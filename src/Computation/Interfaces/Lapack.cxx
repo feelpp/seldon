@@ -32,6 +32,9 @@ namespace Seldon
   private:
     int info_;
   public:
+    LapackInfo(): info_(0)
+    {  
+    }
     LapackInfo(int info): info_(info)
     {  
     }
@@ -46,6 +49,11 @@ namespace Seldon
     int& GetInfoRef()
     {
       return info_;
+    }
+    void Check(string function = "", string lapack_function = "")
+    {
+      if (info_ != 0)
+	throw LapackError(info_, function, lapack_function);
     }
   } lapack_info(0);
 
