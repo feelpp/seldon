@@ -70,7 +70,7 @@ namespace Seldon
     int m(A.GetM());
     int n(A.GetN());
     P.Reallocate(min(m, n));
-    sgetrf_(&m, &n, A.GetData(), &m, P.GetData(), &lapack_info.GetInfoRef());
+    sgetrf_(&m, &n, A.GetData(), &m, P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -83,7 +83,7 @@ namespace Seldon
     int m(A.GetM());
     int n(A.GetN());
     P.Reallocate(min(m, n));
-    dgetrf_(&m, &n, A.GetData(), &m, P.GetData(), &lapack_info.GetInfoRef());
+    dgetrf_(&m, &n, A.GetData(), &m, P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -97,7 +97,7 @@ namespace Seldon
     int n(A.GetN());
     P.Reallocate(min(m, n));
     cgetrf_(&m, &n, A.GetDataVoid(), &m,
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -111,7 +111,7 @@ namespace Seldon
     int n(A.GetN());
     P.Reallocate(min(m, n));
     zgetrf_(&m, &n, A.GetDataVoid(), &m,
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -127,7 +127,7 @@ namespace Seldon
     int m(A.GetM());
     int n(A.GetN());
     P.Reallocate(min(m, n));
-    sgetrf_(&m, &n, A.GetData(), &m, P.GetData(), &lapack_info.GetInfoRef());
+    sgetrf_(&m, &n, A.GetData(), &m, P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -140,7 +140,7 @@ namespace Seldon
     int m(A.GetM());
     int n(A.GetN());
     P.Reallocate(min(m, n));
-    dgetrf_(&m, &n, A.GetData(), &m, P.GetData(), &lapack_info.GetInfoRef());
+    dgetrf_(&m, &n, A.GetData(), &m, P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -154,7 +154,7 @@ namespace Seldon
     int n(A.GetN());
     P.Reallocate(min(m, n));
     cgetrf_(&m, &n, A.GetDataVoid(), &m,
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -168,7 +168,7 @@ namespace Seldon
     int n(A.GetN());
     P.Reallocate(min(m, n));
     zgetrf_(&m, &n, A.GetDataVoid(), &m,
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -184,7 +184,7 @@ namespace Seldon
     int m(A.GetM());
     char uplo('U');
     P.Reallocate(m);
-    ssptrf_(&uplo, &m, A.GetData(), P.GetData(), &lapack_info.GetInfoRef());
+    ssptrf_(&uplo, &m, A.GetData(), P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -197,7 +197,7 @@ namespace Seldon
     int m(A.GetM());
     char uplo('U');
     P.Reallocate(m);
-    dsptrf_(&uplo, &m, A.GetData(), P.GetData(), &lapack_info.GetInfoRef());
+    dsptrf_(&uplo, &m, A.GetData(), P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -211,7 +211,7 @@ namespace Seldon
     char uplo('U');
     P.Reallocate(m);
     csptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -225,7 +225,7 @@ namespace Seldon
     char uplo('U');
     P.Reallocate(m);
     zsptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -242,7 +242,7 @@ namespace Seldon
     int m(A.GetM());
     char uplo(Uplo);
     P.Reallocate(m);
-    ssptrf_(&uplo, &m, A.GetData(), P.GetData(), &lapack_info.GetInfoRef());
+    ssptrf_(&uplo, &m, A.GetData(), P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -256,7 +256,7 @@ namespace Seldon
     int m(A.GetM());
     char uplo(Uplo);
     P.Reallocate(m);
-    dsptrf_(&uplo, &m, A.GetData(), P.GetData(), &lapack_info.GetInfoRef());
+    dsptrf_(&uplo, &m, A.GetData(), P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -271,7 +271,7 @@ namespace Seldon
     char uplo(Uplo);
     P.Reallocate(m);
     csptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -286,7 +286,7 @@ namespace Seldon
     char uplo(Uplo);
     P.Reallocate(m);
     zsptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -302,7 +302,7 @@ namespace Seldon
     int m(A.GetM());
     char uplo('L');
     P.Reallocate(m);
-    ssptrf_(&uplo, &m, A.GetData(), P.GetData(), &lapack_info.GetInfoRef());
+    ssptrf_(&uplo, &m, A.GetData(), P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -315,7 +315,7 @@ namespace Seldon
     int m(A.GetM());
     char uplo('L');
     P.Reallocate(m);
-    dsptrf_(&uplo, &m, A.GetData(), P.GetData(), &lapack_info.GetInfoRef());
+    dsptrf_(&uplo, &m, A.GetData(), P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -329,7 +329,7 @@ namespace Seldon
     char uplo('L');
     P.Reallocate(m);
     csptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -343,7 +343,7 @@ namespace Seldon
     char uplo('L');
     P.Reallocate(m);
     zsptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -360,7 +360,7 @@ namespace Seldon
     int m(A.GetM());
     char uplo(Uplo.RevChar());
     P.Reallocate(m);
-    ssptrf_(&uplo, &m, A.GetData(), P.GetData(), &lapack_info.GetInfoRef());
+    ssptrf_(&uplo, &m, A.GetData(), P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -374,7 +374,7 @@ namespace Seldon
     int m(A.GetM());
     char uplo(Uplo.RevChar());
     P.Reallocate(m);
-    dsptrf_(&uplo, &m, A.GetData(), P.GetData(), &lapack_info.GetInfoRef());
+    dsptrf_(&uplo, &m, A.GetData(), P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -389,7 +389,7 @@ namespace Seldon
     char uplo(Uplo.RevChar());
     P.Reallocate(m);
     csptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
   }
 
 
@@ -404,7 +404,7 @@ namespace Seldon
     char uplo(Uplo.RevChar());
     P.Reallocate(m);
     zsptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
   }
 
 
