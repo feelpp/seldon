@@ -113,7 +113,6 @@ namespace Seldon
     void Nullify();
 
     // Basic methods.
-    int GetNonZeros() const;
     int GetDataSize() const;
     int* GetRealPtr() const;
     int* GetImagPtr() const;

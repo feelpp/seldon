@@ -101,7 +101,6 @@ namespace Seldon
     
     // Convenient functions.
     void Print() const;
-    void SetDiags();
   };
 
 
