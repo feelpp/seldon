@@ -87,6 +87,7 @@ namespace Seldon
 		 Vector<int, Storage1, Allocator1>& ptr,
 		 Vector<int, Storage2, Allocator2>& ind);
     void SetData(int i, int j, int nz, pointer values, int* ptr, int* ind);
+    void Nullify();
 
     // Basic methods.
     int GetNonZeros() const;
