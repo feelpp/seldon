@@ -953,6 +953,28 @@ namespace Seldon
   }
 
 
+  //! Clears the matrix without releasing memory.
+  /*!
+    On exit, the matrix is empty and the memory has not been released.
+    It is useful for low level manipulations on a Matrix instance.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::Nullify()
+  {
+    this->data_ = NULL;
+    this->m_ = 0;
+    this->n_ = 0;
+    real_nz_ = 0;
+    real_ptr_ = NULL;
+    real_ind_ = NULL;
+    imag_nz_ = 0;
+    imag_ptr_ = NULL;
+    imag_ind_ = NULL;
+    real_data_ = NULL;
+    imag_data_ = NULL;
+  }
+
+
   /*******************
    * BASIC FUNCTIONS *
    *******************/

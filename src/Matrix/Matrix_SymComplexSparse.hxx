@@ -110,6 +110,7 @@ namespace Seldon
 		 int* real_ind,
 		 int imag_nz, pointer imag_values, int* imag_ptr,
 		 int* imag_ind);
+    void Nullify();
 
     // Basic methods.
     int GetNonZeros() const;
