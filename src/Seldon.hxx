@@ -35,7 +35,7 @@
 #ifdef SELDON_WITH_CBLAS
 extern "C"
 {
-#include "cblas.h"
+#include "Computation/Interfaces/cblas.h"
 }
 #endif
 
