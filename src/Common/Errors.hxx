@@ -128,6 +128,24 @@ namespace Seldon
   };
   
 
+  /////////////////
+  // LAPACKERROR //
+  /////////////////
+
+  class LapackError: public Error
+  {
+  protected:
+    int info_;
+
+  public:
+    LapackError(int info)  throw();
+    LapackError(int info, string f)  throw();
+    LapackError(int info, string f, string c)  throw();
+
+    virtual void What();
+  };
+  
+
 } // namespace Seldon.
 
 #define SELDON_FILE_ERRORS_HXX

@@ -413,6 +413,72 @@ namespace Seldon
   }
 
 
+
+  /////////////////
+  // LAPACKERROR //
+  /////////////////
+
+  
+  /****************
+   * CONSTRUCTORS *
+   ****************/
+
+
+  //! Constructor.
+  /*! Error only associated with a diagnostic integer.
+    \param info Lapack diagnostic integer.
+    \param f function with which the error is associated.
+  */
+  LapackError::LapackError(int info)  throw(): info_(info)
+  {
+  }
+
+
+  //! Constructor.
+  /*! Error associated with a diagnostic integer and a function.
+    \param info Lapack diagnostic integer.
+    \param f function with which the error is associated.
+  */
+  LapackError::LapackError(int info, string f)  throw(): Error(f), info_(info)
+  {
+  }
+
+
+  //! Main constructor.
+  /*! Error associated with a diagnostic integer, a function and a comment.
+    \param info Lapack diagnostic integer.
+    \param f function with which the error is associated.
+    \param c comment associated with the error.
+  */
+  LapackError::LapackError(int info, string f, string c)  throw():
+    Error(f, c), info_(info)
+  {
+  }
+
+
+  /***********
+   * METHODS *
+   ***********/
+
+
+  //! Delivers information about the error.
+  /*! Displays available information, i.e.
+    the error description, the function and/or the comment.
+  */
+  void LapackError::What()
+  {
+    cout << "Error returned by Lapack";
+    if (this->function != "")
+      cout << " in " << this->function;
+    cout << "." << endl;
+    if (this->comment != "")
+      cout << "   Lapack function: " << this->comment << "." << endl;
+    cout << "   Diagnostic integer (\"info\"): " << this->info_
+	 << "." << endl;
+    cout << endl;
+  }
+
+
 } // namespace Seldon.
 
 #define SELDON_FILE_ERRORS_CXX
