@@ -69,6 +69,9 @@ extern "C"
 #endif
 
 #ifdef SELDON_DEBUG_LEVEL_1
+#ifndef SELDON_LAPACK_CHECK_INFO
+#define SELDON_LAPACK_CHECK_INFO
+#endif
 #ifndef SELDON_CHECK_MEMORY
 #define SELDON_CHECK_MEMORY
 #endif
@@ -551,8 +554,17 @@ extern "C"
 {
 #include "Computation/Interfaces/clapack.h"
 }
-#include "Computation/Interfaces/Lapack.cxx"
+#ifdef SELDON_LAPACK_CHECK_INFO
+#ifndef SELDON_CHECK_INFO
+#define SELDON_CHECK_INFO(f, lf) info.Check(f, lf)
 #endif
+#else
+#ifndef SELDON_CHECK_INFO
+#define SELDON_CHECK_INFO(f, lf)
+#endif
+#endif
+#include "Computation/Interfaces/Lapack.cxx"
+#endif // SELDON_WITH_LAPACK.
 
 namespace Seldon
 {
