@@ -1552,9 +1552,9 @@ namespace Seldon
 #endif
 
     cblas_chemv(CblasColMajor, CblasUpper,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(), A.GetM(), 
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1573,9 +1573,9 @@ namespace Seldon
 #endif
 
     cblas_zhemv(CblasColMajor, CblasUpper,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(), A.GetM(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1598,9 +1598,9 @@ namespace Seldon
 #endif
 
     cblas_chemv(CblasColMajor, Uplo,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(), A.GetM(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1620,9 +1620,9 @@ namespace Seldon
 #endif
 
     cblas_zhemv(CblasColMajor, Uplo,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(), A.GetM(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1644,9 +1644,9 @@ namespace Seldon
 #endif
 
     cblas_chemv(CblasRowMajor, CblasUpper,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(), A.GetM(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1665,9 +1665,9 @@ namespace Seldon
 #endif
 
     cblas_zhemv(CblasRowMajor, CblasUpper,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(), A.GetM(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1690,9 +1690,9 @@ namespace Seldon
 #endif
 
     cblas_chemv(CblasRowMajor, Uplo,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(), A.GetM(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1712,9 +1712,9 @@ namespace Seldon
 #endif
 
     cblas_zhemv(CblasRowMajor, Uplo,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(), A.GetM(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1739,9 +1739,9 @@ namespace Seldon
 #endif
 
     cblas_chpmv(CblasColMajor, CblasUpper,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1761,9 +1761,9 @@ namespace Seldon
 #endif
 
     cblas_zhpmv(CblasColMajor, CblasUpper,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1787,9 +1787,9 @@ namespace Seldon
 #endif
 
     cblas_chpmv(CblasColMajor, Uplo,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1810,9 +1810,9 @@ namespace Seldon
 #endif
 
     cblas_zhpmv(CblasColMajor, Uplo,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1835,9 +1835,9 @@ namespace Seldon
 #endif
 
     cblas_chpmv(CblasRowMajor, CblasUpper,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1857,9 +1857,9 @@ namespace Seldon
 #endif
 
     cblas_zhpmv(CblasRowMajor, CblasUpper,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1883,9 +1883,9 @@ namespace Seldon
 #endif
 
     cblas_chpmv(CblasRowMajor, Uplo,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
@@ -1906,9 +1906,9 @@ namespace Seldon
 #endif
 
     cblas_zhpmv(CblasRowMajor, Uplo,
-		A.GetM(), reinterpret_cast<const void*>(alpha),
+		A.GetM(), reinterpret_cast<const void*>(&alpha),
 		A.GetDataConstVoid(),
-		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(beta),
+		X.GetDataConstVoid(), 1, reinterpret_cast<const void*>(&beta),
 		Y.GetDataVoid(), 1);
   }
 
