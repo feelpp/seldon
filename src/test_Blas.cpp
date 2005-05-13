@@ -22,7 +22,7 @@ int main()
 
   // Note: 'Add' calls the Blas function 'daxpy'.
 
-  cout << "U + V = " << V << endl;
+  cout << "2. * U + V = " << V << endl;
 
   return 0;
 
