@@ -1,4 +1,5 @@
 // Copyright (C) 2001-2005 Vivien Mallet
+// File authors: Vivien Mallet (main part), Marc Duruflé.
 //
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
@@ -125,6 +126,24 @@ namespace Seldon
   //////////////
 
 
+  
+  ///////////////
+  // CONJUGATE //
+  
+  
+  //! Sets a vector to its conjugate.
+  template<class T, class Prop, class Allocator>
+  void Conjugate(Vector<T, Prop, Allocator>& X)
+  {
+    for (int i = 0; i < X.GetM(); i++)
+      X(i) = conj(X(i));
+  }
+  
+  
+  // CONJUGATE //
+  ///////////////
+  
+  
 } // namespace Seldon.
 
 #define SELDON_FILE_FUNCTIONS_VECTOR_CXX
