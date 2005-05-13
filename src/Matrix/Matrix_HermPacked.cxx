@@ -124,6 +124,8 @@ namespace Seldon
   inline void Matrix_HermPacked<T, Prop, Storage, Allocator>::Clear()
   {
     this->~Matrix_HermPacked();
+    this->m_ = 0;
+    this->n_ = 0;
   }
 
 
@@ -610,37 +612,8 @@ namespace Seldon
   {
     Print(0, 0, l, l);
   }
-
-
-  /*********
-   * NORMS *
-   *********/
-
-
-  //! Returns the maximum (in absolute value) of the matrix.
-  /*!
-    \return The maximum (in absolute value) of the matrix.
-    \note The name of this method is of course not relevant
-    since the infinity norm of the matrix is something else.
-    The name of this method will be GetMaxAbs in a next version.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  typename Matrix_HermPacked<T, Prop, Storage, Allocator>::value_type
-  Matrix_HermPacked<T, Prop, Storage, Allocator>::GetNormInf() const
-  {
-    value_type res = value_type(0);
-    int i, j;
-    for (i = 0; i < this->GetM(); i++)
-      for (j = 0; j < this->GetN(); j++)
-	{
-	  res = max(res, (*this)(i, j));
-	  res = max(res, -(*this)(i, j));
-	}
-
-    return res;
-  }
-
-
+  
+  
   /**************************
    * INPUT/OUTPUT FUNCTIONS *
    **************************/
