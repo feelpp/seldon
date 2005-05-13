@@ -1,4 +1,5 @@
 // Copyright (C) 2001-2005 Vivien Mallet
+// File authors: Vivien Mallet (main part), Marc Duruflé.
 //
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
@@ -345,6 +346,176 @@ namespace Seldon
   //////////////
 
 
+  ////////////
+  //  NORMS //
+  
+  
+  //! Returns the maximum (in absolute value) of a matrix.
+  /*!
+    \param A matrix.
+    \return The maximum (in absolute value) of matrix A.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  T MaxAbs(const Matrix<T, Prop, Storage, Allocator>& A)
+  {
+    T res(0);
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetN(); j++)
+	res = max(res, abs(A(i, j)) );
+
+    return res;
+  }
+  
+  
+  //! Returns the 1-norm of a matrix.
+  /*!
+    \param A matrix.
+    \return max_j \sum_i |A_{ij}|
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  T Norm1(const Matrix<T, Prop, Storage, Allocator>& A)
+  {
+    T res(0), sum;
+    for (int j = 0; j < A.GetN(); j++)
+      {
+	sum = T(0);
+	for (int i = 0; i < A.GetM(); i++)
+	  sum += abs( A(i, j) );
+	
+	res = max(res, sum);
+      }
+    
+    return res;
+  }
+  
+  
+  //! Returns the infinity-norm of a matrix.
+  /*!
+    \param A matrix.
+    \return max_i \sum_j |A_{ij}|
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  T NormInf(const Matrix<T, Prop, Storage, Allocator>& A)
+  {
+    T res(0), sum;
+    for (int i = 0; i < A.GetM(); i++)
+      {
+	sum = T(0);
+	for (int j = 0; j < A.GetN(); j++)
+	  sum += abs( A(i, j) );
+	
+	res = max(res, sum);
+      }
+
+    return res;
+  }
+  
+  
+  //! Returns the maximum (in modulus) of a matrix.
+  /*!
+    \param A matrix.
+    \return The maximum (in modulus) of matrix A.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  T MaxAbs(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
+  {
+    T res(0);
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetN(); j++)
+	{
+	  res = max(res, abs(A(i, j)) );
+	}
+    
+    return res;
+  }
+  
+  
+  //! Returns the 1-norm of a matrix.
+  /*!
+    \param A matrix.
+    \return max_j \sum_i |A_{ij}|
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  T Norm1(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
+  {
+    T res(0), sum;
+    for (int j = 0; j < A.GetN(); j++)
+      {
+	sum = T(0);
+	for (int i = 0; i < A.GetM(); i++)
+	  sum += abs( A(i, j) );
+	
+	res = max(res, sum);
+      }
+    
+    return res;
+  }
+  
+  
+  //! Returns the infinity-norm of a matrix.
+  /*!
+    \param A matrix.
+    \return max_i \sum_j |A_{ij}|
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  T NormInf(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
+  {
+    T res(0), sum;
+    for (int i = 0; i < A.GetM(); i++)
+      {
+	sum = T(0);
+	for (int j = 0; j < A.GetN(); j++)
+	  sum += abs( A(i, j) );
+	
+	res = max(res, sum);
+      }
+
+    return res;
+  }
+  
+  
+  //  NORMS //
+  ////////////
+  
+  
+  
+  ////////////////
+  //  TRANSPOSE //
+  
+  
+  //! Matrix transposition.
+  template<class T, class Prop, class Storage, class Allocator>
+  void Transpose(Matrix<T, Prop, Storage, Allocator>& A)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    
+    if (m == n)
+      {
+	T tmp;
+	for (int i = 0; i < m; i++)
+	  for (int j = 0; j < i; j++)
+	    {
+	      tmp = A(i,j);
+	      A(i,j) = A(j,i);
+	      A(j,i) = tmp;
+	    }
+      }
+    else
+      {
+	Matrix<T, Prop, Storage, Allocator> B(A);
+	A.Reallocate(n,m);
+	for (int i = 0; i < m; i++)
+	  for (int j = 0; j < n; j++)
+	    A(j,i) = B(i,j);
+      }
+  }
+  
+  
+  //  TRANSPOSE //
+  ////////////////
+  
+  
 } // namespace Seldon.
 
 #define SELDON_FILE_FUNCTIONS_MATRIX_CXX
