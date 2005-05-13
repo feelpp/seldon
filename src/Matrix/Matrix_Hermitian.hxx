@@ -91,9 +91,6 @@ namespace Seldon
     void Print(int a, int b, int m, int n) const;
     void Print(int l) const;
 
-    // Norms.
-    value_type GetNormInf() const;
-
     // Input/output functions.
     void Write(string FileName) const;
     void Write(ofstream& FileStream) const;
