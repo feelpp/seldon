@@ -265,7 +265,7 @@ namespace Seldon
     CBLAS_TRANSPOSE cblas_status_;
 #endif
   protected:
-    // 0: NoTrans, 1: Trans, 2: ConjTrans.
+    // 0: Trans, 1: NoTrans, 2: ConjTrans.
     int status_;
   public:
     SeldonTranspose(int status)
@@ -298,6 +298,26 @@ namespace Seldon
       return cblas_status_;
     }
 #endif
+    
+    char Char() const 
+    {
+      if (status_ == 0)
+	return 'T';
+      else if (status_ == 1)
+	return 'N';
+      else
+	return 'C';
+    }
+    
+    char RevChar() const 
+    {
+      if (status_ == 0)
+	return 'N';
+      else if (status_ == 1)
+	return 'T';
+      else
+	return 'N';
+    }
     
     bool Trans() const {return (status_ == 0);}
     bool NoTrans() const {return (status_ == 1);}
@@ -355,6 +375,7 @@ namespace Seldon
     }
 #endif
     
+    char Char() const { return (status_ == 0) ? 'N' : 'U'; }
     bool NonUnit() const {return (status_ == 0);}
     bool Unit() const {return (status_ == 1);}
   };
@@ -424,6 +445,40 @@ namespace Seldon
 
   SeldonUplo SeldonUpper(0);
   SeldonUplo SeldonLower(1);
+
+  //
+
+  class SeldonNorm
+  {
+  protected:
+    // 0: Infinity-norm, 1: 1-norm.
+    int status_;
+  public:
+    SeldonNorm(int status)
+    {
+      status_ = status;
+    }
+    
+    operator char() const
+    {
+      return (status_ == 0) ? 'I' : '1';
+    }
+    
+    char Char() const
+    {
+      return (status_ == 0) ? 'I' : '1';
+    }
+    char RevChar() const
+    {
+      return (status_ == 0) ? '1' : 'I';
+    }
+    
+  };
+  
+  SeldonNorm SeldonNormInf(0);
+  SeldonNorm SeldonNorm1(1);
+
+  //
 
   class SeldonConjugate
   {
@@ -563,7 +618,7 @@ extern "C"
 #define SELDON_CHECK_INFO(f, lf)
 #endif
 #endif
-#include "Computation/Interfaces/Lapack.cxx"
+#include "Computation/Interfaces/Lapack_LinearEquations.cxx"
 #endif // SELDON_WITH_LAPACK.
 
 namespace Seldon
