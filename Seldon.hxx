@@ -619,6 +619,8 @@ extern "C"
 #endif
 #endif
 #include "Computation/Interfaces/Lapack_LinearEquations.cxx"
+#include "Computation/Interfaces/Lapack_LeastSquares.cxx"
+#include "Computation/Interfaces/Lapack_Eigenvalues.cxx"
 #endif // SELDON_WITH_LAPACK.
 
 namespace Seldon
