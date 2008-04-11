@@ -24,7 +24,7 @@
 #include "../Common/Common.hxx"
 #include "../Common/Properties.hxx"
 #include "../Common/Storage.hxx"
-#include "../Common/Errors.cxx"
+#include "../Common/Errors.hxx"
 #include "../Common/Allocator.hxx"
 
 namespace Seldon
@@ -41,7 +41,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage,
 	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
-  class Matrix_Sparse: public Spacetown, public Matrix_Base<T, Allocator>
+  class Matrix_Sparse: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
   public:

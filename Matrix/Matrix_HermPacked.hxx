@@ -24,7 +24,7 @@
 #include "../Common/Common.hxx"
 #include "../Common/Properties.hxx"
 #include "../Common/Storage.hxx"
-#include "../Common/Errors.cxx"
+#include "../Common/Errors.hxx"
 #include "../Common/Allocator.hxx"
 
 namespace Seldon
@@ -34,7 +34,7 @@ namespace Seldon
   //! Hermitian packed matrix class.
   template <class T, class Prop, class Storage,
 	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
-  class Matrix_HermPacked: public Spacetown, public Matrix_Base<T, Allocator>
+  class Matrix_HermPacked: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
   public:

@@ -22,7 +22,7 @@
 #include "../Common/Common.hxx"
 #include "../Common/Properties.hxx"
 #include "../Common/Storage.hxx"
-#include "../Common/Errors.cxx"
+#include "../Common/Errors.hxx"
 #include "../Common/Allocator.hxx"
 
 namespace Seldon
@@ -88,8 +88,7 @@ namespace Seldon
     Basic vector class (i.e. not sparse).
   */
   template <class T, class Allocator>
-  class Vector<T, Vect_Full, Allocator>: public Spacetown,
-					 public Vector_Base<T, Allocator>
+  class Vector<T, Vect_Full, Allocator>: public Vector_Base<T, Allocator>
   {
     // typedef declaration.
   public:
@@ -105,9 +104,9 @@ namespace Seldon
     // Methods.
   public:
     // Constructor.
-    explicit Vector<T, Vect_Full, Allocator>()  throw();
-    explicit Vector<T, Vect_Full, Allocator>(int i);
-    Vector<T, Vect_Full, Allocator>(const Vector<T, Vect_Full, Allocator>& A);
+    explicit Vector()  throw();
+    explicit Vector(int i);
+    Vector(const Vector<T, Vect_Full, Allocator>& A);
     
     // Destructor.
     ~Vector();
@@ -120,9 +119,11 @@ namespace Seldon
 
     // Element access and affectation.
     reference operator() (int i);
+#ifndef SWIG
     const_reference operator() (int i) const;
     Vector<T, Vect_Full, Allocator>& operator= (const Vector<T, Vect_Full,
 						Allocator>& X);
+#endif
     void Copy(const Vector<T, Vect_Full, Allocator>& X);
 
     // Basic functions.
@@ -134,7 +135,9 @@ namespace Seldon
     template <class T0>
     void Fill(const T0& x);
     template <class T0>
+#ifndef SWIG
     Vector<T, Vect_Full, Allocator>& operator= (const T0& X);
+#endif
     void FillRand();
     void Print() const;
 
@@ -144,17 +147,25 @@ namespace Seldon
 
     // Input/output functions.
     void Write(string FileName) const;
+#ifndef SWIG
     void Write(ofstream& FileStream) const;
+#endif
     void WriteText(string FileName) const;
+#ifndef SWIG
     void WriteText(ofstream& FileStream) const;
+#endif
     void Read(string FileName);
+#ifndef SWIG
     void Read(ifstream& FileStream);
+#endif
     
   };
 
+#ifndef SWIG
   template <class T, class Storage, class Allocator>
   ostream& operator << (ostream& out,
 			const Vector<T, Storage, Allocator>& V);
+#endif
 
 
 } // namespace Seldon.

@@ -31,28 +31,16 @@ namespace Seldon
   class ColMajor
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return j;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return i;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class RowMajor
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return i;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return j;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
@@ -62,10 +50,7 @@ namespace Seldon
   /////////////
 
 
-  class Vect_Full
-  {
-  };
-
+  class Vect_Full;
 
 
   ////////////
@@ -76,112 +61,64 @@ namespace Seldon
   class ColSparse
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return j;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return i;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class RowSparse
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return i;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return j;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class ColComplexSparse
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return j;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return i;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class RowComplexSparse
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return i;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return j;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class ColSymSparse
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return j;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return i;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class RowSymSparse
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return i;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return j;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class ColSymComplexSparse
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return j;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return i;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class RowSymComplexSparse
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return i;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return j;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
@@ -194,56 +131,32 @@ namespace Seldon
   class ColSymPacked
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return j;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return i;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class RowSymPacked
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return i;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return j;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class ColSym
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return j;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return i;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class RowSym
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return i;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return j;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
@@ -256,56 +169,32 @@ namespace Seldon
   class ColHerm
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return j;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return i;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class RowHerm
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return i;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return j;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class ColHermPacked
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return j;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return i;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
   class RowHermPacked
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return i;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return j;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
   };
 
 
@@ -318,144 +207,72 @@ namespace Seldon
   class ColUpTriang
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return j;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return i;
-    }
-    static bool UpLo()
-    {
-      return true;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static bool UpLo();
   };
 
 
   class ColLoTriang
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return j;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return i;
-    }
-    static bool UpLo()
-    {
-      return false;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static bool UpLo();
   };
 
 
   class RowUpTriang
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return i;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return j;
-    }
-    static bool UpLo()
-    {
-      return true;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static bool UpLo();
   };
 
 
   class RowLoTriang
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return i;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return j;
-    }
-    static bool UpLo()
-    {
-      return false;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static bool UpLo();
   };
 
 
   class ColUpTriangPacked
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return j;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return i;
-    }
-    static bool UpLo()
-    {
-      return true;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static bool UpLo();
   };
 
 
   class ColLoTriangPacked
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return j;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return i;
-    }
-    static bool UpLo()
-    {
-      return false;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static bool UpLo();
   };
 
 
   class RowUpTriangPacked
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return i;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return j;
-    }
-    static bool UpLo()
-    {
-      return true;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static bool UpLo();
   };
 
 
   class RowLoTriangPacked
   {
   public:
-    static int GetFirst(int i, int j)
-    {
-      return i;
-    }
-    static int GetSecond(int i, int j)
-    {
-      return j;
-    }
-    static bool UpLo()
-    {
-      return false;
-    }
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static bool UpLo();
   };
 
 

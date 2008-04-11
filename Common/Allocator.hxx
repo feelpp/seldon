@@ -40,31 +40,11 @@ namespace Seldon
 
   public:
 
-    pointer allocate(int num, void* h = 0)
-    {
-      return static_cast<pointer>( malloc(num * sizeof(T)) );
-    }
-
-    void deallocate(pointer data, int num, void* h = 0)
-    {
-      free(data);
-    }
-
-    void* reallocate(pointer data, int num, void* h = 0)
-    {
-      return realloc(reinterpret_cast<void*>(data), num * sizeof(T));
-    }
-
-    void memoryset(pointer data, char c, size_t num)
-    {
-      memset(reinterpret_cast<void*>(data), c, num);
-    }
-
-    void memorycpy(pointer datat, pointer datas, size_t num)
-    {
-      memcpy(reinterpret_cast<void*>(datat), reinterpret_cast<void*>(datas),
-	     num * sizeof(T));
-    }
+    pointer allocate(int num, void* h = 0);
+    void deallocate(pointer data, int num, void* h = 0);
+    void* reallocate(pointer data, int num, void* h = 0);
+    void memoryset(pointer data, char c, size_t num);
+    void memorycpy(pointer datat, pointer datas, size_t num);
   };
 
 
@@ -85,31 +65,11 @@ namespace Seldon
 
   public:
 
-    pointer allocate(int num, void* h = 0)
-    {
-      return static_cast<pointer>( calloc(num, sizeof(T)) );
-    }
-
-    void deallocate(pointer data, int num, void* h = 0)
-    {
-      free(data);
-    }
-
-    void* reallocate(pointer data, int num, void* h = 0)
-    {
-      return realloc(reinterpret_cast<void*>(data), num * sizeof(T));
-    }
-
-    void memoryset(pointer data, char c, size_t num)
-    {
-      memset(reinterpret_cast<void*>(data), c, num);
-    }
-
-    void memorycpy(pointer datat, pointer datas, size_t num)
-    {
-      memcpy(reinterpret_cast<void*>(datat), reinterpret_cast<void*>(datas),
-	     num * sizeof(T));
-    }
+    pointer allocate(int num, void* h = 0);
+    void deallocate(pointer data, int num, void* h = 0);
+    void* reallocate(pointer data, int num, void* h = 0);
+    void memoryset(pointer data, char c, size_t num);
+    void memorycpy(pointer datat, pointer datas, size_t num);
   };
 
 
@@ -130,33 +90,11 @@ namespace Seldon
 
   public:
 
-    pointer allocate(int num, void* h = 0)
-    {
-      return static_cast<pointer>(new T[num]);
-    }
-
-    void deallocate(pointer data, int num, void* h = 0)
-    {
-      delete [] data;
-    }
-
-    void* reallocate(pointer data, int num, void* h = 0)
-    {
-      if (data != NULL)
-	delete [] data;
-      return (new T[num]);
-    }
-
-    void memoryset(pointer data, char c, size_t num)
-    {
-      memset(reinterpret_cast<void*>(data), c, num);
-    }
-
-    void memorycpy(pointer datat, pointer datas, size_t num)
-    {
-      for (size_t i = 0; i < num; i++)
-	datat[i] = datas[i];
-    }
+    pointer allocate(int num, void* h = 0);
+    void deallocate(pointer data, int num, void* h = 0);
+    void* reallocate(pointer data, int num, void* h = 0);
+    void memoryset(pointer data, char c, size_t num);
+    void memorycpy(pointer datat, pointer datas, size_t num);
   };
 
 
@@ -177,52 +115,11 @@ namespace Seldon
 
   public:
 
-    pointer allocate(int num, void* h = 0)
-    {
-      pointer data = static_cast<pointer>( malloc(num * sizeof(T)) );
-      if (numeric_limits<value_type>::has_signaling_NaN)
-	for (int i = 0; i < num; i++)
-	  data[i] = numeric_limits<value_type>::signaling_NaN();
-      else if (numeric_limits<value_type>::has_quiet_NaN)
-	for (int i = 0; i < num; i++)
-	  data[i] = numeric_limits<value_type>::quiet_NaN();
-      else if  (numeric_limits<value_type>::has_infinity)
-	for (int i = 0; i < num; i++)
-	  data[i] = numeric_limits<value_type>::infinity();
-      return data;
-    }
-
-    void deallocate(pointer data, int num, void* h = 0)
-    {
-      free(data);
-    }
-
-    void* reallocate(pointer data, int num, void* h = 0)
-    {
-      void* datav = realloc(reinterpret_cast<void*>(data), num * sizeof(T));
-      pointer datap = reinterpret_cast<pointer>(datav);
-      if (numeric_limits<value_type>::has_signaling_NaN)
-	for (int i = 0; i < num; i++)
-	  datap[i] = numeric_limits<value_type>::signaling_NaN();
-      else if (numeric_limits<value_type>::has_quiet_NaN)
-	for (int i = 0; i < num; i++)
-	  datap[i] = numeric_limits<value_type>::quiet_NaN();
-      else if  (numeric_limits<value_type>::has_infinity)
-	for (int i = 0; i < num; i++)
-	  datap[i] = numeric_limits<value_type>::infinity();
-      return datav;
-    }
-
-    void memoryset(pointer data, char c, size_t num)
-    {
-      memset(reinterpret_cast<void*>(data), c, num);
-    }
-
-    void memorycpy(pointer datat, pointer datas, size_t num)
-    {
-      memcpy(reinterpret_cast<void*>(datat), reinterpret_cast<void*>(datas),
-	     num * sizeof(T));
-    }
+    pointer allocate(int num, void* h = 0);
+    void deallocate(pointer data, int num, void* h = 0);
+    void* reallocate(pointer data, int num, void* h = 0);
+    void memoryset(pointer data, char c, size_t num);
+    void memorycpy(pointer datat, pointer datas, size_t num);
   };
 
 

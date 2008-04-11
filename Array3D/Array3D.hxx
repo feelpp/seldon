@@ -23,7 +23,7 @@
 #ifndef SELDON_FILE_ARRAY3D_HXX
 
 #include "../Common/Common.hxx"
-#include "../Common/Errors.cxx"
+#include "../Common/Errors.hxx"
 #include "../Common/Allocator.hxx"
 
 namespace Seldon

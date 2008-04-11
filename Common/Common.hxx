@@ -19,60 +19,21 @@
 
 #ifndef SELDON_FILE_COMMON_HXX
 
-class Spacetown
-{
-};
-
 template <class T>
-void PrintArray(T* v, int lgth)
-{
-  for (int k = 0; k < lgth - 1; k++)
-    std::cout << v[k] << " | ";
-  std::cout << v[lgth - 1] << std::endl;
-}
+void PrintArray(T* v, int lgth);
 
 namespace Seldon
 {
 
 
-  //! Converts most types to string.
-  /*!
-    \param input variable to be converted.
-    \return A string containing 'input'.
-  */
   template<typename T>
-  std::string to_str(const T& input)
-  {
-    std::ostringstream output;
-    output << input;
-    return output.str();
-  }
+  std::string to_str(const T& input);
 
-  //! Converts string to most types, specially numbers.
-  /*!
-    \param input string to be converted.
-    \return 'input' converted to 'T'.
-  */
   template <class T>
-  void to_num(std::string s, T& num)
-  {
-    std::istringstream str(s);
-    str >> num;
-  }
+  void to_num(std::string s, T& num);
 
-  //! Converts string to most types, specially numbers.
-  /*!
-    \param input string to be converted.
-    \return 'input' converted to 'T'.
-  */
   template <class T>
-  T to_num(std::string s)
-  {
-    T num;
-    std::istringstream str(s);
-    str >> num;
-    return num;
-  }
+  T to_num(std::string s);
 
 
 }  // namespace Seldon.

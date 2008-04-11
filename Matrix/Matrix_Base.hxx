@@ -24,7 +24,7 @@
 #include "../Common/Common.hxx"
 #include "../Common/Properties.hxx"
 #include "../Common/Storage.hxx"
-#include "../Common/Errors.cxx"
+#include "../Common/Errors.hxx"
 #include "../Common/Allocator.hxx"
 
 namespace Seldon
