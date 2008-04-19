@@ -64,7 +64,6 @@ namespace Seldon
   public:
     // Constructors.
     Matrix_Base();
-    Matrix_Base(int i);
     Matrix_Base(int i, int j);
   
     // Destructor.
