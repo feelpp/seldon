@@ -194,7 +194,9 @@ namespace Seldon
   class Vector<T, Vect_Full, Allocator>;
 
   // Matrix class - specialized for each used type.
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Prop = General,
+	    class Storage = RowMajor,
+	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
   class Matrix;
 
   // column-major matrix.

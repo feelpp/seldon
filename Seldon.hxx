@@ -36,8 +36,7 @@ namespace Seldon
 
 
   // Matrix class - specialized for each used type.
-  template <class T, class Prop = General, class Storage = RowMajor,
-	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, class Prop, class Storage, class Allocator>
   class Matrix
   {
     // Nothing in it: no default matrix is supplied so as to avoid suprises!
