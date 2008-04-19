@@ -124,8 +124,8 @@ namespace Seldon
     Vector<T, Vect_Full, Allocator>& operator= (const Vector<T, Vect_Full,
 						Allocator>& X);
 #endif
-    void Append(const T& x);
     void Copy(const Vector<T, Vect_Full, Allocator>& X);
+    void Append(const T& x);
 
     // Basic functions.
     int GetDataSize();
