@@ -187,22 +187,15 @@ namespace Seldon
   // Vector class - specialized for each used type.
   template <class T, class Storage = Vect_Full,
 	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
-  class Vector
-  {
-    // Nothing in it: no default vector is supplied so as to avoid suprises!
-  };
+  class Vector;
 
   // Full vector.
   template <class T, class Allocator>
   class Vector<T, Vect_Full, Allocator>;
 
   // Matrix class - specialized for each used type.
-  template <class T, class Prop = General, class Storage = RowMajor,
-	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
-  class Matrix
-  {
-    // Nothing in it: no default matrix is supplied so as to avoid suprises!
-  };
+  template <class T, class Prop, class Storage, class Allocator>
+  class Matrix;
 
   // column-major matrix.
   template <class T, class Prop, class Allocator>

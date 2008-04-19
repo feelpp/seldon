@@ -27,6 +27,23 @@ namespace Seldon
 {
   
 
+  // Vector class - specialized for each used type.
+  template <class T, class Storage, class Allocator>
+  class Vector
+  {
+    // Nothing in it: no default vector is supplied so as to avoid suprises!
+  };
+
+
+  // Matrix class - specialized for each used type.
+  template <class T, class Prop = General, class Storage = RowMajor,
+	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  class Matrix
+  {
+    // Nothing in it: no default matrix is supplied so as to avoid suprises!
+  };
+
+
   class SeldonTranspose
   {
 #ifdef SELDON_WITH_CBLAS
