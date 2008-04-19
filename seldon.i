@@ -36,6 +36,25 @@ namespace Seldon
           return self->GetM();
     }
 }
+%extend Matrix<double, General, RowMajor, MallocAlloc<double> >
+{
+    double __getitem__(PyObject* args)
+    {
+	int i, j;
+	int success = PyArg_ParseTuple(args, "ii", &i, &j);
+	if (!success)
+	   throw std::out_of_range("Failed!");
+	return (*self)(i, j);
+    }
+    void __setitem__(PyObject* args, double value)
+    {
+	int i, j;
+	int success = PyArg_ParseTuple(args, "ii", &i, &j);
+	if (!success)
+	   throw std::out_of_range("Failed!");
+	(*self)(i, j) = value;
+    }
+}
 %template(DoubleMalloc) MallocAlloc<double>;
 %template(BaseSeldonVector) Vector_Base<double, MallocAlloc<double> >;
 %template(VectorDouble) Vector<double, Vect_Full, MallocAlloc<double> >;
