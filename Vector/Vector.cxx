@@ -479,6 +479,8 @@ namespace Seldon
   //! Appends an element to the vector.
   /*!
     \param x element to be appended.
+    \warning This method will only work if the allocator preserves the
+    elements while reallocating.
   */
   template <class T, class Allocator>
   inline void Vector<T, Vect_Full, Allocator>::Append(const T& x)
