@@ -11,7 +11,10 @@ using namespace std;
 %include "SeldonHeader.hxx"
 %include "Common/Common.hxx"
 %include "Common/Storage.hxx"
+%include "Common/Properties.hxx"
 %include "Vector/Vector.hxx"
+%include "Matrix/Matrix_Base.hxx"
+%include "Matrix/Matrix_Pointers.hxx"
 %include "Common/Allocator.hxx"
 
 namespace Seldon
@@ -36,4 +39,7 @@ namespace Seldon
 %template(DoubleMalloc) MallocAlloc<double>;
 %template(BaseSeldonVector) Vector_Base<double, MallocAlloc<double> >;
 %template(VectorDouble) Vector<double, Vect_Full, MallocAlloc<double> >;
+%template(MatrixBaseDouble) Matrix_Base<double, MallocAlloc<double> >;
+%template(MatrixPointersDouble) Matrix_Pointers<double, General, RowMajor, MallocAlloc<double> >;
+%template(MatrixDouble) Matrix<double, General, RowMajor, MallocAlloc<double> >;
 }

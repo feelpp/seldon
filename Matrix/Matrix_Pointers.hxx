@@ -68,13 +68,17 @@ namespace Seldon
 
     // Element access and affectation.
     reference operator() (int i, int j);
+#ifndef SWIG
     const_reference operator() (int i, int j) const;
+#endif
     reference Val(int i, int j);
+#ifndef SWIG
     const_reference Val(int i, int j) const;
     reference operator[] (int i);
     const_reference operator[] (int i) const;
     Matrix_Pointers<T, Prop, Storage, Allocator>&
     operator= (const Matrix_Pointers<T, Prop, Storage, Allocator>& A);
+#endif
     void Copy(const Matrix_Pointers<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.
@@ -84,8 +88,10 @@ namespace Seldon
     void Fill();
     template <class T0>
     void Fill(const T0& x);
+#ifndef SWIG
     template <class T0>
     Matrix_Pointers<T, Prop, Storage, Allocator>& operator= (const T0& x);
+#endif
     void FillRand();
     void Print() const;
     void Print(int a, int b, int m, int n) const;
@@ -93,11 +99,17 @@ namespace Seldon
 
     // Input/output functions.
     void Write(string FileName) const;
+#ifndef SWIG
     void Write(ofstream& FileStream) const;
+#endif
     void WriteText(string FileName) const;
+#ifndef SWIG
     void WriteText(ofstream& FileStream) const;
+#endif
     void Read(string FileName);
+#ifndef SWIG
     void Read(ifstream& FileStream);
+#endif
 
   };
 
@@ -111,8 +123,10 @@ namespace Seldon
     Matrix()  throw();
     Matrix(int i, int j);
 
+#ifndef SWIG
     template <class T0>
     Matrix<T, Prop, ColMajor, Allocator>& operator= (const T0& x);
+#endif
   };
 
 
@@ -125,8 +139,10 @@ namespace Seldon
     Matrix()  throw();
     Matrix(int i, int j);
 
+#ifndef SWIG
     template <class T0>
     Matrix<T, Prop, RowMajor, Allocator>& operator= (const T0& x);
+#endif
   };
 
 
