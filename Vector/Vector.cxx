@@ -460,6 +460,19 @@ namespace Seldon
   }
 
 
+  //! Appends an element to the vector.
+  /*!
+    \param x element to be appended.
+  */
+  template <class T, class Allocator>
+  inline void Vector<T, Vect_Full, Allocator>::Append(const T& x)
+  {
+    int i = this->GetLength();
+    this->Reallocate(i + 1);
+    this->data_[i] = x;
+  }
+
+
   //! Duplicates a vector.
   /*!
     \param X vector to be copied.

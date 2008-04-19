@@ -14,6 +14,10 @@ int main()
 
   cout << "Vector: " << V << endl;
 
+  V.Append(19);
+
+  cout << "Vector: " << V << endl;
+
   return 0;
 
 }
