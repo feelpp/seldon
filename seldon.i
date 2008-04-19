@@ -54,6 +54,10 @@ namespace Seldon
 	   throw std::out_of_range("Failed!");
 	(*self)(i, j) = value;
     }
+    unsigned long __len__()
+    {
+	return self->GetM();
+    }
 }
 %template(DoubleMalloc) MallocAlloc<double>;
 %template(BaseSeldonVector) Vector_Base<double, MallocAlloc<double> >;
