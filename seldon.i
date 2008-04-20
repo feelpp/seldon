@@ -46,9 +46,12 @@ namespace Seldon
 	   throw std::out_of_range("Failed!");
 	return (*self)(i, j);
     }
-    double __getitem__(int i)
+    Seldon::Vector<double, Seldon::Vect_Full, Seldon::MallocAlloc<double> > __getitem__(int i)
     {
-    	return (*self)[i];
+	Seldon::Vector<double, Seldon::Vect_Full, Seldon::MallocAlloc<double> > v(self->GetN());
+	for (int j = 0; j < self->GetN(); j++)
+	  v(j) = (*self)(i, j);
+	return v;
     }
     void __setitem__(PyObject* args, double value)
     {
@@ -60,7 +63,7 @@ namespace Seldon
     }
     unsigned long __len__()
     {
-	return self->GetSize();
+	return self->GetM();
     }
 }
 %template(DoubleMalloc) MallocAlloc<double>;
