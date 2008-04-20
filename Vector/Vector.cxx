@@ -590,6 +590,7 @@ namespace Seldon
    *********/
 
 
+#ifndef SELDON_EXCLUDE
   //! Returns the infinite norm.
   /*!
     \return The infinite norm.
@@ -635,6 +636,7 @@ namespace Seldon
 
     return j;
   }
+#endif
 
 
   /**************************

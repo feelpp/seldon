@@ -142,9 +142,13 @@ namespace Seldon
     void FillRand();
     void Print() const;
 
+#ifndef SELDON_EXCLUDE
+#ifndef SWIG
     // Norms.
     value_type GetNormInf() const;
     int GetNormInfIndex() const;
+#endif
+#endif
 
     // Input/output functions.
     void Write(string FileName) const;
