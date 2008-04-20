@@ -1,7 +1,7 @@
 %module seldon
 %{
 #include "SeldonHeader.hxx"
-%}
+  %}
 
 %include "std_string.i"
 
@@ -19,57 +19,59 @@ using namespace std;
 
 namespace Seldon
 {
-%extend Vector<double, Vect_Full, MallocAlloc<double> >
-{
+  %extend Vector<double, Vect_Full, MallocAlloc<double> >
+  {
     double __getitem__(int index) {
-        if (index < self->GetM())
-          return self->GetData()[index];
-        else
-          return 0;
+      if (index < self->GetM())
+	return self->GetData()[index];
+      else
+	return 0;
     }
     void __setitem__(int index, double value) {
-        if (index >= 0 && index < self->GetM()) {
-            self->GetData()[index] = value;
-        }
+      if (index >= 0 && index < self->GetM()) {
+	self->GetData()[index] = value;
+      }
     }
     unsigned long __len__() {
-          return self->GetM();
+      return self->GetM();
     }
-}
-%extend Matrix<double, General, RowMajor, MallocAlloc<double> >
-{
+  }
+  %extend Matrix<double, General, RowMajor, MallocAlloc<double> >
+  {
     double __getitem__(PyObject* args)
     {
-	int i, j;
-	int success = PyArg_ParseTuple(args, "ii", &i, &j);
-	if (!success)
-	   throw std::out_of_range("Failed!");
-	return (*self)(i, j);
+      int i, j;
+      int success = PyArg_ParseTuple(args, "ii", &i, &j);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      return (*self)(i, j);
     }
     Seldon::Vector<double, Seldon::Vect_Full, Seldon::MallocAlloc<double> > __getitem__(int i)
     {
-	Seldon::Vector<double, Seldon::Vect_Full, Seldon::MallocAlloc<double> > v(self->GetN());
-	for (int j = 0; j < self->GetN(); j++)
-	  v(j) = (*self)(i, j);
-	return v;
+      Seldon::Vector<double, Seldon::Vect_Full, Seldon::MallocAlloc<double> > v(self->GetN());
+      for (int j = 0; j < self->GetN(); j++)
+	v(j) = (*self)(i, j);
+      return v;
     }
     void __setitem__(PyObject* args, double value)
     {
-	int i, j;
-	int success = PyArg_ParseTuple(args, "ii", &i, &j);
-	if (!success)
-	   throw std::out_of_range("Failed!");
-	(*self)(i, j) = value;
+      int i, j;
+      int success = PyArg_ParseTuple(args, "ii", &i, &j);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      (*self)(i, j) = value;
     }
     unsigned long __len__()
     {
-	return self->GetM();
+      return self->GetM();
     }
-}
-%template(DoubleMalloc) MallocAlloc<double>;
-%template(BaseSeldonVector) Vector_Base<double, MallocAlloc<double> >;
-%template(VectorDouble) Vector<double, Vect_Full, MallocAlloc<double> >;
-%template(MatrixBaseDouble) Matrix_Base<double, MallocAlloc<double> >;
-%template(MatrixPointersDouble) Matrix_Pointers<double, General, RowMajor, MallocAlloc<double> >;
-%template(MatrixDouble) Matrix<double, General, RowMajor, MallocAlloc<double> >;
+  }
+
+  %template(DoubleMalloc) MallocAlloc<double>;
+  %template(BaseSeldonVector) Vector_Base<double, MallocAlloc<double> >;
+  %template(VectorDouble) Vector<double, Vect_Full, MallocAlloc<double> >;
+  %template(MatrixBaseDouble) Matrix_Base<double, MallocAlloc<double> >;
+  %template(MatrixPointersDouble) Matrix_Pointers<double, General, RowMajor, MallocAlloc<double> >;
+  %template(MatrixDouble) Matrix<double, General, RowMajor, MallocAlloc<double> >;
+
 }
