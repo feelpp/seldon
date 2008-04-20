@@ -142,7 +142,7 @@ namespace Seldon
     void FillRand();
     void Print() const;
 
-#ifndef SELDON_EXCLUDE
+#ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
 #ifndef SWIG
     // Norms.
     value_type GetNormInf() const;

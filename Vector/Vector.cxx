@@ -590,7 +590,7 @@ namespace Seldon
    *********/
 
 
-#ifndef SELDON_EXCLUDE
+#ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
   //! Returns the infinite norm.
   /*!
     \return The infinite norm.
