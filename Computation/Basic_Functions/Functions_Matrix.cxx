@@ -23,6 +23,9 @@
 /*
   Function defined in this file:
 
+  alpha.A -> A
+  Mlt(alpha, A)
+
   A*B -> C
   Mlt(A, B, C)
 
@@ -41,6 +44,21 @@ namespace Seldon
 
   /////////
   // MLT //
+
+
+  template <class T0,
+	    class T1, class Prop1, class Storage1, class Allocator1>
+  void Mlt(const T0 alpha,
+	   Matrix<T1, Prop1, Storage1, Allocator1>& A)  throw()
+  {
+    T1 alpha_ = alpha;
+
+    typename Matrix<T1, Prop1, Storage1, Allocator1>::pointer
+      data = A.GetData();
+
+    for (int i = 0; i < A.GetDataSize(); i++)
+      data[i] = alpha_ * data[i];
+  }  
 
 
   template <class T0,
