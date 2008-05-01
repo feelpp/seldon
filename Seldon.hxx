@@ -375,6 +375,7 @@ namespace Seldon
 #include "Matrix/Matrix_HermPacked.cxx"
 #include "Matrix/Matrix_TriangPacked.cxx"
 #include "Vector/Vector.cxx"
+#include "Matrix/Functions.cxx"
 #include "Computation/Basic_Functions/Functions_Matrix.cxx"
 #include "Computation/Basic_Functions/Functions_Vector.cxx"
 #include "Computation/Basic_Functions/Functions_MatVect.cxx"

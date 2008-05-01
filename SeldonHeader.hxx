@@ -285,6 +285,7 @@ namespace Seldon
 #include "Matrix/Matrix_HermPacked.hxx"
 #include "Matrix/Matrix_TriangPacked.hxx"
 #include "Vector/Vector.hxx"
+#include "Matrix/Functions.hxx"
 
 // Lapack interface.
 #ifdef SELDON_WITH_LAPACK
