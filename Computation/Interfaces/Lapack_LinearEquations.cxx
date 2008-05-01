@@ -1,4 +1,4 @@
-// Copyright (C) 2001-2005 Vivien Mallet
+// Copyright (C) 2001-2008 Vivien Mallet
 // File authors: Marc Duruflé (main part), Vivien Mallet.
 //
 // This file is part of Seldon library.
