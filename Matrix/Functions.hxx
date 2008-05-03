@@ -37,14 +37,14 @@ namespace Seldon
 
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
-  void SetRow(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
-	      int i, Vector<T1, Storage1, Allocator1>& X);
+  void SetRow(const Vector<T1, Storage1, Allocator1>& X,
+	      int i, Matrix<T0, Prop0, Storage0, Allocator0>& M);
 
 
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
-  void SetCol(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
-	      int j, Vector<T1, Storage1, Allocator1>& X);
+  void SetCol(const Vector<T1, Storage1, Allocator1>& X,
+	      int j, Matrix<T0, Prop0, Storage0, Allocator0>& M);
 
 
 } // namespace Seldon.

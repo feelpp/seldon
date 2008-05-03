@@ -40,15 +40,15 @@ namespace Seldon
   void GetCol(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 	      int j, Vector<T1, Storage1, Allocator1>& X)
   {
-    for (int i = 0; i < M.GetN(); i++)
+    for (int i = 0; i < M.GetM(); i++)
       X(i) = M(i, j);
   }
 
 
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
-  void SetRow(Vector<T1, Storage1, Allocator1>& X,
-	      int i, const Matrix<T0, Prop0, Storage0, Allocator0>& M)
+  void SetRow(const Vector<T1, Storage1, Allocator1>& X,
+	      int i, Matrix<T0, Prop0, Storage0, Allocator0>& M)
   {
     for (int j = 0; j < M.GetN(); j++)
       M(i, j) = X(j);
@@ -57,10 +57,10 @@ namespace Seldon
 
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
-  void SetCol(Vector<T1, Storage1, Allocator1>& X,
+  void SetCol(const Vector<T1, Storage1, Allocator1>& X,
 	      int j, Matrix<T0, Prop0, Storage0, Allocator0>& M)
   {
-    for (int i = 0; i < M.GetN(); i++)
+    for (int i = 0; i < M.GetM(); i++)
       M(i, j) = X(i);
   }
 
