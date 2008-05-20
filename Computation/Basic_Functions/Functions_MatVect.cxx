@@ -997,15 +997,16 @@ namespace Seldon
     \param X vector.
     \function (optional) function in which the compatibility is checked.
     Default: "".
+    \param op (optional) operation to be performed. Default: "M.X".
   */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 		const Vector<T1, Storage1, Allocator1>& X,
-		string function = "")
+		string function = "", string op = "M.X")
   {
     if (X.GetLength() != M.GetN())
-      throw WrongDim(function, string("Operation M.X not permitted:")
+      throw WrongDim(function, string("Operation ") + op + " not permitted:"
 		     + string("\n     M (") + to_str(&M) + string(") is a ")
 		     + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
 		     + string(" matrix;\n     X (") + to_str(&X)
