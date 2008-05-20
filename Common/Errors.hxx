@@ -30,17 +30,20 @@ namespace Seldon
   class Error
   {
   protected:
-    string function;
-    string comment;
+    //! Message describing the exception type.
+    string description_;
+    //! Name of the function in which the error occurred.
+    string function_;
+    //! A comment about the error.
+    string comment_;
 
   public:
-    Error()  throw();
-    Error(string f)  throw();
-    Error(string f, string c)  throw();
+    Error(string function, string comment)  throw();
+    Error(string description, string function, string comment)  throw();
     virtual ~Error()  throw();
 
-    virtual void What();
-
+    virtual string What();
+    void CoutWhat();
   };
 
   
@@ -51,10 +54,7 @@ namespace Seldon
   class NoMemory: public Error
   {
   public:
-    NoMemory(string f)  throw();
-    NoMemory(string f, string c)  throw();
-
-    virtual void What();
+    NoMemory(string function, string comment)  throw();
   };
   
 
@@ -65,10 +65,7 @@ namespace Seldon
   class WrongDim: public Error
   {
   public:
-    WrongDim(string f)  throw();
-    WrongDim(string f, string c)  throw();
-
-    virtual void What();
+    WrongDim(string function, string comment)  throw();
   };
   
 
@@ -79,10 +76,7 @@ namespace Seldon
   class WrongIndex: public Error
   {
   public:
-    WrongIndex(string f)  throw();
-    WrongIndex(string f, string c)  throw();
-
-    virtual void What();
+    WrongIndex(string function, string comment)  throw();
   };
   
 
@@ -93,10 +87,7 @@ namespace Seldon
   class WrongRow: public Error
   {
   public:
-    WrongRow(string f)  throw();
-    WrongRow(string f, string c)  throw();
-
-    virtual void What();
+    WrongRow(string function, string comment)  throw();
   };
   
 
@@ -107,10 +98,7 @@ namespace Seldon
   class WrongCol: public Error
   {
   public:
-    WrongCol(string f)  throw();
-    WrongCol(string f, string c)  throw();
-
-    virtual void What();
+    WrongCol(string function, string comment)  throw();
   };
   
 
@@ -121,10 +109,7 @@ namespace Seldon
   class IOError: public Error
   {
   public:
-    IOError(string f)  throw();
-    IOError(string f, string c)  throw();
-
-    virtual void What();
+    IOError(string function, string comment)  throw();
   };
   
 
@@ -138,11 +123,9 @@ namespace Seldon
     int info_;
 
   public:
-    LapackError(int info)  throw();
-    LapackError(int info, string f)  throw();
-    LapackError(int info, string f, string c)  throw();
+    LapackError(int info, string function, string comment)  throw();
 
-    virtual void What();
+    virtual string What();
   };
   
 

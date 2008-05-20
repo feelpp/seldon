@@ -100,7 +100,7 @@ extern "C"
 }\
 catch(Seldon::Error& Err)\
 {\
-Err.What();\
+Err.CoutWhat();\
 return 1;\
 }\
 catch (std::exception& Err)\

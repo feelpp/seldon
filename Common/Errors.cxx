@@ -35,40 +35,29 @@ namespace Seldon
    ****************/
   
 
-  //! Default constructor.
-  /*!
-    Error asociated neither with a function nor with a comment.
-  */
-  Error::Error()  throw()
-  {
-    cout << "ERROR!" << endl;
-    function = "";
-    comment = "";
-  }
-
-
-  //! Constructor.
-  /*! Error associated with a function.
-    \param f function with which the error is associated.
-  */
-  Error::Error(string f)  throw()
-  {
-    cout << "ERROR!" << endl;
-    function = f;
-    comment = "";
-  }
-
-
   //! Main constructor.
   /*! Error associated with both a function and a comment.
-    \param f function with which the error is associated.
-    \param c comment associated with the error.
+    \param function function with which the error is associated.
+    \param comment comment associated with the error.
   */
-  Error::Error(string f, string c)  throw()
+  Error::Error(string function = "", string comment = "")  throw():
+    description_("An undefined error occurred"), function_(function),
+    comment_(comment)
   {
     cout << "ERROR!" << endl;
-    function = f;
-    comment = c;
+  }
+
+
+  //! Alternative constructor.
+  /*! Error associated with a description, a function and a comment.
+    \param description short description of the error.
+    \param function function with which the error is associated.
+    \param comment comment associated with the error.
+  */
+  Error::Error(string description, string function, string comment)  throw():
+    description_(description), function_(function), comment_(comment)
+  {
+    cout << "ERROR!" << endl;
   }
 
 
@@ -92,18 +81,28 @@ namespace Seldon
   
 
   //! Delivers information about the error.
-  /*! Displays available information, i.e.
-    the error description, the function and/or the comment.
+  /*! Displays available information, i.e. the error description, the function
+    and/or a comment.
   */
-  void Error::What()
+  string Error::What()
   {
-    cout << "An undefined error occured";
-    if (function.size() != 0)
-      cout << " in " << function;
-    cout << "." << endl;
-    if (comment.size() != 0)
-      cout << "   " << comment << endl;
-    cout << endl;
+    string message(description_);
+    if (!function_.empty())
+      message += " in " + function_;
+    message += ".\n";
+    if (!comment_.empty())
+      message += "   " + comment_;
+    return message;
+  }
+
+
+  //! Delivers information about the error.
+  /*! Displays available information, i.e. the error description, the function
+    and/or a comment.
+  */
+  void Error::CoutWhat()
+  {
+    cout << this->What() << endl;
   }
 
 
@@ -113,48 +112,14 @@ namespace Seldon
   //////////////
 
   
-  /****************
-   * CONSTRUCTORS *
-   ****************/
-
-
-  //! Constructor.
-  /*! Error associated with a function.
-    \param f function with which the error is associated.
-  */
-  NoMemory::NoMemory(string f)  throw(): Error(f)
-  {
-  }
-
-
   //! Main constructor.
   /*! Error associated with both a function and a comment.
-    \param f function with which the error is associated.
-    \param c comment associated with the error.
+    \param function function with which the error is associated.
+    \param comment comment associated with the error.
   */
-  NoMemory::NoMemory(string f, string c)  throw(): Error(f, c)
+  NoMemory::NoMemory(string function = "", string comment = "")  throw():
+    Error("Out of memory", function, comment)
   {
-  }
-
-
-  /***********
-   * METHODS *
-   ***********/
-
-
-  //! Delivers information about the error.
-  /*! Displays available information, i.e.
-    the error description, the function and/or the comment.
-  */
-  void NoMemory::What()
-  {
-    cout << "Out of memory";
-    if (this->function != "")
-      cout << " in " << this->function;
-    cout << "." << endl;
-    if (this->comment != "")
-      cout << "   " << this->comment << endl;
-    cout << endl;
   }
 
 
@@ -164,48 +129,14 @@ namespace Seldon
   //////////////
 
   
-  /****************
-   * CONSTRUCTORS *
-   ****************/
-
-
-  //! Constructor.
-  /*! Error associated with a function.
-    \param f function with which the error is associated.
-  */
-  WrongDim::WrongDim(string f)  throw(): Error(f)
-  {
-  }
-
-
   //! Main constructor.
   /*! Error associated with both a function and a comment.
-    \param f function with which the error is associated.
-    \param c comment associated with the error.
+    \param function function with which the error is associated.
+    \param comment comment associated with the error.
   */
-  WrongDim::WrongDim(string f, string c)  throw(): Error(f, c)
+  WrongDim::WrongDim(string function = "", string comment = "")  throw():
+    Error("Wrong dimensions involved", function, comment)
   {
-  }
-
-
-  /***********
-   * METHODS *
-   ***********/
-
-
-  //! Delivers information about the error.
-  /*! Displays available information, i.e.
-    the error description, the function and/or the comment.
-  */
-  void WrongDim::What()
-  {
-    cout << "Wrong dimensions involved";
-    if (this->function != "")
-      cout << " in " << this->function;
-    cout << "." << endl;
-    if (this->comment != "")
-      cout << "   " << this->comment << endl;
-    cout << endl;
   }
 
 
@@ -215,48 +146,14 @@ namespace Seldon
   ////////////////
 
   
-  /****************
-   * CONSTRUCTORS *
-   ****************/
-
-
-  //! Constructor.
-  /*! Error associated with a function.
-    \param f function with which the error is associated.
-  */
-  WrongIndex::WrongIndex(string f)  throw(): Error(f)
-  {
-  }
-
-
   //! Main constructor.
   /*! Error associated with both a function and a comment.
-    \param f function with which the error is associated.
-    \param c comment associated with the error.
+    \param function function with which the error is associated.
+    \param comment comment associated with the error.
   */
-  WrongIndex::WrongIndex(string f, string c)  throw(): Error(f, c)
+  WrongIndex::WrongIndex(string function = "", string comment = "")  throw():
+    Error("Index out of range", function, comment)
   {
-  }
-
-
-  /***********
-   * METHODS *
-   ***********/
-
-
-  //! Delivers information about the error.
-  /*! Displays available information, i.e.
-    the error description, the function and/or the comment.
-  */
-  void WrongIndex::What()
-  {
-    cout << "Index out of range";
-    if (this->function != "")
-      cout << " in " << this->function;
-    cout << "." << endl;
-    if (this->comment != "")
-      cout << "   " << this->comment << endl;
-    cout << endl;
   }
 
 
@@ -265,49 +162,15 @@ namespace Seldon
   // WRONGROW //
   //////////////
 
-  
-  /****************
-   * CONSTRUCTORS *
-   ****************/
-
-
-  //! Constructor.
-  /*! Error associated with a function.
-    \param f function with which the error is associated.
-  */
-  WrongRow::WrongRow(string f)  throw(): Error(f)
-  {
-  }
-
 
   //! Main constructor.
   /*! Error associated with both a function and a comment.
-    \param f function with which the error is associated.
-    \param c comment associated with the error.
+    \param function function with which the error is associated.
+    \param comment comment associated with the error.
   */
-  WrongRow::WrongRow(string f, string c)  throw(): Error(f, c)
+  WrongRow::WrongRow(string function = "", string comment = "")  throw():
+    Error("Row index out of range", function, comment)
   {
-  }
-
-
-  /***********
-   * METHODS *
-   ***********/
-
-
-  //! Delivers information about the error.
-  /*! Displays available information, i.e.
-    the error description, the function and/or the comment.
-  */
-  void WrongRow::What()
-  {
-    cout << "Row index out of range";
-    if (this->function != "")
-      cout << " in " << this->function;
-    cout << "." << endl;
-    if (this->comment != "")
-      cout << "   " << this->comment << endl;
-    cout << endl;
   }
 
 
@@ -317,48 +180,14 @@ namespace Seldon
   //////////////
 
   
-  /****************
-   * CONSTRUCTORS *
-   ****************/
-
-
-  //! Constructor.
-  /*! Error associated with a function.
-    \param f function with which the error is associated.
-  */
-  WrongCol::WrongCol(string f)  throw(): Error(f)
-  {
-  }
-
-
   //! Main constructor.
   /*! Error associated with both a function and a comment.
-    \param f function with which the error is associated.
-    \param c comment associated with the error.
+    \param function function with which the error is associated.
+    \param comment comment associated with the error.
   */
-  WrongCol::WrongCol(string f, string c)  throw(): Error(f, c)
+  WrongCol::WrongCol(string function = "", string comment = "")  throw():
+    Error("Column index out of range", function, comment)
   {
-  }
-
-
-  /***********
-   * METHODS *
-   ***********/
-
-
-  //! Delivers information about the error.
-  /*! Displays available information, i.e.
-    the error description, the function and/or the comment.
-  */
-  void WrongCol::What()
-  {
-    cout << "Column index out of range";
-    if (this->function != "")
-      cout << " in " << this->function;
-    cout << "." << endl;
-    if (this->comment != "")
-      cout << "   " << this->comment << endl;
-    cout << endl;
   }
 
 
@@ -368,48 +197,14 @@ namespace Seldon
   /////////////
 
   
-  /****************
-   * CONSTRUCTORS *
-   ****************/
-
-
-  //! Constructor.
-  /*! Error associated with a function.
-    \param f function with which the error is associated.
-  */
-  IOError::IOError(string f)  throw(): Error(f)
-  {
-  }
-
-
   //! Main constructor.
   /*! Error associated with both a function and a comment.
-    \param f function with which the error is associated.
-    \param c comment associated with the error.
+    \param function function with which the error is associated.
+    \param comment comment associated with the error.
   */
-  IOError::IOError(string f, string c)  throw(): Error(f, c)
+  IOError::IOError(string function = "", string comment = "")  throw():
+    Error("Error while performing an I/O operation", function, comment)
   {
-  }
-
-
-  /***********
-   * METHODS *
-   ***********/
-
-
-  //! Delivers information about the error.
-  /*! Displays available information, i.e.
-    the error description, the function and/or the comment.
-  */
-  void IOError::What()
-  {
-    cout << "Error while performing an I/O operation";
-    if (this->function != "")
-      cout << " in " << this->function;
-    cout << "." << endl;
-    if (this->comment != "")
-      cout << "   " << this->comment << endl;
-    cout << endl;
   }
 
 
@@ -419,63 +214,34 @@ namespace Seldon
   /////////////////
 
   
-  /****************
-   * CONSTRUCTORS *
-   ****************/
-
-
-  //! Constructor.
-  /*! Error only associated with a diagnostic integer.
-    \param info Lapack diagnostic integer.
-    \param f function with which the error is associated.
-  */
-  LapackError::LapackError(int info)  throw(): info_(info)
-  {
-  }
-
-
-  //! Constructor.
-  /*! Error associated with a diagnostic integer and a function.
-    \param info Lapack diagnostic integer.
-    \param f function with which the error is associated.
-  */
-  LapackError::LapackError(int info, string f)  throw(): Error(f), info_(info)
-  {
-  }
-
-
   //! Main constructor.
   /*! Error associated with a diagnostic integer, a function and a comment.
     \param info Lapack diagnostic integer.
-    \param f function with which the error is associated.
-    \param c comment associated with the error.
+    \param function function with which the error is associated.
+    \param comment comment associated with the error.
   */
-  LapackError::LapackError(int info, string f, string c)  throw():
-    Error(f, c), info_(info)
+  LapackError::LapackError(int info, string function = "",
+			   string comment = "")
+    throw(): Error("Error returned by Lapack", function, comment), info_(info)
   {
   }
-
-
-  /***********
-   * METHODS *
-   ***********/
 
 
   //! Delivers information about the error.
   /*! Displays available information, i.e.
     the error description, the function and/or the comment.
   */
-  void LapackError::What()
+  string LapackError::What()
   {
-    cout << "Error returned by Lapack";
-    if (this->function != "")
-      cout << " in " << this->function;
-    cout << "." << endl;
-    if (this->comment != "")
-      cout << "   Lapack function: " << this->comment << "." << endl;
-    cout << "   Diagnostic integer (\"info\"): " << this->info_
-	 << "." << endl;
-    cout << endl;
+    string message(this->description_);
+    if (!this->function_.empty())
+      message += " in " + this->function_;
+    message += ".\n";
+    if (!this->comment_.empty())
+      message += "   " + this->comment_;
+    message += "   Diagnostic integer (\"info\"): " + to_str(info_)
+      + ".\n";
+    return message;
   }
 
 
