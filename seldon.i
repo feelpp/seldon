@@ -7,7 +7,40 @@
 
 using namespace std;
 
-// Include the header file with above prototypes
+%include "Common/Errors.hxx"
+%exception
+{
+  try
+    {
+      $action
+	}
+  catch(Seldon::Error& e)
+    {
+      PyErr_SetString(PyExc_Exception, e.What().c_str());
+      return NULL;
+    }
+  catch(std::exception& e)
+    {
+      PyErr_SetString(PyExc_Exception, e.what());
+      return NULL;
+    }
+  catch(std::string& s)
+    {
+      PyErr_SetString(PyExc_Exception, s.c_str());
+      return NULL;
+    }
+  catch(const char* s)
+    {
+      PyErr_SetString(PyExc_Exception, s);
+      return NULL;
+    }
+  catch(...)
+    {
+      PyErr_SetString(PyExc_Exception, "Unknown exception...");
+      return NULL;
+    }
+}
+
 %include "SeldonHeader.hxx"
 %include "Common/Common.hxx"
 %include "Common/Storage.hxx"
@@ -22,15 +55,10 @@ namespace Seldon
   %extend Vector<int, Vect_Full, MallocAlloc<int> >
   {
     int __getitem__(int index) {
-      if (index < self->GetM())
-	return self->GetData()[index];
-      else
-	return 0;
+      return (*self)(index);
     }
     void __setitem__(int index, int value) {
-      if (index >= 0 && index < self->GetM()) {
-	self->GetData()[index] = value;
-      }
+      (*self)(index) = value;
     }
     unsigned long __len__() {
       return self->GetM();
@@ -39,15 +67,10 @@ namespace Seldon
   %extend Vector<double, Vect_Full, MallocAlloc<double> >
   {
     double __getitem__(int index) {
-      if (index < self->GetM())
-	return self->GetData()[index];
-      else
-	return 0;
+      return (*self)(index);
     }
     void __setitem__(int index, double value) {
-      if (index >= 0 && index < self->GetM()) {
-	self->GetData()[index] = value;
-      }
+      (*self)(index) = value;
     }
     unsigned long __len__() {
       return self->GetM();

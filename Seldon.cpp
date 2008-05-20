@@ -20,7 +20,7 @@
 
 #ifndef SELDON_FILE_SELDON_CPP
 
-
+#define SELDON_DEBUG_LEVEL_4
 #include "Seldon.hxx"
 
 namespace Seldon
