@@ -142,7 +142,6 @@ extern "C"
 namespace Seldon
 {
   using namespace std;
-  class ColMajor0;
 }
 
 // Useful functions.
