@@ -144,7 +144,8 @@ namespace Seldon
   using namespace std;
 }
 
-// Useful functions.
+// Exceptions and useful functions.
+#include "Common/Errors.hxx"
 #include "Common/Common.hxx"
 
 // Default allocator.
