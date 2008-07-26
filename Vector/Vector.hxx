@@ -114,6 +114,7 @@ namespace Seldon
 
     // Memory management.
     void Reallocate(int i);
+    void Resize(int i);
     void SetData(int i, pointer data);
     void Nullify();
 
@@ -126,7 +127,11 @@ namespace Seldon
 #endif
     void Copy(const Vector<T, Vect_Full, Allocator>& X);
     void Append(const T& x);
-
+    template<class T0>
+    void PushBack(const T0& x);
+    template<class Allocator0>
+    void PushBack(const Vector<T, Vect_Full, Allocator0>& X);
+    
     // Basic functions.
     int GetDataSize();
 
@@ -139,6 +144,8 @@ namespace Seldon
 #ifndef SWIG
     Vector<T, Vect_Full, Allocator>& operator= (const T0& X);
 #endif
+    template <class T0>
+    Vector<T, Vect_Full, Allocator>& operator*= (const T0& X);
     void FillRand();
     void Print() const;
 

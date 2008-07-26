@@ -164,7 +164,6 @@ namespace Seldon
   
   /*** ColMajor ***/
   
-  
   template<class Prop0, class Allocator0,
 	   class Allocator1>
   void GetQ_FromQR(Matrix<double, Prop0, ColMajor, Allocator0>& A,
@@ -177,6 +176,41 @@ namespace Seldon
     Vector<double, Vect_Full, Allocator1> work(lwork);
     dorgqr_(&m, &m, &n, A.GetData(), &m, tau.GetData(),
 	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+  }
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQ_FromQR(Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
+		   Vector<complex<double>, Vect_Full, Allocator1>& tau,
+		   LapackInfo& info = lapack_info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = 2*max(m,n);
+    Vector<double, Vect_Full, Allocator1> work(lwork);
+    zungqr_(&m, &m, &n, A.GetDataVoid(), &m, tau.GetData(),
+	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+  }
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromQR(const Side& side, const Trans& trans,
+		   Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
+		   Vector<complex<double>, Vect_Full, Allocator1>& tau,
+		   Matrix<complex<double>, Prop0, ColMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = max(m,n);
+    Vector<double, Vect_Full, Allocator1> work(lwork);
+    char side_ = side.Char(); char trans_ = trans.Char();
+    int k = m; 
+    if (side_ == 'R')
+      k = n;
+    
+    zunmqr_(&side, &trans, &m, &n, &k, A.GetDataVoid(), &m, tau.GetDataVoid(),
+	    C.GetDataVoid(), &m, work.GetData(), &lwork, &lapack_info.GetInfoRef());
   }
   
   // GETQ_FROMQR //

@@ -2118,7 +2118,7 @@
 /* Subroutine */ int dpotf2_(char *uplo, LAPACK_INTEGER *n, LAPACK_DOUBLEREAL *a, LAPACK_INTEGER *
 			     lda, LAPACK_INTEGER *info);
  
-/* Subroutine */ int dpotrf_(char *uplo, LAPACK_INTEGER *n, LAPACK_DOUBLEREAL *a, LAPACK_INTEGER *
+/* Subroutine */ int dpotrf_(const char *uplo, const LAPACK_INTEGER *n, LAPACK_DOUBLEREAL *a, const LAPACK_INTEGER *
 			     lda, LAPACK_INTEGER *info);
  
 /* Subroutine */ int dpotri_(char *uplo, LAPACK_INTEGER *n, LAPACK_DOUBLEREAL *a, LAPACK_INTEGER *
@@ -2236,8 +2236,8 @@
 			     ipiv, LAPACK_DOUBLEREAL *anorm, LAPACK_DOUBLEREAL *rcond, LAPACK_DOUBLEREAL *work, LAPACK_INTEGER 
 			     *iwork, LAPACK_INTEGER *info);
  
-/* Subroutine */ int dspev_(char *jobz, char *uplo, LAPACK_INTEGER *n, LAPACK_DOUBLEREAL *
-			    ap, LAPACK_DOUBLEREAL *w, LAPACK_DOUBLEREAL *z__, LAPACK_INTEGER *ldz, LAPACK_DOUBLEREAL *work, 
+/* Subroutine */ int dspev_(char *jobz, char *uplo, LAPACK_INTEGER *n, const LAPACK_DOUBLEREAL *
+			    ap, const LAPACK_DOUBLEREAL *w, const LAPACK_DOUBLEREAL *z__, LAPACK_INTEGER *ldz, LAPACK_DOUBLEREAL *work, 
 			    LAPACK_INTEGER *info);
  
 /* Subroutine */ int dspevd_(char *jobz, char *uplo, LAPACK_INTEGER *n, LAPACK_DOUBLEREAL *
@@ -2347,8 +2347,8 @@
 			     lda, LAPACK_INTEGER *ipiv, LAPACK_DOUBLEREAL *anorm, LAPACK_DOUBLEREAL *rcond, LAPACK_DOUBLEREAL *
 			     work, LAPACK_INTEGER *iwork, LAPACK_INTEGER *info);
  
-/* Subroutine */ int dsyev_(char *jobz, char *uplo, LAPACK_INTEGER *n, LAPACK_DOUBLEREAL *a,
-			    LAPACK_INTEGER *lda, LAPACK_DOUBLEREAL *w, LAPACK_DOUBLEREAL *work, LAPACK_INTEGER *lwork, 
+/* Subroutine */ int dsyev_(const char *jobz, const char *uplo, const LAPACK_INTEGER *n, LAPACK_DOUBLEREAL *a,
+			    const LAPACK_INTEGER *lda, LAPACK_DOUBLEREAL *w, LAPACK_DOUBLEREAL *work, const LAPACK_INTEGER *lwork, 
 			    LAPACK_INTEGER *info);
  
 /* Subroutine */ int dsyevd_(char *jobz, char *uplo, LAPACK_INTEGER *n, LAPACK_DOUBLEREAL *
@@ -2375,9 +2375,9 @@
 			     LAPACK_DOUBLEREAL *a, LAPACK_INTEGER *lda, LAPACK_DOUBLEREAL *b, LAPACK_INTEGER *ldb, LAPACK_INTEGER *
 			     info);
  
-/* Subroutine */ int dsygv_(LAPACK_INTEGER *itype, char *jobz, char *uplo, LAPACK_INTEGER *
-			    n, LAPACK_DOUBLEREAL *a, LAPACK_INTEGER *lda, LAPACK_DOUBLEREAL *b, LAPACK_INTEGER *ldb, 
-			    LAPACK_DOUBLEREAL *w, LAPACK_DOUBLEREAL *work, LAPACK_INTEGER *lwork, LAPACK_INTEGER *info);
+/* Subroutine */ int dsygv_(const LAPACK_INTEGER *itype, const char *jobz, const char *uplo, const LAPACK_INTEGER *
+			    n, LAPACK_DOUBLEREAL *a, const LAPACK_INTEGER *lda, LAPACK_DOUBLEREAL *b, const LAPACK_INTEGER *ldb, 
+			    LAPACK_DOUBLEREAL *w, LAPACK_DOUBLEREAL *work, const LAPACK_INTEGER *lwork, LAPACK_INTEGER *info);
  
 /* Subroutine */ int dsygvd_(LAPACK_INTEGER *itype, char *jobz, char *uplo, LAPACK_INTEGER *
 			     n, LAPACK_DOUBLEREAL *a, LAPACK_INTEGER *lda, LAPACK_DOUBLEREAL *b, LAPACK_INTEGER *ldb, 
@@ -2560,8 +2560,8 @@ LAPACK_INTEGER icmax1_(LAPACK_INTEGER *n, LAPACK_COMPLEX *cx, LAPACK_INTEGER *in
  
 LAPACK_INTEGER ieeeck_(LAPACK_INTEGER *ispec, LAPACK_REAL *zero, LAPACK_REAL *one);
  
-LAPACK_INTEGER ilaenv_(LAPACK_INTEGER *ispec, char *name__, char *opts, LAPACK_INTEGER *n1, 
-		       LAPACK_INTEGER *n2, LAPACK_INTEGER *n3, LAPACK_INTEGER *n4, LAPACK_FTNLEN name_len, LAPACK_FTNLEN 
+LAPACK_INTEGER ilaenv_(const LAPACK_INTEGER *ispec, char *name__, const char *opts, const LAPACK_INTEGER *n1, 
+		       const LAPACK_INTEGER *n2, const LAPACK_INTEGER *n3, const LAPACK_INTEGER *n4, LAPACK_FTNLEN name_len, LAPACK_FTNLEN 
 		       opts_len);
  
 LAPACK_INTEGER izmax1_(LAPACK_INTEGER *n, LAPACK_DOUBLECOMPLEX *cx, LAPACK_INTEGER *incx);
@@ -3908,9 +3908,9 @@ LAPACK_INTEGER izmax1_(LAPACK_INTEGER *n, LAPACK_DOUBLECOMPLEX *cx, LAPACK_INTEG
 			     LAPACK_DOUBLEREAL *rwork, LAPACK_LOGICAL *bwork, LAPACK_INTEGER *info);
  
 /* Subroutine */ int zgeev_(char *jobvl, char *jobvr, LAPACK_INTEGER *n, 
-			    LAPACK_DOUBLECOMPLEX *a, LAPACK_INTEGER *lda, LAPACK_DOUBLECOMPLEX *w, LAPACK_DOUBLECOMPLEX *vl, 
-			    LAPACK_INTEGER *ldvl, LAPACK_DOUBLECOMPLEX *vr, LAPACK_INTEGER *ldvr, LAPACK_DOUBLECOMPLEX *work, 
-			    LAPACK_INTEGER *lwork, LAPACK_DOUBLEREAL *rwork, LAPACK_INTEGER *info);
+			    const LAPACK_DOUBLECOMPLEX *a, LAPACK_INTEGER *lda, const LAPACK_DOUBLECOMPLEX *w, const LAPACK_DOUBLECOMPLEX *vl, 
+			    LAPACK_INTEGER *ldvl, const LAPACK_DOUBLECOMPLEX *vr, LAPACK_INTEGER *ldvr, const LAPACK_DOUBLECOMPLEX *work, 
+			    LAPACK_INTEGER *lwork, const LAPACK_DOUBLEREAL *rwork, LAPACK_INTEGER *info);
  
 /* Subroutine */ int zgeevx_(char *balanc, char *jobvl, char *jobvr, char *
 			     sense, LAPACK_INTEGER *n, LAPACK_DOUBLECOMPLEX *a, LAPACK_INTEGER *lda, LAPACK_DOUBLECOMPLEX *w, 

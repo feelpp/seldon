@@ -355,8 +355,27 @@ namespace Seldon
 
       }
   }
-
-
+  
+  
+  //! changes the length of the vector, and keeps previous values
+  /*!
+    Reallocates the vector to size i. Previous values are kept.
+   */
+  template <class T, class Allocator>
+  inline void Vector<T, Vect_Full, Allocator>::Resize(int n)
+  {
+    if (n == this->m_)
+      return;
+    
+    Vector<T,Vect_Full,Allocator> X_new(n);
+    for (int i = 0; i < min(this->m_,n); i++)
+      X_new(i) = this->data_[i];
+    
+    SetData(n, X_new.GetData());
+    X_new.Nullify();
+  }
+  
+  
   //! Changes the length of the vector and sets its data array
   //! (low level method).
   /*!
@@ -474,8 +493,23 @@ namespace Seldon
 
     this->vect_allocator_.memorycpy(this->data_, X.GetData(), this->m_);
   }
-
-
+  
+  
+  //! Multiplicates a vector by a scalar
+  /*!
+    \param alpha scalar
+  */
+  template <class T, class Allocator> template<class T0>
+  inline Vector<T, Vect_Full, Allocator>& Vector<T, Vect_Full, Allocator>
+  ::operator*= (const T0& alpha)
+  {
+    for (int i = 0; i < this->m_; i++)
+      this->data_[i] *= alpha;
+    
+    return *this;
+  }
+  
+  
   //! Appends an element to the vector.
   /*!
     \param x element to be appended.
@@ -489,7 +523,27 @@ namespace Seldon
     this->Reallocate(i + 1);
     this->data_[i] = x;
   }
-
+  
+  
+  //! adds element x at the end of the vector
+  template <class T, class Allocator> template<class T0>
+  inline void Vector<T, Vect_Full, Allocator>::PushBack(const T0& x)
+  {
+    Resize(this->m_+1);
+    this->data_[this->m_-1] = x;
+  }
+  
+  
+  //! adds vector X at the end of the vector
+  template <class T, class Allocator> template<class Allocator0>
+  inline void Vector<T, Vect_Full, Allocator>::PushBack(const Vector<T, Vect_Full, Allocator0>& X)
+  {
+    int Nold = this->m_;
+    Resize(this->m_ + X.GetM());
+    for (int i = 0; i < X.GetM(); i++)
+      this->data_[Nold+i] = X(i);
+  }
+  
 
   /*******************
    * BASIC FUNCTIONS *

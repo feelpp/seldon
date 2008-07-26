@@ -65,7 +65,8 @@ namespace Seldon
     void Reallocate(int i, int j);
     void SetData(int i, int j, pointer data);
     void Nullify();
-
+    void Resize(int i, int j);
+    
     // Element access and affectation.
     value_type operator() (int i, int j);
     value_type operator() (int i, int j) const;

@@ -65,7 +65,8 @@ namespace Seldon
     void Reallocate(int i, int j);
     void SetData(int i, int j, pointer data);
     void Nullify();
-
+    void Resize(int i, int j);
+    
     // Element access and affectation.
     reference operator() (int i, int j);
 #ifndef SWIG
@@ -127,6 +128,8 @@ namespace Seldon
     template <class T0>
     Matrix<T, Prop, ColMajor, Allocator>& operator= (const T0& x);
 #endif
+    template<class T0>
+    Matrix<T, Prop, ColMajor, Allocator>& operator*= (const T0& x);
   };
 
 
@@ -143,6 +146,8 @@ namespace Seldon
     template <class T0>
     Matrix<T, Prop, RowMajor, Allocator>& operator= (const T0& x);
 #endif
+    template<class T0>
+    Matrix<T, Prop, RowMajor, Allocator>& operator*= (const T0& x);
   };
 
 

@@ -87,6 +87,7 @@ namespace Seldon
     // Element access and affectation.
     reference operator() (int i, int j, int k);
     const_reference operator() (int i, int j, int k) const;
+    Array3D<T, Allocator>& operator= (const Array3D<T, Allocator>& A);
     void Copy(const Array3D<T, Allocator>& A);
 
     // Convenient functions.
@@ -96,7 +97,12 @@ namespace Seldon
     void Fill(const T0& x);
     void FillRand();
     void Print() const;
-
+    
+    // Input/output functions
+    void Write(string FileName) const;
+    void Write(ofstream& FileStream) const;
+    void Read(string FileName);
+    void Read(ifstream& FileStream);
   };
 
 

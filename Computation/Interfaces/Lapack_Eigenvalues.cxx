@@ -2740,7 +2740,7 @@ namespace Seldon
     int lwork = max(3*min(m,n)+max(m,n), 5*min(m,n));
     Vector<float> work(lwork);
     sgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &n, lambda.GetData(),
-	    u.GetData(), &n, v.GetData(), &n, work.GetData(),
+	    u.GetData(), &m, v.GetData(), &n, work.GetData(),
 	    &lwork, &lapack_info.GetInfoRef());
   }
   
@@ -2759,7 +2759,7 @@ namespace Seldon
     Vector<complex<float> > work(lwork);
     Vector<float> rwork(5*min(m,n));
     cgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &n, lambda.GetDataVoid(),
-	    u.GetDataVoid(), &n, v.GetDataVoid(), &n, work.GetDataVoid(),
+	    u.GetDataVoid(), &m, v.GetDataVoid(), &n, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
   }
   
@@ -2774,10 +2774,10 @@ namespace Seldon
   {
     int m = A.GetM(); int n = A.GetM();
     char jobl('A'), jobr('A');
-    int lwork = max(3*min(m,n)+max(m,n), 5*min(m,n));
+    int lwork = 7*max(m,n);
     Vector<double> work(lwork);
     dgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &n, lambda.GetData(),
-	    u.GetData(), &n, v.GetData(), &n, work.GetData(),
+	    u.GetData(), &m, v.GetData(), &n, work.GetData(),
 	    &lwork, &lapack_info.GetInfoRef());
   }
   
@@ -2796,7 +2796,7 @@ namespace Seldon
     Vector<complex<double> > work(lwork);
     Vector<double> rwork(5*min(m,n));
     zgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &n, lambda.GetDataVoid(),
-	    u.GetDataVoid(), &n, v.GetDataVoid(), &n, work.GetDataVoid(),
+	    u.GetDataVoid(), &m, v.GetDataVoid(), &n, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
   }
   
@@ -2804,6 +2804,116 @@ namespace Seldon
   // SINGULAR VALUE DECOMPOSITION //
   //////////////////////////////////
   
+  void GetHessian(Matrix<complex<double>,General,ColMajor>& A, Matrix<complex<double>,General,ColMajor>& B,
+		  Matrix<complex<double>,General,ColMajor>& Q, Matrix<complex<double>,General,ColMajor>& Z)
+  {
+    char compq('V'), compz('I');
+    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4*n;
+    Vector<complex<double> > tau(n); Vector<complex<double> > work(lwork);
+    zgeqrf_(&n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info);
+    
+    Q = B;
+    zungqr_(&n, &n, &n, Q.GetDataVoid(), &n, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info);
+    
+    char side('L'), trans('C');
+    zunmqr_(&side, &trans, &n, &n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
+	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info);
+    
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < i; j++)
+	B(i,j) = 0;
+    
+    zgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n, B.GetDataVoid(), &n,
+	    Q.GetDataVoid(), &n, Z.GetDataVoid(), &n, &info);
+    
+  }
+  
+  void GetQZ(Matrix<complex<double>,General,ColMajor>& A, Matrix<complex<double>,General,ColMajor>& B,
+	     Matrix<complex<double>,General,ColMajor>& Q, Matrix<complex<double>,General,ColMajor>& Z)
+  {
+    char compq('V'), compz('I');
+    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4*n;
+    Vector<complex<double> > tau(n); Vector<complex<double> > work(lwork);
+    zgeqrf_(&n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info);
+    
+    Q = B;
+    zungqr_(&n, &n, &n, Q.GetDataVoid(), &n, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info);
+    
+    char side('L'), trans('C');
+    zunmqr_(&side, &trans, &n, &n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
+	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info);
+    
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < i; j++)
+	B(i,j) = 0;
+    
+    zgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n, B.GetDataVoid(), &n,
+	    Q.GetDataVoid(), &n, Z.GetDataVoid(), &n, &info);
+    
+    char job('S'); compq = 'V'; compz = 'V';
+    Vector<complex<double> > alpha(n), beta(n);
+    Vector<double> rwork(lwork);
+    zhgeqz_(&job, &compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n, B.GetDataVoid(), &n,
+	    alpha.GetDataVoid(), beta.GetDataVoid(), Q.GetDataVoid(), &n, Z.GetDataVoid(),
+	    &n, work.GetDataVoid(), &lwork, rwork.GetData(), &info);
+  }
+  
+  
+  void SolveSylvester(Matrix<complex<double>,General,ColMajor>& A, Matrix<complex<double>,General,ColMajor>& B,
+		      Matrix<complex<double>,General,ColMajor>& C, Matrix<complex<double>,General,ColMajor>& D,
+		      Matrix<complex<double>,General,ColMajor>& E)
+  {
+    complex<double> one(1), zero(0);
+    int n = A.GetM();
+    Matrix<complex<double>, General, ColMajor> Q1(n,n), Q2(n,n), Z1(n,n), Z2(n,n);
+    Matrix<complex<double>, General, ColMajor> Y(n,n), F(n,n);
+    
+    GetHessian(A, C, Q1, Z1);
+    GetQZ(D, B, Q2, Z2);
+    
+    Y.Zero();
+    MltAdd(one, SeldonConjTrans, Q1, SeldonNoTrans, E, zero, Y);
+    MltAdd(one, SeldonNoTrans, Y, SeldonNoTrans, Q2, zero, F);
+    Y.Zero();
+    
+    Vector<complex<double> > ftemp(n), Yvec(n), ytmp(n), xtmp(n); Vector<int> pivot(n);
+    for (int k = n-1; k >= 0; k--)
+      {
+	for (int j = 0; j < n; j++)
+	  ftemp(j) = F(j,k);
+	
+	for (int j = k+1; j < n; j++)
+	  {
+	    for (int i = 0; i < n; i++)
+	      Yvec(i) = Y(i,j);
+	    
+	    Mlt(A, Yvec, xtmp); Mlt(C, Yvec, ytmp);
+	    for (int i = 0; i < n; i++)
+	      ftemp(i) -= (conj(B(k,j))*xtmp(i) + conj(D(k,j))*ytmp(i));
+	    
+	  }
+	
+	for (int i = 0; i < n; i++)
+	  for (int j = 0; j < n; j++)
+	    E(i,j) = conj(B(k,k))*A(i,j) + conj(D(k,k))*C(i,j);
+	
+	GetLU(E, pivot);
+	Yvec = ftemp; SolveLU(E, pivot, Yvec);
+	
+	for (int i = 0; i < n; i++)
+	  Y(i,k) = Yvec(i);
+      }
+    
+    // R_temp = Dtmp = R + Z1*Y*Z2';
+    MltAdd(one, SeldonNoTrans, Y, SeldonConjTrans, Z2, zero, F);
+    MltAdd(one, Z1, F, zero, E); 
+    
+  }
+
   
 } // end namespace
 

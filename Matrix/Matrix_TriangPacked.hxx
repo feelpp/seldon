@@ -66,7 +66,7 @@ namespace Seldon
     void Nullify();
 
     // Element access and affectation.
-    value_type operator() (int i, int j);
+    reference operator() (int i, int j);
     value_type operator() (int i, int j) const;
     reference Val(int i, int j);
     const_reference Val(int i, int j) const;

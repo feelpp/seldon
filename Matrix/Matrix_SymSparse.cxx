@@ -535,6 +535,18 @@ namespace Seldon
     of non-zero elements).
   */
   template <class T, class Prop, class Storage, class Allocator>
+  int Matrix_SymSparse<T, Prop, Storage, Allocator>::GetNonZeros() const
+  {
+    return nz_;
+  }
+  
+  
+  //! Returns the number of elements stored in memory.
+  /*!
+    \return The number of elements stored in memory (the number
+    of non-zero elements).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
   int Matrix_SymSparse<T, Prop, Storage, Allocator>::GetDataSize() const
   {
     return nz_;

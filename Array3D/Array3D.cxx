@@ -357,7 +357,21 @@ namespace Seldon
     return data_[i*length23_ + j*length3_ + k];
   }
 
+  //! Duplicates a 3D array (assignment operator).
+  /*!
+    \param A 3D array to be copied.
+    \note Memory is duplicated: 'A' is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Allocator>
+  inline Array3D<T, Allocator>& Array3D<T, Allocator>::operator= 
+  (const Array3D<T, Allocator>& A)
+  {
+    this->Copy(A);
 
+    return *this;
+  }
+  
   //! Duplicates a 3D array.
   /*!
     \param A 3D array to be copied.
@@ -453,7 +467,146 @@ namespace Seldon
       }
   }
 
+    /**************************
+   * INPUT/OUTPUT FUNCTIONS *
+   **************************/
+  
+  
+  //! Writes the 3D array in a file.
+  /*!
+    Stores the 3D array in a file in binary format.
+    The number of rows (integer) and the number of columns (integer)
+    are written, and matrix elements are then written in the same order
+    as in memory
+    \param FileName output file name.
+  */
+  template <class T, class Allocator> void Array3D<T, Allocator>
+  ::Write(string FileName) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str());
 
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Array3D::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Write(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Writes the 3D array to an output stream.
+  /*!
+    Writes the 3D array to an output stream in binary format.
+    The number of rows (integer) and the number of columns (integer)
+    are written, and array elements are then written in the same order
+    as in memory
+    \param FileStream output stream.
+  */
+  template <class T, class Allocator> void Array3D<T, Allocator>
+  ::Write(ofstream& FileStream) const
+  {
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Array3D::Write(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->length1_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->length2_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->length3_)),
+		     sizeof(int));
+
+    FileStream.write(reinterpret_cast<char*>(this->data_),
+		     this->length23_ * this->length1_ * sizeof(value_type));
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was written.
+    if (!FileStream.good())
+      throw IOError("Array3D::Write(ofstream& FileStream)",
+                    string("Output operation failed.")
+		    + string("  The output file may have been removed")
+		    + " or there is no space left on device.");
+#endif
+
+  }
+
+  
+  //! Reads the 3D array from a file.
+  /*!
+    Reads a 3D array stored in binary format in a file.
+    The dimensions of the array are read (i,j, k three integers),
+    and array elements are then read in the same order
+    as it should be in memory
+    \param FileName input file name.
+  */
+  template <class T, class Allocator>
+  void Array3D<T, Allocator>::Read(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Array3D::Read(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Read(FileStream);
+
+    FileStream.close();
+  }
+ 
+
+  //! Reads the 3D array from an input stream.
+  /*!
+    Reads a 3D array in binary format from an input stream.
+    The dimensions of the array are read (i,j, k three integers),
+    and array elements are then read in the same order
+    as it should be in memory
+    \param FileStream input stream.
+  */
+  template <class T, class Allocator>
+  void Array3D<T, Allocator>
+  ::Read(ifstream& FileStream)
+  {
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_Pointers::Read(ifstream& FileStream)",
+                    "Stream is not ready.");
+#endif
+
+    int new_l1, new_l2, new_l3;
+    FileStream.read(reinterpret_cast<char*>(&new_l1), sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(&new_l2), sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(&new_l3), sizeof(int));
+    this->Reallocate(new_l1, new_l2, new_l3);
+
+    FileStream.read(reinterpret_cast<char*>(this->data_),
+		    length23_ * length1_ * sizeof(value_type));
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was read.
+    if (!FileStream.good())
+      throw IOError("Array3D::Read(ifstream& FileStream)",
+                    string("Output operation failed.")
+		    + string(" The intput file may have been removed")
+		    + " or may not contain enough data.");
+#endif    
+
+  }
+  
   //! operator<< overloaded for a 3D array.
   /*!
     \param out output stream.

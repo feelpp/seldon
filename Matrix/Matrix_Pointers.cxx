@@ -413,8 +413,40 @@ namespace Seldon
 
     this->data_ = NULL;
   }
-
-
+  
+  
+  //! Reallocates memory to resize the matrix.and keeps previous entries
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+    \warning The previous entries are kept, extra-entries are not initialized
+    (depending of the allocator)
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Pointers<T, Prop, Storage, Allocator>
+  ::Resize(int i, int j)
+  {
+    // storing old values of the matrix
+    int iold = Storage::GetFirst(this->m_, this->n_);
+    int jold = Storage::GetSecond(this->m_, this->n_);
+    Vector<value_type,Vect_Full,Allocator> xold(this->GetDataSize());
+    for (int k = 0; k < this->GetDataSize(); k++)
+      xold(k) = this->data_[k];
+    
+    // reallocation
+    int inew = Storage::GetFirst(i, j);
+    int jnew = Storage::GetSecond(i, j);
+    this->Reallocate(i,j);
+    
+    // filling the matrix with old values
+    int imin = min(iold,inew), jmin = min(jold,jnew);
+    for (int k = 0; k < imin; k++)
+      for (int l = 0; l < jmin; l++)
+	this->data_[k*jnew+l] = xold(l+jold*k);
+  }
+  
+  
   /**********************************
    * ELEMENT ACCESS AND AFFECTATION *
    **********************************/
@@ -1032,9 +1064,24 @@ namespace Seldon
 
     return *this;
   }
-
-
-
+  
+  
+  //! Multiplicates the matrix by a scalar
+  /*!
+    \param alpha scalar
+  */
+  template <class T, class Prop, class Allocator> template<class T0>
+  inline Matrix<T, Prop, ColMajor, Allocator>&
+  Matrix<T, Prop, ColMajor, Allocator>
+  ::operator*= (const T0& alpha)
+  {
+    for (int i = 0; i < (this->m_*this->n_); i++)
+      this->data_[i] *= alpha;
+    
+    return *this;
+  }
+  
+  
   //////////////////////
   // MATRIX<ROWMAJOR> //
   //////////////////////
@@ -1086,8 +1133,24 @@ namespace Seldon
 
     return *this;
   }
+  
+  
+  //! Multiplicates the matrix by a scalar
+  /*!
+    \param alpha scalar
+  */
+  template <class T, class Prop, class Allocator> template<class T0>
+  inline Matrix<T, Prop, RowMajor, Allocator>&
+  Matrix<T, Prop, RowMajor, Allocator>
+  ::operator*= (const T0& alpha)
+  {
+    for (int i = 0; i < (this->m_*this->n_); i++)
+      this->data_[i] *= alpha;
+    
+    return *this;
+  }
 
-
+  
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_POINTERS_CXX
