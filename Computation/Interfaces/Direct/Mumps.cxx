@@ -123,7 +123,7 @@ namespace Seldon
       {
 	struct_mumps.job = -2;
 	CallMumps(); /* Terminate instance */
-	int ierr = MPI_Finalize();
+	MPI_Finalize();
 	struct_mumps.n = 0;
       }
   }
@@ -228,10 +228,10 @@ namespace Seldon
     \param[in] num numbers to keep in Schur complement
     \param[out] mat_schur Schur matrix
    */
-  template<class T> template<class Prop1, class Storage1, class Allocator1,
+  template<class T> template<class Prop1, class Storage1, class Allocator,
 			     class Prop2, class Storage2, class Allocator2> 
   void MatrixMumps<T>::
-  GetSchurMatrix(Matrix<T, Prop1, Storage1, Allocator1>& mat, IVect& num, 
+  GetSchurMatrix(Matrix<T, Prop1, Storage1, Allocator>& mat, const IVect& num,
 		 Matrix<T, Prop2, Storage2, Allocator2> & mat_schur,
 		 bool keep_matrix)
   {    
@@ -295,6 +295,22 @@ namespace Seldon
   {
     mat_lu.InitUnSymmetricMatrix();
     mat_lu.FactorizeMatrix(A, keep_matrix);
+  }
+  
+  template<class T, class Storage, class Allocator, class MatrixFull>
+  void GetSchurMatrix(Matrix<T,Symmetric,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
+		      const IVect& num, MatrixFull& schur_matrix, bool keep_matrix = false)
+  {
+    mat_lu.InitSymmetricMatrix();
+    mat_lu.GetSchurMatrix(A, num, schur_matrix, keep_matrix);
+  }
+  
+  template<class T, class Storage, class Allocator, class MatrixFull>
+  void GetSchurMatrix(Matrix<T,General,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
+		      const IVect& num, MatrixFull& schur_matrix, bool keep_matrix = false)
+  {
+    mat_lu.InitUnSymmetricMatrix();
+    mat_lu.GetSchurMatrix(A, num, schur_matrix, keep_matrix);
   }
   
   template<class T, class Allocator>

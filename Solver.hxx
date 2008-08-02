@@ -19,7 +19,10 @@
 
 #ifndef SELDON_FILE_SOLVER_HXX
 
-#include "Computation/Basic_Functions/Matrix_Conversions.cxx"
+#include "MatrixSparse/Functions_Arrays.cxx"
+#include "MatrixSparse/Matrix_ArraySparse.cxx"
+#include "MatrixSparse/Matrix_ArrayComplexSparse.cxx"
+#include "MatrixSparse/Matrix_Conversions.cxx"
 
 #ifdef SELDON_WITH_MUMPS
 #include "Computation/Interfaces/Direct/Mumps.cxx"

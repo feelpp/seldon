@@ -84,13 +84,15 @@ namespace Seldon
     template<class Prop,class Storage,class Allocator>
     void FindOrdering(Matrix<T, Prop, Storage, Allocator> & mat,
 		      IVect& numbers, bool keep_matrix = false);
+    
     template<class Prop,class Storage,class Allocator>
     void FactorizeMatrix(Matrix<T,Prop,Storage,Allocator> & mat,
 			 bool keep_matrix = false);
     
     template<class Prop1, class Storage1, class Allocator1,
 	     class Prop2, class Storage2, class Allocator2> 
-    void GetSchurMatrix(Matrix<T,Prop1,Storage1,Allocator1>& mat, IVect& num,
+    void GetSchurMatrix(Matrix<T,Prop1,Storage1,Allocator1>& mat,
+			const IVect& num,
 			Matrix<T,Prop2,Storage2,Allocator2> & mat_schur,
 			bool keep_matrix = false);
     

@@ -670,7 +670,45 @@ namespace Seldon
 	Y(i) += alpha_ * temp;
       }
   }
+  
+  
+  template <class T0,
+	    class T1, class Prop1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Storage4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const class_SeldonTrans& Trans,
+	      const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3 beta,
+	      Vector<T4, Storage4, Allocator4>& Y)
+  {
+    int ma = M.GetM();
+    int na = M.GetN();
 
+#ifdef SELDON_CHECK_BOUNDARIES
+    CheckDim(Trans, M, X, Y, "MltAdd(alpha, trans, M, X, beta, Y)");
+#endif
+
+    if (beta == T3(0))
+      Y.Fill(T4(0));
+    else
+      Mlt(beta, Y);
+
+    T4 zero(0);
+    T4 temp;
+    T4 alpha_(alpha);
+
+    for (int i = 0; i < na; i++)
+      {
+	temp = zero;
+	for (int j = 0; j < ma; j++)
+	  temp += M(j, i) * X(j);
+	Y(i) += alpha_ * temp;
+      }
+  }
+  
 
   // MltAdd //
   ////////////
