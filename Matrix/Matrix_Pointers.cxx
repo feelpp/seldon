@@ -430,7 +430,7 @@ namespace Seldon
     // storing old values of the matrix
     int iold = Storage::GetFirst(this->m_, this->n_);
     int jold = Storage::GetSecond(this->m_, this->n_);
-    Vector<value_type,Vect_Full,Allocator> xold(this->GetDataSize());
+    Vector<value_type, Vect_Full, Allocator> xold(this->GetDataSize());
     for (int k = 0; k < this->GetDataSize(); k++)
       xold(k) = this->data_[k];
     
@@ -739,7 +739,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Pointers<T, Prop, Storage, Allocator>::FillRand()
   {
-    srand(time(NULL));
+    // srand(time(NULL));
     for (int i = 0; i < this->GetDataSize(); i++)
       this->data_[i] = rand();
   }

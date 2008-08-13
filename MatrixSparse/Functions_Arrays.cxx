@@ -545,7 +545,7 @@ namespace Seldon
   
   //! sorts a and b
   template<class T>
-  void Sort (T & a, T & b)
+  inline void Sort (T & a, T & b)
   {
     if (b < a) 
       {  
@@ -558,7 +558,7 @@ namespace Seldon
   
   //! sorts a, b and c
   template<class T>
-  void Sort (T & a, T & b, T& c)
+  inline void Sort (T & a, T & b, T& c)
   {
     if (b<a) 
       {  
@@ -585,7 +585,7 @@ namespace Seldon
   
   //! Sorts i, j, k and l
   template<class T>
-  void Sort(T& i, T& j, T& k, T& l)
+  inline void Sort(T& i, T& j, T& k, T& l)
   {
     T i0 = i,j0 = j,k0 = k,l0 = l;
     if (i > j)

@@ -28,7 +28,15 @@
 
   alpha.X + Y -> Y
   Add(alpha, X, Y)
-
+  
+  X.Y
+  DotProd(X, Y)
+  DotProdConj(X, Y)
+  
+  Omega*X
+  GenRot(x, y, cos, sin)
+  ApplyRot(x, y, cos, sin)
+  
 */
 
 namespace Seldon
@@ -76,7 +84,7 @@ namespace Seldon
 	int ma = X.GetM();
 	
 #ifdef SELDON_CHECK_BOUNDARIES
-	CheckDim(X, Y, "Mlt(X, Y)");
+	CheckDim(X, Y, "Add(alpha, X, Y)");
 #endif
 
 	for (int i = 0; i < ma; i++)
@@ -87,9 +95,171 @@ namespace Seldon
 
   // Add //
   /////////
+  
+  
+  
+  /////////////
+  // DotProd //
+  
+  
+  //! Scalar product between two vectors
+  template<class T1, class Storage1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  T1 DotProd(const Vector<T1, Storage1, Allocator1>& X,
+	     const Vector<T2, Storage2, Allocator2>& Y)
+  {
+    T1 value(0);
 
+#ifdef SELDON_CHECK_BOUNDARIES
+    CheckDim(X, Y, "DotProd(X, Y)");
+#endif
 
+    for (int i = 0; i < X.GetM(); i++)
+      value += X(i)*Y(i);
+    
+    return value;
+  }
+  
+  
+  //! Scalar product between two vectors
+  template<class T1, class Storage1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  T1 DotProdConj(const Vector<T1, Storage1, Allocator1>& X,
+		 const Vector<T2, Storage2, Allocator2>& Y)
+  {
+    T1 value(0);
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    CheckDim(X, Y, "DotProdConj(X, Y)");
+#endif
+
+    for (int i = 0; i < X.GetM(); i++)
+      value += X(i)*Y(i);
+    
+    return value;
+  }
+  
+  
+  //! Scalar product between two vectors
+  template<class T1, class Storage1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  complex<T1> DotProdConj(const Vector<complex<T1>, Storage1, Allocator1>& X,
+			  const Vector<T2, Storage2, Allocator2>& Y)
+  {
+    complex<T1> value(0);
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    CheckDim(X, Y, "DotProdConj(X, Y)");
+#endif
+
+    for (int i = 0; i < X.GetM(); i++)
+      value += conj(X(i))*Y(i);
+    
+    return value;
+  }
+  
+  
+  // DotProd //
+  /////////////
+  
+  
+  
+  //////////////
+  // ApplyRot //
+  
+  
+  //! Computation of rotation between two points
+  template<class T>
+  void GenRot(T& a_in, T& b_in, T& c_, T& s_) 
+  {
+    // old BLAS version
+    T roe;
+    if (abs(a_in) > abs(b_in))
+      roe = a_in;
+    else
+      roe = b_in;
       
+    T scal = abs(a_in) + abs(b_in);
+    T r, z;
+    if (scal != T(0)) 
+      {
+	T a_scl = a_in / scal;
+	T b_scl = b_in / scal;
+	r = scal * sqrt(a_scl * a_scl + b_scl * b_scl);
+	if (roe < T(0))
+	  r *= -1;
+	
+	c_ = a_in / r;
+	s_ = b_in / r;
+	z = 1;
+	if (abs(a_in) > abs(b_in))
+	  z = s_;
+	else if ((abs(b_in) >= abs(a_in)) && (c_ != T(0)))
+	  z = T(1) / c_;
+      } 
+    else 
+      {
+	c_ = 1;	s_ = 0; r = 0; z = 0;      
+      }
+    a_in = r;
+    b_in = z;
+  }
+  
+  
+  //! Computation of rotation between two points
+  template<class T>
+  void GenRot(complex<T>& a_in, complex<T>& b_in, T& c_, complex<T>& s_) 
+  {
+      
+    T a = abs(a_in), b = abs(b_in);
+    if ( a == T(0) ) 
+      {
+	c_ = T(0);
+	s_ = complex<T>(1,0);
+	a_in = b_in;
+      } 
+    else 
+      {
+	T scale = a + b;
+	T a_scal = abs(a_in/scale);
+	T b_scal = abs(b_in/scale);
+	T norm = sqrt(a_scal*a_scal+b_scal*b_scal) * scale;
+	
+	c_ = a / norm;
+	complex<T> alpha = a_in/a;
+	s_ =  alpha * conj(b_in)/norm;
+	a_in = alpha * norm;
+      }
+    b_in = complex<T>(0,0);
+  }
+  
+  
+  //! Rotation of a point in 2-D
+  template<class T>
+  void ApplyRot(T& x, T& y, const T c_, const T s_)
+  {
+    T temp = c_*x + s_*y;
+    y = c_*y - s_*x;
+    x = temp;
+  }  
+  
+  
+  //! Rotation of a complex point in 2-D
+  template<class T>
+  void ApplyRot(complex<T>& x, complex<T>& y,
+		const T& c_, const complex<T>& s_)
+  {
+    complex<T> temp = s_*y + c_*x;
+    y = -conj(s_)*x + c_*y;
+    x = temp;
+  }  
+  
+  
+  // ApplyRot //
+  //////////////
+  
+  
+  
   //////////////
   // CHECKDIM //
 

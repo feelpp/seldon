@@ -623,7 +623,7 @@ namespace Seldon
   template <class T, class Allocator>
   void Vector<T, Vect_Full, Allocator>::FillRand()
   {
-    srand(time(NULL));
+    // srand(time(NULL));
     for (int i = 0; i < this->m_; i++)
       this->data_[i] = rand();
   }

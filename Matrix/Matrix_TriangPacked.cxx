@@ -947,8 +947,36 @@ namespace Seldon
   /*****************
    * OTHER METHODS *
    *****************/
-
-
+  
+  
+  //! Reallocates memory to resize the matrix.and keeps previous entries
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+    \warning The previous entries are kept, extra-entries are not initialized
+    (depending of the allocator)
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ColUpTriangPacked, Allocator>
+  ::Resize(int i, int j)
+  {
+    // storing old values of the matrix
+    int nold = this->GetDataSize();
+    Vector<T, Vect_Full, Allocator> xold(nold);
+    for (int k = 0; k < nold; k++)
+      xold(k) = this->data_[k];
+    
+    // reallocation
+    this->Reallocate(i, j);
+    
+    // filling the matrix with old values
+    int nmin = min(nold, this->GetDataSize());
+    for (int k = 0; k < nmin; k++)
+      this->data_[k] = xold(k);
+  }
+  
+  
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
@@ -1003,7 +1031,42 @@ namespace Seldon
    * OTHER METHODS *
    *****************/
 
-
+  
+  //! Reallocates memory to resize the matrix.and keeps previous entries
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+    \warning The previous entries are kept, extra-entries are not initialized
+    (depending of the allocator)
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ColLoTriangPacked, Allocator>
+  ::Resize(int i, int j)
+  {
+    // storing old values of the matrix
+    int nold = this->GetDataSize(), iold = this->m_;
+    Vector<T, Vect_Full, Allocator> xold(nold);
+    for (int k = 0; k < nold; k++)
+      xold(k) = this->data_[k];
+    
+    // reallocation
+    this->Reallocate(i,j);
+    
+    // filling the matrix with old values
+    int imin = min(iold, i); nold = 0;
+    int n = 0;
+    for (int k = 0; k < imin; k++)
+      {
+	for (int l = k; l < imin; l++)
+	  this->data_[n+l-k] = xold(nold+l-k);
+	
+	n += i-k;
+	nold += iold-k;
+      }
+  }
+  
+  
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
@@ -1058,7 +1121,42 @@ namespace Seldon
    * OTHER METHODS *
    *****************/
 
-
+  
+  //! Reallocates memory to resize the matrix.and keeps previous entries
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+    \warning The previous entries are kept, extra-entries are not initialized
+    (depending of the allocator)
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, RowUpTriangPacked, Allocator>
+  ::Resize(int i, int j)
+  {
+    // storing old values of the matrix
+    int nold = this->GetDataSize(), iold = this->m_;
+    Vector<T, Vect_Full, Allocator> xold(nold);
+    for (int k = 0; k < nold; k++)
+      xold(k) = this->data_[k];
+    
+    // reallocation
+    this->Reallocate(i,j);
+    
+    // filling the matrix with old values
+    int imin = min(iold, i); nold = 0;
+    int n = 0;
+    for (int k = 0; k < imin; k++)
+      {
+	for (int l = k; l < imin; l++)
+	  this->data_[n+l-k] = xold(nold+l-k);
+	
+	n += i-k;
+	nold += iold-k;
+      }
+  }
+  
+  
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
@@ -1113,7 +1211,35 @@ namespace Seldon
    * OTHER METHODS *
    *****************/
 
-
+  
+  //! Reallocates memory to resize the matrix.and keeps previous entries
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+    \warning The previous entries are kept, extra-entries are not initialized
+    (depending of the allocator)
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, RowLoTriangPacked, Allocator>
+  ::Resize(int i, int j)
+  {
+    // storing old values of the matrix
+    int nold = this->GetDataSize();
+    Vector<T, Vect_Full, Allocator> xold(nold);
+    for (int k = 0; k < nold; k++)
+      xold(k) = this->data_[k];
+    
+    // reallocation
+    this->Reallocate(i, j);
+    
+    // filling the matrix with old values
+    int nmin = min(nold, this->GetDataSize());
+    for (int k = 0; k < nmin; k++)
+      this->data_[k] = xold(k);
+  }
+  
+  
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.

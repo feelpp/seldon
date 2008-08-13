@@ -108,6 +108,7 @@ namespace Seldon
   public:
     Matrix();
     Matrix(int i, int j = 0);
+    void Resize(int i, int j);
 
     template <class T0>
     Matrix<T, Prop, ColUpTriangPacked, Allocator>& operator= (const T0& x);
@@ -122,7 +123,8 @@ namespace Seldon
   public:
     Matrix();
     Matrix(int i, int j = 0);
-
+    void Resize(int i, int j);
+    
     template <class T0>
     Matrix<T, Prop, ColLoTriangPacked, Allocator>& operator= (const T0& x);
   };
@@ -136,7 +138,8 @@ namespace Seldon
   public:
     Matrix();
     Matrix(int i, int j = 0);
-
+    void Resize(int i, int j);
+    
     template <class T0>
     Matrix<T, Prop, RowUpTriangPacked, Allocator>& operator= (const T0& x);
   };
@@ -150,7 +153,8 @@ namespace Seldon
   public:
     Matrix();
     Matrix(int i, int j = 0);
-
+    void Resize(int i, int j);
+    
     template <class T0>
     Matrix<T, Prop, RowLoTriangPacked, Allocator>& operator= (const T0& x);
   };

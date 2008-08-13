@@ -875,7 +875,7 @@ namespace Seldon
   }
 
   
-    //! Reallocates memory to resize the matrix.and keeps previous entries
+  //! Reallocates memory to resize the matrix.and keeps previous entries
   /*!
     On exit, the matrix is a i x j matrix.
     \param i new number of rows.
@@ -889,7 +889,7 @@ namespace Seldon
   {
     // storing old values of the matrix
     int nold = this->GetDataSize();
-    Vector<T,Vect_Full,Allocator> xold(nold);
+    Vector<T, Vect_Full, Allocator> xold(nold);
     for (int k = 0; k < nold; k++)
       xold(k) = this->data_[k];
     
@@ -971,7 +971,7 @@ namespace Seldon
   {
     // storing old values of the matrix
     int nold = this->GetDataSize(), iold = this->m_;
-    Vector<T,Vect_Full,Allocator> xold(nold);
+    Vector<T, Vect_Full, Allocator> xold(nold);
     for (int k = 0; k < nold; k++)
       xold(k) = this->data_[k];
     
