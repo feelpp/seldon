@@ -149,21 +149,30 @@ namespace Seldon
   /////////
   // ADD //
   
-  template<class T0, class T1, class Storage1, class Allocator1, class T2, class Storage2, class Allocator2>
-  void Add(const T0& alpha, const Matrix<T1, General, Storage1, Allocator1>& A, Matrix<T2, General, Storage2, Allocator2>& B)
+
+  template<class T0, class T1, class Storage1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, General, Storage1, Allocator1>& A,
+	   Matrix<T2, General, Storage2, Allocator2>& B)
   {
     for (int i = 0; i < A.GetM(); i++)
       for (int j = 0; j < A.GetN(); j++)
-	B(i,j) += alpha*A(i,j);
+	B(i, j) += alpha * A(i, j);
   }
   
-  template<class T0, class T1, class Storage1, class Allocator1, class T2, class Storage2, class Allocator2>
-  void Add(const T0& alpha, const Matrix<T1, Symmetric, Storage1, Allocator1>& A, Matrix<T2, Symmetric, Storage2, Allocator2>& B)
+
+  template<class T0, class T1, class Storage1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, Symmetric, Storage1, Allocator1>& A,
+	   Matrix<T2, Symmetric, Storage2, Allocator2>& B)
   {
     for (int i = 0; i < A.GetM(); i++)
       for (int j = i; j < A.GetN(); j++)
-	B(i,j) += alpha*A(i,j);
+	B(i, j) += alpha * A(i, j);
   }
+
   
   // ADD //
   /////////

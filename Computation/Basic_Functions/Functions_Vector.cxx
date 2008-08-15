@@ -102,7 +102,7 @@ namespace Seldon
   // DotProd //
   
   
-  //! Scalar product between two vectors
+  //! Scalar product between two vectors.
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
   T1 DotProd(const Vector<T1, Storage1, Allocator1>& X,
@@ -115,13 +115,13 @@ namespace Seldon
 #endif
 
     for (int i = 0; i < X.GetM(); i++)
-      value += X(i)*Y(i);
+      value += X(i) * Y(i);
     
     return value;
   }
   
   
-  //! Scalar product between two vectors
+  //! Scalar product between two vectors.
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
   T1 DotProdConj(const Vector<T1, Storage1, Allocator1>& X,
@@ -134,13 +134,13 @@ namespace Seldon
 #endif
 
     for (int i = 0; i < X.GetM(); i++)
-      value += X(i)*Y(i);
+      value += X(i) * Y(i);
     
     return value;
   }
   
   
-  //! Scalar product between two vectors
+  //! Scalar product between two vectors.
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
   complex<T1> DotProdConj(const Vector<complex<T1>, Storage1, Allocator1>& X,
@@ -153,7 +153,7 @@ namespace Seldon
 #endif
 
     for (int i = 0; i < X.GetM(); i++)
-      value += conj(X(i))*Y(i);
+      value += conj(X(i)) * Y(i);
     
     return value;
   }
@@ -168,11 +168,11 @@ namespace Seldon
   // ApplyRot //
   
   
-  //! Computation of rotation between two points
+  //! Computation of rotation between two points.
   template<class T>
   void GenRot(T& a_in, T& b_in, T& c_, T& s_)
   {
-    // old BLAS version
+    // Old BLAS version.
     T roe;
     if (abs(a_in) > abs(b_in))
       roe = a_in;
@@ -206,7 +206,7 @@ namespace Seldon
   }
   
   
-  //! Computation of rotation between two points
+  //! Computation of rotation between two points.
   template<class T>
   void GenRot(complex<T>& a_in, complex<T>& b_in, T& c_, complex<T>& s_)
   {
@@ -223,34 +223,34 @@ namespace Seldon
 	T scale = a + b;
 	T a_scal = abs(a_in/scale);
 	T b_scal = abs(b_in/scale);
-	T norm = sqrt(a_scal*a_scal+b_scal*b_scal) * scale;
+	T norm = sqrt(a_scal * a_scal + b_scal * b_scal) * scale;
 	
 	c_ = a / norm;
-	complex<T> alpha = a_in/a;
-	s_ =  alpha * conj(b_in)/norm;
+	complex<T> alpha = a_in / a;
+	s_ =  alpha * conj(b_in) / norm;
 	a_in = alpha * norm;
       }
-    b_in = complex<T>(0,0);
+    b_in = complex<T>(0, 0);
   }
   
   
-  //! Rotation of a point in 2-D
+  //! Rotation of a point in 2-D.
   template<class T>
   void ApplyRot(T& x, T& y, const T c_, const T s_)
   {
-    T temp = c_*x + s_*y;
-    y = c_*y - s_*x;
+    T temp = c_ * x + s_ * y;
+    y = c_ * y - s_ * x;
     x = temp;
   }
   
   
-  //! Rotation of a complex point in 2-D
+  //! Rotation of a complex point in 2-D.
   template<class T>
   void ApplyRot(complex<T>& x, complex<T>& y,
 		const T& c_, const complex<T>& s_)
   {
-    complex<T> temp = s_*y + c_*x;
-    y = -conj(s_)*x + c_*y;
+    complex<T> temp = s_ * y + c_ * x;
+    y = -conj(s_) * x + c_ * y;
     x = temp;
   }
   
