@@ -357,9 +357,10 @@ namespace Seldon
   }
   
   
-  //! changes the length of the vector, and keeps previous values
+  //! Changes the length of the vector, and keeps previous values.
   /*!
     Reallocates the vector to size i. Previous values are kept.
+    \param n new length of the vector.
   */
   template <class T, class Allocator>
   inline void Vector<T, Vect_Full, Allocator>::Resize(int n)
@@ -367,8 +368,8 @@ namespace Seldon
     if (n == this->m_)
       return;
     
-    Vector<T,Vect_Full,Allocator> X_new(n);
-    for (int i = 0; i < min(this->m_,n); i++)
+    Vector<T, Vect_Full, Allocator> X_new(n);
+    for (int i = 0; i < min(this->m_, n); i++)
       X_new(i) = this->data_[i];
     
     SetData(n, X_new.GetData());
@@ -495,9 +496,9 @@ namespace Seldon
   }
   
   
-  //! Multiplicates a vector by a scalar
+  //! Multiplicates a vector by a scalar.
   /*!
-    \param alpha scalar
+    \param alpha scalar.
   */
   template <class T, class Allocator> template<class T0>
   inline Vector<T, Vect_Full, Allocator>& Vector<T, Vect_Full, Allocator>
@@ -525,7 +526,10 @@ namespace Seldon
   }
   
   
-  //! adds element x at the end of the vector
+  //! Appends an element at the end of the vector.
+  /*!
+    \param x element to be appended.
+  */
   template <class T, class Allocator> template<class T0>
   inline void Vector<T, Vect_Full, Allocator>::PushBack(const T0& x)
   {
@@ -534,9 +538,13 @@ namespace Seldon
   }
   
   
-  //! adds vector X at the end of the vector
+  //! Appends a vector X at the end of the vector.
+  /*!
+    \param X vector to be appended.
+  */
   template <class T, class Allocator> template<class Allocator0>
-  inline void Vector<T, Vect_Full, Allocator>::PushBack(const Vector<T, Vect_Full, Allocator0>& X)
+  inline void Vector<T, Vect_Full, Allocator>
+  ::PushBack(const Vector<T, Vect_Full, Allocator0>& X)
   {
     int Nold = this->m_;
     Resize(this->m_ + X.GetM());
