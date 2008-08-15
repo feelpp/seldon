@@ -17,6 +17,7 @@
 // For more information, please see the Seldon home page:
 //     http://spacetown.free.fr/lib/seldon/
 
+#include "array3d.hpp"
 #include "matrix.hpp"
 
 #include <cppunit/TestResult.h>
@@ -25,6 +26,7 @@
 using namespace CppUnit;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MatrixTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(Array3DTest);
 
 int main()
 {
