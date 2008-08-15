@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -67,24 +67,24 @@ namespace Seldon
       {
 #endif
 
-	this->data_ = array3D_allocator_.allocate(i*j*k, this);
+	data_ = array3D_allocator_.allocate(i*j*k, this);
 
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
       {
-	this->length1_ = 0;
-	this->length2_ = 0;
-	this->length3_ = 0;
-	this->length23_ = 0;
-	this->data_ = NULL;
+	length1_ = 0;
+	length2_ = 0;
+	length3_ = 0;
+	length23_ = 0;
+	data_ = NULL;
       }
     if (data_ == NULL)
       {
-	this->length1_ = 0;
-	this->length2_ = 0;
-	this->length3_ = 0;
-	this->length23_ = 0;
+	length1_ = 0;
+	length2_ = 0;
+	length3_ = 0;
+	length23_ = 0;
       }
     if (data_ == NULL && i != 0 && j != 0 && k != 0)
       throw NoMemory("Array3D::Array3D(int, int, int)",
@@ -109,28 +109,27 @@ namespace Seldon
   template <class T, class Allocator>
   inline Array3D<T, Allocator>::~Array3D()
   {
-    this->length1_ = 0;
-    this->length2_ = 0;
-    this->length3_ = 0;
-    this->length23_ = 0;
+    length1_ = 0;
+    length2_ = 0;
+    length3_ = 0;
+    length23_ = 0;
     
 #ifdef SELDON_CHECK_MEMORY
     try
       {
 #endif
 	
-	if (this->data_ != NULL)
+	if (data_ != NULL)
 	  {
-	    array3D_allocator_.deallocate(this->data_,
-					  this->length1_ * this->length23_);
-	    this->data_ = NULL;
+	    array3D_allocator_.deallocate(data_, length1_ * length23_);
+	    data_ = NULL;
 	  }
 	
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
       {
-	this->data_ = NULL;
+	data_ = NULL;
       }
 #endif
     
@@ -153,40 +152,40 @@ namespace Seldon
   template <class T, class Allocator>
   inline void Array3D<T, Allocator>::Reallocate(int i, int j, int k)
   {
-    if (i != this->length1_ || j != this->length2_ || k != length3_)
+    if (i != length1_ || j != length2_ || k != length3_)
       {
-	this->length1_ = i;
-	this->length2_ = j;
-	this->length3_ = k;
+	length1_ = i;
+	length2_ = j;
+	length3_ = k;
 
-	this->length23_ = j * k;
+	length23_ = j * k;
 
 #ifdef SELDON_CHECK_MEMORY
 	try
 	  {
 #endif
 	    
-	    this->data_ = 
-	      reinterpret_cast<pointer>(array3D_allocator_.reallocate(this->data_,
-								      i * j * k,
+	    data_ =
+	      reinterpret_cast<pointer>(array3D_allocator_.reallocate(data_,
+								      i*j*k,
 								      this));
 
 #ifdef SELDON_CHECK_MEMORY
 	  }
 	catch (...)
 	  {
-	    this->length1_ = 0;
-	    this->length2_ = 0;
-	    this->length3_ = 0;
-	    this->length23_ = 0;
-	    this->data_ = NULL;
+	    length1_ = 0;
+	    length2_ = 0;
+	    length3_ = 0;
+	    length23_ = 0;
+	    data_ = NULL;
 	  }
-	if (this->data_ == NULL)
+	if (data_ == NULL)
 	  {
-	    this->length1_ = 0;
-	    this->length2_ = 0;
-	    this->length3_ = 0;
-	    this->length23_ = 0;
+	    length1_ = 0;
+	    length2_ = 0;
+	    length3_ = 0;
+	    length23_ = 0;
 	  }
 	if (data_ == NULL && i != 0 && j != 0 && k != 0)
 	  throw NoMemory("Array3D::Reallocate(int, int, int)",
@@ -216,7 +215,7 @@ namespace Seldon
   template <class T, class Allocator>
   int Array3D<T, Allocator>::GetLength1() const
   {
-    return this->length1_;
+    return length1_;
   }
 
 
@@ -227,7 +226,7 @@ namespace Seldon
   template <class T, class Allocator>
   int Array3D<T, Allocator>::GetLength2() const
   {
-    return this->length2_;
+    return length2_;
   }
 
 
@@ -238,7 +237,7 @@ namespace Seldon
   template <class T, class Allocator>
   int Array3D<T, Allocator>::GetLength3() const
   {
-    return this->length3_;
+    return length3_;
   }
 
 
@@ -251,7 +250,7 @@ namespace Seldon
   template <class T, class Allocator>
   int Array3D<T, Allocator>::GetSize() const
   {
-    return this->length1_ * this->length23_;
+    return length1_ * length23_;
   }
 
 
@@ -265,7 +264,7 @@ namespace Seldon
   template <class T, class Allocator>
   int Array3D<T, Allocator>::GetDataSize() const
   {
-    return this->length1_ * this->length23_;
+    return length1_ * length23_;
   }
 
 
@@ -302,20 +301,20 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
-    if (i < 0 || i >= this->length1_)
+    if (i < 0 || i >= length1_)
       throw WrongIndex("Array3D::operator()",
 		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(this->length1_-1) + "], but is equal to "
+		       + to_str(length1_-1) + "], but is equal to "
 		       + to_str(i) + ".");
-    if (j < 0 || j >= this->length2_)
+    if (j < 0 || j >= length2_)
       throw WrongIndex("Array3D::operator()",
 		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(this->length2_-1) + "], but is equal to "
+		       + to_str(length2_-1) + "], but is equal to "
 		       + to_str(j) + ".");
-    if (k < 0 || k >= this->length3_)
+    if (k < 0 || k >= length3_)
       throw WrongIndex("Array3D::operator()",
 		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(this->length3_-1) + "], but is equal to "
+		       + to_str(length3_-1) + "], but is equal to "
 		       + to_str(k) + ".");
 #endif
 
@@ -337,20 +336,20 @@ namespace Seldon
   {
     
 #ifdef SELDON_CHECK_BOUNDARIES
-    if (i < 0 || i >= this->length1_)
+    if (i < 0 || i >= length1_)
       throw WrongIndex("Array3D::operator()",
 		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(this->length1_-1) + "], but is equal to "
+		       + to_str(length1_-1) + "], but is equal to "
 		       + to_str(i) + ".");
-    if (j < 0 || j >= this->length2_)
+    if (j < 0 || j >= length2_)
       throw WrongIndex("Array3D::operator()",
 		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(this->length2_-1) + "], but is equal to "
+		       + to_str(length2_-1) + "], but is equal to "
 		       + to_str(j) + ".");
-    if (k < 0 || k >= this->length3_)
+    if (k < 0 || k >= length3_)
       throw WrongIndex("Array3D::operator()",
 		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(this->length3_-1) + "], but is equal to "
+		       + to_str(length3_-1) + "], but is equal to "
 		       + to_str(k) + ".");
 #endif
 
@@ -364,10 +363,10 @@ namespace Seldon
     instance after the copy.
   */
   template <class T, class Allocator>
-  inline Array3D<T, Allocator>& Array3D<T, Allocator>::operator= 
+  inline Array3D<T, Allocator>& Array3D<T, Allocator>::operator=
   (const Array3D<T, Allocator>& A)
   {
-    this->Copy(A);
+    Copy(A);
 
     return *this;
   }
@@ -381,10 +380,9 @@ namespace Seldon
   template <class T, class Allocator>
   inline void Array3D<T, Allocator>::Copy(const Array3D<T, Allocator>& A)
   {
-    this->Reallocate(A.GetLength1(), A.GetLength2(), A.GetLength3());
+    Reallocate(A.GetLength1(), A.GetLength2(), A.GetLength3());
 
-    array3D_allocator_.memorycpy(this->data_, A.GetData(),
-				 this->GetDataSize());
+    array3D_allocator_.memorycpy(data_, A.GetData(), GetDataSize());
   }
 
 
@@ -401,8 +399,8 @@ namespace Seldon
   template <class T, class Allocator>
   void Array3D<T, Allocator>::Zero()
   {
-    array3D_allocator_.memoryset(this->data_, char(0),
-				 this->GetDataSize()*sizeof(value_type));
+    array3D_allocator_.memoryset(data_, char(0),
+				 GetDataSize()*sizeof(value_type));
   }
 
 
@@ -414,8 +412,8 @@ namespace Seldon
   template <class T, class Allocator>
   void Array3D<T, Allocator>::Fill()
   {
-    for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = i;
+    for (int i = 0; i < GetDataSize(); i++)
+      data_[i] = i;
   }
 
 
@@ -428,8 +426,8 @@ namespace Seldon
   template <class T0>
   void Array3D<T, Allocator>::Fill(const T0& x)
   {
-    for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = x;
+    for (int i = 0; i < GetDataSize(); i++)
+      data_[i] = x;
   }
 
 
@@ -441,8 +439,8 @@ namespace Seldon
   void Array3D<T, Allocator>::FillRand()
   {
     srand(time(NULL));
-    for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = rand();
+    for (int i = 0; i < GetDataSize(); i++)
+      data_[i] = rand();
   }
 
 
@@ -455,11 +453,11 @@ namespace Seldon
   {
     int i, j, k;
 
-    for (i = 0; i < this->GetLength1(); i++)
+    for (i = 0; i < GetLength1(); i++)
       {
-	for (j = 0; j < this->GetLength2(); j++)
+	for (j = 0; j < GetLength2(); j++)
 	  {
-	    for (k = 0; k < this->GetLength3(); k++)
+	    for (k = 0; k < GetLength3(); k++)
 	      cout << (*this)(i, j, k) << '\t';
 	    cout << endl;
 	  }
@@ -467,7 +465,8 @@ namespace Seldon
       }
   }
 
-    /**************************
+
+  /**************************
    * INPUT/OUTPUT FUNCTIONS *
    **************************/
   
@@ -493,7 +492,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->Write(FileStream);
+    Write(FileStream);
 
     FileStream.close();
   }
@@ -518,15 +517,15 @@ namespace Seldon
 		    "Stream is not ready.");
 #endif
 
-    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->length1_)),
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length1_)),
 		     sizeof(int));
-    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->length2_)),
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length2_)),
 		     sizeof(int));
-    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->length3_)),
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length3_)),
 		     sizeof(int));
 
-    FileStream.write(reinterpret_cast<char*>(this->data_),
-		     this->length23_ * this->length1_ * sizeof(value_type));
+    FileStream.write(reinterpret_cast<char*>(data_),
+		     length23_ * length1_ * sizeof(value_type));
 
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
@@ -561,7 +560,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->Read(FileStream);
+    Read(FileStream);
 
     FileStream.close();
   }
@@ -591,9 +590,9 @@ namespace Seldon
     FileStream.read(reinterpret_cast<char*>(&new_l1), sizeof(int));
     FileStream.read(reinterpret_cast<char*>(&new_l2), sizeof(int));
     FileStream.read(reinterpret_cast<char*>(&new_l3), sizeof(int));
-    this->Reallocate(new_l1, new_l2, new_l3);
+    Reallocate(new_l1, new_l2, new_l3);
 
-    FileStream.read(reinterpret_cast<char*>(this->data_),
+    FileStream.read(reinterpret_cast<char*>(data_),
 		    length23_ * length1_ * sizeof(value_type));
 
 #ifdef SELDON_CHECK_IO
@@ -603,7 +602,7 @@ namespace Seldon
                     string("Output operation failed.")
 		    + string(" The intput file may have been removed")
 		    + " or may not contain enough data.");
-#endif    
+#endif
 
   }
   
