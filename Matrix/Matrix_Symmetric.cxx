@@ -413,32 +413,32 @@ namespace Seldon
   }
 
   
-  //! Reallocates memory to resize the matrix.and keeps previous entries
+  //! Reallocates memory to resize the matrix and keeps previous entries.
   /*!
     On exit, the matrix is a i x j matrix.
     \param i new number of rows.
     \param j new number of columns.
-    \warning The previous entries are kept, extra-entries are not initialized
-    (depending of the allocator)
+    \warning The previous entries are kept, extra-entries may not be
+    initialized (depending of the allocator).
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_Symmetric<T, Prop, Storage, Allocator>
   ::Resize(int i, int j)
   {
-    // storing old values of the matrix
+    // Storing the old values of the matrix.
     int iold = Storage::GetFirst(this->m_, this->n_);
     int jold = Storage::GetSecond(this->m_, this->n_);
-    Vector<value_type,Vect_Full,Allocator> xold(this->GetDataSize());
+    Vector<value_type, Vect_Full, Allocator> xold(this->GetDataSize());
     for (int k = 0; k < this->GetDataSize(); k++)
       xold(k) = this->data_[k];
     
-    // reallocation
+    // Reallocation.
     int inew = Storage::GetFirst(i, j);
     int jnew = Storage::GetSecond(i, j);
-    this->Reallocate(i,j);
+    this->Reallocate(i, j);
     
-    // filling the matrix with old values
-    int imin = min(iold,inew), jmin = min(jold,jnew);
+    // Filling the matrix with its old values.
+    int imin = min(iold, inew), jmin = min(jold, jnew);
     for (int k = 0; k < imin; k++)
       for (int l = 0; l < jmin; l++)
 	this->data_[k*jnew+l] = xold(l+jold*k);

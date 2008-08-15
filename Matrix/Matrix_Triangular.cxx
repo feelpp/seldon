@@ -313,13 +313,13 @@ namespace Seldon
   }
 
   
-  //! Reallocates memory to resize the matrix.
+  //! Reallocates memory to resize the matrix and keeps previous entries.
   /*!
     On exit, the matrix is a i x i matrix.
     \param i number of rows.
     \param j number of columns.
-    \warning The previous entries are kept, extra-entries are not initialized
-    (depending of the allocator)
+    \warning The previous entries are kept, extra-entries may not be
+    initialized (depending of the allocator).
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_Triangular<T, Prop, Storage, Allocator>
@@ -327,21 +327,20 @@ namespace Seldon
   {
     if (i != this->m_)
       {
-	// storing previous values of the matrix
+	// Storing the previous values of the matrix.
 	int iold = this->m_;
 	Vector<value_type, Vect_Full, Allocator> xold(this->GetDataSize());
 	for (int k = 0; k < this->GetDataSize(); k++)
 	  xold(k) = this->data_[k];
 	
-	// reallocation
+	// Reallocation.
 	this->Reallocate(i, i);
 	
-	// filling the matrix with previous values
+	// Filling the matrix with its previous values.
 	int imin = min(iold, i);
 	for (int k = 0; k < imin; k++)
 	  for (int l = 0; l < imin; l++)
 	    this->data_[k*i + l] = xold(k*iold + l);
-	
       }
   }
   
