@@ -3,9 +3,9 @@
 
 #if !defined(SELDON_WITH_UMFPACK) && !defined(SELDON_WITH_SUPERLU) \
   && !defined(SELDON_WITH_MUMPS)
-//#define SELDON_WITH_UMFPACK
+#define SELDON_WITH_UMFPACK
 //#define SELDON_WITH_SUPERLU
-#define SELDON_WITH_MUMPS
+//#define SELDON_WITH_MUMPS
 #endif
 
 #include "Seldon.hxx"
