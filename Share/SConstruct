@@ -131,7 +131,7 @@ conf = Configure(env)
 link_flag_list = ""
 for library in ["blas", "atlas", "lapack", "g2c", "gslcblas", "dmumps",
                 "zmumps", "pord", "mpi", "gfortran", "pthread", "metis",
-                "umfpack", "amd", "scalapack", "blacs", "superlu"]:
+                "umfpack", "amd", "scalapack", "blacs", "superlu", "cppunit"]:
     if conf.CheckLib(library):
         link_flag_list += " -l" + library
         env.Replace(LINKFLAGS = link_flag_list)
