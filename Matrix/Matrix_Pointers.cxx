@@ -739,7 +739,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Pointers<T, Prop, Storage, Allocator>::FillRand()
   {
-    // srand(time(NULL));
+    srand(time(NULL));
     for (int i = 0; i < this->GetDataSize(); i++)
       this->data_[i] = rand();
   }
