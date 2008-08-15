@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,7 +19,7 @@
 
 #ifndef SELDON_FILE_ITERATIVE_CGNE_CXX
 
-namespace Seldon 
+namespace Seldon
 {
 
   //! Solves a linear system using Conjugate Gradient Normal Equation (CGNE)
@@ -30,13 +30,13 @@ namespace Seldon
     maximum number of iterations (determined by the iter object).
     return value of 1 indicates a failure to converge.
     
-    \param[in] A  Complex General Matrix 
+    \param[in] A  Complex General Matrix
     \param[inout] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Right hand side of the linear system
-    \param[in] M Left preconditioner   
+    \param[in] M Left preconditioner
     \param[in] iter Iteration parameters
-  */  
+  */
   template <class Titer, class Matrix, class Vector, class Preconditioner>
   int Cgne(Matrix& A, Vector& x, const Vector& b,
 	   Preconditioner& M, Iteration<Titer> & iter)
@@ -55,7 +55,7 @@ namespace Seldon
     // we solve A^t A x = A^t b
     // left-preconditioner is equal to M M^t
     
-    // q = A^t b 
+    // q = A^t b
     Mlt(SeldonTrans, A, b, q);
     // we initialize iter
     int success_init = iter.Init(q);
@@ -78,26 +78,26 @@ namespace Seldon
     dp = Norm2(q);
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
-    while (! iter.Finished(dp)) 
+    while (! iter.Finished(dp))
       {
 	// Preconditioning
 	M.TransSolve(A, r, q);
 	M.Solve(A, q, z);
 	
 	rho = DotProd(r,z);
-	if (rho == Complexe(0)) 
+	if (rho == Complexe(0))
 	  {
 	    iter.Fail(1, "Cgne breakdown #1");
 	    break;
 	  }
 	
 	if (iter.First())
-	  Seldon::Copy(z, p);		  
-	else 
+	  Seldon::Copy(z, p);
+	else
 	  {
 	    beta = rho / rho_1;
 	    Mlt(beta, p);
-	    Seldon::Add(Complexe(1), z, p); 
+	    Seldon::Add(Complexe(1), z, p);
 	  }
 	
 	// instead of q = A*p, we compute q = A^t A *p
@@ -105,7 +105,7 @@ namespace Seldon
 	Mlt(SeldonTrans, A, q, z);
 	
 	delta = DotProd(p, z);
-	if (delta == Complexe(0)) 
+	if (delta == Complexe(0))
 	  {
 	    iter.Fail(2, "Cgne breakdown #2");
 	    break;

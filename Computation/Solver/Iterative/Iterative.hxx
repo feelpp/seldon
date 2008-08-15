@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -29,12 +29,12 @@ namespace Seldon
     Preconditioner_Base();
     
     // solving M z = r
-    template<class T2, class Storage2, class Allocator2, class Matrix> 
+    template<class T2, class Storage2, class Allocator2, class Matrix>
     void Solve(const Matrix& A, const Vector<T2,Storage2,Allocator2> & r,
 	       Vector<T2,Storage2,Allocator2> & z);
     
     // solving M^t z = r
-    template<class T2, class Storage2, class Allocator2, class Matrix> 
+    template<class T2, class Storage2, class Allocator2, class Matrix>
     void TransSolve(const Matrix& A, const Vector<T2,Storage2,Allocator2> & r,
 		    Vector<T2,Storage2,Allocator2> & z);
     
@@ -45,7 +45,7 @@ namespace Seldon
   /*!
     Titer is the precision (float or double), the solved
     linear system can be real or complex
-   */
+  */
   template<class Titer>
   class Iteration
   {
@@ -71,7 +71,7 @@ namespace Seldon
   public :
     
     Iteration();
-    Iteration(int max_iteration, const Titer& tol);    
+    Iteration(int max_iteration, const Titer& tol);
     Iteration(const Iteration<Titer>& outer);
     
     int GetTypeSolver() const;
@@ -107,7 +107,7 @@ namespace Seldon
     
     int ErrorCode() const;
     
-  };  
+  };
   
 } // end namespace
 

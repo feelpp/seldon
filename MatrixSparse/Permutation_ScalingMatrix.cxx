@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -57,7 +57,7 @@ namespace Seldon
 	// we get the index of row where the row initially placed on row i is
 	i2 = rperm(i);
 	// we get the new index of this row
-	i_ = row_perm(i); 
+	i_ = row_perm(i);
 	
 	// we fill ind_tmp of the permuted indices of columns of row i
 	n = A.GetRowSize(i2);
@@ -351,7 +351,7 @@ namespace Seldon
   /*!
     We compute diag(S)*A*diag(S)
     where S = scale
-   */
+  */
   template<class T1, class Allocator1, class T2, class Allocator2>
   void ScaleMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
 		   Matrix<T1, General, ArrayRowSparse, Allocator1>& A)
@@ -368,7 +368,7 @@ namespace Seldon
   /*!
     We compute diag(S)*A*diag(S)
     where S = scale
-   */
+  */
   template<class T1, class Allocator1, class T2, class Allocator2>
   void ScaleMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
 		   Matrix<T1, Symmetric, ArrayRowSymSparse, Allocator1>& A)
@@ -408,7 +408,7 @@ namespace Seldon
   /*!
     We compute diag(S)*A*diag(S)
     where S = scale
-   */
+  */
   template<class T1, class Allocator1, class T2, class Allocator2>
   void ScaleMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
 		   Matrix<T1, General, ArrayRowComplexSparse, Allocator1>& A)
@@ -430,7 +430,7 @@ namespace Seldon
   /*!
     We compute diag(S)*A
     where S = scale
-   */
+  */
   template<class T1, class Allocator1, class T2, class Allocator2>
   void ScaleLeftMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
 		       Matrix<T1, General, ArrayRowSparse, Allocator1>& A)
@@ -448,9 +448,9 @@ namespace Seldon
     We compute diag(S)*A where S = scale.
     In order to keep symmetry, the operation
     is performed on upper part of the matrix,
-    considering that lower part is affected by this 
+    considering that lower part is affected by this
     operation
-   */
+  */
   template<class T1, class Allocator1, class T2, class Allocator2>
   void ScaleLeftMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
 		       Matrix<T1, Symmetric,
@@ -469,9 +469,9 @@ namespace Seldon
     We compute diag(S)*A where S = scale.
     In order to keep symmetry, the operation
     is performed on upper part of the matrix,
-    considering that lower part is affected by this 
+    considering that lower part is affected by this
     operation
-   */
+  */
   template<class T1, class Allocator1, class T2, class Allocator2>
   void ScaleLeftMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
 		       Matrix<T1, Symmetric,
@@ -494,7 +494,7 @@ namespace Seldon
   /*!
     We compute diag(S)*A
     where S = scale
-   */
+  */
   template<class T1, class Allocator1, class T2, class Allocator2>
   void ScaleLeftMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
 		       Matrix<T1, General,

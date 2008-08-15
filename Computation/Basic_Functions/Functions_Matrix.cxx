@@ -4,12 +4,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -58,7 +58,7 @@ namespace Seldon
 
     for (int i = 0; i < A.GetDataSize(); i++)
       data[i] = alpha_ * data[i];
-  }  
+  }
 
 
   template <class T0,
@@ -139,7 +139,7 @@ namespace Seldon
 	  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 	    += alpha_ * temp;
 	}
-  }  
+  }
 
 
   // MLTADD //
@@ -269,7 +269,7 @@ namespace Seldon
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
 		string function = "")
   {
-    if ( SeldonSide(side).Left() && 
+    if ( SeldonSide(side).Left() &&
 	 (B.GetM() != A.GetN() || C.GetM() != A.GetM()
 	  || B.GetN() != C.GetN()) )
       throw WrongDim(function, string("Operation A.B + C -> C not permitted:")
@@ -280,7 +280,7 @@ namespace Seldon
 		     + to_str(B.GetN()) + string(" matrix;\n     C (")
 		     + to_str(&C) + string(") is a ") + to_str(C.GetM())
 		     + string(" x ") + to_str(C.GetN()) + string(" matrix."));
-    else if ( SeldonSide(side).Right() && 
+    else if ( SeldonSide(side).Right() &&
 	      (B.GetN() != A.GetM() || C.GetM() != B.GetM()
 	       || A.GetN() != C.GetN()) )
       throw WrongDim(function, string("Operation B.A + C -> C not permitted:")

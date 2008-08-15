@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -84,7 +84,7 @@ namespace Seldon
     tolerance = 1e-6;
     max_iter = 100;
     nb_iter = 0;
-    error_code = 0; 
+    error_code = 0;
     fail_convergence = false;
     print_level = 1;
     init_guess_null = true;
@@ -100,7 +100,7 @@ namespace Seldon
     max_iter = max_iteration;
     tolerance = tol;
     nb_iter = 0;
-    error_code = 0; 
+    error_code = 0;
     fail_convergence = false;
     print_level = 1;
     init_guess_null = true;
@@ -281,14 +281,14 @@ namespace Seldon
     // displaying residual if required
     if ((print_level >= 1)&&(nb_iter%100 == 0))
       cout<<"Residu at iteration number "<<
-	GetNumberIteration()<<"  "<<reste<<endl;    
+	GetNumberIteration()<<"  "<<reste<<endl;
     else if (print_level >= 6)
       cout<<"Residu at iteration number "<<
 	GetNumberIteration()<<"  "<<reste<<endl;
     
     // end of iterative solver when residual is small enough
     // or when the number of iterations is too high
-    if ((reste < tolerance)||(nb_iter >= max_iter)) 
+    if ((reste < tolerance)||(nb_iter >= max_iter))
       return true;
     
     return false;
@@ -305,14 +305,14 @@ namespace Seldon
     // displaying residual if required
     if ((print_level >= 1)&&(nb_iter%100 == 0))
       cout<<"Residu at iteration number "<<
-	GetNumberIteration()<<"  "<<reste<<endl;    
+	GetNumberIteration()<<"  "<<reste<<endl;
     else if (print_level >= 6)
       cout<<"Residu at iteration number "<<
 	GetNumberIteration()<<"  "<<reste<<endl;
     
     // end of iterative solver when residual is small enough
     // or when the number of iterations is too high
-    if ((reste < tolerance)||(nb_iter >= max_iter)) 
+    if ((reste < tolerance)||(nb_iter >= max_iter))
       return true;
     
     return false;
@@ -321,7 +321,7 @@ namespace Seldon
   
   //! Informs of a failure in the iterative solver
   template<class Titer>
-  void Iteration<Titer>::Fail(int i, const string& s) 
+  void Iteration<Titer>::Fail(int i, const string& s)
   {
     fail_convergence = true;
     error_code = i;
@@ -353,7 +353,7 @@ namespace Seldon
     return 0;
   }
   
-} // end namespace 
+} // end namespace
 
 #define SELDON_FILE_ITERATIVE_CXX
 #endif

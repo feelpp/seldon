@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,27 +19,27 @@
 
 #ifndef SELDON_FILE_ITERATIVE_BICG_CXX
 
-namespace Seldon 
+namespace Seldon
 {
   
   //! Solves a linear system by using BiConjugate Gradient (BICG)
   /*!
-    Solves the unsymmetric linear system Ax = b 
+    Solves the unsymmetric linear system Ax = b
     using the Preconditioned BiConjugate Gradient method.
     
     return value of 0 indicates convergence within the
     maximum number of iterations (determined by the iter object).
     return value of 1 indicates a failure to converge.
     
-    See: R. Fletcher, Conjugate gradient methods for indefinite systems, 
-    In Numerical Analysis Dundee 1975, G. Watson, ed., Springer Verlag, 
+    See: R. Fletcher, Conjugate gradient methods for indefinite systems,
+    In Numerical Analysis Dundee 1975, G. Watson, ed., Springer Verlag,
     Berlin, New York, 1976 pp. 73-89
     
-    \param[in] A  Complex General Matrix 
+    \param[in] A  Complex General Matrix
     \param[inout] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
-    \param[in] M Right preconditioner   
+    \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
   template <class Titer, class Matrix, class Vector, class Preconditioner>
@@ -68,45 +68,45 @@ namespace Seldon
     else
       x.Zero();
     
-    Seldon::Copy(r,r_tilde);	   
+    Seldon::Copy(r,r_tilde);
     
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are reached
-    while (! iter.Finished(r)) 
+    while (! iter.Finished(r))
       {
 	// preconditioning z = M^{-1} r and z_tilde = M^{-t} r_tilde
-	M.Solve(A, r, z);		
-	M.TransSolve(A, r_tilde, z_tilde);  
-	// rho_1 = (z,r_tilde) 
-	rho_1 = DotProd(z, r_tilde);    
+	M.Solve(A, r, z);
+	M.TransSolve(A, r_tilde, z_tilde);
+	// rho_1 = (z,r_tilde)
+	rho_1 = DotProd(z, r_tilde);
 	
-	if (rho_1 == Complexe(0)) 
+	if (rho_1 == Complexe(0))
 	  {
 	    iter.Fail(1, "Bicg breakdown #1");
 	    break;
 	  }
 	
-	if (iter.First()) 
+	if (iter.First())
 	  {
-	    Seldon::Copy(z, p);          
-	    Seldon::Copy(z_tilde, p_tilde);	  
-	  } 
-	else 
+	    Seldon::Copy(z, p);
+	    Seldon::Copy(z_tilde, p_tilde);
+	  }
+	else
 	  {
 	    // p=beta*p+z  where beta = rho_i/rho_{i-1}
 	    // p_tilde=beta*p_tilde+z_tilde
 	    beta = rho_1 / rho_2;
 	    Mlt(beta, p);
-	    Seldon::Add(Complexe(1), z, p);       
+	    Seldon::Add(Complexe(1), z, p);
 	    Mlt(beta, p_tilde);
-	    Seldon::Add(Complexe(1), z_tilde, p_tilde);  
+	    Seldon::Add(Complexe(1), z_tilde, p_tilde);
 	  }
 	
 	// we do the product matrix vector and transpose matrix vector
 	// q = A*p    q_tilde = A^t p_tilde
 	Mlt(A, p, q);
 	++iter;
-	Mlt(SeldonTrans, A, p_tilde, q_tilde);  
+	Mlt(SeldonTrans, A, p_tilde, q_tilde);
 	
 	delta = DotProd(p_tilde, q);
 	if (delta == Complexe(0))
@@ -117,10 +117,10 @@ namespace Seldon
 	
 	alpha = rho_1 / delta;
 	
-	// the new iterate x=x+alpha*p and residual r=r-alpha*q 
+	// the new iterate x=x+alpha*p and residual r=r-alpha*q
 	// where alpha = rho_i/delta
-	Seldon::Add(alpha, p, x);   
-	Seldon::Add(-alpha, q, r);  
+	Seldon::Add(alpha, p, x);
+	Seldon::Add(-alpha, q, r);
 	Seldon::Add(-alpha, q_tilde, r_tilde);
 	
 	rho_2 = rho_1;

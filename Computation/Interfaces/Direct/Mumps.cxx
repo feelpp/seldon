@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -80,7 +80,7 @@ namespace Seldon
       ShowMessages();
     else
       HideMessages();
-  } 
+  }
   
   //! informs mumps that the matrix is unsymmetric
   template<class T>
@@ -155,7 +155,7 @@ namespace Seldon
     \param[inout] mat matrix whose we want to find the ordering
     \param[out] numbers new row numbers
     \param[in] keep_matrix if false, the given matrix is cleared
-   */
+  */
   template<class T> template<class Prop,class Storage,class Allocator>
   void MatrixMumps<T>::FindOrdering(Matrix<T, Prop, Storage, Allocator> & mat,
 				    IVect& numbers, bool keep_matrix)
@@ -170,14 +170,14 @@ namespace Seldon
       mat.Clear();
     
     /* Define the problem on the host */
-    if (rank == 0) 
+    if (rank == 0)
       {
 	struct_mumps.n = n; struct_mumps.nz = nnz;
 	struct_mumps.irn = num_row.GetData();
 	struct_mumps.jcn = num_col.GetData();
       }
     
-    /* Call the MUMPS package. */    
+    /* Call the MUMPS package. */
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
     
@@ -190,7 +190,7 @@ namespace Seldon
   /*!
     \param[inout] mat matrix to factorize
     \param[in] keep_matrix if false, the given matrix is cleared
-   */
+  */
   template<class T> template<class Prop, class Storage, class Allocator>
   void MatrixMumps<T>::FactorizeMatrix(Matrix<T,Prop,Storage,Allocator> & mat,
 				       bool keep_matrix)
@@ -203,14 +203,14 @@ namespace Seldon
       mat.Clear();
     
     /* Define the problem on the host */
-    if (rank == 0) 
+    if (rank == 0)
       {
 	struct_mumps.n = n; struct_mumps.nz = nnz;
 	struct_mumps.irn = num_row.GetData(); struct_mumps.jcn = num_col.GetData();
 	struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
       }
     
-    /* Call the MUMPS package. */    
+    /* Call the MUMPS package. */
     struct_mumps.job = 4; // we analyse and factorize the system
     CallMumps();
   }
@@ -222,19 +222,19 @@ namespace Seldon
     return struct_mumps.info[0];
   }
   
-  //! computation of Schur complement 
+  //! computation of Schur complement
   /*!
     \param[inout] mat initial matrix
     \param[in] num numbers to keep in Schur complement
     \param[out] mat_schur Schur matrix
-   */
+  */
   template<class T> template<class Prop1, class Storage1, class Allocator,
-			     class Prop2, class Storage2, class Allocator2> 
+			     class Prop2, class Storage2, class Allocator2>
   void MatrixMumps<T>::
   GetSchurMatrix(Matrix<T, Prop1, Storage1, Allocator>& mat, const IVect& num,
 		 Matrix<T, Prop2, Storage2, Allocator2> & mat_schur,
 		 bool keep_matrix)
-  {    
+  {
     int n_schur = num.GetM(), n = mat.GetM();
     // Subscripts are changed to respect fortran convention
     IVect index_schur(n_schur);
@@ -272,7 +272,7 @@ namespace Seldon
   /*!
     \param[inout] x right-hand-side on input, solution on output
     It is assumed that a call to FactorizeMatrix has been done before
-   */
+  */
   template<class T> template<class Allocator2>
   void MatrixMumps<T>::Solve(Vector<T,Vect_Full,Allocator2>& x)
   {

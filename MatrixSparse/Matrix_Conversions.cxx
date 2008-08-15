@@ -4,12 +4,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -25,7 +25,7 @@ namespace Seldon
   
   /*
     From CSR formats to "Matlab" coordinate format
-   */
+  */
   
   
   //! conversion from RowSparse to coordinate format
@@ -52,7 +52,7 @@ namespace Seldon
   template<class T,class Prop,class Storage,class Allocator1,class Allocator2>
   void ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ColSparse, Allocator1>& A, IVect& IndRow, IVect& IndCol,
 				    Vector<T,Storage,Allocator2>& Val, int index = 0)
-  {    
+  {
     int n = A.GetN(); int nnz = A.GetDataSize();
     IndCol.Reallocate(nnz); IndRow.Reallocate(nnz); Val.Reallocate(nnz);
     int* ptr = A.GetPtr(); int* ind = A.GetInd(); T* val = A.GetData();
@@ -92,7 +92,7 @@ namespace Seldon
   template<class T,class Prop,class Storage,class Allocator1,class Allocator2>
   void ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ColSymSparse, Allocator1>& A, IVect& IndRow, IVect& IndCol,
 				    Vector<T,Storage,Allocator2>& Val, int index = 0)
-  {    
+  {
     int n = A.GetN(); int nnz = A.GetDataSize();
     IndCol.Reallocate(nnz); IndRow.Reallocate(nnz); Val.Reallocate(nnz);
     int* ptr = A.GetPtr(); int* ind = A.GetInd(); T* val = A.GetData();
@@ -110,7 +110,7 @@ namespace Seldon
   
   /*
     From Sparse Array formats to "Matlab" coordinate format
-   */
+  */
   
   
   //! conversion from ArrayRowSparse to coordinate format
@@ -203,7 +203,7 @@ namespace Seldon
   
   /*
     From CSR to other CSR formats
-   */
+  */
   
   
   //! B = A
@@ -238,7 +238,7 @@ namespace Seldon
     IVect Ptr(n+1); Ptr.Fill(0);
     // counting the number of entries per column
     for (int i = 0; i < nnz; i++)
-      Ptr(ind_[i])++; 
+      Ptr(ind_[i])++;
     
     // incrementing in order to get indices
     int increment = 0, size, num_col;
@@ -340,7 +340,7 @@ namespace Seldon
   
   /*
     From ArraySparse matrices to CSR matrices
-   */
+  */
   
   
   //! conversion from ArrayRowSparse to RowSparse
@@ -360,7 +360,7 @@ namespace Seldon
     
     // we fill arrays
     int ind = 0;
-    IndRow(0) = 0; 
+    IndRow(0) = 0;
     for (int i = 0; i < m; i++)
       {
 	for (int k = 0; k<mat_array.GetRowSize(i);k++)
@@ -403,7 +403,7 @@ namespace Seldon
     // accumulation to get pointer array
     Ptr(0) = 0;
     for (int i = 0; i < n; i++)
-      Ptr(i+1) += Ptr(i); 
+      Ptr(i+1) += Ptr(i);
     
     mat_csr.SetData(m, n, Val, Ptr, IndRow);
   }
@@ -425,7 +425,7 @@ namespace Seldon
     Vector<int,Vect_Full,CallocAlloc<int> > IndCol(nnz);
     
     int ind = 0;
-    IndRow(0) = 0; 
+    IndRow(0) = 0;
     for (int i = 0; i < m; i++)
       {
 	for (int k = 0; k < mat_array.GetRowSize(i); k++)
@@ -458,7 +458,7 @@ namespace Seldon
     IVect IndCol_real(nnz_real), IndCol_imag(nnz_imag);
     
     int ind_real = 0,ind_imag = 0;
-    IndRow_real(0) = 0; IndRow_imag(0) = 0; 
+    IndRow_real(0) = 0; IndRow_imag(0) = 0;
     // loop over rows
     for (int i = 0; i < m; i++)
       {
@@ -501,7 +501,7 @@ namespace Seldon
     IVect IndCol_real(nnz_real), IndCol_imag(nnz_imag);
     
     int ind_real = 0,ind_imag = 0;
-    IndRow_real(0) = 0; IndRow_imag(0) = 0; 
+    IndRow_real(0) = 0; IndRow_imag(0) = 0;
     // loop over rows
     for (int i = 0; i < m; i++)
       {
@@ -524,7 +524,7 @@ namespace Seldon
       }
     
     mat_csr.SetData(m, m, Val_real, IndRow_real, IndCol_real, Val_imag, IndRow_imag, IndCol_imag);
-  }  
+  }
   
   
   template<class T0, class Prop0, class Allocator0,

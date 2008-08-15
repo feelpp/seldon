@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -819,7 +819,7 @@ namespace Seldon
                     string("Output operation failed.")
 		    + string(" The intput file may have been removed")
 		    + " or may not contain enough data.");
-#endif    
+#endif
 
   }
 
@@ -882,7 +882,7 @@ namespace Seldon
   }
 
   
-    //! Reallocates memory to resize the matrix.and keeps previous entries
+  //! Reallocates memory to resize the matrix.and keeps previous entries
   /*!
     On exit, the matrix is a i x j matrix.
     \param i new number of rows.

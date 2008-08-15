@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -62,7 +62,7 @@ namespace Seldon
   void SsorPreconditioner<T, Prop, Storage, Allocator>::
   Init(Matrix<T, Prop, Storage, Allocator>& B)
   {
-    A_ = &B; 
+    A_ = &B;
   }
   
   
@@ -71,7 +71,7 @@ namespace Seldon
   template<class Vector, class Matrix>
   void SsorPreconditioner<T, Prop, Storage, Allocator>::
   Solve(const Matrix& A, const Vector& r, Vector& z)
-  {    
+  {
     z.Zero();
     if (symmetric_precond)
       Seldon::SOR(*A_, z, r, omega, nb_iter, 0);
@@ -85,7 +85,7 @@ namespace Seldon
   template<class Vector, class Matrix>
   void SsorPreconditioner<T, Prop, Storage, Allocator>::
   TransSolve(const Matrix& A, const Vector& r, Vector& z)
-  {    
+  {
     z.Zero();
     if (symmetric_precond)
       Seldon::SOR(*A_, z, r, omega, nb_iter, 0);

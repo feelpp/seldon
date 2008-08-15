@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -27,7 +27,7 @@ namespace Seldon
   template<class T>
   MatrixSuperLU_Base<T>::MatrixSuperLU_Base()
   {
-    //   permc_spec = 0: use the natural ordering 
+    //   permc_spec = 0: use the natural ordering
     //   permc_spec = 1: use minimum degree ordering on structure of A'*A
     //   permc_spec = 2: use minimum degree ordering on structure of A'+A
     //   permc_spec = 3: use approximate mininum degree column ordering
@@ -131,7 +131,7 @@ namespace Seldon
   }
   
   //! factorization of matrix in complex double precision using SuperLU
-  template<class Prop, class Storage,class Allocator>     
+  template<class Prop, class Storage,class Allocator>
   void MatrixSuperLU<complex<double> >::
   FactorizeMatrix(Matrix<complex<double>,Prop,Storage,Allocator> & mat,
 		  bool keep_matrix)
@@ -173,7 +173,7 @@ namespace Seldon
   }
   
   //! resolution of linear system A x = b
-  template<class Allocator2>     
+  template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
   Solve(Vector<complex<double>,Vect_Full,Allocator2>& x)
   {

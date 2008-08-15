@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -83,9 +83,9 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline int Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   GetMemorySize() const
-  { 
+  {
     return (sizeof(int)*(7+2*ind.GetM()+2*val.GetM()+GetDataSize())
-	    +sizeof(T)*GetDataSize()); 
+	    +sizeof(T)*GetDataSize());
   }
   
   
@@ -157,7 +157,7 @@ namespace Seldon
     \param[in] i row/column number
     \param[in] j new size of row/column
     \warning data may be lost
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   ReallocateVector(int i, int j)
@@ -175,7 +175,7 @@ namespace Seldon
     Data is kept
     \param[in] i row/column number
     \param[in] j new size of row/column
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   ResizeVector(int i, int j)
@@ -204,7 +204,7 @@ namespace Seldon
   //! row-column i is removed
   /*!
     \param[in] i row/column number
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   ClearVector(int i)
@@ -222,7 +222,7 @@ namespace Seldon
   /*!
     \param[in] i first row/column number
     \param[in] i_ second row/column number
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   SwapVector(int i, int i_)
@@ -246,7 +246,7 @@ namespace Seldon
     useful method when a permutation is applied to a matrix
     \param[in] i row number (or column number)
     \param[in] new_index column numbers (or row numbers)
-   */    
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   ReplaceIndexVector(int i, IVect& new_index)
@@ -310,11 +310,11 @@ namespace Seldon
   }
   
   
-  //! Returns the size of row/column i 
+  //! Returns the size of row/column i
   /*!
     \param[in] i row/column number
     \return the number of non-zero entries in row/column i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline int Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   GetVectorSize(int i) const
@@ -328,7 +328,7 @@ namespace Seldon
     \param[in] i row (or column) number
     \return the array of column (or row) indices of non-zero entries
     of row (or column) i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline int* Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetInd(int i)
     const
@@ -337,11 +337,11 @@ namespace Seldon
   }
   
   
-  //! Returns values of non-zero entries of a row/column 
+  //! Returns values of non-zero entries of a row/column
   /*!
     \param[in] i row (or column) number
     \return The array of values of non-zero entries of row/column i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline typename Matrix_ArraySparse<T, Prop, Storage, Allocator>::pointer
   Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetData(int i) const
@@ -354,7 +354,7 @@ namespace Seldon
   /*!
     \return Arrays of row (or column) indices of non-zero entries
     There is a different array for each row/column
-   */
+  */
   template <class T, class Prop, class Storage, class Allocat>
   inline IVect* Matrix_ArraySparse<T, Prop, Storage, Allocat>::GetInd() const
   {
@@ -366,7 +366,7 @@ namespace Seldon
   /*!
     \return Arrays of values of non-zero entries
     There is a different array for each row/column
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline
   typename Matrix_ArraySparse<T, Prop, Storage, Allocator>::vect_value_ptr
@@ -421,7 +421,7 @@ namespace Seldon
   }
   
   
-  //! Access operator 
+  //! Access operator
   /*!
     Returns the value of element (i, j).
     \param[in] i row index.
@@ -455,7 +455,7 @@ namespace Seldon
       k++;
     
     if ((k >= size_vec)||(ind(a)(k) != b))
-      {    
+      {
 	// the entry does not exist, we add a null value
 	AddInteraction(a, b, T(0));
       }
@@ -469,7 +469,7 @@ namespace Seldon
     \param[in] i row/column number
     \param[in] j local number
     \return j-th non-zero entry of row/column i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline typename Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   const_reference Matrix_ArraySparse<T, Prop, Storage, Allocator>::
@@ -496,7 +496,7 @@ namespace Seldon
     \param[in] i row/column number
     \param[in] j local number
     \return j-th non-zero entry of row/column i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline typename Matrix_ArraySparse<T, Prop, Storage, Allocator>::reference
   Matrix_ArraySparse<T, Prop, Storage, Allocator>::Value (int i, int j)
@@ -523,7 +523,7 @@ namespace Seldon
     \param[in] i row/column number
     \param[in] j local number
     \return column/row number of j-th non-zero value of row/column i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator> inline
   int Matrix_ArraySparse<T, Prop, Storage, Allocator>::Index(int i, int j)
     const
@@ -550,7 +550,7 @@ namespace Seldon
     \param[in] i row/column number
     \param[in] j local number
     \return column/row number of j-th non-zero value of row/column i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator> inline
   int& Matrix_ArraySparse<T, Prop, Storage, Allocator>::Index(int i, int j)
   {
@@ -578,14 +578,14 @@ namespace Seldon
     \param[in] nnz number of non-zero entries
     \param[in] ind_ptr arrays of row/column numbers
     \param[in] val_ptr arrays of values
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   SetData(int m, int n, int nnz, IVect* ind_ptr,
 	  typename Matrix_ArraySparse<T, Prop, Storage,
 	  Allocator>::vect_value_ptr val_ptr)
   {
-    m_ = m; n_ = n; nz_ = nnz; 
+    m_ = m; n_ = n; nz_ = nnz;
     ind.Clear(); val.Clear();
     ind.SetData(n, ind_ptr); val.SetData(n, val_ptr);
   }
@@ -612,7 +612,7 @@ namespace Seldon
     \param[in] i row/column number
     \param[in] j column/row number
     \param[in] a value to add
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   AddInteraction(int i, int j, const T& a)
@@ -661,13 +661,13 @@ namespace Seldon
   
   //! coefficients are added in the row/column of a matrix
   /*!
-    The method sorts given coefficients and adds them 
+    The method sorts given coefficients and adds them
     in the correct positions
     \param[in] i row/column number
     \param[in] nb_interac number of coefficients to add
     \param[in] col_interac column/row numbers
     \param[in] val_interac coefficients
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   template<class Storage1, class Allocator1>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
@@ -764,7 +764,7 @@ namespace Seldon
   //! Displays a row/column
   /*!
     \param[in] i row/column number
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::PrintVector(int i)
     const
@@ -775,13 +775,13 @@ namespace Seldon
   }
   
   
-  //! Assembles the matrix 
+  //! Assembles the matrix
   /*!
     All the column/row numbers are sorted
     If same column/row numbers exist, values are added
     \warning If you are using the methods AddInteraction,
     you don't need to call that method.
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Assemble()
   {
@@ -793,7 +793,7 @@ namespace Seldon
   //! Removes small coefficients from entries
   /*!
     \param[in] epsilon entries whose values are below epsilon are removed
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   template<class T0>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
@@ -821,7 +821,7 @@ namespace Seldon
     \param[in] i row/column number
     \warning If you are using the methods AddInteraction,
     you don't need to call that method.
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   AssembleVector(int i)
@@ -875,9 +875,9 @@ namespace Seldon
   
   
   //! Non-zero entries are set to a given value x
-  template <class T, class Prop, class Storage, class Allocator> 
+  template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
-  inline Matrix_ArraySparse<T, Prop, Storage, Allocator>& 
+  inline Matrix_ArraySparse<T, Prop, Storage, Allocator>&
   Matrix_ArraySparse<T, Prop, Storage, Allocator>::operator= (const T0& x)
   {
     this->Fill(x);
@@ -904,7 +904,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayColSparse, Allocator>::Matrix()  throw():
-  Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>()
+    Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>()
   {
   }
   
@@ -917,7 +917,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayColSparse, Allocator>::Matrix(int i, int j):
-  Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>(i, j)
+    Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>(i, j)
   {
   }
   
@@ -934,7 +934,7 @@ namespace Seldon
   /*!
     \param[in] i column number
     \param[in] j new number of non-zero entries in the column
-   */
+  */
   template <class T, class Prop, class Alloc> inline
   void Matrix<T, Prop, ArrayColSparse, Alloc>::ReallocateColumn(int i,int j)
   {
@@ -946,7 +946,7 @@ namespace Seldon
   /*!
     \param[in] i column number
     \param[in] j new number of non-zero entries in the column
-   */
+  */
   template <class T, class Prop, class Allocator> inline
   void Matrix<T, Prop, ArrayColSparse, Allocator>::ResizeColumn(int i,int j)
   {
@@ -958,7 +958,7 @@ namespace Seldon
   /*!
     \param[in] i first column number
     \param[in] j second column number
-   */
+  */
   template <class T, class Prop, class Allocator> inline
   void Matrix<T, Prop, ArrayColSparse, Allocator>::SwapColumn(int i,int j)
   {
@@ -970,7 +970,7 @@ namespace Seldon
   /*!
     \param[in] i column number
     \param[in] new_index new row numbers
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
   ReplaceIndexColumn(int i, IVect& new_index)
@@ -983,7 +983,7 @@ namespace Seldon
   /*!
     \param[in] i column number
     \return The number of non-zero entries of the column i
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline int Matrix<T, Prop, ArrayColSparse, Allocator>::GetColumnSize(int i) const
   {
@@ -1006,7 +1006,7 @@ namespace Seldon
     \param[in] i column number
     \warning If you are using the methods AddInteraction,
     you don't need to call that method.
-   */
+  */
   template <class T, class Prop, class Allocator> inline
   void Matrix<T, Prop, ArrayColSparse, Allocator>::AssembleColumn(int i)
   {
@@ -1019,7 +1019,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j column number
     \param[in] val coefficient to add
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
   AddInteraction(int i, int j, const T& val)
@@ -1035,7 +1035,7 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] col_ column numbers of coefficients
     \param[in] val_ values of coefficients
-   */ 
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
   AddInteractionRow(int i, int nb, int* col_, T* val_)
@@ -1053,7 +1053,7 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] row_ row numbers of coefficients
     \param[in] val_ values of coefficients
-   */ 
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
   AddInteractionColumn(int i, int nb, int* row_, T* val_)
@@ -1071,11 +1071,11 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] col column numbers of coefficients
     \param[in] val values of coefficients
-   */
+  */
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		     const Vector<T,Vect_Full,Alloc1>& val)
+		    const Vector<T,Vect_Full,Alloc1>& val)
   {
     for (int j = 0; j < nb; j++)
       Matrix_ArraySparse<T,Prop,ArrayColSparse,Allocator>::
@@ -1089,11 +1089,11 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] row row numbers of coefficients
     \param[in] val values of coefficients
-   */
+  */
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-			const Vector<T,Vect_Full,Alloc1>& val)
+		       const Vector<T,Vect_Full,Alloc1>& val)
   {
     Matrix_ArraySparse<T,Prop,ArrayColSparse,Allocator>::
       AddInteractionVector(i, nb, row, val);
@@ -1142,7 +1142,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j new number of non-zero entries of the row
     \warning data may be lost
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
   ReallocateRow(int i, int j)
@@ -1156,7 +1156,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j new number of non-zero entries of the row
     Data is kept
-   */
+  */
   template <class T, class Prop, class Allocator> inline
   void Matrix<T, Prop, ArrayRowSparse, Allocator>::ResizeRow(int i, int j)
   {
@@ -1168,7 +1168,7 @@ namespace Seldon
   /*!
     \param[in] i first row number
     \param[in] j second row number
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::SwapRow(int i,int j)
   {
@@ -1180,7 +1180,7 @@ namespace Seldon
   /*!
     \param[in] i column number
     \param[in] new_index new column numbers
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
   ReplaceIndexRow(int i, IVect& new_index)
@@ -1193,7 +1193,7 @@ namespace Seldon
   /*!
     \param[in] i row number
     \return The number of non-zero entries of the row i
-   */
+  */
   template <class T, class Prop, class Allocator> inline
   int Matrix<T, Prop, ArrayRowSparse, Allocator>::GetRowSize(int i) const
   {
@@ -1214,7 +1214,7 @@ namespace Seldon
     \param[in] i row number
     \warning If you are using the methods AddInteraction,
     you don't need to call that method.
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::AssembleRow(int i)
   {
@@ -1226,7 +1226,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j column number
     \param[in] val coefficient to add
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
   AddInteraction(int i, int j, const T& val)
@@ -1242,7 +1242,7 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] col_ column numbers of coefficients
     \param[in] val_ values of coefficients
-   */ 
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
   AddInteractionRow(int i, int nb, int* col_, T* val_)
@@ -1260,7 +1260,7 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] row_ row numbers of coefficients
     \param[in] val_ values of coefficients
-   */ 
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
   AddInteractionColumn(int i, int nb, int* row_, T* val_)
@@ -1278,14 +1278,14 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] col column numbers of coefficients
     \param[in] val values of coefficients
-   */
+  */
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		     const Vector<T,Vect_Full,Alloc1>& val)
+		    const Vector<T,Vect_Full,Alloc1>& val)
   {
     Matrix_ArraySparse<T,Prop,ArrayRowSparse,Allocator>::
-	AddInteractionVector(i, nb, col, val);
+      AddInteractionVector(i, nb, col, val);
   }
   
   
@@ -1295,11 +1295,11 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] row row numbers of coefficients
     \param[in] val values of coefficients
-   */
+  */
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-			const Vector<T,Vect_Full,Alloc1>& val)
+		       const Vector<T,Vect_Full,Alloc1>& val)
   {
     for (int j = 0; j < nb; j++)
       Matrix_ArraySparse<T,Prop,ArrayRowSparse,Allocator>::
@@ -1411,7 +1411,7 @@ namespace Seldon
       k++;
     
     if ((k >= size_vec)||(this->ind(j)(k) != i))
-      {    
+      {
 	// the entry does not exist, we add a null value
 	AddInteraction(i, j, T(0));
       }
@@ -1433,7 +1433,7 @@ namespace Seldon
     \param[in] i column number
     \param[in] j new number of non-zero entries in the column
     \warning Data may be lost
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   ReallocateColumn(int i, int j)
@@ -1446,7 +1446,7 @@ namespace Seldon
   /*!
     \param[in] i column number
     \param[in] j new number of non-zero entries in the column
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   ResizeColumn(int i, int j)
@@ -1459,7 +1459,7 @@ namespace Seldon
   /*!
     \param[in] i first column number
     \param[in] j second column number
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   SwapColumn(int i, int j)
@@ -1472,7 +1472,7 @@ namespace Seldon
   /*!
     \param[in] i column number
     \param[in] new_index new row numbers
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   ReplaceIndexColumn(int i, IVect& new_index)
@@ -1485,7 +1485,7 @@ namespace Seldon
   /*!
     \param[in] i column number
     \return The number of non-zero entries of the column i
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline int Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   GetColumnSize(int i) const
@@ -1510,7 +1510,7 @@ namespace Seldon
     \param[in] i column number
     \warning If you are using the methods AddInteraction,
     you don't need to call that method.
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   AssembleColumn(int i)
@@ -1525,7 +1525,7 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] col_ column numbers of coefficients
     \param[in] val_ values of coefficients
-   */ 
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   AddInteractionRow(int i, int nb, int* col_, T* val_)
@@ -1543,7 +1543,7 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] row_ row numbers of coefficients
     \param[in] val_ values of coefficients
-   */ 
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   AddInteractionColumn(int i, int nb, int* row_, T* val_)
@@ -1560,7 +1560,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j column number
     \param[in] val coefficient to add
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   AddInteraction(int i, int j, const T& val)
@@ -1577,11 +1577,11 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] col column numbers of coefficients
     \param[in] val values of coefficients
-   */
+  */
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		     const Vector<T,Vect_Full,Alloc1>& val)
+		    const Vector<T,Vect_Full,Alloc1>& val)
   {
     for (int j = 0; j < nb; j++)
       if (col(j) <= i)
@@ -1596,11 +1596,11 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] row row numbers of coefficients
     \param[in] val values of coefficients
-   */
+  */
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-			const Vector<T,Vect_Full,Alloc1>& val)
+		       const Vector<T,Vect_Full,Alloc1>& val)
   {
     IVect new_row(nb); Vector<T, Vect_Full, Alloc1> new_val(nb);
     nb = 0;
@@ -1722,7 +1722,7 @@ namespace Seldon
       k++;
     
     if ((k >= size_vec)||(this->ind(i)(k) != j))
-      {    
+      {
 	// the entry does not exist, we add a null value
 	AddInteraction(i, j, T(0));
       }
@@ -1744,7 +1744,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j new number of non-zero entries in the row
     \warning Data may be lost
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
   ReallocateRow(int i,int j)
@@ -1757,7 +1757,7 @@ namespace Seldon
   /*!
     \param[in] i column number
     \param[in] j new number of non-zero entries in the row
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
   ResizeRow(int i,int j)
@@ -1770,7 +1770,7 @@ namespace Seldon
   /*!
     \param[in] i first row number
     \param[in] j second row number
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
   SwapRow(int i,int j)
@@ -1783,7 +1783,7 @@ namespace Seldon
   /*!
     \param[in] i row number
     \param[in] new_index new column numbers
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
   ReplaceIndexRow(int i,IVect& new_index)
@@ -1796,7 +1796,7 @@ namespace Seldon
   /*!
     \param[in] i row number
     \return The number of non-zero entries of the row i
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline int Matrix<T, Prop, ArrayRowSymSparse, Allocator>::GetRowSize(int i)
     const
@@ -1819,7 +1819,7 @@ namespace Seldon
     \param[in] i column number
     \warning If you are using the methods AddInteraction,
     you don't need to call that method.
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::AssembleRow(int i)
   {
@@ -1832,7 +1832,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j column number
     \param[in] val coefficient to add
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
   AddInteraction(int i, int j, const T& val)
@@ -1849,7 +1849,7 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] col_ column numbers of coefficients
     \param[in] val_ values of coefficients
-   */ 
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
   AddInteractionRow(int i, int nb, int* col_, T* val_)
@@ -1867,7 +1867,7 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] row_ row numbers of coefficients
     \param[in] val_ values of coefficients
-   */ 
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
   AddInteractionColumn(int i, int nb, int* row_, T* val_)
@@ -1885,11 +1885,11 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] col column numbers of coefficients
     \param[in] val values of coefficients
-   */
+  */
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		     const Vector<T,Vect_Full,Alloc1>& val)
+		    const Vector<T,Vect_Full,Alloc1>& val)
   {
     IVect new_col(nb); Vector<T, Vect_Full, Alloc1> new_val(nb);
     nb = 0;
@@ -1911,11 +1911,11 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] row row numbers of coefficients
     \param[in] val values of coefficients
-   */
+  */
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-			const Vector<T,Vect_Full,Alloc1>& val)
+		       const Vector<T,Vect_Full,Alloc1>& val)
   {
     // symmetric matrix, row = column
     AddInteractionRow(i, nb, row, val);

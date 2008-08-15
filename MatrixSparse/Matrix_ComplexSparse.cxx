@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -437,7 +437,7 @@ namespace Seldon
 		       Vector<int, Storage2, Allocator2>& real_ind,
 		       Vector<T, Storage0, Allocator0>& imag_values,
 		       Vector<int, Storage1, Allocator1>& imag_ptr,
-		       Vector<int, Storage2, Allocator2>& imag_ind): 
+		       Vector<int, Storage2, Allocator2>& imag_ind):
     Matrix_Base<T, Allocator>(i, j)
   {
     

@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,7 +19,7 @@
 
 #ifndef SELDON_FILE_ITERATIVE_CG_CXX
 
-namespace Seldon 
+namespace Seldon
 {
 
   //! Solves a linear system by using Conjugate Gradient (CG)
@@ -30,15 +30,15 @@ namespace Seldon
     maximum number of iterations (determined by the iter object).
     return value of 1 indicates a failure to converge.
     
-    See M. R. Hestenes nd E. Stiefel, Methods of conjugate gradients for 
-    solving linear system, Journal of Research of the National Bureau of 
+    See M. R. Hestenes nd E. Stiefel, Methods of conjugate gradients for
+    solving linear system, Journal of Research of the National Bureau of
     Standards, 49(1952), pp. 409-436
     
-    \param[in] A  Real Symmetric Matrix 
+    \param[in] A  Real Symmetric Matrix
     \param[inout] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
-    \param[in] M Right preconditioner   
+    \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
   template <class Titer, class Matrix, class Vector, class Preconditioner>
@@ -67,35 +67,35 @@ namespace Seldon
     
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
-    while (! iter.Finished(r)) 
+    while (! iter.Finished(r))
       {
 	
 	// Preconditioning z = M^{-1} r
 	M.Solve(A, r, z);
 	
-	// rho = (conj(r),z)  
+	// rho = (conj(r),z)
 	rho = DotProdConj(r, z);
 	
 	if (rho == Complexe(0) )
 	  {
-	    iter.Fail(1, "Cg breakdown #1"); 
+	    iter.Fail(1, "Cg breakdown #1");
 	    break;
 	  }
 	
 	if (iter.First())
-	  Seldon::Copy(z, p);		  
-	else 
+	  Seldon::Copy(z, p);
+	else
 	  {
 	    // p = beta*p + z  where  beta = rho_i/rho_{i-1}
 	    beta = rho / rho_1;
 	    Mlt(beta, p);
-	    Seldon::Add(Complexe(1), z, p); 
+	    Seldon::Add(Complexe(1), z, p);
 	  }
 	
-	// matrix vector product q = A*p 
-	Mlt(A, p, q);  
+	// matrix vector product q = A*p
+	Mlt(A, p, q);
 	delta = DotProdConj(p, q);
-	if (delta == Complexe(0)) 
+	if (delta == Complexe(0))
 	  {
 	    iter.Fail(2, "Cg breakdown #2");
 	    break;

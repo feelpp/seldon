@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,7 +19,7 @@
 
 #ifndef SELDON_FILE_ITERATIVE_BICGSTABL_CXX
 
-namespace Seldon 
+namespace Seldon
 {
 
   //! Implements BiConjugate Gradient Stabilized (BICG-STAB(l))
@@ -32,16 +32,16 @@ namespace Seldon
     BICGSTAB(l) For Linear Equations Involving Unsymmetric Matrices With
     Complex Spectrum
     
-        \param[in] A  Complex General Matrix 
+    \param[in] A  Complex General Matrix
     \param[inout] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
-    \param[in] M Right preconditioner   
+    \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
   template <class Titer, class Matrix, class Vector, class Preconditioner>
   int BiCgStabl(Matrix& A, Vector& x, const Vector& b,
-	       Preconditioner& M, Iteration<Titer> & iter)
+		Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -84,7 +84,7 @@ namespace Seldon
     
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
-    while (! iter.Finished(r(0))) 
+    while (! iter.Finished(r(0)))
       {
 	rho_0 *= -omega;
 	
@@ -94,7 +94,7 @@ namespace Seldon
 	    rho_1 = DotProd(r(j), r0);
 	    if (rho_0 == zero)
 	      {
-		iter.Fail(1, "Bicgstabl breakdown #1"); 
+		iter.Fail(1, "Bicgstabl breakdown #1");
 		break;
 	      }
 	    beta = alpha*(rho_1/rho_0);
@@ -110,7 +110,7 @@ namespace Seldon
 	    sigma = DotProd(u(j+1), r0);
 	    if (sigma == zero)
 	      {
-		iter.Fail(2, "Bicgstabl Breakdown #2"); 
+		iter.Fail(2, "Bicgstabl Breakdown #2");
 		break;
 	      }
 	    alpha = rho_1/sigma;
@@ -135,42 +135,42 @@ namespace Seldon
 		    Seldon::Add(-tau(i,j), r(i), r(j));
 		  }
 	      }
-	    gamma(j) = DotProd(r(j), r(j)); 
+	    gamma(j) = DotProd(r(j), r(j));
 	    if (gamma(j) != zero)
 	      gamma_prime(j) = DotProd(r(0), r(j))/gamma(j);
 	  }
 	
-	  // gamma = tau-1 * gamma_prime
-	  gamma(l) = gamma_prime(l); omega = gamma(l);
-	  for (int j = l-1; j >= 1; j--)
-	    {
-	      sigma = zero;
-	      for (int i = j+1; i <= l; i++)
-		sigma += tau(j,i)*gamma(i);
+	// gamma = tau-1 * gamma_prime
+	gamma(l) = gamma_prime(l); omega = gamma(l);
+	for (int j = l-1; j >= 1; j--)
+	  {
+	    sigma = zero;
+	    for (int i = j+1; i <= l; i++)
+	      sigma += tau(j,i)*gamma(i);
 	      
-	      gamma(j) = gamma_prime(j)-sigma;
-	    }
+	    gamma(j) = gamma_prime(j)-sigma;
+	  }
 	  
-	  // gamma_twice=T*S*gamma
-	  for (int j = 1; j <= l-1; j++)
-	    {
-	      sigma = zero;
-	      for (int i = j+1; i <= l-1; i++)
-		sigma += tau(j,i)*gamma(i+1);
+	// gamma_twice=T*S*gamma
+	for (int j = 1; j <= l-1; j++)
+	  {
+	    sigma = zero;
+	    for (int i = j+1; i <= l-1; i++)
+	      sigma += tau(j,i)*gamma(i+1);
 	      
-	      gamma_twice(j) = gamma(j+1)+sigma;
-	    }
+	    gamma_twice(j) = gamma(j+1)+sigma;
+	  }
 	  
-	  // update
-	  Seldon::Add(gamma(1), r(0), x);
-	  Seldon::Add(-gamma_prime(l), r(l), r(0));
-	  Seldon::Add(-gamma(l), u(l), u(0));
-	  for (int j = 1;j <= l-1; j++)
-	    {
-	      Seldon::Add(-gamma(j), u(j), u(0));
-	      Seldon::Add(gamma_twice(j), r(j), x);
-	      Seldon::Add(-gamma_prime(j), r(j), r(0));
-	    }
+	// update
+	Seldon::Add(gamma(1), r(0), x);
+	Seldon::Add(-gamma_prime(l), r(l), r(0));
+	Seldon::Add(-gamma(l), u(l), u(0));
+	for (int j = 1;j <= l-1; j++)
+	  {
+	    Seldon::Add(-gamma(j), u(j), u(0));
+	    Seldon::Add(gamma_twice(j), r(j), x);
+	    Seldon::Add(-gamma_prime(j), r(j), r(0));
+	  }
       }
     // change of coordinates (right preconditioning)
     Seldon::Copy(x,q); M.Solve(A, q, x);

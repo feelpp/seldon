@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,8 +19,8 @@
 
 #ifndef SELDON_FILE_ITERATIVE_TFQMR_CXX
 
-namespace Seldon 
-{     
+namespace Seldon
+{
   
   //! Solves a linear system by using Transpose Free Quasi-Minimal Residual
   /*!
@@ -30,14 +30,14 @@ namespace Seldon
     maximum number of iterations (determined by the iter object).
     return value of 1 indicates a failure to converge.
     
-    See: R. W. Freund, A Transpose-Free Quasi-Minimal Residual algorithm for 
+    See: R. W. Freund, A Transpose-Free Quasi-Minimal Residual algorithm for
     non-Hermitian linear system. SIAM J. on Sci. Comp. 14(1993), pp. 470-482
     
-        \param[in] A  Complex General Matrix 
+    \param[in] A  Complex General Matrix
     \param[inout] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
-    \param[in] M Right preconditioner   
+    \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
   template <class Titer, class Matrix, class Vector, class Preconditioner>
@@ -102,18 +102,18 @@ namespace Seldon
     
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are reached
-    for (;;) 
+    for (;;)
       {
 	// 9. 10. 11.
 	// sigma=dot(rtilde,v)
-	// alpha=rho/sigma 
+	// alpha=rho/sigma
 	// y2k=y(2k-1)-alpha*v
 	sigma = DotProd(rtilde, v);
 	
-	if (sigma == Complexe(0)) 
-	  { 
-	    iter.Fail(1, "Tfqmr breakdown: sigma=0"); 
-	    break; 
+	if (sigma == Complexe(0))
+	  {
+	    iter.Fail(1, "Tfqmr breakdown: sigma=0");
+	    break;
 	  }
 	alpha = rho / sigma;
 	
@@ -125,27 +125,27 @@ namespace Seldon
 	Seldon::Copy(y0, h);
 	Mlt(A, h, tmp);
 	M.Solve(A, tmp, h);
-	//split the loop of "for m = 2k-1, 2k" 
+	//split the loop of "for m = 2k-1, 2k"
 	
 	//The first one
 	// 13. w = w-alpha*M^{-1} A y0
 	//w = w - alpha * g;
 	Seldon::Add(-alpha, g, w);
 	// 18. d=y0+((theta0^2)*eta0/alpha)*d         //need check breakdown
-	if (alpha == Complexe(0)) 
-	  { 
-	    iter.Fail(2, "Tfqmr breakdown: alpha=0"); 
-	    break; 
+	if (alpha == Complexe(0))
+	  {
+	    iter.Fail(2, "Tfqmr breakdown: alpha=0");
+	    break;
 	  }
 	//d = y1 + ( theta * theta * eta / alpha ) * d;
 	Mlt(theta * theta * eta / alpha,d);
 	Seldon::Add(Complexe(1), y1, d);
 	
 	// 14. theta=||w||_2/tau0       //need check breakdown
-	if (tau == Titer(0)) 
-	  { 
-	    iter.Fail(3, "Tfqmr breakdown: tau=0"); 
-	    break; 
+	if (tau == Titer(0))
+	  {
+	    iter.Fail(3, "Tfqmr breakdown: tau=0");
+	    break;
 	  }
 	theta  = Norm2(w) / tau;
 	
@@ -164,7 +164,7 @@ namespace Seldon
 	kappa = tau * sqrt( 2.* (iter.GetNumberIteration()+1) );
 	
 	// 21. check stopping criterion
-	if ( iter.Finished(kappa) ) 
+	if ( iter.Finished(kappa) )
 	  {
 	    break;
 	  }
@@ -180,10 +180,10 @@ namespace Seldon
 	Mlt(theta * theta * eta / alpha,d);
 	Seldon::Add(Complexe(1), y0, d);
 	// 14. theta=||w||_2/tau0
-	if (tau == Titer(0)) 
-	  { 
-	    iter.Fail(4, "Tfqmr breakdown: tau=0"); 
-	    break; 
+	if (tau == Titer(0))
+	  {
+	    iter.Fail(4, "Tfqmr breakdown: tau=0");
+	    break;
 	  }
 	theta = Norm2(w) / tau;
 	
@@ -203,20 +203,20 @@ namespace Seldon
 	kappa = tau * sqrt(2.* (iter.GetNumberIteration()+1)  + 1.);
 	
 	// 21. check stopping criterion
-	if ( iter.Finished(kappa) ) 
+	if ( iter.Finished(kappa) )
 	  {
 	    break;
-	  }    
+	  }
 	
 	// 22. rho = dot(rtilde,w)
 	// 23. beta = rho/rho0                     //need check breakdown
 	
 	rho0 = rho;
 	rho = DotProd(rtilde, w);
-	if (rho0 == Complexe(0)) 
-	  { 
-	    iter.Fail(5, "tfqmr breakdown: beta=0"); 
-	    break; 
+	if (rho0 == Complexe(0))
+	  {
+	    iter.Fail(5, "tfqmr breakdown: beta=0");
+	    break;
 	  }
 	beta = rho/rho0;
 	

@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -464,7 +464,7 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDARIES
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_Symmetric::operator()", 
+      throw WrongRow("Matrix_Symmetric::operator()",
 		     string("Index should be in [0, ") + to_str(this->m_-1)
 		     + "], but is equal to " + to_str(i) + ".");
     if (j < 0 || j >= this->n_)
@@ -996,7 +996,7 @@ namespace Seldon
                     string("Output operation failed.")
 		    + string(" The intput file may have been removed")
 		    + " or may not contain enough data.");
-#endif    
+#endif
 
   }
 

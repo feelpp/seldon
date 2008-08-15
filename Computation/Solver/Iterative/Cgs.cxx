@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,12 +19,12 @@
 
 #ifndef SELDON_FILE_ITERATIVE_CGS_CXX
 
-namespace Seldon 
+namespace Seldon
 {
   
   //! Solves linear system using Conjugate Gradient Squared (CGS)
   /*!
-    Solves the unsymmetric linear system Ax = b 
+    Solves the unsymmetric linear system Ax = b
     using the Conjugate Gradient Squared method.
     
     return value of 0 indicates convergence within the
@@ -34,13 +34,13 @@ namespace Seldon
     See: P. Sonneveld, CGS, a fast Lanczos-type solver for nonsymmetric linear
     systems, SIAM, J.Sci. Statist. Comput., 10(1989), pp. 36-52
     
-    \param[in] A Complex General Matrix 
+    \param[in] A Complex General Matrix
     \param[inout] x Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
-    \param[in] M Right preconditioner   
+    \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
-  */  
+  */
   template <class Titer, class Matrix, class Vector, class Preconditioner>
   int Cgs(Matrix& A, Vector& x, const Vector& b,
 	  Preconditioner& M, Iteration<Titer> & iter)
@@ -70,22 +70,22 @@ namespace Seldon
     
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are reached
-    while (! iter.Finished(r)) 
+    while (! iter.Finished(r))
       {
 	rho_1 = DotProd(rtilde, r);
 	
-	if (rho_1 == Complexe(0)) 
+	if (rho_1 == Complexe(0))
 	  {
 	    iter.Fail(1, "Cgs breakdown #1");
 	    break;
 	  }
 	  
-	if (iter.First()) 
+	if (iter.First())
 	  {
 	    Seldon::Copy(r, u);
 	    Seldon::Copy(u, p);
-	  } 
-	else 
+	  }
+	else
 	  {
 	    // u = r + beta*q
 	    // p = beta*(beta*p +q) + u  where beta = rho_i/rho_{i-1}
@@ -104,13 +104,13 @@ namespace Seldon
 	// matrix vector product vhat = A*phat
 	Mlt(A, phat, vhat); ++iter;
 	delta = DotProd(rtilde, vhat);
-	if (delta == Complexe(0)) 
+	if (delta == Complexe(0))
 	  {
 	    iter.Fail(2, "Cgs breakdown #2");
 	    break;
 	  }
 	// q = u-alpha*vhat  where alpha = rho_i/(rtilde,vhat)
-	alpha = rho_1 /delta; 
+	alpha = rho_1 /delta;
 	Seldon::Copy(u,q);
 	Seldon::Add(-alpha, vhat, q);
 	

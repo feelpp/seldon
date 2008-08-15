@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -36,14 +36,14 @@ namespace Seldon
     type_ssor = 2 forward sweep
     type_ssor = 3 backward sweep
     type_ssor = 0 forward and backward sweep
-   */
+  */
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
   void SOR(const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
-	    Vector<T2, Storage2, Allocator2>& X,
-	    const Vector<T1, Storage1, Allocator1>& B,
-	    const T3& omega, int iter, int type_ssor = 2)
+	   Vector<T2, Storage2, Allocator2>& X,
+	   const Vector<T1, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor = 2)
   {
     T1 temp(0);
     
@@ -100,7 +100,7 @@ namespace Seldon
     type_ssor = 2 forward sweep
     type_ssor = 3 backward sweep
     type_ssor = 0 forward and backward sweep
-   */
+  */
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
@@ -170,7 +170,7 @@ namespace Seldon
     type_ssor = 2 forward sweep
     type_ssor = 3 backward sweep
     type_ssor = 0 forward and backward sweep
-   */
+  */
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
@@ -302,7 +302,7 @@ namespace Seldon
     type_ssor = 2 forward sweep
     type_ssor = 3 backward sweep
     type_ssor = 0 forward and backward sweep
-   */
+  */
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
@@ -431,7 +431,7 @@ namespace Seldon
     type_ssor = 2 forward sweep
     type_ssor = 3 backward sweep
     type_ssor = 0 forward and backward sweep
-   */
+  */
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
@@ -502,7 +502,7 @@ namespace Seldon
     type_ssor = 2 forward sweep
     type_ssor = 3 backward sweep
     type_ssor = 0 forward and backward sweep
-   */
+  */
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
@@ -583,7 +583,7 @@ namespace Seldon
     type_ssor = 2 forward sweep
     type_ssor = 3 backward sweep
     type_ssor = 0 forward and backward sweep
-   */
+  */
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
@@ -735,7 +735,7 @@ namespace Seldon
 		  if (p == j)
 		    ajj += val;
 		  else
-		  temp += val*X(p);
+		    temp += val*X(p);
 		}
 	      
 	      for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
@@ -749,7 +749,7 @@ namespace Seldon
 		}
 	      X(j) = (X(j)-temp)*omega/ajj;
 	    }
-	}    
+	}
   }
   
   
@@ -760,7 +760,7 @@ namespace Seldon
     type_ssor = 2 forward sweep
     type_ssor = 3 backward sweep
     type_ssor = 0 forward and backward sweep
-   */
+  */
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
@@ -902,7 +902,7 @@ namespace Seldon
 		  if (p==j)
 		    ajj += val;
 		  else
-		  temp += val*X(p);
+		    temp += val*X(p);
 		}
 	      for (int k = 0; k < A.GetImagRowSize(j); k++)
 		{
@@ -915,7 +915,7 @@ namespace Seldon
 		}
 	      X(j) = (X(j)-temp)*omega/ajj;
 	    }
-	}    
+	}
   }
 
 } // end namespace

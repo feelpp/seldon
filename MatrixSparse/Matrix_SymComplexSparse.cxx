@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -77,9 +77,9 @@ namespace Seldon
     non-zero elements in the imaginary part of the matrix.
     \param i number of rows.
     \param j number of columns.
-    \param real_nz number of non-zero elements that are stored 
+    \param real_nz number of non-zero elements that are stored
     for the real part.
-    \param imag_nz number of non-zero elements that are stored 
+    \param imag_nz number of non-zero elements that are stored
     for the imaginary part.
     \note Matrix values are not initialized. Indices of non-zero entries
     are not initialized either.
@@ -435,7 +435,7 @@ namespace Seldon
 			  Vector<int, Storage2, Allocator2>& real_ind,
 			  Vector<T, Storage0, Allocator0>& imag_values,
 			  Vector<int, Storage1, Allocator1>& imag_ptr,
-			  Vector<int, Storage2, Allocator2>& imag_ind): 
+			  Vector<int, Storage2, Allocator2>& imag_ind):
     Matrix_Base<T, Allocator>(i, j)
   {
     real_nz_ = real_values.GetLength();

@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -72,7 +72,7 @@ namespace Seldon
   ~Matrix_ArrayComplexSparse()
   {
     this->m_ = 0;
-    this->n_ = 0; 
+    this->n_ = 0;
   }
   
   
@@ -95,10 +95,10 @@ namespace Seldon
   //! Returns used memory in bytes
   template <class T, class Prop, class Storage, class Allocator>
   inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::GetMemorySize() const
-  { 
+  {
     int size = sizeof(int)*(12 + 2*ind_real.GetM() + 2*val_real.GetM()
-			    + 2*ind_imag.GetM() + 2*val_imag.GetM() + 
-			    GetRealDataSize() + GetImagDataSize()) + 
+			    + 2*ind_imag.GetM() + 2*val_imag.GetM() +
+			    GetRealDataSize() + GetImagDataSize()) +
       sizeof(T)*(GetRealDataSize()+GetImagDataSize());
     
     return size;
@@ -193,7 +193,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j new size of row
     \warning data may be lost
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ReallocateRealRow(int i, int j)
@@ -211,7 +211,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j new size of row
     \warning data may be lost
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ReallocateImagRow(int i, int j)
@@ -229,7 +229,7 @@ namespace Seldon
     Data is kept
     \param[in] i row number
     \param[in] j new size of row
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ResizeRealRow(int i, int j)
@@ -260,7 +260,7 @@ namespace Seldon
     Data is kept
     \param[in] i row number
     \param[in] j new size of row
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ResizeImagRow(int i, int j)
@@ -289,7 +289,7 @@ namespace Seldon
   //! real part of row i is removed
   /*!
     \param[in] i row number
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ClearRealRow(int i)
@@ -306,7 +306,7 @@ namespace Seldon
   //! imaginary part of row i is removed
   /*!
     \param[in] i row number
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ClearImagRow(int i)
@@ -324,7 +324,7 @@ namespace Seldon
   /*!
     \param[in] i first row number
     \param[in] i_ second row number
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   SwapRealRow(int i,int i_)
@@ -347,7 +347,7 @@ namespace Seldon
   /*!
     \param[in] i first row number
     \param[in] i_ second row number
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   SwapImagRow(int i,int i_)
@@ -371,7 +371,7 @@ namespace Seldon
     useful method when a permutation is applied to a matrix
     \param[in] i row number
     \param[in] new_index column numbers
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ReplaceIndexRealRow(int i, IVect& new_index)
@@ -387,7 +387,7 @@ namespace Seldon
     useful method when a permutation is applied to a matrix
     \param[in] i row number
     \param[in] new_index column numbers
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ReplaceIndexImagRow(int i, IVect& new_index)
@@ -495,7 +495,7 @@ namespace Seldon
   /*!
     \param[in] i row number
     \return the number of non-zero entries in row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   GetRealRowSize(int i) const
@@ -508,7 +508,7 @@ namespace Seldon
   /*!
     \param[in] i row number
     \return the number of non-zero entries in row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   GetImagRowSize(int i) const
@@ -522,7 +522,7 @@ namespace Seldon
     \param[in] i row number
     \return the array of column indices of non-zero entries
     of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline int* Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   GetRealInd(int i) const
@@ -535,7 +535,7 @@ namespace Seldon
   /*!
     \param[in] i row number
     \return The array of values of non-zero entries of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator> inline
   typename Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::pointer
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::GetRealData(int i)
@@ -550,7 +550,7 @@ namespace Seldon
     \param[in] i row number
     \return the array of column indices of non-zero entries
     of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline int* Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::GetImagInd(int i) const
   {
@@ -562,7 +562,7 @@ namespace Seldon
   /*!
     \param[in] i row number
     \return The array of values of non-zero entries of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator> inline
   typename Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::pointer
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::GetImagData(int i)
@@ -616,7 +616,7 @@ namespace Seldon
       }
     
     for (k = 0; k < ind_imag(a).GetM(); k++)
-      {    
+      {
 	if (ind_imag(a)(k)==b)
 	  res += complex<T>(0.0,val_imag(a)(k));
       }
@@ -630,9 +630,9 @@ namespace Seldon
     \param[in] i row number
     \param[in] j local number
     \return j-th non-zero entry of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename 
+  inline typename
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::const_reference
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ValueReal(int i, int j) const
@@ -659,7 +659,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j local number
     \return j-th non-zero entry of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline typename
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::reference
@@ -687,7 +687,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j local number
     \return column number of j-th non-zero entry of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   IndexReal(int i, int j) const
@@ -714,7 +714,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j local number
     \return column number of j-th non-zero entry of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline int& Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   IndexReal(int i, int j)
@@ -741,7 +741,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j local number
     \return j-th non-zero entry of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline typename Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   const_reference Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
@@ -769,7 +769,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j local number
     \return j-th non-zero entry of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline typename Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   reference Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
@@ -797,7 +797,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j local number
     \return column number of j-th non-zero entry of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   IndexImag(int i, int j) const
@@ -824,7 +824,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j local number
     \return column number of j-th non-zero entry of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline int& Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   IndexImag(int i, int j)
@@ -850,7 +850,7 @@ namespace Seldon
   /*!
     \param[in] i row number
     \return the array of column indices of non-zero entries of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline const IVect& Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   GetRealIndexRow(int i) const
@@ -863,7 +863,7 @@ namespace Seldon
   /*!
     \param[in] i row number
     \return the array of column indices of non-zero entries of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline const IVect& Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   GetImagIndexRow(int i) const
@@ -876,7 +876,7 @@ namespace Seldon
   /*!
     \param[in] i row number
     \return The array of values of non-zero entries of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline const Vector<T,Vect_Full,Allocator>&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
@@ -890,9 +890,9 @@ namespace Seldon
   /*!
     \param[in] i row number
     \return The array of values of non-zero entries of row i
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
-  inline const Vector<T,Vect_Full,Allocator>& 
+  inline const Vector<T,Vect_Full,Allocator>&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   GetImagValueRow(int i) const
   {
@@ -905,7 +905,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j column number
     \param[in] a value to add
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   AddRealInteraction(int i, int j, const T& a)
@@ -948,13 +948,13 @@ namespace Seldon
   
   //! coefficients are added in the row of a matrix (real part)
   /*!
-    The method sorts given coefficients and adds them 
+    The method sorts given coefficients and adds them
     in the correct positions
     \param[in] i row number
     \param[in] nb_interac number of coefficients to add
     \param[in] col_interac column numbers
     \param[in] val_interac coefficients
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   template<class Storage1,class Allocator1>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
@@ -1023,7 +1023,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j column number
     \param[in] a value to add
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   AddImagInteraction(int i, int j, const T& a)
@@ -1066,13 +1066,13 @@ namespace Seldon
   
   //! coefficients are added in the row of a matrix (imaginary part)
   /*!
-    The method sorts given coefficients and adds them 
+    The method sorts given coefficients and adds them
     in the correct positions
     \param[in] i row number
     \param[in] nb_interac number of coefficients to add
     \param[in] col_interac column numbers
     \param[in] val_interac coefficients
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   template<class Storage1,class Allocator1>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
@@ -1182,13 +1182,13 @@ namespace Seldon
   }
   
   
-  //! Assembles the matrix 
+  //! Assembles the matrix
   /*!
     All the row numbers are sorted
     If same row numbers exist, values are added
     \warning If you are using the methods AddInteraction/AddInteractions,
     you don't need to call that method.
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::Assemble()
   {
@@ -1205,7 +1205,7 @@ namespace Seldon
     \param[in] i row number
     \warning If you are using the methods AddInteraction/AddInteractions,
     you don't need to call that method.
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   AssembleRealRow(int i)
@@ -1221,7 +1221,7 @@ namespace Seldon
     \param[in] i row number
     \warning If you are using the methods AddInteraction/AddInteractions,
     you don't need to call that method.
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   AssembleImagRow(int i)
@@ -1289,9 +1289,9 @@ namespace Seldon
   
   
   //! Non-zero entries are set to a given value x
-  template <class T, class Prop, class Storage, class Allocator> 
+  template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
-  inline Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>& 
+  inline Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::operator=
   (const complex<T0>& x)
   {
@@ -1346,7 +1346,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j column number
     \param[in] val coefficient to add
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::
   AddInteraction(int i, int j, const complex<T>& val)
@@ -1367,7 +1367,7 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] col column numbers of coefficients
     \param[in] val values of coefficients
-   */
+  */
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
@@ -1407,7 +1407,7 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] row row numbers of coefficients
     \param[in] val values of coefficients
-   */
+  */
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
@@ -1514,7 +1514,7 @@ namespace Seldon
     \param[in] i row number
     \param[in] j column number
     \param[in] val coefficient to add
-   */
+  */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::
   AddInteraction(int i, int j, const complex<T>& val)
@@ -1522,7 +1522,7 @@ namespace Seldon
     if (i <= j)
       {
 	if (real(val) != T(0))
-	  Matrix_ArrayComplexSparse<T, Prop, 
+	  Matrix_ArrayComplexSparse<T, Prop,
 	    ArrayRowSymComplexSparse, Allocator>::
 	    AddRealInteraction(i, j, real(val));
 	
@@ -1540,7 +1540,7 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] col column numbers of coefficients
     \param[in] val values of coefficients
-   */
+  */
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
@@ -1581,11 +1581,11 @@ namespace Seldon
     \param[in] nb number of coefficients to add
     \param[in] row row numbers of coefficients
     \param[in] val values of coefficients
-   */
+  */
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-			const Vector<complex<T>, Vect_Full, Alloc1>& val)
+		       const Vector<complex<T>, Vect_Full, Alloc1>& val)
   {
     // symmetric matrix, row = column
     AddInteractionRow(i, nb, row, val);

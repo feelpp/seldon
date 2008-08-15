@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,7 +19,7 @@
 
 #ifndef SELDON_FILE_ITERATIVE_LSQR_CXX
 
-namespace Seldon 
+namespace Seldon
 {
 
   //! Solves a linear system by using Least Squares (LSQR)
@@ -30,11 +30,11 @@ namespace Seldon
     maximum number of iterations (determined by the iter object).
     return value of 1 indicates a failure to converge.
     
-    \param[in] A  Complex General Matrix 
+    \param[in] A  Complex General Matrix
     \param[inout] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
-    \param[in] M Right preconditioner   
+    \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
   template <class Titer, class Matrix, class Vector, class Preconditioner>
@@ -76,7 +76,7 @@ namespace Seldon
     
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
-    while (! iter.Finished(rnorm)) 
+    while (! iter.Finished(rnorm))
       {
 	// matrix vector product u1 = A*v
 	Mlt(A, v, u1);
@@ -85,7 +85,7 @@ namespace Seldon
 	beta = Norm2(u1);
 	if (beta == Complexe(0) )
 	  {
-	    iter.Fail(1, "Lsqr breakdown #1"); 
+	    iter.Fail(1, "Lsqr breakdown #1");
 	    break;
 	  }
 	tmp = 1.0/beta; Mlt(tmp, u1);
@@ -97,7 +97,7 @@ namespace Seldon
 	alpha = Norm2(v1);
 	if (alpha == Complexe(0) )
 	  {
-	    iter.Fail(2, "Lsqr breakdown #2"); 
+	    iter.Fail(2, "Lsqr breakdown #2");
 	    break;
 	  }
 	tmp = 1.0/alpha; Mlt(tmp, v1);
@@ -105,7 +105,7 @@ namespace Seldon
 	rho = sqrt(rho_bar*rho_bar+beta*beta);
 	if (rho == Complexe(0) )
 	  {
-	    iter.Fail(3, "Lsqr breakdown #3"); 
+	    iter.Fail(3, "Lsqr breakdown #3");
 	    break;
 	  }
 	

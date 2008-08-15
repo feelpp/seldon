@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,9 +22,9 @@
 // including Mumps headers
 extern "C"
 {
-  #include "dmumps_c.h"
-  #include "zmumps_c.h"
-  #include "mpi.h"
+#include "dmumps_c.h"
+#include "zmumps_c.h"
+#include "mpi.h"
 }
 
 namespace Seldon
@@ -90,7 +90,7 @@ namespace Seldon
 			 bool keep_matrix = false);
     
     template<class Prop1, class Storage1, class Allocator1,
-	     class Prop2, class Storage2, class Allocator2> 
+	     class Prop2, class Storage2, class Allocator2>
     void GetSchurMatrix(Matrix<T,Prop1,Storage1,Allocator1>& mat,
 			const IVect& num,
 			Matrix<T,Prop2,Storage2,Allocator2> & mat_schur,
@@ -99,7 +99,7 @@ namespace Seldon
     template<class Allocator2>
     void Solve(Vector<T,Vect_Full,Allocator2>& x);
     
-  };  
+  };
   
 }
 

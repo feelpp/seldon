@@ -4,12 +4,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -1947,7 +1947,7 @@ namespace Seldon
 			      Prop1, ColSymPacked, Allocator1>& A,
 			      Matrix<complex<float>,
 			      Prop2, ColSymPacked, Allocator2>& B,
-			      Vector<complex<float>, 
+			      Vector<complex<float>,
 			      Vect_Full, Allocator3>& alpha,
 			      Vector<complex<float>,
 			      Vect_Full, Allocator4>& beta,
@@ -2035,7 +2035,7 @@ namespace Seldon
 			      Prop1, ColSymPacked, Allocator1>& A,
 			      Matrix<complex<double>,
 			      Prop2, ColSymPacked, Allocator2>& B,
-			      Vector<complex<double>, 
+			      Vector<complex<double>,
 			      Vect_Full, Allocator3>& alpha,
 			      Vector<complex<double>,
 			      Vect_Full, Allocator4>& beta,
@@ -2255,13 +2255,13 @@ namespace Seldon
     
     sggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha_real.GetData(), alpha_imag.GetData(), beta.GetData(),
-	   A.GetData(), &n, A.GetData(), &n, 
+	   A.GetData(), &n, A.GetData(), &n,
 	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
   }
   
   
   template<class Prop1, class Prop2, class Prop3, class Allocator1,
-	     class Allocator2, class Allocator3, class Allocator4,
+	   class Allocator2, class Allocator3, class Allocator4,
 	   class Allocator5, class Allocator6>
   void GetEigenvaluesEigenvec(Matrix<float, Prop1, RowMajor, Allocator1>& A,
 			      Matrix<float, Prop2, RowMajor, Allocator2>& B,
@@ -2277,7 +2277,7 @@ namespace Seldon
     
     sggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha_real.GetData(), alpha_imag.GetData(), beta.GetData(),
-	   V.GetData(), &n, V.GetData(), &n, 
+	   V.GetData(), &n, V.GetData(), &n,
 	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
     
     TransposeSquareMatrix(V);
@@ -2362,13 +2362,13 @@ namespace Seldon
     
     dggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha_real.GetData(), alpha_imag.GetData(), beta.GetData(),
-	   A.GetData(), &n, A.GetData(), &n, 
+	   A.GetData(), &n, A.GetData(), &n,
 	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
   }
   
   
   template<class Prop1, class Prop2, class Prop3, class Allocator1,
-	     class Allocator2, class Allocator3, class Allocator4,
+	   class Allocator2, class Allocator3, class Allocator4,
 	   class Allocator5, class Allocator6>
   void GetEigenvaluesEigenvec(Matrix<double, Prop1, RowMajor, Allocator1>& A,
 			      Matrix<double, Prop2, RowMajor, Allocator2>& B,
@@ -2384,7 +2384,7 @@ namespace Seldon
     
     dggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha_real.GetData(), alpha_imag.GetData(), beta.GetData(),
-	   V.GetData(), &n, V.GetData(), &n, 
+	   V.GetData(), &n, V.GetData(), &n,
 	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
     
     TransposeSquareMatrix(V);
@@ -2472,7 +2472,7 @@ namespace Seldon
     
     sggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha_real.GetData(), alpha_imag.GetData(), beta.GetData(),
-	   A.GetData(), &n, A.GetData(), &n, 
+	   A.GetData(), &n, A.GetData(), &n,
 	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
   }
   
@@ -2496,7 +2496,7 @@ namespace Seldon
     
     sggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(),
 	   &n, alpha_real.GetData(), alpha_imag.GetData(),
-	   beta.GetData(), V.GetData(), &n, V.GetData(), &n, 
+	   beta.GetData(), V.GetData(), &n, V.GetData(), &n,
 	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
     
   }
@@ -2540,7 +2540,7 @@ namespace Seldon
     int n = A.GetM();
     char jobvl('N'), jobvr('V'); int lwork = 2*n;
     Vector<complex<float> > work(lwork);
-    Vector<float> rwork(8*n); 
+    Vector<float> rwork(8*n);
     cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(),
 	   &n, alpha.GetData(),
 	   beta.GetData(), V.GetData(), &n, V.GetData(), &n, work.GetData(),
@@ -2564,7 +2564,7 @@ namespace Seldon
     
     dggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha_real.GetData(), alpha_imag.GetData(), beta.GetData(),
-	   A.GetData(), &n, A.GetData(), &n, 
+	   A.GetData(), &n, A.GetData(), &n,
 	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
   }
   
@@ -2588,7 +2588,7 @@ namespace Seldon
     
     dggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(),
 	   &n, alpha_real.GetData(), alpha_imag.GetData(),
-	   beta.GetData(), V.GetData(), &n, V.GetData(), &n, 
+	   beta.GetData(), V.GetData(), &n, V.GetData(), &n,
 	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
     
   }
@@ -2632,7 +2632,7 @@ namespace Seldon
     int n = A.GetM();
     char jobvl('N'), jobvr('V'); int lwork = 2*n;
     Vector<complex<double> > work(lwork);
-    Vector<double> rwork(8*n); 
+    Vector<double> rwork(8*n);
     zggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(),
 	   &n, alpha.GetData(),
 	   beta.GetData(), V.GetData(), &n, V.GetData(), &n, work.GetData(),
@@ -2910,7 +2910,7 @@ namespace Seldon
     
     // R_temp = Dtmp = R + Z1*Y*Z2';
     MltAdd(one, SeldonNoTrans, Y, SeldonConjTrans, Z2, zero, F);
-    MltAdd(one, Z1, F, zero, E); 
+    MltAdd(one, Z1, F, zero, E);
     
   }
 

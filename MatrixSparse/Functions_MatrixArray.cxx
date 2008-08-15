@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -46,10 +46,10 @@ namespace Seldon
   
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAdd(const T0& alpha, const Matrix<T1, Symmetric, 
-	      ArrayRowSymComplexSparse, Allocator1>& A, 
+  void MltAdd(const T0& alpha, const Matrix<T1, Symmetric,
+	      ArrayRowSymComplexSparse, Allocator1>& A,
 	      const Vector<T2, Vect_Full, Allocator2>& B,
-	      const T4& beta, 
+	      const T4& beta,
 	      Vector<T3, Vect_Full, Allocator3>& C)
   {
     if (beta == T4(0))
@@ -129,11 +129,11 @@ namespace Seldon
   
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAdd(const T0& alpha, 
-	      const class_SeldonNoTrans& Trans, const Matrix<T1, Symmetric, 
-	      ArrayRowSymComplexSparse, Allocator1>& A, 
+  void MltAdd(const T0& alpha,
+	      const class_SeldonNoTrans& Trans, const Matrix<T1, Symmetric,
+	      ArrayRowSymComplexSparse, Allocator1>& A,
 	      const Vector<T2, Vect_Full, Allocator2>& B,
-	      const T4& beta, 
+	      const T4& beta,
 	      Vector<T3, Vect_Full, Allocator3>& C)
   {
     MltAdd(alpha, A, B, beta, C);
@@ -142,11 +142,11 @@ namespace Seldon
   
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAdd(const T0& alpha, 
-	      const class_SeldonTrans& Trans, const Matrix<T1, Symmetric, 
-	      ArrayRowSymComplexSparse, Allocator1>& A, 
+  void MltAdd(const T0& alpha,
+	      const class_SeldonTrans& Trans, const Matrix<T1, Symmetric,
+	      ArrayRowSymComplexSparse, Allocator1>& A,
 	      const Vector<T2, Vect_Full, Allocator2>& B,
-	      const T4& beta, 
+	      const T4& beta,
 	      Vector<T3, Vect_Full, Allocator3>& C)
   {
     MltAdd(alpha, A, B, beta, C);
@@ -155,11 +155,11 @@ namespace Seldon
   
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAdd(const T0& alpha, 
-	      const class_SeldonConjTrans& Trans, const Matrix<T1, Symmetric, 
-	      ArrayRowSymComplexSparse, Allocator1>& A, 
+  void MltAdd(const T0& alpha,
+	      const class_SeldonConjTrans& Trans, const Matrix<T1, Symmetric,
+	      ArrayRowSymComplexSparse, Allocator1>& A,
 	      const Vector<T2, Vect_Full, Allocator2>& B,
-	      const T4& beta, 
+	      const T4& beta,
 	      Vector<T3, Vect_Full, Allocator3>& C)
   {
     if (beta == T4(0))
@@ -242,7 +242,7 @@ namespace Seldon
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha, const Matrix<T1, General,
-	      ArrayRowComplexSparse, Allocator1>& A, 
+	      ArrayRowComplexSparse, Allocator1>& A,
 	      const Vector<T2, Vect_Full, Allocator2>& B,
 	      const T4& beta,
 	      Vector<T3, Vect_Full, Allocator3>& C)
@@ -299,9 +299,9 @@ namespace Seldon
   
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAdd(const T0& alpha, 
+  void MltAdd(const T0& alpha,
 	      const class_SeldonNoTrans& Trans, const Matrix<T1, General,
-	      ArrayRowComplexSparse, Allocator1>& A, 
+	      ArrayRowComplexSparse, Allocator1>& A,
 	      const Vector<T2, Vect_Full, Allocator2>& B,
 	      const T4& beta,
 	      Vector<T3, Vect_Full, Allocator3>& C)
@@ -312,9 +312,9 @@ namespace Seldon
   
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAdd(const T0& alpha, 
+  void MltAdd(const T0& alpha,
 	      const class_SeldonTrans& Trans, const Matrix<T1, General,
-	      ArrayRowComplexSparse, Allocator1>& A, 
+	      ArrayRowComplexSparse, Allocator1>& A,
 	      const Vector<T2, Vect_Full, Allocator2>& B,
 	      const T4& beta,
 	      Vector<T3, Vect_Full, Allocator3>& C)
@@ -371,9 +371,9 @@ namespace Seldon
   
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAdd(const T0& alpha, 
+  void MltAdd(const T0& alpha,
 	      const class_SeldonConjTrans& Trans, const Matrix<T1, General,
-	      ArrayRowComplexSparse, Allocator1>& A, 
+	      ArrayRowComplexSparse, Allocator1>& A,
 	      const Vector<T2, Vect_Full, Allocator2>& B,
 	      const T4& beta,
 	      Vector<T3, Vect_Full, Allocator3>& C)
@@ -433,8 +433,8 @@ namespace Seldon
   
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAdd(const T0& alpha, const Matrix<T1, Symmetric, 
-	      ArrayRowSymSparse, Allocator1>& A, 
+  void MltAdd(const T0& alpha, const Matrix<T1, Symmetric,
+	      ArrayRowSymSparse, Allocator1>& A,
 	      const Vector<T2, Vect_Full, Allocator2>& B,
 	      const T4& beta,
 	      Vector<T3, Vect_Full, Allocator3>& C)
@@ -498,9 +498,9 @@ namespace Seldon
   
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAdd(const T0& alpha, 
-	      const class_SeldonNoTrans& Trans, const Matrix<T1, Symmetric, 
-	      ArrayRowSymSparse, Allocator1>& A, 
+  void MltAdd(const T0& alpha,
+	      const class_SeldonNoTrans& Trans, const Matrix<T1, Symmetric,
+	      ArrayRowSymSparse, Allocator1>& A,
 	      const Vector<T2, Vect_Full, Allocator2>& B,
 	      const T4& beta,
 	      Vector<T3, Vect_Full, Allocator3>& C)
@@ -511,9 +511,9 @@ namespace Seldon
   
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAdd(const T0& alpha, 
-	      const class_SeldonTrans& Trans, const Matrix<T1, Symmetric, 
-	      ArrayRowSymSparse, Allocator1>& A, 
+  void MltAdd(const T0& alpha,
+	      const class_SeldonTrans& Trans, const Matrix<T1, Symmetric,
+	      ArrayRowSymSparse, Allocator1>& A,
 	      const Vector<T2, Vect_Full, Allocator2>& B,
 	      const T4& beta,
 	      Vector<T3, Vect_Full, Allocator3>& C)
@@ -797,7 +797,7 @@ namespace Seldon
 	   class Allocator2, class Allocator3>
   void Add(const T0& alpha,
 	   const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
-	   const Matrix<T2, General, ArrayRowSparse, Allocator2>& B, 
+	   const Matrix<T2, General, ArrayRowSparse, Allocator2>& B,
 	   Matrix<complex<T3>, General, ArrayRowSparse, Allocator3>& C)
   {
     int m = B.GetM(),n1,n2,size_row;;

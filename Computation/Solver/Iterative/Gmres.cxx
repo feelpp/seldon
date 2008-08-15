@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,7 +19,7 @@
 
 #ifndef SELDON_FILE_ITERATIVE_GMRES_CXX
 
-namespace Seldon 
+namespace Seldon
 {
 
   //! Solves a linear system by using Generalized Minimum Residual (GMRES)
@@ -34,11 +34,11 @@ namespace Seldon
     algorithm for solving nonsysmmetric linear systems, SIAM
     J. Sci. Statist. Comp.  7(1986), pp, 856-869
     
-    \param[in] A  Complex General Matrix 
+    \param[in] A  Complex General Matrix
     \param[inout] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
-    \param[in] M Right preconditioner   
+    \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
   template <class Titer, class MatrixSparse, class Vector, class Preconditioner>
@@ -101,7 +101,7 @@ namespace Seldon
     
     outer.SetNumberIteration(0);
     // Loop until the stopping criteria are reached
-    while (! outer.Finished(beta)) 
+    while (! outer.Finished(beta))
       {
 	// we normalize V(0) and we init s
 	Seldon::Copy(r, V(0));
@@ -117,16 +117,16 @@ namespace Seldon
 	inner.SetNumberIteration(outer.GetNumberIteration());
 	inner.SetMaxNumberIteration(outer.GetNumberIteration()+m);
 	
-	do 
+	do
 	  {
 	    // product matrix vector u=A*V(i)
 	    Mlt(A, V(i), u);
 	    
-	    // preconditioning 
+	    // preconditioning
 	    M.Solve(A, u, w);
 	    
 	    // Arnoldi algorithm
-	    for (k = 0; k <= i; k++) 
+	    for (k = 0; k <= i; k++)
 	      {
 		// h_{k,i} = \bar{v(k)} w
 		H.Val(k, i) = DotProdConj(V(k), w);
@@ -141,13 +141,13 @@ namespace Seldon
 	    if (hi_ip1 != zero)
 	      Mlt(Complexe(1)/hi_ip1, V(i+1));
 	    
-	    // we apply precedent generated rotations 
+	    // we apply precedent generated rotations
 	    // to the last column we computed.
 	    for (k = 0; k < i; k++)
 	      ApplyRot(H.Val(k,i), H.Val(k+1,i),
 		       rotations_cos(k), rotations_sin(k));
 	    
-	    // we generate a new rotation Omega=[c s;-conj(s) c] in order to 
+	    // we generate a new rotation Omega=[c s;-conj(s) c] in order to
 	    // cancel h(i+1,i) and we store this rotation
 	    if (hi_ip1 != zero)
 	      {
@@ -161,13 +161,13 @@ namespace Seldon
 	    
 	    ++inner, ++outer, ++i;
 	    
-	  } while (! inner.Finished(abs(s(i)))); 
+	  } while (! inner.Finished(abs(s(i))));
 	
 	// Now we solve the triangular system H
 	H.Resize(i, i); s.Resize(i);
 	Solve(H, s); s.Resize(m+1);
 	
-	// new iterate x = x + sum_0^{i-1} s(k)*V(k) 
+	// new iterate x = x + sum_0^{i-1} s(k)*V(k)
 	for (k = 0; k < i; k++)
 	  Seldon::Add(s(k), V(k), x);
 		

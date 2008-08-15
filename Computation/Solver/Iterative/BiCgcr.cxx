@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,7 +19,7 @@
 
 #ifndef SELDON_FILE_ITERATIVE_BICGCR_CXX
 
-namespace Seldon 
+namespace Seldon
 {
   
   //! Solves a linear system by using BiCgCr
@@ -29,15 +29,15 @@ namespace Seldon
     
     See Iterative Methods for the Solution of Very Large Complex Symmetric Linear Systems of
     Equations in Electrodynamics,
-    Markus Clemens, Thomas Weiland 
+    Markus Clemens, Thomas Weiland
     Fachbereich 18 Elektrische Nachrichtentechnik, Fachgebiet Theorie Elektromagnetischer Felder,
-    Technische Hochschule Darmstadt, Schlossgartenstr. 8, D-64289 Darmstadt, Germany  
+    Technische Hochschule Darmstadt, Schlossgartenstr. 8, D-64289 Darmstadt, Germany
     
-    \param[in] A  Complex Symmetric Matrix 
+    \param[in] A  Complex Symmetric Matrix
     \param[inout] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
-    \param[in] M Right preconditioner   
+    \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
   template <class Titer, class Matrix, class Vector, class Preconditioner>
@@ -73,13 +73,13 @@ namespace Seldon
     // we made one product matrix vector
     ++iter;
     
-    while (! iter.Finished(v)) 
+    while (! iter.Finished(v))
       {
 	rho = DotProd(w, v);
 	mu = DotProd(w, a);
 	
 	// new iterate x = x + alpha*p0  where alpha = (r1,r0)/(p1,p1)
-	if (mu == Complexe(0)) 
+	if (mu == Complexe(0))
 	  {
 	    iter.Fail(1, "Bicgcr breakdown #1");
 	    break;
@@ -95,7 +95,7 @@ namespace Seldon
 	Mlt(A, s, z);
 	tau = DotProd(w, z);
 	
-	if (tau == Complexe(0)) 
+	if (tau == Complexe(0))
 	  {
 	    iter.Fail(2, "Bicgcr breakdown #2");
 	    break;
@@ -111,7 +111,7 @@ namespace Seldon
 	M.Solve(A, a, w);
 
 	++iter;
-      } 
+      }
     
     return iter.ErrorCode();
   }
@@ -119,4 +119,4 @@ namespace Seldon
 } // end namespace
 
 #define SELDON_FILE_ITERATIVE_BICGCR_CXX
-#endif 
+#endif

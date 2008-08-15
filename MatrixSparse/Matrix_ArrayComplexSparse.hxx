@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -122,9 +122,9 @@ namespace Seldon
     int IndexImag(int num_row,int i) const;
     int& IndexImag(int num_row,int i);
     const IVect& GetRealIndexRow(int i) const;
-    const IVect& GetImagIndexRow(int i) const; 
+    const IVect& GetImagIndexRow(int i) const;
     const vect_value& GetRealValueRow(int i) const;
-    const vect_value& GetImagValueRow(int i) const; 
+    const vect_value& GetImagValueRow(int i) const;
     
     void AddRealInteraction(int i,int j,const T& a);
     void AddImagInteraction(int i,int j,const T& a);
@@ -182,10 +182,10 @@ namespace Seldon
     
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			    const Vector<complex<T>, Vect_Full, Alloc1>& val);
+			   const Vector<complex<T>, Vect_Full, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			       const Vector<complex<T>, Vect_Full, Alloc1>& val);
+			      const Vector<complex<T>, Vect_Full, Alloc1>& val);
   };
   
   
@@ -205,10 +205,10 @@ namespace Seldon
     
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			    const Vector<complex<T>, Vect_Full, Alloc1>& val);
+			   const Vector<complex<T>, Vect_Full, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			       const Vector<complex<T>, Vect_Full, Alloc1>& val);
+			      const Vector<complex<T>, Vect_Full, Alloc1>& val);
   };
   
 } // namespace Seldon

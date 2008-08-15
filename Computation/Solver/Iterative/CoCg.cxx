@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,7 +19,7 @@
 
 #ifndef SELDON_FILE_ITERATIVE_COCG_CXX
 
-namespace Seldon 
+namespace Seldon
 {
 
   //! Solves a linear system by using Conjugate Orthogonal Conjugate Gradient
@@ -34,11 +34,11 @@ namespace Seldon
     A Petrow-Galerkin type method solving Ax=b where A is symmetric complex
     IEEE Trans. Mag., vol 26, no 2, pp 706-708, 1990
     
-    \param[in] A  Complex Symmetric Matrix 
+    \param[in] A  Complex Symmetric Matrix
     \param[inout] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Right hand side of the linear system
-    \param[in] M Left preconditioner   
+    \param[in] M Left preconditioner
     \param[in] iter Iteration parameters
   */
   template <class Titer, class Matrix, class Vector, class Preconditioner>
@@ -71,7 +71,7 @@ namespace Seldon
     
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are reached
-    while (! iter.Finished(r)) 
+    while (! iter.Finished(r))
       {
 	// preconditioning
 	M.Solve(A, r, z);
@@ -79,25 +79,25 @@ namespace Seldon
 	// instead of (bar(r),z) in CG we compute (r,z)
 	rho = DotProd(r, z);
 	
-	if (rho == zero) 
+	if (rho == zero)
 	  {
 	    iter.Fail(1, "Cocg breakdown #1");
 	    break;
 	  }
 	
 	if (iter.First())
-	  Seldon::Copy(z, p);		  
-	else 
+	  Seldon::Copy(z, p);
+	else
 	  {
 	    beta = rho / rho_1;
 	    Mlt(beta, p);
-	    Seldon::Add(Complexe(1), z, p); 
+	    Seldon::Add(Complexe(1), z, p);
 	  }
 	// product matrix vector
-	Mlt(A, p, q); 
+	Mlt(A, p, q);
 	
 	delta = DotProd(p, q);
-	if (delta == zero) 
+	if (delta == zero)
 	  {
 	    iter.Fail(2, "Cocg breakdown #2");
 	    break;

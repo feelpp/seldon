@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,24 +19,24 @@
 
 #ifndef SELDON_FILE_ITERATIVE_BICGSTAB_CXX
 
-namespace Seldon 
+namespace Seldon
 {
 
   //! Implements  BiConjugate Gradient Stabilized (BICG-STAB)
-  /*! 
+  /*!
     return value of 0 indicates convergence within the
     maximum number of iterations (determined by the iter object).
-    return value of 1 indicates a failure to converge.  
+    return value of 1 indicates a failure to converge.
     
     See: H. Van der Vorst, Bi-CGSTAB: A fast and smoothly converging variant
-    of BiCG for the solution of nonsysmmetric linear systems, SIAM J. Sci. 
+    of BiCG for the solution of nonsysmmetric linear systems, SIAM J. Sci.
     Statist. Comput. 13(1992), pp. 631-644
     
-    \param[in] A  Complex General Matrix 
+    \param[in] A  Complex General Matrix
     \param[inout] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
-    \param[in] M Right preconditioner   
+    \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
   template <class Titer, class Matrix, class Vector, class Preconditioner>
@@ -67,11 +67,11 @@ namespace Seldon
     
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
-    while (! iter.Finished(r)) 
+    while (! iter.Finished(r))
       {
 	
 	rho_1 = DotProdConj(rtilde, r);
-	if (rho_1 == Complexe(0)) 
+	if (rho_1 == Complexe(0))
 	  {
 	    iter.Fail(1, "Bicgstab breakdown #1");
 	    break;
@@ -79,9 +79,9 @@ namespace Seldon
 	
 	if (iter.First())
 	  Seldon::Copy(r, p);
-	else 
+	else
 	  {
-	    if (omega == Complexe(0)) 
+	    if (omega == Complexe(0))
 	      {
 		iter.Fail(2, "Bicgstab breakdown #2");
 		break;
@@ -100,8 +100,8 @@ namespace Seldon
 	Mlt(A, phat, v);
 	
 	// s=r-alpha*v  where alpha = rho_i / (v,rtilde)
-	sigma = DotProdConj(rtilde, v); 
-	if (sigma == Complexe(0)) 
+	sigma = DotProdConj(rtilde, v);
+	if (sigma == Complexe(0))
 	  {
 	    iter.Fail(3, "Bicgstab breakdown #3");
 	    break;
@@ -112,7 +112,7 @@ namespace Seldon
 	
 	// we increment iter, bicgstab has two products matrix vector
 	++iter;
-	if (iter.Finished(s)) 
+	if (iter.Finished(s))
 	  {
 	    // x=x+alpha*phat
 	    Seldon::Add(alpha, phat, x);
@@ -120,7 +120,7 @@ namespace Seldon
 	  }
 	
 	// preconditioning shat = M^{-1} s
-	M.Solve(A, s, shat);	
+	M.Solve(A, s, shat);
 	
 	// product matrix vector t = A*shat
 	Mlt(A, shat, t);

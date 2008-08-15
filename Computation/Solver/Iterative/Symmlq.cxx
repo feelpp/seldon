@@ -3,12 +3,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,7 +19,7 @@
 
 #ifndef SELDON_FILE_ITERATIVE_SYMMLQ_CXX
 
-namespace Seldon 
+namespace Seldon
 {
   
   //! Solves a linear system by using Symmetric LQ (SymmLQ)
@@ -31,15 +31,15 @@ namespace Seldon
     maximum number of iterations (determined by the iter object).
     return value of 1 indicates a failure to converge.
     
-    See C. PAIGE AND M. SAUNDERS, 
-    Solution of sparse indefinite systems of linear equations, 
-    SIAM J. Numer. Anal., 12 (1975), pp. 617-629. 
+    See C. PAIGE AND M. SAUNDERS,
+    Solution of sparse indefinite systems of linear equations,
+    SIAM J. Numer. Anal., 12 (1975), pp. 617-629.
     
-    \param[in] A  Real Symmetric Matrix 
+    \param[in] A  Real Symmetric Matrix
     \param[inout] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
-    \param[in] M Right preconditioner   
+    \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
   template <class Titer, class Matrix, class Vector, class Preconditioner>
@@ -125,7 +125,7 @@ namespace Seldon
 	Seldon::Add(-beta,v_old,r);
 	Seldon::Add(-beta,u_old,z);
 	
-	beta_old = beta; 
+	beta_old = beta;
 	dp = DotProd(r,z);
 	beta = sqrt(dp);
 	
@@ -165,4 +165,4 @@ namespace Seldon
 } // end namespace
 					 
 #define SELDON_FILE_ITERATIVE_SYMMLQ_CXX
-#endif 
+#endif

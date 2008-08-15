@@ -4,12 +4,12 @@
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
 // linear algebra.
-// 
+//
 // Seldon is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // Seldon is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -58,7 +58,7 @@ namespace Seldon
 
     for (int i = 0; i < X.GetDataSize(); i++)
       data[i] = alpha_ * data[i];
-  }  
+  }
 
 
   // Mlt //
@@ -170,7 +170,7 @@ namespace Seldon
   
   //! Computation of rotation between two points
   template<class T>
-  void GenRot(T& a_in, T& b_in, T& c_, T& s_) 
+  void GenRot(T& a_in, T& b_in, T& c_, T& s_)
   {
     // old BLAS version
     T roe;
@@ -181,7 +181,7 @@ namespace Seldon
       
     T scal = abs(a_in) + abs(b_in);
     T r, z;
-    if (scal != T(0)) 
+    if (scal != T(0))
       {
 	T a_scl = a_in / scal;
 	T b_scl = b_in / scal;
@@ -196,10 +196,10 @@ namespace Seldon
 	  z = s_;
 	else if ((abs(b_in) >= abs(a_in)) && (c_ != T(0)))
 	  z = T(1) / c_;
-      } 
-    else 
+      }
+    else
       {
-	c_ = 1;	s_ = 0; r = 0; z = 0;      
+	c_ = 1;	s_ = 0; r = 0; z = 0;
       }
     a_in = r;
     b_in = z;
@@ -208,17 +208,17 @@ namespace Seldon
   
   //! Computation of rotation between two points
   template<class T>
-  void GenRot(complex<T>& a_in, complex<T>& b_in, T& c_, complex<T>& s_) 
+  void GenRot(complex<T>& a_in, complex<T>& b_in, T& c_, complex<T>& s_)
   {
       
     T a = abs(a_in), b = abs(b_in);
-    if ( a == T(0) ) 
+    if ( a == T(0) )
       {
 	c_ = T(0);
 	s_ = complex<T>(1,0);
 	a_in = b_in;
-      } 
-    else 
+      }
+    else
       {
 	T scale = a + b;
 	T a_scal = abs(a_in/scale);
@@ -241,7 +241,7 @@ namespace Seldon
     T temp = c_*x + s_*y;
     y = c_*y - s_*x;
     x = temp;
-  }  
+  }
   
   
   //! Rotation of a complex point in 2-D
@@ -252,7 +252,7 @@ namespace Seldon
     complex<T> temp = s_*y + c_*x;
     y = -conj(s_)*x + c_*y;
     x = temp;
-  }  
+  }
   
   
   // ApplyRot //
