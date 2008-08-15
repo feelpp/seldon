@@ -9,22 +9,23 @@ using namespace Seldon;
 typedef double Real_wp;
 typedef complex<double> Complex_wp;
 
-// we test different iterative solvers on the matrix
+// We test different iterative solvers on the matrix
 // A = S B S^{-1}
-
+//
 // where
-
+//
 // S = |1 \beta  0   ...  0  |
 //     |0   1  \beta ...  0  |
 //     |      ...            |
 //     |0 ...      1   \beta |
 //     |0 ...      0     1   |
-
+//
 // and
+//
+// B = diag(\lambda_1, ... , \lambda_n)
 
-// B = diag(\lambda_1, ... , \lambda_n)    
 
-// class for a new type of matrix
+// Class for a new type of matrix.
 template<class T>
 class BlackBoxMatrix
 {
@@ -34,7 +35,7 @@ public :
   Seldon::Vector<T> lambda;
   
   BlackBoxMatrix(int n_)
-  {  
+  {
     beta = 0.9;
     n = n_;
     lambda.Reallocate(n);
@@ -62,7 +63,8 @@ public :
   
 };
 
-// we need to define MltAdd(alpha, A, X, beta, Y) : Y <- beta Y + alpha A X
+
+// We need to define MltAdd(alpha, A, X, beta, Y) : Y <- beta Y + alpha A X
 template<class T, class Vector>
 void MltAdd(const T& alpha, const BlackBoxMatrix<T>& A,
 	    const Vector& X, const T& beta, Vector& Y)
@@ -91,9 +93,10 @@ void MltAdd(const T& alpha, const BlackBoxMatrix<T>& A,
 }
 
 
-// and the transpose
+// and the transpose...
 template<class T, class Vector>
-void MltAdd(const T& alpha, const class_SeldonTrans& Trans, const BlackBoxMatrix<T>& A,
+void MltAdd(const T& alpha, const class_SeldonTrans& Trans,
+	    const BlackBoxMatrix<T>& A,
 	    const Vector& X, const T& beta, Vector& Y)
 {
   if (beta == T(0))
@@ -102,7 +105,7 @@ void MltAdd(const T& alpha, const class_SeldonTrans& Trans, const BlackBoxMatrix
     Mlt(beta, Y);
   
   int n = A.GetM();
-  // transpose of S B S^{-1} is S^{-t} B S^t
+  // Transpose of S B S^{-1} is S^{-t} B S^t
   Vector C(X);
   // Y = S^t Y
   for (int i = (n-1); i >= 1; i--)
@@ -120,12 +123,14 @@ void MltAdd(const T& alpha, const class_SeldonTrans& Trans, const BlackBoxMatrix
   Add(alpha, C, Y);
 }
 
+
 template<class T, class Vector>
 void Mlt(const BlackBoxMatrix<T>& A, const Vector& X, Vector& Y)
 {
   Y.Zero();
   MltAdd(T(1), A, X, T(0), Y);
 }
+
 
 template<class T, class Vector>
 void Mlt(const class_SeldonTrans& Trans, const BlackBoxMatrix<T>& A,
@@ -135,7 +140,8 @@ void Mlt(const class_SeldonTrans& Trans, const BlackBoxMatrix<T>& A,
   MltAdd(T(1), Trans, A, X, T(0), Y);
 }
 
-int main(int argc, char **argv) 
+
+int main(int argc, char **argv)
 {
   cout.precision(5);
   int restart = 3;
@@ -145,21 +151,24 @@ int main(int argc, char **argv)
   
   srand(time(NULL));
   
-  // Resolution of unsymmetric real system
-  cout<<"Resolution of an unsymmetric real system "<<endl<<endl;
+  // Resolution of unsymmetric real system.
+  cout << "Resolution of an unsymmetric real system " << endl << endl;
   {
     double beta = 0.9;
     BlackBoxMatrix<double> A(n, beta);
     DVect b_rhs(n), x_sol(n);
-    x_sol.Fill(); Mlt(A, x_sol, b_rhs); DISP(b_rhs);
+    x_sol.Fill();
+    Mlt(A, x_sol, b_rhs);
+    DISP(b_rhs);
     x_sol.Zero();
     Preconditioner_Base prec;
     
-    Iteration<double> iter(nb_max_iter, stopping_criterion); iter.ShowFullHistory(); 
+    Iteration<double> iter(nb_max_iter, stopping_criterion);
+    iter.ShowFullHistory();
     iter.SetRestart(restart);
     
-    // You can use iterative solvers for unsymmetric real systems
-    // not using matrix-vector product with transpose matrix 
+    // You can use iterative solvers for unsymmetric real systems not using
+    // matrix-vector product with transpose matrix.
     x_sol.Zero(); cout<<"BiCgStab"<<endl;
     BiCgStab(A, x_sol, b_rhs, prec, iter);
     x_sol.Zero(); cout<<"BiCgStabl"<<endl;
@@ -177,30 +186,33 @@ int main(int argc, char **argv)
     x_sol.Zero(); cout<<"Lsqr"<<endl;
     Lsqr(A, x_sol, b_rhs, prec, iter);
     
-    // and iterative solvers using transpose matrix
+    // And iterative solvers using transpose matrix.
     x_sol.Zero(); cout<<"BiCg"<<endl;
     BiCg(A, x_sol, b_rhs, prec, iter);
     x_sol.Zero(); cout<<"Cgne"<<endl;
     Cgne(A, x_sol, b_rhs, prec, iter);
     x_sol.Zero(); cout<<"Qmr"<<endl;
     Qmr(A, x_sol, b_rhs, prec, iter);
-    
   }
   
-  cout<<endl<<endl<<"Resolution of an unsymmetric complex system "<<endl;
-  {    
+  cout << endl << endl
+       << "Resolution of an unsymmetric complex system " << endl;
+  {
     complex<double> beta(0.9, 0.3);
     BlackBoxMatrix<complex<double> > A(n, beta);
     ZVect b_rhs(n), x_sol(n);
-    x_sol.Fill(); Mlt(A, x_sol, b_rhs); DISP(b_rhs);
+    x_sol.Fill();
+    Mlt(A, x_sol, b_rhs);
+    DISP(b_rhs);
     x_sol.Zero();
     Preconditioner_Base prec;
     
-    Iteration<double> iter(nb_max_iter, stopping_criterion); iter.ShowFullHistory(); 
+    Iteration<double> iter(nb_max_iter, stopping_criterion);
+    iter.ShowFullHistory();
     iter.SetRestart(restart);
     
-    // You can use iterative solvers for unsymmetric complex systems
-    // not using matrix-vector product with transpose matrix 
+    // You can use iterative solvers for unsymmetric complex systems not using
+    // matrix-vector product with transpose matrix.
     x_sol.Zero(); cout<<"BiCgStab"<<endl;
     BiCgStab(A, x_sol, b_rhs, prec, iter);
     x_sol.Zero(); cout<<"BiCgStabl"<<endl;
@@ -216,42 +228,49 @@ int main(int argc, char **argv)
     x_sol.Zero(); cout<<"TfQmr"<<endl;
     TfQmr(A, x_sol, b_rhs, prec, iter);
     
-    // and iterative solvers using transpose matrix
+    // And iterative solvers using transpose matrix.
     x_sol.Zero(); cout<<"BiCg"<<endl;
     BiCg(A, x_sol, b_rhs, prec, iter);
     x_sol.Zero(); cout<<"Cgne"<<endl;
     Cgne(A, x_sol, b_rhs, prec, iter);
     x_sol.Zero(); cout<<"Qmr"<<endl;
     Qmr(A, x_sol, b_rhs, prec, iter);
-    
   }
   
-  // Resolution of symmetric real system
-  cout<<"Resolution of a symmetric real system "<<endl<<endl;
+  // Resolution of symmetric real system.
+  cout << "Resolution of a symmetric real system " << endl << endl;
   {
     Matrix<double, Symmetric, RowSymPacked> A(n,n);
-    A.FillRand(); DISP(A);
+    A.FillRand();
+    DISP(A);
     
     DVect b_rhs(n), x_sol(n);
-    x_sol.Fill(); Mlt(A, x_sol, b_rhs); DISP(b_rhs);
+    x_sol.Fill();
+    Mlt(A, x_sol, b_rhs);
+    DISP(b_rhs);
     x_sol.Zero();
     Preconditioner_Base prec;
     
-    Iteration<double> iter(nb_max_iter, stopping_criterion); iter.ShowFullHistory(); 
+    Iteration<double> iter(nb_max_iter, stopping_criterion);
+    iter.ShowFullHistory();
     iter.SetRestart(restart);
 
-    x_sol.Zero(); cout<<"BiCgcr"<<endl;
+    x_sol.Zero();
+    cout << "BiCgcr" << endl;
     BiCgcr(A, x_sol, b_rhs, prec, iter);
-    x_sol.Zero(); cout<<"Cg"<<endl;
+    x_sol.Zero();
+    cout << "Cg" << endl;
     Cg(A, x_sol, b_rhs, prec, iter);
-    x_sol.Zero(); cout<<"Symmlq"<<endl;
+    x_sol.Zero();
+    cout << "Symmlq" << endl;
     Symmlq(A, x_sol, b_rhs, prec, iter);
-    x_sol.Zero(); cout<<"MinRes"<<endl;
+    x_sol.Zero();
+    cout << "MinRes" << endl;
     MinRes(A, x_sol, b_rhs, prec, iter);
   }
   
-  // Resolution of symmetric complex system
-  cout<<"Resolution of a symmetric complex system "<<endl<<endl;
+  // Resolution of symmetric complex system.
+  cout << "Resolution of a symmetric complex system " << endl << endl;
   {
     Matrix<double, Symmetric, RowSymPacked> Ar(n,n), Ai(n,n);
     Matrix<complex<double>, Symmetric, RowSymPacked> A(n,n);
@@ -263,49 +282,29 @@ int main(int argc, char **argv)
     DISP(A);
     
     ZVect b_rhs(n), x_sol(n);
-    x_sol.Fill(); Mlt(A, x_sol, b_rhs); DISP(b_rhs);
+    x_sol.Fill();
+    Mlt(A, x_sol, b_rhs);
+    DISP(b_rhs);
     x_sol.Zero();
     Preconditioner_Base prec;
     
-    Iteration<double> iter(nb_max_iter, stopping_criterion); iter.ShowFullHistory(); 
+    Iteration<double> iter(nb_max_iter, stopping_criterion);
+    iter.ShowFullHistory();
     iter.SetRestart(restart);
     
-    x_sol.Zero(); cout<<"BiCgcr"<<endl;
+    x_sol.Zero();
+    cout << "BiCgcr" << endl;
     BiCgcr(A, x_sol, b_rhs, prec, iter);
-    x_sol.Zero(); cout<<"CoCg"<<endl;
+    x_sol.Zero();
+    cout << "CoCg" << endl;
     CoCg(A, x_sol, b_rhs, prec, iter);
-    x_sol.Zero(); cout<<"Symmlq"<<endl;
+    x_sol.Zero();
+    cout << "Symmlq" << endl;
     Symmlq(A, x_sol, b_rhs, prec, iter);
-    x_sol.Zero(); cout<<"MinRes"<<endl;
+    x_sol.Zero();
+    cout << "MinRes" << endl;
     MinRes(A, x_sol, b_rhs, prec, iter);
   }
  
   return 0;
-  
-  /* x_sol.Zero();
-     BiCgcr(A, x_sol, b_rhs, prec, iter);
-  x_sol.Zero();
-  Cg(A, x_sol, b_rhs, prec, iter);
-  x_sol.Zero();
-  CoCg(A, x_sol, b_rhs, prec, iter);
-
-
-
-
-
-  x_sol.Zero();
-  QmrSym(A, x_sol, b_rhs, prec, iter);
-  
-
-  DISP(x_sol);
-  */
-  return 0;
 }
-
-
-
-
-
-
-
-
