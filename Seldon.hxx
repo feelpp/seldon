@@ -351,15 +351,15 @@ namespace Seldon
 } // namespace Seldon.
 
 
-#include "Common/Common.cxx"
+#include "Share/Common.cxx"
 
 // Memory management.
-#include "Common/Allocator.cxx"
+#include "Share/Allocator.cxx"
 
 // Storage type.
-#include "Common/Storage.cxx"
+#include "Share/Storage.cxx"
 
-#include "Common/Errors.cxx"
+#include "Share/Errors.cxx"
 
 #include "Array3D/Array3D.cxx"
 #include "Matrix/Matrix_Base.cxx"

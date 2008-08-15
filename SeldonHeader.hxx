@@ -145,21 +145,21 @@ namespace Seldon
 }
 
 // Exceptions and useful functions.
-#include "Common/Errors.hxx"
-#include "Common/Common.hxx"
+#include "Share/Errors.hxx"
+#include "Share/Common.hxx"
 
 // Default allocator.
 #ifndef SELDON_DEFAULT_ALLOCATOR
 #define SELDON_DEFAULT_ALLOCATOR MallocAlloc
 #endif
 // Memory management.
-#include "Common/Allocator.hxx"
+#include "Share/Allocator.hxx"
 
 // Storage type.
-#include "Common/Storage.hxx"
+#include "Share/Storage.hxx"
 
 // Properties.
-#include "Common/Properties.hxx"
+#include "Share/Properties.hxx"
 
 namespace Seldon
 {

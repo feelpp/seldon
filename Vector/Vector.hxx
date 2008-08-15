@@ -19,11 +19,11 @@
 
 #ifndef SELDON_FILE_VECTOR_HXX
 
-#include "../Common/Common.hxx"
-#include "../Common/Properties.hxx"
-#include "../Common/Storage.hxx"
-#include "../Common/Errors.hxx"
-#include "../Common/Allocator.hxx"
+#include "../Share/Common.hxx"
+#include "../Share/Properties.hxx"
+#include "../Share/Storage.hxx"
+#include "../Share/Errors.hxx"
+#include "../Share/Allocator.hxx"
 
 namespace Seldon
 {
