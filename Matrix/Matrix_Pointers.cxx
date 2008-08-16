@@ -69,12 +69,6 @@ namespace Seldon
 	me_ = NULL;
 	this->data_ = NULL;
       }
-    if (me_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	this->data_ = NULL;
-      }
     if (me_ == NULL && i != 0 && j != 0)
       throw NoMemory("Matrix_Pointers::Matrix_Pointers(int, int)",
 		     string("Unable to allocate memory for a matrix of size ")
@@ -101,13 +95,6 @@ namespace Seldon
 	free(me_);
 	me_ = NULL;
 	this->data_ = NULL;
-      }
-    if (this->data_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	free(me_);
-	me_ = NULL;
       }
     if (this->data_ == NULL && i != 0 && j != 0)
       throw NoMemory("Matrix_Pointers::Matrix_Pointers(int, int)",
@@ -252,12 +239,6 @@ namespace Seldon
 	    me_ = NULL;
 	    this->data_ = NULL;
 	  }
-	if (me_ == NULL)
-	  {
-	    this->m_ = 0;
-	    this->n_ = 0;
-	    this->data_ = NULL;
-	  }
 	if (me_ == NULL && i != 0 && j != 0)
 	  throw NoMemory("Matrix_Pointers::Reallocate(int, int)",
 			 string("Unable to reallocate memory for")
@@ -288,13 +269,6 @@ namespace Seldon
 	    free(me_);
 	    me_ = NULL;
 	    this->data_ = NULL;
-	  }
-	if (this->data_ == NULL)
-	  {
-	    this->m_ = 0;
-	    this->n_ = 0;
-	    free(me_);
-	    me_ = NULL;
 	  }
 	if (this->data_ == NULL && i != 0 && j != 0)
 	  throw NoMemory("Matrix_Pointers::Reallocate(int, int)",
