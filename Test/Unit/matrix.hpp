@@ -27,6 +27,7 @@ using namespace Seldon;
 class MatrixTest: public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE(MatrixTest);
+  CPPUNIT_TEST(test_constructor);
   CPPUNIT_TEST(test_reallocate);
   CPPUNIT_TEST_SUITE_END();
 
@@ -47,12 +48,40 @@ public:
   }
 
 
+  void test_constructor()
+  {
+    {
+      Matrix<double> M(m_, n_);
+      CPPUNIT_ASSERT(M.GetM() == m_);
+      CPPUNIT_ASSERT(M.GetN() == n_);
+    }
+    {
+      Matrix<double> M(0, n_);
+      CPPUNIT_ASSERT(M.GetM() == 0);
+      CPPUNIT_ASSERT(M.GetN() == n_);
+    }
+    {
+      Matrix<double> M(m_, 0);
+      CPPUNIT_ASSERT(M.GetM() == m_);
+      CPPUNIT_ASSERT(M.GetN() == 0);
+    }
+    {
+      Matrix<double> M(0, 0);
+      CPPUNIT_ASSERT(M.GetM() == 0);
+      CPPUNIT_ASSERT(M.GetN() == 0);
+    }
+  }
+
+
   void test_reallocate()
   {
     Matrix<double> M(m_, n_);
     M.Reallocate(0, 0);
     CPPUNIT_ASSERT(M.GetM() == 0);
     CPPUNIT_ASSERT(M.GetN() == 0);
+    M.Reallocate(m_, n_);
+    CPPUNIT_ASSERT(M.GetM() == m_);
+    CPPUNIT_ASSERT(M.GetN() == n_);
     M.Reallocate(m_, n_);
     CPPUNIT_ASSERT(M.GetM() == m_);
     CPPUNIT_ASSERT(M.GetN() == n_);
@@ -71,5 +100,14 @@ public:
     M.Reallocate(0, 0);
     CPPUNIT_ASSERT(M.GetM() == 0);
     CPPUNIT_ASSERT(M.GetN() == 0);
+    M.Reallocate(0, n_);
+    CPPUNIT_ASSERT(M.GetM() == 0);
+    CPPUNIT_ASSERT(M.GetN() == n_);
+    M.Reallocate(m_, n_);
+    CPPUNIT_ASSERT(M.GetM() == m_);
+    CPPUNIT_ASSERT(M.GetN() == n_);
+    M.Reallocate(0, n_);
+    CPPUNIT_ASSERT(M.GetM() == 0);
+    CPPUNIT_ASSERT(M.GetN() == n_);
   }
 };
