@@ -23,6 +23,7 @@
 #include <iostream>
 #include <algorithm>
 #include <complex>
+#include <cstring>
 #include <string>
 #include <sstream>
 #include <fstream>
