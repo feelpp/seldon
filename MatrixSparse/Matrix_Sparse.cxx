@@ -481,7 +481,8 @@ namespace Seldon
     \param values values of non-zero entries.
     \param ptr row or column start indices.
     \param ind row or column indices.
-    \warning On exit, arrays 'values', 'ptr' and 'ind' are managed by the matrix.
+    \warning On exit, arrays 'values', 'ptr' and 'ind' are managed by the
+    matrix.
     For example, it means that the destructor will released those arrays;
     therefore, the user mustn't release those arrays.
   */

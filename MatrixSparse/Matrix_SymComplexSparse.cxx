@@ -536,9 +536,11 @@ namespace Seldon
 		       + to_str(i) + " by " + to_str(i) + " matrix).");
       }
 
-    if ( (static_cast<long int>(2 * real_nz_ - 2) / static_cast<long int>(i + 1)
+    if ( (static_cast<long int>(2 * real_nz_ - 2)
+	  / static_cast<long int>(i + 1)
 	  >= static_cast<long int>(i)) ||
-	 (static_cast<long int>(2 * imag_nz_ - 2) / static_cast<long int>(i + 1)
+	 (static_cast<long int>(2 * imag_nz_ - 2)
+	  / static_cast<long int>(i + 1)
 	  >= static_cast<long int>(i)) )
       {
 	this->m_ = 0;

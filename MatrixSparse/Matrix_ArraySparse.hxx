@@ -45,7 +45,8 @@ namespace Seldon
     Sparse matrices are defined by: (1) the number of rows and columns;
     (2) the number of non-zero entries; (3) an array of vectors ind
     ind(i) is a vector, which contains indices of columns of the row i
-    (4) an array of vectors val : val(i) is a vector, which contains values of the row i
+    (4) an array of vectors val : val(i) is a vector, which contains values of
+    the row i
   */
   template <class T, class Prop, class Storage,
 	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
@@ -89,10 +90,10 @@ namespace Seldon
     void PrintVector(int i) const;
     void AssembleVector(int i);
     
-    void AddInteraction(int i,int j,const T& a);
+    void AddInteraction(int i, int j, const T& a);
     
     template<class Storage1,class Allocator1>
-    void AddInteractionVector(int i,int nb_interac, IVect col_interac,
+    void AddInteractionVector(int i, int nb_interac, IVect col_interac,
 			      Vector<T, Storage1, Allocator1> val_interac);
     
   public:
@@ -124,10 +125,10 @@ namespace Seldon
     value_type operator() (int i, int j) const;
     reference operator() (int i, int j);
     
-    const_reference Value(int num_row,int i) const;
-    reference Value(int num_row,int i);
-    int Index(int num_row,int i) const;
-    int& Index(int num_row,int i);
+    const_reference Value(int num_row, int i) const;
+    reference Value(int num_row, int i);
+    int Index(int num_row, int i) const;
+    int& Index(int num_row, int i);
     
     void SetData(int, int, int, IVect*, vect_value*);
     void Nullify();
@@ -169,10 +170,10 @@ namespace Seldon
     
     // Memory management.
     void ClearColumn(int i);
-    void ReallocateColumn(int i,int j);
-    void ResizeColumn(int i,int j);
-    void SwapColumn(int i,int i_);
-    void ReplaceIndexColumn(int i,IVect& new_index);
+    void ReallocateColumn(int i, int j);
+    void ResizeColumn(int i, int j);
+    void SwapColumn(int i, int i_);
+    void ReplaceIndexColumn(int i, IVect& new_index);
     
     int GetColumnSize(int i) const;
     void PrintColumn(int i) const;
@@ -203,10 +204,10 @@ namespace Seldon
     
     // Memory management.
     void ClearRow(int i);
-    void ReallocateRow(int i,int j);
-    void ResizeRow(int i,int j);
-    void SwapRow(int i,int i_);
-    void ReplaceIndexRow(int i,IVect& new_index);
+    void ReallocateRow(int i, int j);
+    void ResizeRow(int i, int j);
+    void SwapRow(int i, int i_);
+    void ReplaceIndexRow(int i, IVect& new_index);
     
     int GetRowSize(int i) const;
     void PrintRow(int i) const;
@@ -227,7 +228,8 @@ namespace Seldon
   
   //! Column-major symmetric sparse-matrix class.
   template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ArrayColSymSparse, Allocator>: public Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>
+  class Matrix<T, Prop, ArrayColSymSparse, Allocator>:
+    public Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>
   {
   public:
     typedef typename Allocator::value_type value_type;
@@ -241,10 +243,10 @@ namespace Seldon
     
     // Memory management.
     void ClearColumn(int i);
-    void ReallocateColumn(int i,int j);
-    void ResizeColumn(int i,int j);
-    void SwapColumn(int i,int i_);
-    void ReplaceIndexColumn(int i,IVect& new_index);
+    void ReallocateColumn(int i, int j);
+    void ResizeColumn(int i, int j);
+    void SwapColumn(int i, int i_);
+    void ReplaceIndexColumn(int i, IVect& new_index);
     
     int GetColumnSize(int i) const;
     void PrintColumn(int i) const;
@@ -266,7 +268,8 @@ namespace Seldon
   
   //! Row-major symmetric sparse-matrix class.
   template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ArrayRowSymSparse, Allocator>: public Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>
+  class Matrix<T, Prop, ArrayRowSymSparse, Allocator>:
+    public Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>
   {
   public:
     typedef typename Allocator::value_type value_type;
@@ -280,10 +283,10 @@ namespace Seldon
     
     // Memory management.
     void ClearRow(int i);
-    void ReallocateRow(int i,int j);
-    void ResizeRow(int i,int j);
-    void SwapRow(int i,int i_);
-    void ReplaceIndexRow(int i,IVect& new_index);
+    void ReallocateRow(int i, int j);
+    void ResizeRow(int i, int j);
+    void SwapRow(int i, int i_);
+    void ReplaceIndexRow(int i, IVect& new_index);
     
     int GetRowSize(int i) const;
     void PrintRow(int i) const;

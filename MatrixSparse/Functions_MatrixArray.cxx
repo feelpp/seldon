@@ -37,6 +37,7 @@
 namespace Seldon
 {
   
+
   ////////////
   // MltAdd //
   
@@ -58,7 +59,8 @@ namespace Seldon
       Mlt(beta, C);
     
     int m = A.GetM(), n, p;
-    T1 val; T3 val_cplx;
+    T1 val;
+    T3 val_cplx;
     if (alpha == T0(1))
       {
 	for (int i = 0 ; i < m ; i++)
@@ -66,60 +68,59 @@ namespace Seldon
 	    n = A.GetRealRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexReal(i,k);
-		val = A.ValueReal(i,k);
+		p = A.IndexReal(i, k);
+		val = A.ValueReal(i, k);
 		if (p == i)
-		  C(i) += val*B(i);
+		  C(i) += val * B(i);
 		else
 		  {
-		    C(i) += val*B(p);
-		    C(p) += val*B(i);
+		    C(i) += val * B(p);
+		    C(p) += val * B(i);
 		  }
 	      }
 	    n = A.GetImagRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexImag(i,k);
-		val = A.ValueImag(i,k);
+		p = A.IndexImag(i, k);
+		val = A.ValueImag(i, k);
 		if (p == i)
-		  C(i) += complex<T1>(0,val)*B(i);
+		  C(i) += complex<T1>(0, val) * B(i);
 		else
 		  {
-		    C(i) += complex<T1>(0,val)*B(p);
-		    C(p) += complex<T1>(0,val)*B(i);
+		    C(i) += complex<T1>(0, val) * B(p);
+		    C(p) += complex<T1>(0, val) * B(i);
 		  }
 	      }
 	  }
       }
-    else
+    else // alpha != 1.
       {
-	// alpha different from 1
 	for (int i = 0 ; i < m ; i++)
 	  {
 	    n = A.GetRealRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexReal(i,k);
-		val_cplx = alpha*A.ValueReal(i,k);
+		p = A.IndexReal(i, k);
+		val_cplx = alpha * A.ValueReal(i, k);
 		if (p == i)
-		  C(i) += val_cplx*B(i);
+		  C(i) += val_cplx * B(i);
 		else
 		  {
-		    C(i) += val_cplx*B(p);
-		    C(p) += val_cplx*B(i);
+		    C(i) += val_cplx * B(p);
+		    C(p) += val_cplx * B(i);
 		  }
 	      }
 	    n = A.GetImagRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexImag(i,k);
-		val_cplx = alpha*complex<T1>(0,A.ValueImag(i,k));
+		p = A.IndexImag(i, k);
+		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
 		if (p == i)
-		  C(i) += val_cplx*B(i);
+		  C(i) += val_cplx * B(i);
 		else
 		  {
-		    C(i) += val_cplx*B(p);
-		    C(p) += val_cplx*B(i);
+		    C(i) += val_cplx * B(p);
+		    C(p) += val_cplx * B(i);
 		  }
 	      }
 	  }
@@ -167,7 +168,8 @@ namespace Seldon
     else
       Mlt(beta, C);
     int m = A.GetM(),n,p;
-    T1 val; T3 val_cplx;
+    T1 val;
+    T3 val_cplx;
     if (alpha == T0(1))
       {
 	for (int i = 0 ; i < m ; i++)
@@ -175,27 +177,27 @@ namespace Seldon
 	    n = A.GetRealRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexReal(i,k);
-		val = A.ValueReal(i,k);
-		if (p==i)
-		  C(i) += val*B(i);
+		p = A.IndexReal(i, k);
+		val = A.ValueReal(i, k);
+		if (p == i)
+		  C(i) += val * B(i);
 		else
 		  {
-		    C(i) += val*B(p);
-		    C(p) += val*B(i);
+		    C(i) += val * B(p);
+		    C(p) += val * B(i);
 		  }
 	      }
 	    n = A.GetImagRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexImag(i,k);
-		val = A.ValueImag(i,k);
-		if (p==i)
-		  C(i) -= complex<T1>(0,val)*B(i);
+		p = A.IndexImag(i, k);
+		val = A.ValueImag(i, k);
+		if (p == i)
+		  C(i) -= complex<T1>(0, val) * B(i);
 		else
 		  {
-		    C(i) -= complex<T1>(0,val)*B(p);
-		    C(p) -= complex<T1>(0,val)*B(i);
+		    C(i) -= complex<T1>(0, val) * B(p);
+		    C(p) -= complex<T1>(0, val) * B(i);
 		  }
 	      }
 	  }
@@ -208,27 +210,27 @@ namespace Seldon
 	    n = A.GetRealRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexReal(i,k);
-		val_cplx = alpha*A.ValueReal(i,k);
-		if (p==i)
-		  C(i) += val_cplx*B(i);
+		p = A.IndexReal(i, k);
+		val_cplx = alpha * A.ValueReal(i, k);
+		if (p == i)
+		  C(i) += val_cplx * B(i);
 		else
 		  {
-		    C(i) += val_cplx*B(p);
-		    C(p) += val_cplx*B(i);
+		    C(i) += val_cplx * B(p);
+		    C(p) += val_cplx * B(i);
 		  }
 	      }
 	    n = A.GetImagRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexImag(i,k);
-		val_cplx = alpha*complex<T1>(0,A.ValueImag(i,k));
-		if (p==i)
-		  C(i) -= val_cplx*B(i);
+		p = A.IndexImag(i, k);
+		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		if (p == i)
+		  C(i) -= val_cplx * B(i);
 		else
 		  {
-		    C(i) -= val_cplx*B(p);
-		    C(p) -= val_cplx*B(i);
+		    C(i) -= val_cplx * B(p);
+		    C(p) -= val_cplx * B(i);
 		  }
 	      }
 	  }
@@ -251,25 +253,26 @@ namespace Seldon
       C.Fill(T3(0));
     else
       Mlt(beta, C);
-    int m = A.GetM(),n,p;
-    T1 val; T3 val_cplx;
-    if (alpha == T0(1,0))
+    int m = A.GetM(), n, p;
+    T1 val;
+    T3 val_cplx;
+    if (alpha == T0(1, 0))
       {
 	for (int i = 0 ; i < m ; i++)
 	  {
 	    n = A.GetRealRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexReal(i,k);
-		val = A.ValueReal(i,k);
-		C(i) += val*B(p);
+		p = A.IndexReal(i, k);
+		val = A.ValueReal(i, k);
+		C(i) += val * B(p);
 	      }
 	    n = A.GetImagRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexImag(i,k);
-		val = A.ValueImag(i,k);
-		C(i) += complex<T1>(0,val)*B(p);
+		p = A.IndexImag(i, k);
+		val = A.ValueImag(i, k);
+		C(i) += complex<T1>(0, val) * B(p);
 	      }
 	  }
       }
@@ -281,16 +284,16 @@ namespace Seldon
 	    n = A.GetRealRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexReal(i,k);
-		val_cplx = alpha*A.ValueReal(i,k);
-		C(i) += val_cplx*B(p);
+		p = A.IndexReal(i, k);
+		val_cplx = alpha * A.ValueReal(i, k);
+		C(i) += val_cplx * B(p);
 	      }
 	    n = A.GetImagRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexImag(i,k);
-		val_cplx = alpha*complex<T1>(0,A.ValueImag(i,k));
-		C(i) += val_cplx*B(p);
+		p = A.IndexImag(i, k);
+		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		C(i) += val_cplx * B(p);
 	      }
 	  }
       }
@@ -324,7 +327,8 @@ namespace Seldon
     else
       Mlt(beta, C);
     int m = A.GetM(),n,p;
-    T1 val; T3 val_cplx;
+    T1 val;
+    T3 val_cplx;
     if (alpha == T0(1))
       {
 	for (int i = 0 ; i < m ; i++)
@@ -332,16 +336,16 @@ namespace Seldon
 	    n = A.GetRealRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexReal(i,k);
-		val = A.ValueReal(i,k);
-		C(p) += val*B(i);
+		p = A.IndexReal(i, k);
+		val = A.ValueReal(i, k);
+		C(p) += val * B(i);
 	      }
 	    n = A.GetImagRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexImag(i,k);
-		val = A.ValueImag(i,k);
-		C(p) += complex<T1>(0,val)*B(i);
+		p = A.IndexImag(i, k);
+		val = A.ValueImag(i, k);
+		C(p) += complex<T1>(0, val) * B(i);
 	      }
 	  }
       }
@@ -353,16 +357,16 @@ namespace Seldon
 	    n = A.GetRealRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexReal(i,k);
-		val_cplx = alpha*A.ValueReal(i,k);
-		C(p) += val_cplx*B(i);
+		p = A.IndexReal(i, k);
+		val_cplx = alpha * A.ValueReal(i, k);
+		C(p) += val_cplx * B(i);
 	      }
 	    n = A.GetImagRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexImag(i,k);
-		val_cplx = alpha*complex<T1>(0,A.ValueImag(i,k));
-		C(p) += val_cplx*B(i);
+		p = A.IndexImag(i, k);
+		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		C(p) += val_cplx * B(i);
 	      }
 	  }
       }
@@ -383,7 +387,8 @@ namespace Seldon
     else
       Mlt(beta, C);
     int m = A.GetM(),n,p;
-    T1 val; T3 val_cplx;
+    T1 val;
+    T3 val_cplx;
     if (alpha == T0(1))
       {
 	for (int i = 0 ; i < m ; i++)
@@ -391,16 +396,16 @@ namespace Seldon
 	    n = A.GetRealRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexReal(i,k);
-		val = A.ValueReal(i,k);
-		C(p) += val*B(i);
+		p = A.IndexReal(i, k);
+		val = A.ValueReal(i, k);
+		C(p) += val * B(i);
 	      }
 	    n = A.GetImagRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexImag(i,k);
-		val = A.ValueImag(i,k);
-		C(p) -= complex<T1>(0,val)*B(i);
+		p = A.IndexImag(i, k);
+		val = A.ValueImag(i, k);
+		C(p) -= complex<T1>(0, val) * B(i);
 	      }
 	  }
       }
@@ -412,16 +417,16 @@ namespace Seldon
 	    n = A.GetRealRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexReal(i,k);
-		val_cplx = alpha*A.ValueReal(i,k);
-		C(p) += val_cplx*B(i);
+		p = A.IndexReal(i, k);
+		val_cplx = alpha * A.ValueReal(i, k);
+		C(p) += val_cplx * B(i);
 	      }
 	    n = A.GetImagRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.IndexImag(i,k);
-		val_cplx -= alpha*complex<T1>(0,A.ValueImag(i,k));
-		C(p) += val_cplx*B(i);
+		p = A.IndexImag(i, k);
+		val_cplx -= alpha * complex<T1>(0, A.ValueImag(i, k));
+		C(p) += val_cplx * B(i);
 	      }
 	  }
       }
@@ -450,7 +455,7 @@ namespace Seldon
     else
       Mlt(beta, C);
     
-    int m = A.GetM(),n,p;
+    int m = A.GetM(), n, p;
     T1 val;
     if (alpha == T0(1))
       {
@@ -459,15 +464,15 @@ namespace Seldon
 	    n = A.GetRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.Index(i,k);
-		val = A.Value(i,k);
+		p = A.Index(i, k);
+		val = A.Value(i, k);
 		
-		if (p==i)
-		  C(i) += val*B(i);
+		if (p == i)
+		  C(i) += val * B(i);
 		else
 		  {
-		    C(i) += val*B(p);
-		    C(p) += val*B(i);
+		    C(i) += val * B(p);
+		    C(p) += val * B(i);
 		  }
 	      }
 	  }
@@ -480,15 +485,15 @@ namespace Seldon
 	    n = A.GetRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.Index(i,k);
-		val = alpha*A.Value(i,k);
+		p = A.Index(i, k);
+		val = alpha * A.Value(i, k);
 		
 		if (p==i)
-		  C(i) += val*B(i);
+		  C(i) += val * B(i);
 		else
 		  {
-		    C(i) += val*B(p);
-		    C(p) += val*B(i);
+		    C(i) += val * B(p);
+		    C(p) += val * B(i);
 		  }
 	      }
 	  }
@@ -537,7 +542,7 @@ namespace Seldon
       C.Fill(T3(0));
     else
       Mlt(beta, C);
-    int m = A.GetM(),n,p;
+    int m = A.GetM(), n, p;
     T1 val;
     if (alpha == T0(1))
       {
@@ -546,23 +551,22 @@ namespace Seldon
 	    n = A.GetRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.Index(i,k);
-		val = A.Value(i,k);
-		C(i) += val*B(p);
+		p = A.Index(i, k);
+		val = A.Value(i, k);
+		C(i) += val * B(p);
 	      }
 	  }
       }
-    else
+    else // alpha != 1.
       {
-	// alpha different from 1
 	for (int i = 0 ; i < m ; i++)
 	  {
 	    n = A.GetRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.Index(i,k);
-		val = A.Value(i,k);
-		C(i) += alpha*val*B(p);
+		p = A.Index(i, k);
+		val = A.Value(i, k);
+		C(i) += alpha * val * B(p);
 	      }
 	  }
       }
@@ -595,7 +599,7 @@ namespace Seldon
       C.Fill(T3(0));
     else
       Mlt(beta, C);
-    int m = A.GetM(),n,p;
+    int m = A.GetM(), n, p;
     T1 val;
     if (alpha == T0(1))
       {
@@ -604,23 +608,22 @@ namespace Seldon
 	    n = A.GetRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.Index(i,k);
-		val = A.Value(i,k);
-		C(p) += val*B(i);
+		p = A.Index(i, k);
+		val = A.Value(i, k);
+		C(p) += val * B(i);
 	      }
 	  }
       }
-    else
+    else // alpha != 1.
       {
-	// alpha different from 1
 	for (int i = 0 ; i < m ; i++)
 	  {
 	    n = A.GetRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
-		p = A.Index(i,k);
-		val = A.Value(i,k);
-		C(p) += alpha*val*B(i);
+		p = A.Index(i, k);
+		val = A.Value(i, k);
+		C(p) += alpha * val * B(i);
 	      }
 	  }
       }
@@ -648,7 +651,7 @@ namespace Seldon
 	n = A.GetRowSize(i);
 	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
-	  value(j) = T2(A.Value(i,j));
+	  value(j) = T2(A.Value(i, j));
 	
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetInd(i), value.GetData());
@@ -668,7 +671,7 @@ namespace Seldon
 	n = A.GetRowSize(i);
 	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
-	  value(j) = A.Value(i,j);
+	  value(j) = A.Value(i, j);
 	
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetInd(i), value.GetData());
@@ -689,17 +692,18 @@ namespace Seldon
       {
 	n = A.GetRealRowSize(i);
 	ni = A.GetImagRowSize(i);
-	value.Reallocate(n+ni); index.Reallocate(n+ni);
+	value.Reallocate(n + ni);
+	index.Reallocate(n + ni);
 	for (int j = 0; j < n; j++)
 	  {
-	    value(j) = A.ValueReal(i,j);
-	    index(j) = A.IndexReal(i,j);
+	    value(j) = A.ValueReal(i, j);
+	    index(j) = A.IndexReal(i, j);
 	  }
 	
 	for (int j = 0; j < ni; j++)
 	  {
-	    value(j+n) = complex<T2>(0,1)*A.ValueImag(i,j);
-	    index(j+n) = A.IndexImag(i,j);
+	    value(j+n) = complex<T2>(0, 1) * A.ValueImag(i, j);
+	    index(j+n) = A.IndexImag(i, j);
 	  }
 	
 	Mlt(alpha, value);
@@ -720,14 +724,14 @@ namespace Seldon
 	n = A.GetRealRowSize(i);
 	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
-	  value(j) = A.ValueReal(i,j);
+	  value(j) = A.ValueReal(i, j);
 	
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetRealInd(i), value.GetData());
 	n = A.GetImagRowSize(i);
 	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
-	  value(j) = complex<T1>(0,1)*A.ValueImag(i,j);
+	  value(j) = complex<T1>(0, 1) * A.ValueImag(i, j);
 	
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetImagInd(i), value.GetData());
@@ -747,14 +751,14 @@ namespace Seldon
 	n = A.GetRealRowSize(i);
 	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
-	  value(j) = A.ValueReal(i,j);
+	  value(j) = A.ValueReal(i, j);
 	
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetRealInd(i), value.GetData());
 	n = A.GetImagRowSize(i);
 	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
-	  value(j) = complex<T1>(0,1)*A.ValueImag(i,j);
+	  value(j) = complex<T1>(0, 1) * A.ValueImag(i, j);
 	
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetImagInd(i), value.GetData());
@@ -773,17 +777,18 @@ namespace Seldon
       {
 	n = A.GetRealRowSize(i);
 	ni = A.GetImagRowSize(i);
-	value.Reallocate(n+ni); index.Reallocate(n+ni);
+	value.Reallocate(n + ni);
+	index.Reallocate(n + ni);
 	for (int j = 0; j < n; j++)
 	  {
-	    value(j) = A.ValueReal(i,j);
-	    index(j) = A.IndexReal(i,j);
+	    value(j) = A.ValueReal(i, j);
+	    index(j) = A.IndexReal(i, j);
 	  }
 	
 	for (int j = 0; j < n; j++)
 	  {
-	    value(n+j) = complex<T2>(0,1)*A.ValueImag(i,j);
-	    index(n+j) = A.IndexImag(i,j);
+	    value(n+j) = complex<T2>(0, 1) * A.ValueImag(i, j);
+	    index(n+j) = A.IndexImag(i, j);
 	  }
 	
 	Mlt(alpha, value);
@@ -805,23 +810,27 @@ namespace Seldon
     IVect ind_row;
     for (int i = 0 ; i < m ; i++)
       {
-	n1 = A.GetRowSize(i); n2 = B.GetRowSize(i); size_row = n1+n2;
-	val_row.Reallocate(size_row); ind_row.Reallocate(size_row);
-	for (int j=0 ; j<n1 ; j++)
+	n1 = A.GetRowSize(i);
+	n2 = B.GetRowSize(i);
+	size_row = n1 + n2;
+	val_row.Reallocate(size_row);
+	ind_row.Reallocate(size_row);
+	for (int j = 0 ; j < n1 ; j++)
 	  {
-	    ind_row(j) = A.Index(i,j);
-	    val_row(j) = alpha*complex<T3>(A.Value(i,j), 0);
+	    ind_row(j) = A.Index(i, j);
+	    val_row(j) = alpha*complex<T3>(A.Value(i, j), 0);
 	  }
 	
-	for (int j=0 ; j<n2 ; j++)
+	for (int j = 0 ; j < n2 ; j++)
 	  {
-	    ind_row(j+n1) = B.Index(i,j);
-	    val_row(j+n1) = alpha*complex<T3>(B.Value(i,j));
+	    ind_row(j+n1) = B.Index(i, j);
+	    val_row(j+n1) = alpha * complex<T3>(B.Value(i, j));
 	  }
 	C.AddInteractionRow(i, size_row, ind_row, val_row);
       }
   }
   
+
   // C = C + complex(A,B)
   template<class T0, class T1, class T2, class T3,
 	   class Allocator1, class Allocator2, class Allocator3>
@@ -830,23 +839,26 @@ namespace Seldon
 	   const Matrix<T2, Symmetric, ArrayRowSymSparse, Allocator2>& B,
 	   Matrix<complex<T3>, Symmetric, ArrayRowSymSparse, Allocator3>& C)
   {
-    int m = B.GetM(),n1,n2,size_row;;
+    int m = B.GetM(), n1, n2, size_row;
     Vector<complex<T3>, Vect_Full, Allocator3> val_row;
     IVect ind_row;
     for (int i = 0 ; i < m ; i++)
       {
-	n1 = A.GetRowSize(i); n2 = B.GetRowSize(i); size_row = n1+n2;
-	val_row.Reallocate(size_row); ind_row.Reallocate(size_row);
-	for (int j=0 ; j<n1 ; j++)
+	n1 = A.GetRowSize(i);
+	n2 = B.GetRowSize(i);
+	size_row = n1 + n2;
+	val_row.Reallocate(size_row);
+	ind_row.Reallocate(size_row);
+	for (int j = 0 ; j < n1 ; j++)
 	  {
-	    ind_row(j) = A.Index(i,j);
-	    val_row(j) = alpha*complex<T3>(A.Value(i,j),0);
+	    ind_row(j) = A.Index(i, j);
+	    val_row(j) = alpha * complex<T3>(A.Value(i, j), 0);
 	  }
 	
-	for (int j=0 ; j<n2 ; j++)
+	for (int j = 0 ; j < n2 ; j++)
 	  {
-	    ind_row(j+n1) = B.Index(i,j);
-	    val_row(j+n1) = alpha*complex<T3>(B.Value(i,j));
+	    ind_row(j+n1) = B.Index(i, j);
+	    val_row(j+n1) = alpha * complex<T3>(B.Value(i, j));
 	  }
 	
 	C.AddInteractionRow(i, size_row, ind_row, val_row);
@@ -871,14 +883,14 @@ namespace Seldon
 	value.Reallocate(n+ni);
 	for (int j = 0; j < n; j++)
 	  {
-	    value(j) = A.Value(i,j);
-	    index(j) = A.Index(i,j);
+	    value(j) = A.Value(i, j);
+	    index(j) = A.Index(i, j);
 	  }
 	
 	for (int j = 0; j < ni; j++)
 	  {
-	    value(n+j) = complex<T3>(0,1)*B.Value(i,j);
-	    index(n+j) = B.Index(i,j);
+	    value(n+j) = complex<T3>(0, 1) * B.Value(i, j);
+	    index(n+j) = B.Index(i, j);
 	  }
 	
 	Mlt(alpha, value);
@@ -896,22 +908,23 @@ namespace Seldon
 	   Matrix<T3, General, ArrayRowComplexSparse, Allocator3>& C)
   {
     int m = B.GetM(), n, ni;
-    Vector<complex<T3> > value; IVect index;
+    Vector<complex<T3> > value;
+    IVect index;
     for (int i = 0 ; i < m ; i++)
       {
 	n = A.GetRowSize(i);
 	ni = B.GetRowSize(i);
-	value.Reallocate(n+ni);
+	value.Reallocate(n + ni);
 	for (int j = 0; j < n; j++)
 	  {
-	    value(j) = A.Value(i,j);
-	    index(j) = A.Index(i,j);
+	    value(j) = A.Value(i, j);
+	    index(j) = A.Index(i, j);
 	  }
 	
 	for (int j = 0; j < ni; j++)
 	  {
-	    value(n+j) = complex<T3>(0,1)*B.Value(i,j);
-	    index(n+j) = B.Index(i,j);
+	    value(n+j) = complex<T3>(0, 1) * B.Value(i, j);
+	    index(n+j) = B.Index(i, j);
 	  }
 	
 	Mlt(alpha, value);
@@ -1004,7 +1017,8 @@ namespace Seldon
 	   const Matrix<T2, Prop2, Storage2, Allocator2>& B,
 	   Matrix<T3, Prop3, Storage3, Allocator3>& C)
   {
-    int m = A.GetM(); int n = B.GetN();
+    int m = A.GetM();
+    int n = B.GetN();
     C.Reallocate(m,n);
     T3 val;
     for (int i = 0; i < m; i++)
@@ -1013,10 +1027,10 @@ namespace Seldon
 	  val = T3(0);
 	  for (int ind = 0; ind < A.GetRowSize(i); ind++)
 	    {
-	      int k = A.Index(i,ind);
-	      val += A.Value(i,ind)*B(k,j);
+	      int k = A.Index(i, ind);
+	      val += A.Value(i, ind) * B(k, j);
 	    }
-	  C(i,j) = val;
+	  C(i, j) = val;
 	}
   }
   

@@ -38,8 +38,9 @@ namespace Seldon
   /*!
     Sparse matrices are defined by: (1) the number of rows and columns;
     (2) the number of non-zero entries; (3) an array of vectors ind
-    ind(i) is a vector, which contains indices of columns of the row i
-    (4) an array of vectors val : val(i) is a vector, which contains values of the row i
+    ind(i) is a vector, which contains indices of columns of the row i;
+    (4) an array of vectors val : val(i) is a vector, which contains values of
+    the row i
   */
   template <class T, class Prop, class Storage,
 	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
@@ -85,16 +86,16 @@ namespace Seldon
     
     // Memory management.
     int GetMemorySize() const;
-    void Reallocate(int i,int j);
-    void Resize(int i,int j);
-    void ReallocateRealRow(int i,int j);
-    void ReallocateImagRow(int i,int j);
-    void ResizeRealRow(int i,int j);
-    void ResizeImagRow(int i,int j);
-    void SwapRealRow(int i,int i_);
-    void SwapImagRow(int i,int i_);
-    void ReplaceIndexRealRow(int i,IVect& new_index);
-    void ReplaceIndexImagRow(int i,IVect& new_index);
+    void Reallocate(int i, int j);
+    void Resize(int i, int j);
+    void ReallocateRealRow(int i, int j);
+    void ReallocateImagRow(int i, int j);
+    void ResizeRealRow(int i, int j);
+    void ResizeImagRow(int i, int j);
+    void SwapRealRow(int i, int i_);
+    void SwapImagRow(int i, int i_);
+    void ReplaceIndexRealRow(int i, IVect& new_index);
+    void ReplaceIndexImagRow(int i, IVect& new_index);
     
     // Basic methods.
     int GetM() const;
@@ -185,7 +186,8 @@ namespace Seldon
 			   const Vector<complex<T>, Vect_Full, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<complex<T>, Vect_Full, Alloc1>& val);
+			      const Vector<complex<T>, Vect_Full,
+			      Alloc1>& val);
   };
   
   
@@ -208,7 +210,8 @@ namespace Seldon
 			   const Vector<complex<T>, Vect_Full, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<complex<T>, Vect_Full, Alloc1>& val);
+			      const Vector<complex<T>, Vect_Full,
+			      Alloc1>& val);
   };
   
 } // namespace Seldon
