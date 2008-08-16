@@ -79,13 +79,6 @@ namespace Seldon
 	length23_ = 0;
 	data_ = NULL;
       }
-    if (data_ == NULL)
-      {
-	length1_ = 0;
-	length2_ = 0;
-	length3_ = 0;
-	length23_ = 0;
-      }
     if (data_ == NULL && i != 0 && j != 0 && k != 0)
       throw NoMemory("Array3D::Array3D(int, int, int)",
 		     string("Unable to allocate memory for an array of size ")
@@ -179,13 +172,6 @@ namespace Seldon
 	    length3_ = 0;
 	    length23_ = 0;
 	    data_ = NULL;
-	  }
-	if (data_ == NULL)
-	  {
-	    length1_ = 0;
-	    length2_ = 0;
-	    length3_ = 0;
-	    length23_ = 0;
 	  }
 	if (data_ == NULL && i != 0 && j != 0 && k != 0)
 	  throw NoMemory("Array3D::Reallocate(int, int, int)",
