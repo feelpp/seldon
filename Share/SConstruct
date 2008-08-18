@@ -86,7 +86,7 @@ linker = create_variable("linker", "$CXX")
 #############
 
 
-# The compilers and the linker may be changed with command line options.
+# The compiler and the linker may be changed with command line options.
 cpp_compiler = ARGUMENTS.get("cpp", cpp_compiler)
 linker = ARGUMENTS.get("link", linker)
 
