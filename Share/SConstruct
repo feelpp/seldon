@@ -141,7 +141,7 @@ if cpp_compiler is not None:
     env.Replace(CXX = cpp_compiler)
 
 # In case of GNU compilers, a few options may be added.
-if len(env["CXX"]) > 3 and env["CXX"][:3] == "g++" \
+if len(env["CXX"]) >= 3 and env["CXX"][:3] == "g++" \
        and ARGUMENTS["mode_cpp"] == "strict":
     compilation_option += " -Wall -ansi -pedantic"
 env.Replace(CCFLAGS = compilation_option)
