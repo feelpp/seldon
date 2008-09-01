@@ -41,10 +41,13 @@ namespace Seldon
     \param comment comment associated with the error.
   */
   Error::Error(string function = "", string comment = "")  throw():
-    description_("An undefined error occurred"), function_(function),
-    comment_(comment)
+    description_("ERROR!\nAn undefined error occurred"),
+    function_(function), comment_(comment)
   {
-    cout << "ERROR!" << endl;
+#ifdef SELDON_WITH_ABORT
+    this->CoutWhat();
+    abort();
+#endif
   }
 
 
@@ -55,9 +58,9 @@ namespace Seldon
     \param comment comment associated with the error.
   */
   Error::Error(string description, string function, string comment)  throw():
-    description_(description), function_(function), comment_(comment)
+    description_("ERROR!\n" + description),
+    function_(function), comment_(comment)
   {
-    cout << "ERROR!" << endl;
   }
 
 
@@ -120,6 +123,10 @@ namespace Seldon
   NoMemory::NoMemory(string function = "", string comment = "")  throw():
     Error("Out of memory", function, comment)
   {
+#ifdef SELDON_WITH_ABORT
+    this->CoutWhat();
+    abort();
+#endif
   }
 
 
@@ -137,6 +144,10 @@ namespace Seldon
   WrongDim::WrongDim(string function = "", string comment = "")  throw():
     Error("Wrong dimensions involved", function, comment)
   {
+#ifdef SELDON_WITH_ABORT
+    this->CoutWhat();
+    abort();
+#endif
   }
 
 
@@ -154,6 +165,10 @@ namespace Seldon
   WrongIndex::WrongIndex(string function = "", string comment = "")  throw():
     Error("Index out of range", function, comment)
   {
+#ifdef SELDON_WITH_ABORT
+    this->CoutWhat();
+    abort();
+#endif
   }
 
 
@@ -171,6 +186,10 @@ namespace Seldon
   WrongRow::WrongRow(string function = "", string comment = "")  throw():
     Error("Row index out of range", function, comment)
   {
+#ifdef SELDON_WITH_ABORT
+    this->CoutWhat();
+    abort();
+#endif
   }
 
 
@@ -188,6 +207,10 @@ namespace Seldon
   WrongCol::WrongCol(string function = "", string comment = "")  throw():
     Error("Column index out of range", function, comment)
   {
+#ifdef SELDON_WITH_ABORT
+    this->CoutWhat();
+    abort();
+#endif
   }
 
 
@@ -205,6 +228,10 @@ namespace Seldon
   IOError::IOError(string function = "", string comment = "")  throw():
     Error("Error while performing an I/O operation", function, comment)
   {
+#ifdef SELDON_WITH_ABORT
+    this->CoutWhat();
+    abort();
+#endif
   }
 
 
@@ -224,6 +251,10 @@ namespace Seldon
 			   string comment = "")
     throw(): Error("Error returned by Lapack", function, comment), info_(info)
   {
+#ifdef SELDON_WITH_ABORT
+    this->CoutWhat();
+    abort();
+#endif
   }
 
 
