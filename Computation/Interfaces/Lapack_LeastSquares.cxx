@@ -23,8 +23,8 @@ namespace Seldon
 {
   
   
-  /////////////
-  // GETQR   //
+  ///////////
+  // GETQR //
   
   
   /*** ColMajor ***/
@@ -132,12 +132,12 @@ namespace Seldon
   }
   
   
-  // GETQR   //
-  /////////////
+  // GETQR //
+  ///////////
   
   
-  ///////////////////
-  // GETQR_PIVOT   //
+  /////////////////
+  // GETQR_PIVOT //
   
   
   /*** ColMajor ***/
@@ -164,8 +164,8 @@ namespace Seldon
   /////////////////
 
   
-  ///////////////////
-  // GETQ_FROMQR   //
+  /////////////////
+  // GETQ_FROMQR //
   
   
   /*** ColMajor ***/
@@ -228,8 +228,8 @@ namespace Seldon
   /////////////////
   
   
-  /////////////
-  // GETLQ   //
+  ///////////
+  // GETLQ //
   
   
   /*** ColMajor ***/
@@ -337,12 +337,12 @@ namespace Seldon
   }
 
   
-  // GETLQ   //
-  /////////////
+  // GETLQ //
+  ///////////
  
   
-  ///////////////////
-  // MLTQ_FROMQR   //
+  /////////////////
+  // MLTQ_FROMQR //
   
   
   /*** ColMajor ***/
