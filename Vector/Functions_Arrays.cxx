@@ -1,4 +1,53 @@
-#ifndef FILE_SELDON_FUNCTIONS_ARRAYS_CXX
+// Copyright (C) 2001-2008 Vivien Mallet
+//
+// This file is part of Seldon library.
+// Seldon library provides matrices and vectors structures for
+// linear algebra.
+//
+// Seldon is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// Seldon is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License (file "license") for more details.
+//
+// For more information, please see the Seldon home page:
+//     http://spacetown.free.fr/lib/seldon/
+
+#ifndef SELDON_FILE_FUNCTIONS_ARRAYS_CXX
+
+/*
+  Functions defined in this file
+  
+  QuickSort(m, n, X);
+  QuickSort(m, n, X, Y);
+  QuickSort(m, n, X, Y, Z);
+
+  MergeSort(m, n, X);
+  MergeSort(m, n, X, Y);
+  MergeSort(m, n, X, Y, Z);
+
+  Sort(m, n, X);
+  Sort(m, n, X, Y);
+  Sort(m, n, X, Y, Z);
+  Sort(m, X);
+  Sort(m, X, Y);
+  Sort(m, X, Y, Z);
+  Sort(X);
+  Sort(X, Y);
+  Sort(X, Y, Z);
+
+  Assemble(m, X);
+  Assemble(m, X, Y);
+  
+  RemoveDuplicate(m, X);
+  RemoveDuplicate(m, X, Y);
+  RemoveDuplicate(X);
+  RemoveDuplicate(X, Y);
+*/
 
 namespace Seldon
 {
@@ -534,112 +583,50 @@ namespace Seldon
     n = nb;
   }
   
+  
+  //! Sorts and removes duplicate entries of a vector.
+  /*!
+    Sorting operations of 'Node' affects 'Node2'.
+  */
+  template<class T, class Storage1, class Allocator1>
+  void RemoveDuplicate(int& n, Vector<T, Storage1, Allocator1>& Node)
+  {
+    Assemble(n, Node);
+  }
+  
+  
+  //! Sorts and removes duplicate entries of a vector.
+  /*!
+    Sorting operations of 'Node' affects 'Node2'.
+  */
+  template<class T, class Storage1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  void RemoveDuplicate(Vector<T, Storage1, Allocator1>& Node,
+		       Vector<T2, Storage2, Allocator2>& Node2)
+  {
+    int n = Node.GetM();
+    if (n <= 1)
+      return;
+    
+    RemoveDuplicate(n, Node, Node2);
+    Node.Resize(n);
+    Node2.Resize(n);
+  }
 
-  //! Sorts 'a' and 'b'.
-  template<class T>
-  inline void Sort(T& a, T& b)
+  
+  //! Sorts and removes duplicate entries of a vector.
+  /*!
+    Sorting operations of 'Node' affects 'Node2'.
+  */
+  template<class T, class Storage1, class Allocator1>
+  void RemoveDuplicate(Vector<T, Storage1, Allocator1>& Node)
   {
-    if (b < a)
-      {
-	T temp = a;
-	a = b;
-	b = temp;
-      }
-  }
-  
-  
-  //! Sorts 'a', 'b' and 'c'.
-  template<class T>
-  inline void Sort(T& a, T& b, T& c)
-  {
-    if (b < a)
-      {
-	T temp = a;
-	a = b;
-	b = temp;
-      }
-    if (c < a)
-      {
-	T temp = a;
-	a = c;
-	T temp2 = b;
-	b = temp;
-	c = temp2;
-      }
-    else if (c < b)
-      {
-	T temp = c;
-	c = b;
-	b = temp;
-      }
-  }
-  
-  
-  //! Sorts 'i', 'j', 'k' and 'l'.
-  template<class T>
-  inline void Sort(T& i, T& j, T& k, T& l)
-  {
-    T i0 = i, j0 = j, k0 = k, l0 = l;
-    if (i > j)
-      {
-	i0 = j;
-	j0 = i;
-      }
+    int n = Node.GetM();
+    if (n <= 1)
+      return;
     
-    if (k > l)
-      {
-	k0 = l;
-	l0 = k;
-      }
-    
-    if (i0 < k0)
-      {
-	i = i0;
-	if (j0 < l0)
-	  {
-	    l = l0;
-	    if (j0 < k0)
-	      {
-		j = j0;
-		k = k0;
-	      }
-	    else
-	      {
-		j = k0;
-		k = j0;
-	      }
-	  }
-	else
-	  {
-	    j = k0;
-	    k = l0;
-	    l = j0;
-	  }
-      }
-    else
-      {
-	i = k0;
-	if (l0 < j0)
-	  {
-	    l = j0;
-	    if (l0 < i0)
-	      {
-		j = l0;
-		k = i0;
-	      }
-	    else
-	      {
-		j = i0;
-		k = l0;
-	      }
-	  }
-	else
-	  {
-	    j = i0;
-	    k = j0;
-	    l = l0;
-	  }
-      }
+    Assemble(n, Node);
+    Node.Resize(n);
   }
   
   
@@ -755,40 +742,7 @@ namespace Seldon
   ////////////
   
   
-  //! Appends two vectors X & Y -> X.
-  template<class T, class Storage1, class Allocator1,
-	   class Storage2, class Allocator2 >
-  void Append(Vector<T, Storage1, Allocator1>& X, int n,
-	      const Vector<T, Storage2, Allocator2>& Y)
-  {
-    int m = X.GetM();
-    if (n <= 0)
-      return;
-    
-    int length = m + n;
-    Vector<T, Storage1, Allocator1> X_new(length);
-    for (int i = 0; i < m; i++)
-      X_new(i) = X(i);
-      
-    for (int i = 0; i < n; i++)
-      X_new(m+i) = Y(i);
-    
-    X.SetData(length, X_new.GetData());
-    X_new.Nullify();
-  }
-  
-  
-  //! Appends two vectors X & Y -> X.
-  template<class T, class Storage1, class Allocator1,
-	   class Storage2, class Allocator2 >
-  void Append(Vector<T, Storage1, Allocator1>& X,
-	      const Vector<T, Storage2, Allocator2>& Y)
-  {
-    Append(X, Y.GetM(), Y);
-  }
+} // namespace Seldon
 
-  
-} // end namespace
-
-#define FILE_SELDON_FUNCTIONS_ARRAYS_CXX
+#define SELDON_FILE_FUNCTIONS_ARRAYS_CXX
 #endif

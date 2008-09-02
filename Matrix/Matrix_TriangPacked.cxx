@@ -579,11 +579,34 @@ namespace Seldon
     this->allocator_.memoryset(this->data_, char(0),
 			       this->GetDataSize() * sizeof(value_type));
     T one(1);
-    int index(0);
-    for (int i = 0; i < min(this->m_, this->n_); i++)
+    bool storage_col = (Storage::GetFirst(1,0) == 0);
+    int index(-1);
+    if ((Storage::UpLo() && storage_col)||(!Storage::UpLo() && !storage_col))
       {
-	index += i;
-	this->data_[index] = one;
+	int index(-1);
+	for (int i = 0; i < min(this->m_, this->n_); i++)
+	  {
+	    index += i+1;
+	    this->data_[index] = one;
+	  }
+      }
+    else if (Storage::UpLo() && !storage_col)
+      {
+	int index(0);
+	for (int i = 0; i < min(this->m_, this->n_); i++)
+	  {
+	    this->data_[index] = one;
+	    index += this->m_-i;
+	  }
+      }
+    else if (!Storage::UpLo() && storage_col)
+      {
+	int index(0);
+	for (int i = 0; i < min(this->m_, this->n_); i++)
+	  {
+	    this->data_[index] = one;
+	    index += this->n_-i;
+	  }
       }
   }
 
@@ -744,7 +767,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_TriangPacked<T, Prop, Storage, Allocator>
-  ::Write(ofstream& FileStream) const
+  ::Write(ostream& FileStream) const
   {
     
 #ifdef SELDON_CHECK_IO
@@ -812,7 +835,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_TriangPacked<T, Prop, Storage, Allocator>
-  ::WriteText(ofstream& FileStream) const
+  ::WriteText(ostream& FileStream) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -879,7 +902,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_TriangPacked<T, Prop, Storage, Allocator>
-  ::Read(ifstream& FileStream)
+  ::Read(istream& FileStream)
   {
 
 #ifdef SELDON_CHECK_IO
@@ -907,7 +930,107 @@ namespace Seldon
 #endif
 
   }
+  
+  
+  //! Reads the matrix from a file.
+  /*!
+    Reads a matrix stored in text format in a file.
+    \param FileName input file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_TriangPacked<T, Prop, Storage, Allocator>::ReadText(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
 
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_Pointers::ReadText(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+    
+    this->ReadText(FileStream);
+
+    FileStream.close();
+  }
+  
+  
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix in text format from an input stream.
+    \param FileStream input stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_TriangPacked<T, Prop, Storage, Allocator>
+  ::ReadText(istream& FileStream)
+  {
+    // clears previous matrix
+    Clear();
+    
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
+                    "Stream is not ready.");
+#endif
+    
+    // we read first line
+    string line;
+    getline(FileStream, line);
+
+    if (FileStream.fail())
+      {
+	// empty file ?
+	return;
+      }
+    
+    // converting first line into a vector 
+    istringstream line_stream(line);
+    Vector<T> first_row;
+    first_row.ReadText(line_stream);
+    
+    // and now the other rows
+    Vector<T> other_rows;
+    other_rows.ReadText(FileStream);
+    
+    // number of rows and columns
+    int n = first_row.GetM();
+    int m = 1 + other_rows.GetM()/n;
+    
+#ifdef SELDON_CHECK_IO
+    // Checking number of elements
+    if (other_rows.GetM() != (m-1)*n)
+      throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
+                    "The file should contain same number of columns.");
+#endif
+    
+    this->Reallocate(m,n);
+    // filling matrix
+    for (int j = 0; j < n; j++)
+      this->Val(0, j) = first_row(j);
+    
+    int nb = 0;
+    if (Storage::UpLo())
+      for (int i = 1; i < m; i++)
+	{
+	  for (int j = 0; j < i; j++)
+	    nb++;
+	  
+	  for (int j = i; j < n; j++)
+	    this->Val(i, j) = other_rows(nb++); 
+	}
+    else
+      for (int i = 1; i < m; i++)
+	{
+	  for (int j = 0; j <= i; j++)
+	    this->Val(i, j) = other_rows(nb++); 
+	  
+	  for (int j = i+1; j < n; j++)
+	    nb++;
+	}
+  }
+  
 
 
   ///////////////////////////////
@@ -990,7 +1113,23 @@ namespace Seldon
 
     return *this;
   }
-
+  
+  
+  //! Multiplies the matrix by a given value.
+  /*!
+    \param x multiplication coefficient
+  */
+  template <class T, class Prop, class Allocator>
+  template <class T0>
+  Matrix<T, Prop, ColUpTriangPacked, Allocator>&
+  Matrix<T, Prop, ColUpTriangPacked, Allocator>::operator*= (const T0& x)
+  {
+    for (int i = 0; i < this->GetDataSize();i++)
+      this->data_[i] *= x;
+    
+    return *this;
+  }
+  
 
 
   ///////////////////////////////
@@ -1082,7 +1221,23 @@ namespace Seldon
     return *this;
   }
 
-
+  
+  //! Multiplies the matrix by a given value.
+  /*!
+    \param x multiplication coefficient
+  */
+  template <class T, class Prop, class Allocator>
+  template <class T0>
+  Matrix<T, Prop, ColLoTriangPacked, Allocator>&
+  Matrix<T, Prop, ColLoTriangPacked, Allocator>::operator*= (const T0& x)
+  {
+    for (int i = 0; i < this->GetDataSize();i++)
+      this->data_[i] *= x;
+    
+    return *this;
+  }
+  
+  
 
   ///////////////////////////////
   // MATRIX<ROWUPTRIANGPACKED> //
@@ -1173,7 +1328,23 @@ namespace Seldon
     return *this;
   }
 
-
+  
+  //! Multiplies the matrix by a given value.
+  /*!
+    \param x multiplication coefficient
+  */
+  template <class T, class Prop, class Allocator>
+  template <class T0>
+  Matrix<T, Prop, RowUpTriangPacked, Allocator>&
+  Matrix<T, Prop, RowUpTriangPacked, Allocator>::operator*= (const T0& x)
+  {
+    for (int i = 0; i < this->GetDataSize();i++)
+      this->data_[i] *= x;
+    
+    return *this;
+  }
+  
+  
 
   ///////////////////////////////
   // MATRIX<ROWLOTRIANGPACKED> //
@@ -1256,7 +1427,22 @@ namespace Seldon
     return *this;
   }
 
-
+  
+  //! Multiplies the matrix by a given value.
+  /*!
+    \param x multiplication coefficient
+  */
+  template <class T, class Prop, class Allocator>
+  template <class T0>
+  Matrix<T, Prop, RowLoTriangPacked, Allocator>&
+  Matrix<T, Prop, RowLoTriangPacked, Allocator>::operator*= (const T0& x)
+  {
+    for (int i = 0; i < this->GetDataSize();i++)
+      this->data_[i] *= x;
+    
+    return *this;
+  }
+  
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_TRIANGPACKED_CXX

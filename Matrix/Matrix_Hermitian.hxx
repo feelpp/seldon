@@ -94,12 +94,14 @@ namespace Seldon
 
     // Input/output functions.
     void Write(string FileName) const;
-    void Write(ofstream& FileStream) const;
+    void Write(ostream& FileStream) const;
     void WriteText(string FileName) const;
-    void WriteText(ofstream& FileStream) const;
+    void WriteText(ostream& FileStream) const;
     void Read(string FileName);
-    void Read(ifstream& FileStream);
-
+    void Read(istream& FileStream);
+    void ReadText(string FileName);
+    void ReadText(istream& FileStream);
+    
   };
 
 
@@ -114,6 +116,9 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, ColHerm, Allocator>& operator= (const T0& x);
+    template<class T0>
+    Matrix<T, Prop, ColHerm, Allocator>& operator*= (const T0& x);
+    
   };
 
 
@@ -128,6 +133,9 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, RowHerm, Allocator>& operator= (const T0& x);
+    template<class T0>
+    Matrix<T, Prop, RowHerm, Allocator>& operator*= (const T0& x);
+    
   };
 
 

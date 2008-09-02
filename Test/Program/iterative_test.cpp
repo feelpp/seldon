@@ -123,7 +123,7 @@ void MltAdd(const T& alpha, const class_SeldonTrans& Trans,
   Add(alpha, C, Y);
 }
 
-
+// Y = A*X
 template<class T, class Vector>
 void Mlt(const BlackBoxMatrix<T>& A, const Vector& X, Vector& Y)
 {
@@ -131,7 +131,7 @@ void Mlt(const BlackBoxMatrix<T>& A, const Vector& X, Vector& Y)
   MltAdd(T(1), A, X, T(0), Y);
 }
 
-
+// Y = transpose(A)*X
 template<class T, class Vector>
 void Mlt(const class_SeldonTrans& Trans, const BlackBoxMatrix<T>& A,
 	 const Vector& X, Vector& Y)

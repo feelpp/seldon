@@ -193,6 +193,10 @@ namespace Seldon
   // Full vector.
   template <class T, class Allocator>
   class Vector<T, Vect_Full, Allocator>;
+  
+  // Sparse vector.
+  template <class T, class Allocator>
+  class Vector<T, Vect_Sparse, Allocator>;
 
   // Matrix class - specialized for each used type.
   template <class T, class Prop = General,
@@ -263,6 +267,38 @@ namespace Seldon
   // row-major symmetric complex sparse matrix.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, RowSymComplexSparse, Allocator>;
+  
+  // column-major sparse matrix.
+  template <class T, class Prop, class Allocator>
+  class Matrix<T, Prop, ArrayColSparse, Allocator>;
+
+  // row-major sparse matrix.
+  template <class T, class Prop, class Allocator>
+  class Matrix<T, Prop, ArrayRowSparse, Allocator>;
+
+  // column-major symmetric sparse matrix.
+  template <class T, class Prop, class Allocator>
+  class Matrix<T, Prop, ArrayColSymSparse, Allocator>;
+
+  // row-major symmetric sparse matrix.
+  template <class T, class Prop, class Allocator>
+  class Matrix<T, Prop, ArrayRowSymSparse, Allocator>;
+
+  // column-major complex sparse matrix.
+  template <class T, class Prop, class Allocator>
+  class Matrix<T, Prop, ColComplexSparse, Allocator>;
+
+  // row-major complex sparse matrix.
+  template <class T, class Prop, class Allocator>
+  class Matrix<T, Prop, ArrayRowComplexSparse, Allocator>;
+
+  // column-major symmetric complex sparse matrix.
+  template <class T, class Prop, class Allocator>
+  class Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>;
+
+  // row-major symmetric complex sparse matrix.
+  template <class T, class Prop, class Allocator>
+  class Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>;
 
   // 3D array.
   template <class T, class Allocator>
@@ -286,6 +322,7 @@ namespace Seldon
 #include "Matrix/Matrix_HermPacked.hxx"
 #include "Matrix/Matrix_TriangPacked.hxx"
 #include "Vector/Vector.hxx"
+#include "Vector/SparseVector.hxx"
 #include "Matrix/Functions.hxx"
 
 // Lapack interface.

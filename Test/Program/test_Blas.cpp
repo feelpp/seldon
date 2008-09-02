@@ -2,9 +2,6 @@
 #include "Seldon.hxx"
 using namespace Seldon;
 
-#include <iostream>
-using namespace std;
-
 int main()
 {
 

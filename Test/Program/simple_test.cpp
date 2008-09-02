@@ -1,8 +1,7 @@
+#define SELDON_DEFAULT_ALLOCATOR NewAlloc
 #include "Seldon.hxx"
-using namespace Seldon;
 
-#include <iostream>
-using namespace std;
+using namespace Seldon;
 
 int main()
 {
@@ -14,7 +13,7 @@ int main()
 
   cout << "Vector: " << V << endl;
 
-  V.Append(19);
+  V.PushBack(19);
 
   cout << "Vector: " << V << endl;
 

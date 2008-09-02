@@ -59,7 +59,11 @@ namespace Seldon
   class Vect_Full
   {
   };
-
+  
+  
+  class Vect_Sparse
+  {
+  };
 
 
   ////////////

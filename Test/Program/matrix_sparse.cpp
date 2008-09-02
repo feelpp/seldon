@@ -21,8 +21,11 @@ int main(int argc, char** argv)
     A.ReallocateRow(irow, nb_values_row);
     A.Index(irow, 0) = 3; A.Value(irow, 0) = -2.0;
     A.Index(irow, 1) = 1; A.Value(irow, 1) = 3.0;
-    // values not sorted you have to call
+    // values not sorted you have to call AssembleRow
     A.AssembleRow(irow); DISP(A);
+    
+    // with reallocate, A is empty with m columns, n rows
+    A.Reallocate(m,n); DISP(A);
     
     irow = 2;
     A.ReallocateRow(irow, nb_values_row);
@@ -66,7 +69,45 @@ int main(int argc, char** argv)
 
     cout << "Number of entries in the matrix : " << A.GetNonZeros() << endl;
     
-    A.Reallocate(m,n); DISP(A);
+    // if you resize, previous elements are conserved
+    A.Resize(m+1,n+1); DISP(A);
+    
+    // you can read/write the matrix
+    A.Write("mat_binary.dat");
+    A.WriteText("mat_ascii.dat");
+    A.Clear();
+    A.Read("mat_binary.dat"); DISP(A);
+    A.Clear();
+    A.ReadText("mat_ascii.dat"); DISP(A);
+    
+    // you can retrieve pointer to row numbers with GetInd
+    // and values with GetData
+    int* row_ptr = A.GetInd(2);
+    cout << "First index " << row_ptr[0] << endl;
+    double* value_ptr = A.GetData(2);
+    cout << "First value " << value_ptr[0] << endl;
+    // you can fill a sparse vectors with pointer, then you call Nullify
+    Vector<double, Vect_Sparse> row_vec;
+    row_vec.SetData(A.GetRowSize(2), value_ptr, row_ptr);
+    // Nullify is necessary to avoid duplicate release of memory
+    A.Nullify(2);
+    
+    // you can initialize A with null values
+    A.Zero(); DISP(A);
+    // or with 0, 1, ...
+    A.Fill(); DISP(A);
+    // or randomly
+    A.FillRand(); DISP(A);
+    // fill with a given value
+    A.Fill(0.01);
+    A(2, 3) = 0.5;
+    A(0, 1) = -0.6;
+    // remove small values (below 0.1 here)
+    A.RemoveSmallEntry(0.1); DISP(A);
+    // you can set A = I
+    A.SetIdentity(); A.Print();
+        
+    // with clear, A is an empty matrix with 0 row, 0 column
     A.Clear(); DISP(A);
   }
   
@@ -86,6 +127,9 @@ int main(int argc, char** argv)
     A.Index(irow, 1) = 3; A.Value(irow, 1) = 3.0;
     // Values not sorted you have to call.
     A.AssembleRow(irow); DISP(A);
+    
+    // with reallocate, A is empty with m columns, n rows
+    A.Reallocate(m,n); DISP(A);
     
     // Be careful, only upper part of the matrix is stored (i <= j).
     irow = 2;
@@ -133,6 +177,47 @@ int main(int argc, char** argv)
     
     // For symmetric matrix, we count non-zero entries only in upper part.
     cout << "Number of entries in the matrix : " << A.GetNonZeros() << endl;
+    
+    // if you resize, previous elements are conserved
+    A.Resize(m+1,n+1); DISP(A);
+    
+    // you can read/write the matrix
+    A.Write("mat_binary.dat");
+    A.WriteText("mat_ascii.dat");
+    A.Clear();
+    A.Read("mat_binary.dat"); DISP(A);
+    A.Clear();
+    A.ReadText("mat_ascii.dat"); DISP(A);
+    
+    // you can retrieve pointer to row numbers with GetInd
+    // and values with GetData
+    int* row_ptr = A.GetInd(2);
+    cout << "First index " << row_ptr[0] << endl;
+    double* value_ptr = A.GetData(2);
+    cout << "First value " << value_ptr[0] << endl;
+    // you can fill a sparse vectors with pointer, then you call Nullify
+    Vector<double, Vect_Sparse> row_vec;
+    row_vec.SetData(A.GetRowSize(2), value_ptr, row_ptr);
+    // Nullify is necessary to avoid duplicate release of memory
+    A.Nullify(2);
+    
+    // you can initialize A with null values
+    A.Zero(); DISP(A);
+    // or with 0, 1, ...
+    A.Fill(); DISP(A);
+    // or randomly
+    A.FillRand(); DISP(A);
+    // fill with a given value
+    A.Fill(0.01);
+    A(2, 3) = 0.5;
+    A(0, 1) = -0.6;
+    // remove small values (below 0.1 here)
+    A.RemoveSmallEntry(0.1); DISP(A);
+    // you can set A = I
+    A.SetIdentity(); A.Print();
+        
+    // with clear, A is an empty matrix with 0 row, 0 column
+    A.Clear(); DISP(A);
   }
   
   return 0;

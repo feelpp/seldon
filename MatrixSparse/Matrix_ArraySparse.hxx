@@ -23,23 +23,7 @@
 
 namespace Seldon
 {
-  
-  class ArrayRowSparse : public RowSparse
-  {
-  };
-  
-  class ArrayColSparse : public ColSparse
-  {
-  };
-  
-  class ArrayRowSymSparse : public RowSymSparse
-  {
-  };
-  
-  class ArrayColSymSparse : public ColSymSparse
-  {
-  };
-  
+    
   //! Sparse Array-matrix class.
   /*!
     Sparse matrices are defined by: (1) the number of rows and columns;
@@ -52,49 +36,17 @@ namespace Seldon
 	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
   class Matrix_ArraySparse
   {
-    // typedef declaration.
-  public:
-    typedef typename Allocator::value_type value_type;
-    typedef typename Allocator::pointer pointer;
-    typedef typename Allocator::const_pointer const_pointer;
-    typedef typename Allocator::reference reference;
-    typedef typename Allocator::const_reference const_reference;
-    typedef Vector<T,Vect_Full,Allocator> vect_value;
-    typedef Vector<T,Vect_Full,Allocator>* vect_value_ptr;
-    
-    // Static attributes.
-  protected:
-    static Allocator allocator_;
-
     // Attributes.
   protected:
-    // Number of rows.
+    //! Number of rows.
     int m_;
-    // Number of columns.
+    //! Number of columns.
     int n_;
-    // Number of non-zero elements.
-    int nz_;
-    Vector<IVect,Vect_Full,NewAlloc<IVect> > ind;
-    Vector<vect_value,Vect_Full,NewAlloc<vect_value> > val;
-    
-    // Methods.
-  protected :
-    // Memory management.
-    void ClearVector(int i);
-    void ReallocateVector(int i,int j);
-    void ResizeVector(int i,int j);
-    void SwapVector(int i,int i_);
-    void ReplaceIndexVector(int i,IVect& new_index);
-    
-    int GetVectorSize(int i) const;
-    void PrintVector(int i) const;
-    void AssembleVector(int i);
-    
-    void AddInteraction(int i, int j, const T& a);
-    
-    template<class Storage1,class Allocator1>
-    void AddInteractionVector(int i, int nb_interac, IVect col_interac,
-			      Vector<T, Storage1, Allocator1> val_interac);
+    //! rows or columns
+    Vector<Vector<T, Vect_Sparse, Allocator>, Vect_Full,
+	   NewAlloc<Vector<T, Vect_Sparse, Allocator> > > val_;
+    //! pointer to the derived class
+    Matrix<T, Prop, Storage, Allocator>* mat_deriv;
     
   public:
     // Constructors.
@@ -106,7 +58,6 @@ namespace Seldon
     void Clear();
     
     // Memory management.
-    int GetMemorySize() const;
     void Reallocate(int i,int j);
     void Resize(int i,int j);
     
@@ -116,21 +67,22 @@ namespace Seldon
     int GetNonZeros() const;
     int GetDataSize() const;
     int* GetInd(int i) const;
-    pointer GetData(int i) const;
+    T* GetData(int i) const;
     
-    IVect* GetInd() const;
-    vect_value* GetData() const;
+    Vector<T, Vect_Sparse, Allocator>* GetData() const;
     
     // Element acess and affectation.
-    value_type operator() (int i, int j) const;
-    reference operator() (int i, int j);
+    T operator() (int i, int j) const;
+    T& operator() (int i, int j);
     
-    const_reference Value(int num_row, int i) const;
-    reference Value(int num_row, int i);
+    const T& Value(int num_row, int i) const;
+    T& Value(int num_row, int i);
     int Index(int num_row, int i) const;
     int& Index(int num_row, int i);
     
-    void SetData(int, int, int, IVect*, vect_value*);
+    void SetData(int, int, Vector<T, Vect_Sparse, Allocator>*);
+    void SetData(int, int, T*, int*);
+    void Nullify(int i);
     void Nullify();
     
     // Convenient functions.
@@ -148,15 +100,17 @@ namespace Seldon
     Matrix_ArraySparse<T, Prop, Storage, Allocator>& operator= (const T0& x);
     void FillRand();
     
-    template <class T_, class Prop_, class Storage_, class Allocator_>
-    friend ostream&
-    operator <<(ostream& out,
-		const Matrix_ArraySparse<T_, Prop_, Storage_, Allocator_>& A);
+    // Input/output functions.
+    void Write(string FileName) const;
+    void Write(ostream& FileStream) const;
+    void WriteText(string FileName) const;
+    void WriteText(ostream& FileStream) const;
+    void Read(string FileName);
+    void Read(istream& FileStream);
+    void ReadText(string FileName);
+    void ReadText(istream& FileStream);
+    
   };
-  
-  //! Matrix allocator.
-  template <class T, class Prop, class Storage, class Allocator>
-  Allocator Matrix_ArraySparse<T, Prop, Storage, Allocator>::allocator_;
   
   
   //! Column-major sparse-matrix class.
@@ -232,14 +186,11 @@ namespace Seldon
     public Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>
   {
   public:
-    typedef typename Allocator::value_type value_type;
-    typedef typename Allocator::reference reference;
-    
     Matrix()  throw();
     Matrix(int i, int j);
     
-    value_type operator() (int i, int j) const;
-    reference operator() (int i, int j);
+    T operator() (int i, int j) const;
+    T& operator() (int i, int j);
     
     // Memory management.
     void ClearColumn(int i);
@@ -272,14 +223,11 @@ namespace Seldon
     public Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>
   {
   public:
-    typedef typename Allocator::value_type value_type;
-    typedef typename Allocator::reference reference;
-    
     Matrix()  throw();
     Matrix(int i, int j);
     
-    value_type operator() (int i, int j) const;
-    reference operator() (int i, int j);
+    T operator() (int i, int j) const;
+    T& operator() (int i, int j);
     
     // Memory management.
     void ClearRow(int i);

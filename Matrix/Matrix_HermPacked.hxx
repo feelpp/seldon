@@ -66,7 +66,7 @@ namespace Seldon
     void Nullify();
 
     // Element access and affectation.
-    value_type operator() (int i, int j);
+    reference operator() (int i, int j);
     value_type operator() (int i, int j) const;
     reference Val(int i, int j);
     const_reference Val(int i, int j) const;
@@ -91,11 +91,13 @@ namespace Seldon
 
     // Input/output functions.
     void Write(string FileName) const;
-    void Write(ofstream& FileStream) const;
+    void Write(ostream& FileStream) const;
     void WriteText(string FileName) const;
-    void WriteText(ofstream& FileStream) const;
+    void WriteText(ostream& FileStream) const;
     void Read(string FileName);
-    void Read(ifstream& FileStream);
+    void Read(istream& FileStream);
+    void ReadText(string FileName);
+    void ReadText(istream& FileStream);
 
   };
 
@@ -111,8 +113,11 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, ColHermPacked, Allocator>& operator= (const T0& x);
+    template<class T0>
+    Matrix<T, Prop, ColHermPacked, Allocator>& operator*= (const T0& x);
     
     void Resize(int i, int j);
+    
   };
 
 
@@ -127,8 +132,11 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, RowHermPacked, Allocator>& operator= (const T0& x);
+    template<class T0>
+    Matrix<T, Prop, RowHermPacked, Allocator>& operator*= (const T0& x);
     
     void Resize(int i, int j);
+    
   };
 
 

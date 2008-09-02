@@ -51,6 +51,7 @@ namespace Seldon
 
 
   class Vect_Full;
+  class Vect_Sparse;
 
 
   ////////////
@@ -121,8 +122,39 @@ namespace Seldon
     static int GetSecond(int i, int j);
   };
 
-
-
+  class ArrayRowSparse : public RowSparse
+  {
+  };
+  
+  class ArrayColSparse : public ColSparse
+  {
+  };
+  
+  class ArrayRowSymSparse : public RowSymSparse
+  {
+  };
+  
+  class ArrayColSymSparse : public ColSymSparse
+  {
+  };
+  
+  class ArrayRowComplexSparse : public RowComplexSparse
+  {
+  };
+  
+  class ArrayRowSymComplexSparse : public RowSymComplexSparse
+  {
+  };
+  
+  class ArrayColComplexSparse : public ColComplexSparse
+  {
+  };
+  
+  class ArrayColSymComplexSparse : public ColSymComplexSparse
+  {
+  };
+  
+  
   ///////////////
   // SYMMETRIC //
   ///////////////

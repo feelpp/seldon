@@ -30,11 +30,11 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_ArraySparse<T, Prop, Storage, Allocator>::Matrix_ArraySparse()
-    : ind(),val()
+    : val_()
   {
-    nz_ = 0;
     this->m_ = 0;
     this->n_ = 0;
+    mat_deriv = NULL;
   }
   
   
@@ -47,11 +47,11 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   Matrix_ArraySparse(int i, int j) :
-    ind(Storage::GetFirst(i, j)),val(Storage::GetFirst(i, j))
+    val_(Storage::GetFirst(i, j))
   {
-    nz_=0;
-    this->m_ = Storage::GetFirst(i, j);
-    this->n_ = Storage::GetSecond(i, j);
+    this->m_ = i;
+    this->n_ = j;
+    mat_deriv = NULL;
   }
   
   
@@ -61,7 +61,6 @@ namespace Seldon
   {
     this->m_ = 0;
     this->n_ = 0;
-    this->nz_ = 0;
   }
   
   
@@ -81,1912 +80,1842 @@ namespace Seldon
    *********************/
   
   
-  //! returns size occupied by the matrix in bytes
+  //! Reallocates memory to resize the matrix.
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i number of rows.
+    \param j number of columns.
+    \warning Data is lost.
+  */
   template <class T, class Prop, class Storage, class Allocator>
-  inline int Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-  GetMemorySize() const
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  Reallocate(int i, int j)
   {
-    return sizeof(int) * (7 + 2*ind.GetM() + 2*val.GetM() + GetDataSize())
-      + sizeof(T) * GetDataSize();
-}
-  
-  
-//! Reallocates memory to resize the matrix.
-/*!
-  On exit, the matrix is a i x j matrix.
-  \param i number of rows.
-  \param j number of columns.
-  \warning Data is lost.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-Reallocate(int i, int j)
-{
-  // Clears previous entries.
-  Clear();
+    // Clears previous entries.
+    Clear();
     
-  this->m_ = i;
-  this->n_ = j;
+    this->m_ = i;
+    this->n_ = j;
     
-  int n = Storage::GetFirst(i, j);
-  val.Reallocate(n);
-  ind.Reallocate(n);
-  nz_ = 0;
-}
+    int n = Storage::GetFirst(i, j);
+    val_.Reallocate(n);
+  }
   
   
-//! Reallocates additional memory to resize the matrix.
-/*!
-  On exit, the matrix is a i x j matrix.
-  \param i number of rows.
-  \param j number of columns.
-  Data is kept
-*/
-template <class T, class Prop, class Storage, class Allocator>
-void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Resize(int i, int j)
-{
-  if (i != this->m_ || j != this->n_)
-    {
-      int n = Storage::GetFirst(m_, n_);
-      int new_n = Storage::GetFirst(i, j);
-      Vector<IVect, Vect_Full, NewAlloc<IVect> > new_ind;
-      Vector<vect_value, Vect_Full, NewAlloc<vect_value> > new_val;
-      new_ind.Reallocate(new_n);
-      new_val.Reallocate(new_n);
-	
-      nz_ = 0;
-      for (int k = 0 ; k < min(n, new_n) ; k++)
-	{
-	  new_ind(k).SetData(ind(k).GetM(), ind(k).GetData());
-	  ind(k).Nullify();
-	  new_val(k).SetData(val(k).GetM(), val(k).GetData());
-	  val(k).Nullify();
-	  nz_ += new_ind(k).GetM();
-	}
-	
-      ind.Clear();
-      ind.SetData(new_ind.GetM(), new_ind.GetData());
-      new_ind.Nullify();
-      val.Clear();
-      val.SetData(new_val.GetM(), new_val.GetData());
-      new_val.Nullify();
-	
-      this->m_ = i;
-      this->n_ = j;
-	
-    }
-}
-  
-  
-//! Changes the size of i-th row/column of the matrix.
-/*!
-  \param[in] i row/column number.
-  \param[in] j new size of row/column.
-  \warning data may be lost.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-ReallocateVector(int i, int j)
-{
-  if (j != this->GetVectorSize(i))
-    {
-      nz_ += j - GetVectorSize(i);
-      val(i).Reallocate(j);
-      ind(i).Reallocate(j);
-    }
-}
-  
-  
-//! Changes the size of i-th row/column of the matrix.
-/*!
-  \param[in] i row/column number.
-  \param[in] j new size of row/column.
-  \note Data is kept.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-ResizeVector(int i, int j)
-{
-  int m = this->GetVectorSize(i);
-  if (j != m)
-    {
-      nz_ += j - m;
-      pointer data_;
-      data_ = allocator_.allocate(j, this);
-      IVect Ind_New(j);
-	
-      for (int k = 0; k < min(m, j); k++)
-	{
-	  data_[k] = val(i)(k);
-	  Ind_New(k) = ind(i)(k);
-	}
-	
-      ind(i).SetData(j, Ind_New.GetData());
-      Ind_New.Nullify();
-      val(i).SetData(j, data_);
-    }
-}
-  
-  
-//! Row-column i is removed.
-/*!
-  \param[in] i row/column number.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-ClearVector(int i)
-{
-  int l = this->GetVectorSize(i);
-  if (l > 0)
-    {
-      nz_ -= l;
-      val(i).Clear();
-      ind(i).Clear();
-    }
-}
-  
-  
-//! Two rows/columns are swapped.
-/*!
-  \param[in] i first row/column number.
-  \param[in] i_ second row/column number.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-SwapVector(int i, int i_)
-{
-  if (i != i_)
-    {
-      int j_ = ind(i_).GetM();
-      int j = ind(i).GetM();
-      int* tmp = ind(i).GetData();
-      ind(i).Nullify();
-      pointer tmp_val = val(i).GetData();
-      val(i).Nullify();
-      ind(i).SetData(j_, ind(i_).GetData());
-      val(i).SetData(j_, val(i_).GetData());
-      ind(i_).Nullify();
-      val(i_).Nullify();
-      ind(i_).SetData(j, tmp);
-      val(i_).SetData(j, tmp_val);
-    }
-}
-  
-  
-//! Column numbers of row i are modified.
-/*!
-  Useful method when a permutation is applied to a matrix.
-  \param[in] i row number (or column number).
-  \param[in] new_index column numbers (or row numbers).
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-ReplaceIndexVector(int i, IVect& new_index)
-{
-  ind(i).Clear();
-  ind(i).SetData(new_index.GetM(), new_index.GetData());
-  new_index.Nullify();
-}
-  
-  
-/*******************
- * BASIC FUNCTIONS *
- *******************/
-  
-  
-//! Returns the number of rows.
-/*!
-  \return the number of rows.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline int Matrix_ArraySparse<T,Prop,Storage,Allocator>::GetM() const
-{
-  return m_;
-}
-  
-  
-//! Returns the number of columns.
-/*!
-  \return the number of columns.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline int Matrix_ArraySparse<T,Prop,Storage,Allocator>::GetN() const
-{
-  return n_;
-}
-  
-  
-//! Returns the number of non-zero entries.
-/*!
-  \return The number of non-zero entries.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline int Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetNonZeros()
-  const
-{
-  return nz_;
-}
-  
-  
-//! Returns the number of elements stored in memory.
-/*!
-  Returns the number of elements stored in memory, i.e.
-  the number of non-zero entries.
-  \return The number of elements stored in memory.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline int Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetDataSize()
-  const
-{
-  return nz_;
-}
-  
-  
-//! Returns the size of row/column i.
-/*!
-  \param[in] i row/column number.
-  \return The number of non-zero entries in row/column i.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline int Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-GetVectorSize(int i) const
-{
-  return ind(i).GetM();
-}
-  
-  
-//! Returns (row or column) indices of non-zero entries in row
-/*!
-  \param[in] i row (or column) number.
-  \return The array of column (or row) indices of non-zero entries
-  of row (or column) i.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline int* Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetInd(int i)
-  const
-{
-  return ind(i).GetData();
-}
-  
-  
-//! Returns values of non-zero entries of a row/column.
-/*!
-  \param[in] i row (or column) number.
-  \return The array of values of non-zero entries of row/column i.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline typename Matrix_ArraySparse<T, Prop, Storage, Allocator>::pointer
-Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetData(int i) const
-{
-  return val(i).GetData();
-}
-  
-  
-//! Returns row (or column) indices of non-zero entries.
-/*!
-  \return Arrays of row (or column) indices of non-zero entries.
-  There is a different array for each row/column.
-*/
-template <class T, class Prop, class Storage, class Allocat>
-inline IVect* Matrix_ArraySparse<T, Prop, Storage, Allocat>::GetInd() const
-{
-  return ind.GetData();
-}
-  
-  
-//! Returns values of non-zero entries.
-/*!
-  \return Arrays of values of non-zero entries.
-  There is a different array for each row/column.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline
-typename Matrix_ArraySparse<T, Prop, Storage, Allocator>::vect_value_ptr
-Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetData() const
-{
-  return val.GetData();
-}
-  
-  
-/**********************************
- * ELEMENT ACCESS AND AFFECTATION *
- **********************************/
-  
-  
-//! Access operator.
-/*!
-  Returns the value of element (i, j).
-  \param[in] i row index.
-  \param[in] j column index.
-  \return Element (i, j) of the matrix.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline typename Matrix_ArraySparse<T, Prop, Storage, Allocator>::value_type
-Matrix_ArraySparse<T, Prop, Storage, Allocator>::operator() (int i, int j)
-  const
-{
-    
-#ifdef SELDON_CHECK_BOUNDARIES
-  if (i < 0 || i >= this->m_)
-    throw WrongRow("Matrix_ArraySparse::operator()",
-		   "Index should be in [0, " + to_str(this->m_-1) +
-		   "],but is equal to " + to_str(i) + ".");
-    
-  if (j < 0 || j >= this->n_)
-    throw WrongCol("Matrix_ArraySparse::operator()",
-		   "Index should be in [0, " + to_str(this->n_-1) +
-		   "], but is equal to " + to_str(j) + ".");
-#endif
-    
-  int k;
-  int a, b;
-    
-  a = Storage::GetFirst(i, j);
-  b = Storage::GetSecond(i, j);
-  for (k = 0; k < ind(a).GetM(); k++)
-    {
-      if (ind(a)(k) == b)
-	return val(a)(k);
-    }
-    
-  return T(0);
-}
-  
-  
-//! Access operator.
-/*!
-  Returns the value of element (i, j).
-  \param[in] i row index.
-  \param[in] j column index.
-  \return Element (i, j) of the matrix.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline typename Matrix_ArraySparse<T, Prop, Storage, Allocator>::reference
-Matrix_ArraySparse<T, Prop, Storage, Allocator>::operator() (int i, int j)
-{
-    
-#ifdef SELDON_CHECK_BOUNDARIES
-  if (i < 0 || i >= this->m_)
-    throw WrongRow("Matrix_ArraySparse::operator()",
-		   "Index should be in [0, " + to_str(this->m_-1) +
-		   "],but is equal to " + to_str(i) + ".");
-    
-  if (j < 0 || j >= this->n_)
-    throw WrongCol("Matrix_ArraySparse::operator()",
-		   "Index should be in [0, " + to_str(this->n_-1) +
-		   "], but is equal to " + to_str(j) + ".");
-#endif
-    
-  int a, b;
-  a = Storage::GetFirst(i, j);
-  b = Storage::GetSecond(i, j);
-  int size_vec = ind(a).GetM();
-  int k = 0;
-  // we search the entry
-  while (k < size_vec && ind(a)(k) < b)
-    k++;
-    
-  if (k >= size_vec || ind(a)(k) != b)
-    // The entry does not exist, we add a null value.
-    AddInteraction(a, b, T(0));
-    
-  return val(a)(k);
-}
-  
-  
-//! Returns j-th non-zero value of row/column i.
-/*!
-  \param[in] i row/column number.
-  \param[in] j local number.
-  \return j-th non-zero entry of row/column i.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline typename Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-const_reference Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-Value (int i, int j) const
-{
-    
-#ifdef SELDON_CHECK_BOUNDARIES
-  if (i < 0 || i >= this->m_)
-    throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		   + to_str(this->m_-1) + "], but is equal to "
-		   + to_str(i) + ".");
-  if ((j < 0)||(j >= this->GetVectorSize(i)))
-    throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
-		   to_str(this->GetVectorSize(i)-1) + "], but is equal to "
-		   + to_str(j) + ".");
-#endif
-    
-  return val(i)(j);
-}
-  
-  
-//! Returns j-th non-zero value of row/column i.
-/*!
-  \param[in] i row/column number.
-  \param[in] j local number.
-  \return j-th non-zero entry of row/column i.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline typename Matrix_ArraySparse<T, Prop, Storage, Allocator>::reference
-Matrix_ArraySparse<T, Prop, Storage, Allocator>::Value (int i, int j)
-{
-    
-#ifdef SELDON_CHECK_BOUNDARIES
-  if (i < 0 || i >= this->m_)
-    throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		   + to_str(this->m_-1) + "], but is equal to "
-		   + to_str(i) + ".");
-    
-  if ((j < 0)||(j >= this->GetVectorSize(i)))
-    throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
-		   to_str(this->GetVectorSize(i)-1) + "], but is equal to "
-		   + to_str(j) + ".");
-#endif
-    
-  return val(i)(j);
-}
-  
-  
-//! Returns column/row number of j-th non-zero value of row/column i.
-/*!
-  \param[in] i row/column number.
-  \param[in] j local number.
-  \return Column/row number of j-th non-zero value of row/column i.
-*/
-template <class T, class Prop, class Storage, class Allocator> inline
-int Matrix_ArraySparse<T, Prop, Storage, Allocator>::Index(int i, int j)
-  const
-{
-    
-#ifdef SELDON_CHECK_BOUNDARIES
-  if (i < 0 || i >= this->m_)
-    throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
-		   + to_str(this->m_-1) + "], but is equal to "
-		   + to_str(i) + ".");
-    
-  if ((j < 0)||(j >= this->GetVectorSize(i)))
-    throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
-		   to_str(this->GetVectorSize(i)-1) + "], but is equal to "
-		   + to_str(j) + ".");
-#endif
-    
-  return ind(i)(j);
-}
-  
-  
-//! Returns column/row number of j-th non-zero value of row/column i.
-/*!
-  \param[in] i row/column number.
-  \param[in] j local number.
-  \return Column/row number of j-th non-zero value of row/column i.
-*/
-template <class T, class Prop, class Storage, class Allocator> inline
-int& Matrix_ArraySparse<T, Prop, Storage, Allocator>::Index(int i, int j)
-{
-    
-#ifdef SELDON_CHECK_BOUNDARIES
-  if (i < 0 || i >= this->m_)
-    throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
-		   + to_str(this->m_-1) + "], but is equal to "
-		   + to_str(i) + ".");
-    
-  if (j < 0 || j >= this->GetVectorSize(i))
-    throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
-		   to_str(this->GetVectorSize(i)-1) + "], but is equal to "
-		   + to_str(j) + ".");
-#endif
-    
-  return ind(i)(j);
-}
-  
-  
-//! Redefines the matrix.
-/*!
-  \param[in] m number of rows.
-  \param[in] n number of columns.
-  \param[in] nnz number of non-zero entries.
-  \param[in] ind_ptr arrays of row/column numbers.
-  \param[in] val_ptr arrays of values.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-SetData(int m, int n, int nnz, IVect* ind_ptr,
-	typename Matrix_ArraySparse<T, Prop, Storage,
-	Allocator>::vect_value_ptr val_ptr)
-{
-  m_ = m;
-  n_ = n;
-  nz_ = nnz;
-  ind.Clear();
-  val.Clear();
-  ind.SetData(n, ind_ptr);
-  val.SetData(n, val_ptr);
-}
-  
-  
-//!  Clears the matrix without releasing memory.
-/*!
-  On exit, the matrix is empty and the memory has not been released.
-  It is useful for low level manipulations on a Matrix instance.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Nullify()
-{
-  m_ = 0;
-  n_ = 0;
-  nz_ = 0;
-  ind.Nullify();
-  val.Nullify();
-}
-  
-  
-//! Coefficient a is added in the matrix.
-/*!
-  \param[in] i row/column number.
-  \param[in] j column/row number.
-  \param[in] a value to add.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-AddInteraction(int i, int j, const T& a)
-{
-  int n = ind(i).GetM();
-  // We look for the position where the entry is.
-  int pos = 0;
-  while (pos < n && ind(i)(pos) < j)
-    pos++;
-    
-  // If the entry already exists, we add a.
-  if (pos < n)
-    if (ind(i)(pos) == j)
+  //! Reallocates additional memory to resize the matrix.
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i number of rows.
+    \param j number of columns.
+    Data is kept
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Resize(int i, int j)
+  {
+    int n = Storage::GetFirst(this->m_, n_);
+    int new_n = Storage::GetFirst(i, j);
+    if (n != new_n)
       {
-	val(i)(pos) += a;
-	return;
+	Vector<Vector<T, Vect_Sparse, Allocator>, Vect_Full,
+	  NewAlloc<Vector<T, Vect_Sparse, Allocator> > > new_val;
+	
+	new_val.Reallocate(new_n);
+	
+	for (int k = 0 ; k < min(n, new_n) ; k++)
+	  Swap(new_val(k), this->val_(k));
+	
+	val_.SetData(new_n, new_val.GetData());
+	new_val.Nullify();
+		
       }
     
-  // The interaction doesn't exist, the row/column is reallocated.
-  vect_value new_val(n+1);
-  IVect new_ind(n+1);
-  for (int k = 0; k < pos; k++)
-    {
-      new_ind(k) = ind(i)(k);
-      new_val(k) = val(i)(k);
-    }
-    
-  // The new entry.
-  new_ind(pos) = j;
-  new_val(pos) = a;
-    
-  // End of the row/column.
-  for (int k = pos+1; k <= n; k++)
-    {
-      new_ind(k) = ind(i)(k-1);
-      new_val(k) = val(i)(k-1);
-    }
-    
-  ind(i).Clear();
-  val(i).Clear();
-  n++;
-  ind(i).SetData(n, new_ind.GetData());
-  val(i).SetData(n, new_val.GetData());
-  new_ind.Nullify();
-  new_val.Nullify();
-    
-  // New entry -> we increase the number of non-zero entries.
-  nz_++;
-}
+    this->m_ = i;
+    this->n_ = j;
+  }
   
   
-//! Coefficients are added in the row/column of a matrix.
-/*!
-  The method sorts given coefficients and adds them
-  in the correct positions.
-  \param[in] i row/column number.
-  \param[in] nb_interac number of coefficients to add.
-  \param[in] col_interac column/row numbers.
-  \param[in] val_interac coefficients.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-template<class Storage1, class Allocator1>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-AddInteractionVector(int i, int nb_interac, IVect col_interac,
-		     Vector<T, Storage1, Allocator1> val_interac)
-{
-  // There is no reference in arguments, because we want to perform a local
-  // copy and keep the input arguments unchanged.
-        
-  // Number of elements in the row/column i.
-  int n = ind(i).GetM();
+  /*******************
+   * BASIC FUNCTIONS *
+   *******************/
+  
+  
+  //! Returns the number of rows.
+  /*!
+    \return the number of rows.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline int Matrix_ArraySparse<T,Prop,Storage,Allocator>::GetM() const
+  {
+    return m_;
+  }
+  
+  
+  //! Returns the number of columns.
+  /*!
+    \return the number of columns.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline int Matrix_ArraySparse<T,Prop,Storage,Allocator>::GetN() const
+  {
+    return n_;
+  }
+  
+  
+  //! Returns the number of non-zero entries.
+  /*!
+    \return The number of non-zero entries.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline int Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetNonZeros()
+    const
+  {
+    int nnz = 0;
+    for (int i = 0; i < this->val_.GetM(); i++)
+      nnz += this->val_(i).GetM();
     
-  Seldon::Assemble(nb_interac, col_interac, val_interac);
+    return nnz;
+  }
+  
+  
+  //! Returns the number of elements stored in memory.
+  /*!
+    Returns the number of elements stored in memory, i.e.
+    the number of non-zero entries.
+    \return The number of elements stored in memory.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline int Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetDataSize()
+    const
+  {
+    return GetNonZeros();
+  }
+  
+  
+  //! Returns (row or column) indices of non-zero entries in row
+  /*!
+    \param[in] i row (or column) number.
+    \return The array of column (or row) indices of non-zero entries
+    of row (or column) i.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline int* Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetInd(int i)
+    const
+  {
+    return val_(i).GetIndex();
+  }
+  
+  
+  //! Returns values of non-zero entries of a row/column.
+  /*!
+    \param[in] i row (or column) number.
+    \return The array of values of non-zero entries of row/column i.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline T*
+  Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetData(int i) const
+  {
+    return val_(i).GetData();
+  }
+  
+  
+  //! Returns values of non-zero entries.
+  /*!
+    \return Array of sparse rows
+    There is a different array for each row/column.
+  */
+  template <class T, class Prop, class Storage, class Allocat>
+  inline Vector<T, Vect_Sparse, Allocat>*
+  Matrix_ArraySparse<T, Prop, Storage, Allocat>::GetData() const
+  {
+    return val_.GetData();
+  }
+  
+  
+  /**********************************
+   * ELEMENT ACCESS AND AFFECTATION *
+   **********************************/
+  
+  
+  //! Access operator.
+  /*!
+    Returns the value of element (i, j).
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline T
+  Matrix_ArraySparse<T, Prop, Storage, Allocator>::operator() (int i, int j)
+    const
+  {
     
-  // We add new entries which have already a slot in the matrix.
-  int nb_new = 0;
-  Vector<bool> new_interac(nb_interac);
-  new_interac.Fill(true);
-  int k = 0;
-  for (int j = 0; j < nb_interac; j++)
-    {
-      while (k < n && ind(i)(k) < col_interac(j))
-	k++;
-	
-      if (k < n && col_interac(j) == ind(i)(k))
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_ArraySparse::operator()",
+		     "Index should be in [0, " + to_str(this->m_-1) +
+		     "],but is equal to " + to_str(i) + ".");
+    
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_ArraySparse::operator()",
+		     "Index should be in [0, " + to_str(this->n_-1) +
+		     "], but is equal to " + to_str(j) + ".");
+#endif
+    
+    return this->val_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j));
+  }
+  
+  
+  //! Access operator.
+  /*!
+    Returns the value of element (i, j).
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline T&
+  Matrix_ArraySparse<T, Prop, Storage, Allocator>::operator() (int i, int j)
+  {
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_ArraySparse::operator()",
+		     "Index should be in [0, " + to_str(this->m_-1) +
+		     "],but is equal to " + to_str(i) + ".");
+    
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_ArraySparse::operator()",
+		     "Index should be in [0, " + to_str(this->n_-1) +
+		     "], but is equal to " + to_str(j) + ".");
+#endif
+    
+    return this->val_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j));
+  }
+  
+  
+  //! Returns j-th non-zero value of row/column i.
+  /*!
+    \param[in] i row/column number.
+    \param[in] j local number.
+    \return j-th non-zero entry of row/column i.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const T& Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  Value (int i, int j) const
+  {
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    
+    if ((j < 0)||(j >= this->val_(i).GetM()))
+      throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
+		     to_str(this->val_(i).GetM()-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    return val_(i).Value(j);
+  }
+  
+  
+  //! Returns j-th non-zero value of row/column i.
+  /*!
+    \param[in] i row/column number.
+    \param[in] j local number.
+    \return j-th non-zero entry of row/column i.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline T&
+  Matrix_ArraySparse<T, Prop, Storage, Allocator>::Value (int i, int j)
+  {
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    
+    if ((j < 0)||(j >= this->val_(i).GetM()))
+      throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
+		     to_str(this->val_(i).GetM()-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    return val_(i).Value(j);
+  }
+  
+  
+  //! Returns column/row number of j-th non-zero value of row/column i.
+  /*!
+    \param[in] i row/column number.
+    \param[in] j local number.
+    \return Column/row number of j-th non-zero value of row/column i.
+  */
+  template <class T, class Prop, class Storage, class Allocator> inline
+  int Matrix_ArraySparse<T, Prop, Storage, Allocator>::Index(int i, int j)
+    const
+  {
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    
+    if ((j < 0)||(j >= this->val_(i).GetM()))
+      throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
+		     to_str(this->val_(i).GetM()-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    return val_(i).Index(j);
+  }
+  
+  
+  //! Returns column/row number of j-th non-zero value of row/column i.
+  /*!
+    \param[in] i row/column number.
+    \param[in] j local number.
+    \return Column/row number of j-th non-zero value of row/column i.
+  */
+  template <class T, class Prop, class Storage, class Allocator> inline
+  int& Matrix_ArraySparse<T, Prop, Storage, Allocator>::Index(int i, int j)
+  {
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    
+    if (j < 0 || j >= this->val_(i).GetM())
+      throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
+		     to_str(this->val_(i).GetM()-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    return val_(i).Index(j);
+  }
+  
+  
+  //! Redefines a row/column of the matrix
+  /*!
+    \param[in] i row/col number
+    \param[in] n number of non-zero entries in the row
+    \param[in] val values
+    \param[in] ind column numbers
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  SetData(int i, int n, T* val, int* ind)
+  {
+    val_(i).SetData(n, val, ind);
+  }
+  
+  
+  //!  Clears a row without releasing memory.
+  /*!
+    On exit, the row is empty and the memory has not been released.
+    It is useful for low level manipulations on a Matrix instance.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Nullify(int i)
+  {
+    val_(i).Nullify();
+  }
+  
+  
+  //! Redefines the matrix.
+  /*!
+    \param[in] m number of rows.
+    \param[in] n number of columns.
+    \param[in] nnz number of non-zero entries.
+    \param[in] val array of sparse rows/columns
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  SetData(int m, int n, Vector<T, Vect_Sparse, Allocator>* val)
+  {
+    m_ = m;
+    n_ = n;
+    val_.SetData(Storage::GetFirst(m, n), val);
+  }
+  
+  
+  //!  Clears the matrix without releasing memory.
+  /*!
+    On exit, the matrix is empty and the memory has not been released.
+    It is useful for low level manipulations on a Matrix instance.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Nullify()
+  {
+    m_ = 0;
+    n_ = 0;
+    val_.Nullify();
+  }
+  
+  
+  /************************
+   * CONVENIENT FUNCTIONS *
+   ************************/
+  
+  
+  //! Displays the matrix on the standard output.
+  /*!
+    Displays elements on the standard output, in text format.
+    Each row is displayed on a single line and elements of
+    a row are delimited by tabulations.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Print() const
+  {
+    if (Storage::GetFirst(1, 0) == 1)
+      for (int i = 0; i < this->m_; i++)
 	{
-	  new_interac(j) = false;
-	  val(i)(k) += val_interac(j);
+	  for (int j = 0; j < this->val_(i).GetM(); j++)
+	    cout << (i+1) << " " << this->val_(i).Index(j)+1
+		 << " " << this->val_(i).Value(j) << endl;
 	}
-      else
-	nb_new++;
-    }
+    else
+      for (int i = 0; i < this->n_; i++)
+	{
+	  for (int j = 0; j < this->val_(i).GetM(); j++)
+	    cout << this->val_(i).Index(j)+1 << " " << i+1
+		 << " " << this->val_(i).Value(j) << endl;
+	}
+  }
+  
+  
+  //! Assembles the matrix
+  /*!
+    All the column/row numbers are sorted.
+    If same column/row numbers exist, values are added.
+    \warning If you are using the methods AddInteraction,
+    you don't need to call that method.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Assemble()
+  {
+    for (int i = 0; i < val_.GetM(); i++)
+      val_(i).Assemble();
+  }
+  
+  
+  //! Removes small coefficients from entries.
+  /*!
+    \param[in] epsilon entries whose values are below epsilon are removed.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  template<class T0>
+  void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  RemoveSmallEntry(const T0& epsilon)
+  {
+    for (int i = 0; i < val_.GetM(); i++)
+      val_(i).RemoveSmallEntry(epsilon);
+  }
+  
+  
+  //! Matrix is initialized to the identity matrix.
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::SetIdentity()
+  {
+    this->n_ = this->m_;
+    for (int i = 0; i < this->m_; i++)
+      {
+	val_(i).Reallocate(1);
+	val_(i).Index(0) = i;
+	val_(i).Value(0) = T(1);
+      }
+  }
+  
+  
+  //! Non-zero entries are set to 0 (but not removed).
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Zero()
+  {
+    for (int i = 0; i < val_.GetM(); i++)
+      val_(i).Zero();
+  }
+  
+  
+  //! Non-zero entries are filled with values 0, 1, 2, 3 ...
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Fill()
+  {
+    int value = 0;
+    for (int i = 0; i < val_.GetM(); i++)
+      for (int j = 0; j < val_(i).GetM(); j++)
+	val_(i).Value(j) = value++;
+  }
+  
+  
+  //! Non-zero entries are set to a given value x.
+  template <class T, class Prop, class Storage, class Allo> template<class T0>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allo>::Fill(const T0& x)
+  {
+    for (int i = 0; i < val_.GetM(); i++)
+      val_(i).Fill(x);
+  }
+  
+  
+  //! Non-zero entries are set to a given value x.
+  template <class T, class Prop, class Storage, class Allocator>
+  template <class T0>
+  inline Matrix_ArraySparse<T, Prop, Storage, Allocator>&
+  Matrix_ArraySparse<T, Prop, Storage, Allocator>::operator= (const T0& x)
+  {
+    this->Fill(x);
+  }
+  
+  
+  //! Non-zero entries take a random value.
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::FillRand()
+  {
+    for (int i = 0; i < val_.GetM(); i++)
+      val_(i).FillRand();
+  }
+  
+  
+  //! Writes the matrix in a file.
+  /*!
+    Stores the matrix in a file in binary format.
+    The number of rows (integer) and the number of columns (integer)
+    are written and matrix elements are then written in the same order
+    as in memory (e.g. row-major storage).
+    \param FileName output file name.
+  */  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  Write(string FileName) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_ArraySparse::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Write(FileStream);
+
+    FileStream.close();
+  }
+  
+  
+  //! Writes the matrix to an output stream.
+  /*!
+    Stores the matrix in a file in binary format.
+    The number of rows (integer) and the number of columns (integer)
+    are written and matrix elements are then written in the same order
+    as in memory (e.g. row-major storage).
+    \param FileStream output file name.
+  */  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  Write(ostream& FileStream) const
+  {
     
-  if (nb_new > 0)
-    {
-      // Some new entries have no slot, we add them on the correct position.
-      vect_value new_val(n+nb_new); IVect new_ind(n+nb_new);
-      int nb = 0, k = 0;
-      for (int j = 0; j < nb_interac; j++)
-	if (new_interac(j))
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_ArraySparse::Write(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
+		     sizeof(int));
+    
+    for (int i = 0; i < this->m_; i++)
+      val_(i).Write(FileStream);
+  }
+  
+  
+  //! Writes the matrix in a file.
+  /*!
+    Stores the matrix in a file in ascii format.
+    The entries are written in coordinate format (row column value)
+    1-index convention is used
+    \param FileName output file name.
+  */  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  WriteText(string FileName) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_ArraySparse::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->WriteText(FileStream);
+
+    FileStream.close();
+  }
+  
+  
+  //! Writes the matrix to an output stream.
+  /*!
+    Stores the matrix in a file in ascii format.
+    The entries are written in coordinate format (row column value)
+    1-index convention is used
+    \param FileStream output file name.
+  */  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  WriteText(ostream& FileStream) const
+  {
+    
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_ArraySparse::Write(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+    
+    // conversion in coordinate format (1-index convention)
+    IVect IndRow, IndCol; Vector<T> Value;
+    ConvertMatrix_to_Coordinates(*this->mat_deriv, IndRow, IndCol,
+				 Value, 1, true);
+    
+    for (int i = 0; i < IndRow.GetM(); i++)
+      FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
+    
+  }
+  
+  
+  //! Reads the matrix from a file.
+  /*!
+    Reads a matrix stored in binary format in a file.
+    The number of rows (integer) and the number of columns (integer)
+    are read and matrix elements are then read in the same order
+    as it should be in memory (e.g. row-major storage).
+    \param FileName output file name.
+  */  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  Read(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_ArraySparse::Read(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+    
+    this->Read(FileStream);
+    
+    FileStream.close();
+  }
+  
+  
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix in binary format from an input stream.
+    The number of rows (integer) and the number of columns (integer)
+    are read and matrix elements are then read in the same order
+    as it should be in memory (e.g. row-major storage).
+    \param FileStream output file name.
+  */  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  Read(istream& FileStream)
+  {
+    
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_ArraySparse::Write(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+    
+    FileStream.read(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+		     sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
+		     sizeof(int));
+    
+    val_.Reallocate(this->m_);
+    for (int i = 0; i < this->m_; i++)
+      val_(i).Read(FileStream);
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was read.
+    if (!FileStream.good())
+      throw IOError("Matrix_ArraySparse::Read(istream& FileStream)",
+                    string("Input operation failed.")
+		    + string(" The input file may have been removed")
+		    + " or may not contain enough data.");
+#endif
+    
+  }
+  
+  
+  //! Reads the matrix from a file.
+  /*!
+    Reads the matrix from a file in text format.
+    \param FileName output file name.
+  */  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  ReadText(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_ArraySparse::ReadText(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->ReadText(FileStream);
+    
+    FileStream.close();
+  }
+  
+  
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix from a file in text format
+    \param FileName output file name.
+  */  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  ReadText(istream& FileStream)
+  {
+    // previous elements are removed
+    Clear();
+    
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_ArraySparse::ReadText(ofstream& FileStream)",
+                    "Stream is not ready.");
+#endif
+    
+    Vector<T, Vect_Full, Allocator> values;
+    Vector<int> row_numbers, col_numbers;
+    T entry; int row = 0, col;
+    int nb_elt = 0;
+    while (!FileStream.eof())
+      {
+	// new entry is read (1-index)
+	FileStream >> row >> col >> entry;
+	
+	if (FileStream.fail())
+	  break;
+	else
 	  {
-	    while (k < n && ind(i)(k) < col_interac(j))
+#ifdef SELDON_CHECK_IO
+	    if (row < 1)
+	      throw IOError(string("Matrix_ArraySparse::ReadText")+
+			    "(istream& FileStream)",
+			    string("Error : Row number should be greater ")
+			    + "than 0 but is equal to " + to_str(row));
+	    
+	    if (col < 1)
+	      throw IOError(string("Matrix_ArraySparse::ReadText")+
+			    "(istream& FileStream)",
+			    string("Error : Column number should be greater")
+			    + " than 0 but is equal to " + to_str(col));
+#endif
+	
+	    nb_elt++;
+	    
+	    // inserting new element
+	    if (nb_elt > values.GetM())
 	      {
-		new_ind(nb) = ind(i)(k);
-		new_val(nb) = val(i)(k);
-		k++;
-		nb++;
+		values.Resize(2*nb_elt);
+		row_numbers.Resize(2*nb_elt);
+		col_numbers.Resize(2*nb_elt);
 	      }
-	      
-	    // The new entry.
-	    new_ind(nb) = col_interac(j);
-	    new_val(nb) = val_interac(j); nb++;
+	    
+	    values(nb_elt-1) = entry;
+	    row_numbers(nb_elt-1) = row;
+	    col_numbers(nb_elt-1) = col;
 	  }
-	
-      // Last entries.
-      while (k < n)
-	{
-	  new_ind(nb) = ind(i)(k);
-	  new_val(nb) = val(i)(k);
-	  k++;
-	  nb++;
-	}
-	
-      n += nb_new;
-      ind(i).Clear();
-      val(i).Clear();
-      ind(i).SetData(n, new_ind.GetData());
-      val(i).SetData(n, new_val.GetData());
-      new_ind.Nullify();
-      new_val.Nullify();
-      nz_ += nb_new;
-    }
-}
+      }
+    
+    if (nb_elt > 0)
+      {
+	row_numbers.Resize(nb_elt);
+	col_numbers.Resize(nb_elt);
+	values.Resize(nb_elt);
+	ConvertMatrix_from_Coordinates(row_numbers, col_numbers, values,
+				       *this->mat_deriv, 1);
+      }
+  }
   
   
-/************************
- * CONVENIENT FUNCTIONS *
- ************************/
+  /////////////////////////////
+  // MATRIX<ARRAY_COLSPARSE> //
+  /////////////////////////////
   
   
-//! Displays the matrix on the standard output.
-/*!
-  Displays elements on the standard output, in text format.
-  Each row is displayed on a single line and elements of
-  a row are delimited by tabulations.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Print() const
-{
-  for (int i = 0; i < this->m_; i++)
-    {
-      for (int j = 0; j < this->n_; j++)
-	cout << (*this)(i, j) << "\t";
-      cout << endl;
-    }
-}
+  //! Default constructor.
+  /*!
+    Builds an empty matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ArrayColSparse, Allocator>::Matrix()  throw():
+    Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>()
+  {
+    this->mat_deriv = this;
+  }
   
   
-//! Displays a row/column.
-/*!
-  \param[in] i row/column number.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-void Matrix_ArraySparse<T, Prop, Storage, Allocator>::PrintVector(int i)
-  const
-{
-  cout << " Row " << i << endl;
-  cout << " Index " << endl << ind(i) << endl;
-  cout << " Value " << endl << val(i) << endl;
-}
+  //! Constructor.
+  /*! Builds a i by j matrix.
+    \param i number of rows.
+    \param j number of columns.
+    \note Matrix values are not initialized.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ArrayColSparse, Allocator>::Matrix(int i, int j):
+    Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>(i, j)
+  {
+    this->mat_deriv = this;
+  }
   
   
-//! Assembles the matrix.
-/*!
-  All the column/row numbers are sorted.
-  If same column/row numbers exist, values are added.
-  \warning If you are using the methods AddInteraction,
-  you don't need to call that method.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Assemble()
-{
-  for (int i = 0; i < m_; i++)
-    AssembleVector(i);
-}
+  //! Clears column i.
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSparse, Allocator>::ClearColumn(int i)
+  {
+    this->val_(i).Clear();
+  }
   
   
-//! Removes small coefficients from entries.
-/*!
-  \param[in] epsilon entries whose values are below epsilon are removed.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-template<class T0>
-void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-RemoveSmallEntry(const T0& epsilon)
-{
-  for (int i = 0; i < ind.GetM(); i++)
-    {
-      int nb = 0;
-      for (int j = 0; j < ind(i).GetM(); j++)
-	if (abs(val(i)(j)) > epsilon)
-	  {
-	    ind(i)(nb) = ind(i)(j);
-	    val(i)(nb) = val(i)(j);
-	    nb++;
-	  }
-	
-      if (nb != ind(i).GetM())
-	ResizeVector(i,nb);
-    }
-}
+  //! Reallocates column i.
+  /*!
+    \param[in] i column number.
+    \param[in] j new number of non-zero entries in the column.
+  */
+  template <class T, class Prop, class Alloc> inline
+  void Matrix<T, Prop, ArrayColSparse, Alloc>::ReallocateColumn(int i,int j)
+  {
+    this->val_(i).Reallocate(j);
+  }
   
   
-//! Assembles a row/column.
-/*!
-  \param[in] i row/column number.
-  \warning If you are using the methods AddInteraction,
-  you don't need to call that method.
-*/
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-AssembleVector(int i)
-{
-  int new_size = ind(i).GetM();
-  Seldon::Assemble(new_size, ind(i), val(i));
-  ResizeVector(i, new_size);
-}
+  //! Reallocates column i.
+  /*!
+    \param[in] i column number.
+    \param[in] j new number of non-zero entries in the column.
+  */
+  template <class T, class Prop, class Allocator> inline
+  void Matrix<T, Prop, ArrayColSparse, Allocator>::ResizeColumn(int i,int j)
+  {
+    this->val_(i).Resize(j);
+  }
   
   
-//! Matrix is initialized to the identity matrix.
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::SetIdentity()
-{
-  this->n_ = this->m_; this->nz_ = this->m_;
-  for (int i = 0; i < this->m_; i++)
-    {
-      ind(i).Reallocate(1);
-      ind(0) = i;
-      val(i).Reallocate(1);
-      val(0) = T(1);
-    }
-}
+  //! Swaps two columns.
+  /*!
+    \param[in] i first column number.
+    \param[in] j second column number.
+  */
+  template <class T, class Prop, class Allocator> inline
+  void Matrix<T, Prop, ArrayColSparse, Allocator>::SwapColumn(int i,int j)
+  {
+    Swap(this->val_(i), this->val_(j));
+  }
   
   
-//! Non-zero entries are set to 0 (but not removed).
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Zero()
-{
-  for (int i = 0; i < val.GetM(); i++)
-    val(i).Zero();
-}
+  //! Sets row numbers of non-zero entries of a column.
+  /*!
+    \param[in] i column number.
+    \param[in] new_index new row numbers.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
+  ReplaceIndexColumn(int i, IVect& new_index)
+  {
+    for (int j = 0; j < this->val_(i).GetM(); j++)
+      this->val_(i).Index(j) = new_index(j);
+  }
   
   
-//! Non-zero entries are filled with values 0, 1, 2, 3 ...
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Fill()
-{
-  int value = 0;
-  for (int i = 0; i < val.GetM(); i++)
-    for (int j = 0; j < val(i).GetM(); j++)
-      val(i)(j) = value++;
-}
+  //! Returns the number of non-zero entries of a column.
+  /*!
+    \param[in] i column number.
+    \return The number of non-zero entries of the column i.
+  */
+  template <class T, class Prop, class Allocator>
+  inline int Matrix<T, Prop, ArrayColSparse, Allocator>::
+  GetColumnSize(int i) const
+  {
+    return this->val_(i).GetSize();
+  }
   
   
-//! Non-zero entries are set to a given value x.
-template <class T, class Prop, class Storage, class Allo> template<class T0>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allo>::Fill(const T0& x)
-{
-  for (int i = 0; i < val.GetM(); i++)
-    val(i).Fill(x);
-}
+  //! Displays non-zero values of a column.
+  template <class T, class Prop, class Allocator> inline
+  void Matrix<T, Prop, ArrayColSparse, Allocator>::PrintColumn(int i) const
+  {
+    this->val_(i).Print();
+  }
   
   
-//! Non-zero entries are set to a given value x.
-template <class T, class Prop, class Storage, class Allocator>
-template <class T0>
-inline Matrix_ArraySparse<T, Prop, Storage, Allocator>&
-Matrix_ArraySparse<T, Prop, Storage, Allocator>::operator= (const T0& x)
-{
-  this->Fill(x);
-}
+  //! Assembles a column.
+  /*!
+    \param[in] i column number.
+    \warning If you are using the methods AddInteraction,
+    you don't need to call that method.
+  */
+  template <class T, class Prop, class Allocator> inline
+  void Matrix<T, Prop, ArrayColSparse, Allocator>::AssembleColumn(int i)
+  {
+    this->val_(i).Assemble();
+  }
   
   
-//! Non-zero entries take a random value.
-template <class T, class Prop, class Storage, class Allocator>
-inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::FillRand()
-{
-  for (int i = 0; i < val.GetM(); i++)
-    val(i).FillRand();
-}
+  //! Adds a coefficient in the matrix.
+  /*!
+    \param[in] i row number.
+    \param[in] j column number.
+    \param[in] val coefficient to add.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
+  AddInteraction(int i, int j, const T& val)
+  {
+    this->val_(j).AddInteraction(i, val);
+  }
   
   
-/////////////////////////////
-// MATRIX<ARRAY_COLSPARSE> //
-/////////////////////////////
-
-  
-//! Default constructor.
-/*!
-  Builds an empty matrix.
-*/
-template <class T, class Prop, class Allocator>
-inline Matrix<T, Prop, ArrayColSparse, Allocator>::Matrix()  throw():
-  Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>()
-{
-}
-  
-  
-//! Constructor.
-/*! Builds a i by j matrix.
-  \param i number of rows.
-  \param j number of columns.
-  \note Matrix values are not initialized.
-*/
-template <class T, class Prop, class Allocator>
-inline Matrix<T, Prop, ArrayColSparse, Allocator>::Matrix(int i, int j):
-  Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>(i, j)
-{
-}
+  //! Adds coefficients in a row.
+  /*!
+    \param[in] i row number.
+    \param[in] nb number of coefficients to add.
+    \param[in] col_ column numbers of coefficients.
+    \param[in] val_ values of coefficients.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
+  AddInteractionRow(int i, int nb, int* col_, T* value_)
+  {
+    IVect col;
+    col.SetData(nb, col_);
+    Vector<T> val;
+    val.SetData(nb, value_);
+    AddInteractionRow(i, nb, col, val);
+    col.Nullify();
+    val.Nullify();
+  }
   
   
-//! Clears column i.
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSparse, Allocator>::ClearColumn(int i)
-{
-  this->ClearVector(i);
-}
+  //! Adds coefficients in a column.
+  /*!
+    \param[in] i column number.
+    \param[in] nb number of coefficients to add.
+    \param[in] row_ row numbers of coefficients.
+    \param[in] val_ values of coefficients.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
+  AddInteractionColumn(int i, int nb, int* row_, T* value_)
+  {
+    IVect row;
+    row.SetData(nb, row_);
+    Vector<T> val;
+    val.SetData(nb, value_);
+    AddInteractionColumn(i, nb, row, val);
+    row.Nullify();
+    val.Nullify();
+  }
   
   
-//! Reallocates column i.
-/*!
-  \param[in] i column number.
-  \param[in] j new number of non-zero entries in the column.
-*/
-template <class T, class Prop, class Alloc> inline
-void Matrix<T, Prop, ArrayColSparse, Alloc>::ReallocateColumn(int i,int j)
-{
-  this->ReallocateVector(i, j);
-}
+  //! Adds coefficients in a row.
+  /*!
+    \param[in] i row number.
+    \param[in] nb number of coefficients to add.
+    \param[in] col column numbers of coefficients.
+    \param[in] val values of coefficients.
+  */
+  template <class T, class Prop, class Allocator> template <class Alloc1>
+  inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
+  AddInteractionRow(int i, int nb, const IVect& col,
+		    const Vector<T, Vect_Full, Alloc1>& val)
+  {
+    for (int j = 0; j < nb; j++)
+      this->val_(col(j)).AddInteraction(i, val(j));
+  }
   
   
-//! Reallocates column i.
-/*!
-  \param[in] i column number.
-  \param[in] j new number of non-zero entries in the column.
-*/
-template <class T, class Prop, class Allocator> inline
-void Matrix<T, Prop, ArrayColSparse, Allocator>::ResizeColumn(int i,int j)
-{
-  this->ResizeVector(i, j);
-}
+  //! Adds coefficients in a column.
+  /*!
+    \param[in] i column number.
+    \param[in] nb number of coefficients to add.
+    \param[in] row row numbers of coefficients.
+    \param[in] val values of coefficients.
+  */
+  template <class T, class Prop, class Allocator> template <class Alloc1>
+  inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
+  AddInteractionColumn(int i, int nb, const IVect& row,
+		       const Vector<T, Vect_Full, Alloc1>& val)
+  {
+    this->val_(i).AddInteractionRow(nb, row, val);
+  }
   
   
-//! Swaps two columns.
-/*!
-  \param[in] i first column number.
-  \param[in] j second column number.
-*/
-template <class T, class Prop, class Allocator> inline
-void Matrix<T, Prop, ArrayColSparse, Allocator>::SwapColumn(int i,int j)
-{
-  this->SwapVector(i, j);
-}
+  /////////////////////////////
+  // MATRIX<ARRAY_ROWSPARSE> //
+  /////////////////////////////
   
   
-//! Sets row numbers of non-zero entries of a column.
-/*!
-  \param[in] i column number.
-  \param[in] new_index new row numbers.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
-ReplaceIndexColumn(int i, IVect& new_index)
-{
-  this->ReplaceIndexVector(i, new_index);
-}
+  //! Default constructor.
+  /*!
+    Builds a empty matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ArrayRowSparse, Allocator>::Matrix()  throw():
+    Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>()
+  {
+    this->mat_deriv = this;
+  }
   
   
-//! Returns the number of non-zero entries of a column.
-/*!
-  \param[in] i column number.
-  \return The number of non-zero entries of the column i.
-*/
-template <class T, class Prop, class Allocator>
-inline int Matrix<T, Prop, ArrayColSparse, Allocator>::
-GetColumnSize(int i) const
-{
-  return this->GetVectorSize(i);
-}
-  
-  
-//! Displays non-zero values of a column.
-template <class T, class Prop, class Allocator> inline
-void Matrix<T, Prop, ArrayColSparse, Allocator>::PrintColumn(int i) const
-{
-  cout << " Column " << i << endl;
-  cout << " Index " << endl << this->ind(i) << endl;
-  cout << " Value " << endl << this->val(i) << endl;
-}
-  
-  
-//! Assembles a column.
-/*!
-  \param[in] i column number.
-  \warning If you are using the methods AddInteraction,
-  you don't need to call that method.
-*/
-template <class T, class Prop, class Allocator> inline
-void Matrix<T, Prop, ArrayColSparse, Allocator>::AssembleColumn(int i)
-{
-  this->AssembleVector(i);
-}
-  
-  
-//! Adds a coefficient in the matrix.
-/*!
-  \param[in] i row number.
-  \param[in] j column number.
-  \param[in] val coefficient to add.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
-AddInteraction(int i, int j, const T& val)
-{
-  Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>::
-    AddInteraction(j, i, val);
-}
-  
-  
-//! Adds coefficients in a row.
-/*!
-  \param[in] i row number.
-  \param[in] nb number of coefficients to add.
-  \param[in] col_ column numbers of coefficients.
-  \param[in] val_ values of coefficients.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
-AddInteractionRow(int i, int nb, int* col_, T* val_)
-{
-  IVect col;
-  col.SetData(nb, col_);
-  Vector<T> val;
-  val.SetData(nb, val_);
-  AddInteractionRow(i, nb, col, val);
-  col.Nullify();
-  val.Nullify();
-}
-  
-  
-//! Adds coefficients in a column.
-/*!
-  \param[in] i column number.
-  \param[in] nb number of coefficients to add.
-  \param[in] row_ row numbers of coefficients.
-  \param[in] val_ values of coefficients.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
-AddInteractionColumn(int i, int nb, int* row_, T* val_)
-{
-  IVect row;
-  row.SetData(nb, row_);
-  Vector<T> val;
-  val.SetData(nb, val_);
-  AddInteractionColumn(i, nb, row, val);
-  row.Nullify();
-  val.Nullify();
-}
-  
-  
-//! Adds coefficients in a row.
-/*!
-  \param[in] i row number.
-  \param[in] nb number of coefficients to add.
-  \param[in] col column numbers of coefficients.
-  \param[in] val values of coefficients.
-*/
-template <class T, class Prop, class Allocator> template <class Alloc1>
-inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
-AddInteractionRow(int i, int nb, const IVect& col,
-		  const Vector<T, Vect_Full, Alloc1>& val)
-{
-  for (int j = 0; j < nb; j++)
-    Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>::
-      AddInteraction(col(j), i, val(j));
-}
-  
-  
-//! Adds coefficients in a column.
-/*!
-  \param[in] i column number.
-  \param[in] nb number of coefficients to add.
-  \param[in] row row numbers of coefficients.
-  \param[in] val values of coefficients.
-*/
-template <class T, class Prop, class Allocator> template <class Alloc1>
-inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
-AddInteractionColumn(int i, int nb, const IVect& row,
-		     const Vector<T, Vect_Full, Alloc1>& val)
-{
-  Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>::
-    AddInteractionVector(i, nb, row, val);
-}
-  
-  
-/////////////////////////////
-// MATRIX<ARRAY_ROWSPARSE> //
-/////////////////////////////
-  
-  
-//! Default constructor.
-/*!
-  Builds a empty matrix.
-*/
-template <class T, class Prop, class Allocator>
-inline Matrix<T, Prop, ArrayRowSparse, Allocator>::Matrix()  throw():
-  Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>()
-{
-}
-  
-  
-//! Constructor.
-/*! Builds a i by j matrix
-  \param i number of rows.
-  \param j number of columns.
-  \note Matrix values are not initialized.
-*/
-template <class T, class Prop, class Allocator>
-inline Matrix<T, Prop, ArrayRowSparse, Allocator>::Matrix(int i, int j):
+  //! Constructor.
+  /*! Builds a i by j matrix
+    \param i number of rows.
+    \param j number of columns.
+    \note Matrix values are not initialized.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ArrayRowSparse, Allocator>::Matrix(int i, int j):
   Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>(i, j)
-{
-}
+  {
+    this->mat_deriv = this;
+  }
   
   
-//! Clears a row
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::ClearRow(int i)
-{
-  this->ClearVector(i);
-}
+  //! Clears a row
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::ClearRow(int i)
+  {
+    this->val_(i).Clear();
+  }
   
   
-//! Changes the size of a row.
-/*!
-  \param[in] i row number.
-  \param[in] j new number of non-zero entries of the row.
-  \warning Data may be lost.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
-ReallocateRow(int i, int j)
-{
-  this->ReallocateVector(i, j);
-}
+  //! Changes the size of a row.
+  /*!
+    \param[in] i row number.
+    \param[in] j new number of non-zero entries of the row.
+    \warning Data may be lost.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
+  ReallocateRow(int i, int j)
+  {
+    this->val_(i).Reallocate(j);
+  }
   
   
-//! Changes the size of a row.
-/*!
-  \param[in] i row number.
-  \param[in] j new number of non-zero entries of the row.
-  \note Data is kept.
-*/
-template <class T, class Prop, class Allocator> inline
-void Matrix<T, Prop, ArrayRowSparse, Allocator>::ResizeRow(int i, int j)
-{
-  this->ResizeVector(i, j);
-}
+  //! Changes the size of a row.
+  /*!
+    \param[in] i row number.
+    \param[in] j new number of non-zero entries of the row.
+    \note Data is kept.
+  */
+  template <class T, class Prop, class Allocator> inline
+  void Matrix<T, Prop, ArrayRowSparse, Allocator>::ResizeRow(int i, int j)
+  {
+    this->val_(i).Resize(j);
+  }
   
   
-//! Swap.s two rows
-/*!
-  \param[in] i first row number.
-  \param[in] j second row number.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::SwapRow(int i,int j)
-{
-  this->SwapVector(i, j);
-}
+  //! Swaps two rows
+  /*!
+    \param[in] i first row number.
+    \param[in] j second row number.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::SwapRow(int i,int j)
+  {
+    Swap(this->val_(i), this->val_(j));
+  }
   
   
-//! Sets column numbers of non-zero entries of a row.
-/*!
-  \param[in] i column number.
-  \param[in] new_index new column numbers.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
-ReplaceIndexRow(int i, IVect& new_index)
-{
-  this->ReplaceIndexVector(i,new_index);
-}
+  //! Sets column numbers of non-zero entries of a row.
+  /*!
+    \param[in] i column number.
+    \param[in] new_index new column numbers.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
+  ReplaceIndexRow(int i, IVect& new_index)
+  {
+    for (int j = 0; j < this->val_(i).GetM(); j++)
+      this->val_(i).Index(j) = new_index(j);
+  }
   
   
-//! Returns the number of non-zero entries of a row.
-/*!
-  \param[in] i row number.
-  \return The number of non-zero entries of the row i.
-*/
-template <class T, class Prop, class Allocator> inline
-int Matrix<T, Prop, ArrayRowSparse, Allocator>::GetRowSize(int i) const
-{
-  return this->GetVectorSize(i);
-}
+  //! Returns the number of non-zero entries of a row.
+  /*!
+    \param[in] i row number.
+    \return The number of non-zero entries of the row i.
+  */
+  template <class T, class Prop, class Allocator> inline
+  int Matrix<T, Prop, ArrayRowSparse, Allocator>::GetRowSize(int i) const
+  {
+    return this->val_(i).GetSize();
+  }
   
   
-//! Displays non-zero values of a row.
-template <class T, class Prop, class Allocator> inline
-void Matrix<T, Prop, ArrayRowSparse, Allocator>::PrintRow(int i) const
-{
-  this->PrintVector(i);
-}
+  //! Displays non-zero values of a row.
+  template <class T, class Prop, class Allocator> inline
+  void Matrix<T, Prop, ArrayRowSparse, Allocator>::PrintRow(int i) const
+  {
+    this->val_(i).Print();
+  }
   
   
-//! Assembles a row.
-/*!
-  \param[in] i row number.
-  \warning If you are using the methods AddInteraction,
-  you don't need to call that method.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::AssembleRow(int i)
-{
-  this->AssembleVector(i);
-}
+  //! Assembles a row.
+  /*!
+    \param[in] i row number.
+    \warning If you are using the methods AddInteraction,
+    you don't need to call that method.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::AssembleRow(int i)
+  {
+    this->val_(i).Assemble();
+  }
   
-//! Adds a coefficient in the matrix.
-/*!
-  \param[in] i row number.
-  \param[in] j column number.
-  \param[in] val coefficient to add.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
-AddInteraction(int i, int j, const T& val)
-{
-  Matrix_ArraySparse<T,Prop,ArrayRowSparse,Allocator>::
-    AddInteraction(i, j, val);
-}
-  
-  
-//! Adds coefficients in a row.
-/*!
-  \param[in] i row number.
-  \param[in] nb number of coefficients to add.
-  \param[in] col_ column numbers of coefficients.
-  \param[in] val_ values of coefficients.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
-AddInteractionRow(int i, int nb, int* col_, T* val_)
-{
-  IVect col;
-  col.SetData(nb, col_);
-  Vector<T> val;
-  val.SetData(nb, val_);
-  AddInteractionRow(i, nb, col, val);
-  col.Nullify();
-  val.Nullify();
-}
+  //! Adds a coefficient in the matrix.
+  /*!
+    \param[in] i row number.
+    \param[in] j column number.
+    \param[in] val coefficient to add.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
+  AddInteraction(int i, int j, const T& val)
+  {
+    this->val_(i).AddInteraction(j, val);
+  }
   
   
-//! Adds coefficients in a column.
-/*!
-  \param[in] i column number.
-  \param[in] nb number of coefficients to add.
-  \param[in] row_ row numbers of coefficients.
-  \param[in] val_ values of coefficients.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
-AddInteractionColumn(int i, int nb, int* row_, T* val_)
-{
-  IVect row;
-  row.SetData(nb, row_);
-  Vector<T> val;
-  val.SetData(nb, val_);
-  AddInteractionColumn(i, nb, row, val);
-  row.Nullify();
-  val.Nullify();
-}
+  //! Adds coefficients in a row.
+  /*!
+    \param[in] i row number.
+    \param[in] nb number of coefficients to add.
+    \param[in] col_ column numbers of coefficients.
+    \param[in] val_ values of coefficients.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
+  AddInteractionRow(int i, int nb, int* col_, T* value_)
+  {
+    IVect col;
+    col.SetData(nb, col_);
+    Vector<T> val;
+    val.SetData(nb, value_);
+    AddInteractionRow(i, nb, col, val);
+    col.Nullify();
+    val.Nullify();
+  }
   
   
-//! Adds coefficients in a row.
-/*!
-  \param[in] i row number.
-  \param[in] nb number of coefficients to add.
-  \param[in] col column numbers of coefficients.
-  \param[in] val values of coefficients.
-*/
-template <class T, class Prop, class Allocator> template <class Alloc1>
-inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
-AddInteractionRow(int i, int nb, const IVect& col,
-		  const Vector<T, Vect_Full, Alloc1>& val)
-{
-  Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>::
-    AddInteractionVector(i, nb, col, val);
-}
+  //! Adds coefficients in a column.
+  /*!
+    \param[in] i column number.
+    \param[in] nb number of coefficients to add.
+    \param[in] row_ row numbers of coefficients.
+    \param[in] val_ values of coefficients.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
+  AddInteractionColumn(int i, int nb, int* row_, T* value_)
+  {
+    IVect row;
+    row.SetData(nb, row_);
+    Vector<T> val;
+    val.SetData(nb, value_);
+    AddInteractionColumn(i, nb, row, val);
+    row.Nullify();
+    val.Nullify();
+  }
   
   
-//! Adds coefficients in a column.
-/*!
-  \param[in] i column number.
-  \param[in] nb number of coefficients to add.
-  \param[in] row row numbers of coefficients.
-  \param[in] val values of coefficients.
-*/
-template <class T, class Prop, class Allocator> template <class Alloc1>
-inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
-AddInteractionColumn(int i, int nb, const IVect& row,
+  //! Adds coefficients in a row.
+  /*!
+    \param[in] i row number.
+    \param[in] nb number of coefficients to add.
+    \param[in] col column numbers of coefficients.
+    \param[in] val values of coefficients.
+  */
+  template <class T, class Prop, class Allocator> template <class Alloc1>
+  inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
+  AddInteractionRow(int i, int nb, const IVect& col,
+		    const Vector<T, Vect_Full, Alloc1>& val)
+  {
+    this->val_(i).AddInteractionRow(nb, col, val);
+  }
+  
+  
+  //! Adds coefficients in a column.
+  /*!
+    \param[in] i column number.
+    \param[in] nb number of coefficients to add.
+    \param[in] row row numbers of coefficients.
+    \param[in] val values of coefficients.
+  */
+  template <class T, class Prop, class Allocator> template <class Alloc1>
+  inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
+  AddInteractionColumn(int i, int nb, const IVect& row,
+		       const Vector<T, Vect_Full, Alloc1>& val)
+  {
+    for (int j = 0; j < nb; j++)
+      this->val_(row(j)).AddInteraction(i, val(j));
+  }
+  
+  
+  ////////////////////////////////
+  // MATRIX<ARRAY_COLSYMSPARSE> //
+  ////////////////////////////////
+  
+  
+  //! Default constructor.
+  /*!
+    Builds a empty matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ArrayColSymSparse, Allocator>::Matrix()  throw():
+    Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>()
+  {
+    this->mat_deriv = this;
+  }
+  
+  
+  //! Constructor.
+  /*! Builds a i by j matrix
+    \param i number of rows.
+    \param j number of columns.
+    \note Matrix values are not initialized.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ArrayColSymSparse, Allocator>::Matrix(int i, int j):
+    Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>(i, j)
+  {
+    this->mat_deriv = this;
+  }
+  
+  
+  /**********************************
+   * ELEMENT ACCESS AND AFFECTATION *
+   **********************************/
+  
+  
+  //! Access operator.
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T
+  Matrix<T, Prop, ArrayColSymSparse, Allocator>::operator() (int i, int j)
+    const
+  {
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    if (i <= j)
+      return this->val_(j)(i);
+    
+    return this->val_(i)(j);
+  }
+  
+  
+  //! Access operator.
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayColSymSparse, Allocator>::operator() (int i, int j)
+  {
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    if (i < j)
+      return this->val_(j)(i);
+    
+    return this->val_(i)(j);
+  }
+  
+  
+  //! Clears a column.
+  template <class T, class Prop, class Allocator> inline
+  void Matrix<T, Prop, ArrayColSymSparse, Allocator>::ClearColumn(int i)
+  {
+    this->val_(i).Clear();
+  }
+  
+  
+  //! Reallocates column i.
+  /*!
+    \param[in] i column number.
+    \param[in] j new number of non-zero entries in the column.
+    \warning Data may be lost.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
+  ReallocateColumn(int i, int j)
+  {
+    this->val_(i).Reallocate(j);
+  }
+  
+  
+  //! Reallocates column i.
+  /*!
+    \param[in] i column number.
+    \param[in] j new number of non-zero entries in the column.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
+  ResizeColumn(int i, int j)
+  {
+    this->val_(i).Resize(j);
+  }
+  
+  
+  //! Swaps two columns.
+  /*!
+    \param[in] i first column number.
+    \param[in] j second column number.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
+  SwapColumn(int i, int j)
+  {
+    Swap(this->val_(i), this->val_(j));
+  }
+  
+  
+  //! Sets row numbers of non-zero entries of a column.
+  /*!
+    \param[in] i column number.
+    \param[in] new_index new row numbers.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
+  ReplaceIndexColumn(int i, IVect& new_index)
+  {
+    for (int j = 0; j < this->val_(i).GetM(); j++)
+      this->val_(i).Index(j) = new_index(j);
+  }
+  
+  
+  //! Returns the number of non-zero entries of a column.
+  /*!
+    \param[in] i column number.
+    \return The number of non-zero entries of the column i.
+  */
+  template <class T, class Prop, class Allocator>
+  inline int Matrix<T, Prop, ArrayColSymSparse, Allocator>::
+  GetColumnSize(int i) const
+  {
+    return this->val_(i).GetSize();
+  }
+  
+  
+  //! Displays non-zero values of a column.
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
+  PrintColumn(int i) const
+  {
+    this->val_(i).Print();
+  }
+  
+  
+  //! Assembles a column.
+  /*!
+    \param[in] i column number.
+    \warning If you are using the methods AddInteraction,
+    you don't need to call that method.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
+  AssembleColumn(int i)
+  {
+    this->val_(i).Assemble();
+  }
+  
+  
+  //! Adds coefficients in a row.
+  /*!
+    \param[in] i row number.
+    \param[in] nb number of coefficients to add.
+    \param[in] col_ column numbers of coefficients.
+    \param[in] val_ values of coefficients.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
+  AddInteractionRow(int i, int nb, int* col_, T* value_)
+  {
+    IVect col;
+    col.SetData(nb, col_);
+    Vector<T> val;
+    val.SetData(nb, value_);
+    AddInteractionRow(i, nb, col, val);
+    col.Nullify();
+    val.Nullify();
+  }
+  
+  
+  //! Adds coefficients in a column.
+  /*!
+    \param[in] i column number.
+    \param[in] nb number of coefficients to add.
+    \param[in] row_ row numbers of coefficients.
+    \param[in] val_ values of coefficients.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
+  AddInteractionColumn(int i, int nb, int* row_, T* value_)
+  {
+    IVect row;
+    row.SetData(nb, row_);
+    Vector<T> val;
+    val.SetData(nb, value_);
+    AddInteractionColumn(i, nb, row, val);
+    row.Nullify();
+    val.Nullify();
+  }
+  
+  
+  //! Adds a coefficient in the matrix.
+  /*!
+    \param[in] i row number.
+    \param[in] j column number.
+    \param[in] val coefficient to add.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
+  AddInteraction(int i, int j, const T& val)
+  {
+    if (i <= j)
+      this->val_(j).AddInteraction(i, val);
+  }
+  
+  
+  //! Adds coefficients in a row.
+  /*!
+    \param[in] i row number.
+    \param[in] nb number of coefficients to add.
+    \param[in] col column numbers of coefficients.
+    \param[in] val values of coefficients.
+  */
+  template <class T, class Prop, class Allocator> template <class Alloc1>
+  inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
+  AddInteractionRow(int i, int nb, const IVect& col,
+		    const Vector<T, Vect_Full, Alloc1>& val)
+  {
+    AddInteractionColumn(i, nb, col, val);
+  }
+  
+  
+  //! Adds coefficients in a column.
+  /*!
+    \param[in] i column number.
+    \param[in] nb number of coefficients to add.
+    \param[in] row row numbers of coefficients.
+    \param[in] val values of coefficients.
+  */
+  template <class T, class Prop, class Allocator> template <class Alloc1>
+  inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
+  AddInteractionColumn(int i, int nb, const IVect& row,
 		     const Vector<T, Vect_Full, Alloc1>& val)
-{
-  for (int j = 0; j < nb; j++)
-    Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>::
-      AddInteraction(row(j), i, val(j));
-}
+  {
+    IVect new_row(nb);
+    Vector<T, Vect_Full, Alloc1> new_val(nb);
+    nb = 0;
+    for (int j = 0; j < new_row.GetM(); j++)
+      if (row(j) <= i)
+	{
+	  new_row(nb) = row(j);
+	  new_val(nb) = val(j); nb++;
+	}
+    
+    this->val_(i).AddInteractionRow(nb, new_row, new_val);
+  }
   
   
-////////////////////////////////
-// MATRIX<ARRAY_COLSYMSPARSE> //
-////////////////////////////////
+  ////////////////////////////////
+  // MATRIX<ARRAY_ROWSYMSPARSE> //
+  ////////////////////////////////
   
   
-//! Default constructor.
-/*!
-  Builds a empty matrix.
-*/
-template <class T, class Prop, class Allocator>
-inline Matrix<T, Prop, ArrayColSymSparse, Allocator>::Matrix()  throw():
-  Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>()
-{
-}
+  //! Default constructor.
+  /*!
+    Builds a empty matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Matrix()  throw():
+    Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>()
+  {
+    this->mat_deriv = this;
+  }
   
   
-//! Constructor.
-/*! Builds a i by j matrix
-  \param i number of rows.
-  \param j number of columns.
-  \note Matrix values are not initialized.
-*/
-template <class T, class Prop, class Allocator>
-inline Matrix<T, Prop, ArrayColSymSparse, Allocator>::Matrix(int i, int j):
-  Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>(i, j)
-{
-}
+  //! Constructor.
+  /*! Builds a i by j matrix
+    \param i number of rows.
+    \param j number of columns.
+    \note Matrix values are not initialized.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Matrix(int i, int j):
+    Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>(i, j)
+  {
+    this->mat_deriv = this;
+  }
   
   
-/**********************************
- * ELEMENT ACCESS AND AFFECTATION *
- **********************************/
+  /**********************************
+   * ELEMENT ACCESS AND AFFECTATION *
+   **********************************/
   
   
-//! Access operator.
-/*!
-  Returns the value of element (i, j).
-  \param i row index.
-  \param j column index.
-  \return Element (i, j) of the matrix.
-*/
-template <class T, class Prop, class Allocator>
-inline typename Matrix<T, Prop, ArrayColSymSparse, Allocator>::value_type
-Matrix<T, Prop, ArrayColSymSparse, Allocator>::operator() (int i, int j)
-  const
-{
+  //! Access operator.
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T
+  Matrix<T, Prop, ArrayRowSymSparse, Allocator>::operator() (int i, int j)
+    const
+  {
     
 #ifdef SELDON_CHECK_BOUNDARIES
-  if (i < 0 || i >= this->m_)
-    throw WrongRow("Matrix::operator()", "Index should be in [0, "
-		   + to_str(this->m_-1) + "], but is equal to "
-		   + to_str(i) + ".");
-  if (j < 0 || j >= this->n_)
-    throw WrongCol("Matrix::operator()", "Index should be in [0, "
-		   + to_str(this->n_-1) + "], but is equal to "
-		   + to_str(j) + ".");
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_ArraySparse::operator()", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_ArraySparse::operator()", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
 #endif
     
-  int k;
-  int a, b;
+    if (i <= j)
+      return this->val_(i)(j);
     
-  a = i; b = j;
-  Sort(a, b);
-    
-  for (k = 0; k < this->ind(b).GetM(); k++)
-    if (this->ind(b)(k) == a)
-      return this->val(b)(k);
-    
-  return T(0);
-}
+    return this->val_(j)(i);
+  }
   
   
-//! Access operator.
-/*!
-  Returns the value of element (i, j).
-  \param i row index.
-  \param j column index.
-  \return Element (i, j) of the matrix.
-*/
-template <class T, class Prop, class Allocator>
-inline typename Matrix<T, Prop, ArrayColSymSparse, Allocator>::reference
-Matrix<T, Prop, ArrayColSymSparse, Allocator>::operator() (int i, int j)
-{
+  //! Access operator.
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayRowSymSparse, Allocator>::operator() (int i, int j)
+  {
     
 #ifdef SELDON_CHECK_BOUNDARIES
-  if (i < 0 || i >= this->m_)
-    throw WrongRow("Matrix::operator()", "Index should be in [0, "
-		   + to_str(this->m_-1) + "], but is equal to "
-		   + to_str(i) + ".");
-  if (j < 0 || j >= this->n_)
-    throw WrongCol("Matrix::operator()", "Index should be in [0, "
-		   + to_str(this->n_-1) + "], but is equal to "
-		   + to_str(j) + ".");
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
 #endif
     
-  Sort(i, j);
+    if (i <= j)
+      return this->val_(i)(j);
     
-  int size_vec = this->ind(j).GetM();
-  int k = 0;
-  // we search the entry
-  while (k < size_vec && this->ind(j)(k) < i)
-    k++;
+    return this->val_(j)(i);
     
-  if (k >= size_vec || this->ind(j)(k) != i)
-    // The entry does not exist, we add a null value.
-    AddInteraction(i, j, T(0));
+  }
+  
+  
+  //! Clears a row.
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::ClearRow(int i)
+  {
+    this->val_(i).Clear();
+  }
+  
+  
+  //! Reallocates row i.
+  /*!
+    \param[in] i row number.
+    \param[in] j new number of non-zero entries in the row.
+    \warning Data may be lost.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
+  ReallocateRow(int i,int j)
+  {
+    this->val_(i).Reallocate(j);
+  }
+  
+  
+  //! Reallocates row i.
+  /*!
+    \param[in] i column number.
+    \param[in] j new number of non-zero entries in the row.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
+  ResizeRow(int i,int j)
+  {
+    this->val_(i).Resize(j);
+  }
+  
+  
+  //! Swaps two rows.
+  /*!
+    \param[in] i first row number.
+    \param[in] j second row number.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
+  SwapRow(int i,int j)
+  {
+    Swap(this->val_(i), this->val_(j));
+  }
+  
+  
+  //! Sets column numbers of non-zero entries of a row.
+  /*!
+    \param[in] i row number.
+    \param[in] new_index new column numbers.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
+  ReplaceIndexRow(int i,IVect& new_index)
+  {
+    for (int j = 0; j < this->val_(i).GetM(); j++)
+      this->val_(i).Index(j) = new_index(j);
+  }
+  
+  
+  //! Returns the number of non-zero entries of a row.
+  /*!
+    \param[in] i row number.
+    \return The number of non-zero entries of the row i.
+  */
+  template <class T, class Prop, class Allocator>
+  inline int Matrix<T, Prop, ArrayRowSymSparse, Allocator>::GetRowSize(int i)
+    const
+  {
+    return this->val_(i).GetSize();
+  }
+  
+  
+  //! Displays non-zero values of a column.
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::PrintRow(int i)
+    const
+  {
+    this->val_(i).Print();
+  }
+  
+  
+  //! Assembles a column.
+  /*!
+    \param[in] i column number.
+    \warning If you are using the methods AddInteraction,
+    you don't need to call that method.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::AssembleRow(int i)
+  {
+    this->val_(i).Assemble();
+  }
+  
+  
+  //! Adds a coefficient in the matrix.
+  /*!
+    \param[in] i row number.
+    \param[in] j column number.
+    \param[in] val coefficient to add.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
+  AddInteraction(int i, int j, const T& val)
+  {
+    if (i <= j)
+      this->val_(i).AddInteraction(j, val);
+  }
+  
+  
+  //! Adds coefficients in a row.
+  /*!
+    \param[in] i row number.
+    \param[in] nb number of coefficients to add.
+    \param[in] col_ column numbers of coefficients.
+    \param[in] val_ values of coefficients.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
+  AddInteractionRow(int i, int nb, int* col_, T* value_)
+  {
+    IVect col;
+    col.SetData(nb, col_);
+    Vector<T> val;
+    val.SetData(nb, value_);
+    AddInteractionRow(i, nb, col, val);
+    col.Nullify();
+    val.Nullify();
+  }
+  
+  
+  //! Adds coefficients in a column.
+  /*!
+    \param[in] i column number.
+    \param[in] nb number of coefficients to add.
+    \param[in] row_ row numbers of coefficients.
+    \param[in] val_ values of coefficients.
+  */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
+  AddInteractionColumn(int i, int nb, int* row_, T* value_)
+  {
+    IVect row;
+    row.SetData(nb, row_);
+    Vector<T> val;
+    val.SetData(nb, value_);
+    AddInteractionColumn(i, nb, row, val);
+    row.Nullify();
+    val.Nullify();
+  }
+  
+  
+  //! Adds coefficients in a row.
+  /*!
+    \param[in] i row number.
+    \param[in] nb number of coefficients to add.
+    \param[in] col column numbers of coefficients.
+    \param[in] val values of coefficients.
+  */
+  template <class T, class Prop, class Allocator> template <class Alloc1>
+  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
+  AddInteractionRow(int i, int nb, const IVect& col,
+		    const Vector<T, Vect_Full, Alloc1>& val)
+  {
+    IVect new_col(nb);
+    Vector<T, Vect_Full, Alloc1> new_val(nb);
+    nb = 0;
+    for (int j = 0; j < new_col.GetM(); j++)
+      if (i <= col(j))
+	{
+	  new_col(nb) = col(j);
+	  new_val(nb) = val(j); nb++;
+	}
     
-  return this->val(j)(k);
-}
+    this->val_(i).AddInteractionRow(nb, new_col, new_val);
+  }
   
   
-//! Clears a column.
-template <class T, class Prop, class Allocator> inline
-void Matrix<T, Prop, ArrayColSymSparse, Allocator>::ClearColumn(int i)
-{
-  this->ClearVector(i);
-}
+  //! Adds coefficients in a column.
+  /*!
+    \param[in] i column number.
+    \param[in] nb number of coefficients to add.
+    \param[in] row row numbers of coefficients.
+    \param[in] val values of coefficients.
+  */
+  template <class T, class Prop, class Allocator> template <class Alloc1>
+  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
+  AddInteractionColumn(int i, int nb, const IVect& row,
+		       const Vector<T,Vect_Full,Alloc1>& val)
+  {
+    // Symmetric matrix, row = column.
+    AddInteractionRow(i, nb, row, val);
+  }
   
   
-//! Reallocates column i.
-/*!
-  \param[in] i column number.
-  \param[in] j new number of non-zero entries in the column.
-  \warning Data may be lost.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
-ReallocateColumn(int i, int j)
-{
-  this->ReallocateVector(i, j);
-}
+  template <class T, class Prop, class Allocator>
+  ostream& operator <<(ostream& out,
+		       const Matrix<T, Prop, ArrayRowSparse, Allocator>& A)
+  {
+    A.WriteText(out);
+       
+    return out;
+  }
   
   
-//! Reallocates column i.
-/*!
-  \param[in] i column number.
-  \param[in] j new number of non-zero entries in the column.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
-ResizeColumn(int i, int j)
-{
-  this->ResizeVector(i, j);
-}
+  template <class T, class Prop, class Allocator>
+  ostream& operator <<(ostream& out,
+		       const Matrix<T, Prop, ArrayColSparse, Allocator>& A)
+  {
+    A.WriteText(out);
+       
+    return out;
+  }
   
   
-//! Swaps two columns.
-/*!
-  \param[in] i first column number.
-  \param[in] j second column number.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
-SwapColumn(int i, int j)
-{
-  this->SwapVector(i, j);
-}
+  template <class T, class Prop, class Allocator>
+  ostream& operator <<(ostream& out,
+		       const Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A)
+  {
+    A.WriteText(out);
+       
+    return out;
+  }
   
   
-//! Sets row numbers of non-zero entries of a column.
-/*!
-  \param[in] i column number.
-  \param[in] new_index new row numbers.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
-ReplaceIndexColumn(int i, IVect& new_index)
-{
-  this->ReplaceIndexVector(i,new_index);
-}
+  template <class T, class Prop, class Allocator>
+  ostream& operator <<(ostream& out,
+		       const Matrix<T, Prop, ArrayColSymSparse, Allocator>& A)
+  {
+    A.WriteText(out);
+       
+    return out;
+  }
   
   
-//! Returns the number of non-zero entries of a column.
-/*!
-  \param[in] i column number.
-  \return The number of non-zero entries of the column i.
-*/
-template <class T, class Prop, class Allocator>
-inline int Matrix<T, Prop, ArrayColSymSparse, Allocator>::
-GetColumnSize(int i) const
-{
-  return this->GetVectorSize(i);
-}
-  
-  
-//! Displays non-zero values of a column.
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
-PrintColumn(int i) const
-{
-  cout << " Column " << i << endl;
-  cout << " Index " << endl << this->ind(i) << endl;
-  cout << " Value " << endl << this->val(i) << endl;
-}
-  
-  
-//! Assembles a column.
-/*!
-  \param[in] i column number.
-  \warning If you are using the methods AddInteraction,
-  you don't need to call that method.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
-AssembleColumn(int i)
-{
-  this->AssembleVector(i);
-}
-  
-  
-//! Adds coefficients in a row.
-/*!
-  \param[in] i row number.
-  \param[in] nb number of coefficients to add.
-  \param[in] col_ column numbers of coefficients.
-  \param[in] val_ values of coefficients.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
-AddInteractionRow(int i, int nb, int* col_, T* val_)
-{
-  IVect col;
-  col.SetData(nb, col_);
-  Vector<T> val;
-  val.SetData(nb, val_);
-  AddInteractionRow(i, nb, col, val);
-  col.Nullify();
-  val.Nullify();
-}
-  
-  
-//! Adds coefficients in a column.
-/*!
-  \param[in] i column number.
-  \param[in] nb number of coefficients to add.
-  \param[in] row_ row numbers of coefficients.
-  \param[in] val_ values of coefficients.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
-AddInteractionColumn(int i, int nb, int* row_, T* val_)
-{
-  IVect row;
-  row.SetData(nb, row_);
-  Vector<T> val;
-  val.SetData(nb, val_);
-  AddInteractionColumn(i, nb, row, val);
-  row.Nullify();
-  val.Nullify();
-}
-  
-  
-//! Adds a coefficient in the matrix.
-/*!
-  \param[in] i row number.
-  \param[in] j column number.
-  \param[in] val coefficient to add.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
-AddInteraction(int i, int j, const T& val)
-{
-  if (i <= j)
-    Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>::
-      AddInteraction(j, i, val);
-}
-  
-  
-//! Adds coefficients in a row.
-/*!
-  \param[in] i row number.
-  \param[in] nb number of coefficients to add.
-  \param[in] col column numbers of coefficients.
-  \param[in] val values of coefficients.
-*/
-template <class T, class Prop, class Allocator> template <class Alloc1>
-inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
-AddInteractionRow(int i, int nb, const IVect& col,
-		  const Vector<T, Vect_Full, Alloc1>& val)
-{
-  for (int j = 0; j < nb; j++)
-    if (col(j) <= i)
-      Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>::
-	AddInteraction(col(j), i, val(j));
-}
-  
-  
-//! Adds coefficients in a column.
-/*!
-  \param[in] i column number.
-  \param[in] nb number of coefficients to add.
-  \param[in] row row numbers of coefficients.
-  \param[in] val values of coefficients.
-*/
-template <class T, class Prop, class Allocator> template <class Alloc1>
-inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
-AddInteractionColumn(int i, int nb, const IVect& row,
-		     const Vector<T, Vect_Full, Alloc1>& val)
-{
-  IVect new_row(nb);
-  Vector<T, Vect_Full, Alloc1> new_val(nb);
-  nb = 0;
-  for (int j = 0; j < new_row.GetM(); j++)
-    if (row(j) <= i)
-      {
-	new_row(nb) = row(j);
-	new_val(nb) = val(j); nb++;
-      }
-    
-  Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>::
-    AddInteractionVector(i, nb, new_row, new_val);
-}
-  
-  
-////////////////////////////////
-// MATRIX<ARRAY_ROWSYMSPARSE> //
-////////////////////////////////
-  
-  
-//! Default constructor.
-/*!
-  Builds a empty matrix.
-*/
-template <class T, class Prop, class Allocator>
-inline Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Matrix()  throw():
-  Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>()
-{
-}
-  
-  
-//! Constructor.
-/*! Builds a i by j matrix
-  \param i number of rows.
-  \param j number of columns.
-  \note Matrix values are not initialized.
-*/
-template <class T, class Prop, class Allocator>
-inline Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Matrix(int i, int j):
-  Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>(i, j)
-{
-}
-  
-/**********************************
- * ELEMENT ACCESS AND AFFECTATION *
- **********************************/
-
-
-//! Access operator.
-/*!
-  Returns the value of element (i, j).
-  \param i row index.
-  \param j column index.
-  \return Element (i, j) of the matrix.
-*/
-template <class T, class Prop, class Allocator>
-inline typename Matrix<T, Prop, ArrayRowSymSparse, Allocator>::value_type
-Matrix<T, Prop, ArrayRowSymSparse, Allocator>::operator() (int i, int j)
-  const
-{
-    
-#ifdef SELDON_CHECK_BOUNDARIES
-  if (i < 0 || i >= this->m_)
-    throw WrongRow("Matrix_ArraySparse::operator()", "Index should be in [0, "
-		   + to_str(this->m_-1) + "], but is equal to "
-		   + to_str(i) + ".");
-  if (j < 0 || j >= this->n_)
-    throw WrongCol("Matrix_ArraySparse::operator()", "Index should be in [0, "
-		   + to_str(this->n_-1) + "], but is equal to "
-		   + to_str(j) + ".");
-#endif
-    
-  int k;
-  int a, b;
-    
-  a = i; b = j;
-  Sort(a,b);
-    
-  for (k = 0; k < this->ind(a).GetM(); k++)
-    {
-      if (this->ind(a)(k) == b)
-	return this->val(a)(k);
-    }
-    
-  return T(0);
-
-}
-  
-  
-//! Access operator.
-/*!
-  Returns the value of element (i, j).
-  \param i row index.
-  \param j column index.
-  \return Element (i, j) of the matrix.
-*/
-template <class T, class Prop, class Allocator>
-inline typename Matrix<T, Prop, ArrayRowSymSparse, Allocator>::reference
-Matrix<T, Prop, ArrayRowSymSparse, Allocator>::operator() (int i, int j)
-{
-    
-#ifdef SELDON_CHECK_BOUNDARIES
-  if (i < 0 || i >= this->m_)
-    throw WrongRow("Matrix::operator()", "Index should be in [0, "
-		   + to_str(this->m_-1) + "], but is equal to "
-		   + to_str(i) + ".");
-  if (j < 0 || j >= this->n_)
-    throw WrongCol("Matrix::operator()", "Index should be in [0, "
-		   + to_str(this->n_-1) + "], but is equal to "
-		   + to_str(j) + ".");
-#endif
-    
-  Sort(i, j);
-    
-  int size_vec = this->ind(i).GetM();
-  int k = 0;
-  // we search the entry
-  while (k < size_vec && this->ind(i)(k) < j)
-    k++;
-    
-  if (k >= size_vec || this->ind(i)(k) != j)
-    // The entry does not exist, we add a null value.
-    AddInteraction(i, j, T(0));
-    
-  return this->val(i)(k);
-}
-  
-  
-//! Clears a row.
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::ClearRow(int i)
-{
-  this->ClearVector(i);
-}
-  
-  
-//! Reallocates row i.
-/*!
-  \param[in] i row number.
-  \param[in] j new number of non-zero entries in the row.
-  \warning Data may be lost.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
-ReallocateRow(int i,int j)
-{
-  this->ReallocateVector(i, j);
-}
-  
-  
-//! Reallocates column i.
-/*!
-  \param[in] i column number.
-  \param[in] j new number of non-zero entries in the row.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
-ResizeRow(int i,int j)
-{
-  this->ResizeVector(i, j);
-}
-  
-  
-//! Swaps two rows.
-/*!
-  \param[in] i first row number.
-  \param[in] j second row number.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
-SwapRow(int i,int j)
-{
-  this->SwapVector(i, j);
-}
-  
-  
-//! Sets column numbers of non-zero entries of a row.
-/*!
-  \param[in] i row number.
-  \param[in] new_index new column numbers.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
-ReplaceIndexRow(int i,IVect& new_index)
-{
-  this->ReplaceIndexVector(i,new_index);
-}
-  
-  
-//! Returns the number of non-zero entries of a row.
-/*!
-  \param[in] i row number.
-  \return The number of non-zero entries of the row i.
-*/
-template <class T, class Prop, class Allocator>
-inline int Matrix<T, Prop, ArrayRowSymSparse, Allocator>::GetRowSize(int i)
-  const
-{
-  return this->GetVectorSize(i);
-}
-  
-  
-//! Displays non-zero values of a column.
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::PrintRow(int i)
-  const
-{
-  this->PrintVector(i);
-}
-  
-  
-//! Assembles a column.
-/*!
-  \param[in] i column number.
-  \warning If you are using the methods AddInteraction,
-  you don't need to call that method.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::AssembleRow(int i)
-{
-  this->AssembleVector(i);
-}
-  
-  
-//! Adds a coefficient in the matrix.
-/*!
-  \param[in] i row number.
-  \param[in] j column number.
-  \param[in] val coefficient to add.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
-AddInteraction(int i, int j, const T& val)
-{
-  if (i <= j)
-    Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>::
-      AddInteraction(i, j, val);
-}
-  
-  
-//! Adds coefficients in a row.
-/*!
-  \param[in] i row number.
-  \param[in] nb number of coefficients to add.
-  \param[in] col_ column numbers of coefficients.
-  \param[in] val_ values of coefficients.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
-AddInteractionRow(int i, int nb, int* col_, T* val_)
-{
-  IVect col;
-  col.SetData(nb, col_);
-  Vector<T> val;
-  val.SetData(nb, val_);
-  AddInteractionRow(i, nb, col, val);
-  col.Nullify();
-  val.Nullify();
-}
-  
-  
-//! Adds coefficients in a column.
-/*!
-  \param[in] i column number.
-  \param[in] nb number of coefficients to add.
-  \param[in] row_ row numbers of coefficients.
-  \param[in] val_ values of coefficients.
-*/
-template <class T, class Prop, class Allocator>
-inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
-AddInteractionColumn(int i, int nb, int* row_, T* val_)
-{
-  IVect row;
-  row.SetData(nb, row_);
-  Vector<T> val;
-  val.SetData(nb, val_);
-  AddInteractionColumn(i, nb, row, val);
-  row.Nullify();
-  val.Nullify();
-}
-  
-  
-//! Adds coefficients in a row.
-/*!
-  \param[in] i row number.
-  \param[in] nb number of coefficients to add.
-  \param[in] col column numbers of coefficients.
-  \param[in] val values of coefficients.
-*/
-template <class T, class Prop, class Allocator> template <class Alloc1>
-inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
-AddInteractionRow(int i, int nb, const IVect& col,
-		  const Vector<T, Vect_Full, Alloc1>& val)
-{
-  IVect new_col(nb);
-  Vector<T, Vect_Full, Alloc1> new_val(nb);
-  nb = 0;
-  for (int j = 0; j < new_col.GetM(); j++)
-    if (i <= col(j))
-      {
-	new_col(nb) = col(j);
-	new_val(nb) = val(j); nb++;
-      }
-    
-  Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>::
-    AddInteractionVector(i, nb, new_col, new_val);
-}
-  
-  
-//! Adds coefficients in a column.
-/*!
-  \param[in] i column number.
-  \param[in] nb number of coefficients to add.
-  \param[in] row row numbers of coefficients.
-  \param[in] val values of coefficients.
-*/
-template <class T, class Prop, class Allocator> template <class Alloc1>
-inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
-AddInteractionColumn(int i, int nb, const IVect& row,
-		     const Vector<T,Vect_Full,Alloc1>& val)
-{
-  // Symmetric matrix, row = column.
-  AddInteractionRow(i, nb, row, val);
-}
-  
-  
-//! operator<< overloaded for sparse matrices.
-template <class T, class Prop, class Storage, class Allocator>
-ostream& operator <<(ostream& out,
-		     const Matrix_ArraySparse<T, Prop, Storage, Allocator>& A)
-{
-
-  out << "Value" << endl;
-  out << A.val << endl;
-  out << "Index" << endl;
-  out << A.ind << endl;
-    
-  return out;
-    
-}
-
-
 } // namespace Seldon
 
 #define FILE_MATRIX_ARRAY_SPARSE_CXX

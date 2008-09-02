@@ -160,15 +160,19 @@ namespace Seldon
     // Input/output functions.
     void Write(string FileName) const;
 #ifndef SWIG
-    void Write(ofstream& FileStream) const;
+    void Write(ostream& FileStream) const;
 #endif
     void WriteText(string FileName) const;
 #ifndef SWIG
-    void WriteText(ofstream& FileStream) const;
+    void WriteText(ostream& FileStream) const;
 #endif
     void Read(string FileName);
 #ifndef SWIG
-    void Read(ifstream& FileStream);
+    void Read(istream& FileStream);
+#endif
+    void ReadText(string FileName);
+#ifndef SWIG
+    void ReadText(istream& FileStream);
 #endif
     
   };

@@ -21,20 +21,18 @@
 
 namespace Seldon
 {
-  template<class T, class Prop, class Storage, class Allocator>
-  class SsorPreconditioner
+  template <class T>
+  class SorPreconditioner
   {
   protected :
     bool symmetric_precond; //!< true for Symmetric relaxation
     int nb_iter; //!< number of iterations
     T omega; //!< relaxation parameter
-    Matrix<T, Prop, Storage, Allocator>* A_; //!< pointer to matrix
     
   public :
-    SsorPreconditioner();
-    ~SsorPreconditioner(){}
+    SorPreconditioner();
+    ~SorPreconditioner(){}
     
-    void Init(Matrix<T, Prop, Storage, Allocator>& B);
     void InitSymmetricPreconditioning() { symmetric_precond = true; }
     void InitUnSymmetricPreconditioning() { symmetric_precond = false; }
     void SetParameterRelaxation(const T& param) { omega = param; }
@@ -49,48 +47,39 @@ namespace Seldon
   
   
   //! Default constructor
-  template<class T, class Prop, class Storage, class Allocator>
-  SsorPreconditioner<T, Prop, Storage, Allocator>::SsorPreconditioner()
+  template<class T>
+  SorPreconditioner<T>::SorPreconditioner()
   {
     nb_iter = 1; omega = T(1);
     symmetric_precond = true;
   }
   
   
-  //! Initialization with a given matrix
-  template<class T, class Prop, class Storage, class Allocator>
-  void SsorPreconditioner<T, Prop, Storage, Allocator>::
-  Init(Matrix<T, Prop, Storage, Allocator>& B)
-  {
-    A_ = &B;
-  }
-  
-  
   //! Solves M z = r
-  template<class T, class Prop, class Storage, class Allocator>
+  template<class T>
   template<class Vector, class Matrix>
-  void SsorPreconditioner<T, Prop, Storage, Allocator>::
+  void SorPreconditioner<T>::
   Solve(const Matrix& A, const Vector& r, Vector& z)
   {
     z.Zero();
     if (symmetric_precond)
-      Seldon::SOR(*A_, z, r, omega, nb_iter, 0);
+      Seldon::SOR(A, z, r, omega, nb_iter, 0);
     else
-      Seldon::SOR(*A_, z, r, omega, nb_iter, 2);
+      Seldon::SOR(A, z, r, omega, nb_iter, 2);
   }
   
   
   //! Solves M^t z = r
-  template<class T, class Prop, class Storage, class Allocator>
+  template<class T>
   template<class Vector, class Matrix>
-  void SsorPreconditioner<T, Prop, Storage, Allocator>::
+  void SorPreconditioner<T>::
   TransSolve(const Matrix& A, const Vector& r, Vector& z)
   {
     z.Zero();
     if (symmetric_precond)
-      Seldon::SOR(*A_, z, r, omega, nb_iter, 0);
+      Seldon::SOR(A, z, r, omega, nb_iter, 0);
     else
-      Seldon::SOR(*A_, z, r, omega, nb_iter, 3);
+      Seldon::SOR(A, z, r, omega, nb_iter, 3);
   }
   
 }

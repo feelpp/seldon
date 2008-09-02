@@ -719,7 +719,7 @@ namespace Seldon
 
     return *this;
   }
-
+  
 
   //! Fills a matrix randomly.
   /*!
@@ -836,7 +836,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Symmetric<T, Prop, Storage, Allocator>
-  ::Write(ofstream& FileStream) const
+  ::Write(ostream& FileStream) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -904,7 +904,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Symmetric<T, Prop, Storage, Allocator>
-  ::WriteText(ofstream& FileStream) const
+  ::WriteText(ostream& FileStream) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -971,7 +971,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Symmetric<T, Prop, Storage, Allocator>
-  ::Read(ifstream& FileStream)
+  ::Read(istream& FileStream)
   {
 
 #ifdef SELDON_CHECK_IO
@@ -999,7 +999,97 @@ namespace Seldon
 #endif
 
   }
+  
+  
+  //! Reads the matrix from a file.
+  /*!
+    Reads a matrix stored in text format in a file.
+    \param FileName input file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Symmetric<T, Prop, Storage, Allocator>::ReadText(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
 
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_Pointers::ReadText(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+    
+    this->ReadText(FileStream);
+
+    FileStream.close();
+  }
+  
+  
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix in text format from an input stream.
+    \param FileStream input stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Symmetric<T, Prop, Storage, Allocator>
+  ::ReadText(istream& FileStream)
+  {
+    // clears previous matrix
+    Clear();
+    
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
+                    "Stream is not ready.");
+#endif
+    
+    // we read first line
+    string line;
+    getline(FileStream, line);
+
+    if (FileStream.fail())
+      {
+	// empty file ?
+	return;
+      }
+    
+    // converting first line into a vector 
+    istringstream line_stream(line);
+    Vector<T> first_row;
+    first_row.ReadText(line_stream);
+    
+    // and now the other rows
+    Vector<T> other_rows;
+    other_rows.ReadText(FileStream);
+    
+    // number of rows and columns
+    int n = first_row.GetM();
+    int m = 1 + other_rows.GetM()/n;
+    
+#ifdef SELDON_CHECK_IO
+    // Checking number of elements
+    if (other_rows.GetM() != (m-1)*n)
+      throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
+                    "The file should contain same number of columns.");
+#endif
+    
+    this->Reallocate(m,n);
+    // filling matrix
+    for (int j = 0; j < n; j++)
+      this->Val(0, j) = first_row(j);
+    
+    int nb = 0;
+    for (int i = 1; i < m; i++)
+      {
+	for (int j = 0; j < i; j++)
+	  nb++;
+	
+	for (int j = i; j < n; j++)
+	  this->Val(i, j) = other_rows(nb++); 
+      }
+  }
+  
 
 
   ////////////////////
@@ -1053,7 +1143,22 @@ namespace Seldon
 
     return *this;
   }
-
+  
+  
+  //! Multiplies the matrix by a given value.
+  /*!
+    \param x multiplication coefficient
+  */
+  template <class T, class Prop, class Allocator>
+  template <class T0>
+  Matrix<T, Prop, ColSym, Allocator>&
+  Matrix<T, Prop, ColSym, Allocator>::operator*= (const T0& x)
+  {
+    for (int i = 0; i < this->GetDataSize();i++)
+      this->data_[i] *= x;
+    
+    return *this;
+  }
 
 
   ////////////////////
@@ -1107,7 +1212,22 @@ namespace Seldon
 
     return *this;
   }
-
+  
+  
+  //! Multiplies the matrix by a given value.
+  /*!
+    \param x multiplication coefficient
+  */
+  template <class T, class Prop, class Allocator>
+  template <class T0>
+  Matrix<T, Prop, RowSym, Allocator>&
+  Matrix<T, Prop, RowSym, Allocator>::operator*= (const T0& x)
+  {
+    for (int i = 0; i < this->GetDataSize();i++)
+      this->data_[i] *= x;
+    
+    return *this;
+  }
 
 } // namespace Seldon.
 

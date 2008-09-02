@@ -30,6 +30,7 @@ namespace Seldon
   void GetRow(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 	      int i, Vector<T1, Storage1, Allocator1>& X)
   {
+    X.Reallocate(M.GetN());
     for (int j = 0; j < M.GetN(); j++)
       X(j) = M(i, j);
   }
@@ -40,6 +41,7 @@ namespace Seldon
   void GetCol(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 	      int j, Vector<T1, Storage1, Allocator1>& X)
   {
+    X.Reallocate(M.GetM());
     for (int i = 0; i < M.GetM(); i++)
       X(i) = M(i, j);
   }

@@ -496,7 +496,7 @@ namespace Seldon
   }
   
   
-  //! Multiplicates a vector by a scalar.
+  //! Multiplies a vector by a scalar.
   /*!
     \param alpha scalar.
   */
@@ -738,7 +738,7 @@ namespace Seldon
     \param FileStream file stream.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::Write(ofstream& FileStream) const
+  void Vector<T, Vect_Full, Allocator>::Write(ostream& FileStream) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -798,7 +798,7 @@ namespace Seldon
     \param FileStream file stream.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::WriteText(ofstream& FileStream) const
+  void Vector<T, Vect_Full, Allocator>::WriteText(ostream& FileStream) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -858,11 +858,11 @@ namespace Seldon
     \param FileStream file stream.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::Read(ifstream& FileStream)
+  void Vector<T, Vect_Full, Allocator>::Read(istream& FileStream)
   {
 
 #ifdef SELDON_CHECK_IO
-    // Checks if the strem is ready.
+    // Checks if the stream is ready.
     if (!FileStream.good())
       throw IOError("Vector<Vect_Full>::Read(ifstream& FileStream)",
                     "Stream is not ready.");
@@ -886,7 +886,80 @@ namespace Seldon
 
   }
 
+  
+  //! Sets the vector from a file.
+  /*!
+    Sets all elements of the vector according to a text format. The length is not
+    stored.
+    \param FileName file name.
+  */
+  template <class T, class Allocator>
+  void Vector<T, Vect_Full, Allocator>::ReadText(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
 
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Vector<Vect_Full>::ReadText(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->ReadText(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Sets the vector from a file stream.
+  /*!
+    Sets all elements of the vector according to a text format. The length is not
+    stored.
+    \param FileStream file stream.
+  */
+  template <class T, class Allocator>
+  void Vector<T, Vect_Full, Allocator>::ReadText(istream& FileStream)
+  {
+    // previous vector is cleared
+    Clear();
+    
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Vector<Vect_Full>::ReadText(ofstream& FileStream)",
+                    "Stream is not ready.");
+#endif
+    
+    T entry;
+    int nb_elt = 0;
+    while (!FileStream.eof())
+      {
+	// new entry is read
+	FileStream>>entry;
+	
+	if (FileStream.fail())
+	  break;
+	else
+	  {
+	    nb_elt++;
+	    
+	    // inserting new element
+	    if (nb_elt > this->m_)
+	      this->Resize(2*nb_elt);
+	    
+	    this->data_[nb_elt-1] = entry;
+	  }
+      }
+    
+    // we resize to the right size
+    if (nb_elt > 0)
+      this->Resize(nb_elt);
+    else
+      this->Clear();
+  }
+  
+  
   //! operator<< overloaded for vectors.
   /*!
     \param out output stream.

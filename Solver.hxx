@@ -20,10 +20,9 @@
 #ifndef SELDON_FILE_SOLVER_HXX
 
 // additional classes and functions for sparse matrices
-#include "MatrixSparse/Functions_Arrays.cxx"
+#include "MatrixSparse/Matrix_Conversions.cxx"
 #include "MatrixSparse/Matrix_ArraySparse.cxx"
 #include "MatrixSparse/Matrix_ArrayComplexSparse.cxx"
-#include "MatrixSparse/Matrix_Conversions.cxx"
 #include "MatrixSparse/Permutation_ScalingMatrix.cxx"
 #include "MatrixSparse/Relaxation_MatVect.cxx"
 #include "MatrixSparse/Functions_MatrixArray.cxx"

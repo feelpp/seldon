@@ -34,8 +34,23 @@
 
   alpha.A*B + beta.C -> C
   MltAdd(alpha, A, B, beta, C)
-
+  
+  alpha*A + B -> B
+  Add(alpha, A, B)
+  
+  LU factorization of matrix A without pivoting
   GetLU(A)
+  
+  highest absolute value of A
+  MaxAbs(A)
+  
+  1-norm of matrix A
+  Norm1(A)
+  
+  infinit-norm of matrix A
+  NormInf(A)
+  
+  Transpose(A)
 */
 
 namespace Seldon
