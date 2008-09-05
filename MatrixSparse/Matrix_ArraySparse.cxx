@@ -1,4 +1,4 @@
-// Copyright (C) 2001-2003 Vivien Mallet
+// Copyright (C) 2001-2008 Vivien Mallet
 //
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
@@ -17,7 +17,7 @@
 // For more information, please see the Seldon home page:
 //     http://spacetown.free.fr/lib/seldon/
 
-#ifndef FILE_MATRIX_ARRAY_SPARSE_CXX
+#ifndef SELDON_FILE_MATRIX_ARRAY_SPARSE_CXX
 
 #include "Matrix_ArraySparse.hxx"
 
@@ -198,7 +198,7 @@ namespace Seldon
     of row (or column) i.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline int* Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetInd(int i)
+  inline int* Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetIndex(int i)
     const
   {
     return val_(i).GetIndex();
@@ -1918,5 +1918,5 @@ namespace Seldon
   
 } // namespace Seldon
 
-#define FILE_MATRIX_ARRAY_SPARSE_CXX
+#define SELDON_FILE_MATRIX_ARRAY_SPARSE_CXX
 #endif

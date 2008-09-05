@@ -2274,7 +2274,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
-    CheckDim(A, Y, X, "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
+    CheckDim(SeldonNoTrans, A, Y, X,
+	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
 
     cblas_sger(CblasColMajor, A.GetM(), A.GetN(), alpha, X.GetData(), 1,
@@ -2291,7 +2292,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
-    CheckDim(A, Y, X, "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
+    CheckDim(SeldonNoTrans, A, Y, X,
+	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
 
     cblas_dger(CblasColMajor, A.GetM(), A.GetN(), alpha, X.GetData(), 1,
@@ -2308,7 +2310,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
-    CheckDim(A, Y, X, "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
+    CheckDim(SeldonNoTrans, A, Y, X,
+	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
 
     cblas_cgeru(CblasColMajor, A.GetM(), A.GetN(),
@@ -2328,7 +2331,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
-    CheckDim(A, Y, X, "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
+    CheckDim(SeldonNoTrans, A, Y, X,
+	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
 
     cblas_zgeru(CblasColMajor, A.GetM(), A.GetN(),
@@ -2352,7 +2356,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
-    CheckDim(A, Y, X, "Rank1Update(alpha, X, status, Y, M)", "X.Y' + M");
+    CheckDim(SeldonNoTrans, A, Y, X,
+	     "Rank1Update(alpha, X, status, Y, M)", "X.Y' + M");
 #endif
 
     if (ConjY.Conj())
@@ -2380,7 +2385,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
-    CheckDim(A, Y, X, "Rank1Update(alpha, X, status, Y, M)", "X.Y' + M");
+    CheckDim(SeldonNoTrans, A, Y, X,
+	     "Rank1Update(alpha, X, status, Y, M)", "X.Y' + M");
 #endif
 
     if (ConjY.Conj())
@@ -2410,7 +2416,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
-    CheckDim(A, Y, X, "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
+    CheckDim(SeldonNoTrans, A, Y, X,
+	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
 
     cblas_sger(CblasRowMajor, A.GetM(), A.GetN(), alpha, X.GetData(), 1,
@@ -2427,7 +2434,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
-    CheckDim(A, Y, X, "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
+    CheckDim(SeldonNoTrans, A, Y, X,
+	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
 
     cblas_dger(CblasRowMajor, A.GetM(), A.GetN(), alpha, X.GetData(), 1,
@@ -2444,7 +2452,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
-    CheckDim(A, Y, X, "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
+    CheckDim(SeldonNoTrans, A, Y, X,
+	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
 
     cblas_cgeru(CblasRowMajor, A.GetM(), A.GetN(),
@@ -2464,7 +2473,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
-    CheckDim(A, Y, X, "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
+    CheckDim(SeldonNoTrans, A, Y, X,
+	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
 
     cblas_zgeru(CblasRowMajor, A.GetM(), A.GetN(),
@@ -2488,7 +2498,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
-    CheckDim(A, Y, X, "Rank1Update(alpha, X, status, Y, M)", "X.Y' + M");
+    CheckDim(SeldonNoTrans, A, Y, X,
+	     "Rank1Update(alpha, X, status, Y, M)", "X.Y' + M");
 #endif
 
     if (ConjY.Conj())
@@ -2516,7 +2527,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
-    CheckDim(A, Y, X, "Rank1Update(alpha, X, status, Y, M)", "X.Y' + M");
+    CheckDim(SeldonNoTrans, A, Y, X,
+	     "Rank1Update(alpha, X, status, Y, M)", "X.Y' + M");
 #endif
 
     if (ConjY.Conj())
@@ -2569,12 +2581,11 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const float alpha,
 		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
-		   Matrix<complex<float>, Prop1, ColSymPacked, Allocator1>& A)
+		   Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2587,13 +2598,12 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
   Rank1Update(const double alpha,
 	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
-	      Matrix<complex<double>, Prop1, ColSymPacked, Allocator1>& A)
+	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2643,13 +2653,12 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const float alpha,
 		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
 		   const enum CBLAS_UPLO Uplo,
-		   Matrix<complex<float>, Prop1, ColSymPacked, Allocator1>& A)
+		   Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2662,14 +2671,13 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
   Rank1Update(const double alpha,
 	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
 	      const enum CBLAS_UPLO Uplo,
-	      Matrix<complex<double>, Prop1, ColSymPacked, Allocator1>& A)
+	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2717,12 +2725,11 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const float alpha,
 		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
-		   Matrix<complex<float>, Prop1, RowSymPacked, Allocator1>& A)
+		   Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2735,13 +2742,12 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
   Rank1Update(const double alpha,
 	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
-	      Matrix<complex<double>, Prop1, RowSymPacked, Allocator1>& A)
+	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2791,13 +2797,12 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const float alpha,
 		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
 		   const enum CBLAS_UPLO Uplo,
-		   Matrix<complex<float>, Prop1, RowSymPacked, Allocator1>& A)
+		   Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2810,14 +2815,13 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
   Rank1Update(const double alpha,
 	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
 	      const enum CBLAS_UPLO Uplo,
-	      Matrix<complex<double>, Prop1, RowSymPacked, Allocator1>& A)
+	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2880,14 +2884,13 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void Rank2Update(const complex<float> alpha,
 		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
 		   const Vector<complex<float>, Vect_Full, Allocator2>& Y,
-		   Matrix<complex<float>, Prop1, ColSymPacked, Allocator1>& A)
+		   Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2903,7 +2906,6 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
@@ -2911,7 +2913,7 @@ namespace Seldon
   Rank2Update(const complex<double> alpha,
 	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
 	      const Vector<complex<double>, Vect_Full, Allocator2>& Y,
-	      Matrix<complex<double>, Prop1, ColSymPacked, Allocator1>& A)
+	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2970,7 +2972,6 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
@@ -2978,7 +2979,7 @@ namespace Seldon
 		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
 		   const Vector<complex<float>, Vect_Full, Allocator2>& Y,
 		   const enum CBLAS_UPLO Uplo,
-		   Matrix<complex<float>, Prop1, ColSymPacked, Allocator1>& A)
+		   Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2994,7 +2995,6 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
@@ -3003,7 +3003,7 @@ namespace Seldon
 	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
 	      const Vector<complex<double>, Vect_Full, Allocator2>& Y,
 	      const enum CBLAS_UPLO Uplo,
-	      Matrix<complex<double>, Prop1, ColSymPacked, Allocator1>& A)
+	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3060,14 +3060,13 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void Rank2Update(const complex<float> alpha,
 		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
 		   const Vector<complex<float>, Vect_Full, Allocator2>& Y,
-		   Matrix<complex<float>, Prop1, RowSymPacked, Allocator1>& A)
+		   Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3083,7 +3082,6 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
@@ -3091,7 +3089,7 @@ namespace Seldon
   Rank2Update(const complex<double> alpha,
 	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
 	      const Vector<complex<double>, Vect_Full, Allocator2>& Y,
-	      Matrix<complex<double>, Prop1, RowSymPacked, Allocator1>& A)
+	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3150,7 +3148,6 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
@@ -3158,7 +3155,7 @@ namespace Seldon
 		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
 		   const Vector<complex<float>, Vect_Full, Allocator2>& Y,
 		   const enum CBLAS_UPLO Uplo,
-		   Matrix<complex<float>, Prop1, RowSymPacked, Allocator1>& A)
+		   Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3174,7 +3171,6 @@ namespace Seldon
   }
 
 
-  // Warning: the matrix is assumed to be hermitian.
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
@@ -3183,7 +3179,7 @@ namespace Seldon
 	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
 	      const Vector<complex<double>, Vect_Full, Allocator2>& Y,
 	      const enum CBLAS_UPLO Uplo,
-	      Matrix<complex<double>, Prop1, RowSymPacked, Allocator1>& A)
+	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES

@@ -37,8 +37,8 @@ namespace Seldon
     B(row_perm(i), col_perm(j)) = A(i,j) and A = B.
     Equivalent Matlab operation: A(row_perm, col_perm) = A.
   */
-  template<class T, class Allocator>
-  void PermuteMatrix(Matrix<T, General, ArrayRowSparse, Allocator>& A,
+  template<class T, class Prop, class Allocator>
+  void PermuteMatrix(Matrix<T, Prop, ArrayRowSparse, Allocator>& A,
 		     const IVect& row_perm, const IVect& col_perm)
   {
     int m = A.GetM(), n, i, i_, j, i2;
@@ -87,8 +87,8 @@ namespace Seldon
     B(row_perm(i),col_perm(j)) = A(i,j) and A = B.
     Equivalent Matlab operation: A(row_perm, col_perm) = A.
   */
-  template<class T,class Allocator>
-  void PermuteMatrix(Matrix<T, Symmetric, ArrayColSymSparse, Allocator>& A,
+  template<class T, class Prop, class Allocator>
+  void PermuteMatrix(Matrix<T, Prop, ArrayColSymSparse, Allocator>& A,
 		     const IVect& row_perm, const IVect& col_perm)
   {
     // It is assumed that the permuted matrix is still symmetric! For example,
@@ -156,8 +156,8 @@ namespace Seldon
     B(row_perm(i),col_perm(j)) = A(i,j) and A = B.
     Equivalent Matlab operation: A(row_perm, col_perm) = A.
   */
-  template<class T, class Allocator>
-  void PermuteMatrix(Matrix<T, Symmetric,
+  template<class T, class Prop, class Allocator>
+  void PermuteMatrix(Matrix<T, Prop,
 		     ArrayRowSymComplexSparse, Allocator>& A,
 		     const IVect& row_perm,const IVect& col_perm)
   {
@@ -285,8 +285,8 @@ namespace Seldon
     B(row_perm(i),col_perm(j)) = A(i,j) and A = B.
     Equivalent Matlab operation: A(row_perm, col_perm) = A.
   */
-  template<class T,class Allocator>
-  void PermuteMatrix(Matrix<T, Symmetric, ArrayRowSymSparse, Allocator>& A,
+  template<class T, class Prop, class Allocator>
+  void PermuteMatrix(Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A,
 		     const IVect& row_perm, const IVect& col_perm)
   {
     // It is assumed that the permuted matrix is still symmetric! For example,
@@ -350,80 +350,93 @@ namespace Seldon
   
   
   //! Each row and column are scaled.
-  /*!  We compute diag(S)*A*diag(S) where S = scale.
+  /*! 
+    We compute diag(scale_left)*A*diag(scale_right).
    */
-  template<class T1, class Allocator1, class T2, class Allocator2>
-  void ScaleMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
-		   Matrix<T1, General, ArrayRowSparse, Allocator1>& A)
+  template<class Prop, class T1, class Allocator1,
+	   class T2, class Allocator2, class T3, class Allocator3>
+  void ScaleMatrix(Matrix<T1, Prop, ArrayRowSparse, Allocator1>& A,
+		   const Vector<T2, Vect_Full, Allocator2>& scale_left,
+		   const Vector<T3, Vect_Full, Allocator3>& scale_right)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
       for (int j = 0; j < A.GetRowSize(i); j++ )
-	A.Value(i,j) *= scale(i) * scale(A.Index(i, j));
+	A.Value(i,j) *= scale_left(i) * scale_right(A.Index(i, j));
     
   }
   
   
   //! Each row and column are scaled.
-  /*!  We compute diag(S)*A*diag(S) where S = scale.
+  /*!
+    We compute diag(scale_left)*A*diag(scale_right).
    */
-  template<class T1, class Allocator1, class T2, class Allocator2>
-  void ScaleMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
-		   Matrix<T1, Symmetric, ArrayRowSymSparse, Allocator1>& A)
+  template<class Prop, class T1, class Allocator1,
+	   class T2, class Allocator2, class T3, class Allocator3>
+  void ScaleMatrix(Matrix<T1, Prop, ArrayRowSymSparse, Allocator1>& A,
+		   const Vector<T2, Vect_Full, Allocator2>& scale_left,
+		   const Vector<T3, Vect_Full, Allocator3>& scale_right)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
       for (int j = 0; j < A.GetRowSize(i); j++ )
-	A.Value(i,j) *= scale(i) * scale(A.Index(i, j));
+	A.Value(i,j) *= scale_left(i) * scale_right(A.Index(i, j));
     
   }
   
   
   //! Each row and column are scaled.
-  /*!  We compute diag(S)*A*diag(S) where S = scale.
+  /*!
+    We compute diag(scale_left)*A*diag(scale_right).
    */
-  template<class T1, class Allocator1, class T2, class Allocator2>
-  void ScaleMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
-		   Matrix<T1, Symmetric, ArrayRowSymComplexSparse,
-		   Allocator1>& A)
+  template<class Prop, class T1, class Allocator1,
+	   class T2, class Allocator2, class T3, class Allocator3>
+  void ScaleMatrix(Matrix<T1, Prop, ArrayRowSymComplexSparse, Allocator1>& A,
+		   const Vector<T2, Vect_Full, Allocator2>& scale_left,
+		   const Vector<T3, Vect_Full, Allocator3>& scale_right)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
       {
 	for (int j = 0; j < A.GetRealRowSize(i); j++ )
-	  A.ValueReal(i,j) *= scale(i) * scale(A.IndexReal(i, j));
+	  A.ValueReal(i,j) *= scale_left(i) * scale_right(A.IndexReal(i, j));
 	
 	for (int j = 0; j < A.GetImagRowSize(i); j++ )
-	  A.ValueImag(i,j) *= scale(i) * scale(A.IndexImag(i, j));
+	  A.ValueImag(i,j) *= scale_left(i) * scale_right(A.IndexImag(i, j));
       }
   }
   
   
   //! Each row and column are scaled.
-  /*!  We compute diag(S)*A*diag(S) where S = scale.
+  /*!
+    We compute diag(scale_left)*A*diag(scale_right).
    */
-  template<class T1, class Allocator1, class T2, class Allocator2>
-  void ScaleMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
-		   Matrix<T1, General, ArrayRowComplexSparse, Allocator1>& A)
+  template<class Prop, class T1, class Allocator1,
+	   class T2, class Allocator2, class T3, class Allocator3>
+  void ScaleMatrix(Matrix<T1, Prop, ArrayRowComplexSparse, Allocator1>& A,
+		   const Vector<T2, Vect_Full, Allocator2>& scale_left,
+		   const Vector<T3, Vect_Full, Allocator3>& scale_right)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
       {
 	for (int j = 0; j < A.GetRealRowSize(i); j++ )
-	  A.ValueReal(i,j) *= scale(i) * scale(A.IndexReal(i, j));
+	  A.ValueReal(i,j) *= scale_left(i) * scale_right(A.IndexReal(i, j));
 	
 	for (int j = 0; j < A.GetImagRowSize(i); j++ )
-	  A.ValueImag(i,j) *= scale(i) * scale(A.IndexImag(i, j));
+	  A.ValueImag(i,j) *= scale_left(i) * scale_right(A.IndexImag(i, j));
       }
   }
   
   
   //! Each row is scaled.
-  /*!  We compute diag(S)*A where S = scale.
+  /*!
+    We compute diag(S)*A where S = scale.
    */
-  template<class T1, class Allocator1, class T2, class Allocator2>
-  void ScaleLeftMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
-		       Matrix<T1, General, ArrayRowSparse, Allocator1>& A)
+  template<class T1, class Allocator1,
+	   class Prop, class T2, class Allocator2>
+  void ScaleLeftMatrix(Matrix<T1, Prop, ArrayRowSparse, Allocator1>& A,
+		       const Vector<T2, Vect_Full, Allocator2>& scale)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
@@ -433,14 +446,15 @@ namespace Seldon
   
   
   //! Each row is scaled.
-  /*!  We compute diag(S)*A where S = scale.  In order to keep symmetry, the
+  /*!
+    We compute diag(S)*A where S = scale.  In order to keep symmetry, the
     operation is performed on upper part of the matrix, considering that lower
     part is affected by this operation.
   */
-  template<class T1, class Allocator1, class T2, class Allocator2>
-  void ScaleLeftMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
-		       Matrix<T1, Symmetric,
-		       ArrayRowSymSparse, Allocator1>& A)
+  template<class T1, class Allocator1,
+	   class Prop, class T2, class Allocator2>
+  void ScaleLeftMatrix(Matrix<T1, Prop, ArrayRowSymSparse, Allocator1>& A,
+		       const Vector<T2, Vect_Full, Allocator2>& scale)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
@@ -450,14 +464,16 @@ namespace Seldon
   
   
   //! Each row is scaled.
-  /*!  We compute diag(S)*A where S = scale.  In order to keep symmetry, the
+  /*!
+    We compute diag(S)*A where S = scale.  In order to keep symmetry, the
     operation is performed on upper part of the matrix, considering that lower
     part is affected by this operation.
   */
-  template<class T1, class Allocator1, class T2, class Allocator2>
-  void ScaleLeftMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
-		       Matrix<T1, Symmetric,
-		       ArrayRowSymComplexSparse, Allocator1>& A)
+  template<class T1, class Allocator1,
+	   class Prop, class T2, class Allocator2>
+  void ScaleLeftMatrix(Matrix<T1, Prop, ArrayRowSymComplexSparse, Allocator1>& A,
+		       const Vector<T2, Vect_Full, Allocator2>& scale,
+		       )
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
@@ -472,12 +488,13 @@ namespace Seldon
   
   
   //! Each row is scaled.
-  /*!  We compute diag(S)*A where S = scale.
+  /*!
+    We compute diag(S)*A where S = scale.
    */
-  template<class T1, class Allocator1, class T2, class Allocator2>
-  void ScaleLeftMatrix(const Vector<T2, Vect_Full, Allocator2>& scale,
-		       Matrix<T1, General,
-		       ArrayRowComplexSparse, Allocator1>& A)
+  template<class T1, class Allocator1,
+	   class Prop, class T2, class Allocator2>
+  void ScaleLeftMatrix(Matrix<T1, Prop, ArrayRowComplexSparse, Allocator1>& A,
+		       const Vector<T2, Vect_Full, Allocator2>& scale)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )

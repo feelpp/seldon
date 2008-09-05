@@ -1,4 +1,4 @@
-// Copyright (C) 2001-2003 Vivien Mallet
+// Copyright (C) 2001-2008 Vivien Mallet
 //
 // This file is part of Seldon library.
 // Seldon library provides matrices and vectors structures for
@@ -19,7 +19,7 @@
 
 // To be included by Seldon.hxx
 
-#ifndef FILE_MATRIX_ARRAY_SPARSE_HXX
+#ifndef SELDON_FILE_MATRIX_ARRAY_SPARSE_HXX
 
 namespace Seldon
 {
@@ -66,7 +66,7 @@ namespace Seldon
     int GetN() const;
     int GetNonZeros() const;
     int GetDataSize() const;
-    int* GetInd(int i) const;
+    int* GetIndex(int i) const;
     T* GetData(int i) const;
     
     Vector<T, Vect_Sparse, Allocator>* GetData() const;
@@ -255,5 +255,5 @@ namespace Seldon
   
 } // namespace Seldon
 
-#define FILE_MATRIX_ARRAY_SPARSE_HXX
+#define SELDON_FILE_MATRIX_ARRAY_SPARSE_HXX
 #endif

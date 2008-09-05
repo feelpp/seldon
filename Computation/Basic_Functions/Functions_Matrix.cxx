@@ -569,11 +569,42 @@ namespace Seldon
       }
     else
       {
-	Matrix<T, Prop, Storage, Allocator> B(A);
+	Matrix<T, Prop, Storage, Allocator> B;
+	B = A;
 	A.Reallocate(n,m);
 	for (int i = 0; i < m; i++)
 	  for (int j = 0; j < n; j++)
 	    A(j,i) = B(i,j);
+      }
+  }
+  
+  
+  //! Matrix transposition and conjugate.
+  template<class T, class Prop, class Storage, class Allocator>
+  void TransposeConj(Matrix<T, Prop, Storage, Allocator>& A)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    
+    if (m == n)
+      {
+	T tmp;
+	for (int i = 0; i < m; i++)
+	  for (int j = 0; j < i; j++)
+	    {
+	      tmp = A(i,j);
+	      A(i,j) = conj(A(j,i));
+	      A(j,i) = conj(tmp);
+	    }
+      }
+    else
+      {
+	Matrix<T, Prop, Storage, Allocator> B;
+	B = A;
+	A.Reallocate(n,m);
+	for (int i = 0; i < m; i++)
+	  for (int j = 0; j < n; j++)
+	    A(j,i) = conj(B(i,j));
       }
   }
   

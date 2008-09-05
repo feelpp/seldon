@@ -34,6 +34,7 @@ namespace Seldon
   {
   };
  
+  
   //! class containing MUMPS data structure
   template<>
   class TypeMumps<double>
@@ -43,6 +44,7 @@ namespace Seldon
     typedef double* pointer;
   };
   
+  
   //! class containing MUMPS data structure
   template<>
   class TypeMumps<complex<double> >
@@ -51,6 +53,7 @@ namespace Seldon
     typedef ZMUMPS_STRUC_C data;
     typedef mumps_double_complex* pointer;
   };
+  
   
   //! object used to solve linear system by calling mumps subroutines
   template<class T>
@@ -63,19 +66,19 @@ namespace Seldon
     typename TypeMumps<T>::data struct_mumps;
     //! double* or complex<double>*
     typedef typename TypeMumps<T>::pointer pointer;
-        
-  public :
     int print_level;
     
+    // internal method
+    void CallMumps();
+    
+  public :    
     MatrixMumps();
     ~MatrixMumps();
     
     void Clear();
     
-    void CallMumps();
     void InitSymmetricMatrix();
     void InitUnSymmetricMatrix();
-    void InitSchurComplement(const IVect& num);
     void SelectOrdering(int num_ordering);
     void HideMessages();
     void ShowMessages();

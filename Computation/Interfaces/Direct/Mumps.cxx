@@ -23,6 +23,7 @@
 
 namespace Seldon
 {
+  
   //! Mumps is called in double precision
   template<>
   inline void MatrixMumps<double>::CallMumps()
@@ -30,12 +31,14 @@ namespace Seldon
     dmumps_c(&struct_mumps);
   }
   
+  
   //! Mumps is called in complex double precision
   template<>
   inline void MatrixMumps<complex<double> >::CallMumps()
   {
     zmumps_c(&struct_mumps);
   }
+  
   
   //! initialization
   template<class T>
@@ -61,6 +64,7 @@ namespace Seldon
     print_level = 0;
   }
   
+  
   //! informs mumps that the matrix is symmetric
   template<class T>
   inline void MatrixMumps<T>::InitSymmetricMatrix()
@@ -77,10 +81,21 @@ namespace Seldon
     
     // the print level is set in mumps
     if (print_level >= 0)
-      ShowMessages();
+      {
+	struct_mumps.icntl[0] = 6;
+	struct_mumps.icntl[1] = 0;
+	struct_mumps.icntl[2] = 6;
+	struct_mumps.icntl[3] = 2;
+      }
     else
-      HideMessages();
+      {
+	struct_mumps.icntl[0] = -1;
+	struct_mumps.icntl[1] = -1;
+	struct_mumps.icntl[2] = -1;
+	struct_mumps.icntl[3] = 0;
+      }
   }
+  
   
   //! informs mumps that the matrix is unsymmetric
   template<class T>
@@ -96,10 +111,21 @@ namespace Seldon
     
     struct_mumps.icntl[13] = 20;
     if (print_level >= 0)
-      ShowMessages();
+      {
+	struct_mumps.icntl[0] = 6;
+	struct_mumps.icntl[1] = 0;
+	struct_mumps.icntl[2] = 6;
+	struct_mumps.icntl[3] = 2;
+      }
     else
-      HideMessages();
+      {
+	struct_mumps.icntl[0] = -1;
+	struct_mumps.icntl[1] = -1;
+	struct_mumps.icntl[2] = -1;
+	struct_mumps.icntl[3] = 0;
+      }
   }
+  
   
   //! selects another ordering scheme
   template<class T>
@@ -108,12 +134,14 @@ namespace Seldon
     struct_mumps.icntl[6] = num_ordering;
   }
   
+  
   //! clears factorization
   template<class T>
   MatrixMumps<T>::~MatrixMumps()
   {
     Clear();
   }
+  
   
   //! clears factorization
   template<class T>
@@ -128,27 +156,22 @@ namespace Seldon
       }
   }
   
+  
   //! no display from Mumps
   template<class T>
   inline void MatrixMumps<T>::HideMessages()
   {
-    /* No outputs */
-    struct_mumps.icntl[0] = -1;
-    struct_mumps.icntl[1] = -1;
-    struct_mumps.icntl[2] = -1;
-    struct_mumps.icntl[3] = 0;
+    print_level = -1;
   }
+  
   
   //! standard display
   template<class T>
   inline void MatrixMumps<T>::ShowMessages()
   {
-    /* outputs */
-    struct_mumps.icntl[0] = 6;
-    struct_mumps.icntl[1] = 0;
-    struct_mumps.icntl[2] = 6;
-    struct_mumps.icntl[3] = 2;
+    print_level = 0;
   }
+  
   
   //! computes row numbers
   /*!
@@ -186,6 +209,7 @@ namespace Seldon
       numbers(i) = struct_mumps.sym_perm[i]-1;
   }
   
+  
   //! factorization of a given matrix
   /*!
     \param[inout] mat matrix to factorize
@@ -215,12 +239,14 @@ namespace Seldon
     CallMumps();
   }
   
+  
   //! returns information about factorization performed
   template<class T>
   int MatrixMumps<T>::GetInfoFactorization()
   {
     return struct_mumps.info[0];
   }
+  
   
   //! computation of Schur complement
   /*!
@@ -268,6 +294,7 @@ namespace Seldon
     vec_schur.Clear(); index_schur.Clear();
   }
   
+  
   //! resolution of a linear system using the computed factorization
   /*!
     \param[inout] x right-hand-side on input, solution on output
@@ -281,6 +308,7 @@ namespace Seldon
     CallMumps();
   }
   
+  
   template<class T, class Storage, class Allocator>
   void GetLU(Matrix<T,Symmetric,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
 	     bool keep_matrix = false)
@@ -288,6 +316,7 @@ namespace Seldon
     mat_lu.InitSymmetricMatrix();
     mat_lu.FactorizeMatrix(A, keep_matrix);
   }
+  
   
   template<class T, class Storage, class Allocator>
   void GetLU(Matrix<T,General,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
@@ -297,6 +326,7 @@ namespace Seldon
     mat_lu.FactorizeMatrix(A, keep_matrix);
   }
   
+  
   template<class T, class Storage, class Allocator, class MatrixFull>
   void GetSchurMatrix(Matrix<T,Symmetric,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
 		      const IVect& num, MatrixFull& schur_matrix, bool keep_matrix = false)
@@ -305,6 +335,7 @@ namespace Seldon
     mat_lu.GetSchurMatrix(A, num, schur_matrix, keep_matrix);
   }
   
+  
   template<class T, class Storage, class Allocator, class MatrixFull>
   void GetSchurMatrix(Matrix<T,General,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
 		      const IVect& num, MatrixFull& schur_matrix, bool keep_matrix = false)
@@ -312,6 +343,7 @@ namespace Seldon
     mat_lu.InitUnSymmetricMatrix();
     mat_lu.GetSchurMatrix(A, num, schur_matrix, keep_matrix);
   }
+  
   
   template<class T, class Allocator>
   void SolveLU(MatrixMumps<T>& mat_lu, Vector<T, Vect_Full, Allocator>& x)

@@ -23,38 +23,7 @@
 namespace Seldon
 {
   
-  
-  template<class T, class Prop, class Storage, class Allocator>
-  void TransposeSquareMatrix(Matrix<T, Prop, Storage, Allocator>& A)
-  {
-    T value;
-    for (int i = 0; i < A.GetM(); i++)
-      for (int j = i + 1; j < A.GetM(); j++)
-	{
-	  value = A(i,j);
-	  A(i,j) = A(j,i);
-	  A(j,i) = value;
-	}
-  }
-  
-  
-  template<class T, class Prop, class Storage, class Allocator>
-  void TransposeConjSquareMatrix(Matrix<T, Prop, Storage, Allocator>& A)
-  {
-    T value;
-    for (int i = 0; i < A.GetM(); i++)
-      {
-	A(i,i) = conj(A(i,i));
-	for (int j = i+1; j < A.GetM(); j++)
-	  {
-	    value = A(i,j);
-	    A(i,j) = conj(A(j,i));
-	    A(j,i) = conj(value);
-	  }
-      }
-  }
-  
-  
+    
   /////////////////////////////////
   // STANDARD EIGENVALUE PROBLEM //
   
@@ -94,7 +63,7 @@ namespace Seldon
 	   zr.GetData(), &n, zr.GetData(), &n, work.GetData(), &lwork,
 	   &lapack_info.GetInfoRef());
     
-    TransposeSquareMatrix(zr);
+    Transpose(zr);
     // conjugate if necessary
     int i = 0;
     while (i < n)
@@ -144,7 +113,7 @@ namespace Seldon
 	   z.GetDataVoid(), &n, z.GetData(), &n, work.GetDataVoid(), &lwork,
 	   rwork.GetData(), &lapack_info.GetInfoRef());
     
-    TransposeConjSquareMatrix(z);
+    TransposeConj(z);
   }
   
   
@@ -176,7 +145,7 @@ namespace Seldon
 	   zr.GetData(), &n, zr.GetData(), &n, work.GetData(), &lwork,
 	   &lapack_info.GetInfoRef());
     
-    TransposeSquareMatrix(zr);
+    Transpose(zr);
     // conjugate if necessary
     int i = 0;
     while (i < n)
@@ -227,7 +196,7 @@ namespace Seldon
 	   z.GetDataVoid(), &n, z.GetData(), &n, work.GetDataVoid(),
 	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
     
-    TransposeConjSquareMatrix(z);
+    TransposeConj(z);
   }
   
   
@@ -396,7 +365,7 @@ namespace Seldon
     ssyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(), work.GetData(),
 	   &lwork, &lapack_info.GetInfoRef());
     
-    TransposeSquareMatrix(z);
+    Transpose(z);
   }
   
   template<class Prop, class Allocator1, class Allocator2>
@@ -461,7 +430,7 @@ namespace Seldon
     dsyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(), work.GetData(),
 	   &lwork, &lapack_info.GetInfoRef());
     
-    TransposeSquareMatrix(z);
+    Transpose(z);
   }
   
   template<class Prop, class Allocator1, class Allocator2>
@@ -666,7 +635,7 @@ namespace Seldon
     cheev_(&job, &uplo,&n, z.GetDataVoid(),&n, w.GetData(), work.GetDataVoid(),
 	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
     
-    TransposeSquareMatrix(z);
+    Transpose(z);
   }
   
   template<class Prop, class Allocator1, class Allocator2>
@@ -704,7 +673,7 @@ namespace Seldon
     zheev_(&job, &uplo,&n, z.GetDataVoid(),&n, w.GetData(), work.GetDataVoid(),
 	   &lwork, rwork.GetData() , &lapack_info.GetInfoRef());
     
-    TransposeSquareMatrix(z);
+    Transpose(z);
   }
   
   
@@ -815,7 +784,7 @@ namespace Seldon
     sspev_(&job, &uplo, &n, A.GetData(), w.GetData(), z.GetData(), &n,
 	   work.GetData() , &lapack_info.GetInfoRef());
     
-    TransposeSquareMatrix(z);
+    Transpose(z);
   }
   
   
@@ -874,7 +843,7 @@ namespace Seldon
     dspev_(&job, &uplo, &n, A.GetData(), w.GetData(), z.GetData(), &n,
 	   work.GetData() , &lapack_info.GetInfoRef());
     
-    TransposeSquareMatrix(z);
+    Transpose(z);
   }
   
   
@@ -1068,7 +1037,7 @@ namespace Seldon
     chpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), z.GetDataVoid(),
 	   &n, work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
     
-    TransposeSquareMatrix(z);
+    Transpose(z);
   }
   
   
@@ -1102,7 +1071,7 @@ namespace Seldon
     zhpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), z.GetDataVoid(),
 	   &n, work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
     
-    TransposeSquareMatrix(z);
+    Transpose(z);
   }
   
   
@@ -1267,7 +1236,7 @@ namespace Seldon
 	   alpha.GetData(), beta.GetData(), V.GetData(), &n, V.GetData(), &n,
 	   work.GetData(), &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
     
-    TransposeConjSquareMatrix(V);
+    TransposeConj(V);
   }
   
   
@@ -1352,7 +1321,7 @@ namespace Seldon
 	   alpha.GetData(), beta.GetData(), V.GetData(), &n, V.GetData(), &n,
 	   work.GetData(), &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
     
-    TransposeConjSquareMatrix(V);
+    TransposeConj(V);
   }
   
   
@@ -2280,7 +2249,7 @@ namespace Seldon
 	   V.GetData(), &n, V.GetData(), &n,
 	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
     
-    TransposeSquareMatrix(V);
+    Transpose(V);
     // conjugate if necessary
     int i = 0;
     while (i < n)
@@ -2342,7 +2311,7 @@ namespace Seldon
 	   beta.GetData(), V.GetData(), &n, V.GetData(), &n, work.GetData(),
 	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
     
-    TransposeConjSquareMatrix(V);
+    TransposeConj(V);
   }
   
   
@@ -2387,7 +2356,7 @@ namespace Seldon
 	   V.GetData(), &n, V.GetData(), &n,
 	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
     
-    TransposeSquareMatrix(V);
+    Transpose(V);
     // conjugate if necessary
     int i = 0;
     while (i < n)
@@ -2449,7 +2418,7 @@ namespace Seldon
 	   beta.GetData(), V.GetData(), &n, V.GetData(), &n, work.GetData(),
 	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
     
-    TransposeConjSquareMatrix(V);
+    TransposeConj(V);
   }
   
   
