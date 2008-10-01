@@ -826,7 +826,8 @@ namespace Seldon
     \param FileName input file name.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_SymPacked<T, Prop, Storage, Allocator>::ReadText(string FileName)
+  void Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::ReadText(string FileName)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -853,59 +854,54 @@ namespace Seldon
   void Matrix_SymPacked<T, Prop, Storage, Allocator>
   ::ReadText(istream& FileStream)
   {
-    // clears previous matrix
+    // Clears the matrix.
     Clear();
     
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
+      throw IOError("Matrix_SymPacked::ReadText(istream& FileStream)",
                     "Stream is not ready.");
 #endif
     
-    // we read first line
+    // Reads the first line.
     string line;
     getline(FileStream, line);
-
     if (FileStream.fail())
-      {
-	// empty file ?
-	return;
-      }
+      // Is the file empty?
+      return;
     
-    // converting first line into a vector 
+    // Converts the first line into a vector.
     istringstream line_stream(line);
     Vector<T> first_row;
     first_row.ReadText(line_stream);
     
-    // and now the other rows
-    Vector<T> other_rows;
-    other_rows.ReadText(FileStream);
+    // Now reads all other rows, and puts them in a single vector.
+    Vector<T> other_row;
+    other_row.ReadText(FileStream);
     
-    // number of rows and columns
+    // Number of rows and columns.
     int n = first_row.GetM();
-    int m = 1 + other_rows.GetM()/n;
+    int m = 1 + other_row.GetM() / n;
     
 #ifdef SELDON_CHECK_IO
-    // Checking number of elements
-    if (other_rows.GetM() != (m-1)*n)
-      throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
-                    "The file should contain same number of columns.");
+    // Checks that enough elements were read.
+    if (other_row.GetM() != (m - 1) * n)
+      throw IOError("Matrix_SymPacked::ReadText(istream& FileStream)",
+                    "Not all rows have the same number of columns.");
 #endif
     
     this->Reallocate(m,n);
-    // filling matrix
+
+    // Fills the matrix.
     for (int j = 0; j < n; j++)
       this->Val(0, j) = first_row(j);
-    
-    int nb = 0;
+    int k = 0;
     for (int i = 1; i < m; i++)
       {
-	for (int j = 0; j < i; j++)
-	  nb++;
-	
+	k += i;
 	for (int j = i; j < n; j++)
-	  this->Val(i, j) = other_rows(nb++); 
+	  this->Val(i, j) = other_row(k++);
       }
   }
   
@@ -1062,7 +1058,7 @@ namespace Seldon
   }
   
   
-    //! Multiplies the matrix by a given value.
+  //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
   */
