@@ -111,9 +111,11 @@ namespace Seldon
 #ifndef SWIG
     void Read(istream& FileStream);
 #endif
-    void ReadText(string FileName);
+#ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
 #ifndef SWIG
+    void ReadText(string FileName);
     void ReadText(istream& FileStream);
+#endif
 #endif
   };
 

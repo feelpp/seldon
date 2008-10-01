@@ -887,6 +887,7 @@ namespace Seldon
   }
 
   
+#ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
   //! Sets the vector from a file.
   /*!
     Sets all elements of the vector according to a text format. The length is not
@@ -959,6 +960,7 @@ namespace Seldon
     else
       this->Clear();
   }
+#endif // SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
   
   
   //! operator<< overloaded for vectors.
