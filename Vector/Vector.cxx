@@ -921,7 +921,7 @@ namespace Seldon
   template <class T, class Allocator>
   void Vector<T, Vect_Full, Allocator>::ReadText(istream& FileStream)
   {
-    // previous vector is cleared
+    // Previous values of the vector are cleared.
     Clear();
     
 #ifdef SELDON_CHECK_IO
@@ -932,29 +932,30 @@ namespace Seldon
 #endif
     
     T entry;
-    int nb_elt = 0;
+    int number_element = 0;
     while (!FileStream.eof())
       {
-	// new entry is read
-	FileStream>>entry;
+	// Reads a new entry.
+	FileStream >> entry;
 	
 	if (FileStream.fail())
 	  break;
 	else
 	  {
-	    nb_elt++;
+	    number_element++;
 	    
-	    // inserting new element
-	    if (nb_elt > this->m_)
-	      this->Resize(2*nb_elt);
+	    // If needed, resizes the vector. Its size is already doubled so
+	    // that the vector should be resized a limited number of times.
+	    if (number_element > this->m_)
+	      this->Resize(2 * number_element);
 	    
-	    this->data_[nb_elt-1] = entry;
+	    this->data_[number_element - 1] = entry;
 	  }
       }
     
-    // we resize to the right size
-    if (nb_elt > 0)
-      this->Resize(nb_elt);
+    // Resizes to the actual size.
+    if (number_element > 0)
+      this->Resize(number_element);
     else
       this->Clear();
   }
