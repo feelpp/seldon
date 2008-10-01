@@ -171,9 +171,10 @@ namespace Seldon
 #endif
 
 	    this->data_ =
-	      reinterpret_cast<pointer>(this->allocator_.reallocate(this->data_,
-								    (i*(i+1))/2,
-								    this));
+	      reinterpret_cast<pointer>(this->allocator_
+					.reallocate(this->data_,
+						    (i * (i + 1)) / 2,
+						    this));
 
 #ifdef SELDON_CHECK_MEMORY
 	  }
@@ -661,8 +662,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file is ready.
     if (!FileStream.good())
-      throw IOError("Matrix_SymPacked::Write(ofstream& FileStream)",
-                    "Stream is not ready.");
+      throw IOError("Matrix_SymPacked::Write(ostream& FileStream)",
+                    "The stream is not ready.");
 #endif
 
     FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
@@ -676,10 +677,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!FileStream.good())
-      throw IOError("Matrix_SymPacked::Write(ofstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The output file may have been removed")
-		    + " or there is no space left on device.");
+      throw IOError("Matrix_SymPacked::Write(ostream& FileStream)",
+                    "Output operation failed.");
 #endif
 
   }
@@ -729,8 +728,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Matrix_SymPacked::WriteText(ofstream& FileStream)",
-                    "Stream is not ready.");
+      throw IOError("Matrix_SymPacked::WriteText(ostream& FileStream)",
+                    "The stream is not ready.");
 #endif
 
     int i, j;
@@ -744,10 +743,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!FileStream.good())
-      throw IOError("Matrix_SymPacked::WriteText(ofstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The output file may have been removed")
-		    + " or there is no space left on device.");
+      throw IOError("Matrix_SymPacked::WriteText(ostream& FileStream)",
+                    "Output operation failed.");
 #endif
 
   }
@@ -796,8 +793,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Matrix_SymPacked::Read(ifstream& FileStream)",
-                    "Stream is not ready.");
+      throw IOError("Matrix_SymPacked::Read(istream& FileStream)",
+                    "The stream is not ready.");
 #endif
 
     int new_m, new_n;
@@ -811,10 +808,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.
     if (!FileStream.good())
-      throw IOError("Matrix_SymPacked::Read(ifstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The intput file may have been removed")
-		    + " or may not contain enough data.");
+      throw IOError("Matrix_SymPacked::Read(istream& FileStream)",
+                    "Output operation failed.");
 #endif
 
   }
@@ -862,7 +857,7 @@ namespace Seldon
     // Checks if the stream is ready.
     if (!FileStream.good())
       throw IOError("Matrix_SymPacked::ReadText(istream& FileStream)",
-                    "Stream is not ready.");
+                    "The stream is not ready.");
 #endif
     
     // Reads the first line.

@@ -335,8 +335,8 @@ namespace Seldon
 #endif
 
 	    this->data_ =
-	      reinterpret_cast<pointer>(this->vect_allocator_.reallocate(this->data_,
-									 i, this) );
+	      reinterpret_cast<pointer>(this->vect_allocator_
+					.reallocate(this->data_, i, this));
 
 #ifdef SELDON_CHECK_MEMORY
 	  }
@@ -744,8 +744,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::Write(ofstream& FileStream)",
-                    "Stream is not ready.");
+      throw IOError("Vector<Vect_Full>::Write(ostream& FileStream)",
+                    "The stream is not ready.");
 #endif
 
     FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
@@ -757,10 +757,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::Write(ofstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The output file may have been removed")
-		    + "or there is no space left on device.");
+      throw IOError("Vector<Vect_Full>::Write(ostream& FileStream)",
+                    "Output operation failed.");
 #endif
 
   }
@@ -804,8 +802,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::WriteText(ofstream& FileStream)",
-                    "Stream is not ready.");
+      throw IOError("Vector<Vect_Full>::WriteText(ostream& FileStream)",
+                    "The stream is not ready.");
 #endif
 
     if (this->GetLength() != 0)
@@ -817,10 +815,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::WriteText(ofstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The output file may have been removed")
-		    + "or there is no space left on device.");
+      throw IOError("Vector<Vect_Full>::WriteText(ostream& FileStream)",
+                    "Output operation failed.");
 #endif
 
   }
@@ -864,8 +860,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::Read(ifstream& FileStream)",
-                    "Stream is not ready.");
+      throw IOError("Vector<Vect_Full>::Read(istream& FileStream)",
+                    "The stream is not ready.");
 #endif
 
     int new_size;
@@ -878,10 +874,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::Read(ifstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The intput file may have been removed")
-		    + " or may not contain enough data.");
+      throw IOError("Vector<Vect_Full>::Read(istream& FileStream)",
+                    "Output operation failed.");
 #endif
 
   }
@@ -890,8 +884,8 @@ namespace Seldon
 #ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
   //! Sets the vector from a file.
   /*!
-    Sets all elements of the vector according to a text format. The length is not
-    stored.
+    Sets all elements of the vector according to a text format. The length is
+    not stored.
     \param FileName file name.
   */
   template <class T, class Allocator>
@@ -915,8 +909,8 @@ namespace Seldon
 
   //! Sets the vector from a file stream.
   /*!
-    Sets all elements of the vector according to a text format. The length is not
-    stored.
+    Sets all elements of the vector according to a text format. The length is
+    not stored.
     \param FileStream file stream.
   */
   template <class T, class Allocator>
@@ -928,8 +922,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::ReadText(ofstream& FileStream)",
-                    "Stream is not ready.");
+      throw IOError("Vector<Vect_Full>::ReadText(istream& FileStream)",
+                    "The stream is not ready.");
 #endif
     
     T entry;

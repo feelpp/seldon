@@ -256,9 +256,9 @@ namespace Seldon
 #endif
 
 	    this->data_ =
-	      reinterpret_cast<pointer>(this->allocator_.reallocate(this->data_,
-								    i * j,
-								    this));
+	      reinterpret_cast<pointer>(this->allocator_
+					.reallocate(this->data_, i * j,
+						    this));
 
 #ifdef SELDON_CHECK_MEMORY
 	  }
@@ -827,8 +827,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Matrix_Pointers::Write(ofstream& FileStream)",
-		    "Stream is not ready.");
+      throw IOError("Matrix_Pointers::Write(ostream& FileStream)",
+		    "The stream is not ready.");
 #endif
 
     FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
@@ -842,10 +842,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!FileStream.good())
-      throw IOError("Matrix_Pointers::Write(ofstream& FileStream)",
-                    string("Output operation failed.")
-		    + string("  The output file may have been removed")
-		    + " or there is no space left on device.");
+      throw IOError("Matrix_Pointers::Write(ostream& FileStream)",
+                    "Output operation failed.");
 #endif
 
   }
@@ -895,8 +893,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file is ready.
     if (!FileStream.good())
-      throw IOError("Matrix_Pointers::WriteText(ofstream& FileStream)",
-                    "Stream is not ready.");
+      throw IOError("Matrix_Pointers::WriteText(ostream& FileStream)",
+                    "The stream is not ready.");
 #endif
 
     int i, j;
@@ -910,10 +908,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!FileStream.good())
-      throw IOError("Matrix_Pointers::WriteText(ofstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The output file may have been removed")
-		    + " or there is no space left on device.");
+      throw IOError("Matrix_Pointers::WriteText(ostream& FileStream)",
+                    "Output operation failed.");
 #endif
 
   }
@@ -962,8 +958,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Matrix_Pointers::Read(ifstream& FileStream)",
-                    "Stream is not ready.");
+      throw IOError("Matrix_Pointers::Read(istream& FileStream)",
+                    "The stream is not ready.");
 #endif
 
     int new_m, new_n;
@@ -977,10 +973,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.
     if (!FileStream.good())
-      throw IOError("Matrix_Pointers::Read(ifstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The input file may have been removed")
-		    + " or may not contain enough data.");
+      throw IOError("Matrix_Pointers::Read(istream& FileStream)",
+                    "Output operation failed.");
 #endif
 
   }
@@ -1026,8 +1020,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
-                    "Stream is not ready.");
+      throw IOError("Matrix_Pointers::ReadText(istream& FileStream)",
+                    "The stream is not ready.");
 #endif
     
     // Reads the first line.
@@ -1053,7 +1047,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks that enough elements were read.
     if (other_row.GetM() != (m - 1) * n)
-      throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
+      throw IOError("Matrix_Pointers::ReadText(istream& FileStream)",
                     "Not all rows have the same number of columns.");
 #endif
     
