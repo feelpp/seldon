@@ -111,7 +111,7 @@ namespace Seldon
 	Vector<T1, Vect_Sparse, Allocator1> Xalpha = X;
 	Xalpha *= alpha;
 	Y.AddInteractionRow(Xalpha.GetSize(),
-			    Xalpha.GetIndex(), Xalpha.GetData(), true); 
+			    Xalpha.GetIndex(), Xalpha.GetData(), true);
       }
   }
 
@@ -128,7 +128,7 @@ namespace Seldon
   template <class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
   void Copy(const Vector<T1, Storage1, Allocator1>& X,
-	   Vector<T2, Storage2, Allocator2>& Y)
+	    Vector<T2, Storage2, Allocator2>& Y)
   {
     Y.Copy(X);
   }
@@ -259,7 +259,7 @@ namespace Seldon
   //! Scalar product between two sparse vectors.
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
-  complex<T1> 
+  complex<T1>
   DotProdConj(const Vector<complex<T1>, Vect_Sparse, Allocator1>& X,
 	      const Vector<T2, Vect_Sparse, Allocator2>& Y)
   {

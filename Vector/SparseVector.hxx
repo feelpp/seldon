@@ -24,9 +24,6 @@ namespace Seldon
   
   
   //! Sparse vector class.
-  /*!
-    Sparse vector class
-  */
   template <class T, class Allocator>
   class Vector<T, Vect_Sparse, Allocator>
     : public Vector<T, Vect_Full, Allocator>
@@ -92,7 +89,7 @@ namespace Seldon
     void Assemble();
     template<class T0>
     void RemoveSmallEntry(const T0& epsilon);
-    void AddInteraction(int i, const T& val);    
+    void AddInteraction(int i, const T& val);
     void AddInteractionRow(int, int*, T*, bool);
     template<class Alloc1>
     void AddInteractionRow(int nb, Vector<int> col,

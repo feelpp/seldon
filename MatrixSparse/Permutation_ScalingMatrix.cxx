@@ -350,9 +350,9 @@ namespace Seldon
   
   
   //! Each row and column are scaled.
-  /*! 
+  /*!
     We compute diag(scale_left)*A*diag(scale_right).
-   */
+  */
   template<class Prop, class T1, class Allocator1,
 	   class T2, class Allocator2, class T3, class Allocator3>
   void ScaleMatrix(Matrix<T1, Prop, ArrayRowSparse, Allocator1>& A,
@@ -370,7 +370,7 @@ namespace Seldon
   //! Each row and column are scaled.
   /*!
     We compute diag(scale_left)*A*diag(scale_right).
-   */
+  */
   template<class Prop, class T1, class Allocator1,
 	   class T2, class Allocator2, class T3, class Allocator3>
   void ScaleMatrix(Matrix<T1, Prop, ArrayRowSymSparse, Allocator1>& A,
@@ -388,7 +388,7 @@ namespace Seldon
   //! Each row and column are scaled.
   /*!
     We compute diag(scale_left)*A*diag(scale_right).
-   */
+  */
   template<class Prop, class T1, class Allocator1,
 	   class T2, class Allocator2, class T3, class Allocator3>
   void ScaleMatrix(Matrix<T1, Prop, ArrayRowSymComplexSparse, Allocator1>& A,
@@ -410,7 +410,7 @@ namespace Seldon
   //! Each row and column are scaled.
   /*!
     We compute diag(scale_left)*A*diag(scale_right).
-   */
+  */
   template<class Prop, class T1, class Allocator1,
 	   class T2, class Allocator2, class T3, class Allocator3>
   void ScaleMatrix(Matrix<T1, Prop, ArrayRowComplexSparse, Allocator1>& A,
@@ -432,7 +432,7 @@ namespace Seldon
   //! Each row is scaled.
   /*!
     We compute diag(S)*A where S = scale.
-   */
+  */
   template<class T1, class Allocator1,
 	   class Prop, class T2, class Allocator2>
   void ScaleLeftMatrix(Matrix<T1, Prop, ArrayRowSparse, Allocator1>& A,
@@ -490,7 +490,7 @@ namespace Seldon
   //! Each row is scaled.
   /*!
     We compute diag(S)*A where S = scale.
-   */
+  */
   template<class T1, class Allocator1,
 	   class Prop, class T2, class Allocator2>
   void ScaleLeftMatrix(Matrix<T1, Prop, ArrayRowComplexSparse, Allocator1>& A,

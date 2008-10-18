@@ -107,7 +107,7 @@ namespace Seldon
 	IndRow.Reallocate(nnz);
 	IndCol.Reallocate(nnz);
 	Val.Reallocate(nnz);
-	IVect Ptr(m); 
+	IVect Ptr(m);
 	Ptr.Zero();
 	int nb = 0;
 	for (int i = 0 ; i < m; i++)
@@ -138,7 +138,7 @@ namespace Seldon
 	  {
 	    Sort(offset, offset+Ptr(i)-1, IndCol, Val);
 	    offset += Ptr(i);
-	  }  
+	  }
 	
       }
     else
@@ -214,7 +214,7 @@ namespace Seldon
 	  {
 	    Sort(offset, offset+Ptr(i)-1, IndCol, Val);
 	    offset += Ptr(i);
-	  }  
+	  }
 	
       }
     else
@@ -348,7 +348,7 @@ namespace Seldon
 	  {
 	    Sort(offset, offset+Ptr(i)-1, IndCol, Val);
 	    offset += Ptr(i);
-	  }  
+	  }
       }
     else
       {
@@ -423,7 +423,7 @@ namespace Seldon
 	  {
 	    Sort(offset, offset+Ptr(i)-1, IndCol, Val);
 	    offset += Ptr(i);
-	  }  
+	  }
       }
     else
       {

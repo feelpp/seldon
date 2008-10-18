@@ -879,7 +879,7 @@ namespace Seldon
 	return;
       }
     
-    // converting first line into a vector 
+    // converting first line into a vector
     istringstream line_stream(line);
     Vector<T> first_row;
     first_row.ReadText(line_stream);
@@ -911,7 +911,7 @@ namespace Seldon
 	  nb++;
 	
 	for (int j = i; j < n; j++)
-	  this->Val(i, j) = other_rows(nb++); 
+	  this->Val(i, j) = other_rows(nb++);
       }
   }
   

@@ -587,7 +587,7 @@ namespace Seldon
     are written and matrix elements are then written in the same order
     as in memory (e.g. row-major storage).
     \param FileName output file name.
-  */  
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   Write(string FileName) const
@@ -615,7 +615,7 @@ namespace Seldon
     are written and matrix elements are then written in the same order
     as in memory (e.g. row-major storage).
     \param FileStream output file name.
-  */  
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   Write(ostream& FileStream) const
@@ -644,7 +644,7 @@ namespace Seldon
     The entries are written in coordinate format (row column value)
     1-index convention is used
     \param FileName output file name.
-  */  
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   WriteText(string FileName) const
@@ -671,7 +671,7 @@ namespace Seldon
     The entries are written in coordinate format (row column value)
     1-index convention is used
     \param FileStream output file name.
-  */  
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   WriteText(ostream& FileStream) const
@@ -702,7 +702,7 @@ namespace Seldon
     are read and matrix elements are then read in the same order
     as it should be in memory (e.g. row-major storage).
     \param FileName output file name.
-  */  
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   Read(string FileName)
@@ -730,7 +730,7 @@ namespace Seldon
     are read and matrix elements are then read in the same order
     as it should be in memory (e.g. row-major storage).
     \param FileStream output file name.
-  */  
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   Read(istream& FileStream)
@@ -744,9 +744,9 @@ namespace Seldon
 #endif
     
     FileStream.read(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
-		     sizeof(int));
+		    sizeof(int));
     FileStream.read(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
-		     sizeof(int));
+		    sizeof(int));
     
     val_.Reallocate(this->m_);
     for (int i = 0; i < this->m_; i++)
@@ -768,7 +768,7 @@ namespace Seldon
   /*!
     Reads the matrix from a file in text format.
     \param FileName output file name.
-  */  
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   ReadText(string FileName)
@@ -793,7 +793,7 @@ namespace Seldon
   /*!
     Reads a matrix from a file in text format
     \param FileName output file name.
-  */  
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   ReadText(istream& FileStream)
@@ -1099,7 +1099,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayRowSparse, Allocator>::Matrix(int i, int j):
-  Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>(i, j)
+    Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>(i, j)
   {
     this->mat_deriv = this;
   }
@@ -1565,7 +1565,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		     const Vector<T, Vect_Full, Alloc1>& val)
+		       const Vector<T, Vect_Full, Alloc1>& val)
   {
     IVect new_row(nb);
     Vector<T, Vect_Full, Alloc1> new_val(nb);

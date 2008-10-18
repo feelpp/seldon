@@ -71,7 +71,7 @@ namespace Seldon
     // internal method
     void CallMumps();
     
-  public :    
+  public :
     MatrixMumps();
     ~MatrixMumps();
     

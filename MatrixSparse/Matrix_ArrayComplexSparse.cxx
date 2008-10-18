@@ -1127,7 +1127,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::Matrix(int i, int j):
-  Matrix_ArraySparse<T, Prop, ArrayRowComplexSparse, Allocator>(i, j)
+    Matrix_ArraySparse<T, Prop, ArrayRowComplexSparse, Allocator>(i, j)
   {
   }
   

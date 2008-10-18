@@ -92,7 +92,7 @@ namespace Seldon
     Vector<T, Vect_Full, Allocator>()
   {
     this->index_ = NULL;
-    Copy(V);	  
+    Copy(V);
   }
 
   
@@ -235,7 +235,7 @@ namespace Seldon
     \param i new length of the vector.
     \param data the new data array. 'data' contains the new elements of the
     vector and must therefore contain 'i' elements.
-    \param index the new index array. 'index' contains the new row numbers 
+    \param index the new index array. 'index' contains the new row numbers
     of the vector and must therefore contain 'i' elements.
     \warning 'data' has to be used carefully outside the object.
     Unless you use 'Nullify', 'data' will be freed by the destructor,
@@ -251,7 +251,7 @@ namespace Seldon
 
     this->m_ = i;
     
-    this->data_ = data;    
+    this->data_ = data;
     this->index_ = index;
   }
   
@@ -262,7 +262,7 @@ namespace Seldon
     Reallocates a vector and sets the new data array. It is useful to create
     a vector from pre-existing data.
     \param data the new data array. 'data' contains the values
-    \param index the new index array. 'index' contains the new row numbers 
+    \param index the new index array. 'index' contains the new row numbers
     of the vector and must have the same size than data.
     \note vectors data and index are empty after the method
   */
@@ -509,7 +509,7 @@ namespace Seldon
   /*!
     \warning If you are using the methods AddInteraction,
     you don't need to call that method
-   */
+  */
   template <class T, class Allocator>
   void Vector<T, Vect_Sparse, Allocator>::Assemble()
   {
@@ -608,7 +608,7 @@ namespace Seldon
   void Vector<T, Vect_Sparse, Allocator>::
   AddInteractionRow(int n, int* row, T* values, bool already_sorted = false)
   {
-    Vector<int> ind; 
+    Vector<int> ind;
     Vector<T, Vect_Full, Allocator> val;
     ind.SetData(n, row);
     val.SetData(n, values);
@@ -701,7 +701,7 @@ namespace Seldon
   
   //! Writes the vector in a file.
   /*!
-    The length and number of non-zero entries 
+    The length and number of non-zero entries
     of the vector (two integers) and non-zero elements of the vector are
     stored in binary format. For non-zero elements, row numbers
     are first written, then values.
@@ -728,7 +728,7 @@ namespace Seldon
 
   //! Writes the vector in a file stream.
   /*!
-    The number of non-zero entries 
+    The number of non-zero entries
     of the vector (two integers) and non-zero elements of the vector are
     stored in binary format. For non-zero elements, row numbers
     are first written, then values.
@@ -808,7 +808,7 @@ namespace Seldon
                     "Stream is not ready.");
 #endif
     
-    // 1-index 
+    // 1-index
     for (int i = 0; i < this->m_ - 1; i++)
       FileStream<<(Index(i)+1)<<" "<<Value(i)<<'\n';
     

@@ -1082,7 +1082,7 @@ namespace Seldon
 	return;
       }
     
-    // converting first line into a vector 
+    // converting first line into a vector
     istringstream line_stream(line);
     Vector<T> first_row;
     first_row.ReadText(line_stream);
@@ -1108,20 +1108,20 @@ namespace Seldon
       this->Val(0, j) = first_row(j);
     
     int nb = 0;
-        if (Storage::UpLo())
+    if (Storage::UpLo())
       for (int i = 1; i < m; i++)
 	{
 	  for (int j = 0; j < i; j++)
 	    nb++;
 	  
 	  for (int j = i; j < n; j++)
-	    this->Val(i, j) = other_rows(nb++); 
+	    this->Val(i, j) = other_rows(nb++);
 	}
     else
       for (int i = 1; i < m; i++)
 	{
 	  for (int j = 0; j <= i; j++)
-	    this->Val(i, j) = other_rows(nb++); 
+	    this->Val(i, j) = other_rows(nb++);
 	  
 	  for (int j = i+1; j < n; j++)
 	    nb++;
