@@ -685,7 +685,8 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
 				 Vector<T, Vect_Full, Allocator>& Val,
-				 Matrix<T, Prop, ArrayRowSparse, Allocator>& A,
+				 Matrix<T, Prop, ArrayRowSparse,
+				 Allocator>& A,
 				 int index = 0)
   {
     if (IndRow.GetM() <= 0)
