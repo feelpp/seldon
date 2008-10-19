@@ -38,16 +38,16 @@
   alpha*A + B -> B
   Add(alpha, A, B)
   
-  LU factorization of matrix A without pivoting
+  LU factorization of matrix A without pivoting.
   GetLU(A)
   
-  highest absolute value of A
+  Highest absolute value of A.
   MaxAbs(A)
   
-  1-norm of matrix A
+  1-norm of matrix A.
   Norm1(A)
   
-  infinit-norm of matrix A
+  infinity norm of matrix A.
   NormInf(A)
   
   Transpose(A)
@@ -160,6 +160,7 @@ namespace Seldon
   // MLTADD //
   ////////////
   
+
   
   /////////
   // ADD //
@@ -171,8 +172,9 @@ namespace Seldon
 	   const Matrix<T1, General, Storage1, Allocator1>& A,
 	   Matrix<T2, General, Storage2, Allocator2>& B)
   {
-    for (int i = 0; i < A.GetM(); i++)
-      for (int j = 0; j < A.GetN(); j++)
+    int i, j;
+    for (i = 0; i < A.GetM(); i++)
+      for (j = 0; j < A.GetN(); j++)
 	B(i, j) += alpha * A(i, j);
   }
   
@@ -183,18 +185,20 @@ namespace Seldon
 	   const Matrix<T1, Symmetric, Storage1, Allocator1>& A,
 	   Matrix<T2, Symmetric, Storage2, Allocator2>& B)
   {
-    for (int i = 0; i < A.GetM(); i++)
-      for (int j = i; j < A.GetN(); j++)
+    int i, j;
+    for (i = 0; i < A.GetM(); i++)
+      for (j = i; j < A.GetN(); j++)
 	B(i, j) += alpha * A(i, j);
   }
 
   
   // ADD //
   /////////
+
   
   
   ///////////
-  // GetLU //
+  // GETLU //
 
 
   // Returns the LU decomposition of A = LU (in A)
@@ -233,7 +237,7 @@ namespace Seldon
   }
   
   
-  // GetLU //
+  // GETLU //
   ///////////
 
 
@@ -412,8 +416,8 @@ namespace Seldon
   //////////////
 
 
-  ////////////
-  //  NORMS //
+  ///////////
+  // NORMS //
   
   
   //! Returns the maximum (in absolute value) of a matrix.
@@ -540,13 +544,13 @@ namespace Seldon
   }
   
   
-  //  NORMS //
-  ////////////
+  // NORMS //
+  ///////////
   
   
   
-  ////////////////
-  //  TRANSPOSE //
+  ///////////////
+  // TRANSPOSE //
   
   
   //! Matrix transposition.
@@ -579,38 +583,40 @@ namespace Seldon
   }
   
   
-  //! Matrix transposition and conjugate.
+  //! Matrix transposition and conjugation.
   template<class T, class Prop, class Storage, class Allocator>
   void TransposeConj(Matrix<T, Prop, Storage, Allocator>& A)
   {
+    int i, j;
+
     int m = A.GetM();
     int n = A.GetN();
     
     if (m == n)
       {
 	T tmp;
-	for (int i = 0; i < m; i++)
-	  for (int j = 0; j < i; j++)
+	for (i = 0; i < m; i++)
+	  for (j = 0; j < i; j++)
 	    {
-	      tmp = A(i,j);
-	      A(i,j) = conj(A(j,i));
-	      A(j,i) = conj(tmp);
+	      tmp = A(i, j);
+	      A(i, j) = conj(A(j, i));
+	      A(j, i) = conj(tmp);
 	    }
       }
     else
       {
 	Matrix<T, Prop, Storage, Allocator> B;
 	B = A;
-	A.Reallocate(n,m);
-	for (int i = 0; i < m; i++)
-	  for (int j = 0; j < n; j++)
-	    A(j,i) = conj(B(i,j));
+	A.Reallocate(n, m);
+	for (i = 0; i < m; i++)
+	  for (j = 0; j < n; j++)
+	    A(j, i) = conj(B(i, j));
       }
   }
   
   
-  //  TRANSPOSE //
-  ////////////////
+  // TRANSPOSE //
+  ///////////////
   
   
 } // namespace Seldon.
