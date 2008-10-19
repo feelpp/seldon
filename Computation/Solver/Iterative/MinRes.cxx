@@ -36,7 +36,7 @@ namespace Seldon
     SIAM J. Numer. Anal., 12 (1975), pp. 617-629.
     
     \param[in] A  Real Symmetric Matrix
-    \param[inout] x  Vector on input it is the initial guess
+    \param[in,out] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
     \param[in] M Right preconditioner

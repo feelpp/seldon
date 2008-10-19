@@ -249,7 +249,7 @@ namespace Seldon
     \param A matrix.
     \param B matrix.
     \param C matrix.
-    \function (optional) function in which the compatibility is checked.
+    \param function (optional) function in which the compatibility is checked.
     Default: "".
   */
   template <class T0, class Prop0, class Storage0, class Allocator0,
@@ -436,7 +436,7 @@ namespace Seldon
   //! Returns the 1-norm of a matrix.
   /*!
     \param A matrix.
-    \return max_j \sum_i |A_{ij}|
+    \return \f$ max_j \sum_i |A_{ij}| \f$
   */
   template <class T, class Prop, class Storage, class Allocator>
   T Norm1(const Matrix<T, Prop, Storage, Allocator>& A)
@@ -458,7 +458,7 @@ namespace Seldon
   //! Returns the infinity-norm of a matrix.
   /*!
     \param A matrix.
-    \return max_i \sum_j |A_{ij}|
+    \return \f$ max_i \sum_j |A_{ij}| \f$
   */
   template <class T, class Prop, class Storage, class Allocator>
   T NormInf(const Matrix<T, Prop, Storage, Allocator>& A)
@@ -499,7 +499,7 @@ namespace Seldon
   //! Returns the 1-norm of a matrix.
   /*!
     \param A matrix.
-    \return max_j \sum_i |A_{ij}|
+    \return \f$ max_j \sum_i |A_{ij}| \f$
   */
   template <class T, class Prop, class Storage, class Allocator>
   T Norm1(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
@@ -521,7 +521,7 @@ namespace Seldon
   //! Returns the infinity-norm of a matrix.
   /*!
     \param A matrix.
-    \return max_i \sum_j |A_{ij}|
+    \return \f$ max_i \sum_j |A_{ij}| \f$
   */
   template <class T, class Prop, class Storage, class Allocator>
   T NormInf(const Matrix<complex<T>, Prop, Storage, Allocator>& A)

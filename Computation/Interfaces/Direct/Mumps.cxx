@@ -175,7 +175,7 @@ namespace Seldon
   
   //! computes row numbers
   /*!
-    \param[inout] mat matrix whose we want to find the ordering
+    \param[in,out] mat matrix whose we want to find the ordering
     \param[out] numbers new row numbers
     \param[in] keep_matrix if false, the given matrix is cleared
   */
@@ -212,7 +212,7 @@ namespace Seldon
   
   //! factorization of a given matrix
   /*!
-    \param[inout] mat matrix to factorize
+    \param[in,out] mat matrix to factorize
     \param[in] keep_matrix if false, the given matrix is cleared
   */
   template<class T> template<class Prop, class Storage, class Allocator>
@@ -248,11 +248,12 @@ namespace Seldon
   }
   
   
-  //! computation of Schur complement
+  //! Computation of Schur complement.
   /*!
-    \param[inout] mat initial matrix
-    \param[in] num numbers to keep in Schur complement
-    \param[out] mat_schur Schur matrix
+    \param[in,out] mat initial matrix.
+    \param[in] num numbers to keep in Schur complement.
+    \param[out] mat_schur Schur matrix.
+    \param[in] keep_matrix if false, \a mat is cleared.
   */
   template<class T> template<class Prop1, class Storage1, class Allocator,
 			     class Prop2, class Storage2, class Allocator2>
@@ -297,7 +298,7 @@ namespace Seldon
   
   //! resolution of a linear system using the computed factorization
   /*!
-    \param[inout] x right-hand-side on input, solution on output
+    \param[in,out] x right-hand-side on input, solution on output
     It is assumed that a call to FactorizeMatrix has been done before
   */
   template<class T> template<class Allocator2>

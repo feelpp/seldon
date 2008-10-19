@@ -48,8 +48,8 @@ namespace Seldon
 
   //! Converts string to most types, specially numbers.
   /*!
-    \param input string to be converted.
-    \return 'input' converted to 'T'.
+    \param[in] s string to be converted.
+    \param[out] num \a s converted to 'T'.
   */
   template <class T>
   void to_num(std::string s, T& num)
@@ -60,8 +60,8 @@ namespace Seldon
 
   //! Converts string to most types, specially numbers.
   /*!
-    \param input string to be converted.
-    \return 'input' converted to 'T'.
+    \param[in] s string to be converted.
+    \return \a s converted to 'T'.
   */
   template <class T>
   T to_num(std::string s)

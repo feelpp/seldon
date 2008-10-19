@@ -34,7 +34,7 @@ namespace Seldon
     Technische Hochschule Darmstadt, Schlossgartenstr. 8, D-64289 Darmstadt, Germany
     
     \param[in] A  Complex Symmetric Matrix
-    \param[inout] x  Vector on input it is the initial guess
+    \param[in,out] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
     \param[in] M Right preconditioner

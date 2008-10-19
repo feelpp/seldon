@@ -618,12 +618,11 @@ namespace Seldon
   }
   
   
-  //! Redefines the matrix.
+  //! Redefines the real part of the matrix.
   /*!
-    \param[in] m number of rows.
-    \param[in] n number of columns.
-    \param[in] nnz number of non-zero entries.
-    \param[in] val array of sparse rows/columns
+    \param[in] m new number of rows.
+    \param[in] n new number of columns.
+    \param[in] val array of sparse rows/columns.
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
@@ -635,12 +634,11 @@ namespace Seldon
   }
   
   
-  //! Redefines the matrix.
+  //! Redefines the imaginary part of the matrix.
   /*!
-    \param[in] m number of rows.
-    \param[in] n number of columns.
-    \param[in] nnz number of non-zero entries.
-    \param[in] val array of sparse rows/columns
+    \param[in] m new number of rows.
+    \param[in] n new number of columns.
+    \param[in] val array of sparse rows/columns.
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
@@ -1127,7 +1125,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::Matrix(int i, int j):
-  Matrix_ArrayComplexSparse<T, Prop, ArrayRowComplexSparse, Allocator>(i, j)
+    Matrix_ArrayComplexSparse<T, Prop, ArrayRowComplexSparse, Allocator>(i, j)
   {
   }
   

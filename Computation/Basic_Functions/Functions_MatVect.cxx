@@ -917,7 +917,7 @@ namespace Seldon
     \param M matrix.
     \param X vector.
     \param Y vector.
-    \function (optional) function in which the compatibility is checked.
+    \param function (optional) function in which the compatibility is checked.
     Default: "".
   */
   template <class T0, class Prop0, class Storage0, class Allocator0,
@@ -1033,7 +1033,7 @@ namespace Seldon
     an exception is raised (a WrongDim object is thrown).
     \param M matrix.
     \param X vector.
-    \function (optional) function in which the compatibility is checked.
+    \param function (optional) function in which the compatibility is checked.
     Default: "".
     \param op (optional) operation to be performed. Default: "M.X".
   */

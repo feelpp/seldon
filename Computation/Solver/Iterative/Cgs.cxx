@@ -35,7 +35,7 @@ namespace Seldon
     systems, SIAM, J.Sci. Statist. Comput., 10(1989), pp. 36-52
     
     \param[in] A Complex General Matrix
-    \param[inout] x Vector on input it is the initial guess
+    \param[in,out] x Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
     \param[in] M Right preconditioner

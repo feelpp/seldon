@@ -35,11 +35,11 @@ namespace Seldon
     J. Sci. Statist. Comp.  7(1986), pp, 856-869
     
     \param[in] A  Complex General Matrix
-    \param[inout] x  Vector on input it is the initial guess
+    \param[in,out] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Vector right hand side of the linear system
     \param[in] M Right preconditioner
-    \param[in] iter Iteration parameters
+    \param[in] outer Iteration parameters
   */
   template <class Titer, class MatrixSparse, class Vector, class Preconditioner>
   int Gmres(MatrixSparse& A, Vector& x, const Vector& b,

@@ -31,7 +31,7 @@ namespace Seldon
     non-Hermitian linear systems, Numerical Math., 60(1991), pp. 315-339
     
     \param[in] A  Complex Symmetric Matrix
-    \param[inout] x  Vector on input it is the initial guess
+    \param[in,out] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Right hand side of the linear system
     \param[in] M Left preconditioner

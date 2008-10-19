@@ -813,29 +813,29 @@ namespace Seldon
     \param stream stream in which the vector is to be written.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::WriteText(ostream& FileStream) const
+  void Vector<T, Vect_Sparse, Allocator>::WriteText(ostream& stream) const
   {
 
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
-    if (!FileStream.good())
-      throw IOError("Vector<Vect_Sparse>::WriteText(ofstream& FileStream)",
+    if (!stream.good())
+      throw IOError("Vector<Vect_Sparse>::WriteText(ostream& stream)",
                     "Stream is not ready.");
 #endif
     
     // First entries.
     for (int i = 0; i < this->m_ - 1; i++)
-      FileStream << (Index(i) + 1) << " " << Value(i) << '\n';
+      stream << (Index(i) + 1) << " " << Value(i) << '\n';
     
     // Last entry is a special case: there should be no empty line at the end
     // of the stream.
     if (this->m_ > 0)
-      FileStream << (Index(this->m_ - 1) + 1) << " " << Value(this->m_ - 1);
+      stream << (Index(this->m_ - 1) + 1) << " " << Value(this->m_ - 1);
     
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
-    if (!FileStream.good())
-      throw IOError("Vector<Vect_Sparse>::WriteText(ofstream& FileStream)",
+    if (!stream.good())
+      throw IOError("Vector<Vect_Sparse>::WriteText(ostream& stream)",
                     "Output operation failed.");
 #endif
     

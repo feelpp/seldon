@@ -429,10 +429,9 @@ namespace Seldon
   
   //! Redefines the matrix.
   /*!
-    \param[in] m number of rows.
-    \param[in] n number of columns.
-    \param[in] nnz number of non-zero entries.
-    \param[in] val array of sparse rows/columns
+    \param[in] m new number of rows.
+    \param[in] n new number of columns.
+    \param[in] val array of sparse rows/columns.
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
@@ -791,8 +790,8 @@ namespace Seldon
   
   //! Reads the matrix from an input stream.
   /*!
-    Reads a matrix from a file in text format
-    \param FileName output file name.
+    Reads a matrix from a stream in text format.
+    \param FileStream input stream.
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
@@ -1004,7 +1003,7 @@ namespace Seldon
     \param[in] i row number.
     \param[in] nb number of coefficients to add.
     \param[in] col_ column numbers of coefficients.
-    \param[in] val_ values of coefficients.
+    \param[in] value_ values of coefficients.
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
@@ -1025,7 +1024,7 @@ namespace Seldon
     \param[in] i column number.
     \param[in] nb number of coefficients to add.
     \param[in] row_ row numbers of coefficients.
-    \param[in] val_ values of coefficients.
+    \param[in] value_ values of coefficients.
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
@@ -1217,7 +1216,7 @@ namespace Seldon
     \param[in] i row number.
     \param[in] nb number of coefficients to add.
     \param[in] col_ column numbers of coefficients.
-    \param[in] val_ values of coefficients.
+    \param[in] value_ values of coefficients.
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
@@ -1238,7 +1237,7 @@ namespace Seldon
     \param[in] i column number.
     \param[in] nb number of coefficients to add.
     \param[in] row_ row numbers of coefficients.
-    \param[in] val_ values of coefficients.
+    \param[in] value_ values of coefficients.
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
@@ -1487,7 +1486,7 @@ namespace Seldon
     \param[in] i row number.
     \param[in] nb number of coefficients to add.
     \param[in] col_ column numbers of coefficients.
-    \param[in] val_ values of coefficients.
+    \param[in] value_ values of coefficients.
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
@@ -1508,7 +1507,7 @@ namespace Seldon
     \param[in] i column number.
     \param[in] nb number of coefficients to add.
     \param[in] row_ row numbers of coefficients.
-    \param[in] val_ values of coefficients.
+    \param[in] value_ values of coefficients.
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
@@ -1796,7 +1795,7 @@ namespace Seldon
     \param[in] i row number.
     \param[in] nb number of coefficients to add.
     \param[in] col_ column numbers of coefficients.
-    \param[in] val_ values of coefficients.
+    \param[in] value_ values of coefficients.
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
@@ -1817,7 +1816,7 @@ namespace Seldon
     \param[in] i column number.
     \param[in] nb number of coefficients to add.
     \param[in] row_ row numbers of coefficients.
-    \param[in] val_ values of coefficients.
+    \param[in] value_ values of coefficients.
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::

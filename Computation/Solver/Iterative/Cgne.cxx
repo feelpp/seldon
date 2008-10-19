@@ -31,7 +31,7 @@ namespace Seldon
     return value of 1 indicates a failure to converge.
     
     \param[in] A  Complex General Matrix
-    \param[inout] x  Vector on input it is the initial guess
+    \param[in,out] x  Vector on input it is the initial guess
     on output it is the solution
     \param[in] b  Right hand side of the linear system
     \param[in] M Left preconditioner

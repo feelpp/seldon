@@ -956,11 +956,9 @@ namespace Seldon
    *******************/
 
 
-  //! Duplicates a matrix (assignment operator).
+  //! Fills the matrix with a given value.
   /*!
-    \param A matrix to be copied.
-    \note Memory is duplicated: 'A' is therefore independent from the current
-    instance after the copy.
+    \param x the value with which the matrix is to be filled.
   */
   template <class T, class Prop, class Allocator>
   template <class T0>
@@ -1057,11 +1055,9 @@ namespace Seldon
    *******************/
 
 
-  //! Duplicates a matrix (assignment operator).
+  //! Fills the matrix with a given value.
   /*!
-    \param A matrix to be copied.
-    \note Memory is duplicated: 'A' is therefore independent from the current
-    instance after the copy.
+    \param x the value with which the matrix is to be filled.
   */
   template <class T, class Prop, class Allocator>
   template <class T0>
