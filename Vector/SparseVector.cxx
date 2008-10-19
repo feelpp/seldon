@@ -75,7 +75,7 @@ namespace Seldon
     if (this->data_ == NULL && i != 0)
       throw NoMemory("Vector<Vect_Sparse>::Vector(int)",
 		     string("Unable to allocate memory for a vector of size ")
-		     + to_str(i*sizeof(T)) + " bytes ("
+		     + to_str(i * sizeof(T)) + " bytes ("
 		     + to_str(i) + " elements).");
 #endif
 
@@ -105,7 +105,7 @@ namespace Seldon
   template <class T, class Allocator>
   Vector<T, Vect_Sparse, Allocator>::~Vector()
   {
-    // data_ is released
+    // 'data_' is released.
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -159,7 +159,8 @@ namespace Seldon
   /*!
     The vector is resized.
     \param i new length of the vector.
-    \warning Previous non-zero entries are removed
+    \warning Depending on your allocator, previous non-zero entries may be
+    lost.
   */
   template <class T, class Allocator>
   inline void Vector<T, Vect_Sparse, Allocator>::Reallocate(int i)
@@ -175,12 +176,12 @@ namespace Seldon
 #endif
 
 	    this->data_ =
-	      reinterpret_cast<pointer>(this->vect_allocator_.reallocate(this->data_,
-									 i, this) );
-										      
+	      reinterpret_cast<pointer>(this->vect_allocator_
+					.reallocate(this->data_, i, this));
+
 	    index_
-	      = reinterpret_cast<int*>(this->index_allocator_.reallocate(index_,
-									 i, this) );
+	      = reinterpret_cast<int*>(this->index_allocator_
+				       .reallocate(index_, i, this));
 
 #ifdef SELDON_CHECK_MEMORY
 	  }
@@ -203,9 +204,10 @@ namespace Seldon
   }
   
   
-  //! Changes the number of non-zero entries of the vector
-  /*!
-    Changes the number of non-zero entries to i. Previous values are kept.
+  //! Changes the number of non-zero entries of the vector.
+  /*! Changes the number of non-zero entries to \a n. If \a n non-zero entries
+    are available before resizing, they are all kept. Otherwise, only the
+    first \n non-zero entries are kept.
     \param n new number of non-zero entries of the vector.
   */
   template <class T, class Allocator>
@@ -216,8 +218,8 @@ namespace Seldon
     
     Vector<T, Vect_Full, Allocator> new_value(n);
     Vector<int> new_index(n);
-    int nmin = min(this->m_, n);
-    for (int i = 0; i < nmin; i++)
+    int Nmin = min(this->m_, n);
+    for (int i = 0; i < Nmin; i++)
       {
 	new_value(i) = this->data_[i];
 	new_index(i) = index_[i];
@@ -227,20 +229,20 @@ namespace Seldon
   }
   
   
-  //! Changes the length of the vector and sets its data array
-  //! (low level method).
+  /*! \brief Changes the length of the vector and sets its data array (low
+    level method). */
   /*!
     Reallocates a vector and sets the new data array. It is useful to create
     a vector from pre-existing data.
     \param i new length of the vector.
-    \param data the new data array. 'data' contains the new elements of the
-    vector and must therefore contain 'i' elements.
-    \param index the new index array. 'index' contains the new row numbers
-    of the vector and must therefore contain 'i' elements.
-    \warning 'data' has to be used carefully outside the object.
-    Unless you use 'Nullify', 'data' will be freed by the destructor,
-    which means that 'data' must have been allocated carefully. The vector
-    allocator should be compatible.
+    \param data the new data array. \a data contains the new elements of the
+    vector and must therefore contain \a i elements.
+    \param index the new index array. \a index contains the new indices of the
+    non-zero entries and it must therefore contain \a i elements.
+    \warning \a data has to be used carefully outside the object.  Unless you
+    use 'Nullify', \a data will be freed by the destructor, which means that
+    \a data must have been allocated carefully. The vector allocator should be
+    compatible.
     \note This method should only be used by advanced users.
   */
   template <class T, class Allocator>
@@ -256,27 +258,30 @@ namespace Seldon
   }
   
   
-  //! Changes the length of the vector and sets its data array
-  //! (low level method).
+  /*! \brief Changes the length of the vector and sets its data array (low
+    level method). */
   /*!
     Reallocates a vector and sets the new data array. It is useful to create
     a vector from pre-existing data.
-    \param data the new data array. 'data' contains the values
-    \param index the new index array. 'index' contains the new row numbers
-    of the vector and must have the same size than data.
-    \note vectors data and index are empty after the method
+    \param data the new data array. \a data contains the new elements of the
+    vector and must therefore contain \a i elements.
+    \param index the new index array. \a index contains the new indices of the
+    non-zero entries and it must therefore contain \a i elements.
+    \note Vectors \a data and \a index are empty vector on exit.
   */
-  template <class T, class Allocator> template<class Allocator2>
-  void Vector<T, Vect_Sparse, Allocator>::SetData(Vector<T, Vect_Full, Allocator2>& data,
-						  Vector<int>& index)
+  template <class T, class Allocator>
+  template<class Allocator2>
+  void Vector<T, Vect_Sparse, Allocator>
+  ::SetData(Vector<T, Vect_Full, Allocator2>& data, Vector<int>& index)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
     if (data.GetM() != index.GetM())
-      throw WrongDim(string("Vector<Vect_Sparse>::SetData ") +
-		     " Vectors data and index should have the same size "
-		     + " size of data : " + to_str(data.GetM())
-		     + "size of index " + to_str(index.GetM()) );
+      throw WrongDim("Vector<Vect_Sparse>::SetData ",
+		     string("The data vector and the index vector should")
+		     + " have the same size.\n  Size of the data vector: "
+		     + to_str(data.GetM()) + "\n  Size of index vector: "
+		     + to_str(index.GetM()));
 #endif
 
     SetData(data.GetM(), data.GetData(), index.GetData());
@@ -307,7 +312,7 @@ namespace Seldon
   //! Access operator.
   /*!
     \param i index.
-    \return The value of the non-zero element i.
+    \return The value of the non-zero element #\a i.
   */
   template <class T, class Allocator>
   inline typename Vector<T, Vect_Sparse, Allocator>::reference
@@ -328,7 +333,7 @@ namespace Seldon
   //! Access operator.
   /*!
     \param i index.
-    \return The value of the non-zero element i.
+    \return The value of the non-zero element #\a i.
   */
   template <class T, class Allocator>
   inline typename Vector<T, Vect_Sparse, Allocator>::const_reference
@@ -349,7 +354,7 @@ namespace Seldon
   //! Access operator.
   /*!
     \param i index.
-    \return The row number of the non-zero element i.
+    \return The index of the non-zero element #\a i.
   */
   template <class T, class Allocator>
   inline int& Vector<T, Vect_Sparse, Allocator>::Index(int i)
@@ -369,7 +374,7 @@ namespace Seldon
   //! Access operator.
   /*!
     \param i index.
-    \return The row number of the non-zero element i.
+    \return The row number of the non-zero element #\a i.
   */
   template <class T, class Allocator>
   inline int Vector<T, Vect_Sparse, Allocator>::Index(int i) const
@@ -389,19 +394,19 @@ namespace Seldon
   //! Access operator.
   /*!
     \param i index.
-    \return The value of the vector at 'i'.
+    \return The value of the vector at \a i.
   */
   template <class T, class Allocator>
   inline typename Vector<T, Vect_Sparse, Allocator>::reference
   Vector<T, Vect_Sparse, Allocator>::operator() (int i)
   {
     int k = 0;
-    // we search the entry
+    // Searching for the entry.
     while (k < this->m_ && index_[k] < i)
       k++;
     
     if (k >= this->m_ || index_[k] != i)
-      // The entry does not exist, we add a null value.
+      // The entry does not exist yet, so a zero entry is introduced.
       AddInteraction(i, T(0));
     
     return this->data_[k];
@@ -411,19 +416,19 @@ namespace Seldon
   //! Access operator.
   /*!
     \param i index.
-    \return The value of the vector at 'i'.
+    \return The value of the vector at \a i.
   */
   template <class T, class Allocator>
   inline typename Vector<T, Vect_Sparse, Allocator>::value_type
   Vector<T, Vect_Sparse, Allocator>::operator() (int i) const
   {
     int k = 0;
-    // we search the entry
+    // Searching for the entry.
     while (k < this->m_ && index_[k] < i)
       k++;
     
     if (k >= this->m_ || index_[k] != i)
-      // The entry does not exist, we return a null value
+      // The entry does not exist, a zero is returned.
       return T(0);
     
     return this->data_[k];
@@ -433,7 +438,7 @@ namespace Seldon
   //! Duplicates a vector (assignment operator).
   /*!
     \param X vector to be copied.
-    \note Memory is duplicated: 'X' is therefore independent from the current
+    \note Memory is duplicated: \a X is therefore independent from the current
     instance after the copy.
   */
   template <class T, class Allocator>
@@ -449,7 +454,7 @@ namespace Seldon
   //! Duplicates a vector.
   /*!
     \param X vector to be copied.
-    \note Memory is duplicated: 'X' is therefore independent from the current
+    \note Memory is duplicated: \a X is therefore independent from the current
     instance after the copy.
   */
   template <class T, class Allocator>
@@ -468,7 +473,11 @@ namespace Seldon
    *******************/
   
 
-  //! Returns a pointer to array containing row numbers
+  /*! \brief Returns a pointer to the array containing the indices of the
+    non-zero entries. */
+  /*!
+    \return A pointer to the array of the indices of the non-zero entries.
+  */
   template <class T, class Allocator>
   int* Vector<T, Vect_Sparse, Allocator>::GetIndex() const
   {
@@ -501,14 +510,14 @@ namespace Seldon
   void Vector<T, Vect_Sparse, Allocator>::Print() const
   {
     for (int i = 0; i < this->GetLength(); i++)
-      cout << (Index(i)+1) << ' ' <<Value(i) << '\n';
+      cout << (Index(i) + 1) << ' ' << Value(i) << '\n';
   }
   
   
-  //! Assembles the vector
+  //! Assembles the vector.
   /*!
-    \warning If you are using the methods AddInteraction,
-    you don't need to call that method
+    \warning If you use the method AddInteraction, you don't need to call
+    that method.
   */
   template <class T, class Allocator>
   void Vector<T, Vect_Sparse, Allocator>::Assemble()
@@ -529,7 +538,11 @@ namespace Seldon
   }
   
   
-  //! Removes small entries
+  //! Removes small entries.
+  /*! Any number whose absolute value is below (or equal) to \a epsilon is
+    removed.
+    \param epsilon the threshold value.
+  */
   template <class T, class Allocator> template<class T0>
   void Vector<T, Vect_Sparse, Allocator>::RemoveSmallEntry(const T0& epsilon)
   {
@@ -551,31 +564,33 @@ namespace Seldon
   }
   
   
-  //! Coefficient a is added in the vector.
-  /*!
-    \param[in] i row number.
-    \param[in] a value to add.
+  //! Adds \a val to the vector component #\a i.
+  /*! If the vector has no entry at \a i, a new entry with value \a val is
+    introduced. Otherwise, this method sums the existing value and \a val.
+    \param[in] i index of the component.
+    \param[in] val value to be added to the vector component \a i.
   */
   template <class T, class Allocator> inline
   void Vector<T, Vect_Sparse, Allocator>::AddInteraction(int i, const T& val)
   {
-    // We look for the position where the entry is.
+    // Searching for the position where the entry may be.
     int pos = 0;
     while (pos < this->m_ && index_[pos] < i)
       pos++;
     
-    // If the entry already exists, we add a.
-    if (pos < this->m_)
-      if (index_[pos] == i)
-	{
-	  this->data_[pos] += val;
-	  return;
-	}
+    // If the entry already exists, adds 'val'.
+    if (pos < this->m_ && index_[pos] == i)
+      {
+	this->data_[pos] += val;
+	return;
+      }
     
-    // The interaction doesn't exist, the vector is reallocated.
-    Vector<T, Vect_Full, Allocator> new_val(this->m_+1);
-    Vector<int> new_ind(this->m_+1);
-    for (int k = 0; k < pos; k++)
+    int k;
+
+    // If the entry does not exist, the vector is reallocated.
+    Vector<T, Vect_Full, Allocator> new_val(this->m_ + 1);
+    Vector<int> new_ind(this->m_ + 1);
+    for (k = 0; k < pos; k++)
       {
 	new_ind(k) = index_[k];
 	new_val(k) = this->data_[k];
@@ -585,89 +600,94 @@ namespace Seldon
     new_ind(pos) = i;
     new_val(pos) = val;
     
-    // End of the row/column.
-    for (int k = pos+1; k <= this->m_; k++)
+    // Other values in the vector.
+    for (k = pos + 1; k <= this->m_; k++)
       {
-	new_ind(k) = index_[k-1];
-	new_val(k) = this->data_[k-1];
+	new_ind(k) = index_[k - 1];
+	new_val(k) = this->data_[k - 1];
       }
     
     SetData(new_val, new_ind);
   }
   
-  //! Coefficients are added in the vector
-  /*!
-    The method sorts given coefficients and adds them
-    in the correct positions.
-    \param[in] n number of coefficients to add.
-    \param[in] row row numbers.
-    \param[in] values coefficients.
-    \param[in] already_sorted true if row numbers are already sorted
+
+  //! Adds given values to several components of the vector.
+  /*! This method sorts the values to be added (according to their indices)
+    and adds them with the vector values. For every component, if the vector
+    has no entry, a new entry is introduced. Otherwise, the method sums the
+    existing value and the corresponsing value in \a value.
+    \param[in] n number of values to be added.
+    \param[in] index indices of the values to be added.
+    \param[in] value values to be added.
+    \param[in] already_sorted true if the indices are already sorted.
   */
   template <class T, class Allocator> inline
   void Vector<T, Vect_Sparse, Allocator>::
-  AddInteractionRow(int n, int* row, T* values, bool already_sorted = false)
+  AddInteractionRow(int n, int* index, T* value, bool already_sorted = false)
   {
     Vector<int> ind;
     Vector<T, Vect_Full, Allocator> val;
-    ind.SetData(n, row);
-    val.SetData(n, values);
+    ind.SetData(n, index);
+    val.SetData(n, value);
     AddInteractionRow(n, ind, val, already_sorted);
     ind.Nullify();
     val.Nullify();
   }
   
   
-  //! Coefficients are added in the vector
-  /*!
-    The method sorts given coefficients and adds them
-    in the correct positions.
-    \param[in] nb_interac number of coefficients to add.
-    \param[in] col_interac row numbers.
-    \param[in] val_interac coefficients.
-    \param[in] already_sorted true if row numbers are already sorted
+  //! Adds given values to several components of the vector.
+  /*! This method sorts the values to be added (according to their indices)
+    and adds them with the vector values. For every component, if the vector
+    has no entry, a new entry is introduced. Otherwise, the method sums the
+    existing value and the corresponsing value in \a value.
+    \param[in] n number of values to be added.
+    \param[in] index indices of the values to be added.
+    \param[in] value values to be added.
+    \param[in] already_sorted true if the indices are already sorted.
   */
-  template <class T, class Allocator> template<class Alloc1>
+  template <class T, class Allocator>
+  template<class Allocator0>
   void Vector<T, Vect_Sparse, Allocator>::
-  AddInteractionRow(int nb_interac, Vector<int> col_interac,
-		    Vector<T, Vect_Full, Alloc1> val_interac,
+  AddInteractionRow(int n, Vector<int> index,
+		    Vector<T, Vect_Full, Allocator0> value,
 		    bool already_sorted = false)
   {
-    // There is no reference in arguments, because we want to perform a local
-    // copy and keep the input arguments unchanged.
-    // row numbers are sorted if required
     if (!already_sorted)
-      Seldon::Assemble(nb_interac, col_interac, val_interac);
+      // Sorts the values to be added according to their indices.
+      Seldon::Assemble(n, index, value);
     
-    // We add new entries which have already a slot in the matrix.
-    int nb_new = 0;
-    Vector<bool> new_interac(nb_interac);
-    new_interac.Fill(true);
+    /***  Values that already have an entry ***/
+
+    // Number of values to be added without entry.
+    int Nnew = 0;
+    Vector<bool> new_index(n);
+    new_index.Fill(true);
     int k = 0;
-    for (int j = 0; j < nb_interac; j++)
+    for (int j = 0; j < n; j++)
       {
-	while (k < this->m_ && index_[k] < col_interac(j))
+	while (k < this->m_ && index_[k] < index(j))
 	  k++;
 	
-	if (k < this->m_ && col_interac(j) == index_[k])
+	if (k < this->m_ && index(j) == index_[k])
 	  {
-	    new_interac(j) = false;
-	    this->data_[k] += val_interac(j);
+	    new_index(j) = false;
+	    this->data_[k] += value(j);
 	  }
 	else
-	  nb_new++;
+	  Nnew++;
       }
     
-    if (nb_new > 0)
+    if (Nnew > 0)
       {
-	// Some new entries have no slot, we add them on the correct position.
-	Vector<T> new_val(this->m_+nb_new);
-	Vector<int> new_ind(this->m_+nb_new);
-	int nb = 0, k = 0;
-	for (int j = 0; j < nb_interac; j++)
-	  if (new_interac(j))
+	// Some values to be added have no entry yet.
+	Vector<T> new_val(this->m_ + Nnew);
+	Vector<int> new_ind(this->m_ + Nnew);
+	int nb = 0;
+	k = 0;
+	for (int j = 0; j < n; j++)
+	  if (new_index(j))
 	    {
-	      while (k < this->m_ && index_[k] < col_interac(j))
+	      while (k < this->m_ && index_[k] < index(j))
 		{
 		  new_ind(nb) = index_[k];
 		  new_val(nb) = this->data_[k];
@@ -676,8 +696,9 @@ namespace Seldon
 		}
 	      
 	      // The new entry.
-	      new_ind(nb) = col_interac(j);
-	      new_val(nb) = val_interac(j); nb++;
+	      new_ind(nb) = index(j);
+	      new_val(nb) = value(j);
+	      nb++;
 	    }
 	
 	// Last entries.
@@ -700,11 +721,9 @@ namespace Seldon
   
   
   //! Writes the vector in a file.
-  /*!
-    The length and number of non-zero entries
-    of the vector (two integers) and non-zero elements of the vector are
-    stored in binary format. For non-zero elements, row numbers
-    are first written, then values.
+  /*! It stores in binary format: (1) the number of non-zero entries in the
+    vector (integer), (2) the indices of the non-zero entries (integers), and
+    (3) the non-zero values of the vector.
     \param FileName file name.
   */
   template <class T, class Allocator>
@@ -726,49 +745,45 @@ namespace Seldon
   }
 
 
-  //! Writes the vector in a file stream.
-  /*!
-    The number of non-zero entries
-    of the vector (two integers) and non-zero elements of the vector are
-    stored in binary format. For non-zero elements, row numbers
-    are first written, then values.
-    \param FileStream file stream.
+  //! Writes the vector in a stream, in binary format.
+  /*! It writes in binary format: (1) the number of non-zero entries in the
+    vector (integer), (2) the indices of the non-zero entries (integers), and
+    (3) the non-zero values of the vector.
+    \param stream stream in which the vector is to be written.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::Write(ostream& FileStream) const
+  void Vector<T, Vect_Sparse, Allocator>::Write(ostream& stream) const
   {
 
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
-    if (!FileStream.good())
-      throw IOError("Vector<Vect_Sparse>::Write(ofstream& FileStream)",
+    if (!stream.good())
+      throw IOError("Vector<Vect_Sparse>::Write(ostream& stream)",
                     "Stream is not ready.");
 #endif
 
-    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
-		     sizeof(int));
+    stream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+		 sizeof(int));
+    
+    stream.write(reinterpret_cast<char*>(this->index_),
+		 this->m_ * sizeof(int));
 
-    FileStream.write(reinterpret_cast<char*>(this->index_),
-		     this->m_ * sizeof(int));
-
-    FileStream.write(reinterpret_cast<char*>(this->data_),
-		     this->m_ * sizeof(value_type));
+    stream.write(reinterpret_cast<char*>(this->data_),
+		 this->m_ * sizeof(value_type));
 
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
-    if (!FileStream.good())
-      throw IOError("Vector<Vect_Sparse>::Write(ofstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The output file may have been removed")
-		    + "or there is no space left on device.");
+    if (!stream.good())
+      throw IOError("Vector<Vect_Sparse>::Write(ostream& stream)",
+                    "Output operation failed.");
 #endif
 
   }
 
 
-  //! Writes the vector in a file.
-  /*!
-    All elements of the vector are stored in text format. The length is not
+  //! Writes the vector in a text file.
+  /*! All non-zero elements of the vector are stored in text format: every
+    line of the text file contains one index and one value. The length is not
     stored.
     \param FileName file name.
   */
@@ -791,11 +806,11 @@ namespace Seldon
   }
 
 
-  //! Writes the vector in a file stream.
-  /*!
-    All elements of the vector are stored in text format. The length is not
+  //! Writes the vector in a stream, in text format.
+  /*! All non-zero elements of the vector are stored in text format: every
+    line of the text file contains one index and one value. The length is not
     stored.
-    \param FileStream file stream.
+    \param stream stream in which the vector is to be written.
   */
   template <class T, class Allocator>
   void Vector<T, Vect_Sparse, Allocator>::WriteText(ostream& FileStream) const
@@ -808,31 +823,28 @@ namespace Seldon
                     "Stream is not ready.");
 #endif
     
-    // 1-index
+    // First entries.
     for (int i = 0; i < this->m_ - 1; i++)
-      FileStream<<(Index(i)+1)<<" "<<Value(i)<<'\n';
+      FileStream << (Index(i) + 1) << " " << Value(i) << '\n';
     
-    // no empty line at the end of the file
+    // Last entry is a special case: there should be no empty line at the end
+    // of the stream.
     if (this->m_ > 0)
-      FileStream<<(Index(this->m_-1)+1)<<" "<<Value(this->m_-1);
+      FileStream << (Index(this->m_ - 1) + 1) << " " << Value(this->m_ - 1);
     
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!FileStream.good())
       throw IOError("Vector<Vect_Sparse>::WriteText(ofstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The output file may have been removed")
-		    + "or there is no space left on device.");
+                    "Output operation failed.");
 #endif
     
   }
 
 
-  //! Sets the vector from a file.
-  /*!
-    Sets the vector according to a binary file that stores the
-    number of rows and non-zero entries of the vector (two integers).
-    For non-zero elements, row numbers are first read, then values.
+  //! Sets the vector from a file in binary format.
+  /*! Sets the vector according to a binary file that stores the data like
+    method Write(string).
     \param FileName file name.
   */
   template <class T, class Allocator>
@@ -854,50 +866,44 @@ namespace Seldon
   }
 
 
-  //! Sets the vector from a file stream.
-  /*!
-    Sets the vector according to a binary file stream that stores the
-    number of rows and non-zero entries of the vector (two integers).
-    For non-zero elements, row numbers are first read, then values.
-    \param FileStream file stream.
+  //! Sets the vector from a file stream, in binary format.
+  /*! Sets the vector according to a binary stream that stores the data like
+    method Write(ostream&).
+    \param stream stream from which to read the vector values.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::Read(istream& FileStream)
+  void Vector<T, Vect_Sparse, Allocator>::Read(istream& stream)
   {
 
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
-    if (!FileStream.good())
-      throw IOError("Vector<Vect_Sparse>::Read(ifstream& FileStream)",
+    if (!stream.good())
+      throw IOError("Vector<Vect_Sparse>::Read(istream& stream)",
                     "Stream is not ready.");
 #endif
 
     int m;
-    FileStream.read(reinterpret_cast<char*>(&m), sizeof(int));
+    stream.read(reinterpret_cast<char*>(&m), sizeof(int));
     this->Reallocate(m);
     
-    FileStream.read(reinterpret_cast<char*>(this->index_),
-		    m * sizeof(int));
+    stream.read(reinterpret_cast<char*>(this->index_), m * sizeof(int));
 
-    FileStream.read(reinterpret_cast<char*>(this->data_),
-		    m * sizeof(value_type));
+    stream.read(reinterpret_cast<char*>(this->data_),
+		m * sizeof(value_type));
     
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.
-    if (!FileStream.good())
-      throw IOError("Vector<Vect_Sparse>::Read(ifstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The intput file may have been removed")
-		    + " or may not contain enough data.");
+    if (!stream.good())
+      throw IOError("Vector<Vect_Sparse>::Read(istream& stream)",
+                    "Output operation failed.");
 #endif
 
   }
 
   
-  //! Sets the vector from a file.
-  /*!
-    Sets all elements of the vector according to a text format. The length is not
-    stored.
+  //! Sets the vector from a text file.
+  /*! Sets the vector according to a text file that stores the data like
+    method WriteText(string).
     \param FileName file name.
   */
   template <class T, class Allocator>
@@ -919,67 +925,67 @@ namespace Seldon
   }
 
 
-  //! Sets the vector from a file stream.
-  /*!
-    Sets all elements of the vector according to a text format. The length is not
-    stored.
-    \param FileStream file stream.
+  //! Sets the vector from a file stream, in text format.
+  /*! Sets the vector according to a stream, in text format, that stores the
+    data like method WriteText(ostream&).
+    \param stream stream from which to read the vector values.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::ReadText(istream& FileStream)
+  void Vector<T, Vect_Sparse, Allocator>::ReadText(istream& stream)
   {
-    // previous vector is cleared
     Clear();
     
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
-    if (!FileStream.good())
-      throw IOError("Vector<Vect_Sparse>::ReadText(ofstream& FileStream)",
+    if (!stream.good())
+      throw IOError("Vector<Vect_Sparse>::ReadText(istream& stream)",
                     "Stream is not ready.");
 #endif
     
     Vector<T, Vect_Full, Allocator> values;
-    Vector<int> row_numbers;
-    T entry; int row = 0;
+    Vector<int> index;
+    T entry;
+    int ind = 0;
     int nb_elt = 0;
-    while (!FileStream.eof())
+    while (!stream.eof())
       {
-	// new entry is read (1-index)
-	FileStream>>row>>entry;
+	// New entry is read.
+	stream >> ind >> entry;
 	
-	if (FileStream.fail())
+	if (stream.fail())
 	  break;
 	else
 	  {
 #ifdef SELDON_CHECK_IO
-	    if (row < 1)
-	      throw IOError(string("Vector<Vect_Sparse>::ReadText")+
-			    "(istream& FileStream)",
-			    string("Error : Row number should be greater ")
-			    + "than 0 but is equal to " + to_str(row));
+	    if (ind < 1)
+	      throw IOError(string("Vector<Vect_Sparse>::ReadText") +
+			    "(istream& stream)",
+			    string("Index should be greater ")
+			    + "than 0 but is equal to " + to_str(ind) + ".");
 #endif
 	
-	    nb_elt++; row--;
+	    nb_elt++;
+	    ind--;
 	    
-	    // inserting new element
+	    // Inserting a new element.
 	    if (nb_elt > values.GetM())
 	      {
-		values.Resize(2*nb_elt);
-		row_numbers.Resize(2*nb_elt);
+		values.Resize(2 * nb_elt);
+		index.Resize(2 * nb_elt);
 	      }
 	    
-	    values(nb_elt-1) = entry;
-	    row_numbers(nb_elt-1) = row;
+	    values(nb_elt - 1) = entry;
+	    index(nb_elt - 1) = ind;
 	  }
       }
     
     if (nb_elt > 0)
       {
-	// we allocate to the right size
+	// Allocating to the right size.
 	this->Reallocate(nb_elt);
 	for (int i = 0; i < nb_elt; i++)
 	  {
-	    Index(i) = row_numbers(i);
+	    Index(i) = index(i);
 	    Value(i) = values(i);
 	  }
       }

@@ -25,10 +25,10 @@ namespace Seldon
   
   //! Sparse vector class.
   template <class T, class Allocator>
-  class Vector<T, Vect_Sparse, Allocator>
-    : public Vector<T, Vect_Full, Allocator>
+  class Vector<T, Vect_Sparse, Allocator>:
+    public Vector<T, Vect_Full, Allocator>
   {
-    // typedef declaration.
+    // typedef declarations.
   public:
     typedef typename Allocator::value_type value_type;
     typedef typename Allocator::pointer pointer;
@@ -41,7 +41,7 @@ namespace Seldon
     
     // Attributes.
   private:
-    //! row numbers
+    //! Indices of the non-zero entries.
     int* index_;
     
     // Methods.
@@ -80,7 +80,7 @@ namespace Seldon
     // Basic functions.
     int* GetIndex() const;
     
-    // Convenient functions
+    // Convenient functions.
     template <class T0>
 #ifndef SWIG
     Vector<T, Vect_Sparse, Allocator>& operator= (const T0& X);
@@ -91,9 +91,9 @@ namespace Seldon
     void RemoveSmallEntry(const T0& epsilon);
     void AddInteraction(int i, const T& val);
     void AddInteractionRow(int, int*, T*, bool);
-    template<class Alloc1>
+    template<class Allocator0>
     void AddInteractionRow(int nb, Vector<int> col,
-			   Vector<T, Vect_Full, Alloc1> val, bool);
+			   Vector<T, Vect_Full, Allocator0> val, bool);
     
     // Input/output functions.
     void Write(string FileName) const;
@@ -123,7 +123,9 @@ namespace Seldon
 
   
   template<class T, class Allocator>
-  SELDON_DEFAULT_ALLOCATOR<int> Vector<T, Vect_Sparse, Allocator>::index_allocator_;
+  SELDON_DEFAULT_ALLOCATOR<int>
+  Vector<T, Vect_Sparse, Allocator>::index_allocator_;
+
 
 } // namespace Seldon.
 
