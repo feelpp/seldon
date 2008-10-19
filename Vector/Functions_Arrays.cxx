@@ -95,9 +95,9 @@ namespace Seldon
   }
   
   
-  //! Vector 't' is sorted by using QuickSort algorithm.
+  //! Vector \a t is sorted by using QuickSort algorithm.
   /*!
-    Sorts array 't' between position m and n.
+    Sorts array \a t between position m and n.
   */
   template<class T, class Storage, class Allocator>
   void QuickSort(int m, int n,
@@ -155,9 +155,9 @@ namespace Seldon
   }
   
   
-  //! Vector 't1' is sorted by using QuickSort algorithm.
-  /*!  Sorts array 't2' between position m and n, the sorting operation
-    affects vector 't2'.
+  //! Vector \a t1 is sorted by using QuickSort algorithm.
+  /*! Sorts array \a t2 between position m and n, the sorting operation
+    affects vector \a t2.
   */
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
@@ -224,9 +224,9 @@ namespace Seldon
   }
   
   
-  //! Vector 't1' is sorted by using QuickSort algorithm.
-  /*!  Sorts array 't1' between position m and n, the sorting operation
-    affects vectors 't2' and 't3'.
+  //! Vector \a t1 is sorted by using QuickSort algorithm.
+  /*! Sorts array \a t1 between position m and n, the sorting operation
+    affects vectors \a t2 and \a t3.
   */
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2,
@@ -245,9 +245,9 @@ namespace Seldon
   }
   
   
-  //! Vector 'tab1' is sorted by using MergeSort algorithm.
+  //! Vector \a tab1 is sorted by using MergeSort algorithm.
   /*!
-    Sorts array 'tab1' between position m and n.
+    Sorts array \a tab1 between position m and n.
   */
   template<class T, class Storage, class Allocator>
   void MergeSort(int m, int n, Vector<T, Storage, Allocator>& tab1)
@@ -257,29 +257,29 @@ namespace Seldon
     
     int inc = 1, ind = 0, current, i, j, sup;
     Vector<T, Storage, Allocator> tab1t(m-n+1);
-    // We perform a merge sort with a reccurence
+    // Performs a merge sort with a recurrence.
     // inc = 1, 2, 4, 8, ...
     while (inc < n)
       {
-	// i is the first index of the sub array of size 2*inc.
-	// We make a loop on these sub arrays.
-	// Each sub array is divided in two sub arrays of size inc.
-	// We merge these two sub arrays in one.
+	// 'i' is the first index of the sub array of size 2*inc.
+	// A loop is performed on these sub-arrays.
+	// Each sub array is divided in two sub-arrays of size 'inc'.
+	// These two sub-arrays are then merged.
 	for (i = m; i < n - inc; i += 2 * inc)
 	  {
 	    ind = i;
-	    current = i + inc; // Index of the second sub array.
+	    current = i + inc; // Index of the second sub-array.
 	    sup = i + 2 * inc; // End of the merged array.
 	    if (sup >= n)
 	      sup = n;
 	    j = i;
-	    // We make a loop on values of the first sub array.
+	    // Loop on values of the first sub-array.
 	    while (j < i + inc)
 	      {
-		// If the second sub array has still elements not sorted.
+		// If the second sub-array has still unsorted elements.
 		if (current < sup)
 		  {
-		    // We insert element of the second sub array in the
+		    // Insert the elements of the second sub-array in the
 		    // merged array until tab1(j) < tab1(current).
 		    while (current < sup && tab1(j) > tab1(current))
 		      {
@@ -287,46 +287,46 @@ namespace Seldon
 			current++;
 			ind++;
 		      }
-		    // We insert the element of the first sub array now.
-		    tab1t(ind-m) = tab1(j);
+		    // Inserts the element of the first sub-array now.
+		    tab1t(ind - m) = tab1(j);
 		    ind++;
 		    j++;
-		    // If first sub array is sorted, we insert all remaining
-		    // elements of the second sub array.
+		    // If the first sub-array is sorted, all remaining
+		    // elements of the second sub-array are inserted.
 		    if (j == i + inc)
 		      {
 			for (j = current; j < sup; j++)
 			  {
-			    tab1t(ind-m) = tab1(j);
+			    tab1t(ind - m) = tab1(j);
 			    ind++;
 			  }
 		      }
 		  }
 		else
 		  {
-		    // If the second sub array is sorted, we insert all
-		    // remaining elements of the first sub array.
+		    // If the second sub-array is sorted, all remaining
+		    // elements of the first sub-array are inserted.
 		    for (current = j; current < i + inc; current++)
 		      {
-			tab1t(ind-m) = tab1(current);
+			tab1t(ind - m) = tab1(current);
 			ind++;
 		      }
-		    j = current+1;
+		    j = current + 1;
 		  }
 	      }
 	  }
 	
 	for (i = m; i < ind; i++)
-	  tab1(i) = tab1t(i-m);
+	  tab1(i) = tab1t(i - m);
 	
-	inc = 2*inc;
+	inc = 2 * inc;
       }
   }
   
   
-  //! Vector 'tab1' is sorted by using MergeSort algorithm.
-  /*!  Sorts array 'tab1' between position m and n. The sort operation affects
-    'tab2'.
+  //! Vector \a tab1 is sorted by using MergeSort algorithm.
+  /*! Sorts array \a tab1 between position m and n. The sort operation affects
+    \a tab2.
   */
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
@@ -337,8 +337,8 @@ namespace Seldon
       return;
     
     int inc = 1, ind = 0, current, i, j, sup;
-    Vector<T1, Storage1, Allocator1> tab1t(m-n+1);
-    Vector<T2, Storage2, Allocator2> tab2t(m-n+1);
+    Vector<T1, Storage1, Allocator1> tab1t(m - n + 1);
+    Vector<T2, Storage2, Allocator2> tab2t(m - n + 1);
     
     while (inc < n)
       {
@@ -356,21 +356,21 @@ namespace Seldon
 		  {
 		    while (current < sup && tab1(j) > tab1(current))
 		      {
-			tab1t(ind-m) = tab1(current);
-			tab2t(ind-m) = tab2(current);
+			tab1t(ind - m) = tab1(current);
+			tab2t(ind - m) = tab2(current);
 			current++;
 			ind++;
 		      }
-		    tab1t(ind-m) = tab1(j);
-		    tab2t(ind-m) = tab2(j);
+		    tab1t(ind - m) = tab1(j);
+		    tab2t(ind - m) = tab2(j);
 		    ind++;
 		    j++;
 		    if (j == i + inc)
 		      {
 			for (j = current; j < sup; j++)
 			  {
-			    tab1t(ind-m) = tab1(j);
-			    tab2t(ind-m) = tab2(j);
+			    tab1t(ind - m) = tab1(j);
+			    tab2t(ind - m) = tab2(j);
 			    ind++;
 			  }
 		      }
@@ -379,8 +379,8 @@ namespace Seldon
 		  {
 		    for (current = j; current < i + inc; current++)
 		      {
-			tab1t(ind-m) = tab1(current);
-			tab2t(ind-m) = tab2(current);
+			tab1t(ind - m) = tab1(current);
+			tab2t(ind - m) = tab2(current);
 			ind++;
 		      }
 		    j = current + 1;
@@ -389,17 +389,17 @@ namespace Seldon
 	  }
 	for (i = 0; i < ind; i++)
 	  {
-	    tab1(i) = tab1t(i-m);
-	    tab2(i) = tab2t(i-m);
+	    tab1(i) = tab1t(i - m);
+	    tab2(i) = tab2t(i - m);
 	  }
 	inc = 2 * inc;
       }
   }
   
   
-  //! Vector 'tab1' is sorted by using MergeSort algorithm.
-  /*!  Sorts array 'tab1' between position m and n. The sort operation affects
-    'tab2' and 'tab3'.
+  //! Vector \a tab1 is sorted by using MergeSort algorithm.
+  /*! Sorts array \a tab1 between position m and n. The sort operation affects
+    \a tab2 and \a tab3.
   */
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2,
@@ -412,9 +412,9 @@ namespace Seldon
       return;
     
     int inc = 1, ind = 0, current, i, j, sup;
-    Vector<T1, Storage1, Allocator1> tab1t(n-m+1);
-    Vector<T2, Storage2, Allocator2> tab2t(n-m+1);
-    Vector<T3, Storage3, Allocator3> tab3t(n-m+1);
+    Vector<T1, Storage1, Allocator1> tab1t(n - m + 1);
+    Vector<T2, Storage2, Allocator2> tab2t(n - m + 1);
+    Vector<T3, Storage3, Allocator3> tab3t(n - m + 1);
     
     while (inc < n)
       {
@@ -432,24 +432,24 @@ namespace Seldon
 		  {
 		    while (current < sup && tab1(j) > tab1(current))
 		      {
-			tab1t(ind-m) = tab1(current);
-			tab2t(ind-m) = tab2(current);
-			tab3t(ind-m) = tab3(current);
+			tab1t(ind - m) = tab1(current);
+			tab2t(ind - m) = tab2(current);
+			tab3t(ind - m) = tab3(current);
 			current++;
 			ind++;
 		      }
-		    tab1t(ind-m) = tab1(j);
-		    tab2t(ind-m) = tab2(j);
-		    tab3t(ind-m) = tab3(j);
+		    tab1t(ind - m) = tab1(j);
+		    tab2t(ind - m) = tab2(j);
+		    tab3t(ind - m) = tab3(j);
 		    ind++;
 		    j++;
 		    if (j == i + inc)
 		      {
 			for (j = current; j < sup; j++)
 			  {
-			    tab1t(ind-m) = tab1(j);
-			    tab2t(ind-m) = tab2(j);
-			    tab3t(ind-m) = tab3(j);
+			    tab1t(ind - m) = tab1(j);
+			    tab2t(ind - m) = tab2(j);
+			    tab3t(ind - m) = tab3(j);
 			    ind++;
 			  }
 		      }
@@ -458,9 +458,9 @@ namespace Seldon
 		  {
 		    for (current = j; current < i + inc; current++)
 		      {
-			tab1t(ind-m) = tab1(current);
-			tab2t(ind-m) = tab2(current);
-			tab3t(ind-m) = tab3(current);
+			tab1t(ind - m) = tab1(current);
+			tab2t(ind - m) = tab2(current);
+			tab3t(ind - m) = tab3(current);
 			ind++;
 		      }
 		    j = current+1;
@@ -469,9 +469,9 @@ namespace Seldon
 	  }
 	for (i = 0; i < ind; i++)
 	  {
-	    tab1(i) = tab1t(i-m);
-	    tab2(i) = tab2t(i-m);
-	    tab3(i) = tab3t(i-m);
+	    tab1(i) = tab1t(i - m);
+	    tab2(i) = tab2t(i - m);
+	    tab3(i) = tab3t(i - m);
 	  }
 	inc = 2 * inc;
       }
@@ -479,19 +479,17 @@ namespace Seldon
   
   
   //! Assembles a sparse vector.
-  /*!
-    Node are the row numbers of the vector.
-    Vect are the values of the vector.
-    The function sorts the row numbers and
-    adds values corresponding to the same row number.
-    For example, if Node = [3 2 2 0], Vect = [1.0 0.4 0.4 -0.3]
-    the function will return
-    n = 3, Node = [0 2 3], Vect = [-0.3 0.8 1.0].
-    \param[inout] n on input, number of row numbers to assemble,
-    on output, number of row numbers after assembling.
-    \param[inout] Node row numbers.
-    \param[inout] Vect value numbers.
-    \warning Vectors Node and Vect are not resized.
+  /*! The function sorts the indices in \a Node and adds the corresponding
+    values of \a Vect corresponding.
+
+    For example, if Node = [3 2 2 0], Vect = [1.0 0.4 0.4 -0.3], the function
+    will return: n = 3, Node = [0 2 3], Vect = [-0.3 0.8 1.0].
+
+    \param[in,out] n on entry, the number of elements to assemble; on exit,
+    the number of values after assembling.
+    \param[in,out] Node positions in the vector.
+    \param[in,out] Vect values.
+    \warning Vectors \a Node and \a Vect are not resized.
   */
   template<class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2 >
@@ -522,10 +520,10 @@ namespace Seldon
   
   //! Sorts and removes duplicate entries of a vector.
   /*!
-    \param[inout] n on input, number of elements to assemble
-    on output, number of elements after assembling.
-    \param[inout] Node vector to assemble.
-    \warning The vector is not resized.
+    \param[in,out] n on entry, the number of elements to assemble; on exit,
+    the number of values after assembling.
+    \param[in,out] Node vector to be assembled.
+    \warning The vector \a Node is not resized.
   */
   template<class T, class Storage1, class Allocator1>
   void Assemble(int& n, Vector<T, Storage1, Allocator1>& Node)
@@ -537,7 +535,7 @@ namespace Seldon
     T prec = Node(0);
     int nb = 1;
     for (int i = 1; i < n; i++)
-      if (Node(i)!=prec)
+      if (Node(i) != prec)
 	{
 	  Node(nb) = Node(i);
 	  prec = Node(nb);
@@ -559,7 +557,7 @@ namespace Seldon
   
   //! Sorts and removes duplicate entries of a vector.
   /*!
-    Sorting operations of 'Node' affects 'Node2'.
+    Sorting operations on \a Node also affect \a Node2.
   */
   template<class T, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
@@ -585,9 +583,6 @@ namespace Seldon
   
   
   //! Sorts and removes duplicate entries of a vector.
-  /*!
-    Sorting operations of 'Node' affects 'Node2'.
-  */
   template<class T, class Storage1, class Allocator1>
   void RemoveDuplicate(int& n, Vector<T, Storage1, Allocator1>& Node)
   {
@@ -597,7 +592,7 @@ namespace Seldon
   
   //! Sorts and removes duplicate entries of a vector.
   /*!
-    Sorting operations of 'Node' affects 'Node2'.
+    Sorting operations of \a Node also affect \a Node2.
   */
   template<class T, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
@@ -615,9 +610,6 @@ namespace Seldon
 
   
   //! Sorts and removes duplicate entries of a vector.
-  /*!
-    Sorting operations of 'Node' affects 'Node2'.
-  */
   template<class T, class Storage1, class Allocator1>
   void RemoveDuplicate(Vector<T, Storage1, Allocator1>& Node)
   {
@@ -630,7 +622,7 @@ namespace Seldon
   }
   
   
-  //! Sorts vector 'V' between a start position and an end position.
+  //! Sorts vector \a V between a start position and an end position.
   template<class T, class Storage, class Allocator>
   void Sort(int m, int n, Vector<T, Storage, Allocator>& V)
   {
@@ -638,9 +630,9 @@ namespace Seldon
   }
   
   
-  //! Sorts vector 'V' between a start position and an end position.
+  //! Sorts vector \a V between a start position and an end position.
   /*!
-    The sorting operation of 'V' affects 'V2'.
+    The sorting operation of \a V also affects \a V2.
   */
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
@@ -651,9 +643,9 @@ namespace Seldon
   }
   
   
-  //! Sorts vector 'V' between a start position and an end position.
+  //! Sorts vector \a V between a start position and an end position.
   /*!
-    The sorting operation of 'V' affects 'V2' and 'V3'.
+    The sorting operation of \a V also affects \a V2 and \a V3.
   */
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2,
@@ -666,30 +658,30 @@ namespace Seldon
   }
   
   
-  //! Sorts the 'n' first elements of 'V'.
+  //! Sorts the \a n first elements of \a V.
   template<class T, class Storage, class Allocator>
   void Sort(int n, Vector<T, Storage, Allocator>& V)
   {
-    Sort(0, n-1, V);
+    Sort(0, n - 1, V);
   }
   
   
-  //! Sorts the 'n' first elements of 'V'.
+  //! Sorts the \a n first elements of \a V.
   /*!
-    The sorting operation of 'V' affects 'V2'.
+    The sorting operation of \a V also affects \a V2.
   */
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
   void Sort(int n, Vector<T1, Storage1, Allocator1>& V,
 	    Vector<T2, Storage2, Allocator2>& V2)
   {
-    Sort(0, n-1, V, V2);
+    Sort(0, n - 1, V, V2);
   }
   
   
-  //! Sorts the 'n' first elements of 'V'.
+  //! Sorts the \a n first elements of \a V.
   /*!
-    The sorting operation of 'V' affects 'V2' and 'V3'.
+    The sorting operation of \a V also affects \a V2 and \a V3.
   */
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2,
@@ -698,34 +690,34 @@ namespace Seldon
 	    Vector<T2, Storage2, Allocator2>& V2,
 	    Vector<T3, Storage3, Allocator3>& V3)
   {
-    Sort(0, n-1, V, V2, V3);
+    Sort(0, n - 1, V, V2, V3);
   }
   
   
-  //! Sorts vector 'V'.
+  //! Sorts vector \a V.
   template<class T, class Storage, class Allocator>
   void Sort(Vector<T, Storage, Allocator>& V)
   {
-    Sort(0, V.GetM()-1, V);
+    Sort(0, V.GetM() - 1, V);
   }
   
   
-  //! Sorts vector 'V'.
+  //! Sorts vector \a V.
   /*!
-    The sorting operation of 'V' affects 'V2'.
+    The sorting operation of \a V also affects \a V2.
   */
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
   void Sort(Vector<T1, Storage1, Allocator1>& V,
 	    Vector<T2, Storage2, Allocator2>& V2)
   {
-    Sort(0, V.GetM()-1, V, V2);
+    Sort(0, V.GetM() - 1, V, V2);
   }
   
   
-  //! Sorts vector 'V'.
+  //! Sorts vector \a V.
   /*!
-    The sorting operation of 'V' affects 'V2' and 'V3'.
+    The sorting operation of \a V also affects \a V2 and \a V3.
   */
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2,
@@ -734,7 +726,7 @@ namespace Seldon
 	    Vector<T2, Storage2, Allocator2>& V2,
 	    Vector<T3, Storage3, Allocator3>& V3)
   {
-    Sort(0, V.GetM()-1, V, V2, V3);
+    Sort(0, V.GetM() - 1, V, V2, V3);
   }
   
   
