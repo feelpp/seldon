@@ -62,7 +62,7 @@ int main()
   Vector<double, Vect_Sparse> W = V;
   cout << "Vector W : " << W << endl;
   // operators = and *= are available
-  W = U; 
+  W = U;
   W *= -2.5;
   cout << "Vector W : " << W << endl;
   // = can be used as an equivalent of method Fill
@@ -72,9 +72,9 @@ int main()
   // you can use functions GetData, SetData and Nullify
   // for low level manipulations
   Vector<int> num(4); Vector<double> values(4);
-  num(0) = 1; values(0) = 1.1; 
+  num(0) = 1; values(0) = 1.1;
   num(1) = 3; values(1) = -0.3;
-  num(2) = 5; values(2) = 0.2; 
+  num(2) = 5; values(2) = 0.2;
   num(3) = 9; values(3) = 0.7;
   // you set row numbers and values of U
   U.SetData(values, num);
@@ -109,14 +109,14 @@ int main()
   A(3) = 0.5;
   cout << "A(3) = " << A(3) << endl;
     
-  // GetNormInfIndex returns the index 
+  // GetNormInfIndex returns the index
   // where the absolute highest value is reached
   int imax = A.GetNormInfIndex();
   cout << "Index where |A| reaches its maximum : " << imax <<endl;
   // if you want the row number and absolute highest value
   // don't forget to use Index and Value
   cout << "Maximum " << A.Value(imax)
-       << " is reached for row " << A.Index(imax) << endl; 
+       << " is reached for row " << A.Index(imax) << endl;
   
   // you can write and read vectors in files
   U.Write("vec_binary.dat");

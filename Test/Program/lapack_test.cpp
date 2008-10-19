@@ -84,13 +84,13 @@ int main(int argc, char** argv)
     Mlt(A, xr, br);
     MltAdd(1.0, SeldonTrans, A, xr, 0.0, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
     cout<<"The reciprocal of condition number in 1-norm is equal to "<<rcond<<endl;
@@ -110,7 +110,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xr.Copy(br); Alu.Copy(A); 
+    xr.Copy(br); Alu.Copy(A);
     GetAndSolveLU(Alu, ipivot, xr);
     cout<<"Solution of A x = b"<<endl<<xr<<endl;
     
@@ -122,7 +122,7 @@ int main(int argc, char** argv)
       for (int j=0 ; j<n ; j++)
 	B(i,j) = i*n+j;
     
-    GetScalingFactors(B, row_scale, col_scale, row_condition_number, 
+    GetScalingFactors(B, row_scale, col_scale, row_condition_number,
 		      col_condition_number, amax);
     cout<<"Rectangular Matrix B"<<endl<<B<<endl;
     cout<<"scaling on rows "<<endl<<row_scale<<endl;
@@ -149,7 +149,7 @@ int main(int argc, char** argv)
     anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
@@ -176,7 +176,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xc.Copy(bc); Alu.Copy(A); 
+    xc.Copy(bc); Alu.Copy(A);
     GetAndSolveLU(Alu, ipivot, xc);
     cout<<"Solution of A x = b"<<endl<<xc<<endl;
     
@@ -188,7 +188,7 @@ int main(int argc, char** argv)
       for (int j=0 ; j<n ; j++)
 	B(i,j) = i*n+j;
     
-    GetScalingFactors(B, row_scale, col_scale, row_condition_number, 
+    GetScalingFactors(B, row_scale, col_scale, row_condition_number,
 		      col_condition_number, amax);
     cout<<"Rectangular Matrix B"<<endl<<B<<endl;
     cout<<"scaling on rows "<<endl<<row_scale<<endl;
@@ -222,13 +222,13 @@ int main(int argc, char** argv)
     Mlt(A, xr, br);
     MltAdd(1.0, SeldonTrans, A, xr, 0.0, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
     cout<<"The reciprocal of condition number in 1-norm is equal to "<<rcond<<endl;
@@ -248,7 +248,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xr.Copy(br); Alu.Copy(A); 
+    xr.Copy(br); Alu.Copy(A);
     GetAndSolveLU(Alu, ipivot, xr);
     cout<<"Solution of A x = b"<<endl<<xr<<endl;
     
@@ -260,7 +260,7 @@ int main(int argc, char** argv)
       for (int j=0 ; j<n ; j++)
 	B(i,j) = i*n+j;
     
-    GetScalingFactors(B, row_scale, col_scale, row_condition_number, 
+    GetScalingFactors(B, row_scale, col_scale, row_condition_number,
 		      col_condition_number, amax);
     cout<<"Rectangular Matrix B"<<endl<<B<<endl;
     cout<<"scaling on rows "<<endl<<row_scale<<endl;
@@ -287,7 +287,7 @@ int main(int argc, char** argv)
     anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
@@ -314,7 +314,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xc.Copy(bc); Alu.Copy(A); 
+    xc.Copy(bc); Alu.Copy(A);
     GetAndSolveLU(Alu, ipivot, xc);
     cout<<"Solution of A x = b"<<endl<<xc<<endl;
     
@@ -326,7 +326,7 @@ int main(int argc, char** argv)
       for (int j=0 ; j<n ; j++)
 	B(i,j) = i*n+j;
     
-    GetScalingFactors(B, row_scale, col_scale, row_condition_number, 
+    GetScalingFactors(B, row_scale, col_scale, row_condition_number,
 		      col_condition_number, amax);
     cout<<"Rectangular Matrix B"<<endl<<B<<endl;
     cout<<"scaling on rows "<<endl<<row_scale<<endl;
@@ -352,20 +352,20 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, Symmetric, ColSymPacked> A(n,n), Alu;
-    A(0,0) = 2.0; 
-    A(1,0) = 3.0; A(1,1) = 5.0;  
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0; 
+    A(0,0) = 2.0;
+    A(1,0) = 3.0; A(1,1) = 5.0;
+    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0;
     A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0;  A(3,3) = 6.0;
     xr.Fill();
     Mlt(A, xr, br);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
     cout<<"The reciprocal of condition number in 1-norm is equal to "<<rcond<<endl;
@@ -379,7 +379,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xr.Copy(br); Alu.Copy(A); 
+    xr.Copy(br); Alu.Copy(A);
     GetAndSolveLU(Alu, ipivot, xr);
     cout<<"Solution of A x = b"<<endl<<xr<<endl;
     
@@ -404,7 +404,7 @@ int main(int argc, char** argv)
     anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
@@ -419,7 +419,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xc.Copy(bc); Alu.Copy(A); 
+    xc.Copy(bc); Alu.Copy(A);
     GetAndSolveLU(Alu, ipivot, xc);
     cout<<"Solution of A x = b"<<endl<<xc<<endl;
     
@@ -445,20 +445,20 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, Symmetric, RowSymPacked> A(n,n), Alu;
-    A(0,0) = 2.0; 
-    A(1,0) = 3.0; A(1,1) = 5.0;  
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0; 
+    A(0,0) = 2.0;
+    A(1,0) = 3.0; A(1,1) = 5.0;
+    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0;
     A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0;  A(3,3) = 6.0;
     xr.Fill();
     Mlt(A, xr, br);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
     cout<<"The reciprocal of condition number in 1-norm is equal to "<<rcond<<endl;
@@ -472,7 +472,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xr.Copy(br); Alu.Copy(A); 
+    xr.Copy(br); Alu.Copy(A);
     GetAndSolveLU(Alu, ipivot, xr);
     cout<<"Solution of A x = b"<<endl<<xr<<endl;
     
@@ -497,7 +497,7 @@ int main(int argc, char** argv)
     anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
@@ -512,7 +512,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xc.Copy(bc); Alu.Copy(A); 
+    xc.Copy(bc); Alu.Copy(A);
     GetAndSolveLU(Alu, ipivot, xc);
     cout<<"Solution of A x = b"<<endl<<xc<<endl;
     
@@ -538,20 +538,20 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, Symmetric, ColSym> A(n,n), Alu;
-    A.Val(0,0) = 2.0; 
-    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;  
-    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0; 
+    A.Val(0,0) = 2.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
     A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = 0.0;  A.Val(3,3) = 6.0;
     xr.Fill();
     Mlt(A, xr, br);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
     cout<<"The reciprocal of condition number in 1-norm is equal to "<<rcond<<endl;
@@ -565,7 +565,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xr.Copy(br); Alu.Copy(A); 
+    xr.Copy(br); Alu.Copy(A);
     GetAndSolveLU(Alu, ipivot, xr);
     cout<<"Solution of A x = b"<<endl<<xr<<endl;
     
@@ -590,7 +590,7 @@ int main(int argc, char** argv)
     anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
@@ -605,7 +605,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xc.Copy(bc); Alu.Copy(A); 
+    xc.Copy(bc); Alu.Copy(A);
     GetAndSolveLU(Alu, ipivot, xc);
     cout<<"Solution of A x = b"<<endl<<xc<<endl;
     
@@ -631,20 +631,20 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, Symmetric, RowSym> A(n,n), Alu;
-    A.Val(0,0) = 2.0; 
-    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;  
-    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0; 
+    A.Val(0,0) = 2.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
     A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = 0.0;  A.Val(3,3) = 6.0;
     xr.Fill();
     Mlt(A, xr, br);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
     cout<<"The reciprocal of condition number in 1-norm is equal to "<<rcond<<endl;
@@ -658,7 +658,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xr.Copy(br); Alu.Copy(A); 
+    xr.Copy(br); Alu.Copy(A);
     GetAndSolveLU(Alu, ipivot, xr);
     cout<<"Solution of A x = b"<<endl<<xr<<endl;
     
@@ -683,7 +683,7 @@ int main(int argc, char** argv)
     anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
@@ -698,7 +698,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xc.Copy(bc); Alu.Copy(A); 
+    xc.Copy(bc); Alu.Copy(A);
     GetAndSolveLU(Alu, ipivot, xc);
     cout<<"Solution of A x = b"<<endl<<xc<<endl;
     
@@ -724,18 +724,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, ColUpTriang> A(n,n);
-    A.Val(0,0) = 2.0; 
-    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;  
-    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0; 
+    A.Val(0,0) = 2.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
     A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = 0.0;  A.Val(3,3) = 6.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(A, br);
     Mlt(SeldonTrans, SeldonNonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -764,19 +764,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, ColUpTriang> A(n,n);
-    A.Val(0,0) = 2.0; 
-    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;  
-    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0; 
+    A.Val(0,0) = 2.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
     A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = 0.0;  A.Val(3,3) = Complex_wp(6.0,2.0);
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(A, bc);
     Mlt(SeldonTrans, SeldonNonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonNonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -825,18 +825,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, ColUpTriang> A(n,n);
-    A.Val(0,0) = 1.0; 
-    A.Val(0,1) = 3.0; A.Val(1,1) = 1.0; 
-    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = 1.0; 
-    A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = 0.0; A.Val(3,3) = 1.0; 
+    A.Val(0,0) = 1.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 1.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = 1.0;
+    A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = 0.0; A.Val(3,3) = 1.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(SeldonNoTrans, SeldonUnit, A, br);
     Mlt(SeldonTrans, SeldonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit, A, SeldonNorm1);
@@ -865,19 +865,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, ColUpTriang> A(n,n);
-    A.Val(0,0) = 1.0; 
-    A.Val(0,1) = 3.0; A.Val(1,1) = 1.0; 
-    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = 1.0; 
+    A.Val(0,0) = 1.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 1.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = 1.0;
     A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = Complex_wp(0.0,2.0); A.Val(3,3) = 1.0;
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(SeldonNoTrans, SeldonUnit, A, bc);
     Mlt(SeldonTrans, SeldonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit, A, SeldonNorm1);
@@ -926,18 +926,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, ColLoTriang> A(n,n);
-    A.Val(0,0) = 2.0; 
-    A.Val(1,0) = 3.0; A.Val(1,1) = 5.0;  
-    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = -4.0; 
+    A.Val(0,0) = 2.0;
+    A.Val(1,0) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = -4.0;
     A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = 0.0;  A.Val(3,3) = 6.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(A, br);
     Mlt(SeldonTrans, SeldonNonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -966,19 +966,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, ColLoTriang> A(n,n);
-    A.Val(0,0) = 2.0; 
-    A.Val(1,0) = 3.0; A.Val(1,1) = 5.0;  
-    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = -4.0; 
+    A.Val(0,0) = 2.0;
+    A.Val(1,0) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = -4.0;
     A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = 0.0;  A.Val(3,3) = Complex_wp(6.0,2.0);
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(A, bc);
     Mlt(SeldonTrans, SeldonNonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonNonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -1027,18 +1027,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, ColLoTriang> A(n,n);
-    A.Val(0,0) = 1.0; 
-    A.Val(1,0) = 3.0; A.Val(1,1) = 1.0; 
-    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = 1.0; 
-    A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = 0.0; A.Val(3,3) = 1.0; 
+    A.Val(0,0) = 1.0;
+    A.Val(1,0) = 3.0; A.Val(1,1) = 1.0;
+    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = 1.0;
+    A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = 0.0; A.Val(3,3) = 1.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(SeldonNoTrans, SeldonUnit, A, br);
     Mlt(SeldonTrans, SeldonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit,A, SeldonNorm1);
@@ -1067,19 +1067,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, ColLoTriang> A(n,n);
-    A.Val(0,0) = 1.0; 
-    A.Val(1,0) = 3.0; A.Val(1,1) = 1.0; 
-    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = 1.0; 
+    A.Val(0,0) = 1.0;
+    A.Val(1,0) = 3.0; A.Val(1,1) = 1.0;
+    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = 1.0;
     A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = Complex_wp(0.0,2.0); A.Val(3,3) = 1.0;
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(SeldonNoTrans, SeldonUnit, A, bc);
     Mlt(SeldonTrans, SeldonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit,A, SeldonNorm1);
@@ -1127,18 +1127,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, ColUpTriangPacked> A(n,n);
-    A(0,0) = 2.0; 
-    A(0,1) = 3.0; A(1,1) = 5.0;  
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = -4.0; 
+    A(0,0) = 2.0;
+    A(0,1) = 3.0; A(1,1) = 5.0;
+    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = -4.0;
     A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0;  A(3,3) = 6.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(A, br);
     Mlt(SeldonTrans, SeldonNonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -1167,19 +1167,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, ColUpTriangPacked> A(n,n);
-    A(0,0) = 2.0; 
-    A(0,1) = 3.0; A(1,1) = 5.0;  
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = -4.0; 
+    A(0,0) = 2.0;
+    A(0,1) = 3.0; A(1,1) = 5.0;
+    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = -4.0;
     A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0;  A(3,3) = Complex_wp(6.0,2.0);
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(A, bc);
     Mlt(SeldonTrans, SeldonNonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonNonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -1228,18 +1228,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, ColUpTriangPacked> A(n,n);
-    A(0,0) = 1.0; 
-    A(0,1) = 3.0; A(1,1) = 1.0; 
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = 1.0; 
-    A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0; A(3,3) = 1.0; 
+    A(0,0) = 1.0;
+    A(0,1) = 3.0; A(1,1) = 1.0;
+    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = 1.0;
+    A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0; A(3,3) = 1.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(SeldonNoTrans, SeldonUnit, A, br);
     Mlt(SeldonTrans, SeldonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit,A, SeldonNorm1);
@@ -1268,19 +1268,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, ColUpTriangPacked> A(n,n);
-    A(0,0) = 1.0; 
-    A(0,1) = 3.0; A(1,1) = 1.0; 
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = 1.0; 
+    A(0,0) = 1.0;
+    A(0,1) = 3.0; A(1,1) = 1.0;
+    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = 1.0;
     A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = Complex_wp(0.0,2.0); A(3,3) = 1.0;
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(SeldonNoTrans, SeldonUnit, A, bc);
     Mlt(SeldonTrans, SeldonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit, A, SeldonNorm1);
@@ -1329,18 +1329,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, ColLoTriangPacked> A(n,n);
-    A(0,0) = 2.0; 
-    A(1,0) = 3.0; A(1,1) = 5.0;  
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0; 
+    A(0,0) = 2.0;
+    A(1,0) = 3.0; A(1,1) = 5.0;
+    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0;
     A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0;  A(3,3) = 6.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(A, br);
     Mlt(SeldonTrans, SeldonNonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -1369,19 +1369,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, ColLoTriangPacked> A(n,n);
-    A(0,0) = 2.0; 
-    A(1,0) = 3.0; A(1,1) = 5.0;  
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0; 
+    A(0,0) = 2.0;
+    A(1,0) = 3.0; A(1,1) = 5.0;
+    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0;
     A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0;  A(3,3) = Complex_wp(6.0,2.0);
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(A, bc);
     Mlt(SeldonTrans, SeldonNonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonNonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -1430,18 +1430,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, ColLoTriangPacked> A(n,n);
-    A(0,0) = 1.0; 
-    A(1,0) = 3.0; A(1,1) = 1.0; 
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = 1.0; 
-    A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0; A(3,3) = 1.0; 
+    A(0,0) = 1.0;
+    A(1,0) = 3.0; A(1,1) = 1.0;
+    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = 1.0;
+    A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0; A(3,3) = 1.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(SeldonNoTrans, SeldonUnit, A, br);
     Mlt(SeldonTrans, SeldonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit, A, SeldonNorm1);
@@ -1470,19 +1470,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, ColLoTriangPacked> A(n,n);
-    A(0,0) = 1.0; 
-    A(1,0) = 3.0; A(1,1) = 1.0; 
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = 1.0; 
+    A(0,0) = 1.0;
+    A(1,0) = 3.0; A(1,1) = 1.0;
+    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = 1.0;
     A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = Complex_wp(0.0,2.0); A(3,3) = 1.0;
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(SeldonNoTrans, SeldonUnit, A, bc);
     Mlt(SeldonTrans, SeldonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit, A, SeldonNorm1);
@@ -1530,18 +1530,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, RowUpTriang> A(n,n);
-    A.Val(0,0) = 2.0; 
-    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;  
-    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0; 
+    A.Val(0,0) = 2.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
     A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = 0.0;  A.Val(3,3) = 6.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(A, br);
     Mlt(SeldonTrans, SeldonNonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -1570,19 +1570,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, RowUpTriang> A(n,n);
-    A.Val(0,0) = 2.0; 
-    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;  
-    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0; 
+    A.Val(0,0) = 2.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
     A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = 0.0;  A.Val(3,3) = Complex_wp(6.0,2.0);
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(A, bc);
     Mlt(SeldonTrans, SeldonNonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonNonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -1631,18 +1631,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, RowUpTriang> A(n,n);
-    A.Val(0,0) = 1.0; 
-    A.Val(0,1) = 3.0; A.Val(1,1) = 1.0; 
-    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = 1.0; 
-    A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = 0.0; A.Val(3,3) = 1.0; 
+    A.Val(0,0) = 1.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 1.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = 1.0;
+    A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = 0.0; A.Val(3,3) = 1.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(SeldonNoTrans, SeldonUnit, A, br);
     Mlt(SeldonTrans, SeldonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit, A, SeldonNorm1);
@@ -1671,19 +1671,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, RowUpTriang> A(n,n);
-    A.Val(0,0) = 1.0; 
-    A.Val(0,1) = 3.0; A.Val(1,1) = 1.0; 
-    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = 1.0; 
+    A.Val(0,0) = 1.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 1.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = 1.0;
     A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = Complex_wp(0.0,2.0); A.Val(3,3) = 1.0;
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(SeldonNoTrans, SeldonUnit, A, bc);
     Mlt(SeldonTrans, SeldonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit, A, SeldonNorm1);
@@ -1732,18 +1732,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, RowLoTriang> A(n,n);
-    A.Val(0,0) = 2.0; 
-    A.Val(1,0) = 3.0; A.Val(1,1) = 5.0;  
-    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = -4.0; 
+    A.Val(0,0) = 2.0;
+    A.Val(1,0) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = -4.0;
     A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = 0.0;  A.Val(3,3) = 6.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(A, br);
     Mlt(SeldonTrans, SeldonNonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -1772,19 +1772,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, RowLoTriang> A(n,n);
-    A.Val(0,0) = 2.0; 
-    A.Val(1,0) = 3.0; A.Val(1,1) = 5.0;  
-    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = -4.0; 
+    A.Val(0,0) = 2.0;
+    A.Val(1,0) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = -4.0;
     A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = 0.0;  A.Val(3,3) = Complex_wp(6.0,2.0);
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(A, bc);
     Mlt(SeldonTrans, SeldonNonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonNonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -1833,18 +1833,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, RowLoTriang> A(n,n);
-    A.Val(0,0) = 1.0; 
-    A.Val(1,0) = 3.0; A.Val(1,1) = 1.0; 
-    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = 1.0; 
-    A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = 0.0; A.Val(3,3) = 1.0; 
+    A.Val(0,0) = 1.0;
+    A.Val(1,0) = 3.0; A.Val(1,1) = 1.0;
+    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = 1.0;
+    A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = 0.0; A.Val(3,3) = 1.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(SeldonNoTrans, SeldonUnit, A, br);
     Mlt(SeldonTrans, SeldonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit, A, SeldonNorm1);
@@ -1873,19 +1873,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, RowLoTriang> A(n,n);
-    A.Val(0,0) = 1.0; 
-    A.Val(1,0) = 3.0; A.Val(1,1) = 1.0; 
-    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = 1.0; 
+    A.Val(0,0) = 1.0;
+    A.Val(1,0) = 3.0; A.Val(1,1) = 1.0;
+    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = 1.0;
     A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = Complex_wp(0.0,2.0); A.Val(3,3) = 1.0;
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(SeldonNoTrans, SeldonUnit, A, bc);
     Mlt(SeldonTrans, SeldonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit, A, SeldonNorm1);
@@ -1933,18 +1933,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, RowUpTriangPacked> A(n,n);
-    A(0,0) = 2.0; 
-    A(0,1) = 3.0; A(1,1) = 5.0;  
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = -4.0; 
+    A(0,0) = 2.0;
+    A(0,1) = 3.0; A(1,1) = 5.0;
+    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = -4.0;
     A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0;  A(3,3) = 6.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(A, br);
     Mlt(SeldonTrans, SeldonNonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -1973,19 +1973,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, RowUpTriangPacked> A(n,n);
-    A(0,0) = 2.0; 
-    A(0,1) = 3.0; A(1,1) = 5.0;  
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = -4.0; 
+    A(0,0) = 2.0;
+    A(0,1) = 3.0; A(1,1) = 5.0;
+    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = -4.0;
     A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0;  A(3,3) = Complex_wp(6.0,2.0);
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(A, bc);
     Mlt(SeldonTrans, SeldonNonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonNonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -2034,18 +2034,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, RowUpTriangPacked> A(n,n);
-    A(0,0) = 1.0; 
-    A(0,1) = 3.0; A(1,1) = 1.0; 
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = 1.0; 
-    A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0; A(3,3) = 1.0; 
+    A(0,0) = 1.0;
+    A(0,1) = 3.0; A(1,1) = 1.0;
+    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = 1.0;
+    A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0; A(3,3) = 1.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(SeldonNoTrans, SeldonUnit, A, br);
     Mlt(SeldonTrans, SeldonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit, A, SeldonNorm1);
@@ -2074,19 +2074,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, RowUpTriangPacked> A(n,n);
-    A(0,0) = 1.0; 
-    A(0,1) = 3.0; A(1,1) = 1.0; 
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = 1.0; 
+    A(0,0) = 1.0;
+    A(0,1) = 3.0; A(1,1) = 1.0;
+    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = 1.0;
     A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = Complex_wp(0.0,2.0); A(3,3) = 1.0;
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(SeldonNoTrans, SeldonUnit, A, bc);
     Mlt(SeldonTrans, SeldonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit, A, SeldonNorm1);
@@ -2135,18 +2135,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, RowLoTriangPacked> A(n,n);
-    A(0,0) = 2.0; 
-    A(1,0) = 3.0; A(1,1) = 5.0;  
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0; 
+    A(0,0) = 2.0;
+    A(1,0) = 3.0; A(1,1) = 5.0;
+    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0;
     A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0;  A(3,3) = 6.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(A, br);
     Mlt(SeldonTrans, SeldonNonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -2175,19 +2175,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, RowLoTriangPacked> A(n,n);
-    A(0,0) = 2.0; 
-    A(1,0) = 3.0; A(1,1) = 5.0;  
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0; 
+    A(0,0) = 2.0;
+    A(1,0) = 3.0; A(1,1) = 5.0;
+    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0;
     A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0;  A(3,3) = Complex_wp(6.0,2.0);
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(A, bc);
     Mlt(SeldonTrans, SeldonNonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonNonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(A, SeldonNorm1);
@@ -2236,18 +2236,18 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, RowLoTriangPacked> A(n,n);
-    A(0,0) = 1.0; 
-    A(1,0) = 3.0; A(1,1) = 1.0; 
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = 1.0; 
-    A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0; A(3,3) = 1.0; 
+    A(0,0) = 1.0;
+    A(1,0) = 3.0; A(1,1) = 1.0;
+    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = 1.0;
+    A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0; A(3,3) = 1.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(SeldonNoTrans, SeldonUnit, A, br);
     Mlt(SeldonTrans, SeldonUnit, A, br_trans);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(br, xr); 
-    anorm_one = Norm1(A); 
+    Copy(br, xr);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit, A, SeldonNorm1);
@@ -2276,19 +2276,19 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, RowLoTriangPacked> A(n,n);
-    A(0,0) = 1.0; 
-    A(1,0) = 3.0; A(1,1) = 1.0; 
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = 1.0; 
+    A(0,0) = 1.0;
+    A(1,0) = 3.0; A(1,1) = 1.0;
+    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = 1.0;
     A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = Complex_wp(0.0,2.0); A(3,3) = 1.0;
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(SeldonNoTrans, SeldonUnit, A, bc);
     Mlt(SeldonTrans, SeldonUnit, A, bc_trans);
     Mlt(SeldonConjTrans, SeldonUnit, A, bc_transConj);
     cout<<"Matrix A"<<endl<<A<<endl;
-    Copy(bc, xc); 
-    anorm_one = Norm1(A); 
+    Copy(bc, xc);
+    anorm_one = Norm1(A);
     cout<<"1-norm of A "<<anorm_one<<endl;
-    anorm_infty = NormInf(A); 
+    anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
     rcond = ReciprocalConditionNumber(SeldonUnit, A, SeldonNorm1);
@@ -2350,7 +2350,7 @@ int main(int argc, char** argv)
     anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
@@ -2365,7 +2365,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xc.Copy(bc); Alu.Copy(A); 
+    xc.Copy(bc); Alu.Copy(A);
     DISP(A); DISP(xc);
     GetAndSolveLU(Alu, ipivot, xc);
     cout<<"Solution of A x = b"<<endl<<xc<<endl;
@@ -2405,7 +2405,7 @@ int main(int argc, char** argv)
     anorm_infty = NormInf(A); DISP(anorm_infty);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
@@ -2420,7 +2420,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xc.Copy(bc); Alu.Copy(A); 
+    xc.Copy(bc); Alu.Copy(A);
     DISP(A); DISP(xc);
     GetAndSolveLU(Alu, ipivot, xc);
     cout<<"Solution of A x = b"<<endl<<xc<<endl;
@@ -2460,7 +2460,7 @@ int main(int argc, char** argv)
     anorm_infty = NormInf(A);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
@@ -2475,7 +2475,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xc.Copy(bc); Alu.Copy(A); 
+    xc.Copy(bc); Alu.Copy(A);
     DISP(A); DISP(xc);
     GetAndSolveLU(Alu, ipivot, xc);
     cout<<"Solution of A x = b"<<endl<<xc<<endl;
@@ -2515,7 +2515,7 @@ int main(int argc, char** argv)
     anorm_infty = NormInf(A); DISP(anorm_infty);
     cout<<"infinity-norm of A "<<anorm_infty<<endl;
     
-    Alu.Copy(A); 
+    Alu.Copy(A);
     
     GetLU(Alu, ipivot);
     rcond = ReciprocalConditionNumber(Alu, ipivot, SeldonNorm1, anorm_one);
@@ -2530,7 +2530,7 @@ int main(int argc, char** argv)
     
     cout<<"Forward error "<<ferr<<endl; cout<<"Backward error "<<berr<<endl;
     
-    xc.Copy(bc); Alu.Copy(A); 
+    xc.Copy(bc); Alu.Copy(A);
     DISP(A); DISP(xc);
     GetAndSolveLU(Alu, ipivot, xc);
     cout<<"Solution of A x = b"<<endl<<xc<<endl;
