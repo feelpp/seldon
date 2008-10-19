@@ -707,7 +707,7 @@ namespace Seldon
 	  }
 	
 	Mlt(alpha, value);
-	B.AddInteractionRow(i, n, index, value);
+	B.AddInteractionRow(i, n+ni, index, value);
       }
   }
   
@@ -792,7 +792,7 @@ namespace Seldon
 	  }
 	
 	Mlt(alpha, value);
-	B.AddInteractionRow(i, n, index, value);
+	B.AddInteractionRow(i, n+ni, index, value);
       }
   }
   
@@ -881,6 +881,7 @@ namespace Seldon
 	n = A.GetRowSize(i);
 	ni = B.GetRowSize(i);
 	value.Reallocate(n+ni);
+	index.Reallocate(n+ni);
 	for (int j = 0; j < n; j++)
 	  {
 	    value(j) = A.Value(i, j);
@@ -894,7 +895,7 @@ namespace Seldon
 	  }
 	
 	Mlt(alpha, value);
-	C.AddInteractionRow(i, n, index, value);
+	C.AddInteractionRow(i, n+ni, index, value);
       }
   }
   
@@ -915,6 +916,7 @@ namespace Seldon
 	n = A.GetRowSize(i);
 	ni = B.GetRowSize(i);
 	value.Reallocate(n + ni);
+	index.Reallocate(n + ni);
 	for (int j = 0; j < n; j++)
 	  {
 	    value(j) = A.Value(i, j);
@@ -928,7 +930,7 @@ namespace Seldon
 	  }
 	
 	Mlt(alpha, value);
-	C.AddInteractionRow(i, n, index, value);
+	C.AddInteractionRow(i, n+ni, index, value);
       }
   }
   

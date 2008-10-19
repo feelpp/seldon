@@ -242,7 +242,7 @@ namespace Seldon
   
   //! returns information about factorization performed
   template<class T>
-  int MatrixMumps<T>::GetInfoFactorization()
+  int MatrixMumps<T>::GetInfoFactorization() const
   {
     return struct_mumps.info[0];
   }

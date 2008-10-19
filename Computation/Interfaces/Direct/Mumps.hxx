@@ -82,7 +82,7 @@ namespace Seldon
     void SelectOrdering(int num_ordering);
     void HideMessages();
     void ShowMessages();
-    int GetInfoFactorization();
+    int GetInfoFactorization() const;
     
     template<class Prop,class Storage,class Allocator>
     void FindOrdering(Matrix<T, Prop, Storage, Allocator> & mat,

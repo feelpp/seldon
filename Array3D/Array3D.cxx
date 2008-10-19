@@ -188,7 +188,22 @@ namespace Seldon
       }
   }
 
+  
+  //! Clears the array
+  /*!
+    Destructs the array.
+    \warning On exit, the 3-D array is empty
+  */
+  template <class T, class Allocator>
+  inline void Array3D<T, Allocator>::Clear()
+  {
+    this->~Array3D();
+    this->length1_ = 0;
+    this->length2_ = 0;
+    this->length3_ = 0;
+  }
 
+  
   /*****************
    * BASIC METHODS *
    *****************/

@@ -120,7 +120,7 @@ namespace Seldon
   //! Column-major sparse-matrix class.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayColComplexSparse, Allocator> :
-    public Matrix_ArraySparse<T, Prop, ArrayColComplexSparse, Allocator>
+    public Matrix_ArrayComplexSparse<T, Prop, ArrayColComplexSparse, Allocator>
   {
   public:
     Matrix()  throw();
@@ -160,7 +160,7 @@ namespace Seldon
   //! Row-major sparse-matrix class.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayRowComplexSparse, Allocator> :
-    public Matrix_ArraySparse<T, Prop, ArrayRowComplexSparse, Allocator>
+    public Matrix_ArrayComplexSparse<T, Prop, ArrayRowComplexSparse, Allocator>
   {
   public:
     Matrix()  throw();
@@ -200,7 +200,7 @@ namespace Seldon
   //! Column-major symmetric sparse-matrix class.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>:
-    public Matrix_ArraySparse<T, Prop, ArrayColSymComplexSparse, Allocator>
+    public Matrix_ArrayComplexSparse<T, Prop, ArrayColSymComplexSparse, Allocator>
   {
   public:
     Matrix()  throw();
@@ -242,7 +242,7 @@ namespace Seldon
   //! Row-major symmetric sparse-matrix class.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>:
-    public Matrix_ArraySparse<T, Prop, ArrayRowSymComplexSparse, Allocator>
+    public Matrix_ArrayComplexSparse<T, Prop, ArrayRowSymComplexSparse, Allocator>
   {
   public:
     Matrix()  throw();

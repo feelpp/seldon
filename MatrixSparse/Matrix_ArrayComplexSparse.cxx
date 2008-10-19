@@ -828,7 +828,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayColComplexSparse, Allocator>::Matrix()  throw():
-    Matrix_ArraySparse<T, Prop, ArrayColComplexSparse, Allocator>()
+    Matrix_ArrayComplexSparse<T, Prop, ArrayColComplexSparse, Allocator>()
   {
   }
   
@@ -841,7 +841,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayColComplexSparse, Allocator>::Matrix(int i, int j):
-    Matrix_ArraySparse<T, Prop, ArrayColComplexSparse, Allocator>(i, j)
+    Matrix_ArrayComplexSparse<T, Prop, ArrayColComplexSparse, Allocator>(i, j)
   {
   }
   
@@ -1114,7 +1114,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::Matrix()  throw():
-    Matrix_ArraySparse<T, Prop, ArrayRowComplexSparse, Allocator>()
+    Matrix_ArrayComplexSparse<T, Prop, ArrayRowComplexSparse, Allocator>()
   {
   }
   
@@ -1127,7 +1127,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::Matrix(int i, int j):
-    Matrix_ArraySparse<T, Prop, ArrayRowComplexSparse, Allocator>(i, j)
+  Matrix_ArrayComplexSparse<T, Prop, ArrayRowComplexSparse, Allocator>(i, j)
   {
   }
   
@@ -1404,7 +1404,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::Matrix()  throw():
-    Matrix_ArraySparse<T, Prop, ArrayColSymComplexSparse, Allocator>()
+    Matrix_ArrayComplexSparse<T, Prop, ArrayColSymComplexSparse, Allocator>()
   {
   }
   
@@ -1417,7 +1417,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::Matrix(int i, int j):
-    Matrix_ArraySparse<T, Prop, ArrayColSymComplexSparse, Allocator>(i, j)
+    Matrix_ArrayComplexSparse<T, Prop, ArrayColSymComplexSparse, Allocator>(i, j)
   {
   }
   

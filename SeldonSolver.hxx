@@ -17,7 +17,7 @@
 // For more information, please see the Seldon home page:
 //     http://spacetown.free.fr/lib/seldon/
 
-#ifndef SELDON_FILE_SOLVER_HXX
+#ifndef SELDON_FILE_SELDON_SOLVER_HXX
 
 // additional classes and functions for sparse matrices
 #include "MatrixSparse/Matrix_Conversions.cxx"
@@ -46,5 +46,5 @@
 #include "Computation/Solver/Iterative/Iterative.cxx"
 #include "Computation/Solver/Preconditioner/Precond_Ssor.cxx"
 
-#define SELDON_FILE_SOLVER_HXX
+#define SELDON_FILE_SELDON_SOLVER_HXX
 #endif

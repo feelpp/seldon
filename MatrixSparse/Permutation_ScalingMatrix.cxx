@@ -472,8 +472,7 @@ namespace Seldon
   template<class T1, class Allocator1,
 	   class Prop, class T2, class Allocator2>
   void ScaleLeftMatrix(Matrix<T1, Prop, ArrayRowSymComplexSparse, Allocator1>& A,
-		       const Vector<T2, Vect_Full, Allocator2>& scale,
-		       )
+		       const Vector<T2, Vect_Full, Allocator2>& scale)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )

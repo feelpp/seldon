@@ -83,6 +83,7 @@ namespace Seldon
 
     // Memory management.
     void Reallocate(int i, int j, int k);
+    void Clear();
 
     // Element access and affectation.
     reference operator() (int i, int j, int k);
