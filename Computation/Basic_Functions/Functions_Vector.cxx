@@ -55,7 +55,7 @@ namespace Seldon
 
 
   /////////
-  // Mlt //
+  // MLT //
 
 
   template <class T0,
@@ -67,13 +67,13 @@ namespace Seldon
   }
 
 
-  // Mlt //
+  // MLT //
   /////////
 
 
 
   /////////
-  // Add //
+  // ADD //
 
 
   template <class T0,
@@ -116,13 +116,13 @@ namespace Seldon
   }
 
 
-  // Add //
+  // ADD //
   /////////
   
   
   
   //////////
-  // Copy //
+  // COPY //
 
   
   template <class T1, class Storage1, class Allocator1,
@@ -134,13 +134,13 @@ namespace Seldon
   }
   
   
-  // Copy //
+  // COPY //
   //////////
   
   
   
   //////////
-  // Swap //
+  // SWAP //
 
   
   template <class T1, class Storage1, class Allocator1,
@@ -171,13 +171,13 @@ namespace Seldon
   }
   
   
-  // Swap //
+  // SWAP //
   //////////
   
   
   
   /////////////
-  // DotProd //
+  // DOTPROD //
   
   
   //! Scalar product between two vectors.
@@ -242,12 +242,11 @@ namespace Seldon
     while (kx < size_x)
       {
 	pos_x = X.Index(kx);
-	while ( (ky < size_y) && (Y.Index(ky) < pos_x))
+	while (ky < size_y && Y.Index(ky) < pos_x)
 	  ky++;
 	
-	if (ky < size_y)
-	  if (Y.Index(ky) == pos_x)
-	    value += X.Value(kx)*Y.Value(ky);
+	if (ky < size_y && Y.Index(ky) == pos_x)
+	  value += X.Value(kx) * Y.Value(ky);
 	
 	kx++;
       }
@@ -271,12 +270,11 @@ namespace Seldon
     while (kx < size_x)
       {
 	pos_x = X.Index(kx);
-	while ( (ky < size_y) && (Y.Index(ky) < pos_x))
+	while (ky < size_y && Y.Index(ky) < pos_x)
 	  ky++;
 	
-	if (ky < size_y)
-	  if (Y.Index(ky) == pos_x)
-	    value += conj(X.Value(kx))*Y.Value(ky);
+	if (ky < size_y && Y.Index(ky) == pos_x)
+	  value += conj(X.Value(kx)) * Y.Value(ky);
 	
 	kx++;
       }
@@ -285,13 +283,13 @@ namespace Seldon
   }
   
   
-  // DotProd //
+  // DOTPROD //
   /////////////
   
   
   
   ///////////
-  // Norm1 //
+  // NORM1 //
   
   
   template<class T1, class Storage1, class Allocator1>
@@ -342,13 +340,13 @@ namespace Seldon
   }
   
   
-  // Norm1 //
+  // NORM1 //
   ///////////
   
   
   
   ///////////
-  // Norm2 //
+  // NORM2 //
   
   
   template<class T1, class Storage1, class Allocator1>
@@ -357,7 +355,7 @@ namespace Seldon
     T1 value(0);
     
     for (int i = 0; i < X.GetM(); i++)
-      value += X(i)*X(i);
+      value += X(i) * X(i);
     
     return sqrt(value);
   }
@@ -369,7 +367,7 @@ namespace Seldon
     T1 value(0);
     
     for (int i = 0; i < X.GetM(); i++)
-      value += real(X(i)*conj(X(i)));
+      value += real(X(i) * conj(X(i)));
     
     return sqrt(value);
   }
@@ -381,7 +379,7 @@ namespace Seldon
     T1 value(0);
     
     for (int i = 0; i < X.GetSize(); i++)
-      value += X.Value(i)*X.Value(i);
+      value += X.Value(i) * X.Value(i);
     
     return sqrt(value);
   }
@@ -393,19 +391,19 @@ namespace Seldon
     T1 value(0);
     
     for (int i = 0; i < X.GetSize(); i++)
-      value += real(X.Value(i)*conj(X.Value(i)));
+      value += real(X.Value(i) * conj(X.Value(i)));
     
     return sqrt(value);
   }
   
   
-  // Norm2 //
+  // NORM2 //
   ///////////
   
   
   
   ////////////////////
-  // GetMaxAbsIndex //
+  // GETMAXABSINDEX //
   
   
   template<class T, class Storage, class Allocator>
@@ -415,13 +413,13 @@ namespace Seldon
   }
   
   
-  // GetMaxAbsIndex //
+  // GETMAXABSINDEX //
   ////////////////////
   
   
   
   //////////////
-  // ApplyRot //
+  // APPLYROT //
   
   
   //! Computation of rotation between two points.
@@ -443,19 +441,22 @@ namespace Seldon
 	T b_scl = b_in / scal;
 	r = scal * sqrt(a_scl * a_scl + b_scl * b_scl);
 	if (roe < T(0))
-	  r *= -1;
+	  r *= T(-1);
 	
 	c_ = a_in / r;
 	s_ = b_in / r;
-	z = 1;
+	z = T(1);
 	if (abs(a_in) > abs(b_in))
 	  z = s_;
-	else if ((abs(b_in) >= abs(a_in)) && (c_ != T(0)))
+	else if (abs(b_in) >= abs(a_in) && c_ != T(0))
 	  z = T(1) / c_;
       }
     else
       {
-	c_ = 1;	s_ = 0; r = 0; z = 0;
+	c_ = T(1);
+	s_ = T(0);
+	r = T(0);
+	z = T(0);
       }
     a_in = r;
     b_in = z;
@@ -468,22 +469,22 @@ namespace Seldon
   {
       
     T a = abs(a_in), b = abs(b_in);
-    if ( a == T(0) )
+    if (a == T(0))
       {
 	c_ = T(0);
-	s_ = complex<T>(1,0);
+	s_ = complex<T>(1, 0);
 	a_in = b_in;
       }
     else
       {
 	T scale = a + b;
-	T a_scal = abs(a_in/scale);
-	T b_scal = abs(b_in/scale);
+	T a_scal = abs(a_in / scale);
+	T b_scal = abs(b_in / scale);
 	T norm = sqrt(a_scal * a_scal + b_scal * b_scal) * scale;
 	
 	c_ = a / norm;
 	complex<T> alpha = a_in / a;
-	s_ =  alpha * conj(b_in) / norm;
+	s_ = alpha * conj(b_in) / norm;
 	a_in = alpha * norm;
       }
     b_in = complex<T>(0, 0);
@@ -511,7 +512,7 @@ namespace Seldon
   }
   
   
-  // ApplyRot //
+  // APPLYROT //
   //////////////
   
   
