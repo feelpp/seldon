@@ -711,9 +711,11 @@ namespace Seldon
     The length of the vector (integer) and all elements of the vector are
     stored in binary format.
     \param FileName file name.
+    \param with_size if set to 'false', the length of the vector is not saved.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::Write(string FileName) const
+  void Vector<T, Vect_Full, Allocator>
+  ::Write(string FileName, bool with_size = true) const
   {
     ofstream FileStream;
     FileStream.open(FileName.c_str());
@@ -725,7 +727,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->Write(FileStream);
+    this->Write(FileStream, with_size);
     
     FileStream.close();
   }
@@ -736,9 +738,11 @@ namespace Seldon
     The length of the vector (integer) and all elements of the vector are
     stored in binary format.
     \param FileStream file stream.
+    \param with_size if set to 'false', the length of the vector is not saved.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::Write(ostream& FileStream) const
+  void Vector<T, Vect_Full, Allocator>
+  ::Write(ostream& FileStream, bool with_size = true) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -748,8 +752,9 @@ namespace Seldon
                     "The stream is not ready.");
 #endif
 
-    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
-		     sizeof(int));
+    if (with_size)
+      FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+		       sizeof(int));
 
     FileStream.write(reinterpret_cast<char*>(this->data_),
 		     this->m_ * sizeof(value_type));

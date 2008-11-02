@@ -790,10 +790,12 @@ namespace Seldon
     are written, and matrix elements are then written in the same order
     as in memory (e.g. row-major storage).
     \param FileName output file name.
+    \param with_size if set to 'false', the dimensions of the matrix are not
+    saved.
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Pointers<T, Prop, Storage, Allocator>
-  ::Write(string FileName) const
+  ::Write(string FileName, bool with_size = true) const
   {
     ofstream FileStream;
     FileStream.open(FileName.c_str());
@@ -805,7 +807,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->Write(FileStream);
+    this->Write(FileStream, with_size);
 
     FileStream.close();
   }
@@ -818,10 +820,12 @@ namespace Seldon
     are written, and matrix elements are then written in the same order
     as in memory (e.g. row-major storage).
     \param FileStream output stream.
+    \param with_size if set to 'false', the dimensions of the matrix are not
+    saved.
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Pointers<T, Prop, Storage, Allocator>
-  ::Write(ostream& FileStream) const
+  ::Write(ostream& FileStream, bool with_size = true) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -831,10 +835,13 @@ namespace Seldon
 		    "The stream is not ready.");
 #endif
 
-    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
-		     sizeof(int));
-    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
-		     sizeof(int));
+    if (with_size)
+      {
+	FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+			 sizeof(int));
+	FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
+			 sizeof(int));
+      }
 
     FileStream.write(reinterpret_cast<char*>(this->data_),
 		     this->m_ * this->n_ * sizeof(value_type));
