@@ -113,7 +113,7 @@ namespace Seldon
 	Ptr.Zero();
 	int nb = 0;
 	for (i = 0; i < m; i++)
-	  for (j = ptr[i]; j < ptr[i+1]; j++)
+	  for (j = ptr[i]; j < ptr[i + 1]; j++)
 	    {
 	      IndRow(nb) = i + index;
 	      IndCol(nb) = ind[j] + index;
@@ -149,7 +149,7 @@ namespace Seldon
 	IndCol.Reallocate(nnz);
 	Val.Reallocate(nnz);
 	for (i = 0; i < m; i++)
-	  for (j = ptr[i]; j< ptr[i+1]; j++)
+	  for (j = ptr[i]; j< ptr[i + 1]; j++)
 	    {
 	      IndRow(j) = i + index;
 	      IndCol(j) = ind[j] + index;
@@ -178,7 +178,7 @@ namespace Seldon
       {
 	nnz *= 2;
 	for (i = 0; i < m; i++)
-	  for (j = ptr[i]; j < ptr[i+1]; i++)
+	  for (j = ptr[i]; j < ptr[i + 1]; i++)
 	    if (ind[j] == i)
 	      nnz--;
 	
@@ -189,7 +189,7 @@ namespace Seldon
 	Ptr.Zero();
 	int nb = 0;
 	for (i = 0; i < m; i++)
-	  for (j = ptr[i]; j < ptr[i+1]; j++)
+	  for (j = ptr[i]; j < ptr[i + 1]; j++)
 	    {
 	      IndRow(nb) = i + index;
 	      IndCol(nb) = ind[j] + index;
@@ -225,7 +225,7 @@ namespace Seldon
 	IndCol.Reallocate(nnz);
 	Val.Reallocate(nnz);
 	for (i = 0; i < m; i++)
-	  for (j = ptr[i]; j< ptr[i+1]; j++)
+	  for (j = ptr[i]; j< ptr[i + 1]; j++)
 	    {
 	      IndRow(j) = i + index;
 	      IndCol(j) = ind[j] + index;
@@ -485,11 +485,11 @@ namespace Seldon
       }
     
     for (i = 0; i < m; i++)
-      Ptr(i+1) += Ptr(i);
+      Ptr(i + 1) += Ptr(i);
     
     // Sorts 'IndCol'.
     for (i = 0; i < m; i++)
-      Sort(Ptr(i), Ptr(i+1) - 1, IndCol, Val);
+      Sort(Ptr(i), Ptr(i + 1) - 1, IndCol, Val);
     
     A.SetData(m, n, nnz, Val, Ptr, IndCol);
   }
@@ -533,7 +533,7 @@ namespace Seldon
     
     // Sorts 'IndRow'
     for (i = 0; i < n; i++)
-      Sort(Ptr(i), Ptr(i+1) - 1, IndRow, Val);
+      Sort(Ptr(i), Ptr(i + 1) - 1, IndRow, Val);
     
     A.SetData(m, n, nnz, Val, Ptr, IndRow);
   }
@@ -601,7 +601,7 @@ namespace Seldon
     
     // Sorts 'IndCol'.
     for (int i = 0; i < m; i++)
-      Sort(Ptr(i), Ptr(i+1) - 1, IndCol, Val);
+      Sort(Ptr(i), Ptr(i + 1) - 1, IndCol, Val);
     
     A.SetData(m, n, nnz, Val, Ptr, IndCol);
   }
@@ -669,7 +669,7 @@ namespace Seldon
     
     // Sorts 'IndCol'.
     for (int i = 0; i < m; i++)
-      Sort(Ptr(i), Ptr(i+1) - 1, IndCol, Val);
+      Sort(Ptr(i), Ptr(i + 1) - 1, IndCol, Val);
     
     A.SetData(m, n, nnz, Val, Ptr, IndCol);
   }
@@ -1012,7 +1012,7 @@ namespace Seldon
     
     // Loop over rows.
     for (i = 0; i < m; i++)
-      for (j = ptr_[i]; j < ptr_[i+1]; j++)
+      for (j = ptr_[i]; j < ptr_[i + 1]; j++)
 	{
 	  num_col = ind_[j];
 	  Ind(Offset(num_col)) = i;
@@ -1044,7 +1044,7 @@ namespace Seldon
     Ptr.Fill(0);
     // Counting the number of entries per column.
     for (i = 0; i < m; i++)
-      for (j = ptr_[i]; j < ptr_[i+1]; j++)
+      for (j = ptr_[i]; j < ptr_[i + 1]; j++)
 	{
 	  Ptr(ind_[j])++;
 	  if (i != ind_[j])
@@ -1069,7 +1069,7 @@ namespace Seldon
     
     // Loop over rows.
     for (i = 0; i < m; i++)
-      for (j = ptr_[i]; j < ptr_[i+1]; j++)
+      for (j = ptr_[i]; j < ptr_[i + 1]; j++)
 	{
 	  num_col = ind_[j];
 	  Ind(Offset(num_col)) = i;
@@ -1139,7 +1139,7 @@ namespace Seldon
 	    Val(ind) = mat_array.Value(i, k);
 	    ind++;
 	  }
-	IndRow(i+1) = ind;
+	IndRow(i + 1) = ind;
       }
     
     mat_csr.SetData(m, n, Val, IndRow, IndCol);
