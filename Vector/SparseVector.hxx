@@ -58,7 +58,7 @@ namespace Seldon
     // Memory management.
     void Reallocate(int i);
     void Resize(int i);
-    void SetData(int nz, T* data, int* data);
+    void SetData(int nz, T* data, int* index);
     template<class Allocator2>
     void SetData(Vector<T, Vect_Full, Allocator2>& data,
 		 Vector<int>& index);
