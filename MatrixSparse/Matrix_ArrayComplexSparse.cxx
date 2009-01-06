@@ -2034,7 +2034,7 @@ namespace Seldon
 	      nb_real++;
 	    }
 	  
-	  if (imag(val(i)) != T(0))
+	  if (imag(val(j)) != T(0))
 	    {
 	      col_imag(nb_imag) = col(j);
 	      val_imag(nb_imag) = imag(val(j));

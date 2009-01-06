@@ -1,7 +1,7 @@
 #define SELDON_WITH_DEBUG_LEVEL_4
 
 #include "Seldon.hxx"
-#include "Solver.hxx"
+#include "SeldonSolver.hxx"
 
 using namespace Seldon;
 
@@ -80,9 +80,9 @@ int main(int argc, char** argv)
     A.Clear();
     A.ReadText("mat_ascii.dat"); DISP(A);
     
-    // you can retrieve pointer to row numbers with GetInd
+    // you can retrieve pointer to row numbers with GetIndex
     // and values with GetData
-    int* row_ptr = A.GetInd(2);
+    int* row_ptr = A.GetIndex(2);
     cout << "First index " << row_ptr[0] << endl;
     double* value_ptr = A.GetData(2);
     cout << "First value " << value_ptr[0] << endl;
@@ -189,9 +189,9 @@ int main(int argc, char** argv)
     A.Clear();
     A.ReadText("mat_ascii.dat"); DISP(A);
     
-    // you can retrieve pointer to row numbers with GetInd
+    // you can retrieve pointer to row numbers with GetIndex
     // and values with GetData
-    int* row_ptr = A.GetInd(2);
+    int* row_ptr = A.GetIndex(2);
     cout << "First index " << row_ptr[0] << endl;
     double* value_ptr = A.GetData(2);
     cout << "First value " << value_ptr[0] << endl;

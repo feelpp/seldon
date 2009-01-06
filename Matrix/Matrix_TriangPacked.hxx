@@ -52,6 +52,8 @@ namespace Seldon
     // Constructor.
     Matrix_TriangPacked();
     Matrix_TriangPacked(int i, int j = 0);
+    Matrix_TriangPacked(const Matrix_TriangPacked<T, Prop, Storage,
+			Allocator>& A);
 
     // Destructor.
     ~Matrix_TriangPacked();

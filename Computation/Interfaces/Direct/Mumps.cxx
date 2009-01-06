@@ -162,6 +162,12 @@ namespace Seldon
   inline void MatrixMumps<T>::HideMessages()
   {
     print_level = -1;
+    
+    struct_mumps.icntl[0] = -1;
+    struct_mumps.icntl[1] = -1;
+    struct_mumps.icntl[2] = -1;
+    struct_mumps.icntl[3] = 0;
+    
   }
   
   
@@ -170,6 +176,12 @@ namespace Seldon
   inline void MatrixMumps<T>::ShowMessages()
   {
     print_level = 0;
+    
+    struct_mumps.icntl[0] = 6;
+    struct_mumps.icntl[1] = 0;
+    struct_mumps.icntl[2] = 6;
+    struct_mumps.icntl[3] = 2;
+    
   }
   
   

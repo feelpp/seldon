@@ -52,7 +52,8 @@ namespace Seldon
     // Constructor.
     Matrix_SymPacked();
     Matrix_SymPacked(int i, int j = 0);
-
+    Matrix_SymPacked(const Matrix_SymPacked<T, Prop, Storage, Allocator>& A);
+    
     // Destructor.
     ~Matrix_SymPacked();
     void Clear();

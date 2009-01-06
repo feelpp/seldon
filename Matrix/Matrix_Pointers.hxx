@@ -53,6 +53,7 @@ namespace Seldon
     // Constructor.
     Matrix_Pointers();
     Matrix_Pointers(int i, int j);
+    Matrix_Pointers(const Matrix_Pointers<T, Prop, Storage, Allocator>& A);
 
     // Destructor.
     ~Matrix_Pointers();
@@ -128,7 +129,8 @@ namespace Seldon
   public:
     Matrix()  throw();
     Matrix(int i, int j);
-
+    Matrix(const Matrix<T, Prop, ColMajor, Allocator>& A);
+    
 #ifndef SWIG
     template <class T0>
     Matrix<T, Prop, ColMajor, Allocator>& operator= (const T0& x);
@@ -146,6 +148,7 @@ namespace Seldon
   public:
     Matrix()  throw();
     Matrix(int i, int j);
+    Matrix(const Matrix<T, Prop, RowMajor, Allocator>& A);
 
 #ifndef SWIG
     template <class T0>

@@ -34,7 +34,6 @@ namespace Seldon
   {
     this->m_ = 0;
     this->n_ = 0;
-    mat_deriv = NULL;
   }
   
   
@@ -51,7 +50,6 @@ namespace Seldon
   {
     this->m_ = i;
     this->n_ = j;
-    mat_deriv = NULL;
   }
   
   
@@ -648,7 +646,7 @@ namespace Seldon
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   WriteText(string FileName) const
   {
-    ofstream FileStream;
+    ofstream FileStream; FileStream.precision(14);
     FileStream.open(FileName.c_str());
 
 #ifdef SELDON_CHECK_IO
@@ -685,7 +683,10 @@ namespace Seldon
     
     // conversion in coordinate format (1-index convention)
     IVect IndRow, IndCol; Vector<T> Value;
-    ConvertMatrix_to_Coordinates(*this->mat_deriv, IndRow, IndCol,
+    const Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this);
+    
+    ConvertMatrix_to_Coordinates(leaf_class, IndRow, IndCol,
 				 Value, 1, true);
     
     for (int i = 0; i < IndRow.GetM(); i++)
@@ -852,11 +853,13 @@ namespace Seldon
     
     if (nb_elt > 0)
       {
+	Matrix<T, Prop, Storage, Allocator>& leaf_class =
+	  static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
 	row_numbers.Resize(nb_elt);
 	col_numbers.Resize(nb_elt);
 	values.Resize(nb_elt);
 	ConvertMatrix_from_Coordinates(row_numbers, col_numbers, values,
-				       *this->mat_deriv, 1);
+				       leaf_class, 1);
       }
   }
   
@@ -874,7 +877,6 @@ namespace Seldon
   inline Matrix<T, Prop, ArrayColSparse, Allocator>::Matrix()  throw():
     Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>()
   {
-    this->mat_deriv = this;
   }
   
   
@@ -888,7 +890,6 @@ namespace Seldon
   inline Matrix<T, Prop, ArrayColSparse, Allocator>::Matrix(int i, int j):
     Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>(i, j)
   {
-    this->mat_deriv = this;
   }
   
   
@@ -1086,7 +1087,6 @@ namespace Seldon
   inline Matrix<T, Prop, ArrayRowSparse, Allocator>::Matrix()  throw():
     Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>()
   {
-    this->mat_deriv = this;
   }
   
   
@@ -1100,7 +1100,6 @@ namespace Seldon
   inline Matrix<T, Prop, ArrayRowSparse, Allocator>::Matrix(int i, int j):
     Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>(i, j)
   {
-    this->mat_deriv = this;
   }
   
   
@@ -1299,7 +1298,6 @@ namespace Seldon
   inline Matrix<T, Prop, ArrayColSymSparse, Allocator>::Matrix()  throw():
     Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>()
   {
-    this->mat_deriv = this;
   }
   
   
@@ -1313,7 +1311,6 @@ namespace Seldon
   inline Matrix<T, Prop, ArrayColSymSparse, Allocator>::Matrix(int i, int j):
     Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>(i, j)
   {
-    this->mat_deriv = this;
   }
   
   
@@ -1593,7 +1590,6 @@ namespace Seldon
   inline Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Matrix()  throw():
     Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>()
   {
-    this->mat_deriv = this;
   }
   
   
@@ -1607,7 +1603,6 @@ namespace Seldon
   inline Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Matrix(int i, int j):
     Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>(i, j)
   {
-    this->mat_deriv = this;
   }
   
   

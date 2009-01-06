@@ -544,7 +544,7 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
 				 Vector<T, Vect_Full, Allocator>& Val,
-				 Matrix<T, Prop, arse, Allocator>& A,
+				 Matrix<T, Prop, RowSymSparse, Allocator>& A,
 				 int index = 0)
   {
     // Assuming there is no duplicate value.
@@ -878,7 +878,7 @@ namespace Seldon
     if (IndRow.GetM() <= 0)
       return;
     
-    int i;
+    int i, j;
 
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();

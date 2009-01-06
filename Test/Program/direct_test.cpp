@@ -9,7 +9,7 @@
 #endif
 
 #include "Seldon.hxx"
-#include "Solver.hxx"
+#include "SeldonSolver.hxx"
 
 using namespace Seldon;
 

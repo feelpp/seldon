@@ -53,7 +53,9 @@ namespace Seldon
     // Constructor.
     Matrix_Triangular();
     Matrix_Triangular(int i, int j);
-
+    Matrix_Triangular(const Matrix_Triangular<T, Prop,
+		      Storage, Allocator>& A);
+    
     // Destructor.
     ~Matrix_Triangular();
     void Clear();

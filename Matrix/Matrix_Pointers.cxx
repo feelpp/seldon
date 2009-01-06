@@ -52,6 +52,13 @@ namespace Seldon
   ::Matrix_Pointers(int i, int j): Matrix_Base<T, Allocator>(i, j)
   {
 
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((i <= 0)||(j <= 0))
+      throw WrongIndex("Matrix_Pointers::Matrix_Pointers(int, int)",
+		       string("Matrix size should be greater than 0 but ") +
+		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
+#endif
+
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -112,7 +119,21 @@ namespace Seldon
       me_[k] = ptr;
   
   }
-
+  
+  
+  //! Copy constructor.
+  template <class T, class Prop, class Storage, class Allocator>
+  inline Matrix_Pointers<T, Prop, Storage, Allocator>
+  ::Matrix_Pointers(const Matrix_Pointers<T, Prop, Storage, Allocator>& A)
+  {
+    this->m_ = 0;
+    this->n_ = 0;
+    this->data_ = NULL;
+    this->me_ = NULL;
+    
+    this->Copy(A);
+  }
+  
   
   /**************
    * DESTRUCTOR *
@@ -216,6 +237,14 @@ namespace Seldon
   inline void Matrix_Pointers<T, Prop, Storage, Allocator>
   ::Reallocate(int i, int j)
   {
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((i <= 0)||(j <= 0))
+      throw WrongIndex("Matrix_Pointers::Reallocate(int, int)",
+		       string("Matrix size should be greater than 0 but ") +
+		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
+#endif
+    
     if (i != this->m_ || j != this->n_)
       {
 	this->m_ = i;
@@ -401,6 +430,14 @@ namespace Seldon
   inline void Matrix_Pointers<T, Prop, Storage, Allocator>
   ::Resize(int i, int j)
   {
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((i <= 0)||(j <= 0))
+      throw WrongIndex("Matrix_Pointers::Resize(int, int)",
+		       string("Matrix size should be greater than 0 but ") +
+		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
+#endif
+    
     // Storing the old values of the matrix.
     int iold = Storage::GetFirst(this->m_, this->n_);
     int jold = Storage::GetSecond(this->m_, this->n_);
@@ -650,15 +687,11 @@ namespace Seldon
 
 
   //! Sets the current matrix to the identity.
-  /*!
-    \warning It fills the memory with zeros. If the matrix stores complex
-    structures, discard this method.
-  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Pointers<T, Prop, Storage, Allocator>::SetIdentity()
   {
-    this->allocator_.memoryset(this->data_, char(0),
-			       this->GetDataSize() * sizeof(value_type));
+    Fill(T(0));
+    
     T one(1);
     for (int i = 0; i < min(this->m_, this->n_); i++)
       (*this)(i,i) = one;
@@ -869,6 +902,8 @@ namespace Seldon
   ::WriteText(string FileName) const
   {
     ofstream FileStream;
+    FileStream.precision(cout.precision());
+    FileStream.flags(cout.flags());
     FileStream.open(FileName.c_str());
 
 #ifdef SELDON_CHECK_IO
@@ -1104,6 +1139,15 @@ namespace Seldon
   }
 
 
+  //! Copy constructor.
+  template <class T, class Prop, class Allocator>
+  Matrix<T, Prop, ColMajor, Allocator>
+  ::Matrix(const Matrix<T, Prop, ColMajor, Allocator>& A):
+    Matrix_Pointers<T, Prop, ColMajor, Allocator>(A)
+  {
+  }
+
+
   /*****************
    * OTHER METHODS *
    *****************/
@@ -1171,7 +1215,16 @@ namespace Seldon
   {
   }
 
-
+  
+  //! Copy constructor.
+  template <class T, class Prop, class Allocator>
+  Matrix<T, Prop, RowMajor, Allocator>
+  ::Matrix(const Matrix<T, Prop, RowMajor, Allocator>& A):
+    Matrix_Pointers<T, Prop, RowMajor, Allocator>(A)
+  {
+  }
+  
+  
   /*****************
    * OTHER METHODS *
    *****************/

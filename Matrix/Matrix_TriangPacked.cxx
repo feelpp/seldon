@@ -52,6 +52,13 @@ namespace Seldon
   ::Matrix_TriangPacked(int i, int j): Matrix_Base<T, Allocator>(i, i)
   {
 
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((i <= 0)||(j <= 0))
+      throw WrongIndex("Matrix_TriangPacked::Matrix_TriangPacked(int, int)",
+		       string("Matrix size should be greater than 0 but ") +
+		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
+#endif
+
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -78,6 +85,21 @@ namespace Seldon
 
   }
 
+  
+  //! Copy constructor.
+  template <class T, class Prop, class Storage, class Allocator>
+  inline Matrix_TriangPacked<T, Prop, Storage, Allocator>
+  ::Matrix_TriangPacked(const Matrix_TriangPacked<T, Prop,
+			Storage, Allocator>& A)
+    : Matrix_Base<T, Allocator>()
+  {
+    this->m_ = 0;
+    this->n_ = 0;
+    this->data_ = NULL;
+    
+    this->Copy(A);
+  }
+  
   
   /**************
    * DESTRUCTOR *
@@ -161,6 +183,14 @@ namespace Seldon
   inline void Matrix_TriangPacked<T, Prop, Storage, Allocator>
   ::Reallocate(int i, int j)
   {
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((i <= 0)||(j <= 0))
+      throw WrongIndex("Matrix_TriangPacked::Reallocate(int, int)",
+		       string("Matrix size should be greater than 0 but ") +
+		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
+#endif
+
     if (i != this->m_)
       {
 	this->m_ = i;
@@ -569,15 +599,11 @@ namespace Seldon
 
 
   //! Sets the matrix to the identity.
-  /*!
-    \warning It fills the memory with zeros. If the matrix stores complex
-    structures, discard this method.
-  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_TriangPacked<T, Prop, Storage, Allocator>::SetIdentity()
   {
-    this->allocator_.memoryset(this->data_, char(0),
-			       this->GetDataSize() * sizeof(value_type));
+    this->Fill(T(0));
+    
     T one(1);
     bool storage_col = (Storage::GetFirst(1,0) == 0);
     int index(-1);
@@ -810,6 +836,8 @@ namespace Seldon
   ::WriteText(string FileName) const
   {
     ofstream FileStream;
+    FileStream.precision(cout.precision());
+    FileStream.flags(cout.flags());
     FileStream.open(FileName.c_str());
 
 #ifdef SELDON_CHECK_IO
@@ -1007,8 +1035,11 @@ namespace Seldon
     
     this->Reallocate(m,n);
     // filling matrix
-    for (int j = 0; j < n; j++)
-      this->Val(0, j) = first_row(j);
+    if (Storage::UpLo())
+      for (int j = 0; j < n; j++)
+	this->Val(0, j) = first_row(j);
+    else
+      this->Val(0, 0) = first_row(0);
     
     int nb = 0;
     if (Storage::UpLo())
@@ -1084,6 +1115,14 @@ namespace Seldon
   inline void Matrix<T, Prop, ColUpTriangPacked, Allocator>
   ::Resize(int i, int j)
   {
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((i <= 0)||(j <= 0))
+      throw WrongIndex("Matrix<T, ColUpTriangPacked>::Resize(int, int)",
+		       string("Matrix size should be greater than 0 but ") +
+		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
+#endif
+
     // Storing the old values of the matrix.
     int nold = this->GetDataSize();
     Vector<T, Vect_Full, Allocator> xold(nold);
@@ -1183,6 +1222,14 @@ namespace Seldon
   inline void Matrix<T, Prop, ColLoTriangPacked, Allocator>
   ::Resize(int i, int j)
   {
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((i <= 0)||(j <= 0))
+      throw WrongIndex("Matrix<T, ColLoTriangPacked>::Resize(int, int)",
+		       string("Matrix size should be greater than 0 but ") +
+		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
+#endif
+
     // Storing the old values of the matrix.
     int nold = this->GetDataSize(), iold = this->m_;
     Vector<T, Vect_Full, Allocator> xold(nold);
@@ -1290,6 +1337,14 @@ namespace Seldon
   inline void Matrix<T, Prop, RowUpTriangPacked, Allocator>
   ::Resize(int i, int j)
   {
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((i <= 0)||(j <= 0))
+      throw WrongIndex("Matrix<T, RowUpTriangPacked>::Resize(int, int)",
+		       string("Matrix size should be greater than 0 but ") +
+		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
+#endif
+
     // Storing the old values of the matrix.
     int nold = this->GetDataSize(), iold = this->m_;
     Vector<T, Vect_Full, Allocator> xold(nold);
@@ -1397,6 +1452,14 @@ namespace Seldon
   inline void Matrix<T, Prop, RowLoTriangPacked, Allocator>
   ::Resize(int i, int j)
   {
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((i <= 0)||(j <= 0))
+      throw WrongIndex("Matrix<T,RowLoTriangPacked>::Resize(int, int)",
+		       string("Matrix size should be greater than 0 but ") +
+		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
+#endif
+
     // Storing the old values of the matrix.
     int nold = this->GetDataSize();
     Vector<T, Vect_Full, Allocator> xold(nold);

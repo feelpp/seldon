@@ -57,7 +57,21 @@ namespace Seldon
     data_ = NULL;
   }
 
+  
+  //! Copy constructor.
+  /*!
+    \param A base matrix to be copied.
+    \warning Only the length is copied.
+  */
+  template <class T, class Allocator>
+  inline Matrix_Base<T, Allocator>::
+  Matrix_Base(const Matrix_Base<T, Allocator>& A)
+  {
+    m_ = A.GetM();
+    n_ = A.GetN();
+  }
 
+  
   /**************
    * DESTRUCTOR *
    **************/

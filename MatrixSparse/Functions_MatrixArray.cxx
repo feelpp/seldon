@@ -674,7 +674,7 @@ namespace Seldon
 	  value(j) = A.Value(i, j);
 	
 	Mlt(alpha, value);
-	B.AddInteractionRow(i, n, A.GetInd(i), value.GetData());
+	B.AddInteractionRow(i, n, A.GetIndex(i), value.GetData());
       }
   }
   

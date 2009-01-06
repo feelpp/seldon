@@ -52,6 +52,8 @@ namespace Seldon
     // Constructor.
     Matrix_HermPacked();
     Matrix_HermPacked(int i, int j = 0);
+    Matrix_HermPacked(const Matrix_HermPacked<T, Prop,
+		      Storage, Allocator>& A);
 
     // Destructor.
     ~Matrix_HermPacked();

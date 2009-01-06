@@ -31,6 +31,7 @@ int main()
   V.Assemble();
   cout << "Number of elements in U : " << U.GetM() << endl;
   cout << "Number of elements in V : " << V.GetLength() << endl;
+  cout << " U : " << U << endl;
   cout << " V : " << V << endl;
   
   // Reallocate doesn't keep previous elements
@@ -78,6 +79,7 @@ int main()
   num(3) = 9; values(3) = 0.7;
   // you set row numbers and values of U
   U.SetData(values, num);
+  cout<<" U = " << U << endl;
   // values and num are empty after the call to SetData
   // you can retrieve row numbers and values of W with GetData and GetIndex
   num.SetData(W.GetM(), W.GetIndex());
@@ -93,6 +95,7 @@ int main()
   // you can insert elements by using AddInteraction
   Vector<double, Vect_Sparse> A, B;
   A.AddInteraction(4, 1.5);
+  cout << " A " << A << endl;
   // or AddInteractionRow for several values
   num.Reallocate(3); values.Reallocate(3);
   num(0) = 7; values(0) = -1.0;

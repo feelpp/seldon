@@ -53,6 +53,7 @@ namespace Seldon
     // Constructor.
     Matrix_Symmetric();
     Matrix_Symmetric(int i, int j);
+    Matrix_Symmetric(const Matrix_Symmetric<T, Prop, Storage, Allocator>& A);
 
     // Destructor.
     ~Matrix_Symmetric();

@@ -91,7 +91,14 @@ namespace Seldon
     int n = A.GetN();
     P.Reallocate(min(m, n));
     sgetrf_(&m, &n, A.GetData(), &m,
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+    
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+    
   }
   
   
@@ -105,7 +112,14 @@ namespace Seldon
     int n = A.GetN();
     P.Reallocate(min(m, n));
     dgetrf_(&m, &n, A.GetData(), &m,
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -119,7 +133,14 @@ namespace Seldon
     int n = A.GetN();
     P.Reallocate(min(m, n));
     cgetrf_(&m, &n, A.GetDataVoid(), &m,
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -133,7 +154,14 @@ namespace Seldon
     int n = A.GetN();
     P.Reallocate(min(m, n));
     zgetrf_(&m, &n, A.GetDataVoid(), &m,
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -150,7 +178,14 @@ namespace Seldon
     int n = A.GetN();
     P.Reallocate(min(m, n));
     sgetrf_(&m, &n, A.GetData(), &m,
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -164,7 +199,14 @@ namespace Seldon
     int n = A.GetN();
     P.Reallocate(min(m, n));
     dgetrf_(&m, &n, A.GetData(), &m,
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -178,7 +220,14 @@ namespace Seldon
     int n = A.GetN();
     P.Reallocate(min(m, n));
     cgetrf_(&m, &n, A.GetDataVoid(), &m,
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -192,7 +241,14 @@ namespace Seldon
     int n = A.GetN();
     P.Reallocate(min(m, n));
     zgetrf_(&m, &n, A.GetDataVoid(), &m,
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -211,7 +267,14 @@ namespace Seldon
     Vector<float,Vect_Full,Allocator0> work(lwork);
     P.Reallocate(m);
     ssytrf_(&uplo, &m, A.GetData(), &m,
-	    P.GetData(), work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    P.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -227,7 +290,14 @@ namespace Seldon
     Vector<double,Vect_Full,Allocator0> work(lwork);
     P.Reallocate(m);
     dsytrf_(&uplo, &m, A.GetData(), &m,
-	    P.GetData(), work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    P.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -244,7 +314,14 @@ namespace Seldon
     P.Reallocate(m);
     csytrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(),  work.GetDataVoid(),
-	    &lwork, &lapack_info.GetInfoRef());
+	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -261,7 +338,14 @@ namespace Seldon
     P.Reallocate(m);
     zsytrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(), work.GetDataVoid(),
-	    &lwork, &lapack_info.GetInfoRef());
+	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -278,7 +362,14 @@ namespace Seldon
     char uplo('U');
     P.Reallocate(m);
     ssptrf_(&uplo, &m, A.GetData(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -292,7 +383,14 @@ namespace Seldon
     char uplo('U');
     P.Reallocate(m);
     dsptrf_(&uplo, &m, A.GetData(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -306,7 +404,14 @@ namespace Seldon
     char uplo('U');
     P.Reallocate(m);
     csptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -320,7 +425,14 @@ namespace Seldon
     char uplo('U');
     P.Reallocate(m);
     zsptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -338,7 +450,14 @@ namespace Seldon
     char uplo(Uplo);
     P.Reallocate(m);
     ssptrf_(&uplo, &m, A.GetData(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -353,7 +472,14 @@ namespace Seldon
     char uplo(Uplo);
     P.Reallocate(m);
     dsptrf_(&uplo, &m, A.GetData(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -368,7 +494,14 @@ namespace Seldon
     char uplo(Uplo);
     P.Reallocate(m);
     csptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -383,7 +516,14 @@ namespace Seldon
     char uplo(Uplo);
     P.Reallocate(m);
     zsptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -402,7 +542,14 @@ namespace Seldon
     Vector<float, Vect_Full, Allocator0> work(lwork);
     P.Reallocate(m);
     ssytrf_(&uplo, &m, A.GetData(), &m,
-	    P.GetData(), work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    P.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -418,7 +565,14 @@ namespace Seldon
     Vector<double, Vect_Full, Allocator0> work(lwork);
     P.Reallocate(m);
     dsytrf_(&uplo, &m, A.GetData(), &m,
-	    P.GetData(), work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    P.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -435,7 +589,14 @@ namespace Seldon
     P.Reallocate(m);
     csytrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(),  work.GetDataVoid(),
-	    &lwork, &lapack_info.GetInfoRef());
+	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -452,7 +613,14 @@ namespace Seldon
     P.Reallocate(m);
     zsytrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(), work.GetDataVoid(),
-	    &lwork, &lapack_info.GetInfoRef());
+	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -469,7 +637,14 @@ namespace Seldon
     char uplo('L');
     P.Reallocate(m);
     ssptrf_(&uplo, &m, A.GetData(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -483,7 +658,14 @@ namespace Seldon
     char uplo('L');
     P.Reallocate(m);
     dsptrf_(&uplo, &m, A.GetData(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -497,7 +679,14 @@ namespace Seldon
     char uplo('L');
     P.Reallocate(m);
     csptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -511,7 +700,14 @@ namespace Seldon
     char uplo('L');
     P.Reallocate(m);
     zsptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -529,7 +725,14 @@ namespace Seldon
     char uplo(Uplo.RevChar());
     P.Reallocate(m);
     ssptrf_(&uplo, &m, A.GetData(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -544,7 +747,14 @@ namespace Seldon
     char uplo(Uplo.RevChar());
     P.Reallocate(m);
     dsptrf_(&uplo, &m, A.GetData(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -559,7 +769,14 @@ namespace Seldon
     char uplo(Uplo.RevChar());
     P.Reallocate(m);
     csptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -574,7 +791,14 @@ namespace Seldon
     char uplo(Uplo.RevChar());
     P.Reallocate(m);
     zsptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -594,7 +818,14 @@ namespace Seldon
     P.Reallocate(m);
     chetrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(),  work.GetDataVoid(),
-	    &lwork, &lapack_info.GetInfoRef());
+	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -611,7 +842,14 @@ namespace Seldon
     P.Reallocate(m);
     zhetrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(), work.GetDataVoid(),
-	    &lwork, &lapack_info.GetInfoRef());
+	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -628,7 +866,14 @@ namespace Seldon
     char uplo('U');
     P.Reallocate(m);
     chptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -642,7 +887,14 @@ namespace Seldon
     char uplo('U');
     P.Reallocate(m);
     zhptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -662,7 +914,14 @@ namespace Seldon
     P.Reallocate(m);
     chetrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(),  work.GetDataVoid(),
-	    &lwork, &lapack_info.GetInfoRef());
+	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -679,7 +938,14 @@ namespace Seldon
     P.Reallocate(m);
     zhetrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(), work.GetDataVoid(),
-	    &lwork, &lapack_info.GetInfoRef());
+	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -696,7 +962,14 @@ namespace Seldon
     char uplo('L');
     P.Reallocate(m);
     chptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -710,7 +983,14 @@ namespace Seldon
     char uplo('L');
     P.Reallocate(m);
     zhptrf_(&uplo, &m, A.GetDataVoid(),
-	    P.GetData(), &lapack_info.GetInfoRef());
+	    P.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetLU",
+			"An error occured during the factorization.");
+#endif
+
   }
   
   
@@ -742,7 +1022,7 @@ namespace Seldon
     int nrhs = 1;
     char trans('N');
     sgetrs_(&trans, &m, &nrhs, A.GetData(), &m, P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    b.GetData(), &m, &info.GetInfoRef() );
   }
   
   
@@ -762,7 +1042,7 @@ namespace Seldon
     int nrhs = 1;
     char trans('N');
     dgetrs_(&trans, &m, &nrhs, A.GetData(), &m,P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    b.GetData(), &m, &info.GetInfoRef() );
   }
   
   
@@ -783,7 +1063,7 @@ namespace Seldon
     char trans('N');
     cgetrs_(&trans, &m, &nrhs, A.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(),
-	    &m, &lapack_info.GetInfoRef() );
+	    &m, &info.GetInfoRef() );
   }
   
   
@@ -804,7 +1084,7 @@ namespace Seldon
     char trans('N');
     zgetrs_(&trans, &m, &nrhs, A.GetData(), &m,
 	    P.GetData(), b.GetDataVoid(),
-	    &m, &lapack_info.GetInfoRef() );
+	    &m, &info.GetInfoRef() );
   }
   
   
@@ -828,7 +1108,7 @@ namespace Seldon
     int nrhs = 1;
     char trans = TransA.Char();
     sgetrs_(&trans, &m, &nrhs, A.GetData(), &m, P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   template <class Prop0, class Allocator0,
@@ -848,7 +1128,7 @@ namespace Seldon
     int nrhs = 1;
     char trans = TransA.Char();
     dgetrs_(&trans, &m, &nrhs, A.GetData(), &m, P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   template <class Prop0, class Allocator0,
@@ -868,7 +1148,7 @@ namespace Seldon
     int nrhs = 1;
     char trans = TransA.Char();
     cgetrs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, P.GetData(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   template <class Prop0, class Allocator0,
@@ -888,7 +1168,7 @@ namespace Seldon
     int nrhs = 1;
     char trans = TransA.Char();
     zgetrs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, P.GetData(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   /*** RowMajor and NoTrans***/
@@ -910,7 +1190,7 @@ namespace Seldon
     int nrhs = 1;
     char trans('T');
     sgetrs_(&trans, &m, &nrhs, A.GetData(), &m,
-	    P.GetData(), b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    P.GetData(), b.GetData(), &m, &info.GetInfoRef() );
   }
   
   
@@ -930,7 +1210,7 @@ namespace Seldon
     int nrhs = 1;
     char trans('T');
     dgetrs_(&trans, &m, &nrhs, A.GetData(), &m,
-	    P.GetData(), b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    P.GetData(), b.GetData(), &m, &info.GetInfoRef() );
   }
   
   
@@ -950,7 +1230,7 @@ namespace Seldon
     int nrhs = 1;
     char trans('T');
     cgetrs_(&trans, &m, &nrhs, A.GetDataVoid(), &m,
-	    P.GetData(), b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    P.GetData(), b.GetData(), &m, &info.GetInfoRef() );
   }
   
   
@@ -970,7 +1250,7 @@ namespace Seldon
     int nrhs = 1;
     char trans('T');
     zgetrs_(&trans, &m, &nrhs, A.GetDataVoid(), &m,
-	    P.GetData(), b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    P.GetData(), b.GetData(), &m, &info.GetInfoRef() );
   }
 
   
@@ -994,7 +1274,7 @@ namespace Seldon
     int nrhs = 1;
     char trans = TransA.RevChar();
     sgetrs_(&trans, &m, &nrhs, A.GetData(), &m, P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   template <class Prop0, class Allocator0,
@@ -1014,7 +1294,7 @@ namespace Seldon
     int nrhs = 1;
     char trans = TransA.RevChar();
     dgetrs_(&trans, &m, &nrhs, A.GetData(), &m, P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   template <class Prop0, class Allocator0,
@@ -1037,7 +1317,7 @@ namespace Seldon
       Conjugate(b);
     
     cgetrs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, P.GetData(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
     if (TransA.ConjTrans())
       Conjugate(b);
@@ -1063,7 +1343,7 @@ namespace Seldon
       Conjugate(b);
     
     zgetrs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, P.GetData(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
     if (TransA.ConjTrans())
       Conjugate(b);
@@ -1088,7 +1368,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U');
     ssytrs_(&uplo, &m, &nrhs, A.GetData(), &m,
-	    P.GetData(), b.GetData(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(), b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -1107,7 +1387,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U');
     dsytrs_(&uplo, &m, &nrhs, A.GetData(), &m,
-	    P.GetData(), b.GetData(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(), b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -1126,7 +1406,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U');
     csytrs_(&uplo, &m, & nrhs, A.GetDataVoid(), &m,
-	    P.GetData(),  b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(),  b.GetDataVoid(), &m, &info.GetInfoRef());
   }
 
 
@@ -1145,7 +1425,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U');
     zsytrs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m,
-	    P.GetData(), b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(), b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -1168,7 +1448,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     ssptrs_(&uplo, &m, &nrhs, A.GetData(), P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    b.GetData(), &m, &info.GetInfoRef() );
   }
   
   
@@ -1188,7 +1468,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     dsptrs_(&uplo, &m, &nrhs, A.GetData(), P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    b.GetData(), &m, &info.GetInfoRef() );
   }
   
   
@@ -1208,7 +1488,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     csptrs_(&uplo, &m, &nrhs, A.GetDataVoid(), P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    b.GetData(), &m, &info.GetInfoRef() );
   }
   
   
@@ -1228,7 +1508,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     zsptrs_(&uplo, &m, &nrhs, A.GetDataVoid(), P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    b.GetData(), &m, &info.GetInfoRef() );
   }
   
   
@@ -1250,7 +1530,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L');
     ssytrs_(&uplo, &m, &nrhs, A.GetData(), &m,
-	    P.GetData(), b.GetData(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(), b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -1269,7 +1549,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L');
     dsytrs_(&uplo, &m, &nrhs, A.GetData(), &m,
-	    P.GetData(), b.GetData(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(), b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -1288,7 +1568,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L');
     csytrs_(&uplo, &m, & nrhs, A.GetDataVoid(), &m,
-	    P.GetData(),  b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(),  b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -1307,7 +1587,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L');
     zsytrs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m,
-	    P.GetData(), b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(), b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -1330,7 +1610,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     ssptrs_(&uplo, &m, &nrhs, A.GetData(), P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    b.GetData(), &m, &info.GetInfoRef() );
   }
   
   
@@ -1350,7 +1630,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     dsptrs_(&uplo, &m, &nrhs, A.GetData(), P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    b.GetData(), &m, &info.GetInfoRef() );
   }
   
   
@@ -1370,7 +1650,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     csptrs_(&uplo, &m, &nrhs, A.GetDataVoid(), P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    b.GetData(), &m, &info.GetInfoRef() );
   }
   
   
@@ -1390,7 +1670,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     zsptrs_(&uplo, &m, &nrhs, A.GetDataVoid(), P.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef() );
+	    b.GetData(), &m, &info.GetInfoRef() );
   }
   
   
@@ -1412,7 +1692,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U');
     chetrs_(&uplo, &m, & nrhs, A.GetDataVoid(), &m,
-	    P.GetData(),  b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(),  b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -1431,7 +1711,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U');
     zhetrs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m,
-	    P.GetData(), b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(), b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -1453,7 +1733,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U');
     chptrs_(&uplo, &m, & nrhs, A.GetDataVoid(),
-	    P.GetData(),  b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(),  b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -1472,7 +1752,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U');
     zhptrs_(&uplo, &m, &nrhs, A.GetDataVoid(),
-	    P.GetData(), b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(), b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -1495,7 +1775,7 @@ namespace Seldon
     char uplo('L');
     Conjugate(b);
     chetrs_(&uplo, &m, & nrhs, A.GetDataVoid(), &m,
-	    P.GetData(),  b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(),  b.GetDataVoid(), &m, &info.GetInfoRef());
     Conjugate(b);
   }
   
@@ -1516,7 +1796,7 @@ namespace Seldon
     char uplo('L');
     Conjugate(b);
     zhetrs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m,
-	    P.GetData(), b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(), b.GetDataVoid(), &m, &info.GetInfoRef());
     Conjugate(b);
   }
   
@@ -1540,7 +1820,7 @@ namespace Seldon
     char uplo('L');
     Conjugate(b);
     chptrs_(&uplo, &m, & nrhs, A.GetDataVoid(),
-	    P.GetData(),  b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(),  b.GetDataVoid(), &m, &info.GetInfoRef());
     Conjugate(b);
   }
   
@@ -1561,7 +1841,7 @@ namespace Seldon
     char uplo('L');
     Conjugate(b);
     zhptrs_(&uplo, &m, &nrhs, A.GetDataVoid(),
-	    P.GetData(), b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    P.GetData(), b.GetDataVoid(), &m, &info.GetInfoRef());
     Conjugate(b);
   }
   
@@ -1582,7 +1862,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('N'); char diag('N');
     strtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -1599,7 +1879,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('N'); char diag('N');
     dtrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -1617,7 +1897,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('N'); char diag('N');
     ctrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -1635,7 +1915,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('N'); char diag('N');
     ztrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
   }
   
@@ -1658,7 +1938,7 @@ namespace Seldon
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
     strtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -1677,7 +1957,7 @@ namespace Seldon
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
     dtrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -1697,7 +1977,7 @@ namespace Seldon
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
     ctrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -1717,7 +1997,7 @@ namespace Seldon
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
     ztrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
   }
   
@@ -1738,7 +2018,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('N'); char diag('N');
     strtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -1755,7 +2035,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('N'); char diag('N');
     dtrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -1774,7 +2054,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('N'); char diag('N');
     ctrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -1792,7 +2072,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('N'); char diag('N');
     ztrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
   }
   
@@ -1815,7 +2095,7 @@ namespace Seldon
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
     strtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -1834,7 +2114,7 @@ namespace Seldon
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
     dtrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -1855,7 +2135,7 @@ namespace Seldon
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
     ctrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -1875,7 +2155,7 @@ namespace Seldon
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
     ztrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
   }
   
@@ -1896,7 +2176,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('N'); char diag('N');
     stptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -1913,7 +2193,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('N'); char diag('N');
     dtptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -1932,7 +2212,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('N'); char diag('N');
     ctptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -1950,7 +2230,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('N'); char diag('N');
     ztptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
   }
   
@@ -1973,7 +2253,7 @@ namespace Seldon
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
     stptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -1992,7 +2272,7 @@ namespace Seldon
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
     dtptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -2013,7 +2293,7 @@ namespace Seldon
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
     ctptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -2033,7 +2313,7 @@ namespace Seldon
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
     ztptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
   }
   
@@ -2054,7 +2334,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('N'); char diag('N');
     stptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -2071,7 +2351,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('N'); char diag('N');
     dtptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -2090,7 +2370,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('N'); char diag('N');
     ctptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -2108,7 +2388,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('N'); char diag('N');
     ztptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
   }
   
@@ -2131,7 +2411,7 @@ namespace Seldon
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
     stptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -2150,7 +2430,7 @@ namespace Seldon
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
     dtptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -2171,7 +2451,7 @@ namespace Seldon
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
     ctptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -2191,7 +2471,7 @@ namespace Seldon
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
     ztptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
   }
   
@@ -2212,7 +2492,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('T'); char diag('N');
     strtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -2229,7 +2509,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('T'); char diag('N');
     dtrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -2248,7 +2528,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('T'); char diag('N');
     ctrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -2266,7 +2546,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('T'); char diag('N');
     ztrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
   }
   
@@ -2289,7 +2569,7 @@ namespace Seldon
     char uplo('L');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
     strtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -2308,7 +2588,7 @@ namespace Seldon
     char uplo('L');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
     dtrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -2331,7 +2611,7 @@ namespace Seldon
     if (TransA.ConjTrans())
       Conjugate(b);
     ctrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     if (TransA.ConjTrans())
       Conjugate(b);
   }
@@ -2355,7 +2635,7 @@ namespace Seldon
     if (TransA.ConjTrans())
       Conjugate(b);
     ztrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     if (TransA.ConjTrans())
       Conjugate(b);
     
@@ -2378,7 +2658,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('T'); char diag('N');
     strtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -2395,7 +2675,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('T'); char diag('N');
     dtrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -2414,7 +2694,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('T'); char diag('N');
     ctrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -2432,7 +2712,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('T'); char diag('N');
     ztrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
   }
   
@@ -2455,7 +2735,7 @@ namespace Seldon
     char uplo('U');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
     strtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -2474,7 +2754,7 @@ namespace Seldon
     char uplo('U');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
     dtrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(), &m,
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -2497,7 +2777,7 @@ namespace Seldon
     if (TransA.ConjTrans())
       Conjugate(b);
     ctrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     if (TransA.ConjTrans())
       Conjugate(b);
   }
@@ -2521,7 +2801,7 @@ namespace Seldon
     if (TransA.ConjTrans())
       Conjugate(b);
     ztrtrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(), &m,
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     if (TransA.ConjTrans())
       Conjugate(b);
   }
@@ -2543,7 +2823,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('T'); char diag('N');
     stptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -2560,7 +2840,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('T'); char diag('N');
     dtptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -2579,7 +2859,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('T'); char diag('N');
     ctptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -2597,7 +2877,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('L'); char trans('T'); char diag('N');
     ztptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
   }
   
@@ -2620,7 +2900,7 @@ namespace Seldon
     char uplo('L');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
     stptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -2639,7 +2919,7 @@ namespace Seldon
     char uplo('L');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
     dtptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -2662,7 +2942,7 @@ namespace Seldon
     if (TransA.ConjTrans())
       Conjugate(b);
     ctptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     if (TransA.ConjTrans())
       Conjugate(b);
   }
@@ -2686,7 +2966,7 @@ namespace Seldon
     if (TransA.ConjTrans())
       Conjugate(b);
     ztptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     if (TransA.ConjTrans())
       Conjugate(b);
   }
@@ -2708,7 +2988,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('T'); char diag('N');
     stptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -2725,7 +3005,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('T'); char diag('N');
     dtptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -2746,7 +3026,7 @@ namespace Seldon
     
 
     ctptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
   }
   
   
@@ -2764,7 +3044,7 @@ namespace Seldon
     int m = A.GetM(); int nrhs = 1;
     char uplo('U'); char trans('T'); char diag('N');
     ztptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     
   }
   
@@ -2787,7 +3067,7 @@ namespace Seldon
     char uplo('U');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
     stptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
   }
   
   
@@ -2806,7 +3086,7 @@ namespace Seldon
     char uplo('U');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
     dtptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetData(),
-	    b.GetData(), &m, &lapack_info.GetInfoRef());
+	    b.GetData(), &m, &info.GetInfoRef());
     
   }
   
@@ -2829,7 +3109,7 @@ namespace Seldon
     if (TransA.ConjTrans())
       Conjugate(b);
     ctptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     if (TransA.ConjTrans())
       Conjugate(b);
   }
@@ -2853,7 +3133,7 @@ namespace Seldon
     if (TransA.ConjTrans())
       Conjugate(b);
     ztptrs_(&uplo, &trans, &diag, &m, & nrhs, A.GetDataVoid(),
-	    b.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    b.GetDataVoid(), &m, &info.GetInfoRef());
     if (TransA.ConjTrans())
       Conjugate(b);
   }
@@ -2883,7 +3163,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(4*n);
     sgecon_(&norm_type, &n, A.GetData(), &n, &anorm, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -2900,7 +3180,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(4*n);
     dgecon_(&norm_type, &n, A.GetData(), &n, &anorm, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -2918,7 +3198,7 @@ namespace Seldon
     Vector<float> rwork(2*n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     cgecon_(&norm_type, &n, A.GetDataVoid(), &n, &anorm, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -2936,7 +3216,7 @@ namespace Seldon
     Vector<double> rwork(2*n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     zgecon_(&norm_type, &n, A.GetDataVoid(), &n, &anorm, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -2956,7 +3236,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(4*n);
     sgecon_(&norm_type, &n, A.GetData(), &n, &anorm, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -2973,7 +3253,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(4*n);
     dgecon_(&norm_type, &n, A.GetData(), &n, &anorm, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -2991,7 +3271,7 @@ namespace Seldon
     Vector<float> rwork(2*n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     cgecon_(&norm_type, &n, A.GetDataVoid(), &n, &anorm, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3009,7 +3289,7 @@ namespace Seldon
     Vector<double> rwork(2*n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     zgecon_(&norm_type, &n, A.GetDataVoid(), &n, &anorm, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3029,7 +3309,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(2*n);
     ssycon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3046,7 +3326,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(2*n);
     dsycon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3063,7 +3343,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     csycon_(&uplo, &n, A.GetDataVoid(), &n, P.GetData(), &anorm, &rcond,
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3080,7 +3360,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     zsycon_(&uplo, &n, A.GetDataVoid(), &n, P.GetData(), &anorm, &rcond,
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3100,7 +3380,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(2*n);
     sspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3117,7 +3397,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(2*n);
     dspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3134,7 +3414,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     cspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
-	    work.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3151,7 +3431,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     zspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
-	    work.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3171,7 +3451,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(2*n);
     ssycon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3188,7 +3468,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(2*n);
     dsycon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3205,7 +3485,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     csycon_(&uplo, &n, A.GetDataVoid(), &n, P.GetData(), &anorm, &rcond,
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3222,7 +3502,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     zsycon_(&uplo, &n, A.GetDataVoid(), &n, P.GetData(), &anorm, &rcond,
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3242,7 +3522,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(2*n);
     sspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3259,7 +3539,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(2*n);
     dspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3276,7 +3556,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     cspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
-	    work.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3293,7 +3573,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     zspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
-	    work.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3313,7 +3593,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     checon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
-	    work.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3330,7 +3610,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     zhecon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
-	    work.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3350,7 +3630,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     chpcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
-	    work.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3367,7 +3647,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     zhpcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
-	    work.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3387,7 +3667,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     checon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
-	    work.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3404,7 +3684,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     zhecon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
-	    work.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3424,7 +3704,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     chpcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
-	    work.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3441,7 +3721,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     zhpcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
-	    work.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3459,7 +3739,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3474,7 +3754,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3491,7 +3771,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3508,7 +3788,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3527,7 +3807,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3544,7 +3824,7 @@ namespace Seldon
     char diag = DiagA.Char();
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3562,7 +3842,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3580,7 +3860,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3599,7 +3879,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3614,7 +3894,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3631,7 +3911,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3648,7 +3928,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3668,7 +3948,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3684,7 +3964,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3702,7 +3982,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3720,7 +4000,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3739,7 +4019,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3755,7 +4035,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3772,7 +4052,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3789,7 +4069,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3809,7 +4089,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3826,7 +4106,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3844,7 +4124,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3862,7 +4142,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3881,7 +4161,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3897,7 +4177,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3914,7 +4194,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3931,7 +4211,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3951,7 +4231,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3968,7 +4248,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -3986,7 +4266,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4004,7 +4284,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4022,7 +4302,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4037,7 +4317,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4054,7 +4334,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4071,7 +4351,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4090,7 +4370,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4106,7 +4386,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4124,7 +4404,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4142,7 +4422,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4161,7 +4441,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4177,7 +4457,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4194,7 +4474,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4211,7 +4491,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4231,7 +4511,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4248,7 +4528,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4266,7 +4546,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4284,7 +4564,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4303,7 +4583,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4319,7 +4599,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4336,7 +4616,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4353,7 +4633,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4373,7 +4653,7 @@ namespace Seldon
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4390,7 +4670,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4408,7 +4688,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4426,7 +4706,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4446,7 +4726,7 @@ namespace Seldon
     Vector<int> iwork(n);
     Vector<float, Vect_Full, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4462,7 +4742,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4479,7 +4759,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4496,7 +4776,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4517,7 +4797,7 @@ namespace Seldon
     Vector<int> iwork(n);
     Vector<float, Vect_Full, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4534,7 +4814,7 @@ namespace Seldon
     int n = A.GetM(); double rcond(0);
     Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
-	    work.GetData(), iwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4552,7 +4832,7 @@ namespace Seldon
     Vector<float> rwork(n);
     Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4570,7 +4850,7 @@ namespace Seldon
     Vector<double> rwork(n);
     Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
-	    work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
   }
   
@@ -4613,7 +4893,7 @@ namespace Seldon
     sgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -4643,7 +4923,7 @@ namespace Seldon
     dgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -4675,7 +4955,7 @@ namespace Seldon
     cgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
   
   
@@ -4707,7 +4987,7 @@ namespace Seldon
     zgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
   
   
@@ -4741,7 +5021,7 @@ namespace Seldon
     sgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -4772,7 +5052,7 @@ namespace Seldon
     dgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -4805,7 +5085,7 @@ namespace Seldon
     cgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -4838,7 +5118,7 @@ namespace Seldon
     zgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef());
+	    rwork.GetData(), &info.GetInfoRef());
   }
   
   
@@ -4871,7 +5151,7 @@ namespace Seldon
     sgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef());
+	    iwork.GetData(), &info.GetInfoRef());
   }
   
   
@@ -4901,7 +5181,7 @@ namespace Seldon
     dgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef());
+	    iwork.GetData(), &info.GetInfoRef());
   }
   
   
@@ -4933,7 +5213,7 @@ namespace Seldon
     cgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
   }
   
   
@@ -4965,7 +5245,7 @@ namespace Seldon
     zgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
   }
   
   
@@ -4999,7 +5279,7 @@ namespace Seldon
     sgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -5030,7 +5310,7 @@ namespace Seldon
     dgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -5067,7 +5347,7 @@ namespace Seldon
     cgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
     if (TransA.ConjTrans())
       {
 	Conjugate(b);
@@ -5110,7 +5390,7 @@ namespace Seldon
     zgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef());
+	    rwork.GetData(), &info.GetInfoRef());
     if (TransA.ConjTrans())
       {
 	Conjugate(b);
@@ -5148,7 +5428,7 @@ namespace Seldon
     ssyrfs_(&uplo, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -5178,7 +5458,7 @@ namespace Seldon
     dsyrfs_(&uplo, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -5210,7 +5490,7 @@ namespace Seldon
     csyrfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
   
   
@@ -5242,7 +5522,7 @@ namespace Seldon
     zsyrfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
   
   
@@ -5276,7 +5556,7 @@ namespace Seldon
     ssprfs_(&uplo, &m, &nrhs, A.GetData(), Alu.GetData(),
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -5307,7 +5587,7 @@ namespace Seldon
     dsprfs_(&uplo, &m, &nrhs, A.GetData(), Alu.GetData(),
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -5339,7 +5619,7 @@ namespace Seldon
     csprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
   
   
@@ -5371,7 +5651,7 @@ namespace Seldon
     zsprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
   
   
@@ -5404,7 +5684,7 @@ namespace Seldon
     ssyrfs_(&uplo, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -5434,7 +5714,7 @@ namespace Seldon
     dsyrfs_(&uplo, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -5466,7 +5746,7 @@ namespace Seldon
     csyrfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
   
   
@@ -5498,7 +5778,7 @@ namespace Seldon
     zsyrfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
     
   
@@ -5532,7 +5812,7 @@ namespace Seldon
     ssprfs_(&uplo, &m, &nrhs, A.GetData(), Alu.GetData(),
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -5563,7 +5843,7 @@ namespace Seldon
     dsprfs_(&uplo, &m, &nrhs, A.GetData(), Alu.GetData(),
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -5595,7 +5875,7 @@ namespace Seldon
     csprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
   
   
@@ -5627,7 +5907,7 @@ namespace Seldon
     zsprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
   
   
@@ -5662,7 +5942,7 @@ namespace Seldon
     cherfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
   
   
@@ -5694,7 +5974,7 @@ namespace Seldon
     zherfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
   
   
@@ -5729,7 +6009,7 @@ namespace Seldon
     chprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
   
   
@@ -5761,7 +6041,7 @@ namespace Seldon
     zhprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
   }
   
   
@@ -5797,7 +6077,7 @@ namespace Seldon
     cherfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
     Conjugate(b); Conjugate(x);
   }
   
@@ -5831,7 +6111,7 @@ namespace Seldon
     zherfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
     Conjugate(b); Conjugate(x);
   }
   
@@ -5868,7 +6148,7 @@ namespace Seldon
     chprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
     Conjugate(b); Conjugate(x);
   }
   
@@ -5902,7 +6182,7 @@ namespace Seldon
     zhprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
 	    &berr, work.GetData(), rwork.GetData(),
-	    &lapack_info.GetInfoRef() );
+	    &info.GetInfoRef() );
     Conjugate(b); Conjugate(x);
   }
   
@@ -5933,7 +6213,7 @@ namespace Seldon
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -5959,7 +6239,7 @@ namespace Seldon
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -5987,7 +6267,7 @@ namespace Seldon
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6015,7 +6295,7 @@ namespace Seldon
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
 
   
@@ -6047,7 +6327,7 @@ namespace Seldon
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -6075,7 +6355,7 @@ namespace Seldon
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6104,7 +6384,7 @@ namespace Seldon
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6133,7 +6413,7 @@ namespace Seldon
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6163,7 +6443,7 @@ namespace Seldon
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -6189,7 +6469,7 @@ namespace Seldon
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6217,7 +6497,7 @@ namespace Seldon
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6245,7 +6525,7 @@ namespace Seldon
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6277,7 +6557,7 @@ namespace Seldon
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -6305,7 +6585,7 @@ namespace Seldon
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6334,7 +6614,7 @@ namespace Seldon
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6363,7 +6643,7 @@ namespace Seldon
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6393,7 +6673,7 @@ namespace Seldon
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -6419,7 +6699,7 @@ namespace Seldon
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6447,7 +6727,7 @@ namespace Seldon
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6475,7 +6755,7 @@ namespace Seldon
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6507,7 +6787,7 @@ namespace Seldon
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -6535,7 +6815,7 @@ namespace Seldon
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6564,7 +6844,7 @@ namespace Seldon
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6593,7 +6873,7 @@ namespace Seldon
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6623,7 +6903,7 @@ namespace Seldon
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -6649,7 +6929,7 @@ namespace Seldon
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6677,7 +6957,7 @@ namespace Seldon
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6705,7 +6985,7 @@ namespace Seldon
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6737,7 +7017,7 @@ namespace Seldon
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -6765,7 +7045,7 @@ namespace Seldon
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6794,7 +7074,7 @@ namespace Seldon
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6823,7 +7103,7 @@ namespace Seldon
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6853,7 +7133,7 @@ namespace Seldon
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -6879,7 +7159,7 @@ namespace Seldon
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6907,7 +7187,7 @@ namespace Seldon
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -6935,7 +7215,7 @@ namespace Seldon
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
 
   
@@ -6967,7 +7247,7 @@ namespace Seldon
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -6995,7 +7275,7 @@ namespace Seldon
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -7029,7 +7309,7 @@ namespace Seldon
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
     if (TransA.ConjTrans())
       {
 	Conjugate(b);
@@ -7068,7 +7348,7 @@ namespace Seldon
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
     if (TransA.ConjTrans())
       {
 	Conjugate(b);
@@ -7103,7 +7383,7 @@ namespace Seldon
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -7129,7 +7409,7 @@ namespace Seldon
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -7157,7 +7437,7 @@ namespace Seldon
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -7185,7 +7465,7 @@ namespace Seldon
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -7217,7 +7497,7 @@ namespace Seldon
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -7245,7 +7525,7 @@ namespace Seldon
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -7279,7 +7559,7 @@ namespace Seldon
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
     if (TransA.ConjTrans())
       {
 	Conjugate(b);
@@ -7318,7 +7598,7 @@ namespace Seldon
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
     if (TransA.ConjTrans())
       {
 	Conjugate(b);
@@ -7353,7 +7633,7 @@ namespace Seldon
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -7379,7 +7659,7 @@ namespace Seldon
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -7407,7 +7687,7 @@ namespace Seldon
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -7435,7 +7715,7 @@ namespace Seldon
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -7467,7 +7747,7 @@ namespace Seldon
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -7495,7 +7775,7 @@ namespace Seldon
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -7529,7 +7809,7 @@ namespace Seldon
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
     if (TransA.ConjTrans())
       {
 	Conjugate(b);
@@ -7568,7 +7848,7 @@ namespace Seldon
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
     if (TransA.ConjTrans())
       {
 	Conjugate(b);
@@ -7603,7 +7883,7 @@ namespace Seldon
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -7629,7 +7909,7 @@ namespace Seldon
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -7657,7 +7937,7 @@ namespace Seldon
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -7685,7 +7965,7 @@ namespace Seldon
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -7717,7 +7997,7 @@ namespace Seldon
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
 
   template <class Prop0, class Allocator0,
@@ -7745,7 +8025,7 @@ namespace Seldon
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
 	    &ferr, &berr, work.GetData(),
-	    iwork.GetData(), &lapack_info.GetInfoRef() );
+	    iwork.GetData(), &info.GetInfoRef() );
   }
   
   
@@ -7779,7 +8059,7 @@ namespace Seldon
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
     if (TransA.ConjTrans())
       {
 	Conjugate(b);
@@ -7818,7 +8098,7 @@ namespace Seldon
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
 	    &ferr, &berr, work.GetDataVoid(),
-	    rwork.GetData(), &lapack_info.GetInfoRef() );
+	    rwork.GetData(), &info.GetInfoRef() );
     if (TransA.ConjTrans())
       {
 	Conjugate(b);
@@ -7848,7 +8128,14 @@ namespace Seldon
     Vector<float, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     sgetri_(&m, A.GetData(), &m, pivot.GetData(), work.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -7861,7 +8148,14 @@ namespace Seldon
     Vector<double, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     dgetri_(&m, A.GetData(), &m, pivot.GetData(), work.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -7874,7 +8168,14 @@ namespace Seldon
     Vector<complex<float>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     cgetri_(&m, A.GetDataVoid(), &m, pivot.GetData(),
-	    work.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &m, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -7887,7 +8188,14 @@ namespace Seldon
     Vector<complex<double>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     zgetri_(&m, A.GetDataVoid(), &m, pivot.GetData(),
-	    work.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &m, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -7903,7 +8211,14 @@ namespace Seldon
     Vector<float, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     sgetri_(&m, A.GetData(), &m, pivot.GetData(), work.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -7916,7 +8231,14 @@ namespace Seldon
     Vector<double, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     dgetri_(&m, A.GetData(), &m, pivot.GetData(), work.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -7929,7 +8251,14 @@ namespace Seldon
     Vector<complex<float>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     cgetri_(&m, A.GetDataVoid(), &m, pivot.GetData(),
-	    work.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &m, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -7942,7 +8271,14 @@ namespace Seldon
     Vector<complex<double>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     zgetri_(&m, A.GetDataVoid(), &m, pivot.GetData(),
-	    work.GetDataVoid(), &m, &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &m, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -7959,7 +8295,14 @@ namespace Seldon
     Vector<float, Vect_Full, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     ssytri_(&uplo, &m, A.GetData(), &m, pivot.GetData(), work.GetData(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -7973,7 +8316,14 @@ namespace Seldon
     Vector<double, Vect_Full, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     dsytri_(&uplo, &m, A.GetData(), &m, pivot.GetData(), work.GetData(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -7987,7 +8337,14 @@ namespace Seldon
     Vector<complex<float>, Vect_Full, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     csytri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8001,7 +8358,14 @@ namespace Seldon
     Vector<complex<double>, Vect_Full, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     zsytri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8018,7 +8382,14 @@ namespace Seldon
     Vector<float, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     ssptri_(&uplo, &m, A.GetData(), pivot.GetData(), work.GetData(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8032,7 +8403,14 @@ namespace Seldon
     Vector<double, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     dsptri_(&uplo, &m, A.GetData(), pivot.GetData(), work.GetData(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8046,7 +8424,14 @@ namespace Seldon
     Vector<complex<float>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     csptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8060,7 +8445,14 @@ namespace Seldon
     Vector<complex<double>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     zsptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8077,7 +8469,14 @@ namespace Seldon
     Vector<float, Vect_Full, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     ssytri_(&uplo, &m, A.GetData(), &m, pivot.GetData(), work.GetData(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8091,7 +8490,14 @@ namespace Seldon
     Vector<double, Vect_Full, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     dsytri_(&uplo, &m, A.GetData(), &m, pivot.GetData(), work.GetData(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8105,7 +8511,14 @@ namespace Seldon
     Vector<complex<float>, Vect_Full, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     csytri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8119,7 +8532,14 @@ namespace Seldon
     Vector<complex<double>, Vect_Full, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     zsytri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8136,7 +8556,14 @@ namespace Seldon
     Vector<float, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     ssptri_(&uplo, &m, A.GetData(), pivot.GetData(), work.GetData(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8150,7 +8577,14 @@ namespace Seldon
     Vector<double, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     dsptri_(&uplo, &m, A.GetData(), pivot.GetData(), work.GetData(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8164,7 +8598,14 @@ namespace Seldon
     Vector<complex<float>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     csptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8178,7 +8619,14 @@ namespace Seldon
     Vector<complex<double>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     zsptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8195,7 +8643,14 @@ namespace Seldon
     Vector<complex<float>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     chetri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8209,7 +8664,14 @@ namespace Seldon
     Vector<complex<double>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     zhetri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8227,7 +8689,14 @@ namespace Seldon
     Vector<complex<float>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     chptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8242,7 +8711,14 @@ namespace Seldon
     Vector<complex<double>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     zhptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8259,7 +8735,14 @@ namespace Seldon
     Vector<complex<float>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     chetri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8273,7 +8756,14 @@ namespace Seldon
     Vector<complex<double>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     zhetri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8291,7 +8781,14 @@ namespace Seldon
     Vector<complex<float>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     chptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8306,7 +8803,14 @@ namespace Seldon
     Vector<complex<double>, Vect_Full, Allocator0> work(m);
     GetLU(A, pivot, info);
     zhptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
-	    work.GetDataVoid(), &lapack_info.GetInfoRef());
+	    work.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8320,7 +8824,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag('N');
     strtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8331,7 +8842,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag('N');
     dtrtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8342,7 +8860,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag('N');
     ctrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8353,7 +8878,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag('N');
     ztrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8368,7 +8900,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
     strtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8380,7 +8919,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
     dtrtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8392,7 +8938,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
     ctrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8404,7 +8957,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
     ztrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8418,7 +8978,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag('N');
     strtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8429,7 +8996,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag('N');
     dtrtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8440,7 +9014,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag('N');
     ctrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8451,7 +9032,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag('N');
     ztrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8466,7 +9054,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
     strtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8478,7 +9073,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
     dtrtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8490,7 +9092,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
     ctrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8502,7 +9111,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
     ztrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8515,7 +9131,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U'); char diag('N');
-    stptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    stptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8525,7 +9148,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U'); char diag('N');
-    dtptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    dtptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8536,7 +9166,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U'); char diag('N');
-    ctptri_(&uplo, &diag, &m, A.GetDataVoid(), &lapack_info.GetInfoRef());
+    ctptri_(&uplo, &diag, &m, A.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8548,7 +9185,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag('N');
     ztptri_(&uplo, &diag, &m, A.GetDataVoid(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8562,7 +9206,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
-    stptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    stptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8573,7 +9224,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
-    dtptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    dtptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8585,7 +9243,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
-    ctptri_(&uplo, &diag, &m, A.GetDataVoid(), &lapack_info.GetInfoRef());
+    ctptri_(&uplo, &diag, &m, A.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8598,7 +9263,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
     ztptri_(&uplo, &diag, &m, A.GetDataVoid(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8611,7 +9283,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L'); char diag('N');
-    stptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    stptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8621,7 +9300,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L'); char diag('N');
-    dtptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    dtptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8633,7 +9319,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag('N');
     ctptri_(&uplo, &diag, &m, A.GetDataVoid(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8645,7 +9338,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag('N');
     ztptri_(&uplo, &diag, &m, A.GetDataVoid(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8659,7 +9359,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
-    stptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    stptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8670,7 +9377,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
-    dtptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    dtptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8683,7 +9397,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
     ctptri_(&uplo, &diag, &m, A.GetDataVoid(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8696,7 +9417,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
     ztptri_(&uplo, &diag, &m, A.GetDataVoid(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8710,7 +9438,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag('N');
     strtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8721,7 +9456,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag('N');
     dtrtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8732,7 +9474,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag('N');
     ctrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8743,7 +9492,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag('N');
     ztrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8758,7 +9514,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
     strtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8770,7 +9533,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
     dtrtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8782,7 +9552,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
     ctrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8794,7 +9571,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
     ztrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8808,7 +9592,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag('N');
     strtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8819,7 +9610,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag('N');
     dtrtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8830,7 +9628,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag('N');
     ctrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8841,7 +9646,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag('N');
     ztrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8856,7 +9668,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
     strtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8868,7 +9687,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
     dtrtri_(&uplo, &diag, &m, A.GetData(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8880,7 +9706,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
     ctrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8892,7 +9725,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
     ztrtri_(&uplo, &diag, &m, A.GetDataVoid(), &m,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8905,7 +9745,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L'); char diag('N');
-    stptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    stptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8915,7 +9762,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L'); char diag('N');
-    dtptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    dtptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8926,7 +9780,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L'); char diag('N');
-    ctptri_(&uplo, &diag, &m, A.GetDataVoid(), &lapack_info.GetInfoRef());
+    ctptri_(&uplo, &diag, &m, A.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8938,7 +9799,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag('N');
     ztptri_(&uplo, &diag, &m, A.GetDataVoid(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8952,7 +9820,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
-    stptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    stptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8963,7 +9838,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
-    dtptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    dtptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8975,7 +9857,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
-    ctptri_(&uplo, &diag, &m, A.GetDataVoid(), &lapack_info.GetInfoRef());
+    ctptri_(&uplo, &diag, &m, A.GetDataVoid(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -8988,7 +9877,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('L'); char diag = DiagA.Char();
     ztptri_(&uplo, &diag, &m, A.GetDataVoid(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -9001,7 +9897,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U'); char diag('N');
-    stptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    stptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -9011,7 +9914,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U'); char diag('N');
-    dtptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    dtptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -9023,7 +9933,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag('N');
     ctptri_(&uplo, &diag, &m, A.GetDataVoid(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -9035,7 +9952,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag('N');
     ztptri_(&uplo, &diag, &m, A.GetDataVoid(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -9049,7 +9973,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
-    stptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    stptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -9060,7 +9991,14 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
-    dtptri_(&uplo, &diag, &m, A.GetData(), &lapack_info.GetInfoRef());
+    dtptri_(&uplo, &diag, &m, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -9073,7 +10011,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
     ctptri_(&uplo, &diag, &m, A.GetDataVoid(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -9086,7 +10031,14 @@ namespace Seldon
     int m = A.GetM();
     char uplo('U'); char diag = DiagA.Char();
     ztptri_(&uplo, &diag, &m, A.GetDataVoid(),
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetInverse",
+			"The matrix is inversible ? ");
+#endif
+
   }
   
   
@@ -9121,7 +10073,7 @@ namespace Seldon
     int lda = A.GetLD();
     sgeequ_(&m, &n, A.GetData(), &lda, row_scale.GetData(),
 	    col_scale.GetData(), &row_condition_number, &col_condition_number,
-	    &amax,  &lapack_info.GetInfoRef());
+	    &amax,  &info.GetInfoRef());
   }
   
   
@@ -9144,7 +10096,7 @@ namespace Seldon
     int lda = A.GetLD();
     dgeequ_(&m, &n, A.GetData(), &lda, row_scale.GetData(),
 	    col_scale.GetData(), &row_condition_number, &col_condition_number,
-	    &amax,  &lapack_info.GetInfoRef());
+	    &amax,  &info.GetInfoRef());
   }
   
   
@@ -9168,7 +10120,7 @@ namespace Seldon
     int lda = A.GetLD();
     cgeequ_(&m, &n, A.GetDataVoid(), &lda, row_scale.GetData(),
 	    col_scale.GetData(),  &row_condition_number,
-	    &col_condition_number, &amax,  &lapack_info.GetInfoRef());
+	    &col_condition_number, &amax,  &info.GetInfoRef());
   }
   
   
@@ -9192,7 +10144,7 @@ namespace Seldon
     int lda = A.GetLD();
     zgeequ_(&m, &n, A.GetDataVoid(), &lda, row_scale.GetData(),
 	    col_scale.GetData(),  &row_condition_number,
-	    &col_condition_number, &amax,  &lapack_info.GetInfoRef());
+	    &col_condition_number, &amax,  &info.GetInfoRef());
   }
   
   
@@ -9218,7 +10170,7 @@ namespace Seldon
     int lda = A.GetLD();
     sgeequ_(&n, &m, A.GetData(), &lda, col_scale.GetData(),
 	    row_scale.GetData(), &col_condition_number, &row_condition_number,
-	    &amax,  &lapack_info.GetInfoRef());
+	    &amax,  &info.GetInfoRef());
   }
   
   
@@ -9241,7 +10193,7 @@ namespace Seldon
     int lda = A.GetLD();
     dgeequ_(&n, &m, A.GetData(), &lda, col_scale.GetData(),
 	    row_scale.GetData(), &col_condition_number, &row_condition_number,
-	    &amax,  &lapack_info.GetInfoRef());
+	    &amax,  &info.GetInfoRef());
   }
   
   
@@ -9265,7 +10217,7 @@ namespace Seldon
     int lda = A.GetLD();
     cgeequ_(&n, &m, A.GetDataVoid(), &lda, col_scale.GetData(),
 	    row_scale.GetData(),  &col_condition_number,
-	    &row_condition_number, &amax,  &lapack_info.GetInfoRef());
+	    &row_condition_number, &amax,  &info.GetInfoRef());
   }
   
   
@@ -9289,7 +10241,7 @@ namespace Seldon
     int lda = A.GetLD();
     zgeequ_(&n, &m, A.GetDataVoid(), &lda, col_scale.GetData(),
 	    row_scale.GetData(),  &col_condition_number,
-	    &row_condition_number, &amax,  &lapack_info.GetInfoRef());
+	    &row_condition_number, &amax,  &info.GetInfoRef());
   }
   
   
@@ -9307,10 +10259,7 @@ namespace Seldon
 		     LapackInfo& info = lapack_info)
   {
     GetLU(A, P, info);
-    if (info.GetInfo() == 0)
-      SolveLU(A, P, b, info);
-    else
-      cout << "An error occured during the factorization phase" << endl;
+    SolveLU(A, P, b, info);
   }
   
   

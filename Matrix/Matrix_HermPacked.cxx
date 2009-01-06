@@ -53,6 +53,13 @@ namespace Seldon
     Matrix_Base<T, Allocator>(i, i)
   {
 
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((i <= 0)||(j <= 0))
+      throw WrongIndex("Matrix_HermPacked::Matrix_HermPacked(int, int)",
+		       string("Matrix size should be greater than 0 but ") +
+		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
+#endif
+
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -78,7 +85,22 @@ namespace Seldon
 #endif
 
   }
-
+  
+  
+  //! Copy constructor.
+  template <class T, class Prop, class Storage, class Allocator>
+  inline Matrix_HermPacked<T, Prop, Storage, Allocator>
+  ::Matrix_HermPacked(const Matrix_HermPacked<T, Prop,
+		      Storage, Allocator>& A):
+    Matrix_Base<T, Allocator>()
+  {
+    this->m_ = 0;
+    this->n_ = 0;
+    this->data_ = NULL;
+    
+    this->Copy(A);
+  }
+  
   
   /**************
    * DESTRUCTOR *
@@ -161,6 +183,13 @@ namespace Seldon
   inline void Matrix_HermPacked<T, Prop, Storage, Allocator>
   ::Reallocate(int i, int j)
   {
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((i <= 0)||(j <= 0))
+      throw WrongIndex("Matrix_HermPacked::Reallocate(int, int)",
+		       string("Matrix size should be greater than 0 but ") +
+		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
+#endif
+
     if (i != this->m_)
       {
 	this->m_ = i;
@@ -488,15 +517,11 @@ namespace Seldon
 
 
   //! Sets the matrix to the identity.
-  /*!
-    \warning It fills the memory with zeros. If the matrix stores complex
-    structures, discard this method.
-  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_HermPacked<T, Prop, Storage, Allocator>::SetIdentity()
   {
-    this->allocator_.memoryset(this->data_, char(0),
-			       this->GetDataSize() * sizeof(value_type));
+    this->Fill(T(0));
+    
     T one(1);
     for (int i = 0; i < min(this->m_, this->n_); i++)
       (*this)(i,i) = one;
@@ -704,6 +729,8 @@ namespace Seldon
   ::WriteText(string FileName) const
   {
     ofstream FileStream;
+    FileStream.precision(cout.precision());
+    FileStream.flags(cout.flags());
     FileStream.open(FileName.c_str());
 
 #ifdef SELDON_CHECK_IO
@@ -1000,6 +1027,14 @@ namespace Seldon
   inline void Matrix<T, Prop, ColHermPacked, Allocator>
   ::Resize(int i, int j)
   {
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((i <= 0)||(j <= 0))
+      throw WrongIndex("Matrix_HermPacked::Resize(int, int)",
+		       string("Matrix size should be greater than 0 but ") +
+		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
+#endif
+
     // Storing the old values of the matrix.
     int nold = this->GetDataSize();
     Vector<T, Vect_Full, Allocator> xold(nold);
@@ -1099,6 +1134,14 @@ namespace Seldon
   inline void Matrix<T, Prop, RowHermPacked, Allocator>
   ::Resize(int i, int j)
   {
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((i <= 0)||(j <= 0))
+      throw WrongIndex("Matrix_HermPacked::Resize(int, int)",
+		       string("Matrix size should be greater than 0 but ") +
+		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
+#endif
+
     // Storing the old values of the matrix.
     int nold = this->GetDataSize(), iold = this->m_;
     Vector<T, Vect_Full, Allocator> xold(nold);

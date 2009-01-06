@@ -45,8 +45,6 @@ namespace Seldon
     //! rows or columns
     Vector<Vector<T, Vect_Sparse, Allocator>, Vect_Full,
 	   NewAlloc<Vector<T, Vect_Sparse, Allocator> > > val_;
-    //! pointer to the derived class
-    Matrix<T, Prop, Storage, Allocator>* mat_deriv;
     
   public:
     // Constructors.

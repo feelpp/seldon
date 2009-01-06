@@ -42,7 +42,7 @@ namespace Seldon
     Vector<float, Vect_Full, Allocator1> work(lwork);
     tau.Reallocate(min(m, n));
     sgeqrf_(&m, &n, A.GetData(), &m, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
   
 
@@ -58,7 +58,7 @@ namespace Seldon
     Vector<double, Vect_Full, Allocator1> work(lwork);
     tau.Reallocate(min(m, n));
     dgeqrf_(&m, &n, A.GetData(), &m, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
   
 
@@ -74,7 +74,7 @@ namespace Seldon
     Vector<complex<double>, Vect_Full, Allocator1> work(lwork);
     tau.Reallocate(min(m, n));
     zgeqrf_(&m, &n, A.GetData(), &m, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
   
   
@@ -94,7 +94,7 @@ namespace Seldon
     tau.Reallocate(min(m, n));
     // Factorization LQ of A^t.
     sgelqf_(&n, &m, A.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
   
   
@@ -111,7 +111,7 @@ namespace Seldon
     tau.Reallocate(min(m, n));
     // Factorization LQ of A^t.
     dgelqf_(&n, &m, A.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
   
 
@@ -128,7 +128,7 @@ namespace Seldon
     tau.Reallocate(min(m, n));
     // Factorization LQ of A^t.
     zgelqf_(&n, &m, A.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
   
   
@@ -156,7 +156,7 @@ namespace Seldon
     Vector<double, Vect_Full, Allocator1> work(lwork);
     tau.Reallocate(min(m, n));
     dgeqp3_(&m, &n, A.GetData(), &m, ipivot.GetData(), tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
   
 
@@ -181,7 +181,7 @@ namespace Seldon
     int lwork = 2 * max(m, n);
     Vector<double, Vect_Full, Allocator1> work(lwork);
     dorgqr_(&m, &m, &n, A.GetData(), &m, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
   
 
@@ -196,7 +196,7 @@ namespace Seldon
     int lwork = 2 * max(m, n);
     Vector<double, Vect_Full, Allocator1> work(lwork);
     zungqr_(&m, &m, &n, A.GetDataVoid(), &m, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
   
 
@@ -220,7 +220,7 @@ namespace Seldon
     
     zunmqr_(&side, &trans, &m, &n, &k, A.GetDataVoid(), &m, tau.GetDataVoid(),
 	    C.GetDataVoid(), &m, work.GetData(), &lwork,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
   }
 
   
@@ -247,7 +247,7 @@ namespace Seldon
     Vector<float, Vect_Full, Allocator1> work(lwork);
     tau.Reallocate(min(m, n));
     sgelqf_(&m, &n, A.GetData(), &m, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
   
   
@@ -263,7 +263,7 @@ namespace Seldon
     Vector<double, Vect_Full, Allocator1> work(lwork);
     tau.Reallocate(min(m, n));
     dgelqf_(&m, &n, A.GetData(), &m, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
 
   
@@ -279,7 +279,7 @@ namespace Seldon
     Vector<complex<double>, Vect_Full, Allocator1> work(lwork);
     tau.Reallocate(min(m, n));
     zgelqf_(&m, &n, A.GetData(), &m, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
   
   
@@ -299,7 +299,7 @@ namespace Seldon
     tau.Reallocate(min(m, n));
     // Factorization QR of A^t.
     sgeqrf_(&n, &m, A.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
   
   
@@ -316,7 +316,7 @@ namespace Seldon
     tau.Reallocate(min(m, n));
     // Factorization LQ of A^t.
     dgeqrf_(&n, &m, A.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
 
   
@@ -333,7 +333,7 @@ namespace Seldon
     tau.Reallocate(min(m, n));
     // Factorization LQ of A^t.
     zgeqrf_(&n, &m, A.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    work.GetData(), &lwork, &info.GetInfoRef());
   }
 
   
@@ -365,7 +365,7 @@ namespace Seldon
     char trans_(trans);
     dormqr_(&side, &trans_, &m, &n, &k, A.GetData(), &m, tau.GetData(),
 	    b.GetData(), &m, work.GetData(), &lwork,
-	    &lapack_info.GetInfoRef());
+	    &info.GetInfoRef());
   }
 
   
@@ -398,7 +398,7 @@ namespace Seldon
     // Computes Q^t b.
     sormqr_(&side, &trans, &m, &nrhs, &k, A.GetData(),
 	    &m, tau.GetData(), b.GetData(),
-	    &m, work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    &m, work.GetData(), &lwork, &info.GetInfoRef());
     
     b.Resize(n);
     for (int i = nb; i < n; i++)
@@ -430,7 +430,7 @@ namespace Seldon
     // Computes Q^t b.
     dormqr_(&side, &trans, &lwork, &nrhs, &k, A.GetData(),
 	    &m, tau.GetData(), b.GetData(),
-	    &lwork, work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    &lwork, work.GetData(), &lwork, &info.GetInfoRef());
     
     b.Resize(n);
     for (int i = nb; i < n; i++)
@@ -462,7 +462,7 @@ namespace Seldon
     // Computes Q^t b.
     zunmqr_(&side, &trans, &m, &nrhs, &k, A.GetData(),
 	    &m, tau.GetData(), b.GetData(),
-	    &m, work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    &m, work.GetData(), &lwork, &info.GetInfoRef());
     
     b.Resize(n);
     for (int i = nb; i < n; i++)
@@ -497,7 +497,7 @@ namespace Seldon
     // Computes Q b.
     sormlq_(&side, &trans, &m, &nrhs, &k, A.GetData(),
 	    &n, tau.GetData(), b.GetData(),
-	    &m, work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    &m, work.GetData(), &lwork, &info.GetInfoRef());
     
     b.Resize(n);
     for (int i = nb; i < n; i++)
@@ -529,7 +529,7 @@ namespace Seldon
     // Computes Q b.
     dormlq_(&side, &trans, &m, &nrhs, &k, A.GetData(),
 	    &n, tau.GetData(), b.GetData(),
-	    &m, work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    &m, work.GetData(), &lwork, &info.GetInfoRef());
     
     b.Resize(n);
     for (int i = nb; i < n; i++)
@@ -561,7 +561,7 @@ namespace Seldon
     // Computes Q b.
     zunmlq_(&side, &trans, &m, &nrhs, &k, A.GetData(),
 	    &n, tau.GetData(), b.GetData(),
-	    &m, work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    &m, work.GetData(), &lwork, &info.GetInfoRef());
     
     b.Resize(n);
     for (int i = nb; i < n; i++)
@@ -614,7 +614,7 @@ namespace Seldon
     // Computes Q^t b.
     sormlq_(&side, &trans, &n, &nrhs, &k, A.GetData(),
 	    &m, tau.GetData(), b.GetData(),
-	    &n, work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    &n, work.GetData(), &lwork, &info.GetInfoRef());
   }
   
   
@@ -646,7 +646,7 @@ namespace Seldon
     // Computes Q^t b.
     dormlq_(&side, &trans, &n, &nrhs, &k, A.GetData(),
 	    &m, tau.GetData(), b.GetData(),
-	    &n, work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    &n, work.GetData(), &lwork, &info.GetInfoRef());
   }
 
   
@@ -678,7 +678,7 @@ namespace Seldon
     // Computes Q^t.
     zunmlq_(&side, &trans, &n, &nrhs, &k, A.GetData(),
 	    &m, tau.GetData(), b.GetData(),
-	    &n, work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    &n, work.GetData(), &lwork, &info.GetInfoRef());
   }
   
   
@@ -713,7 +713,7 @@ namespace Seldon
     // Multiplies by Q.
     sormqr_(&side, &trans, &n, &nrhs, &k, A.GetData(),
 	    &n, tau.GetData(), b.GetData(),
-	    &n, work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    &n, work.GetData(), &lwork, &info.GetInfoRef());
   }
   
   
@@ -745,7 +745,7 @@ namespace Seldon
     // Multiplies by Q.
     dormqr_(&side, &trans, &n, &nrhs, &k, A.GetData(),
 	    &n, tau.GetData(), b.GetData(),
-	    &n, work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    &n, work.GetData(), &lwork, &info.GetInfoRef());
   }
 
   
@@ -777,7 +777,7 @@ namespace Seldon
     // Computes Q b.
     zunmqr_(&side, &trans, &n, &nrhs, &k, A.GetData(),
 	    &n, tau.GetData(), b.GetData(),
-	    &n, work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	    &n, work.GetData(), &lwork, &info.GetInfoRef());
   }
   
   

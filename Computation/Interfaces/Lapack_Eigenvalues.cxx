@@ -41,9 +41,18 @@ namespace Seldon
     char jobvl('N');
     char jobvr('N');
     Vector<float> work(lwork);
+    wr.Reallocate(n);
+    wi.Reallocate(n);
     sgeev_(&jobvl, &jobvr, &n, A.GetData(), &n, wr.GetData(), wi.GetData(),
 	   A.GetData(), &n, A.GetData(), &n, work.GetData(),
-	   &lwork, &lapack_info.GetInfoRef());
+	   &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -59,9 +68,18 @@ namespace Seldon
     char jobvl('V');
     char jobvr('N');
     Vector<float> work(lwork);
+    wr.Reallocate(n);
+    wi.Reallocate(n);
+    zr.Reallocate(n, n);
     sgeev_(&jobvl, &jobvr, &n, A.GetData(), &n, wr.GetData(), wi.GetData(),
 	   zr.GetData(), &n, zr.GetData(), &n, work.GetData(), &lwork,
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     Transpose(zr);
     // conjugate if necessary
@@ -91,9 +109,17 @@ namespace Seldon
     char jobl('N'), jobr('N'); int lwork = 3*n;
     Vector<complex<float> > work(lwork);
     Vector<float> rwork(2*n);
+    w.Reallocate(n);
     cgeev_(&jobl, &jobr, &n, A.GetDataVoid(), &n, w.GetDataVoid(),
 	   A.GetDataVoid(), &n, A.GetData(), &n, work.GetDataVoid(), &lwork,
-	   rwork.GetData(), &lapack_info.GetInfoRef());
+	   rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -109,10 +135,18 @@ namespace Seldon
     char jobl('V'), jobr('N'); int lwork = 3*n;
     Vector<complex<float> > work(lwork);
     Vector<float> rwork(2*n);
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     cgeev_(&jobl, &jobr, &n, A.GetDataVoid(), &n, w.GetDataVoid(),
 	   z.GetDataVoid(), &n, z.GetData(), &n, work.GetDataVoid(), &lwork,
-	   rwork.GetData(), &lapack_info.GetInfoRef());
+	   rwork.GetData(), &info.GetInfoRef());
     
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
     TransposeConj(z);
   }
   
@@ -125,9 +159,18 @@ namespace Seldon
   {
     int n = A.GetM(), lwork = 6*n;
     char jobvl('N'), jobvr('N'); Vector<double> work(lwork);
+    wr.Reallocate(n);
+    wi.Reallocate(n);
     dgeev_(&jobvl, &jobvr, &n, A.GetData(), &n, wr.GetData(), wi.GetData(),
 	   A.GetData(), &n, A.GetData(), &n, work.GetData(),
-	   &lwork, &lapack_info.GetInfoRef());
+	   &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -141,9 +184,18 @@ namespace Seldon
   {
     int n = A.GetM(), lwork = 6*n;
     char jobvl('V'), jobvr('N'); Vector<double> work(lwork);
+    wr.Reallocate(n);
+    wi.Reallocate(n);
+    zr.Reallocate(n, n);
     dgeev_(&jobvl, &jobvr, &n, A.GetData(), &n, wr.GetData(), wi.GetData(),
 	   zr.GetData(), &n, zr.GetData(), &n, work.GetData(), &lwork,
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     Transpose(zr);
     // conjugate if necessary
@@ -173,9 +225,17 @@ namespace Seldon
     char jobl('N'), jobr('N'); int lwork = 3*n;
     Vector<complex<double> > work(lwork);
     Vector<double> rwork(2*n);
+    w.Reallocate(n);
     zgeev_(&jobl, &jobr, &n, A.GetDataVoid(), &n, w.GetDataVoid(),
 	   A.GetDataVoid(), &n, A.GetData(), &n, work.GetDataVoid(), &lwork,
-	   rwork.GetData(), &lapack_info.GetInfoRef());
+	   rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -192,9 +252,17 @@ namespace Seldon
     char jobl('V'), jobr('N'); int lwork = 3*n;
     Vector<complex<double> > work(lwork);
     Vector<double> rwork(2*n);
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     zgeev_(&jobl, &jobr, &n, A.GetDataVoid(), &n, w.GetDataVoid(),
 	   z.GetDataVoid(), &n, z.GetData(), &n, work.GetDataVoid(),
-	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     TransposeConj(z);
   }
@@ -211,9 +279,18 @@ namespace Seldon
   {
     int n = A.GetM(), lwork = 6*n;
     char jobvl('N'), jobvr('N'); Vector<float> work(lwork);
+    wr.Reallocate(n);
+    wi.Reallocate(n);
     sgeev_(&jobvl, &jobvr, &n, A.GetData(), &n, wr.GetData(), wi.GetData(),
 	   A.GetData(), &n, A.GetData(), &n, work.GetData(), &lwork,
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   template<class Prop, class Allocator1, class Allocator2,
@@ -227,9 +304,18 @@ namespace Seldon
     int n = A.GetM(), lwork = 6*n;
     char jobvl('N'), jobvr('V');
     Vector<float> work(lwork);
+    wr.Reallocate(n);
+    wi.Reallocate(n);
+    zr.Reallocate(n, n);
     sgeev_(&jobvl, &jobvr, &n, A.GetData(), &n, wr.GetData(), wi.GetData(),
 	   zr.GetData(), &n, zr.GetData(), &n, work.GetData(),
-	   &lwork, &lapack_info.GetInfoRef());
+	   &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
   }
   
@@ -243,9 +329,17 @@ namespace Seldon
     char jobl('N'), jobr('N'); int lwork = 3*n;
     Vector<complex<float> > work(lwork);
     Vector<float> rwork(2*n);
+    w.Reallocate(n);
     cgeev_(&jobl, &jobr, &n, A.GetDataVoid(), &n, w.GetDataVoid(),
 	   A.GetDataVoid(), &n, A.GetData(), &n, work.GetDataVoid(),
-	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -262,9 +356,18 @@ namespace Seldon
     char jobl('N'), jobr('V'); int lwork = 3*n;
     Vector<complex<float> > work(lwork);
     Vector<float> rwork(2*n);
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     cgeev_(&jobl, &jobr, &n, A.GetDataVoid(), &n, w.GetDataVoid(),
 	   z.GetDataVoid(), &n, z.GetData(), &n, work.GetDataVoid(),
-	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
@@ -275,9 +378,18 @@ namespace Seldon
   {
     int n = A.GetM(), lwork = 6*n;
     char jobvl('N'), jobvr('N'); Vector<double> work(lwork);
+    wr.Reallocate(n);
+    wi.Reallocate(n);
     dgeev_(&jobvl, &jobvr, &n, A.GetData(), &n, wr.GetData(), wi.GetData(),
 	   A.GetData(), &n, A.GetData(), &n, work.GetData(), &lwork,
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -292,9 +404,18 @@ namespace Seldon
     int n = A.GetM(), lwork = 6*n;
     char jobvl('N'), jobvr('V');
     Vector<double> work(lwork);
+    wr.Reallocate(n);
+    wi.Reallocate(n);
+    zr.Reallocate(n, n);
     dgeev_(&jobvl, &jobvr, &n, A.GetData(), &n, wr.GetData(), wi.GetData(),
 	   zr.GetData(), &n, zr.GetData(), &n, work.GetData(),
-	   &lwork, &lapack_info.GetInfoRef());
+	   &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
   }
   
@@ -308,9 +429,17 @@ namespace Seldon
     char jobl('N'), jobr('N'); int lwork = 3*n;
     Vector<complex<double> > work(lwork);
     Vector<double> rwork(2*n);
+    w.Reallocate(n);
     zgeev_(&jobl, &jobr, &n, A.GetDataVoid(), &n, w.GetDataVoid(),
 	   A.GetDataVoid(), &n, A.GetData(), &n, work.GetDataVoid(),
-	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -327,9 +456,18 @@ namespace Seldon
     char jobl('N'), jobr('V'); int lwork = 3*n;
     Vector<complex<double> > work(lwork);
     Vector<double> rwork(2*n);
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     zgeev_(&jobl, &jobr, &n, A.GetDataVoid(), &n, w.GetDataVoid(),
 	   z.GetDataVoid(), &n, z.GetData(), &n, work.GetDataVoid(),
-	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -344,8 +482,16 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('N');
     int lwork = 3*n; Vector<float> work(lwork);
+    w.Reallocate(n);
     ssyev_(&job, &uplo, &n, A.GetData(), &n, w.GetData(), work.GetData(),
-	   &lwork, &lapack_info.GetInfoRef());
+	   &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -358,12 +504,20 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('V');
     int lwork = 3*n; Vector<float> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
  
     ssyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(), work.GetData(),
-	   &lwork, &lapack_info.GetInfoRef());
+	   &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     Transpose(z);
   }
@@ -374,6 +528,7 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
+    w.Reallocate(n);
     Matrix<complex<float>, General, ColMajor> B(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
@@ -392,6 +547,8 @@ namespace Seldon
 			      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     Matrix<complex<float>, General, RowMajor> B(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
@@ -409,8 +566,16 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('N');
     int lwork = 3*n; Vector<double> work(lwork);
+    w.Reallocate(n);
     dsyev_(&job, &uplo, &n, A.GetData(), &n, w.GetData(), work.GetData(),
-	   &lwork, &lapack_info.GetInfoRef());
+	   &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -423,12 +588,20 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('V');
     int lwork = 3*n; Vector<double> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
  
     dsyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(), work.GetData(),
-	   &lwork, &lapack_info.GetInfoRef());
+	   &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     Transpose(z);
   }
@@ -439,6 +612,7 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
+    w.Reallocate(n);
     Matrix<complex<double>, General, ColMajor> B(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
@@ -462,6 +636,8 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
     
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     GetEigenvaluesEigenvec(B, w, z);
   }
   
@@ -476,8 +652,16 @@ namespace Seldon
   {
     int n = A.GetM();
     char uplo('U'); char job('N'); int lwork = 3*n; Vector<float> work(lwork);
+    w.Reallocate(n);
     ssyev_(&job, &uplo, &n, A.GetData(), &n, w.GetData(), work.GetData(),
-	   &lwork, &lapack_info.GetInfoRef());
+	   &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -490,12 +674,21 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('V');
     int lwork = 3*n; Vector<float> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
     
     ssyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(),
-	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -505,6 +698,7 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
+    w.Reallocate(n);
     Matrix<complex<float>, General, ColMajor> B(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
@@ -529,6 +723,8 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
     
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     GetEigenvaluesEigenvec(B, w, z);
   }
   
@@ -540,8 +736,16 @@ namespace Seldon
   {
     int n = A.GetM();
     char uplo('U'); char job('N'); int lwork = 3*n; Vector<double> work(lwork);
+    w.Reallocate(n);
     dsyev_(&job, &uplo, &n, A.GetData(), &n, w.GetData(), work.GetData(),
-	   &lwork, &lapack_info.GetInfoRef());
+	   &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -554,12 +758,21 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('V');
     int lwork = 3*n; Vector<double> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
     
     dsyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(),
-	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -570,6 +783,7 @@ namespace Seldon
   {
     int n = A.GetM();
     Matrix<complex<double>, General, ColMajor> B(n,n);
+    w.Reallocate(n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
@@ -593,6 +807,8 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
     
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     GetEigenvaluesEigenvec(B, w, z);
   }
   
@@ -609,9 +825,17 @@ namespace Seldon
     char uplo('L'); char job('N');
     int lwork = 2*n; Vector<complex<float> > work(lwork);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
     cheev_(&job, &uplo, &n, A.GetDataVoid(), &n, w.GetData(),
 	   work.GetDataVoid(), &lwork, rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -627,14 +851,21 @@ namespace Seldon
     char uplo('L'); char job('V');
     int lwork = 2*n; Vector<complex<float> > work(lwork);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
     z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
     
     cheev_(&job, &uplo,&n, z.GetDataVoid(),&n, w.GetData(), work.GetDataVoid(),
-	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData(), &info.GetInfoRef());
     
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
     Transpose(z);
   }
   
@@ -647,9 +878,17 @@ namespace Seldon
     char uplo('L'); char job('N');
     int lwork = 2*n; Vector<complex<double> > work(lwork);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
     zheev_(&job, &uplo, &n, A.GetDataVoid(), &n, w.GetData(),
 	   work.GetDataVoid(), &lwork, rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -665,13 +904,20 @@ namespace Seldon
     char uplo('L'); char job('V');
     int lwork = 2*n; Vector<complex<double> > work(lwork);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
     z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
     
     zheev_(&job, &uplo,&n, z.GetDataVoid(),&n, w.GetData(), work.GetDataVoid(),
-	   &lwork, rwork.GetData() , &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData() , &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     Transpose(z);
   }
@@ -689,9 +935,17 @@ namespace Seldon
     char uplo('U'); char job('N'); int lwork = 2*n;
     Vector<complex<float> > work(lwork);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
     cheev_(&job, &uplo, &n, A.GetDataVoid(), &n, w.GetData(),
 	   work.GetDataVoid(), &lwork, rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -707,6 +961,7 @@ namespace Seldon
     char uplo('U'); char job('V'); int lwork = 2*n;
     Vector<complex<float> > work(lwork);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
     z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
@@ -714,7 +969,14 @@ namespace Seldon
     
     cheev_(&job, &uplo, &n, z.GetDataVoid(), &n,
 	   w.GetData(), work.GetDataVoid(),
-	   &lwork, rwork.GetData() , &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData() , &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -727,9 +989,17 @@ namespace Seldon
     char uplo('U'); char job('N'); int lwork = 2*n;
     Vector<complex<double> > work(lwork);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
     zheev_(&job, &uplo, &n, A.GetDataVoid(), &n, w.GetData(),
 	   work.GetDataVoid(), &lwork, rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -745,6 +1015,7 @@ namespace Seldon
     char uplo('U'); char job('V'); int lwork = 2*n;
     Vector<complex<double> > work(lwork);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
     z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
@@ -752,7 +1023,14 @@ namespace Seldon
     
     zheev_(&job, &uplo, &n, z.GetDataVoid(), &n,
 	   w.GetData(), work.GetDataVoid(),
-	   &lwork, rwork.GetData() , &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData() , &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -767,8 +1045,16 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('N');
     Vector<float> work(3*n);
+    w.Reallocate(n);
     sspev_(&job, &uplo, &n, A.GetData(), w.GetData(), A.GetData(), &n,
-	   work.GetData() , &lapack_info.GetInfoRef());
+	   work.GetData() , &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -781,8 +1067,16 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('V');
     Vector<float> work(3*n);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     sspev_(&job, &uplo, &n, A.GetData(), w.GetData(), z.GetData(), &n,
-	   work.GetData() , &lapack_info.GetInfoRef());
+	   work.GetData() , &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     Transpose(z);
   }
@@ -799,6 +1093,7 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
     
+    w.Reallocate(n);
     GetEigenvalues(B, w);
   }
   
@@ -816,6 +1111,8 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
     
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     GetEigenvaluesEigenvec(B, w, z);
   }
   
@@ -827,8 +1124,16 @@ namespace Seldon
   {
     int n = A.GetM();
     char uplo('L'); char job('N'); Vector<double> work(3*n);
+    w.Reallocate(n);
     dspev_(&job, &uplo, &n, A.GetData(), w.GetData(), A.GetData(), &n,
-	   work.GetData() , &lapack_info.GetInfoRef());
+	   work.GetData() , &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -840,8 +1145,16 @@ namespace Seldon
   {
     int n = A.GetM();
     char uplo('L'); char job('V'); Vector<double> work(3*n);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     dspev_(&job, &uplo, &n, A.GetData(), w.GetData(), z.GetData(), &n,
-	   work.GetData() , &lapack_info.GetInfoRef());
+	   work.GetData() , &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     Transpose(z);
   }
@@ -858,6 +1171,7 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
     
+    w.Reallocate(n);
     GetEigenvalues(B, w);
   }
   
@@ -876,6 +1190,8 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
     
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     GetEigenvaluesEigenvec(B, w, z);
   }
   
@@ -891,8 +1207,16 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('N');
     Vector<float> work(3*n);
+    w.Reallocate(n);
     sspev_(&job, &uplo, &n, A.GetData(), w.GetData(), A.GetData(),
-	   &n, work.GetData() , &lapack_info.GetInfoRef());
+	   &n, work.GetData() , &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -905,8 +1229,17 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('V');
     Vector<float> work(3*n);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     sspev_(&job, &uplo, &n, A.GetData(), w.GetData(), z.GetData(),
-	   &n, work.GetData() , &lapack_info.GetInfoRef());
+	   &n, work.GetData() , &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -922,6 +1255,7 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
     
+    w.Reallocate(n);
     GetEigenvalues(B, w);
   }
   
@@ -940,6 +1274,8 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
     
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     GetEigenvaluesEigenvec(B, w, z);
   }
   
@@ -951,8 +1287,16 @@ namespace Seldon
   {
     int n = A.GetM();
     char uplo('U'); char job('N'); Vector<double> work(3*n);
+    w.Reallocate(n);
     dspev_(&job, &uplo, &n, A.GetData(), w.GetData(), A.GetData(),
-	   &n, work.GetData() , &lapack_info.GetInfoRef());
+	   &n, work.GetData() , &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -965,8 +1309,17 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('V');
     Vector<double> work(3*n);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     dspev_(&job, &uplo, &n, A.GetData(), w.GetData(), z.GetData(),
-	   &n, work.GetData() , &lapack_info.GetInfoRef());
+	   &n, work.GetData() , &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -982,6 +1335,7 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
     
+    w.Reallocate(n);
     GetEigenvalues(B, w);
   }
   
@@ -1000,6 +1354,8 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
     
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     GetEigenvaluesEigenvec(B, w, z);
   }
   
@@ -1017,8 +1373,16 @@ namespace Seldon
     char uplo('L'); char job('N');
     Vector<complex<float> > work(2*n);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
     chpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), A.GetDataVoid(), &n,
-	   work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1034,8 +1398,16 @@ namespace Seldon
     char uplo('L'); char job('V');
     Vector<complex<float> > work(2*n);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     chpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), z.GetDataVoid(),
-	   &n, work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	   &n, work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     Transpose(z);
   }
@@ -1051,8 +1423,16 @@ namespace Seldon
     char uplo('L'); char job('N');
     Vector<complex<double> > work(2*n);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
     zhpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), A.GetDataVoid(), &n,
-	   work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1068,8 +1448,16 @@ namespace Seldon
     char uplo('L'); char job('V');
     Vector<complex<double> > work(2*n);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     zhpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), z.GetDataVoid(),
-	   &n, work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	   &n, work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     Transpose(z);
   }
@@ -1089,8 +1477,16 @@ namespace Seldon
     char job('N');
     Vector<complex<float> > work(2*n);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
     chpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), A.GetDataVoid(), &n,
-	   work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1106,8 +1502,17 @@ namespace Seldon
     char uplo('U'); char job('V');
     Vector<complex<float> > work(2*n);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     chpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), z.GetDataVoid(), &n,
-	   work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1122,8 +1527,16 @@ namespace Seldon
     char job('N');
     Vector<complex<double> > work(2*n);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
     zhpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), A.GetDataVoid(), &n,
-	   work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1139,8 +1552,17 @@ namespace Seldon
     char uplo('U'); char job('V');
     Vector<complex<double> > work(2*n);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     zhpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), z.GetDataVoid(), &n,
-	   work.GetDataVoid(), rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1166,9 +1588,16 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('N');
     int lwork = 3*n; Vector<float> work(lwork);
-    
+    w.Reallocate(n);
     ssygv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
-	   w.GetData(), work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1184,12 +1613,21 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('V');
     int lwork = 3*n; Vector<float> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
     
     ssygv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
-	   w.GetData(), work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1205,10 +1643,18 @@ namespace Seldon
     char jobvl('N'), jobvr('N');
     int lwork = 2*n; Vector<complex<float> > work(lwork);
     Vector<float> rwork(8*n);
-    
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
     cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha.GetData(), beta.GetData(), A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1231,10 +1677,18 @@ namespace Seldon
     char jobvl('V'), jobvr('N');
     int lwork = 2*n; Vector<complex<float> > work(lwork);
     Vector<float> rwork(8*n);
-    
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
+    V.Reallocate(n);
     cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha.GetData(), beta.GetData(), V.GetData(), &n, V.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     TransposeConj(V);
   }
@@ -1251,9 +1705,16 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('N');
     int lwork = 3*n; Vector<double> work(lwork);
-    
+    w.Reallocate(n);
     dsygv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
-	   w.GetData(), work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1269,12 +1730,21 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('V');
     int lwork = 3*n; Vector<double> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
     
     dsygv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
-	   w.GetData(), work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1290,10 +1760,18 @@ namespace Seldon
     char jobvl('N'), jobvr('N');
     int lwork = 2*n; Vector<complex<double> > work(lwork);
     Vector<double> rwork(8*n);
-    
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
     zggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha.GetData(), beta.GetData(), A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1316,10 +1794,18 @@ namespace Seldon
     char jobvl('V'), jobvr('N');
     int lwork = 2*n; Vector<complex<double> > work(lwork);
     Vector<double> rwork(8*n);
-    
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
+    V.Reallocate(n,n);
     zggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha.GetData(), beta.GetData(), V.GetData(), &n, V.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     TransposeConj(V);
   }
@@ -1339,9 +1825,16 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('N');
     int lwork = 3*n; Vector<float> work(lwork);
-    
+    w.Reallocate(n);
     ssygv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
-	   w.GetData(), work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1357,12 +1850,21 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('V');
     int lwork = 3*n; Vector<float> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n, n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
     
     ssygv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
-	   w.GetData(), work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1378,10 +1880,18 @@ namespace Seldon
     char jobvl('N'), jobvr('N'); int lwork = 2*n;
     Vector<complex<float> > work(lwork);
     Vector<float> rwork(8*n);
-    
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
     cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha.GetData(), beta.GetData(), A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1401,10 +1911,19 @@ namespace Seldon
     char jobvl('N'), jobvr('V');
     int lwork = 2*n; Vector<complex<float> > work(lwork);
     Vector<float> rwork(8*n);
-    
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
+    V.Reallocate(n,n);
     cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha.GetData(), beta.GetData(), V.GetData(), &n, V.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   template<class Prop1, class Prop2, class Allocator1,
@@ -1418,9 +1937,16 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('N');
     int lwork = 3*n; Vector<double> work(lwork);
-    
+    w.Reallocate(n);
     dsygv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
-	   w.GetData(), work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1436,12 +1962,21 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('V');
     int lwork = 3*n; Vector<double> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
     
     dsygv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
-	   w.GetData(), work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1457,10 +1992,18 @@ namespace Seldon
     char jobvl('N'), jobvr('N'); int lwork = 2*n;
     Vector<complex<double> > work(lwork);
     Vector<double> rwork(8*n);
-    
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
     zggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha.GetData(), beta.GetData(), A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1480,10 +2023,19 @@ namespace Seldon
     char jobvl('N'), jobvr('V');
     int lwork = 2*n; Vector<complex<double> > work(lwork);
     Vector<double> rwork(8*n);
-    
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
+    V.Reallocate(n,n);
     zggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha.GetData(), beta.GetData(), V.GetData(), &n, V.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1502,9 +2054,17 @@ namespace Seldon
     char uplo('L'); char job('N');
     int lwork = 2*n; Vector<float> work(lwork);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
     chegv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1523,6 +2083,8 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('V');
     int lwork = 2*n; Vector<float> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
@@ -1530,7 +2092,14 @@ namespace Seldon
     Vector<float> rwork(3*n);
     chegv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1546,9 +2115,17 @@ namespace Seldon
     char uplo('L'); char job('N');
     int lwork = 3*n; Vector<double> work(lwork);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
     zhegv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1567,6 +2144,8 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('V');
     int lwork = 3*n; Vector<double> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
@@ -1574,7 +2153,14 @@ namespace Seldon
     Vector<double> rwork(3*n);
     zhegv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1593,9 +2179,17 @@ namespace Seldon
     char uplo('U'); char job('N');
     int lwork = 2*n; Vector<float> work(lwork);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
     chegv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1614,6 +2208,8 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('V');
     int lwork = 3*n; Vector<float> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
@@ -1621,7 +2217,14 @@ namespace Seldon
     Vector<float> rwork(3*n);
     chegv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork,
-	   rwork.GetData(), &lapack_info.GetInfoRef());
+	   rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1637,9 +2240,17 @@ namespace Seldon
     char uplo('U'); char job('N');
     int lwork = 3*n; Vector<double> work(lwork);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
     zhegv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1658,6 +2269,8 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('V');
     int lwork = 3*n; Vector<double> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
@@ -1665,7 +2278,14 @@ namespace Seldon
     Vector<double> rwork(3*n);
     zhegv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork,
-	   rwork.GetData(), &lapack_info.GetInfoRef());
+	   rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1683,9 +2303,16 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('N');
     int lwork = 3*n; Vector<float> work(lwork);
-    
+    w.Reallocate(n);
     sspgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
-	   A.GetData(), &n, work.GetData(), &lapack_info.GetInfoRef());
+	   A.GetData(), &n, work.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1704,8 +2331,17 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('V');
     int lwork = 3*n; Vector<float> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     sspgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
-	   z.GetData(), &n, work.GetData(), &lapack_info.GetInfoRef());
+	   z.GetData(), &n, work.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1728,6 +2364,8 @@ namespace Seldon
 	  D(i,j) = B(i,j);
 	}
     
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
     GetEigenvalues(C, D, alpha, beta);
   }
   
@@ -1755,6 +2393,9 @@ namespace Seldon
 	  D(i,j) = B(i,j);
 	}
     
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
+    z.Reallocate(n,n);
     GetEigenvaluesEigenvec(C, D, alpha, beta, z);
   }
   
@@ -1770,9 +2411,16 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('N');
     int lwork = 3*n; Vector<double> work(lwork);
-    
+    w.Reallocate(n);
     dspgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
-	   A.GetData(), &n, work.GetData(), &lapack_info.GetInfoRef());
+	   A.GetData(), &n, work.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1791,8 +2439,17 @@ namespace Seldon
     int n = A.GetM();
     char uplo('L'); char job('V');
     int lwork = 3*n; Vector<double> work(lwork);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     dspgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
-	   z.GetData(), &n, work.GetData(), &lapack_info.GetInfoRef());
+	   z.GetData(), &n, work.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1815,6 +2472,8 @@ namespace Seldon
 	  D(i,j) = B(i,j);
 	}
     
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
     GetEigenvalues(C, D, alpha, beta);
   }
   
@@ -1842,6 +2501,9 @@ namespace Seldon
 	  D(i,j) = B(i,j);
 	}
     
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
+    z.Reallocate(n,n);
     GetEigenvaluesEigenvec(C, D, alpha, beta, z);
   }
   
@@ -1860,9 +2522,16 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('N');
     int lwork = 3*n; Vector<float> work(lwork);
-    
+    w.Reallocate(n);
     sspgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
-	   A.GetData(), &n, work.GetData(), &lapack_info.GetInfoRef());
+	   A.GetData(), &n, work.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1881,9 +2550,17 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('V'); int lwork = 3*n;
     Vector<float> work(lwork);
-    
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     sspgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
-	   z.GetData(), &n, work.GetData(), &lapack_info.GetInfoRef());
+	   z.GetData(), &n, work.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1906,6 +2583,8 @@ namespace Seldon
 	  D(i,j) = B(i,j);
 	}
     
+    alpha.Reallocate(n);    
+    beta.Reallocate(n);
     GetEigenvalues(C, D, alpha, beta);
   }
   
@@ -1933,6 +2612,9 @@ namespace Seldon
 	  D(i,j) = B(i,j);
 	}
     
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
+    z.Reallocate(n,n);
     GetEigenvaluesEigenvec(C, D, alpha, beta, z);
   }
   
@@ -1948,9 +2630,16 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('N');
     int lwork = 3*n; Vector<double> work(lwork);
-    
+    w.Reallocate(n);
     dspgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
-	   A.GetData(), &n, work.GetData(), &lapack_info.GetInfoRef());
+	   A.GetData(), &n, work.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1969,9 +2658,17 @@ namespace Seldon
     int n = A.GetM();
     char uplo('U'); char job('V'); int lwork = 3*n;
     Vector<double> work(lwork);
-    
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     dspgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
-	   z.GetData(), &n, work.GetData(), &lapack_info.GetInfoRef());
+	   z.GetData(), &n, work.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -1994,6 +2691,8 @@ namespace Seldon
 	  D(i,j) = B(i,j);
 	}
     
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
     GetEigenvalues(C, D, alpha, beta);
   }
   
@@ -2021,6 +2720,9 @@ namespace Seldon
 	  D(i,j) = B(i,j);
 	}
     
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
+    z.Reallocate(n,n);
     GetEigenvaluesEigenvec(C, D, alpha, beta, z);
   }
   
@@ -2043,9 +2745,17 @@ namespace Seldon
     int lwork = 2*n;
     Vector<float> work(lwork);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
     chpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
 	   A.GetData(), &n, work.GetData(), rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2065,9 +2775,18 @@ namespace Seldon
     char uplo('L'); char job('V'); int lwork = 2*n;
     Vector<float> work(lwork);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     chpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
 	   z.GetData(), &n, work.GetData(), rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2086,9 +2805,17 @@ namespace Seldon
     int lwork = 2*n;
     Vector<double> work(lwork);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
     zhpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
 	   A.GetData(), &n, work.GetData(), rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2108,9 +2835,18 @@ namespace Seldon
     char uplo('L'); char job('V'); int lwork = 2*n;
     Vector<double> work(lwork);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     zhpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
 	   z.GetData(), &n, work.GetData(), rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2132,9 +2868,17 @@ namespace Seldon
     int lwork = 2*n;
     Vector<float> work(lwork);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
     chpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(),
 	   w.GetData(), A.GetData(), &n, work.GetData(),
-	   rwork.GetData(), &lapack_info.GetInfoRef());
+	   rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2155,9 +2899,18 @@ namespace Seldon
     int lwork = 3*n;
     Vector<float> work(lwork);
     Vector<float> rwork(3*n);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     chpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
 	   z.GetData(), &n, work.GetData(), rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2176,9 +2929,17 @@ namespace Seldon
     int lwork = 2*n;
     Vector<double> work(lwork);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
     zhpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(),
 	   w.GetData(), A.GetData(), &n, work.GetData(),
-	   rwork.GetData(), &lapack_info.GetInfoRef());
+	   rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2199,9 +2960,18 @@ namespace Seldon
     int lwork = 3*n;
     Vector<double> work(lwork);
     Vector<double> rwork(3*n);
+    w.Reallocate(n);
+    z.Reallocate(n,n);
     zhpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
 	   z.GetData(), &n, work.GetData(), rwork.GetData(),
-	   &lapack_info.GetInfoRef());
+	   &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2221,11 +2991,20 @@ namespace Seldon
     int n = A.GetM();
     char jobvl('N'), jobvr('N');
     int lwork = 8*n+16; Vector<float> work(lwork);
-    
+    alpha_real.Reallocate(n);
+    alpha_imag.Reallocate(n);
+    beta.Reallocate(n);
     sggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha_real.GetData(), alpha_imag.GetData(), beta.GetData(),
 	   A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2243,11 +3022,21 @@ namespace Seldon
     int n = A.GetM();
     char jobvl('V'), jobvr('N');
     int lwork = 8*n+16; Vector<float> work(lwork);
-    
+    alpha_real.Reallocate(n);
+    alpha_imag.Reallocate(n);
+    beta.Reallocate(n);
+    V.Reallocate(n,n);
     sggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha_real.GetData(), alpha_imag.GetData(), beta.GetData(),
 	   V.GetData(), &n, V.GetData(), &n,
-	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, &info.GetInfoRef());
+
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     Transpose(V);
     // conjugate if necessary
@@ -2280,10 +3069,18 @@ namespace Seldon
     char jobvl('N'), jobvr('N'); int lwork = 2*n;
     Vector<complex<float> > work(lwork);
     Vector<float> rwork(8*n);
-    
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
     cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha.GetData(), beta.GetData(), A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2306,10 +3103,19 @@ namespace Seldon
     char jobvl('V'), jobvr('N');
     int lwork = 2*n; Vector<complex<float> > work(lwork);
     Vector<float> rwork(8*n);
-    
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
+    V.Reallocate(n,n);
     cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n, alpha.GetData(),
 	   beta.GetData(), V.GetData(), &n, V.GetData(), &n, work.GetData(),
-	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData(), &info.GetInfoRef());
+
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     TransposeConj(V);
   }
@@ -2328,11 +3134,20 @@ namespace Seldon
     int n = A.GetM();
     char jobvl('N'), jobvr('N');
     int lwork = 8*n+16; Vector<double> work(lwork);
-    
+    alpha_real.Reallocate(n);
+    alpha_imag.Reallocate(n);
+    beta.Reallocate(n);
     dggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha_real.GetData(), alpha_imag.GetData(), beta.GetData(),
 	   A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2350,11 +3165,20 @@ namespace Seldon
     int n = A.GetM();
     char jobvl('V'), jobvr('N');
     int lwork = 8*n+16; Vector<double> work(lwork);
-    
+    alpha_real.Reallocate(n);
+    alpha_imag.Reallocate(n);
+    beta.Reallocate(n);
+    V.Reallocate(n, n);
     dggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha_real.GetData(), alpha_imag.GetData(), beta.GetData(),
 	   V.GetData(), &n, V.GetData(), &n,
-	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     Transpose(V);
     // conjugate if necessary
@@ -2387,10 +3211,18 @@ namespace Seldon
     char jobvl('N'), jobvr('N'); int lwork = 2*n;
     Vector<complex<double> > work(lwork);
     Vector<double> rwork(8*n);
-    
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
     zggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha.GetData(), beta.GetData(), A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2413,10 +3245,18 @@ namespace Seldon
     char jobvl('V'), jobvr('N');
     int lwork = 2*n; Vector<complex<double> > work(lwork);
     Vector<double> rwork(8*n);
-    
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
+    V.Reallocate(n,n);
     zggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n, alpha.GetData(),
 	   beta.GetData(), V.GetData(), &n, V.GetData(), &n, work.GetData(),
-	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
     TransposeConj(V);
   }
@@ -2438,11 +3278,21 @@ namespace Seldon
     int n = A.GetM();
     char jobvl('N'), jobvr('N');
     int lwork = 8*n+16; Vector<float> work(lwork);
-    
+    alpha_real.Reallocate(n);
+    alpha_imag.Reallocate(n);
+    beta.Reallocate(n);
+
     sggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha_real.GetData(), alpha_imag.GetData(), beta.GetData(),
 	   A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2462,11 +3312,20 @@ namespace Seldon
     int n = A.GetM();
     char jobvl('V'), jobvr('N');
     int lwork = 8*n+16; Vector<float> work(lwork);
-    
+    alpha_real.Reallocate(n);
+    alpha_imag.Reallocate(n);
+    beta.Reallocate(n);
+    V.Reallocate(n,n);
     sggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(),
 	   &n, alpha_real.GetData(), alpha_imag.GetData(),
 	   beta.GetData(), V.GetData(), &n, V.GetData(), &n,
-	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
   }
   
@@ -2483,11 +3342,20 @@ namespace Seldon
     char jobvl('N'), jobvr('N'); int lwork = 2*n;
     Vector<complex<float> > work(lwork);
     Vector<float> rwork(8*n);
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
     
     cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(),
 	   &n, alpha.GetData(),
 	   beta.GetData(), A.GetData(), &n, A.GetData(), &n, work.GetData(),
-	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2510,10 +3378,20 @@ namespace Seldon
     char jobvl('N'), jobvr('V'); int lwork = 2*n;
     Vector<complex<float> > work(lwork);
     Vector<float> rwork(8*n);
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
+    V.Reallocate(n,n);
     cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(),
 	   &n, alpha.GetData(),
 	   beta.GetData(), V.GetData(), &n, V.GetData(), &n, work.GetData(),
-	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2530,11 +3408,21 @@ namespace Seldon
     int n = A.GetM();
     char jobvl('N'), jobvr('N');
     int lwork = 8*n+16; Vector<double> work(lwork);
+    alpha_real.Reallocate(n);
+    alpha_imag.Reallocate(n);
+    beta.Reallocate(n);
     
     dggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha_real.GetData(), alpha_imag.GetData(), beta.GetData(),
 	   A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2554,11 +3442,21 @@ namespace Seldon
     int n = A.GetM();
     char jobvl('V'), jobvr('N');
     int lwork = 8*n+16; Vector<double> work(lwork);
+    alpha_real.Reallocate(n);
+    alpha_imag.Reallocate(n);
+    beta.Reallocate(n);
+    V.Reallocate(n,n);
     
     dggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(),
 	   &n, alpha_real.GetData(), alpha_imag.GetData(),
 	   beta.GetData(), V.GetData(), &n, V.GetData(), &n,
-	   work.GetData(), &lwork, &lapack_info.GetInfoRef());
+	   work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
     
   }
   
@@ -2575,11 +3473,20 @@ namespace Seldon
     char jobvl('N'), jobvr('N'); int lwork = 2*n;
     Vector<complex<double> > work(lwork);
     Vector<double> rwork(8*n);
-    
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
+
     zggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(),
 	   &n, alpha.GetData(),
 	   beta.GetData(), A.GetData(), &n, A.GetData(), &n, work.GetData(),
-	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2602,10 +3509,20 @@ namespace Seldon
     char jobvl('N'), jobvr('V'); int lwork = 2*n;
     Vector<complex<double> > work(lwork);
     Vector<double> rwork(8*n);
+    alpha.Reallocate(n);
+    beta.Reallocate(n);
+    V.Reallocate(n,n);
     zggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(),
 	   &n, alpha.GetData(),
 	   beta.GetData(), V.GetData(), &n, V.GetData(), &n, work.GetData(),
-	   &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	   &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetEigenvalues",
+			"Failed to find eigenvalues ");
+#endif
+
   }
   
   
@@ -2634,7 +3551,7 @@ namespace Seldon
     Vector<float> work(lwork);
     sgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &n, lambda.GetData(),
 	    u.GetData(), &n, v.GetData(), &n, work.GetData(),
-	    &lwork, &lapack_info.GetInfoRef());
+	    &lwork, &info.GetInfoRef());
   }
   
   
@@ -2653,7 +3570,7 @@ namespace Seldon
     Vector<float> rwork(5*min(m,n));
     cgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &n, lambda.GetDataVoid(),
 	    u.GetDataVoid(), &n, v.GetDataVoid(), &n, work.GetDataVoid(),
-	    &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	    &lwork, rwork.GetData(), &info.GetInfoRef());
   }
   
   template<class Prop1, class Allocator1, class Allocator2,
@@ -2670,7 +3587,7 @@ namespace Seldon
     Vector<double> work(lwork);
     dgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &n, lambda.GetData(),
 	    u.GetData(), &n, v.GetData(), &n, work.GetData(),
-	    &lwork, &lapack_info.GetInfoRef());
+	    &lwork, &info.GetInfoRef());
   }
   
   
@@ -2689,7 +3606,7 @@ namespace Seldon
     Vector<double> rwork(5*min(m,n));
     zgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &n, lambda.GetDataVoid(),
 	    u.GetDataVoid(), &n, v.GetDataVoid(), &n, work.GetDataVoid(),
-	    &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	    &lwork, rwork.GetData(), &info.GetInfoRef());
   }
   
   
@@ -2704,13 +3621,16 @@ namespace Seldon
 	      Matrix<float, General, ColMajor, Allocator3>& v,
 	      LapackInfo& info = lapack_info)
   {
-    int m = A.GetM(); int n = A.GetM();
+    int m = A.GetM(); int n = A.GetN();
     char jobl('A'), jobr('A');
     int lwork = max(3*min(m,n)+max(m,n), 5*min(m,n));
     Vector<float> work(lwork);
-    sgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &n, lambda.GetData(),
+    lambda.Reallocate(min(m, n)); lambda.Zero();
+    u.Reallocate(m, m); u.Zero();
+    v.Reallocate(n, n); v.Zero();
+    sgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &m, lambda.GetData(),
 	    u.GetData(), &m, v.GetData(), &n, work.GetData(),
-	    &lwork, &lapack_info.GetInfoRef());
+	    &lwork, &info.GetInfoRef());
   }
   
   
@@ -2722,14 +3642,17 @@ namespace Seldon
 	      Matrix<complex<float>, General, ColMajor, Allocator3>& v,
 	      LapackInfo& info = lapack_info)
   {
-    int m = A.GetM(); int n = A.GetM();
+    int m = A.GetM(); int n = A.GetN();
     char jobl('A'), jobr('A');
     int lwork = 2*min(m,n)+max(m,n);
     Vector<complex<float> > work(lwork);
     Vector<float> rwork(5*min(m,n));
-    cgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &n, lambda.GetDataVoid(),
+    lambda.Reallocate(min(m, n)); lambda.Zero();
+    u.Reallocate(m, m); u.Zero();
+    v.Reallocate(n, n); v.Zero();
+    cgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &m, lambda.GetDataVoid(),
 	    u.GetDataVoid(), &m, v.GetDataVoid(), &n, work.GetDataVoid(),
-	    &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	    &lwork, rwork.GetData(), &info.GetInfoRef());
   }
   
   
@@ -2741,13 +3664,17 @@ namespace Seldon
 	      Matrix<double, General, ColMajor, Allocator3>& v,
 	      LapackInfo& info = lapack_info)
   {
-    int m = A.GetM(); int n = A.GetM();
+    int m = A.GetM(); int n = A.GetN();
     char jobl('A'), jobr('A');
-    int lwork = 7*max(m,n);
+    int lwork =10*max(m,n);
     Vector<double> work(lwork);
-    dgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &n, lambda.GetData(),
+    lambda.Reallocate(min(m, n)); lambda.Zero();
+    u.Reallocate(m, m); u.Zero();
+    v.Reallocate(n, n); v.Zero();
+    dgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &m, lambda.GetData(),
 	    u.GetData(), &m, v.GetData(), &n, work.GetData(),
-	    &lwork, &lapack_info.GetInfoRef());
+	    &lwork, &info.GetInfoRef());
+    
   }
   
   
@@ -2759,19 +3686,48 @@ namespace Seldon
 	      Matrix<complex<double>, General, ColMajor, Allocator3>& v,
 	      LapackInfo& info = lapack_info)
   {
-    int m = A.GetM(); int n = A.GetM();
+    int m = A.GetM(); int n = A.GetN();
     char jobl('A'), jobr('A');
     int lwork = 2*min(m,n)+max(m,n);
     Vector<complex<double> > work(lwork);
     Vector<double> rwork(5*min(m,n));
-    zgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &n, lambda.GetDataVoid(),
+    lambda.Reallocate(min(m, n)); lambda.Zero();
+    u.Reallocate(m, m); u.Zero();
+    v.Reallocate(n, n); v.Zero();
+    zgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &m, lambda.GetDataVoid(),
 	    u.GetDataVoid(), &m, v.GetDataVoid(), &n, work.GetDataVoid(),
-	    &lwork, rwork.GetData(), &lapack_info.GetInfoRef());
+	    &lwork, rwork.GetData(), &info.GetInfoRef());
   }
   
   
+  // pseudo inverse
+  template<class Prop1, class Allocator1>
+  void GetPseudoInverse(Matrix<double, Prop1, ColMajor, Allocator1>& A,
+			double epsilon, LapackInfo& info = lapack_info)
+  {
+    int m = A.GetM(), n = A.GetN();
+    Vector<double, Vect_Full, Allocator1> lambda;
+    Matrix<double, General, ColMajor, Allocator1> U;
+    Matrix<double, General, ColMajor, Allocator1> V;
+    
+    GetSVD(A, lambda, U, V);
+    
+    A.Reallocate(n, m); A.Fill(0);
+    // computation of A = V Sigma U^*
+    for (int k = 0; k < min(m, n); k++)
+      if (abs(lambda(k)) > epsilon)
+	{
+	  lambda(k) = 1.0/lambda(k);
+	  for (int i = 0; i < n; i++)
+	    for (int j = 0; j < m; j++)
+	      A(i, j) += V(k, i)*lambda(k)*U(j, k);
+	}
+  }
+
+  
   // SINGULAR VALUE DECOMPOSITION //
   //////////////////////////////////
+  
   
 
   void GetHessian(Matrix<complex<double>, General, ColMajor>& A,

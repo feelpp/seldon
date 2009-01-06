@@ -53,6 +53,7 @@ namespace Seldon
     // Constructor.
     Matrix_Hermitian();
     Matrix_Hermitian(int i, int j = 0);
+    Matrix_Hermitian(const Matrix_Hermitian<T, Prop, Storage, Allocator>& A);
 
     // Destructor.
     ~Matrix_Hermitian();

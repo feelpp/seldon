@@ -1,5 +1,6 @@
 #define SELDON_WITH_CBLAS
 #define SELDON_WITH_LAPACK
+#define SELDON_DEBUG_LEVEL_4
 
 #include "Seldon.hxx"
 

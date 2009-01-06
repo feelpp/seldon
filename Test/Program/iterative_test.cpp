@@ -2,7 +2,7 @@
 #define SELDON_WITH_CBLAS
 
 #include "Seldon.hxx"
-#include "Solver.hxx"
+#include "SeldonSolver.hxx"
 
 using namespace Seldon;
 
