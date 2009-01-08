@@ -53,13 +53,6 @@ namespace Seldon
   ::Matrix_Symmetric(int i, int j): Matrix_Base<T, Allocator>(i, i)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_Symmetric::Matrix_Symmetric(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -251,13 +244,6 @@ namespace Seldon
   ::Reallocate(int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_Symmetric::Reallocate(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-
     if (i != this->m_)
       {
 	this->m_ = i;
@@ -455,13 +441,6 @@ namespace Seldon
   inline void Matrix_Symmetric<T, Prop, Storage, Allocator>
   ::Resize(int i, int j)
   {
-
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_Symmetric::Resize(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
 
     // Storing the old values of the matrix.
     int iold = Storage::GetFirst(this->m_, this->n_);

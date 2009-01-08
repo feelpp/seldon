@@ -52,13 +52,6 @@ namespace Seldon
   ::Matrix_SymPacked(int i, int j): Matrix_Base<T, Allocator>(i, i)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_SymPacked::MatrixSymPacked(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -182,13 +175,6 @@ namespace Seldon
 									int j)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_SymPacked::Reallocate(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-    
     if (i != this->m_)
       {
 	this->m_ = i;
@@ -1012,13 +998,6 @@ namespace Seldon
   inline void Matrix<T, Prop, ColSymPacked, Allocator>::Resize(int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix<T,ColSymPacked>::Resize(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-
     // Storing the old values of the matrix.
     int nold = this->GetDataSize();
     Vector<T, Vect_Full, Allocator> xold(nold);
@@ -1116,13 +1095,6 @@ namespace Seldon
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, RowSymPacked, Allocator>::Resize(int i, int j)
   {
-
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix<T,RowSymPacked>::Resize(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
 
     // Storing the old values of the matrix.
     int nold = this->GetDataSize(), iold = this->m_;

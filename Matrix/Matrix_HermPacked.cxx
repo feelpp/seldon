@@ -53,13 +53,6 @@ namespace Seldon
     Matrix_Base<T, Allocator>(i, i)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_HermPacked::Matrix_HermPacked(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -183,12 +176,6 @@ namespace Seldon
   inline void Matrix_HermPacked<T, Prop, Storage, Allocator>
   ::Reallocate(int i, int j)
   {
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_HermPacked::Reallocate(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
 
     if (i != this->m_)
       {
@@ -1028,13 +1015,6 @@ namespace Seldon
   ::Resize(int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_HermPacked::Resize(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-
     // Storing the old values of the matrix.
     int nold = this->GetDataSize();
     Vector<T, Vect_Full, Allocator> xold(nold);
@@ -1134,14 +1114,6 @@ namespace Seldon
   inline void Matrix<T, Prop, RowHermPacked, Allocator>
   ::Resize(int i, int j)
   {
-
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_HermPacked::Resize(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-
     // Storing the old values of the matrix.
     int nold = this->GetDataSize(), iold = this->m_;
     Vector<T, Vect_Full, Allocator> xold(nold);

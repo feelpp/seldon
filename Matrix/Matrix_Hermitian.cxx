@@ -54,13 +54,6 @@ namespace Seldon
     Matrix_Base<T, Allocator>(i, i)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_Hermitian::Matrix_Hermitian(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -252,13 +245,6 @@ namespace Seldon
   ::Reallocate(int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_Hermitian::Reallocate(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-
     if (i != this->m_)
       {
 	this->m_ = i;
@@ -456,13 +442,6 @@ namespace Seldon
   ::Resize(int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_Hermitian::Resize(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-
     // Storing the old values of the matrix.
     int iold = Storage::GetFirst(this->m_, this->n_);
     int jold = Storage::GetSecond(this->m_, this->n_);

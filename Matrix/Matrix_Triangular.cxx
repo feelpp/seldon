@@ -53,13 +53,6 @@ namespace Seldon
   ::Matrix_Triangular(int i, int j): Matrix_Base<T, Allocator>(i, i)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_Triangular::Matrix_Triangular(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-    
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -252,13 +245,6 @@ namespace Seldon
   ::Reallocate(int i, int j)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_Triangular::Reallocate(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-    
     if (i != this->m_)
       {
 	this->m_ = i;
@@ -357,13 +343,6 @@ namespace Seldon
   ::Resize(int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_Triangular::Resize(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-
     if (i != this->m_)
       {
 	// Storing the previous values of the matrix.

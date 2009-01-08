@@ -52,13 +52,6 @@ namespace Seldon
   ::Matrix_Pointers(int i, int j): Matrix_Base<T, Allocator>(i, j)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_Pointers::Matrix_Pointers(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
-
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -237,13 +230,6 @@ namespace Seldon
   inline void Matrix_Pointers<T, Prop, Storage, Allocator>
   ::Reallocate(int i, int j)
   {
-    
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_Pointers::Reallocate(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
     
     if (i != this->m_ || j != this->n_)
       {
@@ -430,13 +416,6 @@ namespace Seldon
   inline void Matrix_Pointers<T, Prop, Storage, Allocator>
   ::Resize(int i, int j)
   {
-    
-#ifdef SELDON_CHECK_BOUNDARIES
-    if ((i <= 0)||(j <= 0))
-      throw WrongIndex("Matrix_Pointers::Resize(int, int)",
-		       string("Matrix size should be greater than 0 but ") +
-		       "is equal to " + to_str(i) + "," + to_str(j) + ".");
-#endif
     
     // Storing the old values of the matrix.
     int iold = Storage::GetFirst(this->m_, this->n_);

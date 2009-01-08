@@ -388,7 +388,6 @@ namespace Seldon
     int i, j;
 
     int ma = M.GetM();
-    int na = M.GetN();
 
 #ifdef SELDON_CHECK_BOUNDARIES
     CheckDim(Trans, M, X, Y, "MltAdd(alpha, SeldonTrans, M, X, beta, Y)");
@@ -430,7 +429,6 @@ namespace Seldon
     int i, j;
 
     int ma = M.GetM();
-    int na = M.GetN();
 
 #ifdef SELDON_CHECK_BOUNDARIES
     CheckDim(Trans, M, X, Y, "MltAdd(alpha, SeldonConjTrans, M, X, beta, Y)");
