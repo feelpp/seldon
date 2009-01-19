@@ -21,7 +21,7 @@
 
 extern "C"
 {
-#include "Computation/Interfaces/Direct/superlu_interface.h"
+  #include "Computation/Interfaces/Direct/superlu_interface.h"
 }
 
 namespace Seldon
@@ -30,11 +30,13 @@ namespace Seldon
   template<class T>
   class MatrixSuperLU_Base
   {
-  public :
+  protected :
     //! objects of SuperLU
     SuperMatrix A, L, U, B;
-    SCformat *Lstore;  //! object of SuperLU
-    NCformat *Ustore;  //! object of SuperLU
+    SCformat *Lstore;  //!< object of SuperLU
+    NCformat *Ustore;  //!< object of SuperLU
+    SuperLUStat_t stat; //!< statistics
+    superlu_options_t options; //!< options
     //! permutation array
     IVect perm_r, perm_c;
     

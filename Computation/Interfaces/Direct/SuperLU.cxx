@@ -33,8 +33,11 @@ namespace Seldon
     //   permc_spec = 3: use approximate mininum degree column ordering
     n = 0;
     permc_spec = 2;
+    StatInit(&stat);
+    set_default_options(&options);
     ShowMessages();
   }
+  
   
   //! destructor
   template<class T>
@@ -42,6 +45,7 @@ namespace Seldon
   {
     Clear();
   }
+  
   
   //! same effect as a call to the destructor
   template<class T>
@@ -58,12 +62,14 @@ namespace Seldon
       }
   }
   
+  
   //! no message from SuperLU
   template<class T>
   void MatrixSuperLU_Base<T>::HideMessages()
   {
     display_info = false;
   }
+  
   
   //! allows messages from SuperLU
   template<class T>
@@ -72,12 +78,16 @@ namespace Seldon
     display_info = true;
   }
   
+  
   //! factorization of matrix in double precision using SuperLU
   template<class Prop,class Storage,class Allocator>
   void MatrixSuperLU<double>::
   FactorizeMatrix(Matrix<double,Prop,Storage,Allocator> & mat,
 		  bool keep_matrix)
   {
+    // clearing previous factorization
+    Clear();
+    
     // conversion in CSR format
     n = mat.GetN();
     Matrix<double,General,ColSparse> Acsr;
@@ -93,13 +103,11 @@ namespace Seldon
     perm_r.Reallocate(n);
     perm_c.Reallocate(n);
     
-    get_perm_c(permc_spec, &A, perm_c.GetData());
-    
     // factorization -> no right hand side
     int nb_rhs = 0, info;
     dCreate_Dense_Matrix(&B, n, nb_rhs, NULL, n, SLU_DN, SLU_D, SLU_GE);
     
-    dgssv(&A, perm_c.GetData(), perm_r.GetData(), &L, &U, &B, &info);
+    dgssv(&options, &A, perm_c.GetData(), perm_r.GetData(), &L, &U, &B, &stat, &info);
     
     if ((info==0)&&(display_info))
       {
@@ -109,8 +117,7 @@ namespace Seldon
 	cout<<"No of nonzeros in factor L = "<<Lstore->nnz<<endl;
 	cout<<"No of nonzeros in factor U = "<<Ustore->nnz<<endl;
 	cout<<"No of nonzeros in L+U     = "<<(Lstore->nnz+Ustore->nnz)<<endl;
-	int panel_size = sp_ienv(1);
-	dQuerySpace(&L, &U, panel_size, &mem_usage);
+	dQuerySpace(&L, &U, &mem_usage);
 	cout<<"Memory used for factorisation in Mo "
 	    <<mem_usage.total_needed/(1024*1024)<<endl;
       }
@@ -118,17 +125,22 @@ namespace Seldon
     Acsr.Nullify();
   }
   
+  
   //! resolution of linear system A x = b
   template<class Allocator2>
   void MatrixSuperLU<double>::Solve(Vector<double,Vect_Full,Allocator2>& x)
   {
-    char trans('N');
+    trans_t trans = NOTRANS;
     int nb_rhs = 1, info;
     dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
     
-    dgstrs(&trans, &L, &U, perm_r.GetData(), perm_c.GetData(), &B, &info);
+    SuperLUStat_t stat;
+    StatInit(&stat);
+    dgstrs(trans, &L, &U, perm_r.GetData(),
+	   perm_c.GetData(), &B, &stat, &info);
   }
+  
   
   //! factorization of matrix in complex double precision using SuperLU
   template<class Prop, class Storage,class Allocator>
@@ -136,6 +148,9 @@ namespace Seldon
   FactorizeMatrix(Matrix<complex<double>,Prop,Storage,Allocator> & mat,
 		  bool keep_matrix)
   {
+    // clearing previous factorization
+    Clear();
+    
     // conversion in CSR format
     n = mat.GetN();
     Matrix<complex<double>,General,ColSparse> Acsr;
@@ -145,15 +160,19 @@ namespace Seldon
     
     // we get renumbering vectors perm_r and perm_c
     int nnz = Acsr.GetDataSize();
-    zCreate_CompCol_Matrix(&A, n, n, nnz, Acsr.GetDataVoid(), Acsr.GetInd(),
-			   Acsr.GetPtr(), SLU_NC, SLU_D, SLU_GE);
+    zCreate_CompCol_Matrix(&A, n, n, nnz,
+			   reinterpret_cast<doublecomplex*>(Acsr.GetData()),
+			   Acsr.GetInd(), Acsr.GetPtr(),
+			   SLU_NC, SLU_Z, SLU_GE);
+    
     perm_r.Reallocate(n);
     perm_c.Reallocate(n);
     
-    get_perm_c(permc_spec, &A, perm_c.GetData());
     int nb_rhs = 0, info;
-    zCreate_Dense_Matrix(&B, n, nb_rhs, NULL, n, SLU_DN, SLU_D, SLU_GE);
-    zgssv(&A, perm_c.GetData(), perm_r.GetData(), &L, &U, &B, &info);
+    zCreate_Dense_Matrix(&B, n, nb_rhs, NULL, n, SLU_DN, SLU_Z, SLU_GE);
+
+    zgssv(&options, &A, perm_c.GetData(), perm_r.GetData(),
+	  &L, &U, &B, &stat, &info);
     
     if ((info==0)&&(display_info))
       {
@@ -163,8 +182,7 @@ namespace Seldon
 	cout<<"No of nonzeros in factor L = "<<Lstore->nnz<<endl;
 	cout<<"No of nonzeros in factor U = "<<Ustore->nnz<<endl;
 	cout<<"No of nonzeros in L+U     = "<<(Lstore->nnz+Ustore->nnz)<<endl;
-	int panel_size = sp_ienv(1);
-	zQuerySpace(&L,&U,panel_size,&mem_usage);
+	zQuerySpace(&L, &U, &mem_usage);
 	cout<<"Memory used for factorisation in Mo "
 	    <<mem_usage.total_needed/1e6<<endl;
       }
@@ -172,18 +190,22 @@ namespace Seldon
     Acsr.Nullify();
   }
   
+  
   //! resolution of linear system A x = b
   template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
   Solve(Vector<complex<double>,Vect_Full,Allocator2>& x)
   {
-    char trans('N');
+    trans_t trans = NOTRANS;
     int nb_rhs = 1, info;
-    zCreate_Dense_Matrix(&B, x.GetM(), nb_rhs, x.GetDataVoid(),
-			 x.GetM(), SLU_DN, SLU_D, SLU_GE);
+    zCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
+			 reinterpret_cast<doublecomplex*>(x.GetData()),
+			 x.GetM(), SLU_DN, SLU_Z, SLU_GE);
     
-    zgstrs (&trans, &L, &U, perm_r.GetData(), perm_c.GetData(), &B, &info);
+    zgstrs (trans, &L, &U, perm_r.GetData(),
+	    perm_c.GetData(), &B, &stat, &info);
   }
+  
   
   template<class T, class Prop, class Storage, class Allocator>
   void GetLU(Matrix<T,Prop,Storage,Allocator>& A, MatrixSuperLU<T>& mat_lu,
@@ -191,6 +213,7 @@ namespace Seldon
   {
     mat_lu.FactorizeMatrix(A, keep_matrix);
   }
+  
   
   template<class T, class Allocator>
   void SolveLU(MatrixSuperLU<T>& mat_lu, Vector<T, Vect_Full, Allocator>& x)

@@ -51,13 +51,6 @@ namespace Seldon
     Vector<T, Vect_Full, Allocator>(i)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
-    if (i <= 0)
-      throw WrongIndex("Vector<Vect_Sparse>::Vector(int)",
-		       string("Vector size should be greater than 0")
-		       + " but is equal to " + to_str(i) + ".");
-#endif
-
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -174,13 +167,6 @@ namespace Seldon
   inline void Vector<T, Vect_Sparse, Allocator>::Reallocate(int i)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
-    if (i <= 0)
-      throw WrongIndex("Vector<Vect_Sparse>::Reallocate(int)",
-		       string("Vector size should be greater than 0")
-			      + " but is equal to " + to_str(i) + ".");
-#endif
-
     if (i != this->m_)
       {
 
@@ -230,13 +216,6 @@ namespace Seldon
   inline void Vector<T, Vect_Sparse, Allocator>::Resize(int n)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
-    if (n <= 0)
-      throw WrongIndex("Vector<Vect_Full>::Resize(int)",
-		       string("Vector size should be greater than 0")
-			      + " but is equal to " + to_str(n) + ".");
-#endif
-
     if (n == this->m_)
       return;
     
