@@ -20,6 +20,45 @@
 
 #ifndef SELDON_FILE_LAPACK_LINEAREQUATIONS_CXX
 
+/*
+  Functions included in this file:
+
+  xGETRF   (GetLU)
+  xSYTRF   (GetLU)
+  xSPTRF   (GetLU)
+  xHETRF   (GetLU)
+  xHPTRF   (GetLU)
+  xGETRS   (SolveLU)
+  xSYTRS   (SolveLU)
+  xSPTRS   (SolveLU)
+  xHETRS   (SolveLU)
+  xHPTRS   (SolveLU)
+  xTRTRS   (SolveLU)
+  xTPTRS   (SolveLU)
+  xGECON   (ReciprocalConditionNumber)
+  xSYCON   (ReciprocalConditionNumber)
+  xSPCON   (ReciprocalConditionNumber)
+  xHECON   (ReciprocalConditionNumber)
+  xHPCON   (ReciprocalConditionNumber)
+  xTRCON   (ReciprocalConditionNumber)
+  xTPCON   (ReciprocalConditionNumber)
+  xGERFS   (RefineSolutionLU)
+  xSYRFS   (RefineSolutionLU)
+  xSPRFS   (RefineSolutionLU)
+  xHERFS   (RefineSolutionLU)
+  xHPRFS   (RefineSolutionLU)
+  xTRRFS   (RefineSolutionLU)
+  xTPRFS   (RefineSolutionLU)
+  xGETRI   (GetInverse)
+  xSYTRI   (RefineSolutionLU)
+  xSPTRI   (RefineSolutionLU)
+  xHETRI   (RefineSolutionLU)
+  xHPTRI   (RefineSolutionLU)
+  xTRTRI   (RefineSolutionLU)
+  xTPTRI   (RefineSolutionLU)
+  xGEEQU   (GetScalingFactors)
+*/
+
 namespace Seldon
 {
   

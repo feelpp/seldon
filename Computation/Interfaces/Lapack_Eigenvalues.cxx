@@ -20,6 +20,26 @@
 
 #ifndef SELDON_FILE_LAPACK_EIGENVALUES_CXX
 
+/*
+  Functions included in this file:
+
+  xGEEV   (GetEigenvalues, GetEigenvaluesEigenvec)
+  xSYEV   (GetEigenvalues, GetEigenvaluesEigenvec)
+  xHEEV   (GetEigenvalues, GetEigenvaluesEigenvec)
+  xSPEV   (GetEigenvalues, GetEigenvaluesEigenvec)
+  xHPEV   (GetEigenvalues, GetEigenvaluesEigenvec)
+  xSYGV   (GetEigenvalues, GetEigenvaluesEigenvec)
+  xGGEV   (GetEigenvalues, GetEigenvaluesEigenvec)
+  xHEGV   (GetEigenvalues, GetEigenvaluesEigenvec)
+  xSPGV   (GetEigenvalues, GetEigenvaluesEigenvec)
+  xHPGV   (GetEigenvalues, GetEigenvaluesEigenvec)
+  xGESVD  (GetSVD)
+  xGEQRF  (GetHessian)
+  ZGEQRF + ZUNGQR + ZUNMQR + ZGGHRD   (GetHessian)
+  ZGEQRF + ZUNGQR + ZUNMQR + ZGGHRD + ZHGEQZ   (GetQZ)
+  (SolveSylvester)
+*/
+
 namespace Seldon
 {
   

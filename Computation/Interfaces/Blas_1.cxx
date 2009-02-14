@@ -20,9 +20,23 @@
 #ifndef SELDON_FILE_BLAS_1_CXX
 
 /*
-  Functions defined in this file:
+  Functions included in this file:
 
-  xROTG
+  xROTG   (GenRot)
+  xROTMG  (GenModifRot)
+  xROT    (ApplyRot)
+  xROTM   (ApplyModifRot)
+  xSWAP   (Swap)
+  xSCAL   (Mlt)
+  xCOPY   (Copy)
+  xAXPY   (Add)
+  xDOT    (DotProd)
+  xDOTU   (DotProd)
+  SDSDOT  (ScaledDotProd)
+  xDOTC   (DotProdConj)
+  xASUM   (Norm1)
+  xNRM2   (Norm2)
+  IxAMAX  (GetMaxAbsIndex)
 */
 
 extern "C"

@@ -20,9 +20,24 @@
 #ifndef SELDON_FILE_BLAS_2_CXX
 
 /*
-  Functions defined in this file:
+  Functions included in this file:
 
-  xROTG
+  xTRMV   (Mlt)
+  xTPMV   (Mlt)
+  xGEMV   (MltAdd)
+  xHEMV   (MltAdd)
+  xHPMV   (MltAdd)
+  xSYMV   (MltAdd)
+  xSPMV   (MltAdd)
+  xGER    (Rank1Update)
+  xGERU   (Rank1Update)
+  xGERC   (Rank1Update)
+  xSPR    (Rank1Update)
+  xHPR    (Rank1Update)
+  xSPR2   (Rank2Update)
+  xHPR2   (Rank2Update)
+  xTRSV   (Solve)
+  xTPSV   (Solve)
 */
 
 extern "C"
@@ -2583,9 +2598,10 @@ namespace Seldon
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
-  void Rank1Update(const float alpha,
-		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
-		   Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
+  void
+  Rank1Update(const float alpha,
+	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
+	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2655,10 +2671,11 @@ namespace Seldon
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
-  void Rank1Update(const float alpha,
-		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
-		   const enum CBLAS_UPLO Uplo,
-		   Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
+  void
+  Rank1Update(const float alpha,
+	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
+	      const enum CBLAS_UPLO Uplo,
+	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2727,9 +2744,10 @@ namespace Seldon
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
-  void Rank1Update(const float alpha,
-		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
-		   Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
+  void
+  Rank1Update(const float alpha,
+	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
+	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2799,10 +2817,11 @@ namespace Seldon
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
-  void Rank1Update(const float alpha,
-		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
-		   const enum CBLAS_UPLO Uplo,
-		   Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
+  void
+  Rank1Update(const float alpha,
+	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
+	      const enum CBLAS_UPLO Uplo,
+	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2887,10 +2906,11 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
-  void Rank2Update(const complex<float> alpha,
-		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& Y,
-		   Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
+  void
+  Rank2Update(const complex<float> alpha,
+	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
+	      const Vector<complex<float>, Vect_Full, Allocator2>& Y,
+	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2975,11 +2995,12 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
-  void Rank2Update(const complex<float> alpha,
-		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& Y,
-		   const enum CBLAS_UPLO Uplo,
-		   Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
+  void
+  Rank2Update(const complex<float> alpha,
+	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
+	      const Vector<complex<float>, Vect_Full, Allocator2>& Y,
+	      const enum CBLAS_UPLO Uplo,
+	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3063,10 +3084,11 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
-  void Rank2Update(const complex<float> alpha,
-		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& Y,
-		   Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
+  void
+  Rank2Update(const complex<float> alpha,
+	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
+	      const Vector<complex<float>, Vect_Full, Allocator2>& Y,
+	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3151,11 +3173,12 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
-  void Rank2Update(const complex<float> alpha,
-		   const Vector<complex<float>, Vect_Full, Allocator0>& X,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& Y,
-		   const enum CBLAS_UPLO Uplo,
-		   Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
+  void
+  Rank2Update(const complex<float> alpha,
+	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
+	      const Vector<complex<float>, Vect_Full, Allocator2>& Y,
+	      const enum CBLAS_UPLO Uplo,
+	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES

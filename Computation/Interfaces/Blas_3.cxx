@@ -20,6 +20,16 @@
 
 #ifndef SELDON_FILE_BLAS_3_CXX
 
+/*
+  Functions included in this file:
+
+  xGEMM   (MltAdd)
+  xSYMM   (MltAdd)
+  xHEMM   (MltAdd)
+  xTRMM   (Mlt)
+  xTRSM   (Solve)
+*/
+
 extern "C"
 {
 #include "cblas.h"
