@@ -117,7 +117,8 @@ namespace Seldon
   //! Copy constructor.
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_Pointers<T, Prop, Storage, Allocator>
-  ::Matrix_Pointers(const Matrix_Pointers<T, Prop, Storage, Allocator>& A)
+  ::Matrix_Pointers(const Matrix_Pointers<T, Prop, Storage, Allocator>& A):
+    Matrix_Base<T, Allocator>(A)
   {
     this->m_ = 0;
     this->n_ = 0;
