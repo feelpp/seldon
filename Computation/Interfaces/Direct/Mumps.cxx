@@ -19,7 +19,7 @@
 
 #ifndef SELDON_FILE_MUMPS_CXX
 
-#include "Computation/Interfaces/Direct/Mumps.hxx"
+#include "Mumps.hxx"
 
 namespace Seldon
 {

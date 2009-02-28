@@ -21,7 +21,7 @@
 
 extern "C"
 {
-  #include "Computation/Interfaces/Direct/superlu_interface.h"
+#include "superlu_interface.h"
 }
 
 namespace Seldon

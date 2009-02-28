@@ -1,7 +1,7 @@
 #ifndef __SUPERLU_INTERFACE /* allow multiple inclusions */
 #define __SUPERLU_INTERFACE
 
-#include "slu_zdefs.h"
+#include "superlu/slu_zdefs.h"
 
 /*! \brief Driver routines */
 extern void

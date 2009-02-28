@@ -19,7 +19,7 @@
 
 #ifndef SELDON_FILE_SUPERLU_CXX
 
-#include "Computation/Interfaces/Direct/SuperLU.hxx"
+#include "SuperLU.hxx"
 
 namespace Seldon
 {
