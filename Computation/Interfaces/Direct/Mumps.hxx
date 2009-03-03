@@ -67,6 +67,7 @@ namespace Seldon
     //! double* or complex<double>*
     typedef typename TypeMumps<T>::pointer pointer;
     int print_level;
+    bool out_of_core;
     
     // internal method
     void CallMumps();
@@ -82,6 +83,8 @@ namespace Seldon
     void SelectOrdering(int num_ordering);
     void HideMessages();
     void ShowMessages();
+    void EnableOutOfCore();
+    void DisableOutOfCore();
     int GetInfoFactorization() const;
     
     template<class Prop,class Storage,class Allocator>

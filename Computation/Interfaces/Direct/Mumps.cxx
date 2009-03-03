@@ -78,6 +78,11 @@ namespace Seldon
     CallMumps();
     
     struct_mumps.icntl[13] = 20;
+    // setting out of core parameters
+    if (out_of_core)
+      struct_mumps.icntl[21] = 1;
+    else
+      struct_mumps.icntl[21] = 0;
     
     // the print level is set in mumps
     if (print_level >= 0)
@@ -182,6 +187,20 @@ namespace Seldon
     struct_mumps.icntl[2] = 6;
     struct_mumps.icntl[3] = 2;
     
+  }
+  
+  
+  template<class T>
+  inline void MatrixMumps<T>::EnableOutOfCore()
+  {
+    out_of_core = true;
+  }
+
+
+  template<class T>
+  inline void MatrixMumps<T>::DisableOutOfCore()
+  {
+    out_of_core = false;
   }
   
   

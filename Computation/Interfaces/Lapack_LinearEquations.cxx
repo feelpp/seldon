@@ -128,6 +128,11 @@ namespace Seldon
   {
     int m = A.GetM();
     int n = A.GetN();
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((m <= 0)||(n <= 0))
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     P.Reallocate(min(m, n));
     sgetrf_(&m, &n, A.GetData(), &m,
 	    P.GetData(), &info.GetInfoRef());
@@ -149,7 +154,13 @@ namespace Seldon
   {
     int m = A.GetM();
     int n = A.GetN();
-    P.Reallocate(min(m, n));
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((m <= 0)||(n <= 0))
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
+    P.Reallocate(min(m, n));    
     dgetrf_(&m, &n, A.GetData(), &m,
 	    P.GetData(), &info.GetInfoRef());
 
@@ -170,7 +181,13 @@ namespace Seldon
   {
     int m = A.GetM();
     int n = A.GetN();
-    P.Reallocate(min(m, n));
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((m <= 0)||(n <= 0))
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
+    P.Reallocate(min(m, n));    
     cgetrf_(&m, &n, A.GetDataVoid(), &m,
 	    P.GetData(), &info.GetInfoRef());
 
@@ -191,6 +208,12 @@ namespace Seldon
   {
     int m = A.GetM();
     int n = A.GetN();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((m <= 0)||(n <= 0))
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     P.Reallocate(min(m, n));
     zgetrf_(&m, &n, A.GetDataVoid(), &m,
 	    P.GetData(), &info.GetInfoRef());
@@ -215,6 +238,12 @@ namespace Seldon
   {
     int m = A.GetM();
     int n = A.GetN();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((m <= 0)||(n <= 0))
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     P.Reallocate(min(m, n));
     sgetrf_(&m, &n, A.GetData(), &m,
 	    P.GetData(), &info.GetInfoRef());
@@ -236,6 +265,12 @@ namespace Seldon
   {
     int m = A.GetM();
     int n = A.GetN();
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((m <= 0)||(n <= 0))
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+    
     P.Reallocate(min(m, n));
     dgetrf_(&m, &n, A.GetData(), &m,
 	    P.GetData(), &info.GetInfoRef());
@@ -257,6 +292,12 @@ namespace Seldon
   {
     int m = A.GetM();
     int n = A.GetN();
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((m <= 0)||(n <= 0))
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+    
     P.Reallocate(min(m, n));
     cgetrf_(&m, &n, A.GetDataVoid(), &m,
 	    P.GetData(), &info.GetInfoRef());
@@ -278,6 +319,12 @@ namespace Seldon
   {
     int m = A.GetM();
     int n = A.GetN();
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if ((m <= 0)||(n <= 0))
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+    
     P.Reallocate(min(m, n));
     zgetrf_(&m, &n, A.GetDataVoid(), &m,
 	    P.GetData(), &info.GetInfoRef());
@@ -301,6 +348,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+    
     int lwork = m;
     char uplo('U');
     Vector<float,Vect_Full,Allocator0> work(lwork);
@@ -325,6 +378,12 @@ namespace Seldon
   {
     int m = A.GetM();
     int lwork = m;
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('U');
     Vector<double,Vect_Full,Allocator0> work(lwork);
     P.Reallocate(m);
@@ -348,6 +407,12 @@ namespace Seldon
   {
     int m = A.GetM();
     int lwork = m;
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('U');
     Vector<complex<float>,Vect_Full,Allocator0> work(lwork);
     P.Reallocate(m);
@@ -372,6 +437,12 @@ namespace Seldon
   {
     int m = A.GetM();
     int lwork = m;
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('U');
     Vector<complex<double>,Vect_Full,Allocator0> work(lwork);
     P.Reallocate(m);
@@ -398,6 +469,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('U');
     P.Reallocate(m);
     ssptrf_(&uplo, &m, A.GetData(),
@@ -419,6 +496,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('U');
     P.Reallocate(m);
     dsptrf_(&uplo, &m, A.GetData(),
@@ -440,6 +523,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('U');
     P.Reallocate(m);
     csptrf_(&uplo, &m, A.GetDataVoid(),
@@ -461,6 +550,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('U');
     P.Reallocate(m);
     zsptrf_(&uplo, &m, A.GetDataVoid(),
@@ -486,6 +581,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo(Uplo);
     P.Reallocate(m);
     ssptrf_(&uplo, &m, A.GetData(),
@@ -508,6 +609,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo(Uplo);
     P.Reallocate(m);
     dsptrf_(&uplo, &m, A.GetData(),
@@ -530,6 +637,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo(Uplo);
     P.Reallocate(m);
     csptrf_(&uplo, &m, A.GetDataVoid(),
@@ -552,6 +665,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo(Uplo);
     P.Reallocate(m);
     zsptrf_(&uplo, &m, A.GetDataVoid(),
@@ -576,6 +695,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     int lwork = m;
     char uplo('L');
     Vector<float, Vect_Full, Allocator0> work(lwork);
@@ -599,6 +724,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     int lwork = m;
     char uplo('L');
     Vector<double, Vect_Full, Allocator0> work(lwork);
@@ -622,6 +753,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     int lwork = m;
     char uplo('L');
     Vector<complex<float>, Vect_Full, Allocator0> work(lwork);
@@ -646,6 +783,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     int lwork = m;
     char uplo('L');
     Vector<complex<double>, Vect_Full, Allocator0> work(lwork);
@@ -673,6 +816,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('L');
     P.Reallocate(m);
     ssptrf_(&uplo, &m, A.GetData(),
@@ -694,6 +843,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('L');
     P.Reallocate(m);
     dsptrf_(&uplo, &m, A.GetData(),
@@ -715,6 +870,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('L');
     P.Reallocate(m);
     csptrf_(&uplo, &m, A.GetDataVoid(),
@@ -736,6 +897,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('L');
     P.Reallocate(m);
     zsptrf_(&uplo, &m, A.GetDataVoid(),
@@ -761,6 +928,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo(Uplo.RevChar());
     P.Reallocate(m);
     ssptrf_(&uplo, &m, A.GetData(),
@@ -783,6 +956,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo(Uplo.RevChar());
     P.Reallocate(m);
     dsptrf_(&uplo, &m, A.GetData(),
@@ -805,6 +984,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo(Uplo.RevChar());
     P.Reallocate(m);
     csptrf_(&uplo, &m, A.GetDataVoid(),
@@ -827,11 +1012,17 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+    
     char uplo(Uplo.RevChar());
     P.Reallocate(m);
     zsptrf_(&uplo, &m, A.GetDataVoid(),
 	    P.GetData(), &info.GetInfoRef());
-
+    
 #ifdef SELDON_LAPACK_CHECK_INFO
     if (info.GetInfo() != 0)
       throw LapackError(info.GetInfo(), "GetLU",
@@ -851,6 +1042,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+    
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+    
     int lwork = m;
     char uplo('U');
     Vector<complex<float>, Vect_Full, Allocator0> work(lwork);
@@ -875,6 +1072,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     int lwork = m;
     char uplo('U');
     Vector<complex<double>, Vect_Full, Allocator0> work(lwork);
@@ -902,6 +1105,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('U');
     P.Reallocate(m);
     chptrf_(&uplo, &m, A.GetDataVoid(),
@@ -923,6 +1132,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('U');
     P.Reallocate(m);
     zhptrf_(&uplo, &m, A.GetDataVoid(),
@@ -947,6 +1162,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     int lwork = m;
     char uplo('L');
     Vector<complex<float>, Vect_Full, Allocator0> work(lwork);
@@ -971,6 +1192,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     int lwork = m;
     char uplo('L');
     Vector<complex<double>, Vect_Full, Allocator0> work(lwork);
@@ -998,6 +1225,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('L');
     P.Reallocate(m);
     chptrf_(&uplo, &m, A.GetDataVoid(),
@@ -1019,6 +1252,12 @@ namespace Seldon
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (m <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+
     char uplo('L');
     P.Reallocate(m);
     zhptrf_(&uplo, &m, A.GetDataVoid(),

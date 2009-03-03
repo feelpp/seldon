@@ -39,9 +39,9 @@ namespace Seldon
     void SetNumberIterations(int nb_iterations) { nb_iter = nb_iterations; }
     
     template<class Vector, class Matrix>
-    void Solve(const Matrix& A, const Vector& r, Vector& z);
+    void Solve(const Matrix& A, const Vector& r, Vector& z, bool init_guess_null = true);
     template<class Vector, class Matrix>
-    void TransSolve(const Matrix& A, const Vector& r, Vector& z);
+    void TransSolve(const Matrix& A, const Vector& r, Vector& z, bool init_guess_null = true);
     
   };
   
@@ -59,9 +59,11 @@ namespace Seldon
   template<class T>
   template<class Vector, class Matrix>
   void SorPreconditioner<T>::
-  Solve(const Matrix& A, const Vector& r, Vector& z)
+  Solve(const Matrix& A, const Vector& r, Vector& z, bool init_guess_null)
   {
-    z.Zero();
+    if (init_guess_null)
+      z.Zero();
+    
     if (symmetric_precond)
       Seldon::SOR(A, z, r, omega, nb_iter, 0);
     else
@@ -73,9 +75,11 @@ namespace Seldon
   template<class T>
   template<class Vector, class Matrix>
   void SorPreconditioner<T>::
-  TransSolve(const Matrix& A, const Vector& r, Vector& z)
+  TransSolve(const Matrix& A, const Vector& r, Vector& z, bool init_guess_null)
   {
-    z.Zero();
+    if (init_guess_null)
+      z.Zero();
+    
     if (symmetric_precond)
       Seldon::SOR(A, z, r, omega, nb_iter, 0);
     else
