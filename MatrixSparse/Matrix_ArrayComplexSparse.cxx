@@ -166,7 +166,8 @@ namespace Seldon
     \return the number of rows.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline int Matrix_ArrayComplexSparse<T,Prop,Storage,Allocator>::GetM() const
+  inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::GetM() const
   {
     return m_;
   }
@@ -177,9 +178,42 @@ namespace Seldon
     \return the number of columns.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline int Matrix_ArrayComplexSparse<T,Prop,Storage,Allocator>::GetN() const
+  inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::GetN() const
   {
     return n_;
+  }
+  
+  
+  //! Returns the number of rows of the matrix possibly transposed.
+  /*!
+    \param status assumed status about the transposition of the matrix.
+    \return The number of rows of the possibly-transposed matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::GetM(const SeldonTranspose& status) const
+  {
+    if (status.NoTrans())
+      return m_;
+    else
+      return n_;
+  }
+  
+  
+  //! Returns the number of columns of the matrix possibly transposed.
+  /*!
+    \param status assumed status about the transposition of the matrix.
+    \return The number of columns of the possibly-transposed matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::GetN(const SeldonTranspose& status) const
+  {
+    if (status.NoTrans())
+      return n_;
+    else
+      return m_;
   }
   
   

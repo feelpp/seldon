@@ -62,6 +62,8 @@ namespace Seldon
     // Basic methods.
     int GetM() const;
     int GetN() const;
+    int GetM(const SeldonTranspose& status) const;
+    int GetN(const SeldonTranspose& status) const;
     int GetNonZeros() const;
     int GetDataSize() const;
     int* GetIndex(int i) const;
