@@ -27,8 +27,8 @@ int main(int argc, char** argv)
     A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0;  A(3,3) = 6.0;
     
     DISP(A);
-    A.Resize(6,8); DISP(A);
-    A.Resize(3,2); DISP(A);
+    A.Resize(m-1, n-1); DISP(A);
+    A.Resize(m-2, n-2); DISP(A);
   }
   
   {
@@ -39,8 +39,8 @@ int main(int argc, char** argv)
     A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0;  A(3,3) = 6.0;
     
     DISP(A);
-    A.Resize(6,8); DISP(A);
-    A.Resize(3,2); DISP(A);
+    A.Resize(m-1, n-1); DISP(A);
+    A.Resize(m-2, n-2); DISP(A);
   }
   
   {
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
     A.Val(0,2) = Complex_wp(-1.0,1.0); A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
     A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = Complex_wp(0.0,2.0);  A.Val(3,3) = 6.0;
     
-    DISP(A); A.Resize(7,7); DISP(A);
+    DISP(A); A.Resize(4,4); DISP(A);
     A.Resize(3,3); DISP(A);
   }
   
@@ -61,7 +61,7 @@ int main(int argc, char** argv)
     A.Val(0,2) = Complex_wp(-1.0,1.0); A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
     A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = Complex_wp(0.0,2.0);  A.Val(3,3) = 6.0;
     
-    DISP(A); A.Resize(7,7); DISP(A);
+    DISP(A); A.Resize(4,4); DISP(A);
     A.Resize(3,3); DISP(A);
   }
     
