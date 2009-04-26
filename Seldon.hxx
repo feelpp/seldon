@@ -228,10 +228,8 @@ namespace Seldon
 
   };
 
-#ifndef SWIG0
   SeldonUplo SeldonUpper(0);
   SeldonUplo SeldonLower(1);
-#endif
 
   //
 
@@ -262,10 +260,8 @@ namespace Seldon
     
   };
   
-#ifndef SWIG0
   SeldonNorm SeldonNormInf(0);
   SeldonNorm SeldonNorm1(1);
-#endif
 
   //
 
