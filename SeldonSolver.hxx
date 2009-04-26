@@ -20,31 +20,31 @@
 #ifndef SELDON_FILE_SELDON_SOLVER_HXX
 
 // additional classes and functions for sparse matrices
-#include "MatrixSparse/Matrix_Conversions.cxx"
-#include "MatrixSparse/Matrix_ArraySparse.cxx"
-#include "MatrixSparse/Matrix_ArrayComplexSparse.cxx"
-#include "MatrixSparse/Permutation_ScalingMatrix.cxx"
-#include "MatrixSparse/Relaxation_MatVect.cxx"
-#include "MatrixSparse/Functions_MatrixArray.cxx"
+#include "matrix_sparse/Matrix_Conversions.cxx"
+#include "matrix_sparse/Matrix_ArraySparse.cxx"
+#include "matrix_sparse/Matrix_ArrayComplexSparse.cxx"
+#include "matrix_sparse/Permutation_ScalingMatrix.cxx"
+#include "matrix_sparse/Relaxation_MatVect.cxx"
+#include "matrix_sparse/Functions_MatrixArray.cxx"
 
 
 // interfaces with direct solvers
 #ifdef SELDON_WITH_MUMPS
-#include "Computation/Interfaces/Direct/Mumps.cxx"
+#include "computation/interfaces/direct/Mumps.cxx"
 #endif
 
 #ifdef SELDON_WITH_UMFPACK
-#include "Computation/Interfaces/Direct/UmfPack.cxx"
+#include "computation/interfaces/direct/UmfPack.cxx"
 #endif
 
 #ifdef SELDON_WITH_SUPERLU
-#include "Computation/Interfaces/Direct/SuperLU.cxx"
+#include "computation/interfaces/direct/SuperLU.cxx"
 #endif
 
 // iterative solvers and preconditioning
 
-#include "Computation/Solver/Iterative/Iterative.cxx"
-#include "Computation/Solver/Preconditioner/Precond_Ssor.cxx"
+#include "computation/solver/iterative/Iterative.cxx"
+#include "computation/solver/preconditioner/Precond_Ssor.cxx"
 
 #define SELDON_FILE_SELDON_SOLVER_HXX
 #endif

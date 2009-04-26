@@ -19,22 +19,22 @@
 
 // To be included by Seldon.hxx
 
-#ifndef SELDON_FILE_MATRIX_TRIANGULAR_HXX
+#ifndef SELDON_FILE_MATRIX_SYMMETRIC_HXX
 
-#include "../Share/Common.hxx"
-#include "../Share/Properties.hxx"
-#include "../Share/Storage.hxx"
-#include "../Share/Errors.hxx"
-#include "../Share/Allocator.hxx"
+#include "../share/Common.hxx"
+#include "../share/Properties.hxx"
+#include "../share/Storage.hxx"
+#include "../share/Errors.hxx"
+#include "../share/Allocator.hxx"
 
 namespace Seldon
 {
   
 
-  //! Triangular matrix stored in a full matrix.
+  //! Symmetric matrix stored in a full matrix.
   template <class T, class Prop, class Storage,
 	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
-  class Matrix_Triangular: public Matrix_Base<T, Allocator>
+  class Matrix_Symmetric: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
   public:
@@ -51,13 +51,12 @@ namespace Seldon
     // Methods.
   public:
     // Constructor.
-    Matrix_Triangular();
-    Matrix_Triangular(int i, int j);
-    Matrix_Triangular(const Matrix_Triangular<T, Prop,
-		      Storage, Allocator>& A);
-    
+    Matrix_Symmetric();
+    Matrix_Symmetric(int i, int j);
+    Matrix_Symmetric(const Matrix_Symmetric<T, Prop, Storage, Allocator>& A);
+
     // Destructor.
-    ~Matrix_Triangular();
+    ~Matrix_Symmetric();
     void Clear();
 
     // Basic methods.
@@ -65,10 +64,10 @@ namespace Seldon
 
     // Memory management.
     void Reallocate(int i, int j);
-    void Resize(int i, int j);
     void SetData(int i, int j, pointer data);
     void Nullify();
-
+    void Resize(int i, int j);
+    
     // Element access and affectation.
     value_type operator() (int i, int j);
     value_type operator() (int i, int j) const;
@@ -76,9 +75,9 @@ namespace Seldon
     reference Val(int i, int j);
     reference operator[] (int i);
     const_reference operator[] (int i) const;
-    Matrix_Triangular<T, Prop, Storage, Allocator>&
-    operator= (const Matrix_Triangular<T, Prop, Storage, Allocator>& A);
-    void Copy(const Matrix_Triangular<T, Prop, Storage, Allocator>& A);
+    Matrix_Symmetric<T, Prop, Storage, Allocator>&
+    operator= (const Matrix_Symmetric<T, Prop, Storage, Allocator>& A);
+    void Copy(const Matrix_Symmetric<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.
     void Zero();
@@ -87,7 +86,7 @@ namespace Seldon
     template <class T0>
     void Fill(const T0& x);
     template <class T0>
-    Matrix_Triangular<T, Prop, Storage, Allocator>& operator= (const T0& x);
+    Matrix_Symmetric<T, Prop, Storage, Allocator>& operator= (const T0& x);
     void FillRand();
     void Print() const;
     void Print(int a, int b, int m, int n) const;
@@ -102,78 +101,45 @@ namespace Seldon
     void Read(istream& FileStream);
     void ReadText(string FileName);
     void ReadText(istream& FileStream);
-
-  };
-
-
-  //! Column-major upper-triangular full-matrix class.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ColUpTriang, Allocator>:
-    public Matrix_Triangular<T, Prop, ColUpTriang, Allocator>
-  {
-  public:
-    Matrix()  throw();
-    Matrix(int i, int j);
-
-    template <class T0>
-    Matrix<T, Prop, ColUpTriang, Allocator>& operator= (const T0& x);
-    template<class T0>
-    Matrix<T, Prop, ColUpTriang, Allocator>& operator*= (const T0& x);
     
   };
 
 
-  //! Column-major lower-triangular full-matrix class.
+  //! Column-major symmetric full-matrix class.
   template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ColLoTriang, Allocator>:
-    public Matrix_Triangular<T, Prop, ColLoTriang, Allocator>
+  class Matrix<T, Prop, ColSym, Allocator>:
+    public Matrix_Symmetric<T, Prop, ColSym, Allocator>
   {
   public:
     Matrix()  throw();
     Matrix(int i, int j);
 
     template <class T0>
-    Matrix<T, Prop, ColLoTriang, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, ColSym, Allocator>& operator= (const T0& x);
     template<class T0>
-    Matrix<T, Prop, ColLoTriang, Allocator>& operator*= (const T0& x);
-  
-  };
-
-
-  //! Row-major upper-triangular full-matrix class.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, RowUpTriang, Allocator>:
-    public Matrix_Triangular<T, Prop, RowUpTriang, Allocator>
-  {
-  public:
-    Matrix()  throw();
-    Matrix(int i, int j);
-
-    template <class T0>
-    Matrix<T, Prop, RowUpTriang, Allocator>& operator= (const T0& x);
-    template<class T0>
-    Matrix<T, Prop, RowUpTriang, Allocator>& operator*= (const T0& x);
+    Matrix<T, Prop, ColSym, Allocator>& operator*= (const T0& x);
     
   };
 
 
-  //! Row-major lower-triangular full-matrix class.
+  //! Row-major symmetric full-matrix class.
   template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, RowLoTriang, Allocator>:
-    public Matrix_Triangular<T, Prop, RowLoTriang, Allocator>
+  class Matrix<T, Prop, RowSym, Allocator>:
+    public Matrix_Symmetric<T, Prop, RowSym, Allocator>
   {
   public:
     Matrix()  throw();
     Matrix(int i, int j);
 
     template <class T0>
-    Matrix<T, Prop, RowLoTriang, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, RowSym, Allocator>& operator= (const T0& x);
     template<class T0>
-    Matrix<T, Prop, RowLoTriang, Allocator>& operator*= (const T0& x);
+    Matrix<T, Prop, RowSym, Allocator>& operator*= (const T0& x);
+    
   };
 
 
 } // namespace Seldon.
 
-#define SELDON_FILE_MATRIX_TRIANGULAR_HXX
+#define SELDON_FILE_MATRIX_SYMMETRIC_HXX
 #endif

@@ -13,4 +13,4 @@ include_path = []
 library_path = []
 
 
-execfile(os.path.join(seldon_path, "Share/SConstruct"))
+execfile(os.path.join(seldon_path, "share/SConstruct"))

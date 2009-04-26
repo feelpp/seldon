@@ -19,25 +19,23 @@
 
 // To be included by Seldon.hxx
 
-#ifndef SELDON_FILE_MATRIX_BASE_HXX
 
-#include "../Share/Common.hxx"
-#include "../Share/Properties.hxx"
-#include "../Share/Storage.hxx"
-#include "../Share/Errors.hxx"
-#include "../Share/Allocator.hxx"
+#ifndef SELDON_FILE_ARRAY3D_HXX
+
+#include "../share/Common.hxx"
+#include "../share/Errors.hxx"
+#include "../share/Allocator.hxx"
 
 namespace Seldon
 {
 
   
-  //! Base class for all matrices.
+  //! 3D array.
   /*!
-    It stores some data and matrix dimensions. It defines basic
-    methods as well.
+    This class implements 3D arrays.
   */
   template <class T, class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
-  class Matrix_Base
+  class Array3D
   {
     // typdef declarations.
   public:
@@ -49,56 +47,78 @@ namespace Seldon
 
     // Static attributes.
   protected:
-    static Allocator allocator_;
+    static Allocator array3D_allocator_;
 
     // Attributes.
   protected:
-    // Number of rows.
-    int m_;
-    // Number of columns.
-    int n_;
+    // Length along dimension #1.
+    int length1_;
+    // Length along dimension #2.
+    int length2_;
+    // Length along dimension #3.
+    int length3_;
+
+    // Size of a slice (i.e. length1_ by length2_).
+    int length23_;
+
     // Pointer to stored elements.
     pointer data_;
 
     // Methods.
   public:
     // Constructors.
-    Matrix_Base();
-    explicit Matrix_Base(int i, int j);
-    Matrix_Base(const Matrix_Base<T, Allocator>& A);
-    
+    Array3D();
+    Array3D(int i, int j, int k);
+  
     // Destructor.
-    ~Matrix_Base();
+    ~Array3D();
 
     // Basic methods.
-    int GetM() const;
-    int GetN() const;
-    int GetM(const SeldonTranspose& status) const;
-    int GetN(const SeldonTranspose& status) const;
-#ifdef SELDON_WITH_CBLAS
-    int GetM(const CBLAS_TRANSPOSE& status) const;
-    int GetN(const CBLAS_TRANSPOSE& status) const;
-#endif
+    int GetLength1() const;
+    int GetLength2() const;
+    int GetLength3() const;
     int GetSize() const;
+    int GetDataSize() const;
     pointer GetData() const;
-    const_pointer GetDataConst() const;
-    void* GetDataVoid() const;
-    const void* GetDataConstVoid() const;
 
+    // Memory management.
+    void Reallocate(int i, int j, int k);
+    void Clear();
+
+    // Element access and affectation.
+    reference operator() (int i, int j, int k);
+    const_reference operator() (int i, int j, int k) const;
+    Array3D<T, Allocator>& operator= (const Array3D<T, Allocator>& A);
+    void Copy(const Array3D<T, Allocator>& A);
+
+    // Convenient functions.
+    void Zero();
+    void Fill();
+    template <class T0>
+    void Fill(const T0& x);
+    void FillRand();
+    void Print() const;
+    
+    // Input/output functions
+    void Write(string FileName) const;
+    void Write(ofstream& FileStream) const;
+    void Read(string FileName);
+    void Read(ifstream& FileStream);
   };
 
 
-  // Matrix allocator.
+  // 3D array allocator.
   template <class T, class Allocator>
-  Allocator Matrix_Base<T, Allocator>::allocator_;
+  Allocator Array3D<T, Allocator>::array3D_allocator_;
 
 
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Allocator>
   ostream& operator << (ostream& out,
-			const Matrix<T, Prop, Storage, Allocator>& A);
+			const Array3D<T, Allocator>& A);
 
 
 } // namespace Seldon.
 
-#define SELDON_FILE_MATRIX_BASE_HXX
+
+#define SELDON_FILE_ARRAY3D_HXX
 #endif

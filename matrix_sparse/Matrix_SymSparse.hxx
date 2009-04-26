@@ -21,11 +21,11 @@
 
 #ifndef SELDON_FILE_MATRIX_SYMSPARSE_HXX
 
-#include "../Share/Common.hxx"
-#include "../Share/Properties.hxx"
-#include "../Share/Storage.hxx"
-#include "../Share/Errors.hxx"
-#include "../Share/Allocator.hxx"
+#include "../share/Common.hxx"
+#include "../share/Properties.hxx"
+#include "../share/Storage.hxx"
+#include "../share/Errors.hxx"
+#include "../share/Allocator.hxx"
 
 namespace Seldon
 {

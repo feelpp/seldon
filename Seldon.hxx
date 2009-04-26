@@ -347,49 +347,49 @@ namespace Seldon
 } // namespace Seldon.
 
 
-#include "Share/Common.cxx"
+#include "share/Common.cxx"
 
 // Memory management.
-#include "Share/Allocator.cxx"
+#include "share/Allocator.cxx"
 
 // Storage type.
-#include "Share/Storage.cxx"
+#include "share/Storage.cxx"
 
-#include "Share/Errors.cxx"
+#include "share/Errors.cxx"
 
-#include "Array3D/Array3D.cxx"
-#include "Matrix/Matrix_Base.cxx"
-#include "Matrix/Matrix_Pointers.cxx"
-#include "Matrix/Matrix_Triangular.cxx"
-#include "Matrix/Matrix_Symmetric.cxx"
-#include "Matrix/Matrix_Hermitian.cxx"
-#include "MatrixSparse/Matrix_Sparse.cxx"
-#include "MatrixSparse/Matrix_ComplexSparse.cxx"
-#include "MatrixSparse/Matrix_SymSparse.cxx"
-#include "MatrixSparse/Matrix_SymComplexSparse.cxx"
-#include "Matrix/Matrix_SymPacked.cxx"
-#include "Matrix/Matrix_HermPacked.cxx"
-#include "Matrix/Matrix_TriangPacked.cxx"
-#include "Vector/Vector.cxx"
-#include "Vector/Functions_Arrays.cxx"
-#include "Vector/SparseVector.cxx"
-#include "Matrix/Functions.cxx"
-#include "Computation/Basic_Functions/Functions_Matrix.cxx"
-#include "Computation/Basic_Functions/Functions_Vector.cxx"
-#include "Computation/Basic_Functions/Functions_MatVect.cxx"
+#include "array3d/Array3D.cxx"
+#include "matrix/Matrix_Base.cxx"
+#include "matrix/Matrix_Pointers.cxx"
+#include "matrix/Matrix_Triangular.cxx"
+#include "matrix/Matrix_Symmetric.cxx"
+#include "matrix/Matrix_Hermitian.cxx"
+#include "matrix_sparse/Matrix_Sparse.cxx"
+#include "matrix_sparse/Matrix_ComplexSparse.cxx"
+#include "matrix_sparse/Matrix_SymSparse.cxx"
+#include "matrix_sparse/Matrix_SymComplexSparse.cxx"
+#include "matrix/Matrix_SymPacked.cxx"
+#include "matrix/Matrix_HermPacked.cxx"
+#include "matrix/Matrix_TriangPacked.cxx"
+#include "vector/Vector.cxx"
+#include "vector/Functions_Arrays.cxx"
+#include "vector/SparseVector.cxx"
+#include "matrix/Functions.cxx"
+#include "computation/basic_functions/Functions_Matrix.cxx"
+#include "computation/basic_functions/Functions_Vector.cxx"
+#include "computation/basic_functions/Functions_MatVect.cxx"
 
 // Blas interface.
 #ifdef SELDON_WITH_CBLAS
-#include "Computation/Interfaces/Blas_1.cxx"
-#include "Computation/Interfaces/Blas_2.cxx"
-#include "Computation/Interfaces/Blas_3.cxx"
+#include "computation/interfaces/Blas_1.cxx"
+#include "computation/interfaces/Blas_2.cxx"
+#include "computation/interfaces/Blas_3.cxx"
 #endif
 
 // Lapack interface.
 #ifdef SELDON_WITH_LAPACK
-#include "Computation/Interfaces/Lapack_LinearEquations.cxx"
-#include "Computation/Interfaces/Lapack_LeastSquares.cxx"
-#include "Computation/Interfaces/Lapack_Eigenvalues.cxx"
+#include "computation/interfaces/Lapack_LinearEquations.cxx"
+#include "computation/interfaces/Lapack_LeastSquares.cxx"
+#include "computation/interfaces/Lapack_Eigenvalues.cxx"
 #endif // SELDON_WITH_LAPACK.
 
 

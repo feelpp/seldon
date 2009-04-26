@@ -19,22 +19,22 @@
 
 // To be included by Seldon.hxx
 
-#ifndef SELDON_FILE_MATRIX_SYMPACKED_HXX
+#ifndef SELDON_FILE_MATRIX_POINTERS_HXX
 
-#include "../Share/Common.hxx"
-#include "../Share/Properties.hxx"
-#include "../Share/Storage.hxx"
-#include "../Share/Errors.hxx"
-#include "../Share/Allocator.hxx"
+#include "../share/Common.hxx"
+#include "../share/Properties.hxx"
+#include "../share/Storage.hxx"
+#include "../share/Errors.hxx"
+#include "../share/Allocator.hxx"
 
 namespace Seldon
 {
   
 
-  //! Symmetric packed matrix class.
+  //! Full matrix class.
   template <class T, class Prop, class Storage,
 	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
-  class Matrix_SymPacked: public Matrix_Base<T, Allocator>
+  class Matrix_Pointers: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
   public:
@@ -46,16 +46,17 @@ namespace Seldon
 
     // Attributes.
   protected:
+    pointer* me_;
 
     // Methods.
   public:
     // Constructor.
-    Matrix_SymPacked();
-    Matrix_SymPacked(int i, int j = 0);
-    Matrix_SymPacked(const Matrix_SymPacked<T, Prop, Storage, Allocator>& A);
-    
+    Matrix_Pointers();
+    Matrix_Pointers(int i, int j);
+    Matrix_Pointers(const Matrix_Pointers<T, Prop, Storage, Allocator>& A);
+
     // Destructor.
-    ~Matrix_SymPacked();
+    ~Matrix_Pointers();
     void Clear();
 
     // Basic methods.
@@ -65,80 +66,100 @@ namespace Seldon
     void Reallocate(int i, int j);
     void SetData(int i, int j, pointer data);
     void Nullify();
-
+    void Resize(int i, int j);
+    
     // Element access and affectation.
     reference operator() (int i, int j);
+#ifndef SWIG
     const_reference operator() (int i, int j) const;
+#endif
     reference Val(int i, int j);
+#ifndef SWIG
     const_reference Val(int i, int j) const;
     reference operator[] (int i);
     const_reference operator[] (int i) const;
-    Matrix_SymPacked<T, Prop, Storage, Allocator>&
-    operator= (const Matrix_SymPacked<T, Prop, Storage, Allocator>& A);
-    void Copy(const Matrix_SymPacked<T, Prop, Storage, Allocator>& A);
+    Matrix_Pointers<T, Prop, Storage, Allocator>&
+    operator= (const Matrix_Pointers<T, Prop, Storage, Allocator>& A);
+#endif
+    void Copy(const Matrix_Pointers<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.
+    int GetLD() const;
     void Zero();
     void SetIdentity();
     void Fill();
     template <class T0>
     void Fill(const T0& x);
+#ifndef SWIG
     template <class T0>
-    Matrix_SymPacked<T, Prop, Storage, Allocator>& operator= (const T0& x);
+    Matrix_Pointers<T, Prop, Storage, Allocator>& operator= (const T0& x);
+#endif
     void FillRand();
     void Print() const;
     void Print(int a, int b, int m, int n) const;
     void Print(int l) const;
 
     // Input/output functions.
-    void Write(string FileName) const;
-    void Write(ostream& FileStream) const;
+    void Write(string FileName, bool with_size) const;
+#ifndef SWIG
+    void Write(ostream& FileStream, bool with_size) const;
+#endif
     void WriteText(string FileName) const;
+#ifndef SWIG
     void WriteText(ostream& FileStream) const;
+#endif
     void Read(string FileName);
+#ifndef SWIG
     void Read(istream& FileStream);
+#endif
 #ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
+#ifndef SWIG
     void ReadText(string FileName);
     void ReadText(istream& FileStream);
+#endif
 #endif
   };
 
 
-  //! Column-major symmetric packed matrix class.
+  //! Column-major full-matrix class.
   template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ColSymPacked, Allocator>:
-    public Matrix_SymPacked<T, Prop, ColSymPacked, Allocator>
+  class Matrix<T, Prop, ColMajor, Allocator>:
+    public Matrix_Pointers<T, Prop, ColMajor, Allocator>
   {
   public:
-    Matrix();
-    Matrix(int i, int j = 0);
-
+    Matrix()  throw();
+    Matrix(int i, int j);
+    Matrix(const Matrix<T, Prop, ColMajor, Allocator>& A);
+    
+#ifndef SWIG
     template <class T0>
-    Matrix<T, Prop, ColSymPacked, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, ColMajor, Allocator>& operator= (const T0& x);
+#endif
     template<class T0>
-    Matrix<T, Prop, ColSymPacked, Allocator>& operator*= (const T0& x);
-    void Resize(int i, int j);
+    Matrix<T, Prop, ColMajor, Allocator>& operator*= (const T0& x);
   };
 
 
-  //! Row-major symmetric packed matrix class.
+  //! Row-major full-matrix class.
   template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, RowSymPacked, Allocator>:
-    public Matrix_SymPacked<T, Prop, RowSymPacked, Allocator>
+  class Matrix<T, Prop, RowMajor, Allocator>:
+    public Matrix_Pointers<T, Prop, RowMajor, Allocator>
   {
   public:
-    Matrix();
-    Matrix(int i, int j = 0);
+    Matrix()  throw();
+    Matrix(int i, int j);
+    Matrix(const Matrix<T, Prop, RowMajor, Allocator>& A);
 
+#ifndef SWIG
     template <class T0>
-    Matrix<T, Prop, RowSymPacked, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, RowMajor, Allocator>& operator= (const T0& x);
+#endif
     template<class T0>
-    Matrix<T, Prop, RowSymPacked, Allocator>& operator*= (const T0& x);
-    void Resize(int i, int j);
+    Matrix<T, Prop, RowMajor, Allocator>& operator*= (const T0& x);
   };
 
 
 } // namespace Seldon.
 
-#define SELDON_FILE_MATRIX_SYMPACKED_HXX
+#define SELDON_FILE_MATRIX_POINTERS_HXX
 #endif

@@ -7,7 +7,7 @@
 
 using namespace std;
 
-%include "Share/Errors.hxx"
+%include "share/Errors.hxx"
 %exception
 {
   try
@@ -42,13 +42,13 @@ using namespace std;
 }
 
 %include "SeldonHeader.hxx"
-%include "Share/Common.hxx"
-%include "Share/Storage.hxx"
-%include "Share/Properties.hxx"
-%include "Vector/Vector.hxx"
-%include "Matrix/Matrix_Base.hxx"
-%include "Matrix/Matrix_Pointers.hxx"
-%include "Share/Allocator.hxx"
+%include "share/Common.hxx"
+%include "share/Storage.hxx"
+%include "share/Properties.hxx"
+%include "vector/Vector.hxx"
+%include "matrix/Matrix_Base.hxx"
+%include "matrix/Matrix_Pointers.hxx"
+%include "share/Allocator.hxx"
 
 namespace Seldon
 {

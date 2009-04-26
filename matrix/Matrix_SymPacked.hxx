@@ -19,22 +19,22 @@
 
 // To be included by Seldon.hxx
 
-#ifndef SELDON_FILE_MATRIX_HERMPACKED_HXX
+#ifndef SELDON_FILE_MATRIX_SYMPACKED_HXX
 
-#include "../Share/Common.hxx"
-#include "../Share/Properties.hxx"
-#include "../Share/Storage.hxx"
-#include "../Share/Errors.hxx"
-#include "../Share/Allocator.hxx"
+#include "../share/Common.hxx"
+#include "../share/Properties.hxx"
+#include "../share/Storage.hxx"
+#include "../share/Errors.hxx"
+#include "../share/Allocator.hxx"
 
 namespace Seldon
 {
   
 
-  //! Hermitian packed matrix class.
+  //! Symmetric packed matrix class.
   template <class T, class Prop, class Storage,
 	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
-  class Matrix_HermPacked: public Matrix_Base<T, Allocator>
+  class Matrix_SymPacked: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
   public:
@@ -50,13 +50,12 @@ namespace Seldon
     // Methods.
   public:
     // Constructor.
-    Matrix_HermPacked();
-    Matrix_HermPacked(int i, int j = 0);
-    Matrix_HermPacked(const Matrix_HermPacked<T, Prop,
-		      Storage, Allocator>& A);
-
+    Matrix_SymPacked();
+    Matrix_SymPacked(int i, int j = 0);
+    Matrix_SymPacked(const Matrix_SymPacked<T, Prop, Storage, Allocator>& A);
+    
     // Destructor.
-    ~Matrix_HermPacked();
+    ~Matrix_SymPacked();
     void Clear();
 
     // Basic methods.
@@ -69,14 +68,14 @@ namespace Seldon
 
     // Element access and affectation.
     reference operator() (int i, int j);
-    value_type operator() (int i, int j) const;
+    const_reference operator() (int i, int j) const;
     reference Val(int i, int j);
     const_reference Val(int i, int j) const;
     reference operator[] (int i);
     const_reference operator[] (int i) const;
-    Matrix_HermPacked<T, Prop, Storage, Allocator>&
-    operator= (const Matrix_HermPacked<T, Prop, Storage, Allocator>& A);
-    void Copy(const Matrix_HermPacked<T, Prop, Storage, Allocator>& A);
+    Matrix_SymPacked<T, Prop, Storage, Allocator>&
+    operator= (const Matrix_SymPacked<T, Prop, Storage, Allocator>& A);
+    void Copy(const Matrix_SymPacked<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.
     void Zero();
@@ -85,7 +84,7 @@ namespace Seldon
     template <class T0>
     void Fill(const T0& x);
     template <class T0>
-    Matrix_HermPacked<T, Prop, Storage, Allocator>& operator= (const T0& x);
+    Matrix_SymPacked<T, Prop, Storage, Allocator>& operator= (const T0& x);
     void FillRand();
     void Print() const;
     void Print(int a, int b, int m, int n) const;
@@ -98,51 +97,48 @@ namespace Seldon
     void WriteText(ostream& FileStream) const;
     void Read(string FileName);
     void Read(istream& FileStream);
+#ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
     void ReadText(string FileName);
     void ReadText(istream& FileStream);
-
+#endif
   };
 
 
-  //! Column-major hermitian packed matrix class.
+  //! Column-major symmetric packed matrix class.
   template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ColHermPacked, Allocator>:
-    public Matrix_HermPacked<T, Prop, ColHermPacked, Allocator>
+  class Matrix<T, Prop, ColSymPacked, Allocator>:
+    public Matrix_SymPacked<T, Prop, ColSymPacked, Allocator>
   {
   public:
     Matrix();
     Matrix(int i, int j = 0);
 
     template <class T0>
-    Matrix<T, Prop, ColHermPacked, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, ColSymPacked, Allocator>& operator= (const T0& x);
     template<class T0>
-    Matrix<T, Prop, ColHermPacked, Allocator>& operator*= (const T0& x);
-    
+    Matrix<T, Prop, ColSymPacked, Allocator>& operator*= (const T0& x);
     void Resize(int i, int j);
-    
   };
 
 
-  //! Row-major hermitian packed matrix class.
+  //! Row-major symmetric packed matrix class.
   template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, RowHermPacked, Allocator>:
-    public Matrix_HermPacked<T, Prop, RowHermPacked, Allocator>
+  class Matrix<T, Prop, RowSymPacked, Allocator>:
+    public Matrix_SymPacked<T, Prop, RowSymPacked, Allocator>
   {
   public:
     Matrix();
     Matrix(int i, int j = 0);
 
     template <class T0>
-    Matrix<T, Prop, RowHermPacked, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, RowSymPacked, Allocator>& operator= (const T0& x);
     template<class T0>
-    Matrix<T, Prop, RowHermPacked, Allocator>& operator*= (const T0& x);
-    
+    Matrix<T, Prop, RowSymPacked, Allocator>& operator*= (const T0& x);
     void Resize(int i, int j);
-    
   };
 
 
 } // namespace Seldon.
 
-#define SELDON_FILE_MATRIX_HERMPACKED_HXX
+#define SELDON_FILE_MATRIX_SYMPACKED_HXX
 #endif

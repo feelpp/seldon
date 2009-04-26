@@ -36,7 +36,7 @@
 #ifdef SELDON_WITH_CBLAS
 extern "C"
 {
-#include "Computation/Interfaces/cblas.h"
+#include "computation/interfaces/cblas.h"
 }
 #endif
 
@@ -150,21 +150,21 @@ namespace Seldon
 }
 
 // Exceptions and useful functions.
-#include "Share/Errors.hxx"
-#include "Share/Common.hxx"
+#include "share/Errors.hxx"
+#include "share/Common.hxx"
 
 // Default allocator.
 #ifndef SELDON_DEFAULT_ALLOCATOR
 #define SELDON_DEFAULT_ALLOCATOR MallocAlloc
 #endif
 // Memory management.
-#include "Share/Allocator.hxx"
+#include "share/Allocator.hxx"
 
 // Storage type.
-#include "Share/Storage.hxx"
+#include "share/Storage.hxx"
 
 // Properties.
-#include "Share/Properties.hxx"
+#include "share/Properties.hxx"
 
 namespace Seldon
 {
@@ -312,22 +312,22 @@ namespace Seldon
 } // namespace Seldon.
 
 
-#include "Array3D/Array3D.hxx"
-#include "Matrix/Matrix_Base.hxx"
-#include "Matrix/Matrix_Pointers.hxx"
-#include "Matrix/Matrix_Triangular.hxx"
-#include "Matrix/Matrix_Symmetric.hxx"
-#include "Matrix/Matrix_Hermitian.hxx"
-#include "MatrixSparse/Matrix_Sparse.hxx"
-#include "MatrixSparse/Matrix_ComplexSparse.hxx"
-#include "MatrixSparse/Matrix_SymSparse.hxx"
-#include "MatrixSparse/Matrix_SymComplexSparse.hxx"
-#include "Matrix/Matrix_SymPacked.hxx"
-#include "Matrix/Matrix_HermPacked.hxx"
-#include "Matrix/Matrix_TriangPacked.hxx"
-#include "Vector/Vector.hxx"
-#include "Vector/SparseVector.hxx"
-#include "Matrix/Functions.hxx"
+#include "array3d/Array3D.hxx"
+#include "matrix/Matrix_Base.hxx"
+#include "matrix/Matrix_Pointers.hxx"
+#include "matrix/Matrix_Triangular.hxx"
+#include "matrix/Matrix_Symmetric.hxx"
+#include "matrix/Matrix_Hermitian.hxx"
+#include "matrix_sparse/Matrix_Sparse.hxx"
+#include "matrix_sparse/Matrix_ComplexSparse.hxx"
+#include "matrix_sparse/Matrix_SymSparse.hxx"
+#include "matrix_sparse/Matrix_SymComplexSparse.hxx"
+#include "matrix/Matrix_SymPacked.hxx"
+#include "matrix/Matrix_HermPacked.hxx"
+#include "matrix/Matrix_TriangPacked.hxx"
+#include "vector/Vector.hxx"
+#include "vector/SparseVector.hxx"
+#include "matrix/Functions.hxx"
 
 // Lapack interface.
 #ifdef SELDON_WITH_LAPACK
@@ -349,7 +349,7 @@ namespace Seldon
 #define LAPACK_FTNLEN int*
 extern "C"
 {
-#include "Computation/Interfaces/clapack.h"
+#include "computation/interfaces/clapack.h"
 }
 #ifdef SELDON_LAPACK_CHECK_INFO
 #ifndef SELDON_CHECK_INFO
