@@ -49,7 +49,7 @@ namespace Seldon
     
     int ma = A.GetM();
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
@@ -115,7 +115,7 @@ namespace Seldon
     
     int ma = A.GetM();
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
@@ -184,7 +184,7 @@ namespace Seldon
     
     int ma = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
@@ -317,7 +317,7 @@ namespace Seldon
     
     int ma = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
@@ -447,7 +447,7 @@ namespace Seldon
     
     int ma = A.GetM();
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
@@ -520,7 +520,7 @@ namespace Seldon
     
     int ma = A.GetM();
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
@@ -603,7 +603,7 @@ namespace Seldon
     
     int ma = A.GetM();
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
@@ -784,7 +784,7 @@ namespace Seldon
     
     int ma = A.GetM();
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");

@@ -279,7 +279,7 @@ namespace Seldon
     const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::operator()",
 		     "Index should be in [0, " + to_str(this->m_-1) +
@@ -307,7 +307,7 @@ namespace Seldon
   Matrix_ArraySparse<T, Prop, Storage, Allocator>::operator() (int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::operator()",
 		     "Index should be in [0, " + to_str(this->m_-1) +
@@ -334,7 +334,7 @@ namespace Seldon
   Value (int i, int j) const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -361,7 +361,7 @@ namespace Seldon
   Matrix_ArraySparse<T, Prop, Storage, Allocator>::Value (int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -388,7 +388,7 @@ namespace Seldon
     const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -414,7 +414,7 @@ namespace Seldon
   int& Matrix_ArraySparse<T, Prop, Storage, Allocator>::Index(int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -1364,7 +1364,7 @@ namespace Seldon
     const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix::operator()", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -1394,7 +1394,7 @@ namespace Seldon
   Matrix<T, Prop, ArrayColSymSparse, Allocator>::operator() (int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix::operator()", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -1656,7 +1656,7 @@ namespace Seldon
     const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::operator()", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -1686,7 +1686,7 @@ namespace Seldon
   Matrix<T, Prop, ArrayRowSymSparse, Allocator>::operator() (int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix::operator()", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "

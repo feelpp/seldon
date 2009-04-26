@@ -56,7 +56,7 @@ namespace Seldon
 	      Matrix<float, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
 #endif
 
@@ -77,7 +77,7 @@ namespace Seldon
 	      Matrix<double, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
 #endif
 
@@ -98,7 +98,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
 #endif
 
@@ -122,7 +122,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
 #endif
 
@@ -151,7 +151,7 @@ namespace Seldon
 	      Matrix<float, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, TransB, B, C,
 	     "MltAdd(alpha, TransA, A, TransB, B, beta, C)");
 #endif
@@ -174,7 +174,7 @@ namespace Seldon
 	      Matrix<double, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, TransB, B, C,
 	     "MltAdd(alpha, TransA, A, TransB, B, beta, C)");
 #endif
@@ -197,7 +197,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, TransB, B, C,
 	     "MltAdd(alpha, TransA, A, TransB, B, beta, C)");
 #endif
@@ -223,7 +223,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, TransB, B, C,
 	     "MltAdd(alpha, TransA, A, TransB, B, beta, C)");
 #endif
@@ -250,7 +250,7 @@ namespace Seldon
 	      Matrix<float, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
 #endif
 
@@ -271,7 +271,7 @@ namespace Seldon
 	      Matrix<double, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
 #endif
 
@@ -292,7 +292,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
 #endif
 
@@ -316,7 +316,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
 #endif
 
@@ -345,7 +345,7 @@ namespace Seldon
 	      Matrix<float, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, TransB, B, C,
 	     "MltAdd(alpha, TransA, A, TransB, B, beta, C)");
 #endif
@@ -368,7 +368,7 @@ namespace Seldon
 	      Matrix<double, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, TransB, B, C,
 	     "MltAdd(alpha, TransA, A, TransB, B, beta, C)");
 #endif
@@ -391,7 +391,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, TransB, B, C,
 	     "MltAdd(alpha, TransA, A, TransB, B, beta, C)");
 #endif
@@ -417,7 +417,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, TransB, B, C,
 	     "MltAdd(alpha, TransA, A, TransB, B, beta, C)");
 #endif
@@ -454,7 +454,7 @@ namespace Seldon
 	      Matrix<float, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, A, B, beta, C)");
 #endif
 
@@ -476,7 +476,7 @@ namespace Seldon
 	      Matrix<double, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, A, B, beta, C)");
 #endif
 
@@ -498,7 +498,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, A, B, beta, C)");
 #endif
 
@@ -523,7 +523,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, A, B, beta, C)");
 #endif
 
@@ -552,7 +552,7 @@ namespace Seldon
 	      Matrix<float, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, uplo, A, B, beta, C)");
 #endif
 
@@ -575,7 +575,7 @@ namespace Seldon
 	      Matrix<double, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, uplo, A, B, beta, C)");
 #endif
 
@@ -598,7 +598,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, uplo, A, B, beta, C)");
 #endif
 
@@ -624,7 +624,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, uplo, A, B, beta, C)");
 #endif
 
@@ -652,7 +652,7 @@ namespace Seldon
 	      Matrix<float, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, A, B, beta, C)");
 #endif
 
@@ -674,7 +674,7 @@ namespace Seldon
 	      Matrix<double, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, A, B, beta, C)");
 #endif
 
@@ -696,7 +696,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, A, B, beta, C)");
 #endif
 
@@ -721,7 +721,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, A, B, beta, C)");
 #endif
 
@@ -750,7 +750,7 @@ namespace Seldon
 	      Matrix<float, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, uplo, A, B, beta, C)");
 #endif
 
@@ -773,7 +773,7 @@ namespace Seldon
 	      Matrix<double, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, uplo, A, B, beta, C)");
 #endif
 
@@ -796,7 +796,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, uplo, A, B, beta, C)");
 #endif
 
@@ -822,7 +822,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, uplo, A, B, beta, C)");
 #endif
 
@@ -859,7 +859,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, A, B, beta, C)");
 #endif
 
@@ -884,7 +884,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, A, B, beta, C)");
 #endif
 
@@ -913,7 +913,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, uplo, A, B, beta, C)");
 #endif
 
@@ -939,7 +939,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, uplo, A, B, beta, C)");
 #endif
 
@@ -967,7 +967,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, A, B, beta, C)");
 #endif
 
@@ -992,7 +992,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, A, B, beta, C)");
 #endif
 
@@ -1021,7 +1021,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, uplo, A, B, beta, C)");
 #endif
 
@@ -1047,7 +1047,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, C, "MltAdd(side, alpha, uplo, A, B, beta, C)");
 #endif
 
@@ -1081,7 +1081,7 @@ namespace Seldon
 	   Matrix<float, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1099,7 +1099,7 @@ namespace Seldon
 	   Matrix<double, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1117,7 +1117,7 @@ namespace Seldon
 	   Matrix<complex<float>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1137,7 +1137,7 @@ namespace Seldon
 	   Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1162,7 +1162,7 @@ namespace Seldon
 	   Matrix<float, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1182,7 +1182,7 @@ namespace Seldon
 	   Matrix<double, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1202,7 +1202,7 @@ namespace Seldon
 	   Matrix<complex<float>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1224,7 +1224,7 @@ namespace Seldon
 	   Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1247,7 +1247,7 @@ namespace Seldon
 	   Matrix<float, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1265,7 +1265,7 @@ namespace Seldon
 	   Matrix<double, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1283,7 +1283,7 @@ namespace Seldon
 	   Matrix<complex<float>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1303,7 +1303,7 @@ namespace Seldon
 	   Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1328,7 +1328,7 @@ namespace Seldon
 	   Matrix<float, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1348,7 +1348,7 @@ namespace Seldon
 	   Matrix<double, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1368,7 +1368,7 @@ namespace Seldon
 	   Matrix<complex<float>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1390,7 +1390,7 @@ namespace Seldon
 	   Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1413,7 +1413,7 @@ namespace Seldon
 	   Matrix<float, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1431,7 +1431,7 @@ namespace Seldon
 	   Matrix<double, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1449,7 +1449,7 @@ namespace Seldon
 	   Matrix<complex<float>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1469,7 +1469,7 @@ namespace Seldon
 	   Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1494,7 +1494,7 @@ namespace Seldon
 	   Matrix<float, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1514,7 +1514,7 @@ namespace Seldon
 	   Matrix<double, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1534,7 +1534,7 @@ namespace Seldon
 	   Matrix<complex<float>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1556,7 +1556,7 @@ namespace Seldon
 	   Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1579,7 +1579,7 @@ namespace Seldon
 	   Matrix<float, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1597,7 +1597,7 @@ namespace Seldon
 	   Matrix<double, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1615,7 +1615,7 @@ namespace Seldon
 	   Matrix<complex<float>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1635,7 +1635,7 @@ namespace Seldon
 	   Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, A, B)");
 #endif
 
@@ -1660,7 +1660,7 @@ namespace Seldon
 	   Matrix<float, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1680,7 +1680,7 @@ namespace Seldon
 	   Matrix<double, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1700,7 +1700,7 @@ namespace Seldon
 	   Matrix<complex<float>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1722,7 +1722,7 @@ namespace Seldon
 	   Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Mlt(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1754,7 +1754,7 @@ namespace Seldon
 	     Matrix<float, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -1772,7 +1772,7 @@ namespace Seldon
 	     Matrix<double, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -1790,7 +1790,7 @@ namespace Seldon
 	     Matrix<complex<float>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -1810,7 +1810,7 @@ namespace Seldon
 	     Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -1835,7 +1835,7 @@ namespace Seldon
 	     Matrix<float, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1855,7 +1855,7 @@ namespace Seldon
 	     Matrix<double, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1875,7 +1875,7 @@ namespace Seldon
 	     Matrix<complex<float>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1897,7 +1897,7 @@ namespace Seldon
 	     Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -1920,7 +1920,7 @@ namespace Seldon
 	     Matrix<float, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -1938,7 +1938,7 @@ namespace Seldon
 	     Matrix<double, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -1956,7 +1956,7 @@ namespace Seldon
 	     Matrix<complex<float>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -1976,7 +1976,7 @@ namespace Seldon
 	     Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -2001,7 +2001,7 @@ namespace Seldon
 	     Matrix<float, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -2021,7 +2021,7 @@ namespace Seldon
 	     Matrix<double, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -2041,7 +2041,7 @@ namespace Seldon
 	     Matrix<complex<float>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -2063,7 +2063,7 @@ namespace Seldon
 	     Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -2086,7 +2086,7 @@ namespace Seldon
 	     Matrix<float, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -2104,7 +2104,7 @@ namespace Seldon
 	     Matrix<double, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -2122,7 +2122,7 @@ namespace Seldon
 	     Matrix<complex<float>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -2142,7 +2142,7 @@ namespace Seldon
 	     Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -2167,7 +2167,7 @@ namespace Seldon
 	     Matrix<float, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -2187,7 +2187,7 @@ namespace Seldon
 	     Matrix<double, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -2207,7 +2207,7 @@ namespace Seldon
 	     Matrix<complex<float>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -2229,7 +2229,7 @@ namespace Seldon
 	     Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -2252,7 +2252,7 @@ namespace Seldon
 	     Matrix<float, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -2270,7 +2270,7 @@ namespace Seldon
 	     Matrix<double, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -2288,7 +2288,7 @@ namespace Seldon
 	     Matrix<complex<float>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -2308,7 +2308,7 @@ namespace Seldon
 	     Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, A, B)");
 #endif
 
@@ -2333,7 +2333,7 @@ namespace Seldon
 	     Matrix<float, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -2353,7 +2353,7 @@ namespace Seldon
 	     Matrix<double, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -2373,7 +2373,7 @@ namespace Seldon
 	     Matrix<complex<float>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 
@@ -2395,7 +2395,7 @@ namespace Seldon
 	     Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(Side, A, B, "Solve(side, alpha, status, diag, A, B)");
 #endif
 

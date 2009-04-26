@@ -126,7 +126,7 @@ namespace Seldon
     int mc = C.GetM();
     int nc = C.GetN();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
 #endif
 
@@ -211,7 +211,7 @@ namespace Seldon
 
     int ma = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("GetLU(A)", "The matrix must be squared.");

@@ -434,7 +434,7 @@ namespace Seldon
   Vector<T, VectFull, Allocator>::operator() (int i)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongIndex("Vector<VectFull>::operator()",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
@@ -455,7 +455,7 @@ namespace Seldon
   Vector<T, VectFull, Allocator>::operator() (int i) const
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongIndex("Vector<VectFull>::operator()",
 		       string("Index should be in [0, ") + to_str(this->m_-1)

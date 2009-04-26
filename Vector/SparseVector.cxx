@@ -278,7 +278,7 @@ namespace Seldon
   ::SetData(Vector<T, VectFull, Allocator2>& data, Vector<int>& index)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (data.GetM() != index.GetM())
       throw WrongDim("Vector<VectSparse>::SetData ",
 		     string("The data vector and the index vector should")
@@ -322,7 +322,7 @@ namespace Seldon
   Vector<T, VectSparse, Allocator>::Value(int i)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongIndex("Vector<VectSparse>::Value(int)",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
@@ -343,7 +343,7 @@ namespace Seldon
   Vector<T, VectSparse, Allocator>::Value(int i) const
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongIndex("Vector<VectSparse>::Value(int)",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
@@ -363,7 +363,7 @@ namespace Seldon
   inline int& Vector<T, VectSparse, Allocator>::Index(int i)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongIndex("Vector<VectSparse>::Index(int)",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
@@ -383,7 +383,7 @@ namespace Seldon
   inline int Vector<T, VectSparse, Allocator>::Index(int i) const
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongIndex("Vector<VectSparse>::Index(int)",
 		       string("Index should be in [0, ") + to_str(this->m_-1)

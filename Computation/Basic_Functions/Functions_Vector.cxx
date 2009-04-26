@@ -89,7 +89,7 @@ namespace Seldon
 
 	int ma = X.GetM();
 	
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
 	CheckDim(X, Y, "Add(alpha, X, Y)");
 #endif
 
@@ -188,7 +188,7 @@ namespace Seldon
   {
     T1 value(0);
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "DotProd(X, Y)");
 #endif
 
@@ -217,7 +217,7 @@ namespace Seldon
   {
     complex<T1> value(0);
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "DotProdConj(X, Y)");
 #endif
 

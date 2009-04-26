@@ -301,7 +301,7 @@ namespace Seldon
   Array3D<T, Allocator>::operator() (int i, int j, int k)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= length1_)
       throw WrongIndex("Array3D::operator()",
 		       string("Index along dimension #1 should be in [0, ")
@@ -336,7 +336,7 @@ namespace Seldon
   Array3D<T, Allocator>::operator() (int i, int j, int k) const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= length1_)
       throw WrongIndex("Array3D::operator()",
 		       string("Index along dimension #1 should be in [0, ")

@@ -623,7 +623,7 @@ namespace Seldon
   Matrix_Sparse<T, Prop, Storage, Allocator>::operator() (int i, int j) const
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_Sparse::operator()",
 		     string("Index should be in [0, ") + to_str(this->m_-1)

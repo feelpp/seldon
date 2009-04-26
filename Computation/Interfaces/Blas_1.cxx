@@ -161,7 +161,7 @@ namespace Seldon
 	    Vector<float, VectFull, Allocator>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "Swap(X, Y)", "X <-> Y");
 #endif
 
@@ -175,7 +175,7 @@ namespace Seldon
 	    Vector<double, VectFull, Allocator>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "Swap(X, Y)", "X <-> Y");
 #endif
 
@@ -189,7 +189,7 @@ namespace Seldon
 	    Vector<complex<float>, VectFull, Allocator>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "Swap(X, Y)", "X <-> Y");
 #endif
 
@@ -203,7 +203,7 @@ namespace Seldon
 	    Vector<complex<double>, VectFull, Allocator>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "Swap(X, Y)", "X <-> Y");
 #endif
 
@@ -289,7 +289,7 @@ namespace Seldon
 	    Vector<float, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "Copy(X, Y)", "X -> Y");
 #endif
 
@@ -304,7 +304,7 @@ namespace Seldon
 	    Vector<double, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "Copy(X, Y)", "X -> Y");
 #endif
 
@@ -319,7 +319,7 @@ namespace Seldon
 	    Vector<complex<float>, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "Copy(X, Y)", "X -> Y");
 #endif
 
@@ -334,7 +334,7 @@ namespace Seldon
 	    Vector<complex<double>, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "Copy(X, Y)", "X -> Y");
 #endif
 
@@ -359,7 +359,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "Add(alpha, X, Y)");
 #endif
 
@@ -376,7 +376,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "Add(alpha, X, Y)");
 #endif
 
@@ -393,7 +393,7 @@ namespace Seldon
 	   Vector<complex<float>, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "Add(alpha, X, Y)");
 #endif
 
@@ -410,7 +410,7 @@ namespace Seldon
 	   Vector<complex<double>, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "Add(alpha, X, Y)");
 #endif
 
@@ -435,7 +435,7 @@ namespace Seldon
 		const Vector<float, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "DotProd(X, Y)", "dot(X, Y)");
 #endif
 
@@ -450,7 +450,7 @@ namespace Seldon
 		 const Vector<double, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "DotProd(X, Y)", "dot(X, Y)");
 #endif
 
@@ -466,7 +466,7 @@ namespace Seldon
 	  const Vector<complex<float>, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "DotProd(X, Y)", "dot(X, Y)");
 #endif
 
@@ -485,7 +485,7 @@ namespace Seldon
 	  const Vector<complex<double>, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "DotProd(X, Y)", "dot(X, Y)");
 #endif
 
@@ -513,7 +513,7 @@ namespace Seldon
 		      const Vector<float, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "ScaledDotProd(X, Y)", "dot(X, Y)");
 #endif
 
@@ -538,7 +538,7 @@ namespace Seldon
 	      const Vector<complex<float>, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "DotProdConj(X, Y)", "dot(X, Y)");
 #endif
 
@@ -557,7 +557,7 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator1>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(X, Y, "DotProdConj(X, Y)", "dot(X, Y)");
 #endif
 

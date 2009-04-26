@@ -62,7 +62,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -77,7 +77,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -93,7 +93,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -110,7 +110,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -131,7 +131,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -148,7 +148,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -166,7 +166,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -185,7 +185,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -204,7 +204,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -219,7 +219,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -235,7 +235,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -252,7 +252,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -273,7 +273,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -290,7 +290,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -308,7 +308,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -327,7 +327,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -346,7 +346,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -361,7 +361,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -377,7 +377,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -394,7 +394,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -415,7 +415,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -432,7 +432,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -450,7 +450,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -469,7 +469,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -488,7 +488,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -503,7 +503,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -519,7 +519,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -536,7 +536,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -557,7 +557,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -574,7 +574,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -592,7 +592,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -611,7 +611,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -630,7 +630,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -645,7 +645,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -661,7 +661,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -678,7 +678,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -699,7 +699,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -716,7 +716,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -734,7 +734,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -753,7 +753,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -772,7 +772,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -787,7 +787,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -803,7 +803,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -820,7 +820,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -841,7 +841,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -858,7 +858,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -876,7 +876,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -895,7 +895,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -914,7 +914,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -929,7 +929,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -945,7 +945,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -962,7 +962,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -983,7 +983,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -1000,7 +1000,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -1018,7 +1018,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -1037,7 +1037,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -1056,7 +1056,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -1071,7 +1071,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -1087,7 +1087,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -1104,7 +1104,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(M, X)");
 #endif
 
@@ -1125,7 +1125,7 @@ namespace Seldon
 	   Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -1142,7 +1142,7 @@ namespace Seldon
 	   Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -1160,7 +1160,7 @@ namespace Seldon
       Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -1179,7 +1179,7 @@ namespace Seldon
       Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Mlt(status, diag, M, X)");
 #endif
 
@@ -1212,7 +1212,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1231,7 +1231,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1250,7 +1250,7 @@ namespace Seldon
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1272,7 +1272,7 @@ namespace Seldon
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1298,7 +1298,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, status, M, X, beta, Y)");
 #endif
 
@@ -1318,7 +1318,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, status, M, X, beta, Y)");
 #endif
 
@@ -1338,7 +1338,7 @@ namespace Seldon
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, status, M, X, beta, Y)");
 #endif
 
@@ -1361,7 +1361,7 @@ namespace Seldon
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, status, M, X, beta, Y)");
 #endif
 
@@ -1386,7 +1386,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1405,7 +1405,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1424,7 +1424,7 @@ namespace Seldon
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1446,7 +1446,7 @@ namespace Seldon
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1472,7 +1472,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, status, M, X, beta, Y)");
 #endif
 
@@ -1492,7 +1492,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, status, M, X, beta, Y)");
 #endif
 
@@ -1512,7 +1512,7 @@ namespace Seldon
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, status, M, X, beta, Y)");
 #endif
 
@@ -1535,7 +1535,7 @@ namespace Seldon
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, status, M, X, beta, Y)");
 #endif
 
@@ -1562,7 +1562,7 @@ namespace Seldon
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1583,7 +1583,7 @@ namespace Seldon
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1608,7 +1608,7 @@ namespace Seldon
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -1630,7 +1630,7 @@ namespace Seldon
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -1654,7 +1654,7 @@ namespace Seldon
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1675,7 +1675,7 @@ namespace Seldon
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1700,7 +1700,7 @@ namespace Seldon
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -1722,7 +1722,7 @@ namespace Seldon
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -1749,7 +1749,7 @@ namespace Seldon
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1771,7 +1771,7 @@ namespace Seldon
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1797,7 +1797,7 @@ namespace Seldon
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -1820,7 +1820,7 @@ namespace Seldon
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -1845,7 +1845,7 @@ namespace Seldon
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1867,7 +1867,7 @@ namespace Seldon
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1893,7 +1893,7 @@ namespace Seldon
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -1916,7 +1916,7 @@ namespace Seldon
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -1942,7 +1942,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1961,7 +1961,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -1984,7 +1984,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -2004,7 +2004,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -2026,7 +2026,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -2045,7 +2045,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -2068,7 +2068,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -2088,7 +2088,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -2112,7 +2112,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -2131,7 +2131,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -2154,7 +2154,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -2174,7 +2174,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -2196,7 +2196,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -2215,7 +2215,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -2238,7 +2238,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -2258,7 +2258,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, Y, "MltAdd(alpha, uplo, M, X, beta, Y)");
 #endif
 
@@ -2288,7 +2288,7 @@ namespace Seldon
 		   Matrix<float, Prop0, ColMajor, Allocator0>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(SeldonNoTrans, A, Y, X,
 	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
@@ -2306,7 +2306,7 @@ namespace Seldon
 		   Matrix<double, Prop0, ColMajor, Allocator0>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(SeldonNoTrans, A, Y, X,
 	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
@@ -2324,7 +2324,7 @@ namespace Seldon
 		   Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(SeldonNoTrans, A, Y, X,
 	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
@@ -2345,7 +2345,7 @@ namespace Seldon
 		   Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(SeldonNoTrans, A, Y, X,
 	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
@@ -2370,7 +2370,7 @@ namespace Seldon
 		   Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(SeldonNoTrans, A, Y, X,
 	     "Rank1Update(alpha, X, status, Y, M)", "X.Y' + M");
 #endif
@@ -2399,7 +2399,7 @@ namespace Seldon
 		   Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(SeldonNoTrans, A, Y, X,
 	     "Rank1Update(alpha, X, status, Y, M)", "X.Y' + M");
 #endif
@@ -2430,7 +2430,7 @@ namespace Seldon
 		   Matrix<float, Prop0, RowMajor, Allocator0>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(SeldonNoTrans, A, Y, X,
 	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
@@ -2448,7 +2448,7 @@ namespace Seldon
 		   Matrix<double, Prop0, RowMajor, Allocator0>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(SeldonNoTrans, A, Y, X,
 	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
@@ -2466,7 +2466,7 @@ namespace Seldon
 		   Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(SeldonNoTrans, A, Y, X,
 	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
@@ -2487,7 +2487,7 @@ namespace Seldon
 		   Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(SeldonNoTrans, A, Y, X,
 	     "Rank1Update(alpha, X, Y, M)", "X.Y' + M");
 #endif
@@ -2512,7 +2512,7 @@ namespace Seldon
 		   Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(SeldonNoTrans, A, Y, X,
 	     "Rank1Update(alpha, X, status, Y, M)", "X.Y' + M");
 #endif
@@ -2541,7 +2541,7 @@ namespace Seldon
 		   Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(SeldonNoTrans, A, Y, X,
 	     "Rank1Update(alpha, X, status, Y, M)", "X.Y' + M");
 #endif
@@ -2571,7 +2571,7 @@ namespace Seldon
 		   Matrix<float, Prop1, ColSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
 #endif
 
@@ -2587,7 +2587,7 @@ namespace Seldon
 		   Matrix<double, Prop1, ColSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
 #endif
 
@@ -2604,7 +2604,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
 #endif
 
@@ -2622,7 +2622,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
 #endif
 
@@ -2643,7 +2643,7 @@ namespace Seldon
 		   Matrix<float, Prop1, ColSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
 #endif
 
@@ -2660,7 +2660,7 @@ namespace Seldon
 		   Matrix<double, Prop1, ColSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
 #endif
 
@@ -2678,7 +2678,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
 #endif
 
@@ -2697,7 +2697,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
 #endif
 
@@ -2717,7 +2717,7 @@ namespace Seldon
 		   Matrix<float, Prop1, RowSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
 #endif
 
@@ -2733,7 +2733,7 @@ namespace Seldon
 		   Matrix<double, Prop1, RowSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
 #endif
 
@@ -2750,7 +2750,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
 #endif
 
@@ -2768,7 +2768,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
 #endif
 
@@ -2789,7 +2789,7 @@ namespace Seldon
 		   Matrix<float, Prop1, RowSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
 #endif
 
@@ -2806,7 +2806,7 @@ namespace Seldon
 		   Matrix<double, Prop1, RowSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
 #endif
 
@@ -2824,7 +2824,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
 #endif
 
@@ -2843,7 +2843,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
 #endif
 
@@ -2874,7 +2874,7 @@ namespace Seldon
 		   Matrix<float, Prop1, ColSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
 #endif
@@ -2893,7 +2893,7 @@ namespace Seldon
 		   Matrix<double, Prop1, ColSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
 #endif
@@ -2913,7 +2913,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
 #endif
@@ -2936,7 +2936,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
 #endif
@@ -2962,7 +2962,7 @@ namespace Seldon
 		   Matrix<float, Prop1, ColSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
 #endif
@@ -2982,7 +2982,7 @@ namespace Seldon
 		   Matrix<double, Prop1, ColSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
 #endif
@@ -3003,7 +3003,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
 #endif
@@ -3027,7 +3027,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
 #endif
@@ -3052,7 +3052,7 @@ namespace Seldon
 		   Matrix<float, Prop1, RowSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
 #endif
@@ -3071,7 +3071,7 @@ namespace Seldon
 		   Matrix<double, Prop1, RowSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
 #endif
@@ -3091,7 +3091,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
 #endif
@@ -3114,7 +3114,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
 #endif
@@ -3140,7 +3140,7 @@ namespace Seldon
 		   Matrix<float, Prop1, RowSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
 #endif
@@ -3160,7 +3160,7 @@ namespace Seldon
 		   Matrix<double, Prop1, RowSymPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
 #endif
@@ -3181,7 +3181,7 @@ namespace Seldon
 	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
 #endif
@@ -3205,7 +3205,7 @@ namespace Seldon
 	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
     CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
 #endif
@@ -3236,7 +3236,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3251,7 +3251,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3267,7 +3267,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3285,7 +3285,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3306,7 +3306,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3323,7 +3323,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3341,7 +3341,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3361,7 +3361,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3380,7 +3380,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3395,7 +3395,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3411,7 +3411,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3429,7 +3429,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3450,7 +3450,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, uplo, M, X)");
 #endif
 
@@ -3467,7 +3467,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, uplo, M, X)");
 #endif
 
@@ -3485,7 +3485,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, uplo, M, X)");
 #endif
 
@@ -3505,7 +3505,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, uplo, M, X)");
 #endif
 
@@ -3524,7 +3524,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3539,7 +3539,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3555,7 +3555,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3573,7 +3573,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3594,7 +3594,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3611,7 +3611,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3629,7 +3629,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3649,7 +3649,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3668,7 +3668,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3683,7 +3683,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3699,7 +3699,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3717,7 +3717,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3738,7 +3738,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3755,7 +3755,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3773,7 +3773,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3793,7 +3793,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3812,7 +3812,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3827,7 +3827,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3843,7 +3843,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3861,7 +3861,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3882,7 +3882,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3899,7 +3899,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3917,7 +3917,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3937,7 +3937,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -3956,7 +3956,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3971,7 +3971,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -3987,7 +3987,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -4005,7 +4005,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -4026,7 +4026,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -4043,7 +4043,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -4061,7 +4061,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -4081,7 +4081,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -4100,7 +4100,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -4115,7 +4115,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -4131,7 +4131,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -4149,7 +4149,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -4170,7 +4170,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -4187,7 +4187,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -4205,7 +4205,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -4225,7 +4225,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -4244,7 +4244,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -4259,7 +4259,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -4275,7 +4275,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -4293,7 +4293,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(M, X)");
 #endif
 
@@ -4314,7 +4314,7 @@ namespace Seldon
 	     Vector<float, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -4331,7 +4331,7 @@ namespace Seldon
 	     Vector<double, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -4349,7 +4349,7 @@ namespace Seldon
 	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 
@@ -4369,7 +4369,7 @@ namespace Seldon
 	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, X, "Solve(status, diag, M, X)");
 #endif
 

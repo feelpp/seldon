@@ -363,7 +363,7 @@ namespace Seldon
     (int i, int j) const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix::operator()", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -393,7 +393,7 @@ namespace Seldon
   ValueReal(int i, int j) const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -421,7 +421,7 @@ namespace Seldon
   ValueReal(int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -447,7 +447,7 @@ namespace Seldon
   IndexReal(int i, int j) const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -474,7 +474,7 @@ namespace Seldon
   IndexReal(int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -501,7 +501,7 @@ namespace Seldon
   ValueImag(int i, int j) const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -528,7 +528,7 @@ namespace Seldon
   ValueImag (int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -555,7 +555,7 @@ namespace Seldon
   IndexImag(int i, int j) const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -582,7 +582,7 @@ namespace Seldon
   IndexImag(int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArrayComplexSparse::index",
 		     "Index should be in [0, " + to_str(this->m_-1)
@@ -1472,7 +1472,7 @@ namespace Seldon
     const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix::operator()", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
@@ -1809,7 +1809,7 @@ namespace Seldon
     const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::operator()", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "

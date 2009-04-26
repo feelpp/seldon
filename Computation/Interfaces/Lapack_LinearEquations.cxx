@@ -128,7 +128,7 @@ namespace Seldon
   {
     int m = A.GetM();
     int n = A.GetN();
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if ((m <= 0)||(n <= 0))
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -155,7 +155,7 @@ namespace Seldon
     int m = A.GetM();
     int n = A.GetN();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if ((m <= 0)||(n <= 0))
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -182,7 +182,7 @@ namespace Seldon
     int m = A.GetM();
     int n = A.GetN();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if ((m <= 0)||(n <= 0))
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -209,7 +209,7 @@ namespace Seldon
     int m = A.GetM();
     int n = A.GetN();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if ((m <= 0)||(n <= 0))
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -239,7 +239,7 @@ namespace Seldon
     int m = A.GetM();
     int n = A.GetN();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if ((m <= 0)||(n <= 0))
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -266,7 +266,7 @@ namespace Seldon
     int m = A.GetM();
     int n = A.GetN();
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if ((m <= 0)||(n <= 0))
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -293,7 +293,7 @@ namespace Seldon
     int m = A.GetM();
     int n = A.GetN();
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if ((m <= 0)||(n <= 0))
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -320,7 +320,7 @@ namespace Seldon
     int m = A.GetM();
     int n = A.GetN();
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if ((m <= 0)||(n <= 0))
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -349,7 +349,7 @@ namespace Seldon
   {
     int m = A.GetM();
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -379,7 +379,7 @@ namespace Seldon
     int m = A.GetM();
     int lwork = m;
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -408,7 +408,7 @@ namespace Seldon
     int m = A.GetM();
     int lwork = m;
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -438,7 +438,7 @@ namespace Seldon
     int m = A.GetM();
     int lwork = m;
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -470,7 +470,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -497,7 +497,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -524,7 +524,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -551,7 +551,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -582,7 +582,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -610,7 +610,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -638,7 +638,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -666,7 +666,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -696,7 +696,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -725,7 +725,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -754,7 +754,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -784,7 +784,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -817,7 +817,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -844,7 +844,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -871,7 +871,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -898,7 +898,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -929,7 +929,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -957,7 +957,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -985,7 +985,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -1013,7 +1013,7 @@ namespace Seldon
   {
     int m = A.GetM();
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -1043,7 +1043,7 @@ namespace Seldon
   {
     int m = A.GetM();
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -1073,7 +1073,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -1106,7 +1106,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -1133,7 +1133,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -1163,7 +1163,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -1193,7 +1193,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -1226,7 +1226,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -1253,7 +1253,7 @@ namespace Seldon
   {
     int m = A.GetM();
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (m <= 0)
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
@@ -1292,7 +1292,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1312,7 +1312,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1332,7 +1332,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1353,7 +1353,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1378,7 +1378,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1398,7 +1398,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1418,7 +1418,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1438,7 +1438,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1460,7 +1460,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1480,7 +1480,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1500,7 +1500,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1520,7 +1520,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1544,7 +1544,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1564,7 +1564,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1584,7 +1584,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1610,7 +1610,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1639,7 +1639,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1658,7 +1658,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1677,7 +1677,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1696,7 +1696,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1718,7 +1718,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1738,7 +1738,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1758,7 +1758,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1778,7 +1778,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1801,7 +1801,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1820,7 +1820,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1839,7 +1839,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1858,7 +1858,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1880,7 +1880,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1900,7 +1900,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1920,7 +1920,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1940,7 +1940,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1963,7 +1963,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -1982,7 +1982,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -2004,7 +2004,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -2023,7 +2023,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -2045,7 +2045,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -2066,7 +2066,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -2090,7 +2090,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -2111,7 +2111,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
     
@@ -2133,7 +2133,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2150,7 +2150,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2168,7 +2168,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2186,7 +2186,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2208,7 +2208,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2227,7 +2227,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2247,7 +2247,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2267,7 +2267,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2289,7 +2289,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2306,7 +2306,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2325,7 +2325,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2343,7 +2343,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2365,7 +2365,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2384,7 +2384,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2405,7 +2405,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2425,7 +2425,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2447,7 +2447,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2464,7 +2464,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2483,7 +2483,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2501,7 +2501,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2523,7 +2523,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2542,7 +2542,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2563,7 +2563,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2583,7 +2583,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2605,7 +2605,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2622,7 +2622,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2641,7 +2641,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2659,7 +2659,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2681,7 +2681,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2700,7 +2700,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2721,7 +2721,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2741,7 +2741,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2763,7 +2763,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2780,7 +2780,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2799,7 +2799,7 @@ namespace Seldon
 	  LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2817,7 +2817,7 @@ namespace Seldon
 	  LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2839,7 +2839,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2858,7 +2858,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2879,7 +2879,7 @@ namespace Seldon
 	  LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2903,7 +2903,7 @@ namespace Seldon
 	  LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2929,7 +2929,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2946,7 +2946,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2965,7 +2965,7 @@ namespace Seldon
 	  LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -2983,7 +2983,7 @@ namespace Seldon
 	  LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3005,7 +3005,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3024,7 +3024,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3045,7 +3045,7 @@ namespace Seldon
 	  LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3069,7 +3069,7 @@ namespace Seldon
 	  LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3094,7 +3094,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3111,7 +3111,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3130,7 +3130,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3148,7 +3148,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3170,7 +3170,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3189,7 +3189,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3210,7 +3210,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3234,7 +3234,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3259,7 +3259,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3276,7 +3276,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3295,7 +3295,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3315,7 +3315,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3337,7 +3337,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3356,7 +3356,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3377,7 +3377,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -3401,7 +3401,7 @@ namespace Seldon
 	       LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, b, "SolveLU(A, X)");
 #endif
     
@@ -5158,7 +5158,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5188,7 +5188,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5220,7 +5220,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5252,7 +5252,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5286,7 +5286,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5317,7 +5317,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5350,7 +5350,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5383,7 +5383,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5416,7 +5416,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5446,7 +5446,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5478,7 +5478,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5510,7 +5510,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5544,7 +5544,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5575,7 +5575,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5607,7 +5607,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5650,7 +5650,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5693,7 +5693,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5723,7 +5723,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5755,7 +5755,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5787,7 +5787,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5821,7 +5821,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5852,7 +5852,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5884,7 +5884,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5916,7 +5916,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5949,7 +5949,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -5979,7 +5979,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6011,7 +6011,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6043,7 +6043,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6077,7 +6077,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6108,7 +6108,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6140,7 +6140,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6172,7 +6172,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6207,7 +6207,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6239,7 +6239,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6274,7 +6274,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6306,7 +6306,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6341,7 +6341,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6375,7 +6375,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6412,7 +6412,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6446,7 +6446,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
     CheckDim(Alu, x, b, "RefineSolutionLU(A, Alu, pivot, X, Y)");
 #endif
@@ -6478,7 +6478,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6504,7 +6504,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6532,7 +6532,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6560,7 +6560,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6592,7 +6592,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6620,7 +6620,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6649,7 +6649,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6678,7 +6678,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6708,7 +6708,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6734,7 +6734,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6762,7 +6762,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6790,7 +6790,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6822,7 +6822,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6850,7 +6850,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6879,7 +6879,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6908,7 +6908,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6938,7 +6938,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6964,7 +6964,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -6992,7 +6992,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7020,7 +7020,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7052,7 +7052,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7080,7 +7080,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7109,7 +7109,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7138,7 +7138,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7168,7 +7168,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7194,7 +7194,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7222,7 +7222,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7250,7 +7250,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7282,7 +7282,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7310,7 +7310,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7339,7 +7339,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7368,7 +7368,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7398,7 +7398,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7424,7 +7424,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7452,7 +7452,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7480,7 +7480,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7512,7 +7512,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7540,7 +7540,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7569,7 +7569,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7608,7 +7608,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7648,7 +7648,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7674,7 +7674,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7702,7 +7702,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7730,7 +7730,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7762,7 +7762,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7790,7 +7790,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7819,7 +7819,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7858,7 +7858,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7898,7 +7898,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7924,7 +7924,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7952,7 +7952,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -7980,7 +7980,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -8012,7 +8012,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -8040,7 +8040,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -8069,7 +8069,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -8108,7 +8108,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -8148,7 +8148,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -8174,7 +8174,7 @@ namespace Seldon
 			LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -8202,7 +8202,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -8230,7 +8230,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -8262,7 +8262,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -8290,7 +8290,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -8319,7 +8319,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -8358,7 +8358,7 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, x, b, "RefineSolutionLU(A, Alu, X, Y)");
 #endif
     
@@ -10342,7 +10342,7 @@ namespace Seldon
 			 LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, col_scale, row_scale, string("GetScalingFactors(A, X, Y, ")
              + string(" rowcnd, colcnd, amax)"));
 #endif
@@ -10365,7 +10365,7 @@ namespace Seldon
 			 LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, col_scale, row_scale, string("GetScalingFactors(A, X, Y, ")
              + string(" rowcnd, colcnd, amax)"));
 #endif
@@ -10389,7 +10389,7 @@ namespace Seldon
 			 LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, col_scale, row_scale, string("GetScalingFactors(A, X, Y, ")
 	     +string("rowcnd, colcnd, amax)"));
 #endif
@@ -10413,7 +10413,7 @@ namespace Seldon
 			 LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, col_scale, row_scale, string("GetScalingFactors(A, X, Y, ")
 	     + string("rowcnd, colcnd, amax)"));
 #endif
@@ -10439,7 +10439,7 @@ namespace Seldon
 			 LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, col_scale, row_scale, string("GetScalingFactors(A, X, Y, ")
              + string(" rowcnd, colcnd, amax)"));
 #endif
@@ -10462,7 +10462,7 @@ namespace Seldon
 			 LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, col_scale, row_scale, string("GetScalingFactors(A, X, Y, ")
              + string(" rowcnd, colcnd, amax)"));
 #endif
@@ -10486,7 +10486,7 @@ namespace Seldon
 			 LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, col_scale, row_scale, string("GetScalingFactors(A, X, Y,")
 	     + string(" rowcnd, colcnd, amax)"));
 #endif
@@ -10510,7 +10510,7 @@ namespace Seldon
 			 LapackInfo& info = lapack_info)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     CheckDim(A, col_scale, row_scale, string("GetScalingFactors(A, X, Y, ")
 	     + string("rowcnd, colcnd, amax)"));
 #endif

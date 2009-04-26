@@ -479,7 +479,7 @@ namespace Seldon
   Matrix_Symmetric<T, Prop, Storage, Allocator>::operator() (int i, int j)
   {
 
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_Symmetric::operator()",
 		     string("Index should be in [0, ") + to_str(this->m_-1)
@@ -510,7 +510,7 @@ namespace Seldon
   ::operator() (int i, int j) const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_Symmetric::operator() const",
 		     string("Index should be in [0, ") + to_str(this->m_-1)
@@ -541,7 +541,7 @@ namespace Seldon
   Matrix_Symmetric<T, Prop, Storage, Allocator>::Val(int i, int j) const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_Symmetric::Val(int, int) const",
 		     string("Index should be in [0, ") + to_str(this->m_-1)
@@ -568,7 +568,7 @@ namespace Seldon
   Matrix_Symmetric<T, Prop, Storage, Allocator>::Val(int i, int j)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_Symmetric::Val(int, int)",
 		     string("Index should be in [0, ") + to_str(this->m_-1)
@@ -594,7 +594,7 @@ namespace Seldon
   Matrix_Symmetric<T, Prop, Storage, Allocator>::operator[] (int i)
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->GetDataSize())
       throw WrongIndex("Matrix_Symmetric::operator[] (int)",
 		       string("Index should be in [0, ")
@@ -618,7 +618,7 @@ namespace Seldon
   Matrix_Symmetric<T, Prop, Storage, Allocator>::operator[] (int i) const
   {
     
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->GetDataSize())
       throw WrongIndex("Matrix_Symmetric::operator[] (int) const",
 		       string("Index should be in [0, ")
