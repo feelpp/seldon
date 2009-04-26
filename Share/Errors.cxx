@@ -110,6 +110,42 @@ namespace Seldon
 
 
 
+  ///////////////////
+  // WRONGARGUMENT //
+  ///////////////////
+
+  
+  //! Main constructor.
+  /*! Error associated with both a function and a comment.
+    \param function function with which the error is associated.
+    \param comment comment associated with the error.
+  */
+  WrongArgument::WrongArgument(string function = "", string comment = "")
+    throw(): Error("Wrong argument given to ", function, comment)
+  {
+#ifdef SELDON_WITH_ABORT
+    this->CoutWhat();
+    abort();
+#endif
+  }
+
+
+  //! Delivers information about the error.
+  /*! Displays available information, i.e.
+    the error description, the function and/or the comment.
+  */
+  string WrongArgument::What()
+  {
+    string message(this->description_);
+    if (!this->function_.empty())
+      message += this->function_;
+    message += ".\n";
+    if (!this->comment_.empty())
+      message += "   " + this->comment_;
+    return message;
+  }
+
+
   //////////////
   // NOMEMORY //
   //////////////

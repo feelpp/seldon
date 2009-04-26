@@ -47,6 +47,19 @@ namespace Seldon
   };
 
   
+  ///////////////////
+  // WRONGARGUMENT //
+  ///////////////////
+
+  class WrongArgument: public Error
+  {
+  public:
+    WrongArgument(string function, string comment)  throw();
+
+    virtual string What();
+  };
+  
+
   //////////////
   // NOMEMORY //
   //////////////
