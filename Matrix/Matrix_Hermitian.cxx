@@ -445,7 +445,7 @@ namespace Seldon
     // Storing the old values of the matrix.
     int iold = Storage::GetFirst(this->m_, this->n_);
     int jold = Storage::GetSecond(this->m_, this->n_);
-    Vector<value_type, Vect_Full, Allocator> xold(this->GetDataSize());
+    Vector<value_type, VectFull, Allocator> xold(this->GetDataSize());
     for (int k = 0; k < this->GetDataSize(); k++)
       xold(k) = this->data_[k];
     

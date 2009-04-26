@@ -43,11 +43,11 @@ namespace Seldon
     //! Number of columns.
     int n_;
     //! real part rows or columns
-    Vector<Vector<T, Vect_Sparse, Allocator>, Vect_Full,
-	   NewAlloc<Vector<T, Vect_Sparse, Allocator> > > val_real_;
+    Vector<Vector<T, VectSparse, Allocator>, VectFull,
+	   NewAlloc<Vector<T, VectSparse, Allocator> > > val_real_;
     //! imaginary part rows or columns
-    Vector<Vector<T, Vect_Sparse, Allocator>, Vect_Full,
-	   NewAlloc<Vector<T, Vect_Sparse, Allocator> > > val_imag_;
+    Vector<Vector<T, VectSparse, Allocator>, VectFull,
+	   NewAlloc<Vector<T, VectSparse, Allocator> > > val_imag_;
     
     // Methods.
   public:
@@ -77,8 +77,8 @@ namespace Seldon
     int* GetImagInd(int i) const;
     T* GetRealData(int i) const;
     T* GetImagData(int i) const;
-    Vector<T, Vect_Sparse, Allocator>* GetRealData() const;
-    Vector<T, Vect_Sparse, Allocator>* GetImagData() const;
+    Vector<T, VectSparse, Allocator>* GetRealData() const;
+    Vector<T, VectSparse, Allocator>* GetImagData() const;
     
     // Element acess and affectation.
     complex<T> operator() (int i, int j) const;
@@ -91,8 +91,8 @@ namespace Seldon
     int IndexImag(int num_row,int i) const;
     int& IndexImag(int num_row,int i);
     
-    void SetRealData(int, int, Vector<T, Vect_Sparse, Allocator>*);
-    void SetImagData(int, int, Vector<T, Vect_Sparse, Allocator>*);
+    void SetRealData(int, int, Vector<T, VectSparse, Allocator>*);
+    void SetImagData(int, int, Vector<T, VectSparse, Allocator>*);
     void SetRealData(int, int, T*, int*);
     void SetImagData(int, int, T*, int*);
     void NullifyReal(int i);
@@ -151,10 +151,10 @@ namespace Seldon
     
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<complex<T>, Vect_Full, Alloc1>& val);
+			   const Vector<complex<T>, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<complex<T>, Vect_Full,
+			      const Vector<complex<T>, VectFull,
 			      Alloc1>& val);
   };
   
@@ -191,10 +191,10 @@ namespace Seldon
     
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<complex<T>, Vect_Full, Alloc1>& val);
+			   const Vector<complex<T>, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<complex<T>, Vect_Full,
+			      const Vector<complex<T>, VectFull,
 			      Alloc1>& val);
   };
   
@@ -233,10 +233,10 @@ namespace Seldon
     
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<complex<T>, Vect_Full, Alloc1>& val);
+			   const Vector<complex<T>, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<complex<T>, Vect_Full,
+			      const Vector<complex<T>, VectFull,
 			      Alloc1>& val);
   };
   
@@ -275,10 +275,10 @@ namespace Seldon
     
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<complex<T>, Vect_Full, Alloc1>& val);
+			   const Vector<complex<T>, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<complex<T>, Vect_Full,
+			      const Vector<complex<T>, VectFull,
 			      Alloc1>& val);
   };
   

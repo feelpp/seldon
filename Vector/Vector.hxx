@@ -88,7 +88,7 @@ namespace Seldon
     Basic vector class (i.e. not sparse).
   */
   template <class T, class Allocator>
-  class Vector<T, Vect_Full, Allocator>: public Vector_Base<T, Allocator>
+  class Vector<T, VectFull, Allocator>: public Vector_Base<T, Allocator>
   {
     // typedef declaration.
   public:
@@ -106,7 +106,7 @@ namespace Seldon
     // Constructor.
     explicit Vector()  throw();
     explicit Vector(int i);
-    Vector(const Vector<T, Vect_Full, Allocator>& A);
+    Vector(const Vector<T, VectFull, Allocator>& A);
     
     // Destructor.
     ~Vector();
@@ -122,15 +122,15 @@ namespace Seldon
     reference operator() (int i);
 #ifndef SWIG
     const_reference operator() (int i) const;
-    Vector<T, Vect_Full, Allocator>& operator= (const Vector<T, Vect_Full,
+    Vector<T, VectFull, Allocator>& operator= (const Vector<T, VectFull,
 						Allocator>& X);
 #endif
-    void Copy(const Vector<T, Vect_Full, Allocator>& X);
+    void Copy(const Vector<T, VectFull, Allocator>& X);
     void Append(const T& x);
     template<class T0>
     void PushBack(const T0& x);
     template<class Allocator0>
-    void PushBack(const Vector<T, Vect_Full, Allocator0>& X);
+    void PushBack(const Vector<T, VectFull, Allocator0>& X);
     
     // Basic functions.
     int GetDataSize();
@@ -142,10 +142,10 @@ namespace Seldon
     void Fill(const T0& x);
     template <class T0>
 #ifndef SWIG
-    Vector<T, Vect_Full, Allocator>& operator= (const T0& X);
+    Vector<T, VectFull, Allocator>& operator= (const T0& X);
 #endif
     template <class T0>
-    Vector<T, Vect_Full, Allocator>& operator*= (const T0& X);
+    Vector<T, VectFull, Allocator>& operator*= (const T0& X);
     void FillRand();
     void Print() const;
 

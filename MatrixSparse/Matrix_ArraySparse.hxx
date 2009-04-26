@@ -43,8 +43,8 @@ namespace Seldon
     //! Number of columns.
     int n_;
     //! rows or columns
-    Vector<Vector<T, Vect_Sparse, Allocator>, Vect_Full,
-	   NewAlloc<Vector<T, Vect_Sparse, Allocator> > > val_;
+    Vector<Vector<T, VectSparse, Allocator>, VectFull,
+	   NewAlloc<Vector<T, VectSparse, Allocator> > > val_;
     
   public:
     // Constructors.
@@ -69,7 +69,7 @@ namespace Seldon
     int* GetIndex(int i) const;
     T* GetData(int i) const;
     
-    Vector<T, Vect_Sparse, Allocator>* GetData() const;
+    Vector<T, VectSparse, Allocator>* GetData() const;
     
     // Element acess and affectation.
     T operator() (int i, int j) const;
@@ -80,7 +80,7 @@ namespace Seldon
     int Index(int num_row, int i) const;
     int& Index(int num_row, int i);
     
-    void SetData(int, int, Vector<T, Vect_Sparse, Allocator>*);
+    void SetData(int, int, Vector<T, VectSparse, Allocator>*);
     void SetData(int, int, T*, int*);
     void Nullify(int i);
     void Nullify();
@@ -140,10 +140,10 @@ namespace Seldon
     
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<T, Vect_Full, Alloc1>& val);
+			   const Vector<T, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<T, Vect_Full, Alloc1>& val);
+			      const Vector<T, VectFull, Alloc1>& val);
   };
   
   
@@ -174,10 +174,10 @@ namespace Seldon
     
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<T, Vect_Full, Alloc1>& val);
+			   const Vector<T, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<T, Vect_Full, Alloc1>& val);
+			      const Vector<T, VectFull, Alloc1>& val);
   };
   
   //! Column-major symmetric sparse-matrix class.
@@ -210,10 +210,10 @@ namespace Seldon
     
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<T, Vect_Full, Alloc1>& val);
+			   const Vector<T, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<T, Vect_Full, Alloc1>& val);
+			      const Vector<T, VectFull, Alloc1>& val);
   };
   
   
@@ -247,10 +247,10 @@ namespace Seldon
     
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<T, Vect_Full, Alloc1>& val);
+			   const Vector<T, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<T, Vect_Full, Alloc1>& val);
+			      const Vector<T, VectFull, Alloc1>& val);
   };
   
 } // namespace Seldon

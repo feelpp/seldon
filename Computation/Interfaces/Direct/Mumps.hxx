@@ -103,7 +103,7 @@ namespace Seldon
 			bool keep_matrix = false);
     
     template<class Allocator2>
-    void Solve(Vector<T,Vect_Full,Allocator2>& x);
+    void Solve(Vector<T,VectFull,Allocator2>& x);
     
   };
   

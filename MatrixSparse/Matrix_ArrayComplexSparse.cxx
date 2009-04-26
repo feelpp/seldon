@@ -129,11 +129,11 @@ namespace Seldon
     int new_n = Storage::GetFirst(i, j);
     if (n != new_n)
       {
-	Vector<Vector<T, Vect_Sparse, Allocator>, Vect_Full,
-	  NewAlloc<Vector<T, Vect_Sparse, Allocator> > > new_val_real;
+	Vector<Vector<T, VectSparse, Allocator>, VectFull,
+	  NewAlloc<Vector<T, VectSparse, Allocator> > > new_val_real;
 	
-	Vector<Vector<T, Vect_Sparse, Allocator>, Vect_Full,
-	  NewAlloc<Vector<T, Vect_Sparse, Allocator> > > new_val_imag;
+	Vector<Vector<T, VectSparse, Allocator>, VectFull,
+	  NewAlloc<Vector<T, VectSparse, Allocator> > > new_val_imag;
 	
 	new_val_real.Reallocate(new_n);
 	new_val_imag.Reallocate(new_n);
@@ -660,7 +660,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
-  SetRealData(int m, int n, Vector<T, Vect_Sparse, Allocator>* val)
+  SetRealData(int m, int n, Vector<T, VectSparse, Allocator>* val)
   {
     m_ = m;
     n_ = n;
@@ -676,7 +676,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
-  SetImagData(int m, int n, Vector<T, Vect_Sparse, Allocator>* val)
+  SetImagData(int m, int n, Vector<T, VectSparse, Allocator>* val)
   {
     m_ = m;
     n_ = n;
@@ -1090,7 +1090,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<complex<T>, Vect_Full, Alloc1>& val)
+		    const Vector<complex<T>, VectFull, Alloc1>& val)
   {
     for (int j = 0; j < nb; j++)
       AddInteraction(i, col(j), val(j));
@@ -1107,7 +1107,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<complex<T>, Vect_Full, Alloc1>& val)
+		       const Vector<complex<T>, VectFull, Alloc1>& val)
   {
     int nb_real = 0;
     int nb_imag = 0;
@@ -1380,7 +1380,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<complex<T>, Vect_Full, Alloc1>& val)
+		    const Vector<complex<T>, VectFull, Alloc1>& val)
   {
     int nb_real = 0;
     int nb_imag = 0;
@@ -1418,7 +1418,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<complex<T>, Vect_Full, Alloc1>& val)
+		       const Vector<complex<T>, VectFull, Alloc1>& val)
   {
     for (int j = 0; j < nb; j++)
       AddInteraction(row(j), i, val(j));
@@ -1717,7 +1717,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<complex<T>, Vect_Full, Alloc1>& val)
+		    const Vector<complex<T>, VectFull, Alloc1>& val)
   {
     AddInteractionColumn(i, nb, col, val);
   }
@@ -1733,7 +1733,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<complex<T>, Vect_Full, Alloc1>& val)
+		       const Vector<complex<T>, VectFull, Alloc1>& val)
   {
     int nb_real = 0;
     int nb_imag = 0;
@@ -2052,7 +2052,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<complex<T>, Vect_Full, Alloc1>& val)
+		    const Vector<complex<T>, VectFull, Alloc1>& val)
   {
     int nb_real = 0;
     int nb_imag = 0;
@@ -2091,7 +2091,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<complex<T>,Vect_Full,Alloc1>& val)
+		       const Vector<complex<T>,VectFull,Alloc1>& val)
   {
     // Symmetric matrix, row = column.
     AddInteractionRow(i, nb, row, val);

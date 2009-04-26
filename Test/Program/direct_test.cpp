@@ -20,8 +20,8 @@ double epsilon(1e-14);
 template<class T, class Prop, class Storage,
 	 class Allocator1, class Allocator2, class Allocator3>
 void Solve(Matrix<T, Prop, Storage, Allocator1>& A,
-	   Vector<T, Vect_Full, Allocator2>& x,
-	   const Vector<T, Vect_Full, Allocator3>& b)
+	   Vector<T, VectFull, Allocator2>& x,
+	   const Vector<T, VectFull, Allocator3>& b)
 {
 #ifdef SELDON_WITH_UMFPACK
   MatrixUmfPack<T> mat_lu;

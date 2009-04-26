@@ -55,7 +55,7 @@ namespace Seldon
     int m = outer.GetRestart();
     // V is the array of orthogonal basis contructed
     // from the Krylov subspace (v0,A*v0,A^2*v0,...,A^m*v0)
-    Seldon::Vector<Vector,Vect_Full,NewAlloc<Vector> > V(m+1);
+    Seldon::Vector<Vector,VectFull,NewAlloc<Vector> > V(m+1);
   
     // Upper triangular hessenberg matrix
     // we don't store the sub-diagonal

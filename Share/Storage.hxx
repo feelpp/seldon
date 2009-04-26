@@ -50,8 +50,8 @@ namespace Seldon
   /////////////
 
 
-  class Vect_Full;
-  class Vect_Sparse;
+  class VectFull;
+  class VectSparse;
 
 
   ////////////

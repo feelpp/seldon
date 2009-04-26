@@ -128,7 +128,7 @@ namespace Seldon
   
   //! resolution of linear system A x = b
   template<class Allocator2>
-  void MatrixSuperLU<double>::Solve(Vector<double,Vect_Full,Allocator2>& x)
+  void MatrixSuperLU<double>::Solve(Vector<double,VectFull,Allocator2>& x)
   {
     trans_t trans = NOTRANS;
     int nb_rhs = 1, info;
@@ -194,7 +194,7 @@ namespace Seldon
   //! resolution of linear system A x = b
   template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
-  Solve(Vector<complex<double>,Vect_Full,Allocator2>& x)
+  Solve(Vector<complex<double>,VectFull,Allocator2>& x)
   {
     trans_t trans = NOTRANS;
     int nb_rhs = 1, info;
@@ -216,7 +216,7 @@ namespace Seldon
   
   
   template<class T, class Allocator>
-  void SolveLU(MatrixSuperLU<T>& mat_lu, Vector<T, Vect_Full, Allocator>& x)
+  void SolveLU(MatrixSuperLU<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
     mat_lu.Solve(x);
   }

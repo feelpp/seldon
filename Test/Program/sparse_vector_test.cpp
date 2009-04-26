@@ -5,13 +5,13 @@
 
 using namespace Seldon;
 
-// testing class Vector<T, Vect_Sparse>
+// testing class Vector<T, VectSparse>
 
 int main()
 {
   cout << "Seldon: compilation test of sparse vectors" << endl;
   
-  Vector<double, Vect_Sparse> U(3), V;
+  Vector<double, VectSparse> U(3), V;
   V.Reallocate(2); V.Reallocate(3);
   // U and V are not initialized
   // you can initialize them with Zero, Fill or FillRand
@@ -60,7 +60,7 @@ int main()
   V.Reallocate(2);
   V.Fill();
   V.Index(0) = 5; V.Index(1) = 10;
-  Vector<double, Vect_Sparse> W = V;
+  Vector<double, VectSparse> W = V;
   cout << "Vector W : " << W << endl;
   // operators = and *= are available
   W = U;
@@ -93,7 +93,7 @@ int main()
   values.Nullify(); // values is now empty
   
   // you can insert elements by using AddInteraction
-  Vector<double, Vect_Sparse> A, B;
+  Vector<double, VectSparse> A, B;
   A.AddInteraction(4, 1.5);
   cout << " A " << A << endl;
   // or AddInteractionRow for several values
@@ -133,7 +133,7 @@ int main()
   // you can use functions Mlt, Add, Copy, Swap, DotProd, Norm1, Norm2
   {
     // for real numbers
-    Vector<double, Vect_Sparse> X(4), Y(4);
+    Vector<double, VectSparse> X(4), Y(4);
     
     X.Index(0) = 2; X.Value(0) = -0.4;
     X.Index(1) = 5; X.Value(1) = 1.6;
@@ -169,7 +169,7 @@ int main()
   
   {
     // for complex numbers
-    Vector<complex<double> , Vect_Sparse> X(4), Y(4);
+    Vector<complex<double> , VectSparse> X(4), Y(4);
     
     X.Index(0) = 2; X.Value(0) = complex<double>(-0.4, 0.4);
     X.Index(1) = 5; X.Value(1) = complex<double>(1.6, -0.2);

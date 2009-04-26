@@ -57,7 +57,7 @@ namespace Seldon
     Vector q(N), r0(N), gamma(l+1), gamma_prime(l+1), gamma_twice(l+1);
     Seldon::Matrix<Complexe, General, RowMajor> tau(l+1,l+1);
     // history of u and residual r
-    Seldon::Vector<Vector, Vect_Full, NewAlloc<Vector> > r(l+1), u(l+1);
+    Seldon::Vector<Vector, VectFull, NewAlloc<Vector> > r(l+1), u(l+1);
     for (int i = 0; i <= l; i++)
       {
 	r(i).Reallocate(N); r(i).Zero();

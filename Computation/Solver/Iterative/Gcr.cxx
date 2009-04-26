@@ -56,7 +56,7 @@ namespace Seldon
     if (success_init != 0)
       return outer.ErrorCode();
     
-    Seldon::Vector<Vector,Vect_Full,NewAlloc<Vector> > p(m+1), w(m+1);
+    Seldon::Vector<Vector,VectFull,NewAlloc<Vector> > p(m+1), w(m+1);
     
     Vector beta(m+1);
     

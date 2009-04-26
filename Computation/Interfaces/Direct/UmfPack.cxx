@@ -137,10 +137,10 @@ namespace Seldon
   }
   
   template<class Allocator2>
-  void MatrixUmfPack<double>::Solve(Vector<double,Vect_Full,Allocator2>& x)
+  void MatrixUmfPack<double>::Solve(Vector<double,VectFull,Allocator2>& x)
   {
     // we call UmfPack
-    Vector<double,Vect_Full,Allocator2> b(x);
+    Vector<double,VectFull,Allocator2> b(x);
     int status
       = umfpack_di_solve(UMFPACK_A, Acsr.GetPtr(), Acsr.GetInd(),
 			 Acsr.GetData(), x.GetData(), b.GetData(),
@@ -210,7 +210,7 @@ namespace Seldon
   //! solves linear system in complex double precision using UmfPack
   template<class Allocator2>
   void MatrixUmfPack<complex<double> >::
-  Solve(Vector<complex<double>,Vect_Full,Allocator2>& x)
+  Solve(Vector<complex<double>,VectFull,Allocator2>& x)
   {
     int m = x.GetM();
     // creation of vectors
@@ -248,7 +248,7 @@ namespace Seldon
   }
   
   template<class T, class Allocator>
-  void SolveLU(MatrixUmfPack<T>& mat_lu, Vector<T, Vect_Full, Allocator>& x)
+  void SolveLU(MatrixUmfPack<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
     mat_lu.Solve(x);
   }

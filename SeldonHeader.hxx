@@ -139,6 +139,10 @@ extern "C"
 #define DISPLAY(x) cout << #x ": " << x << endl
 #endif
 
+// For backward compatibility. These lines should be removed one day.
+#define Vect_Full VectFull
+#define Vect_Sparse VectSparse
+
 //! Seldon namespace.
 namespace Seldon
 {
@@ -186,17 +190,17 @@ namespace Seldon
   class Vector_Base;
 
   // Vector class - specialized for each used type.
-  template <class T, class Storage = Vect_Full,
+  template <class T, class Storage = VectFull,
 	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
   class Vector;
 
   // Full vector.
   template <class T, class Allocator>
-  class Vector<T, Vect_Full, Allocator>;
+  class Vector<T, VectFull, Allocator>;
   
   // Sparse vector.
   template <class T, class Allocator>
-  class Vector<T, Vect_Sparse, Allocator>;
+  class Vector<T, VectSparse, Allocator>;
 
   // Matrix class - specialized for each used type.
   template <class T, class Prop = General,
@@ -362,12 +366,12 @@ namespace Seldon
 {
 
 
-  typedef Vector<int, Vect_Full, SELDON_DEFAULT_ALLOCATOR<int> > IVect;
-  typedef Vector<float, Vect_Full, SELDON_DEFAULT_ALLOCATOR<float> > SVect;
-  typedef Vector<double, Vect_Full, SELDON_DEFAULT_ALLOCATOR<double> > DVect;
-  typedef Vector<complex<float>, Vect_Full,
+  typedef Vector<int, VectFull, SELDON_DEFAULT_ALLOCATOR<int> > IVect;
+  typedef Vector<float, VectFull, SELDON_DEFAULT_ALLOCATOR<float> > SVect;
+  typedef Vector<double, VectFull, SELDON_DEFAULT_ALLOCATOR<double> > DVect;
+  typedef Vector<complex<float>, VectFull,
 		 SELDON_DEFAULT_ALLOCATOR<complex<float> > > CVect;
-  typedef Vector<complex<double>, Vect_Full,
+  typedef Vector<complex<double>, VectFull,
 		 SELDON_DEFAULT_ALLOCATOR<complex<double> > > ZVect;
 
   typedef Matrix<int, General, ColMajor,

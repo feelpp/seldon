@@ -216,7 +216,7 @@ namespace Seldon
   {
     int n = mat.GetM(), nnz = mat.GetNonZeros();
     // conversion in coordinate format
-    IVect num_row, num_col; Vector<T, Vect_Full, Allocator> values;
+    IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
     ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
     // no values needed to renumber
     values.Clear();
@@ -252,7 +252,7 @@ namespace Seldon
   {
     int n = mat.GetM(), nnz = mat.GetNonZeros();
     // conversion in coordinate format with fortran convention (1-index)
-    IVect num_row, num_col; Vector<T, Vect_Full, Allocator> values;
+    IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
     ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
     if (!keep_matrix)
       mat.Clear();
@@ -300,7 +300,7 @@ namespace Seldon
       index_schur(i) = num(i)+1;
     
     // array that will contain values of Schur matrix
-    Vector<T, Vect_Full, Allocator2> vec_schur(n_schur*n_schur);
+    Vector<T, VectFull, Allocator2> vec_schur(n_schur*n_schur);
     
     struct_mumps.icntl[18] = n_schur;
     struct_mumps.size_schur = n_schur;
@@ -333,7 +333,7 @@ namespace Seldon
     It is assumed that a call to FactorizeMatrix has been done before
   */
   template<class T> template<class Allocator2>
-  void MatrixMumps<T>::Solve(Vector<T,Vect_Full,Allocator2>& x)
+  void MatrixMumps<T>::Solve(Vector<T,VectFull,Allocator2>& x)
   {
     struct_mumps.rhs = reinterpret_cast<pointer>(x.GetData());
     struct_mumps.job = 3; // we solve system
@@ -378,7 +378,7 @@ namespace Seldon
   
   
   template<class T, class Allocator>
-  void SolveLU(MatrixMumps<T>& mat_lu, Vector<T, Vect_Full, Allocator>& x)
+  void SolveLU(MatrixMumps<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
     mat_lu.Solve(x);
   }

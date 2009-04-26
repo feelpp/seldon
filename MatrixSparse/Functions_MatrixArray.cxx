@@ -49,9 +49,9 @@ namespace Seldon
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha, const Matrix<T1, Symmetric,
 	      ArrayRowSymComplexSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T3, Vect_Full, Allocator3>& C)
+	      Vector<T3, VectFull, Allocator3>& C)
   {
     if (beta == T4(0))
       C.Fill(T3(0));
@@ -133,9 +133,9 @@ namespace Seldon
   void MltAdd(const T0& alpha,
 	      const class_SeldonNoTrans& Trans, const Matrix<T1, Symmetric,
 	      ArrayRowSymComplexSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T3, Vect_Full, Allocator3>& C)
+	      Vector<T3, VectFull, Allocator3>& C)
   {
     MltAdd(alpha, A, B, beta, C);
   }
@@ -146,9 +146,9 @@ namespace Seldon
   void MltAdd(const T0& alpha,
 	      const class_SeldonTrans& Trans, const Matrix<T1, Symmetric,
 	      ArrayRowSymComplexSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T3, Vect_Full, Allocator3>& C)
+	      Vector<T3, VectFull, Allocator3>& C)
   {
     MltAdd(alpha, A, B, beta, C);
   }
@@ -159,9 +159,9 @@ namespace Seldon
   void MltAdd(const T0& alpha,
 	      const class_SeldonConjTrans& Trans, const Matrix<T1, Symmetric,
 	      ArrayRowSymComplexSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T3, Vect_Full, Allocator3>& C)
+	      Vector<T3, VectFull, Allocator3>& C)
   {
     if (beta == T4(0))
       C.Fill(T3(0));
@@ -245,9 +245,9 @@ namespace Seldon
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha, const Matrix<T1, General,
 	      ArrayRowComplexSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T3, Vect_Full, Allocator3>& C)
+	      Vector<T3, VectFull, Allocator3>& C)
   {
     if (beta == T4(0))
       C.Fill(T3(0));
@@ -305,9 +305,9 @@ namespace Seldon
   void MltAdd(const T0& alpha,
 	      const class_SeldonNoTrans& Trans, const Matrix<T1, General,
 	      ArrayRowComplexSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T3, Vect_Full, Allocator3>& C)
+	      Vector<T3, VectFull, Allocator3>& C)
   {
     MltAdd(alpha, A, B, beta, C);
   }
@@ -318,9 +318,9 @@ namespace Seldon
   void MltAdd(const T0& alpha,
 	      const class_SeldonTrans& Trans, const Matrix<T1, General,
 	      ArrayRowComplexSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T3, Vect_Full, Allocator3>& C)
+	      Vector<T3, VectFull, Allocator3>& C)
   {
     if (beta == T4(0))
       C.Fill(T3(0));
@@ -378,9 +378,9 @@ namespace Seldon
   void MltAdd(const T0& alpha,
 	      const class_SeldonConjTrans& Trans, const Matrix<T1, General,
 	      ArrayRowComplexSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T3, Vect_Full, Allocator3>& C)
+	      Vector<T3, VectFull, Allocator3>& C)
   {
     if (beta == T4(0))
       C.Fill(T3(0));
@@ -440,9 +440,9 @@ namespace Seldon
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha, const Matrix<T1, Symmetric,
 	      ArrayRowSymSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T3, Vect_Full, Allocator3>& C)
+	      Vector<T3, VectFull, Allocator3>& C)
   {
     if (B.GetM() <= 0)
       return;
@@ -506,9 +506,9 @@ namespace Seldon
   void MltAdd(const T0& alpha,
 	      const class_SeldonNoTrans& Trans, const Matrix<T1, Symmetric,
 	      ArrayRowSymSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T3, Vect_Full, Allocator3>& C)
+	      Vector<T3, VectFull, Allocator3>& C)
   {
     MltAdd(alpha, A, B, beta, C);
   }
@@ -519,9 +519,9 @@ namespace Seldon
   void MltAdd(const T0& alpha,
 	      const class_SeldonTrans& Trans, const Matrix<T1, Symmetric,
 	      ArrayRowSymSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T3, Vect_Full, Allocator3>& C)
+	      Vector<T3, VectFull, Allocator3>& C)
   {
     MltAdd(alpha, A, B, beta, C);
   }
@@ -534,9 +534,9 @@ namespace Seldon
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha,
 	      const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T3, Vect_Full, Allocator3>& C)
+	      Vector<T3, VectFull, Allocator3>& C)
   {
     if (beta == T4(0))
       C.Fill(T3(0));
@@ -578,9 +578,9 @@ namespace Seldon
   void MltAdd(const T0& alpha,
 	      const class_SeldonNoTrans& Trans,
 	      const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T4, Vect_Full, Allocator3>& C)
+	      Vector<T4, VectFull, Allocator3>& C)
   {
     MltAdd(alpha, A, B, beta, C);
   }
@@ -591,9 +591,9 @@ namespace Seldon
   void MltAdd(const T0& alpha,
 	      const class_SeldonTrans& Trans,
 	      const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
-	      const Vector<T2, Vect_Full, Allocator2>& B,
+	      const Vector<T2, VectFull, Allocator2>& B,
 	      const T4& beta,
-	      Vector<T3, Vect_Full, Allocator3>& C)
+	      Vector<T3, VectFull, Allocator3>& C)
   {
     if (beta == T4(0))
       C.Fill(T3(0));
@@ -645,7 +645,7 @@ namespace Seldon
 	   Matrix<T2, General, ArrayRowSparse, Allocator2>& B)
   {
     int m = B.GetM(),n;
-    Vector<T2, Vect_Full, Allocator2> value;
+    Vector<T2, VectFull, Allocator2> value;
     for (int i = 0 ; i < m ; i++)
       {
 	n = A.GetRowSize(i);
@@ -665,7 +665,7 @@ namespace Seldon
 	   Matrix<T2, Symmetric, ArrayRowSymSparse, Allocator2>& B)
   {
     int m = B.GetM(),n;
-    Vector<T2, Vect_Full, Allocator2> value;
+    Vector<T2, VectFull, Allocator2> value;
     for (int i = 0 ; i < m ; i++)
       {
 	n = A.GetRowSize(i);
@@ -718,7 +718,7 @@ namespace Seldon
 	   Matrix<T2, Symmetric, ArrayRowSymSparse, Allocator2>& B)
   {
     int m = B.GetM(), n;
-    Vector<T2, Vect_Full, Allocator2> value;
+    Vector<T2, VectFull, Allocator2> value;
     for (int i = 0 ; i < m ; i++)
       {
 	n = A.GetRealRowSize(i);
@@ -745,7 +745,7 @@ namespace Seldon
 	   Matrix<T2, Symmetric, ArrayRowSparse, Allocator2>& B)
   {
     int m = B.GetM(),n;
-    Vector<T2, Vect_Full, Allocator2> value;
+    Vector<T2, VectFull, Allocator2> value;
     for (int i = 0; i < m; i++)
       {
 	n = A.GetRealRowSize(i);
@@ -806,7 +806,7 @@ namespace Seldon
 	   Matrix<complex<T3>, General, ArrayRowSparse, Allocator3>& C)
   {
     int m = B.GetM(),n1,n2,size_row;;
-    Vector<complex<T3>, Vect_Full, Allocator3> val_row;
+    Vector<complex<T3>, VectFull, Allocator3> val_row;
     IVect ind_row;
     for (int i = 0 ; i < m ; i++)
       {
@@ -840,7 +840,7 @@ namespace Seldon
 	   Matrix<complex<T3>, Symmetric, ArrayRowSymSparse, Allocator3>& C)
   {
     int m = B.GetM(), n1, n2, size_row;
-    Vector<complex<T3>, Vect_Full, Allocator3> val_row;
+    Vector<complex<T3>, VectFull, Allocator3> val_row;
     IVect ind_row;
     for (int i = 0 ; i < m ; i++)
       {

@@ -1017,7 +1017,7 @@ namespace Seldon
     
     // Storing the old values of the matrix.
     int nold = this->GetDataSize();
-    Vector<T, Vect_Full, Allocator> xold(nold);
+    Vector<T, VectFull, Allocator> xold(nold);
     for (int k = 0; k < nold; k++)
       xold(k) = this->data_[k];
     
@@ -1116,7 +1116,7 @@ namespace Seldon
   {
     // Storing the old values of the matrix.
     int nold = this->GetDataSize(), iold = this->m_;
-    Vector<T, Vect_Full, Allocator> xold(nold);
+    Vector<T, VectFull, Allocator> xold(nold);
     for (int k = 0; k < nold; k++)
       xold(k) = this->data_[k];
     

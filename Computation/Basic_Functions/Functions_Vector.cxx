@@ -103,12 +103,12 @@ namespace Seldon
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
   void Add(const T0 alpha,
-	   const Vector<T1, Vect_Sparse, Allocator1>& X,
-	   Vector<T2, Vect_Sparse, Allocator2>& Y)  throw(WrongDim, NoMemory)
+	   const Vector<T1, VectSparse, Allocator1>& X,
+	   Vector<T2, VectSparse, Allocator2>& Y)  throw(WrongDim, NoMemory)
   {
     if (alpha != T0(0))
       {
-	Vector<T1, Vect_Sparse, Allocator1> Xalpha = X;
+	Vector<T1, VectSparse, Allocator1> Xalpha = X;
 	Xalpha *= alpha;
 	Y.AddInteractionRow(Xalpha.GetSize(),
 			    Xalpha.GetIndex(), Xalpha.GetData(), true);
@@ -158,8 +158,8 @@ namespace Seldon
   
   
   template <class T1, class Allocator1, class Allocator2>
-  void Swap(Vector<T1, Vect_Sparse, Allocator1>& X,
-	    Vector<T1, Vect_Sparse, Allocator2>& Y)
+  void Swap(Vector<T1, VectSparse, Allocator1>& X,
+	    Vector<T1, VectSparse, Allocator2>& Y)
   {
     int nx = X.GetM();
     T1* data = X.GetData();
@@ -231,8 +231,8 @@ namespace Seldon
   //! Scalar product between two sparse vectors.
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
-  T1 DotProd(const Vector<T1, Vect_Sparse, Allocator1>& X,
-	     const Vector<T2, Vect_Sparse, Allocator2>& Y)
+  T1 DotProd(const Vector<T1, VectSparse, Allocator1>& X,
+	     const Vector<T2, VectSparse, Allocator2>& Y)
   {
     T1 value(0);
 
@@ -259,8 +259,8 @@ namespace Seldon
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
   complex<T1>
-  DotProdConj(const Vector<complex<T1>, Vect_Sparse, Allocator1>& X,
-	      const Vector<T2, Vect_Sparse, Allocator2>& Y)
+  DotProdConj(const Vector<complex<T1>, VectSparse, Allocator1>& X,
+	      const Vector<T2, VectSparse, Allocator2>& Y)
   {
     complex<T1> value(0);
     
@@ -317,7 +317,7 @@ namespace Seldon
   
   
   template<class T1, class Allocator1>
-  T1 Norm1(const Vector<T1, Vect_Sparse, Allocator1>& X)
+  T1 Norm1(const Vector<T1, VectSparse, Allocator1>& X)
   {
     T1 value(0);
     
@@ -329,7 +329,7 @@ namespace Seldon
   
   
   template<class T1, class Allocator1>
-  T1 Norm1(const Vector<complex<T1>, Vect_Sparse, Allocator1>& X)
+  T1 Norm1(const Vector<complex<T1>, VectSparse, Allocator1>& X)
   {
     T1 value(0);
     
@@ -374,7 +374,7 @@ namespace Seldon
   
   
   template<class T1, class Allocator1>
-  T1 Norm2(const Vector<T1, Vect_Sparse, Allocator1>& X)
+  T1 Norm2(const Vector<T1, VectSparse, Allocator1>& X)
   {
     T1 value(0);
     
@@ -386,7 +386,7 @@ namespace Seldon
   
   
   template<class T1, class Allocator1>
-  T1 Norm2(const Vector<complex<T1>, Vect_Sparse, Allocator1>& X)
+  T1 Norm2(const Vector<complex<T1>, VectSparse, Allocator1>& X)
   {
     T1 value(0);
     
@@ -569,7 +569,7 @@ namespace Seldon
   
   //! Sets a vector to its conjugate.
   template<class T, class Allocator>
-  void Conjugate(Vector<T, Vect_Sparse, Allocator>& X)
+  void Conjugate(Vector<T, VectSparse, Allocator>& X)
   {
     for (int i = 0; i < X.GetSize(); i++)
       X.Value(i) = conj(X.Value(i));

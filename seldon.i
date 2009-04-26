@@ -52,7 +52,7 @@ using namespace std;
 
 namespace Seldon
 {
-  %extend Vector<int, Vect_Full, MallocAlloc<int> >
+  %extend Vector<int, VectFull, MallocAlloc<int> >
   {
     int __getitem__(int index) {
       return (*self)(index);
@@ -64,7 +64,7 @@ namespace Seldon
       return self->GetM();
     }
   }
-  %extend Vector<double, Vect_Full, MallocAlloc<double> >
+  %extend Vector<double, VectFull, MallocAlloc<double> >
   {
     double __getitem__(int index) {
       return (*self)(index);
@@ -87,9 +87,9 @@ namespace Seldon
 	throw std::out_of_range("Failed!");
       return (*self)(i, j);
     }
-    Seldon::Vector<int, Seldon::Vect_Full, Seldon::MallocAlloc<int> > __getitem__(int i)
+    Seldon::Vector<int, Seldon::VectFull, Seldon::MallocAlloc<int> > __getitem__(int i)
     {
-      Seldon::Vector<int, Seldon::Vect_Full, Seldon::MallocAlloc<int> > v(self->GetN());
+      Seldon::Vector<int, Seldon::VectFull, Seldon::MallocAlloc<int> > v(self->GetN());
       for (int j = 0; j < self->GetN(); j++)
 	v(j) = (*self)(i, j);
       return v;
@@ -117,9 +117,9 @@ namespace Seldon
 	throw std::out_of_range("Failed!");
       return (*self)(i, j);
     }
-    Seldon::Vector<double, Seldon::Vect_Full, Seldon::MallocAlloc<double> > __getitem__(int i)
+    Seldon::Vector<double, Seldon::VectFull, Seldon::MallocAlloc<double> > __getitem__(int i)
     {
-      Seldon::Vector<double, Seldon::Vect_Full, Seldon::MallocAlloc<double> > v(self->GetN());
+      Seldon::Vector<double, Seldon::VectFull, Seldon::MallocAlloc<double> > v(self->GetN());
       for (int j = 0; j < self->GetN(); j++)
 	v(j) = (*self)(i, j);
       return v;
@@ -140,10 +140,10 @@ namespace Seldon
 
   %template(IntMalloc) MallocAlloc<int>;
   %template(BaseSeldonVectorInt) Vector_Base<int, MallocAlloc<int> >;
-  %template(VectorInt) Vector<int, Vect_Full, MallocAlloc<int> >;
+  %template(VectorInt) Vector<int, VectFull, MallocAlloc<int> >;
   %template(DoubleMalloc) MallocAlloc<double>;
   %template(BaseSeldonVectorDouble) Vector_Base<double, MallocAlloc<double> >;
-  %template(VectorDouble) Vector<double, Vect_Full, MallocAlloc<double> >;
+  %template(VectorDouble) Vector<double, VectFull, MallocAlloc<double> >;
 
   %template(MatrixBaseInt) Matrix_Base<int, MallocAlloc<int> >;
   %template(MatrixPointersInt) Matrix_Pointers<int, General, RowMajor, MallocAlloc<int> >;

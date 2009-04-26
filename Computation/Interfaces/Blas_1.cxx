@@ -99,8 +99,8 @@ namespace Seldon
 
 
   template <class Allocator>
-  void ApplyRot(Vector<float, Vect_Full, Allocator>& X,
-		Vector<float, Vect_Full, Allocator>& Y,
+  void ApplyRot(Vector<float, VectFull, Allocator>& X,
+		Vector<float, VectFull, Allocator>& Y,
 		const float c, const float s)
   {
     cblas_srot(X.GetLength(), X.GetData(), 1,
@@ -109,8 +109,8 @@ namespace Seldon
 
 
   template <class Allocator>
-  void ApplyRot(Vector<double, Vect_Full, Allocator>& X,
-		Vector<double, Vect_Full, Allocator>& Y,
+  void ApplyRot(Vector<double, VectFull, Allocator>& X,
+		Vector<double, VectFull, Allocator>& Y,
 		const double c, const double s)
   {
     cblas_drot(X.GetLength(), X.GetData(), 1,
@@ -128,8 +128,8 @@ namespace Seldon
 
 
   template <class Allocator>
-  void ApplyModifRot(Vector<float, Vect_Full, Allocator>& X,
-		     Vector<float, Vect_Full, Allocator>& Y,
+  void ApplyModifRot(Vector<float, VectFull, Allocator>& X,
+		     Vector<float, VectFull, Allocator>& Y,
 		     const float* param)
   {
     cblas_srotm(X.GetLength(), X.GetData(), 1,
@@ -138,8 +138,8 @@ namespace Seldon
 
 
   template <class Allocator>
-  void ApplyModifRot(Vector<double, Vect_Full, Allocator>& X,
-		     Vector<double, Vect_Full, Allocator>& Y,
+  void ApplyModifRot(Vector<double, VectFull, Allocator>& X,
+		     Vector<double, VectFull, Allocator>& Y,
 		     const double* param)
   {
     cblas_drotm(X.GetLength(), X.GetData(), 1,
@@ -157,8 +157,8 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Swap(Vector<float, Vect_Full, Allocator>& X,
-	    Vector<float, Vect_Full, Allocator>& Y)
+  void Swap(Vector<float, VectFull, Allocator>& X,
+	    Vector<float, VectFull, Allocator>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -171,8 +171,8 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Swap(Vector<double, Vect_Full, Allocator>& X,
-	    Vector<double, Vect_Full, Allocator>& Y)
+  void Swap(Vector<double, VectFull, Allocator>& X,
+	    Vector<double, VectFull, Allocator>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -185,8 +185,8 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Swap(Vector<complex<float>, Vect_Full, Allocator>& X,
-	    Vector<complex<float>, Vect_Full, Allocator>& Y)
+  void Swap(Vector<complex<float>, VectFull, Allocator>& X,
+	    Vector<complex<float>, VectFull, Allocator>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -199,8 +199,8 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Swap(Vector<complex<double>, Vect_Full, Allocator>& X,
-	    Vector<complex<double>, Vect_Full, Allocator>& Y)
+  void Swap(Vector<complex<double>, VectFull, Allocator>& X,
+	    Vector<complex<double>, VectFull, Allocator>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -223,7 +223,7 @@ namespace Seldon
 
   template <class Allocator>
   void Mlt(const float alpha,
-	   Vector<float, Vect_Full, Allocator>& X)
+	   Vector<float, VectFull, Allocator>& X)
   {
     cblas_sscal(X.GetLength(), alpha, X.GetData(), 1);
   }
@@ -231,7 +231,7 @@ namespace Seldon
 
   template <class Allocator>
   void Mlt(const double alpha,
-	   Vector<double, Vect_Full, Allocator>& X)
+	   Vector<double, VectFull, Allocator>& X)
   {
     cblas_dscal(X.GetLength(), alpha, X.GetData(), 1);
   }
@@ -239,7 +239,7 @@ namespace Seldon
 
   template <class Allocator>
   void Mlt(const float alpha,
-	   Vector<complex<float>, Vect_Full, Allocator>& X)
+	   Vector<complex<float>, VectFull, Allocator>& X)
   {
     cblas_csscal(X.GetLength(), alpha,
 		 reinterpret_cast<void*>(X.GetData()), 1);
@@ -248,7 +248,7 @@ namespace Seldon
 
   template <class Allocator>
   void Mlt(const double alpha,
-	   Vector<complex<double>, Vect_Full, Allocator>& X)
+	   Vector<complex<double>, VectFull, Allocator>& X)
   {
     cblas_zdscal(X.GetLength(), alpha,
 		 reinterpret_cast<void*>(X.GetData()), 1);
@@ -257,7 +257,7 @@ namespace Seldon
 
   template <class Allocator>
   void Mlt(const complex<float> alpha,
-	   Vector<complex<float>, Vect_Full, Allocator>& X)
+	   Vector<complex<float>, VectFull, Allocator>& X)
   {
     cblas_cscal(X.GetLength(),
 		reinterpret_cast<const void*>(&alpha),
@@ -267,7 +267,7 @@ namespace Seldon
 
   template <class Allocator>
   void Mlt(const complex<double> alpha,
-	   Vector<complex<double>, Vect_Full, Allocator>& X)
+	   Vector<complex<double>, VectFull, Allocator>& X)
   {
     cblas_zscal(X.GetLength(),
 		reinterpret_cast<const void*>(&alpha),
@@ -285,8 +285,8 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Copy(const Vector<float, Vect_Full, Allocator0>& X,
-	    Vector<float, Vect_Full, Allocator1>& Y)
+  void Copy(const Vector<float, VectFull, Allocator0>& X,
+	    Vector<float, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -300,8 +300,8 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Copy(const Vector<double, Vect_Full, Allocator0>& X,
-	    Vector<double, Vect_Full, Allocator1>& Y)
+  void Copy(const Vector<double, VectFull, Allocator0>& X,
+	    Vector<double, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -315,8 +315,8 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Copy(const Vector<complex<float>, Vect_Full, Allocator0>& X,
-	    Vector<complex<float>, Vect_Full, Allocator1>& Y)
+  void Copy(const Vector<complex<float>, VectFull, Allocator0>& X,
+	    Vector<complex<float>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -330,8 +330,8 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Copy(const Vector<complex<double>, Vect_Full, Allocator0>& X,
-	    Vector<complex<double>, Vect_Full, Allocator1>& Y)
+  void Copy(const Vector<complex<double>, VectFull, Allocator0>& X,
+	    Vector<complex<double>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -355,8 +355,8 @@ namespace Seldon
 
   template <class Allocator0, class Allocator1>
   void Add(const float alpha,
-	   const Vector<float, Vect_Full, Allocator0>& X,
-	   Vector<float, Vect_Full, Allocator1>& Y)
+	   const Vector<float, VectFull, Allocator0>& X,
+	   Vector<float, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -372,8 +372,8 @@ namespace Seldon
 
   template <class Allocator0, class Allocator1>
   void Add(const double alpha,
-	   const Vector<double, Vect_Full, Allocator0>& X,
-	   Vector<double, Vect_Full, Allocator1>& Y)
+	   const Vector<double, VectFull, Allocator0>& X,
+	   Vector<double, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -389,8 +389,8 @@ namespace Seldon
 
   template <class Allocator0, class Allocator1>
   void Add(const complex<float> alpha,
-	   const Vector<complex<float>, Vect_Full, Allocator0>& X,
-	   Vector<complex<float>, Vect_Full, Allocator1>& Y)
+	   const Vector<complex<float>, VectFull, Allocator0>& X,
+	   Vector<complex<float>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -406,8 +406,8 @@ namespace Seldon
 
   template <class Allocator0, class Allocator1>
   void Add(const complex<double> alpha,
-	   const Vector<complex<double>, Vect_Full, Allocator0>& X,
-	   Vector<complex<double>, Vect_Full, Allocator1>& Y)
+	   const Vector<complex<double>, VectFull, Allocator0>& X,
+	   Vector<complex<double>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -431,8 +431,8 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  float DotProd(const Vector<float, Vect_Full, Allocator0>& X,
-		const Vector<float, Vect_Full, Allocator1>& Y)
+  float DotProd(const Vector<float, VectFull, Allocator0>& X,
+		const Vector<float, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -446,8 +446,8 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  double DotProd(const Vector<double, Vect_Full, Allocator0>& X,
-		 const Vector<double, Vect_Full, Allocator1>& Y)
+  double DotProd(const Vector<double, VectFull, Allocator0>& X,
+		 const Vector<double, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -462,8 +462,8 @@ namespace Seldon
 
   template <class Allocator0, class Allocator1>
   complex<float>
-  DotProd(const Vector<complex<float>, Vect_Full, Allocator0>& X,
-	  const Vector<complex<float>, Vect_Full, Allocator1>& Y)
+  DotProd(const Vector<complex<float>, VectFull, Allocator0>& X,
+	  const Vector<complex<float>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -481,8 +481,8 @@ namespace Seldon
 
   template <class Allocator0, class Allocator1>
   complex<double>
-  DotProd(const Vector<complex<double>, Vect_Full, Allocator0>& X,
-	  const Vector<complex<double>, Vect_Full, Allocator1>& Y)
+  DotProd(const Vector<complex<double>, VectFull, Allocator0>& X,
+	  const Vector<complex<double>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -509,8 +509,8 @@ namespace Seldon
 
   template <class Allocator0, class Allocator1>
   float ScaledDotProd(const float alpha,
-		      const Vector<float, Vect_Full, Allocator0>& X,
-		      const Vector<float, Vect_Full, Allocator1>& Y)
+		      const Vector<float, VectFull, Allocator0>& X,
+		      const Vector<float, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -534,8 +534,8 @@ namespace Seldon
 
   template <class Allocator0, class Allocator1>
   complex<float>
-  DotProdConj(const Vector<complex<float>, Vect_Full, Allocator0>& X,
-	      const Vector<complex<float>, Vect_Full, Allocator1>& Y)
+  DotProdConj(const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -553,8 +553,8 @@ namespace Seldon
 
   template <class Allocator0, class Allocator1>
   complex<double>
-  DotProdConj(const Vector<complex<double>, Vect_Full, Allocator0>& X,
-	      const Vector<complex<double>, Vect_Full, Allocator1>& Y)
+  DotProdConj(const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -580,7 +580,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  float Norm1(const Vector<float, Vect_Full, Allocator>& X)
+  float Norm1(const Vector<float, VectFull, Allocator>& X)
   {
     return cblas_sasum(X.GetLength(),
 		       reinterpret_cast<const float*>(X.GetData()), 1);
@@ -588,7 +588,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  double Norm1(const Vector<double, Vect_Full, Allocator>& X)
+  double Norm1(const Vector<double, VectFull, Allocator>& X)
   {
     return cblas_dasum(X.GetLength(),
 		       reinterpret_cast<const double*>(X.GetData()), 1);
@@ -596,7 +596,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  float Norm1(const Vector<complex<float>, Vect_Full, Allocator>& X)
+  float Norm1(const Vector<complex<float>, VectFull, Allocator>& X)
   {
     return cblas_scasum(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
@@ -604,7 +604,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  double Norm1(const Vector<complex<double>, Vect_Full, Allocator>& X)
+  double Norm1(const Vector<complex<double>, VectFull, Allocator>& X)
   {
     return cblas_dzasum(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
@@ -621,7 +621,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  float Norm2(const Vector<float, Vect_Full, Allocator>& X)
+  float Norm2(const Vector<float, VectFull, Allocator>& X)
   {
     return cblas_snrm2(X.GetLength(),
 		       reinterpret_cast<const float*>(X.GetData()), 1);
@@ -629,7 +629,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  double Norm2(const Vector<double, Vect_Full, Allocator>& X)
+  double Norm2(const Vector<double, VectFull, Allocator>& X)
   {
     return cblas_dnrm2(X.GetLength(),
 		       reinterpret_cast<const double*>(X.GetData()), 1);
@@ -637,7 +637,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  float Norm2(const Vector<complex<float>, Vect_Full, Allocator>& X)
+  float Norm2(const Vector<complex<float>, VectFull, Allocator>& X)
   {
     return cblas_scnrm2(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
@@ -645,7 +645,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  double Norm2(const Vector<complex<double>, Vect_Full, Allocator>& X)
+  double Norm2(const Vector<complex<double>, VectFull, Allocator>& X)
   {
     return cblas_dznrm2(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
@@ -662,7 +662,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  size_t GetMaxAbsIndex(const Vector<float, Vect_Full, Allocator>& X)
+  size_t GetMaxAbsIndex(const Vector<float, VectFull, Allocator>& X)
   {
     return cblas_isamax(X.GetLength(),
 			reinterpret_cast<const float*>(X.GetData()), 1);
@@ -670,7 +670,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  size_t GetMaxAbsIndex(const Vector<double, Vect_Full, Allocator>& X)
+  size_t GetMaxAbsIndex(const Vector<double, VectFull, Allocator>& X)
   {
     return cblas_idamax(X.GetLength(),
 			reinterpret_cast<const double*>(X.GetData()), 1);
@@ -678,7 +678,7 @@ namespace Seldon
   
   
   template <class Allocator>
-  size_t GetMaxAbsIndex(const Vector<complex<float>, Vect_Full, Allocator>& X)
+  size_t GetMaxAbsIndex(const Vector<complex<float>, VectFull, Allocator>& X)
   {
     return cblas_icamax(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
@@ -687,7 +687,7 @@ namespace Seldon
 
   template <class Allocator>
   size_t
-  GetMaxAbsIndex(const Vector<complex<double>, Vect_Full, Allocator>& X)
+  GetMaxAbsIndex(const Vector<complex<double>, VectFull, Allocator>& X)
   {
     return cblas_izamax(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);

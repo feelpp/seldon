@@ -123,7 +123,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<float, Prop0, ColMajor, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -149,7 +149,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<double, Prop0, ColMajor, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -176,7 +176,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -203,7 +203,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -233,7 +233,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<float, Prop0, RowMajor, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -260,7 +260,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<double, Prop0, RowMajor, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -287,7 +287,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -314,7 +314,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -344,7 +344,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<float, Prop0, ColSym, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -356,7 +356,7 @@ namespace Seldon
     
     int lwork = m;
     char uplo('U');
-    Vector<float,Vect_Full,Allocator0> work(lwork);
+    Vector<float,VectFull,Allocator0> work(lwork);
     P.Reallocate(m);
     ssytrf_(&uplo, &m, A.GetData(), &m,
 	    P.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
@@ -373,7 +373,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<double, Prop0, ColSym, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -385,7 +385,7 @@ namespace Seldon
 #endif
 
     char uplo('U');
-    Vector<double,Vect_Full,Allocator0> work(lwork);
+    Vector<double,VectFull,Allocator0> work(lwork);
     P.Reallocate(m);
     dsytrf_(&uplo, &m, A.GetData(), &m,
 	    P.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
@@ -402,7 +402,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<float>, Prop0, ColSym, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -414,7 +414,7 @@ namespace Seldon
 #endif
 
     char uplo('U');
-    Vector<complex<float>,Vect_Full,Allocator0> work(lwork);
+    Vector<complex<float>,VectFull,Allocator0> work(lwork);
     P.Reallocate(m);
     csytrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(),  work.GetDataVoid(),
@@ -432,7 +432,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<double>, Prop0, ColSym, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -444,7 +444,7 @@ namespace Seldon
 #endif
 
     char uplo('U');
-    Vector<complex<double>,Vect_Full,Allocator0> work(lwork);
+    Vector<complex<double>,VectFull,Allocator0> work(lwork);
     P.Reallocate(m);
     zsytrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(), work.GetDataVoid(),
@@ -465,7 +465,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<float, Prop0, ColSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -492,7 +492,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<double, Prop0, ColSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -519,7 +519,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<float>, Prop0, ColSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -546,7 +546,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<double>, Prop0, ColSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -577,7 +577,7 @@ namespace Seldon
 	    class Allocator1>
   void GetLU(SeldonUplo Uplo,
 	     Matrix<float, Prop0, ColSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -605,7 +605,7 @@ namespace Seldon
 	    class Allocator1>
   void GetLU(SeldonUplo Uplo,
 	     Matrix<double, Prop0, ColSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -633,7 +633,7 @@ namespace Seldon
 	    class Allocator1>
   void GetLU(SeldonUplo Uplo,
 	     Matrix<complex<float>, Prop0, ColSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -661,7 +661,7 @@ namespace Seldon
 	    class Allocator1>
   void GetLU(SeldonUplo Uplo,
 	     Matrix<complex<double>, Prop0, ColSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -691,7 +691,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<float, Prop0, RowSym, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -703,7 +703,7 @@ namespace Seldon
 
     int lwork = m;
     char uplo('L');
-    Vector<float, Vect_Full, Allocator0> work(lwork);
+    Vector<float, VectFull, Allocator0> work(lwork);
     P.Reallocate(m);
     ssytrf_(&uplo, &m, A.GetData(), &m,
 	    P.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
@@ -720,7 +720,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<double, Prop0, RowSym, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -732,7 +732,7 @@ namespace Seldon
 
     int lwork = m;
     char uplo('L');
-    Vector<double, Vect_Full, Allocator0> work(lwork);
+    Vector<double, VectFull, Allocator0> work(lwork);
     P.Reallocate(m);
     dsytrf_(&uplo, &m, A.GetData(), &m,
 	    P.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
@@ -749,7 +749,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<float>, Prop0, RowSym, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -761,7 +761,7 @@ namespace Seldon
 
     int lwork = m;
     char uplo('L');
-    Vector<complex<float>, Vect_Full, Allocator0> work(lwork);
+    Vector<complex<float>, VectFull, Allocator0> work(lwork);
     P.Reallocate(m);
     csytrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(),  work.GetDataVoid(),
@@ -779,7 +779,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<double>, Prop0, RowSym, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -791,7 +791,7 @@ namespace Seldon
 
     int lwork = m;
     char uplo('L');
-    Vector<complex<double>, Vect_Full, Allocator0> work(lwork);
+    Vector<complex<double>, VectFull, Allocator0> work(lwork);
     P.Reallocate(m);
     zsytrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(), work.GetDataVoid(),
@@ -812,7 +812,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<float, Prop0, RowSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -839,7 +839,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<double, Prop0, RowSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -866,7 +866,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<float>, Prop0, RowSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -893,7 +893,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<double>, Prop0, RowSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -924,7 +924,7 @@ namespace Seldon
 	    class Allocator1>
   void GetLU(SeldonUplo Uplo,
 	     Matrix<float, Prop0, RowSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -952,7 +952,7 @@ namespace Seldon
 	    class Allocator1>
   void GetLU(SeldonUplo Uplo,
 	     Matrix<double, Prop0, RowSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -980,7 +980,7 @@ namespace Seldon
 	    class Allocator1>
   void GetLU(SeldonUplo Uplo,
 	     Matrix<complex<float>, Prop0, RowSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -1008,7 +1008,7 @@ namespace Seldon
 	    class Allocator1>
   void GetLU(SeldonUplo Uplo,
 	     Matrix<complex<double>, Prop0, RowSymPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -1038,7 +1038,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<float>, Prop0, ColHerm, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -1050,7 +1050,7 @@ namespace Seldon
     
     int lwork = m;
     char uplo('U');
-    Vector<complex<float>, Vect_Full, Allocator0> work(lwork);
+    Vector<complex<float>, VectFull, Allocator0> work(lwork);
     P.Reallocate(m);
     chetrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(),  work.GetDataVoid(),
@@ -1068,7 +1068,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<double>, Prop0, ColHerm, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -1080,7 +1080,7 @@ namespace Seldon
 
     int lwork = m;
     char uplo('U');
-    Vector<complex<double>, Vect_Full, Allocator0> work(lwork);
+    Vector<complex<double>, VectFull, Allocator0> work(lwork);
     P.Reallocate(m);
     zhetrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(), work.GetDataVoid(),
@@ -1101,7 +1101,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<float>, Prop0, ColHermPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -1128,7 +1128,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<double>, Prop0, ColHermPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -1158,7 +1158,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<float>, Prop0, RowHerm, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -1170,7 +1170,7 @@ namespace Seldon
 
     int lwork = m;
     char uplo('L');
-    Vector<complex<float>, Vect_Full, Allocator0> work(lwork);
+    Vector<complex<float>, VectFull, Allocator0> work(lwork);
     P.Reallocate(m);
     chetrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(),  work.GetDataVoid(),
@@ -1188,7 +1188,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<double>, Prop0, RowHerm, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -1200,7 +1200,7 @@ namespace Seldon
 
     int lwork = m;
     char uplo('L');
-    Vector<complex<double>, Vect_Full, Allocator0> work(lwork);
+    Vector<complex<double>, VectFull, Allocator0> work(lwork);
     P.Reallocate(m);
     zhetrf_(&uplo, &m, A.GetDataVoid(), &m,
 	    P.GetData(), work.GetDataVoid(),
@@ -1221,7 +1221,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<float>, Prop0, RowHermPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -1248,7 +1248,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void GetLU(Matrix<complex<double>, Prop0, RowHermPacked, Allocator0>& A,
-	     Vector<int, Vect_Full, Allocator1>& P,
+	     Vector<int, VectFull, Allocator1>& P,
 	     LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
@@ -1287,8 +1287,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
   void SolveLU(const Matrix<float, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1307,8 +1307,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<double, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1327,8 +1327,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1348,8 +1348,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1373,8 +1373,8 @@ namespace Seldon
 	    class Allocator1,class Allocator2>
   void SolveLU(const SeldonTranspose& TransA,
 	       const Matrix<float, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1393,8 +1393,8 @@ namespace Seldon
 	    class Allocator1,class Allocator2>
   void SolveLU(const SeldonTranspose& TransA,
 	       const Matrix<double, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1413,8 +1413,8 @@ namespace Seldon
 	    class Allocator1,class Allocator2>
   void SolveLU(const SeldonTranspose& TransA,
 	       const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1433,8 +1433,8 @@ namespace Seldon
 	    class Allocator1,class Allocator2>
   void SolveLU(const SeldonTranspose& TransA,
 	       const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1455,8 +1455,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
   void SolveLU(const Matrix<float, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1475,8 +1475,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
   void SolveLU(const Matrix<double, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1495,8 +1495,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1515,8 +1515,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1539,8 +1539,8 @@ namespace Seldon
 	    class Allocator1,class Allocator2>
   void SolveLU(const SeldonTranspose& TransA,
 	       const Matrix<float, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1559,8 +1559,8 @@ namespace Seldon
 	    class Allocator1,class Allocator2>
   void SolveLU(const SeldonTranspose& TransA,
 	       const Matrix<double, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1579,8 +1579,8 @@ namespace Seldon
 	    class Allocator1,class Allocator2>
   void SolveLU(const SeldonTranspose& TransA,
 	       const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1605,8 +1605,8 @@ namespace Seldon
 	    class Allocator1,class Allocator2>
   void SolveLU(const SeldonTranspose& TransA,
 	       const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1634,8 +1634,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<float, Prop0, ColSym, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1653,8 +1653,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<double, Prop0, ColSym, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1672,8 +1672,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, ColSym, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1691,8 +1691,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, ColSym, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1713,8 +1713,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<float, Prop0, ColSymPacked, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1733,8 +1733,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<double, Prop0, ColSymPacked, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1753,8 +1753,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, ColSymPacked,
-	       Allocator0>& A, const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1773,8 +1773,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, ColSymPacked,
-	       Allocator0>& A, const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1796,8 +1796,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<float, Prop0, RowSym, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1815,8 +1815,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<double, Prop0, RowSym, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1834,8 +1834,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, RowSym, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1853,8 +1853,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, RowSym, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1875,8 +1875,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<float, Prop0, RowSymPacked, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1895,8 +1895,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<double, Prop0, RowSymPacked, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1915,8 +1915,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, RowSymPacked,
-	       Allocator0>& A, const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1935,8 +1935,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, RowSymPacked,
-	       Allocator0>& A, const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1958,8 +1958,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, ColHerm, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1977,8 +1977,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, ColHerm, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -1999,8 +1999,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, ColHermPacked,
-	       Allocator0>& A, const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2018,8 +2018,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, ColHermPacked,
-	       Allocator0>& A, const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2040,8 +2040,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, RowHerm, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2061,8 +2061,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, RowHerm, Allocator0>& A,
-	       const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2085,8 +2085,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, RowHermPacked,
-	       Allocator0>& A, const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2106,8 +2106,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, RowHermPacked,
-	       Allocator0>& A, const Vector<int, Vect_Full, Allocator1>& P,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2129,7 +2129,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<float, Prop0, ColUpTriang, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2146,7 +2146,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<double, Prop0, ColUpTriang, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2164,7 +2164,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, ColUpTriang,
 	       Allocator0>& A,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2182,7 +2182,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, ColUpTriang,
 	       Allocator0>& A,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2204,7 +2204,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<float, Prop0, ColUpTriang, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2223,7 +2223,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<double, Prop0, ColUpTriang, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2243,7 +2243,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<complex<float>, Prop0, ColUpTriang,
 	       Allocator0>& A,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2263,7 +2263,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<complex<double>, Prop0, ColUpTriang,
 	       Allocator0>& A,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2285,7 +2285,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<float, Prop0, ColLoTriang, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2302,7 +2302,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<double, Prop0, ColLoTriang, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2321,7 +2321,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, ColLoTriang,
 	       Allocator0>& A,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2339,7 +2339,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, ColLoTriang,
 	       Allocator0>& A,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2361,7 +2361,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<float, Prop0, ColLoTriang, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2380,7 +2380,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<double, Prop0, ColLoTriang, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2401,7 +2401,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<complex<float>, Prop0, ColLoTriang,
 	       Allocator0>& A,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2421,7 +2421,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<complex<double>, Prop0, ColLoTriang,
 	       Allocator0>& A,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2443,7 +2443,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<float, Prop0, ColUpTriangPacked, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2460,7 +2460,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<double, Prop0, ColUpTriangPacked, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2479,7 +2479,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, ColUpTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2497,7 +2497,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, ColUpTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2519,7 +2519,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<float, Prop0, ColUpTriangPacked, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2538,7 +2538,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<double, Prop0, ColUpTriangPacked, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2559,7 +2559,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<complex<float>, Prop0, ColUpTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2579,7 +2579,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<complex<double>, Prop0, ColUpTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2601,7 +2601,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<float, Prop0, ColLoTriangPacked, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2618,7 +2618,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<double, Prop0, ColLoTriangPacked, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2637,7 +2637,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, ColLoTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2655,7 +2655,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, ColLoTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2677,7 +2677,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<float, Prop0, ColLoTriangPacked, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2696,7 +2696,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<double, Prop0, ColLoTriangPacked, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2717,7 +2717,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<complex<float>, Prop0, ColLoTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2737,7 +2737,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<complex<double>, Prop0, ColLoTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2759,7 +2759,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<float, Prop0, RowUpTriang, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2776,7 +2776,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<double, Prop0, RowUpTriang, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2795,7 +2795,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void
   SolveLU(const Matrix<complex<float>, Prop0, RowUpTriang, Allocator0>& A,
-	  Vector<complex<float>, Vect_Full, Allocator2>& b,
+	  Vector<complex<float>, VectFull, Allocator2>& b,
 	  LapackInfo& info = lapack_info)
   {
     
@@ -2813,7 +2813,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void
   SolveLU(const Matrix<complex<double>, Prop0, RowUpTriang, Allocator0>& A,
-	  Vector<complex<double>, Vect_Full, Allocator2>& b,
+	  Vector<complex<double>, VectFull, Allocator2>& b,
 	  LapackInfo& info = lapack_info)
   {
     
@@ -2835,7 +2835,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<float, Prop0, RowUpTriang, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2854,7 +2854,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<double, Prop0, RowUpTriang, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2875,7 +2875,7 @@ namespace Seldon
   void
   SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	  const Matrix<complex<float>, Prop0, RowUpTriang, Allocator0>& A,
-	  Vector<complex<float>, Vect_Full, Allocator2>& b,
+	  Vector<complex<float>, VectFull, Allocator2>& b,
 	  LapackInfo& info = lapack_info)
   {
     
@@ -2899,7 +2899,7 @@ namespace Seldon
   void
   SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	  const Matrix<complex<double>, Prop0, RowUpTriang, Allocator0>& A,
-	  Vector<complex<double>, Vect_Full, Allocator2>& b,
+	  Vector<complex<double>, VectFull, Allocator2>& b,
 	  LapackInfo& info = lapack_info)
   {
     
@@ -2925,7 +2925,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<float, Prop0, RowLoTriang, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2942,7 +2942,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<double, Prop0, RowLoTriang, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -2961,7 +2961,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void
   SolveLU(const Matrix<complex<float>, Prop0, RowLoTriang, Allocator0>& A,
-	  Vector<complex<float>, Vect_Full, Allocator2>& b,
+	  Vector<complex<float>, VectFull, Allocator2>& b,
 	  LapackInfo& info = lapack_info)
   {
     
@@ -2979,7 +2979,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void
   SolveLU(const Matrix<complex<double>, Prop0, RowLoTriang, Allocator0>& A,
-	  Vector<complex<double>, Vect_Full, Allocator2>& b,
+	  Vector<complex<double>, VectFull, Allocator2>& b,
 	  LapackInfo& info = lapack_info)
   {
     
@@ -3001,7 +3001,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<float, Prop0, RowLoTriang, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3020,7 +3020,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<double, Prop0, RowLoTriang, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3041,7 +3041,7 @@ namespace Seldon
   void
   SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	  const Matrix<complex<float>, Prop0, RowLoTriang, Allocator0>& A,
-	  Vector<complex<float>, Vect_Full, Allocator2>& b,
+	  Vector<complex<float>, VectFull, Allocator2>& b,
 	  LapackInfo& info = lapack_info)
   {
     
@@ -3065,7 +3065,7 @@ namespace Seldon
   void
   SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	  const Matrix<complex<double>, Prop0, RowLoTriang, Allocator0>& A,
-	  Vector<complex<double>, Vect_Full, Allocator2>& b,
+	  Vector<complex<double>, VectFull, Allocator2>& b,
 	  LapackInfo& info = lapack_info)
   {
     
@@ -3090,7 +3090,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<float, Prop0, RowUpTriangPacked, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3107,7 +3107,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<double, Prop0, RowUpTriangPacked, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3126,7 +3126,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, RowUpTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3144,7 +3144,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, RowUpTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3166,7 +3166,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<float, Prop0, RowUpTriangPacked, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3185,7 +3185,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<double, Prop0, RowUpTriangPacked, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3206,7 +3206,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<complex<float>, Prop0, RowUpTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3230,7 +3230,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<complex<double>, Prop0, RowUpTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3255,7 +3255,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<float, Prop0, RowLoTriangPacked, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3272,7 +3272,7 @@ namespace Seldon
   
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<double, Prop0, RowLoTriangPacked, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3291,7 +3291,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<complex<float>, Prop0, RowLoTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3311,7 +3311,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const Matrix<complex<double>, Prop0, RowLoTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3333,7 +3333,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<float, Prop0, RowLoTriangPacked, Allocator0>& A,
-	       Vector<float, Vect_Full, Allocator2>& b,
+	       Vector<float, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3352,7 +3352,7 @@ namespace Seldon
   template <class Prop0, class Allocator0, class Allocator2>
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<double, Prop0, RowLoTriangPacked, Allocator0>& A,
-	       Vector<double, Vect_Full, Allocator2>& b,
+	       Vector<double, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3373,7 +3373,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<complex<float>, Prop0, RowLoTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<float>, Vect_Full, Allocator2>& b,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3397,7 +3397,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 	       const Matrix<complex<double>, Prop0, RowLoTriangPacked,
 	       Allocator0>& A,
-	       Vector<complex<double>, Vect_Full, Allocator2>& b,
+	       Vector<complex<double>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info)
   {
     
@@ -3432,14 +3432,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<float, Prop0, ColMajor,
 				  Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char norm_type = norm.Char();
     
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(4*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(4*n);
     sgecon_(&norm_type, &n, A.GetData(), &n, &anorm, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3449,14 +3449,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<double, Prop0, ColMajor,
 				   Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char norm_type = norm.Char();
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(4*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(4*n);
     dgecon_(&norm_type, &n, A.GetData(), &n, &anorm, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3466,7 +3466,7 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<complex<float>, Prop0,
 				  ColMajor, Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
@@ -3474,7 +3474,7 @@ namespace Seldon
     
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(2*n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     cgecon_(&norm_type, &n, A.GetDataVoid(), &n, &anorm, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3484,7 +3484,7 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<complex<double>, Prop0,
 				   ColMajor, Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
@@ -3492,7 +3492,7 @@ namespace Seldon
     
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(2*n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     zgecon_(&norm_type, &n, A.GetDataVoid(), &n, &anorm, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3505,14 +3505,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<float, Prop0, RowMajor,
 				  Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char norm_type = norm.RevChar();
     
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(4*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(4*n);
     sgecon_(&norm_type, &n, A.GetData(), &n, &anorm, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3522,14 +3522,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<double, Prop0, RowMajor,
 				   Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char norm_type = norm.RevChar();
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(4*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(4*n);
     dgecon_(&norm_type, &n, A.GetData(), &n, &anorm, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3539,7 +3539,7 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<complex<float>, Prop0,
 				  RowMajor, Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
@@ -3547,7 +3547,7 @@ namespace Seldon
     
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(2*n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     cgecon_(&norm_type, &n, A.GetDataVoid(), &n, &anorm, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3557,7 +3557,7 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<complex<double>, Prop0,
 				   RowMajor, Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
@@ -3565,7 +3565,7 @@ namespace Seldon
     
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(2*n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     zgecon_(&norm_type, &n, A.GetDataVoid(), &n, &anorm, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3578,14 +3578,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<float, Prop0, ColSym,
 				  Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char uplo('U');
     
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(2*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(2*n);
     ssycon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3595,14 +3595,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<double, Prop0, ColSym,
 				   Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char uplo('U');
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(2*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(2*n);
     dsycon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3612,14 +3612,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<complex<float>, Prop0,
 				  ColSym, Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char uplo('U');
     
     int n = A.GetM(); float rcond(0);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     csycon_(&uplo, &n, A.GetDataVoid(), &n, P.GetData(), &anorm, &rcond,
 	    work.GetDataVoid(), &info.GetInfoRef());
     return rcond;
@@ -3629,14 +3629,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<complex<double>, Prop0,
 				   ColSym, Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char uplo('U');
     
     int n = A.GetM(); double rcond(0);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     zsycon_(&uplo, &n, A.GetDataVoid(), &n, P.GetData(), &anorm, &rcond,
 	    work.GetDataVoid(), &info.GetInfoRef());
     return rcond;
@@ -3649,14 +3649,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<float, Prop0,
 				  ColSymPacked, Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char uplo('U');
     
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(2*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(2*n);
     sspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3666,14 +3666,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<double, Prop0, ColSymPacked,
 				   Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char uplo('U');
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(2*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(2*n);
     dspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3683,14 +3683,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<complex<float>, Prop0,
 				  ColSymPacked, Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char uplo('U');
     
     int n = A.GetM(); float rcond(0);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     cspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
 	    work.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3700,14 +3700,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<complex<double>, Prop0,
 				   ColSymPacked, Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char uplo('U');
     
     int n = A.GetM(); double rcond(0);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     zspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
 	    work.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3720,14 +3720,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<float, Prop0, RowSym,
 				  Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char uplo('L');
     
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(2*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(2*n);
     ssycon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3737,14 +3737,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<double, Prop0, RowSym,
 				   Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char uplo('L');
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(2*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(2*n);
     dsycon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3754,14 +3754,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<complex<float>, Prop0, RowSym,
 				  Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char uplo('L');
     
     int n = A.GetM(); float rcond(0);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     csycon_(&uplo, &n, A.GetDataVoid(), &n, P.GetData(), &anorm, &rcond,
 	    work.GetDataVoid(), &info.GetInfoRef());
     return rcond;
@@ -3771,14 +3771,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<complex<double>, Prop0,
 				   RowSym, Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char uplo('L');
     
     int n = A.GetM(); double rcond(0);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     zsycon_(&uplo, &n, A.GetDataVoid(), &n, P.GetData(), &anorm, &rcond,
 	    work.GetDataVoid(), &info.GetInfoRef());
     return rcond;
@@ -3791,14 +3791,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<float, Prop0, RowSymPacked,
 				  Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char uplo('L');
     
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(2*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(2*n);
     sspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3808,14 +3808,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<double, Prop0, RowSymPacked,
 				   Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char uplo('L');
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(2*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(2*n);
     dspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3825,14 +3825,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<complex<float>, Prop0,
 				  RowSymPacked, Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char uplo('L');
     
     int n = A.GetM(); float rcond(0);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     cspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
 	    work.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3842,14 +3842,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<complex<double>, Prop0,
 				   RowSymPacked, Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char uplo('L');
     
     int n = A.GetM(); double rcond(0);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     zspcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
 	    work.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3862,14 +3862,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<complex<float>, Prop0,
 				  ColHerm, Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char uplo('U');
     
     int n = A.GetM(); float rcond(0);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     checon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
 	    work.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3879,14 +3879,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<complex<double>, Prop0,
 				   ColHerm, Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm,  double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char uplo('U');
     
     int n = A.GetM(); double rcond(0);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     zhecon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
 	    work.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3899,14 +3899,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<complex<float>, Prop0,
 				  ColHermPacked, Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char uplo('U');
     
     int n = A.GetM(); float rcond(0);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     chpcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
 	    work.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3916,14 +3916,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<complex<double>, Prop0,
 				   ColHermPacked, Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char uplo('U');
     
     int n = A.GetM(); double rcond(0);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     zhpcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
 	    work.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3936,14 +3936,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<complex<float>, Prop0,
 				  RowHerm, Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char uplo('L');
     
     int n = A.GetM(); float rcond(0);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     checon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
 	    work.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3953,14 +3953,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<complex<double>, Prop0,
 				   RowHerm, Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char uplo('L');
     
     int n = A.GetM(); double rcond(0);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     zhecon_(&uplo, &n, A.GetData(), &n, P.GetData(), &anorm, &rcond,
 	    work.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3973,14 +3973,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   float ReciprocalConditionNumber(const Matrix<complex<float>, Prop0,
 				  RowHermPacked, Allocator0>& A,
-				  Vector<int, Vect_Full, Allocator1>& P,
+				  Vector<int, VectFull, Allocator1>& P,
 				  SeldonNorm norm, float anorm,
 				  LapackInfo& info = lapack_info)
   {
     char uplo('L');
     
     int n = A.GetM(); float rcond(0);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     chpcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
 	    work.GetData(), &info.GetInfoRef());
     return rcond;
@@ -3990,14 +3990,14 @@ namespace Seldon
   template<class Prop0, class Allocator0, class Allocator1>
   double ReciprocalConditionNumber(const Matrix<complex<double>, Prop0,
 				   RowHermPacked, Allocator0>& A,
-				   Vector<int, Vect_Full, Allocator1>& P,
+				   Vector<int, VectFull, Allocator1>& P,
 				   SeldonNorm norm, double anorm,
 				   LapackInfo& info = lapack_info)
   {
     char uplo('L');
     
     int n = A.GetM(); double rcond(0);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     zhpcon_(&uplo, &n, A.GetData(), P.GetData(), &anorm, &rcond,
 	    work.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4015,7 +4015,7 @@ namespace Seldon
     char uplo('U'); char norm_type = norm.Char(); char diag('N');
     
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4030,7 +4030,7 @@ namespace Seldon
     char uplo('U'); char norm_type = norm.Char(); char diag('N');
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4047,7 +4047,7 @@ namespace Seldon
     
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4064,7 +4064,7 @@ namespace Seldon
     
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4083,7 +4083,7 @@ namespace Seldon
     char uplo('U'); char norm_type = norm.Char();
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4100,7 +4100,7 @@ namespace Seldon
     
     int n = A.GetM(); double rcond(0);
     char diag = DiagA.Char();
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4118,7 +4118,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4136,7 +4136,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4155,7 +4155,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.Char(); char diag('N');
     
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4170,7 +4170,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.Char(); char diag('N');
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4187,7 +4187,7 @@ namespace Seldon
     
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4204,7 +4204,7 @@ namespace Seldon
     
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4224,7 +4224,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.Char();
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4240,7 +4240,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.Char();
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4258,7 +4258,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4276,7 +4276,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4295,7 +4295,7 @@ namespace Seldon
     char uplo('U'); char norm_type = norm.Char(); char diag('N');
     
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4311,7 +4311,7 @@ namespace Seldon
     char uplo('U'); char norm_type = norm.Char(); char diag('N');
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4328,7 +4328,7 @@ namespace Seldon
     
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4345,7 +4345,7 @@ namespace Seldon
     
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4365,7 +4365,7 @@ namespace Seldon
     char uplo('U'); char norm_type = norm.Char();
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4382,7 +4382,7 @@ namespace Seldon
     char uplo('U'); char norm_type = norm.Char();
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4400,7 +4400,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4418,7 +4418,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4437,7 +4437,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.Char(); char diag('N');
     
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4453,7 +4453,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.Char(); char diag('N');
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4470,7 +4470,7 @@ namespace Seldon
     
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4487,7 +4487,7 @@ namespace Seldon
     
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4507,7 +4507,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.Char();
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4524,7 +4524,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.Char();
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4542,7 +4542,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4560,7 +4560,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4578,7 +4578,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.RevChar(); char diag('N');
     
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4593,7 +4593,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.RevChar(); char diag('N');
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4610,7 +4610,7 @@ namespace Seldon
     
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4627,7 +4627,7 @@ namespace Seldon
     
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4646,7 +4646,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.RevChar();
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4662,7 +4662,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.RevChar();
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4680,7 +4680,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4698,7 +4698,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4717,7 +4717,7 @@ namespace Seldon
     char uplo('U'); char norm_type = norm.RevChar(); char diag('N');
     
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4733,7 +4733,7 @@ namespace Seldon
     char uplo('U'); char norm_type = norm.RevChar(); char diag('N');
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4750,7 +4750,7 @@ namespace Seldon
     
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4767,7 +4767,7 @@ namespace Seldon
     
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4787,7 +4787,7 @@ namespace Seldon
     char uplo('U'); char norm_type = norm.RevChar();
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     strcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4804,7 +4804,7 @@ namespace Seldon
     char uplo('U'); char norm_type = norm.RevChar();
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtrcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &n, &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4822,7 +4822,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4840,7 +4840,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztrcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &n, &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4859,7 +4859,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.RevChar(); char diag('N');
     
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4875,7 +4875,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.RevChar(); char diag('N');
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4892,7 +4892,7 @@ namespace Seldon
     
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4909,7 +4909,7 @@ namespace Seldon
     
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4929,7 +4929,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.RevChar();
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
-    Vector<int> iwork(n); Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<float, VectFull, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4946,7 +4946,7 @@ namespace Seldon
     char uplo('L'); char norm_type = norm.RevChar();
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4964,7 +4964,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -4982,7 +4982,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -5002,7 +5002,7 @@ namespace Seldon
     
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n);
-    Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<float, VectFull, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -5018,7 +5018,7 @@ namespace Seldon
     char uplo('U'); char norm_type = norm.RevChar(); char diag('N');
     
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -5035,7 +5035,7 @@ namespace Seldon
     
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -5052,7 +5052,7 @@ namespace Seldon
     
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -5073,7 +5073,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
     Vector<int> iwork(n);
-    Vector<float, Vect_Full, Allocator0> work(3*n);
+    Vector<float, VectFull, Allocator0> work(3*n);
     stpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -5090,7 +5090,7 @@ namespace Seldon
     char uplo('U'); char norm_type = norm.RevChar();
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
-    Vector<int> iwork(n); Vector<double, Vect_Full, Allocator0> work(3*n);
+    Vector<int> iwork(n); Vector<double, VectFull, Allocator0> work(3*n);
     dtpcon_(&norm_type, &uplo, &diag, &n, A.GetData(), &rcond,
 	    work.GetData(), iwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -5108,7 +5108,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); float rcond(0);
     Vector<float> rwork(n);
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<float>, VectFull, Allocator0> work(2*n);
     ctpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -5126,7 +5126,7 @@ namespace Seldon
     char diag = DiagA.Char();
     int n = A.GetM(); double rcond(0);
     Vector<double> rwork(n);
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*n);
+    Vector<complex<double>, VectFull, Allocator0> work(2*n);
     ztpcon_(&norm_type, &uplo, &diag, &n, A.GetDataVoid(), &rcond,
 	    work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
     return rcond;
@@ -5151,9 +5151,9 @@ namespace Seldon
   void RefineSolutionLU(const Matrix<float, Prop0, ColMajor, Allocator0>& A,
 			const Matrix<float, Prop0, ColMajor,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<float, Vect_Full, Allocator3>& x,
-			const Vector<float, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<float, VectFull, Allocator3>& x,
+			const Vector<float, VectFull, Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5166,7 +5166,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans('N');
-    Vector<float, Vect_Full, Allocator3> work(3*m);
+    Vector<float, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     sgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -5181,9 +5181,9 @@ namespace Seldon
   void RefineSolutionLU(const Matrix<double, Prop0, ColMajor, Allocator0>& A,
 			const Matrix<double, Prop0, ColMajor,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<double, Vect_Full, Allocator3>& x,
-			const Vector<double, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<double, VectFull, Allocator3>& x,
+			const Vector<double, VectFull, Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5196,7 +5196,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans('N');
-    Vector<double, Vect_Full, Allocator3> work(3*m);
+    Vector<double, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     dgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -5212,9 +5212,9 @@ namespace Seldon
 			ColMajor, Allocator0>& A,
 			const Matrix<complex<float>, Prop0,
 			ColMajor, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<float>, Vect_Full, Allocator3>& x,
-			const Vector<complex<float>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<float>, VectFull, Allocator3>& x,
+			const Vector<complex<float>, VectFull,
 			Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
@@ -5228,7 +5228,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans('N');
-    Vector<complex<float>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<float>, VectFull, Allocator3> work(2*m);
     Vector<float> rwork(m);
     cgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -5244,9 +5244,9 @@ namespace Seldon
 			ColMajor, Allocator0>& A,
 			const Matrix<complex<double>, Prop0,
 			ColMajor, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<double>, Vect_Full, Allocator3>& x,
-			const Vector<complex<double>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<double>, VectFull, Allocator3>& x,
+			const Vector<complex<double>, VectFull,
 			Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
@@ -5260,7 +5260,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans('N');
-    Vector<complex<double>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<double>, VectFull, Allocator3> work(2*m);
     Vector<double> rwork(m);
     zgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -5279,9 +5279,9 @@ namespace Seldon
 			const Matrix<float, Prop0, ColMajor, Allocator0>& A,
 			const Matrix<float, Prop0, ColMajor,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<float, Vect_Full, Allocator3>& x,
-			const Vector<float, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<float, VectFull, Allocator3>& x,
+			const Vector<float, VectFull, Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5294,7 +5294,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans = TransA.Char();
-    Vector<float, Vect_Full, Allocator3> work(3*m);
+    Vector<float, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     sgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -5310,9 +5310,9 @@ namespace Seldon
 			const Matrix<double, Prop0, ColMajor, Allocator0>& A,
 			const Matrix<double, Prop0, ColMajor,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<double, Vect_Full, Allocator3>& x,
-			const Vector<double, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<double, VectFull, Allocator3>& x,
+			const Vector<double, VectFull, Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5325,7 +5325,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans = TransA.Char();
-    Vector<double, Vect_Full, Allocator3> work(3*m);
+    Vector<double, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     dgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -5343,9 +5343,9 @@ namespace Seldon
 		   Allocator0>& A,
 		   const Matrix<complex<float>, Prop0, ColMajor,
 		   Allocator1>& Alu,
-		   const Vector<int, Vect_Full, Allocator2>& P,
-		   Vector<complex<float>, Vect_Full, Allocator3>& x,
-		   const Vector<complex<float>, Vect_Full, Allocator4>& b,
+		   const Vector<int, VectFull, Allocator2>& P,
+		   Vector<complex<float>, VectFull, Allocator3>& x,
+		   const Vector<complex<float>, VectFull, Allocator4>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -5358,7 +5358,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans = TransA.Char();
-    Vector<complex<float>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<float>, VectFull, Allocator3> work(2*m);
     Vector<float> rwork(m);
     cgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -5375,9 +5375,9 @@ namespace Seldon
 			Allocator0>& A,
 			const Matrix<complex<double>, Prop0, ColMajor,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<double>, Vect_Full, Allocator3>& x,
-			const Vector<complex<double>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<double>, VectFull, Allocator3>& x,
+			const Vector<complex<double>, VectFull,
 			Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
@@ -5391,7 +5391,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans = TransA.Char();
-    Vector<complex<double>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<double>, VectFull, Allocator3> work(2*m);
     Vector<double> rwork(m);
     zgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -5409,9 +5409,9 @@ namespace Seldon
   void RefineSolutionLU(const Matrix<float, Prop0, RowMajor, Allocator0>& A,
 			const Matrix<float, Prop0, RowMajor,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<float, Vect_Full, Allocator3>& x,
-			const Vector<float, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<float, VectFull, Allocator3>& x,
+			const Vector<float, VectFull, Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5424,7 +5424,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans('T');
-    Vector<float, Vect_Full, Allocator3> work(3*m);
+    Vector<float, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     sgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -5439,9 +5439,9 @@ namespace Seldon
   void RefineSolutionLU(const Matrix<double, Prop0, RowMajor, Allocator0>& A,
 			const Matrix<double, Prop0, RowMajor,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<double, Vect_Full, Allocator3>& x,
-			const Vector<double, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<double, VectFull, Allocator3>& x,
+			const Vector<double, VectFull, Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5454,7 +5454,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans('T');
-    Vector<double, Vect_Full, Allocator3> work(3*m);
+    Vector<double, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     dgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -5470,9 +5470,9 @@ namespace Seldon
 			RowMajor, Allocator0>& A,
 			const Matrix<complex<float>, Prop0,
 			RowMajor, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<float>, Vect_Full, Allocator3>& x,
-			const Vector<complex<float>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<float>, VectFull, Allocator3>& x,
+			const Vector<complex<float>, VectFull,
 			Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
@@ -5486,7 +5486,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans('T');
-    Vector<complex<float>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<float>, VectFull, Allocator3> work(2*m);
     Vector<float> rwork(m);
     cgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -5502,9 +5502,9 @@ namespace Seldon
 			RowMajor, Allocator0>& A,
 			const Matrix<complex<double>, Prop0,
 			RowMajor, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<double>, Vect_Full, Allocator3>& x,
-			const Vector<complex<double>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<double>, VectFull, Allocator3>& x,
+			const Vector<complex<double>, VectFull,
 			Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
@@ -5518,7 +5518,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans('T');
-    Vector<complex<double>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<double>, VectFull, Allocator3> work(2*m);
     Vector<double> rwork(m);
     zgerfs_(&trans, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -5537,9 +5537,9 @@ namespace Seldon
 			const Matrix<float, Prop0, RowMajor, Allocator0>& A,
 			const Matrix<float, Prop0, RowMajor,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<float, Vect_Full, Allocator3>& x,
-			const Vector<float, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<float, VectFull, Allocator3>& x,
+			const Vector<float, VectFull, Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5552,7 +5552,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans = TransA.RevChar();
-    Vector<float, Vect_Full, Allocator3> work(3*m);
+    Vector<float, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     sgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -5568,9 +5568,9 @@ namespace Seldon
 			const Matrix<double, Prop0, RowMajor, Allocator0>& A,
 			const Matrix<double, Prop0, RowMajor,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<double, Vect_Full, Allocator3>& x,
-			const Vector<double, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<double, VectFull, Allocator3>& x,
+			const Vector<double, VectFull, Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5583,7 +5583,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans = TransA.RevChar();
-    Vector<double, Vect_Full, Allocator3> work(3*m);
+    Vector<double, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     dgerfs_(&trans, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -5600,9 +5600,9 @@ namespace Seldon
 			Allocator0>& A,
 			const Matrix<complex<float>, Prop0, RowMajor,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<float>, Vect_Full, Allocator3>& x,
-			Vector<complex<float>, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<float>, VectFull, Allocator3>& x,
+			Vector<complex<float>, VectFull, Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5615,7 +5615,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans = TransA.RevChar();
-    Vector<complex<float>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<float>, VectFull, Allocator3> work(2*m);
     Vector<float> rwork(m);
     if (TransA.ConjTrans())
       {
@@ -5642,9 +5642,9 @@ namespace Seldon
 			Allocator0>& A,
 			const Matrix<complex<double>, Prop0, RowMajor,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<double>, Vect_Full, Allocator3>& x,
-			Vector<complex<double>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<double>, VectFull, Allocator3>& x,
+			Vector<complex<double>, VectFull,
 			Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
@@ -5658,7 +5658,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char trans = TransA.RevChar();
-    Vector<complex<double>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<double>, VectFull, Allocator3> work(2*m);
     Vector<double> rwork(m);
     if (TransA.ConjTrans())
       {
@@ -5686,9 +5686,9 @@ namespace Seldon
   void RefineSolutionLU(const Matrix<float, Prop0, ColSym, Allocator0>& A,
 			const Matrix<float, Prop0, ColSym,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<float, Vect_Full, Allocator3>& x,
-			const Vector<float, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<float, VectFull, Allocator3>& x,
+			const Vector<float, VectFull, Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5701,7 +5701,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('U');
-    Vector<float, Vect_Full, Allocator3> work(3*m);
+    Vector<float, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     ssyrfs_(&uplo, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -5716,9 +5716,9 @@ namespace Seldon
   void RefineSolutionLU(const Matrix<double, Prop0, ColSym, Allocator0>& A,
 			const Matrix<double, Prop0, ColSym,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<double, Vect_Full, Allocator3>& x,
-			const Vector<double, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<double, VectFull, Allocator3>& x,
+			const Vector<double, VectFull, Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5731,7 +5731,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('U');
-    Vector<double, Vect_Full, Allocator3> work(3*m);
+    Vector<double, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     dsyrfs_(&uplo, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -5747,9 +5747,9 @@ namespace Seldon
 			ColSym, Allocator0>& A,
 			const Matrix<complex<float>, Prop0,
 			ColSym, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<float>, Vect_Full, Allocator3>& x,
-			const Vector<complex<float>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<float>, VectFull, Allocator3>& x,
+			const Vector<complex<float>, VectFull,
 			Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
@@ -5763,7 +5763,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('U');
-    Vector<complex<float>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<float>, VectFull, Allocator3> work(2*m);
     Vector<float> rwork(m);
     csyrfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -5779,9 +5779,9 @@ namespace Seldon
 			ColSym, Allocator0>& A,
 			const Matrix<complex<double>, Prop0,
 			ColSym, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<double>, Vect_Full, Allocator3>& x,
-			const Vector<complex<double>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<double>, VectFull, Allocator3>& x,
+			const Vector<complex<double>, VectFull,
 			Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
@@ -5795,7 +5795,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('U');
-    Vector<complex<double>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<double>, VectFull, Allocator3> work(2*m);
     Vector<double> rwork(m);
     zsyrfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -5814,9 +5814,9 @@ namespace Seldon
 			Allocator0>& A,
 			const Matrix<float, Prop0, ColSymPacked,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<float, Vect_Full, Allocator3>& x,
-			const Vector<float, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<float, VectFull, Allocator3>& x,
+			const Vector<float, VectFull, Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5829,7 +5829,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('U');
-    Vector<float, Vect_Full, Allocator3> work(3*m);
+    Vector<float, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     ssprfs_(&uplo, &m, &nrhs, A.GetData(), Alu.GetData(),
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -5845,9 +5845,9 @@ namespace Seldon
 			Allocator0>& A,
 			const Matrix<double, Prop0, ColSymPacked,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<double, Vect_Full, Allocator3>& x,
-			const Vector<double, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<double, VectFull, Allocator3>& x,
+			const Vector<double, VectFull, Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5860,7 +5860,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('U');
-    Vector<double, Vect_Full, Allocator3> work(3*m);
+    Vector<double, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     dsprfs_(&uplo, &m, &nrhs, A.GetData(), Alu.GetData(),
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -5876,9 +5876,9 @@ namespace Seldon
 			ColSymPacked, Allocator0>& A,
 			const Matrix<complex<float>, Prop0,
 			ColSymPacked, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<float>, Vect_Full, Allocator3>& x,
-			const Vector<complex<float>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<float>, VectFull, Allocator3>& x,
+			const Vector<complex<float>, VectFull,
 			Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
@@ -5892,7 +5892,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('U');
-    Vector<complex<float>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<float>, VectFull, Allocator3> work(2*m);
     Vector<float> rwork(m);
     csprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -5908,9 +5908,9 @@ namespace Seldon
 			ColSymPacked, Allocator0>& A,
 			const Matrix<complex<double>, Prop0,
 			ColSymPacked, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<double>, Vect_Full, Allocator3>& x,
-			const Vector<complex<double>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<double>, VectFull, Allocator3>& x,
+			const Vector<complex<double>, VectFull,
 			Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
@@ -5924,7 +5924,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('U');
-    Vector<complex<double>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<double>, VectFull, Allocator3> work(2*m);
     Vector<double> rwork(m);
     zsprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -5942,9 +5942,9 @@ namespace Seldon
   void RefineSolutionLU(const Matrix<float, Prop0, RowSym, Allocator0>& A,
 			const Matrix<float, Prop0, RowSym,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<float, Vect_Full, Allocator3>& x,
-			const Vector<float, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<float, VectFull, Allocator3>& x,
+			const Vector<float, VectFull, Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5957,7 +5957,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('L');
-    Vector<float, Vect_Full, Allocator3> work(3*m);
+    Vector<float, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     ssyrfs_(&uplo, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -5972,9 +5972,9 @@ namespace Seldon
   void RefineSolutionLU(const Matrix<double, Prop0, RowSym, Allocator0>& A,
 			const Matrix<double, Prop0, RowSym,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<double, Vect_Full, Allocator3>& x,
-			const Vector<double, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<double, VectFull, Allocator3>& x,
+			const Vector<double, VectFull, Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -5987,7 +5987,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('L');
-    Vector<double, Vect_Full, Allocator3> work(3*m);
+    Vector<double, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     dsyrfs_(&uplo, &m, &nrhs, A.GetData(), &m, Alu.GetData(), &m,
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -6003,9 +6003,9 @@ namespace Seldon
 			RowSym, Allocator0>& A,
 			const Matrix<complex<float>, Prop0,
 			RowSym, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<float>, Vect_Full, Allocator3>& x,
-			const Vector<complex<float>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<float>, VectFull, Allocator3>& x,
+			const Vector<complex<float>, VectFull,
 			Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
@@ -6019,7 +6019,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('L');
-    Vector<complex<float>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<float>, VectFull, Allocator3> work(2*m);
     Vector<float> rwork(m);
     csyrfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -6035,9 +6035,9 @@ namespace Seldon
 			RowSym, Allocator0>& A,
 			const Matrix<complex<double>, Prop0,
 			RowSym, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<double>, Vect_Full, Allocator3>& x,
-			const Vector<complex<double>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<double>, VectFull, Allocator3>& x,
+			const Vector<complex<double>, VectFull,
 			Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
@@ -6051,7 +6051,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('L');
-    Vector<complex<double>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<double>, VectFull, Allocator3> work(2*m);
     Vector<double> rwork(m);
     zsyrfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -6070,9 +6070,9 @@ namespace Seldon
 			Allocator0>& A,
 			const Matrix<float, Prop0, RowSymPacked,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<float, Vect_Full, Allocator3>& x,
-			const Vector<float, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<float, VectFull, Allocator3>& x,
+			const Vector<float, VectFull, Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -6085,7 +6085,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('L');
-    Vector<float, Vect_Full, Allocator3> work(3*m);
+    Vector<float, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     ssprfs_(&uplo, &m, &nrhs, A.GetData(), Alu.GetData(),
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -6101,9 +6101,9 @@ namespace Seldon
 			Allocator0>& A,
 			const Matrix<double, Prop0, RowSymPacked,
 			Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<double, Vect_Full, Allocator3>& x,
-			const Vector<double, Vect_Full, Allocator4>& b,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<double, VectFull, Allocator3>& x,
+			const Vector<double, VectFull, Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -6116,7 +6116,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('L');
-    Vector<double, Vect_Full, Allocator3> work(3*m);
+    Vector<double, VectFull, Allocator3> work(3*m);
     Vector<int> iwork(m);
     dsprfs_(&uplo, &m, &nrhs, A.GetData(), Alu.GetData(),
 	    P.GetData(), b.GetData(), &m, x.GetData(), &m,
@@ -6132,9 +6132,9 @@ namespace Seldon
 			RowSymPacked, Allocator0>& A,
 			const Matrix<complex<float>, Prop0,
 			RowSymPacked, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<float>, Vect_Full, Allocator3>& x,
-			const Vector<complex<float>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<float>, VectFull, Allocator3>& x,
+			const Vector<complex<float>, VectFull,
 			Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
@@ -6148,7 +6148,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('L');
-    Vector<complex<float>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<float>, VectFull, Allocator3> work(2*m);
     Vector<float> rwork(m);
     csprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -6164,9 +6164,9 @@ namespace Seldon
 			RowSymPacked, Allocator0>& A,
 			const Matrix<complex<double>, Prop0,
 			RowSymPacked, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<double>, Vect_Full, Allocator3>& x,
-			const Vector<complex<double>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<double>, VectFull, Allocator3>& x,
+			const Vector<complex<double>, VectFull,
 			Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
@@ -6180,7 +6180,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('L');
-    Vector<complex<double>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<double>, VectFull, Allocator3> work(2*m);
     Vector<double> rwork(m);
     zsprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -6199,9 +6199,9 @@ namespace Seldon
 			ColHerm, Allocator0>& A,
 			const Matrix<complex<float>, Prop0,
 			ColHerm, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<float>, Vect_Full, Allocator3>& x,
-			const Vector<complex<float>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<float>, VectFull, Allocator3>& x,
+			const Vector<complex<float>, VectFull,
 			Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
@@ -6215,7 +6215,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('U');
-    Vector<complex<float>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<float>, VectFull, Allocator3> work(2*m);
     Vector<float> rwork(m);
     cherfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -6231,9 +6231,9 @@ namespace Seldon
 			ColHerm, Allocator0>& A,
 			const Matrix<complex<double>, Prop0,
 			ColHerm, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<double>, Vect_Full, Allocator3>& x,
-			const Vector<complex<double>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<double>, VectFull, Allocator3>& x,
+			const Vector<complex<double>, VectFull,
 			Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
@@ -6247,7 +6247,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('U');
-    Vector<complex<double>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<double>, VectFull, Allocator3> work(2*m);
     Vector<double> rwork(m);
     zherfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -6266,9 +6266,9 @@ namespace Seldon
 			ColHermPacked, Allocator0>& A,
 			const Matrix<complex<float>, Prop0,
 			ColHermPacked, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<float>, Vect_Full, Allocator3>& x,
-			const Vector<complex<float>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<float>, VectFull, Allocator3>& x,
+			const Vector<complex<float>, VectFull,
 			Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
@@ -6282,7 +6282,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('U');
-    Vector<complex<float>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<float>, VectFull, Allocator3> work(2*m);
     Vector<float> rwork(m);
     chprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -6298,9 +6298,9 @@ namespace Seldon
 			ColHermPacked, Allocator0>& A,
 			const Matrix<complex<double>, Prop0,
 			ColHermPacked, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<double>, Vect_Full, Allocator3>& x,
-			const Vector<complex<double>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<double>, VectFull, Allocator3>& x,
+			const Vector<complex<double>, VectFull,
 			Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
@@ -6314,7 +6314,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('U');
-    Vector<complex<double>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<double>, VectFull, Allocator3> work(2*m);
     Vector<double> rwork(m);
     zhprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
 	    P.GetData(), b.GetDataVoid(), &m, x.GetDataVoid(), &m, &ferr,
@@ -6333,9 +6333,9 @@ namespace Seldon
 			RowHerm, Allocator0>& A,
 			const Matrix<complex<float>, Prop0,
 			RowHerm, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<float>, Vect_Full, Allocator3>& x,
-			Vector<complex<float>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<float>, VectFull, Allocator3>& x,
+			Vector<complex<float>, VectFull,
 			Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
@@ -6349,7 +6349,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('L');
-    Vector<complex<float>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<float>, VectFull, Allocator3> work(2*m);
     Vector<float> rwork(m);
     Conjugate(b); Conjugate(x);
     cherfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
@@ -6367,9 +6367,9 @@ namespace Seldon
 			RowHerm, Allocator0>& A,
 			const Matrix<complex<double>, Prop0,
 			RowHerm, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<double>, Vect_Full, Allocator3>& x,
-			Vector<complex<double>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<double>, VectFull, Allocator3>& x,
+			Vector<complex<double>, VectFull,
 			Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
@@ -6383,7 +6383,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('L');
-    Vector<complex<double>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<double>, VectFull, Allocator3> work(2*m);
     Vector<double> rwork(m);
     Conjugate(b); Conjugate(x);
     zherfs_(&uplo, &m, &nrhs, A.GetDataVoid(), &m, Alu.GetDataVoid(), &m,
@@ -6404,9 +6404,9 @@ namespace Seldon
 			RowHermPacked, Allocator0>& A,
 			const Matrix<complex<float>, Prop0,
 			RowHermPacked, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<float>, Vect_Full, Allocator3>& x,
-			Vector<complex<float>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<float>, VectFull, Allocator3>& x,
+			Vector<complex<float>, VectFull,
 			Allocator4>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
@@ -6420,7 +6420,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('L');
-    Vector<complex<float>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<float>, VectFull, Allocator3> work(2*m);
     Vector<float> rwork(m);
     Conjugate(b); Conjugate(x);
     chprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
@@ -6438,9 +6438,9 @@ namespace Seldon
 			RowHermPacked, Allocator0>& A,
 			const Matrix<complex<double>, Prop0,
 			RowHermPacked, Allocator1>& Alu,
-			const Vector<int, Vect_Full, Allocator2>& P,
-			Vector<complex<double>, Vect_Full, Allocator3>& x,
-			Vector<complex<double>, Vect_Full,
+			const Vector<int, VectFull, Allocator2>& P,
+			Vector<complex<double>, VectFull, Allocator3>& x,
+			Vector<complex<double>, VectFull,
 			Allocator4>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
@@ -6454,7 +6454,7 @@ namespace Seldon
     int m = A.GetM();
     int nrhs = 1;
     char uplo('L');
-    Vector<complex<double>, Vect_Full, Allocator3> work(2*m);
+    Vector<complex<double>, VectFull, Allocator3> work(2*m);
     Vector<double> rwork(m);
     Conjugate(b); Conjugate(x);
     zhprfs_(&uplo, &m, &nrhs, A.GetDataVoid(), Alu.GetDataVoid(),
@@ -6472,8 +6472,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<float, Prop0, ColUpTriang,
 			Allocator0>& A,
-			Vector<float, Vect_Full, Allocator1>& x,
-			const Vector<float, Vect_Full, Allocator2>& b,
+			Vector<float, VectFull, Allocator1>& x,
+			const Vector<float, VectFull, Allocator2>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -6486,7 +6486,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('N'); char diag('N');
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -6498,8 +6498,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<double, Prop0, ColUpTriang,
 			Allocator0>& A,
-			Vector<double, Vect_Full, Allocator1>& x,
-			const Vector<double, Vect_Full, Allocator2>& b,
+			Vector<double, VectFull, Allocator1>& x,
+			const Vector<double, VectFull, Allocator2>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -6512,7 +6512,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('N'); char diag('N');
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -6526,8 +6526,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<float>, Prop0, ColUpTriang,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   const Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -6540,7 +6540,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('N'); char diag('N');
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -6554,8 +6554,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<double>, Prop0, ColUpTriang,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   const Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -6568,7 +6568,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('N'); char diag('N');
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -6586,8 +6586,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<float, Prop0, ColUpTriang,
 		   Allocator0>& A,
-		   Vector<float, Vect_Full, Allocator1>& x,
-		   const Vector<float, Vect_Full, Allocator2>& b,
+		   Vector<float, VectFull, Allocator1>& x,
+		   const Vector<float, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -6600,7 +6600,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -6614,8 +6614,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<double, Prop0, ColUpTriang,
 		   Allocator0>& A,
-		   Vector<double, Vect_Full, Allocator1>& x,
-		   const Vector<double, Vect_Full, Allocator2>& b,
+		   Vector<double, VectFull, Allocator1>& x,
+		   const Vector<double, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -6628,7 +6628,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -6643,8 +6643,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<float>, Prop0, ColUpTriang,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   const Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -6657,7 +6657,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -6672,8 +6672,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<double>, Prop0, ColUpTriang,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   const Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -6686,7 +6686,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -6702,8 +6702,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<float, Prop0, ColLoTriang,
 			Allocator0>& A,
-			Vector<float, Vect_Full, Allocator1>& x,
-			const Vector<float, Vect_Full, Allocator2>& b,
+			Vector<float, VectFull, Allocator1>& x,
+			const Vector<float, VectFull, Allocator2>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -6716,7 +6716,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('N'); char diag('N');
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -6728,8 +6728,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<double, Prop0, ColLoTriang,
 			Allocator0>& A,
-			Vector<double, Vect_Full, Allocator1>& x,
-			const Vector<double, Vect_Full, Allocator2>& b,
+			Vector<double, VectFull, Allocator1>& x,
+			const Vector<double, VectFull, Allocator2>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -6742,7 +6742,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('N'); char diag('N');
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -6756,8 +6756,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<float>, Prop0, ColLoTriang,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   const Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -6770,7 +6770,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('N'); char diag('N');
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -6784,8 +6784,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<double>, Prop0, ColLoTriang,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   const Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -6798,7 +6798,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('N'); char diag('N');
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -6816,8 +6816,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<float, Prop0, ColLoTriang,
 		   Allocator0>& A,
-		   Vector<float, Vect_Full, Allocator1>& x,
-		   const Vector<float, Vect_Full, Allocator2>& b,
+		   Vector<float, VectFull, Allocator1>& x,
+		   const Vector<float, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -6830,7 +6830,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -6844,8 +6844,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<double, Prop0, ColLoTriang,
 		   Allocator0>& A,
-		   Vector<double, Vect_Full, Allocator1>& x,
-		   const Vector<double, Vect_Full, Allocator2>& b,
+		   Vector<double, VectFull, Allocator1>& x,
+		   const Vector<double, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -6858,7 +6858,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -6873,8 +6873,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<float>, Prop0, ColLoTriang,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   const Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -6887,7 +6887,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -6902,8 +6902,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<double>, Prop0, ColLoTriang,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   const Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -6916,7 +6916,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -6932,8 +6932,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<float, Prop0, ColUpTriangPacked,
 			Allocator0>& A,
-			Vector<float, Vect_Full, Allocator1>& x,
-			const Vector<float, Vect_Full, Allocator2>& b,
+			Vector<float, VectFull, Allocator1>& x,
+			const Vector<float, VectFull, Allocator2>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -6946,7 +6946,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('N'); char diag('N');
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -6958,8 +6958,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<double, Prop0, ColUpTriangPacked,
 			Allocator0>& A,
-			Vector<double, Vect_Full, Allocator1>& x,
-			const Vector<double, Vect_Full, Allocator2>& b,
+			Vector<double, VectFull, Allocator1>& x,
+			const Vector<double, VectFull, Allocator2>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -6972,7 +6972,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('N'); char diag('N');
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -6986,8 +6986,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<float>, Prop0, ColUpTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   const Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7000,7 +7000,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('N'); char diag('N');
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -7014,8 +7014,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<double>, Prop0, ColUpTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   const Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7028,7 +7028,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('N'); char diag('N');
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -7046,8 +7046,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<float, Prop0, ColUpTriangPacked,
 		   Allocator0>& A,
-		   Vector<float, Vect_Full, Allocator1>& x,
-		   const Vector<float, Vect_Full, Allocator2>& b,
+		   Vector<float, VectFull, Allocator1>& x,
+		   const Vector<float, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7060,7 +7060,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7074,8 +7074,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<double, Prop0, ColUpTriangPacked,
 		   Allocator0>& A,
-		   Vector<double, Vect_Full, Allocator1>& x,
-		   const Vector<double, Vect_Full, Allocator2>& b,
+		   Vector<double, VectFull, Allocator1>& x,
+		   const Vector<double, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7088,7 +7088,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7103,8 +7103,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<float>, Prop0, ColUpTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   const Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7117,7 +7117,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -7132,8 +7132,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<double>, Prop0, ColUpTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   const Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7146,7 +7146,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -7162,8 +7162,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<float, Prop0, ColLoTriangPacked,
 			Allocator0>& A,
-			Vector<float, Vect_Full, Allocator1>& x,
-			const Vector<float, Vect_Full, Allocator2>& b,
+			Vector<float, VectFull, Allocator1>& x,
+			const Vector<float, VectFull, Allocator2>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -7176,7 +7176,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('N'); char diag('N');
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7188,8 +7188,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<double, Prop0, ColLoTriangPacked,
 			Allocator0>& A,
-			Vector<double, Vect_Full, Allocator1>& x,
-			const Vector<double, Vect_Full, Allocator2>& b,
+			Vector<double, VectFull, Allocator1>& x,
+			const Vector<double, VectFull, Allocator2>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -7202,7 +7202,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('N'); char diag('N');
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7216,8 +7216,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<float>, Prop0, ColLoTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   const Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7230,7 +7230,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('N'); char diag('N');
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -7244,8 +7244,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<double>, Prop0, ColLoTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   const Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7258,7 +7258,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('N'); char diag('N');
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -7276,8 +7276,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<float, Prop0, ColLoTriangPacked,
 		   Allocator0>& A,
-		   Vector<float, Vect_Full, Allocator1>& x,
-		   const Vector<float, Vect_Full, Allocator2>& b,
+		   Vector<float, VectFull, Allocator1>& x,
+		   const Vector<float, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7290,7 +7290,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7304,8 +7304,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<double, Prop0, ColLoTriangPacked,
 		   Allocator0>& A,
-		   Vector<double, Vect_Full, Allocator1>& x,
-		   const Vector<double, Vect_Full, Allocator2>& b,
+		   Vector<double, VectFull, Allocator1>& x,
+		   const Vector<double, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7318,7 +7318,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7333,8 +7333,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<float>, Prop0, ColLoTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   const Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7347,7 +7347,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -7362,8 +7362,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<double>, Prop0, ColLoTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   const Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7376,7 +7376,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.Char(); char diag = DiagA.Char();
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -7392,8 +7392,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<float, Prop0, RowUpTriang,
 			Allocator0>& A,
-			Vector<float, Vect_Full, Allocator1>& x,
-			const Vector<float, Vect_Full, Allocator2>& b,
+			Vector<float, VectFull, Allocator1>& x,
+			const Vector<float, VectFull, Allocator2>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -7406,7 +7406,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('T'); char diag('N');
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7418,8 +7418,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<double, Prop0, RowUpTriang,
 			Allocator0>& A,
-			Vector<double, Vect_Full, Allocator1>& x,
-			const Vector<double, Vect_Full, Allocator2>& b,
+			Vector<double, VectFull, Allocator1>& x,
+			const Vector<double, VectFull, Allocator2>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -7432,7 +7432,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('T'); char diag('N');
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7446,8 +7446,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<float>, Prop0, RowUpTriang,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   const Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7460,7 +7460,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('T'); char diag('N');
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -7474,8 +7474,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<double>, Prop0, RowUpTriang,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   const Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7488,7 +7488,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('T'); char diag('N');
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -7506,8 +7506,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<float, Prop0, RowUpTriang,
 		   Allocator0>& A,
-		   Vector<float, Vect_Full, Allocator1>& x,
-		   const Vector<float, Vect_Full, Allocator2>& b,
+		   Vector<float, VectFull, Allocator1>& x,
+		   const Vector<float, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7520,7 +7520,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7534,8 +7534,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<double, Prop0, RowUpTriang,
 		   Allocator0>& A,
-		   Vector<double, Vect_Full, Allocator1>& x,
-		   const Vector<double, Vect_Full, Allocator2>& b,
+		   Vector<double, VectFull, Allocator1>& x,
+		   const Vector<double, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7548,7 +7548,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7563,8 +7563,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<float>, Prop0, RowUpTriang,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7577,7 +7577,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     if (TransA.ConjTrans())
       {
@@ -7602,8 +7602,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<double>, Prop0, RowUpTriang,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7616,7 +7616,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     if (TransA.ConjTrans())
       {
@@ -7642,8 +7642,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<float, Prop0, RowLoTriang,
 			Allocator0>& A,
-			Vector<float, Vect_Full, Allocator1>& x,
-			const Vector<float, Vect_Full, Allocator2>& b,
+			Vector<float, VectFull, Allocator1>& x,
+			const Vector<float, VectFull, Allocator2>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -7656,7 +7656,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('T'); char diag('N');
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7668,8 +7668,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<double, Prop0, RowLoTriang,
 			Allocator0>& A,
-			Vector<double, Vect_Full, Allocator1>& x,
-			const Vector<double, Vect_Full, Allocator2>& b,
+			Vector<double, VectFull, Allocator1>& x,
+			const Vector<double, VectFull, Allocator2>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -7682,7 +7682,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('T'); char diag('N');
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7696,8 +7696,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<float>, Prop0, RowLoTriang,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   const Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7710,7 +7710,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('T'); char diag('N');
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     ctrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -7724,8 +7724,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<double>, Prop0, RowLoTriang,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   const Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7738,7 +7738,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('T'); char diag('N');
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     ztrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(), &m,
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -7756,8 +7756,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<float, Prop0, RowLoTriang,
 		   Allocator0>& A,
-		   Vector<float, Vect_Full, Allocator1>& x,
-		   const Vector<float, Vect_Full, Allocator2>& b,
+		   Vector<float, VectFull, Allocator1>& x,
+		   const Vector<float, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7770,7 +7770,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     strrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7784,8 +7784,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<double, Prop0, RowLoTriang,
 		   Allocator0>& A,
-		   Vector<double, Vect_Full, Allocator1>& x,
-		   const Vector<double, Vect_Full, Allocator2>& b,
+		   Vector<double, VectFull, Allocator1>& x,
+		   const Vector<double, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7798,7 +7798,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtrrfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(), &m,
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7813,8 +7813,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<float>, Prop0, RowLoTriang,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7827,7 +7827,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     if (TransA.ConjTrans())
       {
@@ -7852,8 +7852,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<double>, Prop0, RowLoTriang,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7866,7 +7866,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     if (TransA.ConjTrans())
       {
@@ -7892,8 +7892,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<float, Prop0, RowUpTriangPacked,
 			Allocator0>& A,
-			Vector<float, Vect_Full, Allocator1>& x,
-			const Vector<float, Vect_Full, Allocator2>& b,
+			Vector<float, VectFull, Allocator1>& x,
+			const Vector<float, VectFull, Allocator2>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -7906,7 +7906,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('T'); char diag('N');
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7918,8 +7918,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<double, Prop0, RowUpTriangPacked,
 			Allocator0>& A,
-			Vector<double, Vect_Full, Allocator1>& x,
-			const Vector<double, Vect_Full, Allocator2>& b,
+			Vector<double, VectFull, Allocator1>& x,
+			const Vector<double, VectFull, Allocator2>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -7932,7 +7932,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('T'); char diag('N');
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -7946,8 +7946,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<float>, Prop0, RowUpTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   const Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7960,7 +7960,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('T'); char diag('N');
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -7974,8 +7974,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<double>, Prop0, RowUpTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   const Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -7988,7 +7988,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans('T'); char diag('N');
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -8006,8 +8006,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<float, Prop0, RowUpTriangPacked,
 		   Allocator0>& A,
-		   Vector<float, Vect_Full, Allocator1>& x,
-		   const Vector<float, Vect_Full, Allocator2>& b,
+		   Vector<float, VectFull, Allocator1>& x,
+		   const Vector<float, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -8020,7 +8020,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -8034,8 +8034,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<double, Prop0, RowUpTriangPacked,
 		   Allocator0>& A,
-		   Vector<double, Vect_Full, Allocator1>& x,
-		   const Vector<double, Vect_Full, Allocator2>& b,
+		   Vector<double, VectFull, Allocator1>& x,
+		   const Vector<double, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -8048,7 +8048,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -8063,8 +8063,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<float>, Prop0, RowUpTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -8077,7 +8077,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     if (TransA.ConjTrans())
       {
@@ -8102,8 +8102,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<double>, Prop0, RowUpTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -8116,7 +8116,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('L');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     if (TransA.ConjTrans())
       {
@@ -8142,8 +8142,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<float, Prop0, RowLoTriangPacked,
 			Allocator0>& A,
-			Vector<float, Vect_Full, Allocator1>& x,
-			const Vector<float, Vect_Full, Allocator2>& b,
+			Vector<float, VectFull, Allocator1>& x,
+			const Vector<float, VectFull, Allocator2>& b,
 			float& ferr, float& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -8156,7 +8156,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('T'); char diag('N');
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -8168,8 +8168,8 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void RefineSolutionLU(const Matrix<double, Prop0, RowLoTriangPacked,
 			Allocator0>& A,
-			Vector<double, Vect_Full, Allocator1>& x,
-			const Vector<double, Vect_Full, Allocator2>& b,
+			Vector<double, VectFull, Allocator1>& x,
+			const Vector<double, VectFull, Allocator2>& b,
 			double& ferr, double& berr,
 			LapackInfo& info = lapack_info)
   {
@@ -8182,7 +8182,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('T'); char diag('N');
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -8196,8 +8196,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<float>, Prop0, RowLoTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   const Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -8210,7 +8210,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('T'); char diag('N');
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     ctprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -8224,8 +8224,8 @@ namespace Seldon
   void
   RefineSolutionLU(const Matrix<complex<double>, Prop0, RowLoTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   const Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -8238,7 +8238,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans('T'); char diag('N');
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     ztprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetDataVoid(),
 	    b.GetDataVoid(), &m, x.GetDataVoid(), &m,
@@ -8256,8 +8256,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<float, Prop0, RowLoTriangPacked,
 		   Allocator0>& A,
-		   Vector<float, Vect_Full, Allocator1>& x,
-		   const Vector<float, Vect_Full, Allocator2>& b,
+		   Vector<float, VectFull, Allocator1>& x,
+		   const Vector<float, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -8270,7 +8270,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<float, Vect_Full, Allocator1> work(3*m);
+    Vector<float, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     stprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -8284,8 +8284,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<double, Prop0, RowLoTriangPacked,
 		   Allocator0>& A,
-		   Vector<double, Vect_Full, Allocator1>& x,
-		   const Vector<double, Vect_Full, Allocator2>& b,
+		   Vector<double, VectFull, Allocator1>& x,
+		   const Vector<double, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -8298,7 +8298,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<double, Vect_Full, Allocator1> work(3*m);
+    Vector<double, VectFull, Allocator1> work(3*m);
     Vector<int> iwork(m);
     dtprfs_(&uplo, &trans, &diag, &m, &nrhs, A.GetData(),
 	    b.GetData(), &m, x.GetData(), &m,
@@ -8313,8 +8313,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<float>, Prop0, RowLoTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<float>, Vect_Full, Allocator1>& x,
-		   Vector<complex<float>, Vect_Full, Allocator2>& b,
+		   Vector<complex<float>, VectFull, Allocator1>& x,
+		   Vector<complex<float>, VectFull, Allocator2>& b,
 		   float& ferr, float& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -8327,7 +8327,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<complex<float>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<float>, VectFull, Allocator1> work(2*m);
     Vector<float> rwork(m);
     if (TransA.ConjTrans())
       {
@@ -8352,8 +8352,8 @@ namespace Seldon
   RefineSolutionLU(const SeldonTranspose& TransA, const SeldonDiag& DiagA,
 		   const Matrix<complex<double>, Prop0, RowLoTriangPacked,
 		   Allocator0>& A,
-		   Vector<complex<double>, Vect_Full, Allocator1>& x,
-		   Vector<complex<double>, Vect_Full, Allocator2>& b,
+		   Vector<complex<double>, VectFull, Allocator1>& x,
+		   Vector<complex<double>, VectFull, Allocator2>& b,
 		   double& ferr, double& berr,
 		   LapackInfo& info = lapack_info)
   {
@@ -8366,7 +8366,7 @@ namespace Seldon
     int nrhs = 1;
     char uplo('U');
     char trans = TransA.RevChar(); char diag = DiagA.Char();
-    Vector<complex<double>, Vect_Full, Allocator1> work(2*m);
+    Vector<complex<double>, VectFull, Allocator1> work(2*m);
     Vector<double> rwork(m);
     if (TransA.ConjTrans())
       {
@@ -8402,8 +8402,8 @@ namespace Seldon
 		  LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<float, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<float, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     sgetri_(&m, A.GetData(), &m, pivot.GetData(), work.GetData(), &m,
 	    &info.GetInfoRef());
@@ -8422,8 +8422,8 @@ namespace Seldon
 		  LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<double, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<double, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     dgetri_(&m, A.GetData(), &m, pivot.GetData(), work.GetData(), &m,
 	    &info.GetInfoRef());
@@ -8442,8 +8442,8 @@ namespace Seldon
 		  LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<float>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     cgetri_(&m, A.GetDataVoid(), &m, pivot.GetData(),
 	    work.GetDataVoid(), &m, &info.GetInfoRef());
@@ -8462,8 +8462,8 @@ namespace Seldon
 		  LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<double>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zgetri_(&m, A.GetDataVoid(), &m, pivot.GetData(),
 	    work.GetDataVoid(), &m, &info.GetInfoRef());
@@ -8485,8 +8485,8 @@ namespace Seldon
 		  LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<float, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<float, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     sgetri_(&m, A.GetData(), &m, pivot.GetData(), work.GetData(), &m,
 	    &info.GetInfoRef());
@@ -8505,8 +8505,8 @@ namespace Seldon
 		  LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<double, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<double, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     dgetri_(&m, A.GetData(), &m, pivot.GetData(), work.GetData(), &m,
 	    &info.GetInfoRef());
@@ -8525,8 +8525,8 @@ namespace Seldon
 		  LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<float>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     cgetri_(&m, A.GetDataVoid(), &m, pivot.GetData(),
 	    work.GetDataVoid(), &m, &info.GetInfoRef());
@@ -8545,8 +8545,8 @@ namespace Seldon
 		  LapackInfo& info = lapack_info)
   {
     int m = A.GetM();
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<double>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zgetri_(&m, A.GetDataVoid(), &m, pivot.GetData(),
 	    work.GetDataVoid(), &m, &info.GetInfoRef());
@@ -8569,8 +8569,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<float, Vect_Full, Allocator0> work(2*m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<float, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     ssytri_(&uplo, &m, A.GetData(), &m, pivot.GetData(), work.GetData(),
 	    &info.GetInfoRef());
@@ -8590,8 +8590,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<double, Vect_Full, Allocator0> work(2*m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<double, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     dsytri_(&uplo, &m, A.GetData(), &m, pivot.GetData(), work.GetData(),
 	    &info.GetInfoRef());
@@ -8611,8 +8611,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<float>, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     csytri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -8632,8 +8632,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<double>, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     zsytri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -8656,8 +8656,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<float, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<float, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     ssptri_(&uplo, &m, A.GetData(), pivot.GetData(), work.GetData(),
 	    &info.GetInfoRef());
@@ -8677,8 +8677,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<double, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<double, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     dsptri_(&uplo, &m, A.GetData(), pivot.GetData(), work.GetData(),
 	    &info.GetInfoRef());
@@ -8698,8 +8698,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<float>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     csptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -8719,8 +8719,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<double>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zsptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -8743,8 +8743,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<float, Vect_Full, Allocator0> work(2*m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<float, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     ssytri_(&uplo, &m, A.GetData(), &m, pivot.GetData(), work.GetData(),
 	    &info.GetInfoRef());
@@ -8764,8 +8764,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<double, Vect_Full, Allocator0> work(2*m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<double, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     dsytri_(&uplo, &m, A.GetData(), &m, pivot.GetData(), work.GetData(),
 	    &info.GetInfoRef());
@@ -8785,8 +8785,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<float>, Vect_Full, Allocator0> work(2*m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<float>, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     csytri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -8806,8 +8806,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<double>, Vect_Full, Allocator0> work(2*m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<double>, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     zsytri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -8830,8 +8830,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<float, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<float, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     ssptri_(&uplo, &m, A.GetData(), pivot.GetData(), work.GetData(),
 	    &info.GetInfoRef());
@@ -8851,8 +8851,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<double, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<double, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     dsptri_(&uplo, &m, A.GetData(), pivot.GetData(), work.GetData(),
 	    &info.GetInfoRef());
@@ -8872,8 +8872,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<float>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     csptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -8893,8 +8893,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<double>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zsptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -8917,8 +8917,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<float>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     chetri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -8938,8 +8938,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<double>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zhetri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -8963,8 +8963,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<float>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     chptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -8985,8 +8985,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<double>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zhptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -9009,8 +9009,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<float>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     chetri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -9030,8 +9030,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<double>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zhetri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -9055,8 +9055,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<float>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     chptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -9077,8 +9077,8 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, Vect_Full, CallocAlloc<int> > pivot;
-    Vector<complex<double>, Vect_Full, Allocator0> work(m);
+    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zhptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
 	    work.GetDataVoid(), &info.GetInfoRef());
@@ -10335,8 +10335,8 @@ namespace Seldon
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2>
   void GetScalingFactors(const Matrix<float, Prop0, ColMajor, Allocator0>& A,
-			 Vector<float, Vect_Full, Allocator1>& row_scale,
-			 Vector<float, Vect_Full, Allocator2>& col_scale,
+			 Vector<float, VectFull, Allocator1>& row_scale,
+			 Vector<float, VectFull, Allocator2>& col_scale,
 			 float& row_condition_number,
 			 float& col_condition_number, float& amax,
 			 LapackInfo& info = lapack_info)
@@ -10358,8 +10358,8 @@ namespace Seldon
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2>
   void GetScalingFactors(const Matrix<double, Prop0, ColMajor, Allocator0>& A,
-			 Vector<double, Vect_Full, Allocator1>& row_scale,
-			 Vector<double, Vect_Full, Allocator2>& col_scale,
+			 Vector<double, VectFull, Allocator1>& row_scale,
+			 Vector<double, VectFull, Allocator2>& col_scale,
 			 double& row_condition_number,
 			 double& col_condition_number, double& amax,
 			 LapackInfo& info = lapack_info)
@@ -10382,8 +10382,8 @@ namespace Seldon
 	   class Allocator1, class Allocator2>
   void GetScalingFactors(const Matrix<complex<float>, Prop0, ColMajor,
 			 Allocator0>& A,
-			 Vector<float, Vect_Full, Allocator1>& row_scale,
-			 Vector<float, Vect_Full, Allocator2>& col_scale,
+			 Vector<float, VectFull, Allocator1>& row_scale,
+			 Vector<float, VectFull, Allocator2>& col_scale,
 			 float& row_condition_number,
 			 float& col_condition_number, float& amax,
 			 LapackInfo& info = lapack_info)
@@ -10406,8 +10406,8 @@ namespace Seldon
 	   class Allocator1, class Allocator2>
   void GetScalingFactors(const Matrix<complex<double>, Prop0, ColMajor,
 			 Allocator0>& A,
-			 Vector<double, Vect_Full, Allocator1>& row_scale,
-			 Vector<double, Vect_Full, Allocator2>& col_scale,
+			 Vector<double, VectFull, Allocator1>& row_scale,
+			 Vector<double, VectFull, Allocator2>& col_scale,
 			 double& row_condition_number,
 			 double& col_condition_number, double& amax,
 			 LapackInfo& info = lapack_info)
@@ -10432,8 +10432,8 @@ namespace Seldon
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2>
   void GetScalingFactors(const Matrix<float, Prop0, RowMajor, Allocator0>& A,
-			 Vector<float, Vect_Full, Allocator1>& row_scale,
-			 Vector<float, Vect_Full, Allocator2>& col_scale,
+			 Vector<float, VectFull, Allocator1>& row_scale,
+			 Vector<float, VectFull, Allocator2>& col_scale,
 			 float& row_condition_number,
 			 float& col_condition_number, float& amax,
 			 LapackInfo& info = lapack_info)
@@ -10455,8 +10455,8 @@ namespace Seldon
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2>
   void GetScalingFactors(const Matrix<double, Prop0, RowMajor, Allocator0>& A,
-			 Vector<double, Vect_Full, Allocator1>& row_scale,
-			 Vector<double, Vect_Full, Allocator2>& col_scale,
+			 Vector<double, VectFull, Allocator1>& row_scale,
+			 Vector<double, VectFull, Allocator2>& col_scale,
 			 double& row_condition_number,
 			 double& col_condition_number, double& amax,
 			 LapackInfo& info = lapack_info)
@@ -10479,8 +10479,8 @@ namespace Seldon
 	   class Allocator1, class Allocator2>
   void GetScalingFactors(const Matrix<complex<float>, Prop0, RowMajor,
 			 Allocator0>& A,
-			 Vector<float, Vect_Full, Allocator1>& row_scale,
-			 Vector<float, Vect_Full, Allocator2>& col_scale,
+			 Vector<float, VectFull, Allocator1>& row_scale,
+			 Vector<float, VectFull, Allocator2>& col_scale,
 			 float& row_condition_number,
 			 float& col_condition_number, float& amax,
 			 LapackInfo& info = lapack_info)
@@ -10503,8 +10503,8 @@ namespace Seldon
 	   class Allocator1, class Allocator2>
   void GetScalingFactors(const Matrix<complex<double>, Prop0, RowMajor,
 			 Allocator0>& A,
-			 Vector<double, Vect_Full, Allocator1>& row_scale,
-			 Vector<double, Vect_Full, Allocator2>& col_scale,
+			 Vector<double, VectFull, Allocator1>& row_scale,
+			 Vector<double, VectFull, Allocator2>& col_scale,
 			 double& row_condition_number,
 			 double& col_condition_number, double& amax,
 			 LapackInfo& info = lapack_info)
@@ -10532,8 +10532,8 @@ namespace Seldon
   template<class T, class Prop, class Storage, class Allocator,
 	   class Allocator1, class Allocator2>
   void GetAndSolveLU(Matrix<T, Prop, Storage, Allocator>& A,
-		     Vector<int, Vect_Full, Allocator1>& P,
-		     Vector<T, Vect_Full, Allocator2>& b,
+		     Vector<int, VectFull, Allocator1>& P,
+		     Vector<T, VectFull, Allocator2>& b,
 		     LapackInfo& info = lapack_info)
   {
     GetLU(A, P, info);

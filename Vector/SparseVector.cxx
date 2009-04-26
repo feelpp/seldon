@@ -35,8 +35,8 @@ namespace Seldon
     On exit, the vector is empty.
   */
   template <class T, class Allocator>
-  Vector<T, Vect_Sparse, Allocator>::Vector()  throw():
-    Vector<T, Vect_Full, Allocator>()
+  Vector<T, VectSparse, Allocator>::Vector()  throw():
+    Vector<T, VectFull, Allocator>()
   {
     index_ = NULL;
   }
@@ -47,8 +47,8 @@ namespace Seldon
     \param i length of the vector.
   */
   template <class T, class Allocator>
-  Vector<T, Vect_Sparse, Allocator>::Vector(int i):
-    Vector<T, Vect_Full, Allocator>(i)
+  Vector<T, VectSparse, Allocator>::Vector(int i):
+    Vector<T, VectFull, Allocator>(i)
   {
     
 #ifdef SELDON_CHECK_MEMORY
@@ -74,7 +74,7 @@ namespace Seldon
       }
     
     if (this->data_ == NULL && i != 0)
-      throw NoMemory("Vector<Vect_Sparse>::Vector(int)",
+      throw NoMemory("Vector<VectSparse>::Vector(int)",
 		     string("Unable to allocate memory for a vector of size ")
 		     + to_str(i * sizeof(T)) + " bytes ("
 		     + to_str(i) + " elements).");
@@ -88,9 +88,9 @@ namespace Seldon
     \param V vector to be copied.
   */
   template <class T, class Allocator>
-  Vector<T, Vect_Sparse, Allocator>::
-  Vector(const Vector<T, Vect_Sparse, Allocator>& V) :
-    Vector<T, Vect_Full, Allocator>()
+  Vector<T, VectSparse, Allocator>::
+  Vector(const Vector<T, VectSparse, Allocator>& V) :
+    Vector<T, VectFull, Allocator>()
   {
     this->index_ = NULL;
     Copy(V);
@@ -104,7 +104,7 @@ namespace Seldon
   
   //! Destructor.
   template <class T, class Allocator>
-  Vector<T, Vect_Sparse, Allocator>::~Vector()
+  Vector<T, VectSparse, Allocator>::~Vector()
   {
     // 'data_' is released.
 #ifdef SELDON_CHECK_MEMORY
@@ -150,7 +150,7 @@ namespace Seldon
     \warning On exit, the vector is an empty vector.
   */
   template <class T, class Allocator>
-  inline void Vector<T, Vect_Sparse, Allocator>::Clear()
+  inline void Vector<T, VectSparse, Allocator>::Clear()
   {
     this->~Vector();
   }
@@ -164,7 +164,7 @@ namespace Seldon
     lost.
   */
   template <class T, class Allocator>
-  inline void Vector<T, Vect_Sparse, Allocator>::Reallocate(int i)
+  inline void Vector<T, VectSparse, Allocator>::Reallocate(int i)
   {
     
     if (i != this->m_)
@@ -213,13 +213,13 @@ namespace Seldon
     \param n new number of non-zero entries of the vector.
   */
   template <class T, class Allocator>
-  inline void Vector<T, Vect_Sparse, Allocator>::Resize(int n)
+  inline void Vector<T, VectSparse, Allocator>::Resize(int n)
   {
     
     if (n == this->m_)
       return;
     
-    Vector<T, Vect_Full, Allocator> new_value(n);
+    Vector<T, VectFull, Allocator> new_value(n);
     Vector<int> new_index(n);
     int Nmin = min(this->m_, n);
     for (int i = 0; i < Nmin; i++)
@@ -249,7 +249,7 @@ namespace Seldon
     \note This method should only be used by advanced users.
   */
   template <class T, class Allocator>
-  inline void Vector<T, Vect_Sparse, Allocator>
+  inline void Vector<T, VectSparse, Allocator>
   ::SetData(int i, T* data, int* index)
   {
     this->Clear();
@@ -274,13 +274,13 @@ namespace Seldon
   */
   template <class T, class Allocator>
   template<class Allocator2>
-  void Vector<T, Vect_Sparse, Allocator>
-  ::SetData(Vector<T, Vect_Full, Allocator2>& data, Vector<int>& index)
+  void Vector<T, VectSparse, Allocator>
+  ::SetData(Vector<T, VectFull, Allocator2>& data, Vector<int>& index)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
     if (data.GetM() != index.GetM())
-      throw WrongDim("Vector<Vect_Sparse>::SetData ",
+      throw WrongDim("Vector<VectSparse>::SetData ",
 		     string("The data vector and the index vector should")
 		     + " have the same size.\n  Size of the data vector: "
 		     + to_str(data.GetM()) + "\n  Size of index vector: "
@@ -299,7 +299,7 @@ namespace Seldon
     \warning Memory is not released.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::Nullify()
+  void Vector<T, VectSparse, Allocator>::Nullify()
   {
     this->m_ = 0;
     this->data_ = NULL;
@@ -318,13 +318,13 @@ namespace Seldon
     \return The value of the non-zero element #\a i.
   */
   template <class T, class Allocator>
-  inline typename Vector<T, Vect_Sparse, Allocator>::reference
-  Vector<T, Vect_Sparse, Allocator>::Value(int i)
+  inline typename Vector<T, VectSparse, Allocator>::reference
+  Vector<T, VectSparse, Allocator>::Value(int i)
   {
     
 #ifdef SELDON_CHECK_BOUNDARIES
     if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<Vect_Sparse>::Value(int)",
+      throw WrongIndex("Vector<VectSparse>::Value(int)",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
@@ -339,13 +339,13 @@ namespace Seldon
     \return The value of the non-zero element #\a i.
   */
   template <class T, class Allocator>
-  inline typename Vector<T, Vect_Sparse, Allocator>::const_reference
-  Vector<T, Vect_Sparse, Allocator>::Value(int i) const
+  inline typename Vector<T, VectSparse, Allocator>::const_reference
+  Vector<T, VectSparse, Allocator>::Value(int i) const
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
     if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<Vect_Sparse>::Value(int)",
+      throw WrongIndex("Vector<VectSparse>::Value(int)",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
@@ -360,12 +360,12 @@ namespace Seldon
     \return The index of the non-zero element #\a i.
   */
   template <class T, class Allocator>
-  inline int& Vector<T, Vect_Sparse, Allocator>::Index(int i)
+  inline int& Vector<T, VectSparse, Allocator>::Index(int i)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
     if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<Vect_Sparse>::Index(int)",
+      throw WrongIndex("Vector<VectSparse>::Index(int)",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
@@ -380,12 +380,12 @@ namespace Seldon
     \return The row number of the non-zero element #\a i.
   */
   template <class T, class Allocator>
-  inline int Vector<T, Vect_Sparse, Allocator>::Index(int i) const
+  inline int Vector<T, VectSparse, Allocator>::Index(int i) const
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
     if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<Vect_Sparse>::Index(int)",
+      throw WrongIndex("Vector<VectSparse>::Index(int)",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
@@ -400,8 +400,8 @@ namespace Seldon
     \return The value of the vector at \a i.
   */
   template <class T, class Allocator>
-  inline typename Vector<T, Vect_Sparse, Allocator>::reference
-  Vector<T, Vect_Sparse, Allocator>::operator() (int i)
+  inline typename Vector<T, VectSparse, Allocator>::reference
+  Vector<T, VectSparse, Allocator>::operator() (int i)
   {
     int k = 0;
     // Searching for the entry.
@@ -422,8 +422,8 @@ namespace Seldon
     \return The value of the vector at \a i.
   */
   template <class T, class Allocator>
-  inline typename Vector<T, Vect_Sparse, Allocator>::value_type
-  Vector<T, Vect_Sparse, Allocator>::operator() (int i) const
+  inline typename Vector<T, VectSparse, Allocator>::value_type
+  Vector<T, VectSparse, Allocator>::operator() (int i) const
   {
     int k = 0;
     // Searching for the entry.
@@ -445,8 +445,8 @@ namespace Seldon
     instance after the copy.
   */
   template <class T, class Allocator>
-  inline Vector<T, Vect_Sparse, Allocator>& Vector<T, Vect_Sparse, Allocator>
-  ::operator= (const Vector<T, Vect_Sparse, Allocator>& X)
+  inline Vector<T, VectSparse, Allocator>& Vector<T, VectSparse, Allocator>
+  ::operator= (const Vector<T, VectSparse, Allocator>& X)
   {
     this->Copy(X);
 
@@ -461,8 +461,8 @@ namespace Seldon
     instance after the copy.
   */
   template <class T, class Allocator>
-  inline void Vector<T, Vect_Sparse, Allocator>
-  ::Copy(const Vector<T, Vect_Sparse, Allocator>& X)
+  inline void Vector<T, VectSparse, Allocator>
+  ::Copy(const Vector<T, VectSparse, Allocator>& X)
   {
     this->Reallocate(X.GetLength());
     
@@ -482,7 +482,7 @@ namespace Seldon
     \return A pointer to the array of the indices of the non-zero entries.
   */
   template <class T, class Allocator>
-  int* Vector<T, Vect_Sparse, Allocator>::GetIndex() const
+  int* Vector<T, VectSparse, Allocator>::GetIndex() const
   {
     return this->index_;
   }
@@ -499,8 +499,8 @@ namespace Seldon
   */
   template <class T, class Allocator>
   template <class T0>
-  Vector<T, Vect_Sparse, Allocator>&
-  Vector<T, Vect_Sparse, Allocator>::operator= (const T0& x)
+  Vector<T, VectSparse, Allocator>&
+  Vector<T, VectSparse, Allocator>::operator= (const T0& x)
   {
     this->Fill(x);
 
@@ -510,7 +510,7 @@ namespace Seldon
   
   //! Displays the vector.
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::Print() const
+  void Vector<T, VectSparse, Allocator>::Print() const
   {
     for (int i = 0; i < this->GetLength(); i++)
       cout << (Index(i) + 1) << ' ' << Value(i) << '\n';
@@ -523,10 +523,10 @@ namespace Seldon
     that method.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::Assemble()
+  void Vector<T, VectSparse, Allocator>::Assemble()
   {
     int new_size = this->m_;
-    Vector<T, Vect_Full, Allocator> values(new_size);
+    Vector<T, VectFull, Allocator> values(new_size);
     Vector<int> index(new_size);
     for (int i = 0; i < new_size; i++)
       {
@@ -547,10 +547,10 @@ namespace Seldon
     \param epsilon the threshold value.
   */
   template <class T, class Allocator> template<class T0>
-  void Vector<T, Vect_Sparse, Allocator>::RemoveSmallEntry(const T0& epsilon)
+  void Vector<T, VectSparse, Allocator>::RemoveSmallEntry(const T0& epsilon)
   {
     int new_size = this->m_;
-    Vector<T, Vect_Full, Allocator> values(new_size);
+    Vector<T, VectFull, Allocator> values(new_size);
     Vector<int> index(new_size);
     new_size = 0;
     for (int i = 0; i < this->m_; i++)
@@ -574,7 +574,7 @@ namespace Seldon
     \param[in] val value to be added to the vector component \a i.
   */
   template <class T, class Allocator> inline
-  void Vector<T, Vect_Sparse, Allocator>::AddInteraction(int i, const T& val)
+  void Vector<T, VectSparse, Allocator>::AddInteraction(int i, const T& val)
   {
     // Searching for the position where the entry may be.
     int pos = 0;
@@ -591,7 +591,7 @@ namespace Seldon
     int k;
 
     // If the entry does not exist, the vector is reallocated.
-    Vector<T, Vect_Full, Allocator> new_val(this->m_ + 1);
+    Vector<T, VectFull, Allocator> new_val(this->m_ + 1);
     Vector<int> new_ind(this->m_ + 1);
     for (k = 0; k < pos; k++)
       {
@@ -625,11 +625,11 @@ namespace Seldon
     \param[in] already_sorted true if the indices are already sorted.
   */
   template <class T, class Allocator> inline
-  void Vector<T, Vect_Sparse, Allocator>::
+  void Vector<T, VectSparse, Allocator>::
   AddInteractionRow(int n, int* index, T* value, bool already_sorted = false)
   {
     Vector<int> ind;
-    Vector<T, Vect_Full, Allocator> val;
+    Vector<T, VectFull, Allocator> val;
     ind.SetData(n, index);
     val.SetData(n, value);
     AddInteractionRow(n, ind, val, already_sorted);
@@ -650,9 +650,9 @@ namespace Seldon
   */
   template <class T, class Allocator>
   template<class Allocator0>
-  void Vector<T, Vect_Sparse, Allocator>::
+  void Vector<T, VectSparse, Allocator>::
   AddInteractionRow(int n, Vector<int> index,
-		    Vector<T, Vect_Full, Allocator0> value,
+		    Vector<T, VectFull, Allocator0> value,
 		    bool already_sorted = false)
   {
     if (!already_sorted)
@@ -730,7 +730,7 @@ namespace Seldon
     \param FileName file name.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::Write(string FileName) const
+  void Vector<T, VectSparse, Allocator>::Write(string FileName) const
   {
     ofstream FileStream;
     FileStream.open(FileName.c_str());
@@ -738,7 +738,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Vector<Vect_Sparse>::Write(string FileName)",
+      throw IOError("Vector<VectSparse>::Write(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
@@ -755,13 +755,13 @@ namespace Seldon
     \param stream stream in which the vector is to be written.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::Write(ostream& stream) const
+  void Vector<T, VectSparse, Allocator>::Write(ostream& stream) const
   {
 
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!stream.good())
-      throw IOError("Vector<Vect_Sparse>::Write(ostream& stream)",
+      throw IOError("Vector<VectSparse>::Write(ostream& stream)",
                     "Stream is not ready.");
 #endif
 
@@ -777,7 +777,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!stream.good())
-      throw IOError("Vector<Vect_Sparse>::Write(ostream& stream)",
+      throw IOError("Vector<VectSparse>::Write(ostream& stream)",
                     "Output operation failed.");
 #endif
 
@@ -791,7 +791,7 @@ namespace Seldon
     \param FileName file name.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::WriteText(string FileName) const
+  void Vector<T, VectSparse, Allocator>::WriteText(string FileName) const
   {
     ofstream FileStream;
     FileStream.precision(cout.precision());
@@ -801,7 +801,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Vector<Vect_Sparse>::WriteText(string FileName)",
+      throw IOError("Vector<VectSparse>::WriteText(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
     
@@ -818,13 +818,13 @@ namespace Seldon
     \param stream stream in which the vector is to be written.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::WriteText(ostream& stream) const
+  void Vector<T, VectSparse, Allocator>::WriteText(ostream& stream) const
   {
 
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!stream.good())
-      throw IOError("Vector<Vect_Sparse>::WriteText(ostream& stream)",
+      throw IOError("Vector<VectSparse>::WriteText(ostream& stream)",
                     "Stream is not ready.");
 #endif
     
@@ -840,7 +840,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!stream.good())
-      throw IOError("Vector<Vect_Sparse>::WriteText(ostream& stream)",
+      throw IOError("Vector<VectSparse>::WriteText(ostream& stream)",
                     "Output operation failed.");
 #endif
     
@@ -853,7 +853,7 @@ namespace Seldon
     \param FileName file name.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::Read(string FileName)
+  void Vector<T, VectSparse, Allocator>::Read(string FileName)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -861,7 +861,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Vector<Vect_Sparse>::Read(string FileName)",
+      throw IOError("Vector<VectSparse>::Read(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
@@ -877,13 +877,13 @@ namespace Seldon
     \param stream stream from which to read the vector values.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::Read(istream& stream)
+  void Vector<T, VectSparse, Allocator>::Read(istream& stream)
   {
 
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!stream.good())
-      throw IOError("Vector<Vect_Sparse>::Read(istream& stream)",
+      throw IOError("Vector<VectSparse>::Read(istream& stream)",
                     "Stream is not ready.");
 #endif
 
@@ -899,7 +899,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.
     if (!stream.good())
-      throw IOError("Vector<Vect_Sparse>::Read(istream& stream)",
+      throw IOError("Vector<VectSparse>::Read(istream& stream)",
                     "Output operation failed.");
 #endif
 
@@ -912,7 +912,7 @@ namespace Seldon
     \param FileName file name.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::ReadText(string FileName)
+  void Vector<T, VectSparse, Allocator>::ReadText(string FileName)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -920,7 +920,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Vector<Vect_Sparse>::ReadText(string FileName)",
+      throw IOError("Vector<VectSparse>::ReadText(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
@@ -936,18 +936,18 @@ namespace Seldon
     \param stream stream from which to read the vector values.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Sparse, Allocator>::ReadText(istream& stream)
+  void Vector<T, VectSparse, Allocator>::ReadText(istream& stream)
   {
     Clear();
     
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!stream.good())
-      throw IOError("Vector<Vect_Sparse>::ReadText(istream& stream)",
+      throw IOError("Vector<VectSparse>::ReadText(istream& stream)",
                     "Stream is not ready.");
 #endif
     
-    Vector<T, Vect_Full, Allocator> values;
+    Vector<T, VectFull, Allocator> values;
     Vector<int> index;
     T entry;
     int ind = 0;
@@ -963,7 +963,7 @@ namespace Seldon
 	  {
 #ifdef SELDON_CHECK_IO
 	    if (ind < 1)
-	      throw IOError(string("Vector<Vect_Sparse>::ReadText") +
+	      throw IOError(string("Vector<VectSparse>::ReadText") +
 			    "(istream& stream)",
 			    string("Index should be greater ")
 			    + "than 0 but is equal to " + to_str(ind) + ".");
@@ -1005,7 +1005,7 @@ namespace Seldon
   */
   template <class T, class Allocator>
   ostream& operator << (ostream& out,
-			const Vector<T, Vect_Sparse, Allocator>& V)
+			const Vector<T, VectSparse, Allocator>& V)
   {
     for (int i = 0; i < V.GetLength(); i++)
       out << (V.Index(i) + 1) << ' ' << V.Value(i) << '\n';

@@ -87,7 +87,7 @@ int main(int argc, char** argv)
     double* value_ptr = A.GetData(2);
     cout << "First value " << value_ptr[0] << endl;
     // you can fill a sparse vectors with pointer, then you call Nullify
-    Vector<double, Vect_Sparse> row_vec;
+    Vector<double, VectSparse> row_vec;
     row_vec.SetData(A.GetRowSize(2), value_ptr, row_ptr);
     // Nullify is necessary to avoid duplicate release of memory
     A.Nullify(2);
@@ -196,7 +196,7 @@ int main(int argc, char** argv)
     double* value_ptr = A.GetData(2);
     cout << "First value " << value_ptr[0] << endl;
     // you can fill a sparse vectors with pointer, then you call Nullify
-    Vector<double, Vect_Sparse> row_vec;
+    Vector<double, VectSparse> row_vec;
     row_vec.SetData(A.GetRowSize(2), value_ptr, row_ptr);
     // Nullify is necessary to avoid duplicate release of memory
     A.Nullify(2);

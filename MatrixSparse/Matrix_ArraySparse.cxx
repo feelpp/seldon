@@ -114,8 +114,8 @@ namespace Seldon
     int new_n = Storage::GetFirst(i, j);
     if (n != new_n)
       {
-	Vector<Vector<T, Vect_Sparse, Allocator>, Vect_Full,
-	  NewAlloc<Vector<T, Vect_Sparse, Allocator> > > new_val;
+	Vector<Vector<T, VectSparse, Allocator>, VectFull,
+	  NewAlloc<Vector<T, VectSparse, Allocator> > > new_val;
 	
 	new_val.Reallocate(new_n);
 	
@@ -254,7 +254,7 @@ namespace Seldon
     There is a different array for each row/column.
   */
   template <class T, class Prop, class Storage, class Allocat>
-  inline Vector<T, Vect_Sparse, Allocat>*
+  inline Vector<T, VectSparse, Allocat>*
   Matrix_ArraySparse<T, Prop, Storage, Allocat>::GetData() const
   {
     return val_.GetData();
@@ -465,7 +465,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-  SetData(int m, int n, Vector<T, Vect_Sparse, Allocator>* val)
+  SetData(int m, int n, Vector<T, VectSparse, Allocator>* val)
   {
     m_ = m;
     n_ = n;
@@ -840,7 +840,7 @@ namespace Seldon
                     "Stream is not ready.");
 #endif
     
-    Vector<T, Vect_Full, Allocator> values;
+    Vector<T, VectFull, Allocator> values;
     Vector<int> row_numbers, col_numbers;
     T entry; int row = 0, col;
     int nb_elt = 0;
@@ -1083,7 +1083,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<T, Vect_Full, Alloc1>& val)
+		    const Vector<T, VectFull, Alloc1>& val)
   {
     for (int j = 0; j < nb; j++)
       this->val_(col(j)).AddInteraction(i, val(j));
@@ -1100,7 +1100,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<T, Vect_Full, Alloc1>& val)
+		       const Vector<T, VectFull, Alloc1>& val)
   {
     this->val_(i).AddInteractionRow(nb, row, val);
   }
@@ -1294,7 +1294,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<T, Vect_Full, Alloc1>& val)
+		    const Vector<T, VectFull, Alloc1>& val)
   {
     this->val_(i).AddInteractionRow(nb, col, val);
   }
@@ -1310,7 +1310,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<T, Vect_Full, Alloc1>& val)
+		       const Vector<T, VectFull, Alloc1>& val)
   {
     for (int j = 0; j < nb; j++)
       this->val_(row(j)).AddInteraction(i, val(j));
@@ -1577,7 +1577,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<T, Vect_Full, Alloc1>& val)
+		    const Vector<T, VectFull, Alloc1>& val)
   {
     AddInteractionColumn(i, nb, col, val);
   }
@@ -1593,10 +1593,10 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<T, Vect_Full, Alloc1>& val)
+		       const Vector<T, VectFull, Alloc1>& val)
   {
     IVect new_row(nb);
-    Vector<T, Vect_Full, Alloc1> new_val(nb);
+    Vector<T, VectFull, Alloc1> new_val(nb);
     nb = 0;
     for (int j = 0; j < new_row.GetM(); j++)
       if (row(j) <= i)
@@ -1869,10 +1869,10 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<T, Vect_Full, Alloc1>& val)
+		    const Vector<T, VectFull, Alloc1>& val)
   {
     IVect new_col(nb);
-    Vector<T, Vect_Full, Alloc1> new_val(nb);
+    Vector<T, VectFull, Alloc1> new_val(nb);
     nb = 0;
     for (int j = 0; j < new_col.GetM(); j++)
       if (i <= col(j))
@@ -1895,7 +1895,7 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<T,Vect_Full,Alloc1>& val)
+		       const Vector<T,VectFull,Alloc1>& val)
   {
     // Symmetric matrix, row = column.
     AddInteractionRow(i, nb, row, val);

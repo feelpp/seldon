@@ -34,7 +34,7 @@ namespace Seldon
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, RowSparse,
 			       Allocator1>& A,
 			       IVect& IndRow, IVect& IndCol,
-			       Vector<T, Vect_Full, Allocator2>& Val,
+			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
     int i, j;
@@ -62,7 +62,7 @@ namespace Seldon
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ColSparse,
 			       Allocator1>& A,
 			       IVect& IndRow, IVect& IndCol,
-			       Vector<T, Vect_Full, Allocator2>& Val,
+			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
     int i, j;
@@ -90,7 +90,7 @@ namespace Seldon
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
 			       RowSymSparse, Allocator1>& A,
 			       IVect& IndRow, IVect& IndCol,
-			       Vector<T, Vect_Full, Allocator2>& Val,
+			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
     int i, j;
@@ -165,7 +165,7 @@ namespace Seldon
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
 			       ColSymSparse, Allocator1>& A,
 			       IVect& IndRow, IVect& IndCol,
-			       Vector<T, Vect_Full, Allocator2>& Val,
+			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
     int i, j;
@@ -246,7 +246,7 @@ namespace Seldon
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
 			       ArrayRowSparse, Allocator1>& A,
 			       IVect& IndRow, IVect& IndCol,
-			       Vector<T, Vect_Full, Allocator2>& Val,
+			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
     int i, j;
@@ -274,7 +274,7 @@ namespace Seldon
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
 			       ArrayColSparse, Allocator1>& A,
 			       IVect& IndRow, IVect& IndCol,
-			       Vector<T, Vect_Full, Allocator2>& Val,
+			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
     int i, j;
@@ -302,7 +302,7 @@ namespace Seldon
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
 			       ArrayRowSymSparse, Allocator1>& A,
 			       IVect& IndRow, IVect& IndCol,
-			       Vector<T, Vect_Full, Allocator2>& Val,
+			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
     int i, j;
@@ -377,7 +377,7 @@ namespace Seldon
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
 			       ArrayColSymSparse, Allocator1>& A,
 			       IVect& IndRow, IVect& IndCol,
-			       Vector<T, Vect_Full, Allocator2>& Val,
+			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
     int i, j;
@@ -455,7 +455,7 @@ namespace Seldon
   template<class T, class Prop, class Allocator>
   void
   ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
-				 Vector<T, Vect_Full, Allocator>& Val,
+				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop, RowSparse, Allocator>& A,
 				 int index = 0)
   {
@@ -499,7 +499,7 @@ namespace Seldon
   template<class T, class Prop, class Allocator>
   void
   ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
-				 Vector<T, Vect_Full, Allocator>& Val,
+				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop, ColSparse, Allocator>& A,
 				 int index = 0)
   {
@@ -543,7 +543,7 @@ namespace Seldon
   template<class T, class Prop, class Allocator>
   void
   ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
-				 Vector<T, Vect_Full, Allocator>& Val,
+				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop, RowSymSparse, Allocator>& A,
 				 int index = 0)
   {
@@ -611,7 +611,7 @@ namespace Seldon
   template<class T, class Prop, class Allocator>
   void
   ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
-				 Vector<T, Vect_Full, Allocator>& Val,
+				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop, ColSymSparse, Allocator>& A,
 				 int index = 0)
   {
@@ -684,7 +684,7 @@ namespace Seldon
   template<class T, class Prop, class Allocator>
   void
   ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
-				 Vector<T, Vect_Full, Allocator>& Val,
+				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop, ArrayRowSparse,
 				 Allocator>& A,
 				 int index = 0)
@@ -737,7 +737,7 @@ namespace Seldon
   template<class T, class Prop, class Allocator>
   void
   ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
-				 Vector<T, Vect_Full, Allocator>& Val,
+				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop, ArrayColSparse,
 				 Allocator>& A,
 				 int index = 0)
@@ -791,7 +791,7 @@ namespace Seldon
   template<class T, class Prop, class Allocator>
   void
   ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
-				 Vector<T, Vect_Full, Allocator>& Val,
+				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop,
 				 ArrayRowSymSparse, Allocator>& A,
 				 int index = 0)
@@ -869,7 +869,7 @@ namespace Seldon
   template<class T, class Prop, class Allocator>
   void
   ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
-				 Vector<T, Vect_Full, Allocator>& Val,
+				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop,
 				 ArrayColSymSparse, Allocator>& A,
 				 int index = 0)
@@ -961,7 +961,7 @@ namespace Seldon
     T* data_ = A.GetData();
     
     IVect Ptr(n+1), Ind(nnz);
-    Vector<T, Vect_Full, Alloc2> Val(nnz);
+    Vector<T, VectFull, Alloc2> Val(nnz);
     for (i = 0; i <= n; i++)
       Ptr(i) = ptr_[i];
     
@@ -1008,7 +1008,7 @@ namespace Seldon
     // 'Offset' will be used to get current positions of new entries.
     IVect Offset = Ptr;
     IVect Ind(nnz);
-    Vector<T, Vect_Full, Alloc2> Val(nnz);
+    Vector<T, VectFull, Alloc2> Val(nnz);
     
     // Loop over rows.
     for (i = 0; i < m; i++)
@@ -1065,7 +1065,7 @@ namespace Seldon
     // 'Offset' will be used to get current positions of new entries.
     IVect Offset = Ptr;
     IVect Ind(nnz);
-    Vector<T, Vect_Full, Alloc2> Val(nnz);
+    Vector<T, VectFull, Alloc2> Val(nnz);
     
     // Loop over rows.
     for (i = 0; i < m; i++)
@@ -1197,8 +1197,8 @@ namespace Seldon
     
     // Allocation of arrays for CSR format.
     Vector<T1> Val(nnz);
-    Vector<int, Vect_Full, CallocAlloc<int> > IndRow(m + 1);
-    Vector<int, Vect_Full, CallocAlloc<int> > IndCol(nnz);
+    Vector<int, VectFull, CallocAlloc<int> > IndRow(m + 1);
+    Vector<int, VectFull, CallocAlloc<int> > IndCol(nnz);
     
     int ind = 0;
     IndRow(0) = 0;

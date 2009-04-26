@@ -206,7 +206,7 @@ namespace Seldon
     On exit, the vector is empty.
   */
   template <class T, class Allocator>
-  Vector<T, Vect_Full, Allocator>::Vector()  throw():
+  Vector<T, VectFull, Allocator>::Vector()  throw():
     Vector_Base<T, Allocator>()
   {
   }
@@ -217,7 +217,7 @@ namespace Seldon
     \param i length of the vector.
   */
   template <class T, class Allocator>
-  Vector<T, Vect_Full, Allocator>::Vector(int i):
+  Vector<T, VectFull, Allocator>::Vector(int i):
     Vector_Base<T, Allocator>(i)
   {
 
@@ -238,7 +238,7 @@ namespace Seldon
     if (this->data_ == NULL)
       this->m_ = 0;
     if (this->data_ == NULL && i != 0)
-      throw NoMemory("Vector<Vect_Full>::Vector(int)",
+      throw NoMemory("Vector<VectFull>::Vector(int)",
 		     string("Unable to allocate memory for a vector of size ")
 		     + to_str(i*sizeof(T)) + " bytes ("
 		     + to_str(i) + " elements).");
@@ -252,8 +252,8 @@ namespace Seldon
     \param V vector to be copied.
   */
   template <class T, class Allocator>
-  Vector<T, Vect_Full, Allocator>::
-  Vector(const Vector<T, Vect_Full, Allocator>& V):
+  Vector<T, VectFull, Allocator>::
+  Vector(const Vector<T, VectFull, Allocator>& V):
     Vector_Base<T, Allocator>(V)
   {
       
@@ -274,7 +274,7 @@ namespace Seldon
     if (this->data_ == NULL)
       this->m_ = 0;
     if (this->data_ == NULL && V.GetM() != 0)
-      throw NoMemory("Vector<Vect_Full>::Vector(Vector<Vect_Full>&)",
+      throw NoMemory("Vector<VectFull>::Vector(Vector<VectFull>&)",
 		     string("Unable to allocate memory for a vector of size ")
 		     + to_str(V.GetM()*sizeof(T)) + " bytes ("
 		     + to_str(V.GetM()) + " elements).");
@@ -292,7 +292,7 @@ namespace Seldon
 
   //! Destructor.
   template <class T, class Allocator>
-  Vector<T, Vect_Full, Allocator>::~Vector()
+  Vector<T, VectFull, Allocator>::~Vector()
   {
   }
 
@@ -308,7 +308,7 @@ namespace Seldon
     \warning On exit, the vector is an empty vector.
   */
   template <class T, class Allocator>
-  inline void Vector<T, Vect_Full, Allocator>::Clear()
+  inline void Vector<T, VectFull, Allocator>::Clear()
   {
     this->~Vector();
   }
@@ -322,7 +322,7 @@ namespace Seldon
     be lost.
   */
   template <class T, class Allocator>
-  inline void Vector<T, Vect_Full, Allocator>::Reallocate(int i)
+  inline void Vector<T, VectFull, Allocator>::Reallocate(int i)
   {
     
     if (i != this->m_)
@@ -364,13 +364,13 @@ namespace Seldon
     \param n new length of the vector.
   */
   template <class T, class Allocator>
-  inline void Vector<T, Vect_Full, Allocator>::Resize(int n)
+  inline void Vector<T, VectFull, Allocator>::Resize(int n)
   {
     
     if (n == this->m_)
       return;
     
-    Vector<T, Vect_Full, Allocator> X_new(n);
+    Vector<T, VectFull, Allocator> X_new(n);
     for (int i = 0; i < min(this->m_, n); i++)
       X_new(i) = this->data_[i];
     
@@ -394,8 +394,8 @@ namespace Seldon
     \note This method should only be used by advanced users.
   */
   template <class T, class Allocator>
-  inline void Vector<T, Vect_Full, Allocator>
-  ::SetData(int i, typename Vector<T, Vect_Full, Allocator>::pointer data)
+  inline void Vector<T, VectFull, Allocator>
+  ::SetData(int i, typename Vector<T, VectFull, Allocator>::pointer data)
   {
     this->Clear();
 
@@ -412,7 +412,7 @@ namespace Seldon
     \warning Memory is not released.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::Nullify()
+  void Vector<T, VectFull, Allocator>::Nullify()
   {
     this->m_ = 0;
     this->data_ = NULL;
@@ -430,13 +430,13 @@ namespace Seldon
     \return The value of the vector at 'i'.
   */
   template <class T, class Allocator>
-  inline typename Vector<T, Vect_Full, Allocator>::reference
-  Vector<T, Vect_Full, Allocator>::operator() (int i)
+  inline typename Vector<T, VectFull, Allocator>::reference
+  Vector<T, VectFull, Allocator>::operator() (int i)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
     if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<Vect_Full>::operator()",
+      throw WrongIndex("Vector<VectFull>::operator()",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
@@ -451,13 +451,13 @@ namespace Seldon
     \return The value of the vector at 'i'.
   */
   template <class T, class Allocator>
-  inline typename Vector<T, Vect_Full, Allocator>::const_reference
-  Vector<T, Vect_Full, Allocator>::operator() (int i) const
+  inline typename Vector<T, VectFull, Allocator>::const_reference
+  Vector<T, VectFull, Allocator>::operator() (int i) const
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
     if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<Vect_Full>::operator()",
+      throw WrongIndex("Vector<VectFull>::operator()",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
@@ -473,8 +473,8 @@ namespace Seldon
     instance after the copy.
   */
   template <class T, class Allocator>
-  inline Vector<T, Vect_Full, Allocator>& Vector<T, Vect_Full, Allocator>
-  ::operator= (const Vector<T, Vect_Full, Allocator>& X)
+  inline Vector<T, VectFull, Allocator>& Vector<T, VectFull, Allocator>
+  ::operator= (const Vector<T, VectFull, Allocator>& X)
   {
     this->Copy(X);
 
@@ -489,8 +489,8 @@ namespace Seldon
     instance after the copy.
   */
   template <class T, class Allocator>
-  inline void Vector<T, Vect_Full, Allocator>
-  ::Copy(const Vector<T, Vect_Full, Allocator>& X)
+  inline void Vector<T, VectFull, Allocator>
+  ::Copy(const Vector<T, VectFull, Allocator>& X)
   {
     this->Reallocate(X.GetLength());
 
@@ -503,7 +503,7 @@ namespace Seldon
     \param alpha scalar.
   */
   template <class T, class Allocator> template<class T0>
-  inline Vector<T, Vect_Full, Allocator>& Vector<T, Vect_Full, Allocator>
+  inline Vector<T, VectFull, Allocator>& Vector<T, VectFull, Allocator>
   ::operator*= (const T0& alpha)
   {
     for (int i = 0; i < this->m_; i++)
@@ -520,7 +520,7 @@ namespace Seldon
     elements while reallocating.
   */
   template <class T, class Allocator>
-  inline void Vector<T, Vect_Full, Allocator>::Append(const T& x)
+  inline void Vector<T, VectFull, Allocator>::Append(const T& x)
   {
     int i = this->GetLength();
     this->Reallocate(i + 1);
@@ -533,7 +533,7 @@ namespace Seldon
     \param x element to be appended.
   */
   template <class T, class Allocator> template<class T0>
-  inline void Vector<T, Vect_Full, Allocator>::PushBack(const T0& x)
+  inline void Vector<T, VectFull, Allocator>::PushBack(const T0& x)
   {
     Resize(this->m_+1);
     this->data_[this->m_-1] = x;
@@ -545,8 +545,8 @@ namespace Seldon
     \param X vector to be appended.
   */
   template <class T, class Allocator> template<class Allocator0>
-  inline void Vector<T, Vect_Full, Allocator>
-  ::PushBack(const Vector<T, Vect_Full, Allocator0>& X)
+  inline void Vector<T, VectFull, Allocator>
+  ::PushBack(const Vector<T, VectFull, Allocator0>& X)
   {
     int Nold = this->m_;
     Resize(this->m_ + X.GetM());
@@ -565,7 +565,7 @@ namespace Seldon
     \return The number of elements stored in memory.
   */
   template <class T, class Allocator>
-  int Vector<T, Vect_Full, Allocator>::GetDataSize()
+  int Vector<T, VectFull, Allocator>::GetDataSize()
   {
     return this->m_;
   }
@@ -582,7 +582,7 @@ namespace Seldon
     structures, use 'Fill' instead.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::Zero()
+  void Vector<T, VectFull, Allocator>::Zero()
   {
     this->vect_allocator_.memoryset(this->data_, char(0),
 				    this->GetDataSize() * sizeof(value_type));
@@ -591,7 +591,7 @@ namespace Seldon
 
   //! Fills the vector with 0, 1, 2, ...
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::Fill()
+  void Vector<T, VectFull, Allocator>::Fill()
   {
     for (int i = 0; i < this->m_; i++)
       this->data_[i] = i;
@@ -604,7 +604,7 @@ namespace Seldon
   */
   template <class T, class Allocator>
   template <class T0>
-  void Vector<T, Vect_Full, Allocator>::Fill(const T0& x)
+  void Vector<T, VectFull, Allocator>::Fill(const T0& x)
   {
     for (int i = 0; i < this->m_; i++)
       this->data_[i] = x;
@@ -617,8 +617,8 @@ namespace Seldon
   */
   template <class T, class Allocator>
   template <class T0>
-  Vector<T, Vect_Full, Allocator>&
-  Vector<T, Vect_Full, Allocator>::operator= (const T0& x)
+  Vector<T, VectFull, Allocator>&
+  Vector<T, VectFull, Allocator>::operator= (const T0& x)
   {
     this->Fill(x);
 
@@ -631,7 +631,7 @@ namespace Seldon
     \note The random generator is very basic.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::FillRand()
+  void Vector<T, VectFull, Allocator>::FillRand()
   {
     srand(time(NULL));
     for (int i = 0; i < this->m_; i++)
@@ -641,7 +641,7 @@ namespace Seldon
 
   //! Displays the vector.
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::Print() const
+  void Vector<T, VectFull, Allocator>::Print() const
   {
     for (int i = 0; i < this->GetLength(); i++)
       cout << (*this)(i) << "\t";
@@ -660,8 +660,8 @@ namespace Seldon
     \return The infinite norm.
   */
   template <class T, class Allocator>
-  typename Vector<T, Vect_Full, Allocator>::value_type
-  Vector<T, Vect_Full, Allocator>::GetNormInf() const
+  typename Vector<T, VectFull, Allocator>::value_type
+  Vector<T, VectFull, Allocator>::GetNormInf() const
   {
     value_type res = value_type(0);
     for (int i = 0; i < this->GetLength(); i++)
@@ -679,12 +679,12 @@ namespace Seldon
     \return The index of the element that has the highest absolute value.
   */
   template <class T, class Allocator>
-  int Vector<T, Vect_Full, Allocator>::GetNormInfIndex() const
+  int Vector<T, VectFull, Allocator>::GetNormInfIndex() const
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
     if (this->GetLength() == 0)
-      throw WrongDim("Vector<Vect_Full>::GetNormInfIndex()",
+      throw WrongDim("Vector<VectFull>::GetNormInfIndex()",
 		     "Vector is null.");
 #endif
 
@@ -716,7 +716,7 @@ namespace Seldon
     \param with_size if set to 'false', the length of the vector is not saved.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>
+  void Vector<T, VectFull, Allocator>
   ::Write(string FileName, bool with_size = true) const
   {
     ofstream FileStream;
@@ -725,7 +725,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Vector<Vect_Full>::Write(string FileName)",
+      throw IOError("Vector<VectFull>::Write(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
@@ -743,14 +743,14 @@ namespace Seldon
     \param with_size if set to 'false', the length of the vector is not saved.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>
+  void Vector<T, VectFull, Allocator>
   ::Write(ostream& FileStream, bool with_size = true) const
   {
 
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::Write(ostream& FileStream)",
+      throw IOError("Vector<VectFull>::Write(ostream& FileStream)",
                     "The stream is not ready.");
 #endif
 
@@ -764,7 +764,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::Write(ostream& FileStream)",
+      throw IOError("Vector<VectFull>::Write(ostream& FileStream)",
                     "Output operation failed.");
 #endif
 
@@ -778,7 +778,7 @@ namespace Seldon
     \param FileName file name.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::WriteText(string FileName) const
+  void Vector<T, VectFull, Allocator>::WriteText(string FileName) const
   {
     ofstream FileStream;
     FileStream.precision(cout.precision());
@@ -788,7 +788,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Vector<Vect_Full>::WriteText(string FileName)",
+      throw IOError("Vector<VectFull>::WriteText(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
@@ -805,13 +805,13 @@ namespace Seldon
     \param FileStream file stream.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::WriteText(ostream& FileStream) const
+  void Vector<T, VectFull, Allocator>::WriteText(ostream& FileStream) const
   {
 
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::WriteText(ostream& FileStream)",
+      throw IOError("Vector<VectFull>::WriteText(ostream& FileStream)",
                     "The stream is not ready.");
 #endif
 
@@ -824,7 +824,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::WriteText(ostream& FileStream)",
+      throw IOError("Vector<VectFull>::WriteText(ostream& FileStream)",
                     "Output operation failed.");
 #endif
 
@@ -838,7 +838,7 @@ namespace Seldon
     \param FileName file name.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::Read(string FileName)
+  void Vector<T, VectFull, Allocator>::Read(string FileName)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -846,7 +846,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Vector<Vect_Full>::Read(string FileName)",
+      throw IOError("Vector<VectFull>::Read(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
@@ -863,13 +863,13 @@ namespace Seldon
     \param FileStream file stream.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::Read(istream& FileStream)
+  void Vector<T, VectFull, Allocator>::Read(istream& FileStream)
   {
 
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::Read(istream& FileStream)",
+      throw IOError("Vector<VectFull>::Read(istream& FileStream)",
                     "The stream is not ready.");
 #endif
 
@@ -883,7 +883,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::Read(istream& FileStream)",
+      throw IOError("Vector<VectFull>::Read(istream& FileStream)",
                     "Output operation failed.");
 #endif
 
@@ -898,7 +898,7 @@ namespace Seldon
     \param FileName file name.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::ReadText(string FileName)
+  void Vector<T, VectFull, Allocator>::ReadText(string FileName)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -906,7 +906,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Vector<Vect_Full>::ReadText(string FileName)",
+      throw IOError("Vector<VectFull>::ReadText(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
@@ -923,7 +923,7 @@ namespace Seldon
     \param FileStream file stream.
   */
   template <class T, class Allocator>
-  void Vector<T, Vect_Full, Allocator>::ReadText(istream& FileStream)
+  void Vector<T, VectFull, Allocator>::ReadText(istream& FileStream)
   {
     // Previous values of the vector are cleared.
     Clear();
@@ -931,7 +931,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Vector<Vect_Full>::ReadText(istream& FileStream)",
+      throw IOError("Vector<VectFull>::ReadText(istream& FileStream)",
                     "The stream is not ready.");
 #endif
     

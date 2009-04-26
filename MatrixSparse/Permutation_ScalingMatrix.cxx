@@ -96,7 +96,7 @@ namespace Seldon
     int m = A.GetM();
     int nnz = A.GetDataSize();
     IVect IndRow(nnz), IndCol(nnz);
-    Vector<T, Vect_Full, Allocator> Val(nnz);
+    Vector<T, VectFull, Allocator> Val(nnz);
     
     // First we convert the matrix in coordinate format and we permute the
     // indices.
@@ -166,7 +166,7 @@ namespace Seldon
     int m = A.GetM();
     int nnz_real = A.GetRealDataSize(), nnz_imag = A.GetImagDataSize();
     IVect IndRow(nnz_real), IndCol(nnz_real);
-    Vector<T, Vect_Full, Allocator> Val(nnz_real);
+    Vector<T, VectFull, Allocator> Val(nnz_real);
     
     // First we convert the matrix in coordinate format and we permute the
     // indices.
@@ -294,7 +294,7 @@ namespace Seldon
     int m = A.GetM();
     int nnz = A.GetDataSize();
     IVect IndRow(nnz), IndCol(nnz);
-    Vector<T,Vect_Full,Allocator> Val(nnz);
+    Vector<T,VectFull,Allocator> Val(nnz);
     
     // First we convert the matrix in coordinate format and we permute the
     // indices.
@@ -356,8 +356,8 @@ namespace Seldon
   template<class Prop, class T1, class Allocator1,
 	   class T2, class Allocator2, class T3, class Allocator3>
   void ScaleMatrix(Matrix<T1, Prop, ArrayRowSparse, Allocator1>& A,
-		   const Vector<T2, Vect_Full, Allocator2>& scale_left,
-		   const Vector<T3, Vect_Full, Allocator3>& scale_right)
+		   const Vector<T2, VectFull, Allocator2>& scale_left,
+		   const Vector<T3, VectFull, Allocator3>& scale_right)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
@@ -374,8 +374,8 @@ namespace Seldon
   template<class Prop, class T1, class Allocator1,
 	   class T2, class Allocator2, class T3, class Allocator3>
   void ScaleMatrix(Matrix<T1, Prop, ArrayRowSymSparse, Allocator1>& A,
-		   const Vector<T2, Vect_Full, Allocator2>& scale_left,
-		   const Vector<T3, Vect_Full, Allocator3>& scale_right)
+		   const Vector<T2, VectFull, Allocator2>& scale_left,
+		   const Vector<T3, VectFull, Allocator3>& scale_right)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
@@ -392,8 +392,8 @@ namespace Seldon
   template<class Prop, class T1, class Allocator1,
 	   class T2, class Allocator2, class T3, class Allocator3>
   void ScaleMatrix(Matrix<T1, Prop, ArrayRowSymComplexSparse, Allocator1>& A,
-		   const Vector<T2, Vect_Full, Allocator2>& scale_left,
-		   const Vector<T3, Vect_Full, Allocator3>& scale_right)
+		   const Vector<T2, VectFull, Allocator2>& scale_left,
+		   const Vector<T3, VectFull, Allocator3>& scale_right)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
@@ -414,8 +414,8 @@ namespace Seldon
   template<class Prop, class T1, class Allocator1,
 	   class T2, class Allocator2, class T3, class Allocator3>
   void ScaleMatrix(Matrix<T1, Prop, ArrayRowComplexSparse, Allocator1>& A,
-		   const Vector<T2, Vect_Full, Allocator2>& scale_left,
-		   const Vector<T3, Vect_Full, Allocator3>& scale_right)
+		   const Vector<T2, VectFull, Allocator2>& scale_left,
+		   const Vector<T3, VectFull, Allocator3>& scale_right)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
@@ -436,7 +436,7 @@ namespace Seldon
   template<class T1, class Allocator1,
 	   class Prop, class T2, class Allocator2>
   void ScaleLeftMatrix(Matrix<T1, Prop, ArrayRowSparse, Allocator1>& A,
-		       const Vector<T2, Vect_Full, Allocator2>& scale)
+		       const Vector<T2, VectFull, Allocator2>& scale)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
@@ -454,7 +454,7 @@ namespace Seldon
   template<class T1, class Allocator1,
 	   class Prop, class T2, class Allocator2>
   void ScaleLeftMatrix(Matrix<T1, Prop, ArrayRowSymSparse, Allocator1>& A,
-		       const Vector<T2, Vect_Full, Allocator2>& scale)
+		       const Vector<T2, VectFull, Allocator2>& scale)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
@@ -472,7 +472,7 @@ namespace Seldon
   template<class T1, class Allocator1,
 	   class Prop, class T2, class Allocator2>
   void ScaleLeftMatrix(Matrix<T1, Prop, ArrayRowSymComplexSparse, Allocator1>& A,
-		       const Vector<T2, Vect_Full, Allocator2>& scale)
+		       const Vector<T2, VectFull, Allocator2>& scale)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )
@@ -493,7 +493,7 @@ namespace Seldon
   template<class T1, class Allocator1,
 	   class Prop, class T2, class Allocator2>
   void ScaleLeftMatrix(Matrix<T1, Prop, ArrayRowComplexSparse, Allocator1>& A,
-		       const Vector<T2, Vect_Full, Allocator2>& scale)
+		       const Vector<T2, VectFull, Allocator2>& scale)
   {
     int m = A.GetM();
     for (int i = 0; i < m; i++ )

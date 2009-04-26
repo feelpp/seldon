@@ -59,7 +59,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, ColUpTriang, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -74,7 +74,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<double, Prop0, ColUpTriang, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -90,7 +90,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<float>, Prop0, ColUpTriang, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -107,7 +107,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<double>, Prop0, ColUpTriang, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -128,7 +128,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<float, Prop0, ColUpTriang, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -145,7 +145,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<double, Prop0, ColUpTriang, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -163,7 +163,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<float>, Prop0, ColUpTriang, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -182,7 +182,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<double>, Prop0, ColUpTriang, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -201,7 +201,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, ColLoTriang, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -216,7 +216,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<double, Prop0, ColLoTriang, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -232,7 +232,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<float>, Prop0, ColLoTriang, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -249,7 +249,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<double>, Prop0, ColLoTriang, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -270,7 +270,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<float, Prop0, ColLoTriang, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -287,7 +287,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<double, Prop0, ColLoTriang, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -305,7 +305,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<float>, Prop0, ColLoTriang, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -324,7 +324,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<double>, Prop0, ColLoTriang, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -343,7 +343,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, RowUpTriang, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -358,7 +358,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<double, Prop0, RowUpTriang, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -374,7 +374,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<float>, Prop0, RowUpTriang, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -391,7 +391,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<double>, Prop0, RowUpTriang, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -412,7 +412,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<float, Prop0, RowUpTriang, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -429,7 +429,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<double, Prop0, RowUpTriang, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -447,7 +447,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<float>, Prop0, RowUpTriang, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -466,7 +466,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<double>, Prop0, RowUpTriang, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -485,7 +485,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, RowLoTriang, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -500,7 +500,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<double, Prop0, RowLoTriang, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -516,7 +516,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<float>, Prop0, RowLoTriang, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -533,7 +533,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<double>, Prop0, RowLoTriang, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -554,7 +554,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<float, Prop0, RowLoTriang, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -571,7 +571,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<double, Prop0, RowLoTriang, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -589,7 +589,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<float>, Prop0, RowLoTriang, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -608,7 +608,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<double>, Prop0, RowLoTriang, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -627,7 +627,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, ColUpTriangPacked, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -642,7 +642,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<double, Prop0, ColUpTriangPacked, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -658,7 +658,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<float>, Prop0, ColUpTriangPacked, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -675,7 +675,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<double>, Prop0, ColUpTriangPacked, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -696,7 +696,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<float, Prop0, ColUpTriangPacked, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -713,7 +713,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<double, Prop0, ColUpTriangPacked, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -731,7 +731,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<float>, Prop0, ColUpTriangPacked, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -750,7 +750,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<double>, Prop0, ColUpTriangPacked, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -769,7 +769,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, ColLoTriangPacked, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -784,7 +784,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<double, Prop0, ColLoTriangPacked, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -800,7 +800,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<float>, Prop0, ColLoTriangPacked, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -817,7 +817,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<double>, Prop0, ColLoTriangPacked, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -838,7 +838,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<float, Prop0, ColLoTriangPacked, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -855,7 +855,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<double, Prop0, ColLoTriangPacked, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -873,7 +873,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<float>, Prop0, ColLoTriangPacked, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -892,7 +892,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<double>, Prop0, ColLoTriangPacked, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -911,7 +911,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, RowUpTriangPacked, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -926,7 +926,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<double, Prop0, RowUpTriangPacked, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -942,7 +942,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<float>, Prop0, RowUpTriangPacked, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -959,7 +959,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<double>, Prop0, RowUpTriangPacked, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -980,7 +980,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<float, Prop0, RowUpTriangPacked, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -997,7 +997,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<double, Prop0, RowUpTriangPacked, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1015,7 +1015,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<float>, Prop0, RowUpTriangPacked, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1034,7 +1034,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<double>, Prop0, RowUpTriangPacked, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1053,7 +1053,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, RowLoTriangPacked, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1068,7 +1068,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<double, Prop0, RowLoTriangPacked, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1084,7 +1084,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<float>, Prop0, RowLoTriangPacked, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1101,7 +1101,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Mlt(const Matrix<complex<double>, Prop0, RowLoTriangPacked, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1122,7 +1122,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<float, Prop0, RowLoTriangPacked, Allocator0>& A,
-	   Vector<float, Vect_Full, Allocator1>& X)
+	   Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1139,7 +1139,7 @@ namespace Seldon
   void Mlt(const SeldonTranspose& TransA,
 	   const SeldonDiag& DiagA,
 	   const Matrix<double, Prop0, RowLoTriangPacked, Allocator0>& A,
-	   Vector<double, Vect_Full, Allocator1>& X)
+	   Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1157,7 +1157,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<float>, Prop0, RowLoTriangPacked, Allocator0>& A,
-      Vector<complex<float>, Vect_Full, Allocator1>& X)
+      Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1176,7 +1176,7 @@ namespace Seldon
   Mlt(const SeldonTranspose& TransA,
       const SeldonDiag& DiagA,
       const Matrix<complex<double>, Prop0, RowLoTriangPacked, Allocator0>& A,
-      Vector<complex<double>, Vect_Full, Allocator1>& X)
+      Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1207,9 +1207,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const float alpha,
 	      const Matrix<float, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<float, Vect_Full, Allocator1>& X,
+	      const Vector<float, VectFull, Allocator1>& X,
 	      const float beta,
-	      Vector<float, Vect_Full, Allocator2>& Y)
+	      Vector<float, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1226,9 +1226,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const double alpha,
 	      const Matrix<double, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<double, Vect_Full, Allocator1>& X,
+	      const Vector<double, VectFull, Allocator1>& X,
 	      const double beta,
-	      Vector<double, Vect_Full, Allocator2>& Y)
+	      Vector<double, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1245,9 +1245,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<float> alpha,
 	      const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<complex<float>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float> beta,
-	      Vector<complex<float>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1267,9 +1267,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<double> alpha,
 	      const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<complex<double>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double> beta,
-	      Vector<complex<double>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1293,9 +1293,9 @@ namespace Seldon
   void MltAdd(const float alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<float, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<float, Vect_Full, Allocator1>& X,
+	      const Vector<float, VectFull, Allocator1>& X,
 	      const float beta,
-	      Vector<float, Vect_Full, Allocator2>& Y)
+	      Vector<float, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1313,9 +1313,9 @@ namespace Seldon
   void MltAdd(const double alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<double, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<double, Vect_Full, Allocator1>& X,
+	      const Vector<double, VectFull, Allocator1>& X,
 	      const double beta,
-	      Vector<double, Vect_Full, Allocator2>& Y)
+	      Vector<double, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1333,9 +1333,9 @@ namespace Seldon
   void MltAdd(const complex<float> alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<complex<float>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float> beta,
-	      Vector<complex<float>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1356,9 +1356,9 @@ namespace Seldon
   void MltAdd(const complex<double> alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<complex<double>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double> beta,
-	      Vector<complex<double>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1381,9 +1381,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const float alpha,
 	      const Matrix<float, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<float, Vect_Full, Allocator1>& X,
+	      const Vector<float, VectFull, Allocator1>& X,
 	      const float beta,
-	      Vector<float, Vect_Full, Allocator2>& Y)
+	      Vector<float, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1400,9 +1400,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const double alpha,
 	      const Matrix<double, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<double, Vect_Full, Allocator1>& X,
+	      const Vector<double, VectFull, Allocator1>& X,
 	      const double beta,
-	      Vector<double, Vect_Full, Allocator2>& Y)
+	      Vector<double, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1419,9 +1419,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<float> alpha,
 	      const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<complex<float>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float> beta,
-	      Vector<complex<float>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1441,9 +1441,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<double> alpha,
 	      const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<complex<double>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double> beta,
-	      Vector<complex<double>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1467,9 +1467,9 @@ namespace Seldon
   void MltAdd(const float alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<float, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<float, Vect_Full, Allocator1>& X,
+	      const Vector<float, VectFull, Allocator1>& X,
 	      const float beta,
-	      Vector<float, Vect_Full, Allocator2>& Y)
+	      Vector<float, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1487,9 +1487,9 @@ namespace Seldon
   void MltAdd(const double alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<double, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<double, Vect_Full, Allocator1>& X,
+	      const Vector<double, VectFull, Allocator1>& X,
 	      const double beta,
-	      Vector<double, Vect_Full, Allocator2>& Y)
+	      Vector<double, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1507,9 +1507,9 @@ namespace Seldon
   void MltAdd(const complex<float> alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<complex<float>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float> beta,
-	      Vector<complex<float>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1530,9 +1530,9 @@ namespace Seldon
   void MltAdd(const complex<double> alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<complex<double>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double> beta,
-	      Vector<complex<double>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1557,9 +1557,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<float> alpha,
 	      const Matrix<complex<float>, Prop0, ColHerm, Allocator0>& A,
-	      const Vector<complex<float>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float> beta,
-	      Vector<complex<float>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1578,9 +1578,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<double> alpha,
 	      const Matrix<complex<double>, Prop0, ColHerm, Allocator0>& A,
-	      const Vector<complex<double>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double> beta,
-	      Vector<complex<double>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1603,9 +1603,9 @@ namespace Seldon
   void MltAdd(const complex<float> alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<float>, Prop0, ColHerm, Allocator0>& A,
-	      const Vector<complex<float>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float> beta,
-	      Vector<complex<float>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1625,9 +1625,9 @@ namespace Seldon
   void MltAdd(const complex<double> alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<double>, Prop0, ColHerm, Allocator0>& A,
-	      const Vector<complex<double>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double> beta,
-	      Vector<complex<double>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1649,9 +1649,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<float> alpha,
 	      const Matrix<complex<float>, Prop0, RowHerm, Allocator0>& A,
-	      const Vector<complex<float>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float> beta,
-	      Vector<complex<float>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1670,9 +1670,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<double> alpha,
 	      const Matrix<complex<double>, Prop0, RowHerm, Allocator0>& A,
-	      const Vector<complex<double>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double> beta,
-	      Vector<complex<double>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1695,9 +1695,9 @@ namespace Seldon
   void MltAdd(const complex<float> alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<float>, Prop0, RowHerm, Allocator0>& A,
-	      const Vector<complex<float>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float> beta,
-	      Vector<complex<float>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1717,9 +1717,9 @@ namespace Seldon
   void MltAdd(const complex<double> alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<double>, Prop0, RowHerm, Allocator0>& A,
-	      const Vector<complex<double>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double> beta,
-	      Vector<complex<double>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1744,9 +1744,9 @@ namespace Seldon
   void MltAdd(const complex<float> alpha,
 	      const Matrix<complex<float>, Prop0,
 	      ColHermPacked, Allocator0>& A,
-	      const Vector<complex<float>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float> beta,
-	      Vector<complex<float>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1766,9 +1766,9 @@ namespace Seldon
   void MltAdd(const complex<double> alpha,
 	      const Matrix<complex<double>, Prop0,
 	      ColHermPacked, Allocator0>& A,
-	      const Vector<complex<double>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double> beta,
-	      Vector<complex<double>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1792,9 +1792,9 @@ namespace Seldon
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<float>, Prop0,
 	      ColHermPacked, Allocator0>& A,
-	      const Vector<complex<float>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float> beta,
-	      Vector<complex<float>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1815,9 +1815,9 @@ namespace Seldon
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<double>, Prop0,
 	      ColHermPacked, Allocator0>& A,
-	      const Vector<complex<double>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double> beta,
-	      Vector<complex<double>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1840,9 +1840,9 @@ namespace Seldon
   void MltAdd(const complex<float> alpha,
 	      const Matrix<complex<float>, Prop0,
 	      RowHermPacked, Allocator0>& A,
-	      const Vector<complex<float>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float> beta,
-	      Vector<complex<float>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1862,9 +1862,9 @@ namespace Seldon
   void MltAdd(const complex<double> alpha,
 	      const Matrix<complex<double>, Prop0,
 	      RowHermPacked, Allocator0>& A,
-	      const Vector<complex<double>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double> beta,
-	      Vector<complex<double>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1888,9 +1888,9 @@ namespace Seldon
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<float>, Prop0,
 	      RowHermPacked, Allocator0>& A,
-	      const Vector<complex<float>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float> beta,
-	      Vector<complex<float>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1911,9 +1911,9 @@ namespace Seldon
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<double>, Prop0,
 	      RowHermPacked, Allocator0>& A,
-	      const Vector<complex<double>, Vect_Full, Allocator1>& X,
+	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double> beta,
-	      Vector<complex<double>, Vect_Full, Allocator2>& Y)
+	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1937,9 +1937,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const float alpha,
 	      const Matrix<float, Prop0, ColSym, Allocator0>& A,
-	      const Vector<float, Vect_Full, Allocator1>& X,
+	      const Vector<float, VectFull, Allocator1>& X,
 	      const float beta,
-	      Vector<float, Vect_Full, Allocator2>& Y)
+	      Vector<float, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1956,9 +1956,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const double alpha,
 	      const Matrix<double, Prop0, ColSym, Allocator0>& A,
-	      const Vector<double, Vect_Full, Allocator1>& X,
+	      const Vector<double, VectFull, Allocator1>& X,
 	      const double beta,
-	      Vector<double, Vect_Full, Allocator2>& Y)
+	      Vector<double, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1979,9 +1979,9 @@ namespace Seldon
   void MltAdd(const float alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<float, Prop0, ColSym, Allocator0>& A,
-	      const Vector<float, Vect_Full, Allocator1>& X,
+	      const Vector<float, VectFull, Allocator1>& X,
 	      const float beta,
-	      Vector<float, Vect_Full, Allocator2>& Y)
+	      Vector<float, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -1999,9 +1999,9 @@ namespace Seldon
   void MltAdd(const double alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<double, Prop0, ColSym, Allocator0>& A,
-	      const Vector<double, Vect_Full, Allocator1>& X,
+	      const Vector<double, VectFull, Allocator1>& X,
 	      const double beta,
-	      Vector<double, Vect_Full, Allocator2>& Y)
+	      Vector<double, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2021,9 +2021,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const float alpha,
 	      const Matrix<float, Prop0, RowSym, Allocator0>& A,
-	      const Vector<float, Vect_Full, Allocator1>& X,
+	      const Vector<float, VectFull, Allocator1>& X,
 	      const float beta,
-	      Vector<float, Vect_Full, Allocator2>& Y)
+	      Vector<float, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2040,9 +2040,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const double alpha,
 	      const Matrix<double, Prop0, RowSym, Allocator0>& A,
-	      const Vector<double, Vect_Full, Allocator1>& X,
+	      const Vector<double, VectFull, Allocator1>& X,
 	      const double beta,
-	      Vector<double, Vect_Full, Allocator2>& Y)
+	      Vector<double, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2063,9 +2063,9 @@ namespace Seldon
   void MltAdd(const float alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<float, Prop0, RowSym, Allocator0>& A,
-	      const Vector<float, Vect_Full, Allocator1>& X,
+	      const Vector<float, VectFull, Allocator1>& X,
 	      const float beta,
-	      Vector<float, Vect_Full, Allocator2>& Y)
+	      Vector<float, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2083,9 +2083,9 @@ namespace Seldon
   void MltAdd(const double alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<double, Prop0, RowSym, Allocator0>& A,
-	      const Vector<double, Vect_Full, Allocator1>& X,
+	      const Vector<double, VectFull, Allocator1>& X,
 	      const double beta,
-	      Vector<double, Vect_Full, Allocator2>& Y)
+	      Vector<double, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2107,9 +2107,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const float alpha,
 	      const Matrix<float, Prop0, ColSymPacked, Allocator0>& A,
-	      const Vector<float, Vect_Full, Allocator1>& X,
+	      const Vector<float, VectFull, Allocator1>& X,
 	      const float beta,
-	      Vector<float, Vect_Full, Allocator2>& Y)
+	      Vector<float, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2126,9 +2126,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const double alpha,
 	      const Matrix<double, Prop0, ColSymPacked, Allocator0>& A,
-	      const Vector<double, Vect_Full, Allocator1>& X,
+	      const Vector<double, VectFull, Allocator1>& X,
 	      const double beta,
-	      Vector<double, Vect_Full, Allocator2>& Y)
+	      Vector<double, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2149,9 +2149,9 @@ namespace Seldon
   void MltAdd(const float alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<float, Prop0, ColSymPacked, Allocator0>& A,
-	      const Vector<float, Vect_Full, Allocator1>& X,
+	      const Vector<float, VectFull, Allocator1>& X,
 	      const float beta,
-	      Vector<float, Vect_Full, Allocator2>& Y)
+	      Vector<float, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2169,9 +2169,9 @@ namespace Seldon
   void MltAdd(const double alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<double, Prop0, ColSymPacked, Allocator0>& A,
-	      const Vector<double, Vect_Full, Allocator1>& X,
+	      const Vector<double, VectFull, Allocator1>& X,
 	      const double beta,
-	      Vector<double, Vect_Full, Allocator2>& Y)
+	      Vector<double, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2191,9 +2191,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const float alpha,
 	      const Matrix<float, Prop0, RowSymPacked, Allocator0>& A,
-	      const Vector<float, Vect_Full, Allocator1>& X,
+	      const Vector<float, VectFull, Allocator1>& X,
 	      const float beta,
-	      Vector<float, Vect_Full, Allocator2>& Y)
+	      Vector<float, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2210,9 +2210,9 @@ namespace Seldon
 	    class Allocator1, class Allocator2>
   void MltAdd(const double alpha,
 	      const Matrix<double, Prop0, RowSymPacked, Allocator0>& A,
-	      const Vector<double, Vect_Full, Allocator1>& X,
+	      const Vector<double, VectFull, Allocator1>& X,
 	      const double beta,
-	      Vector<double, Vect_Full, Allocator2>& Y)
+	      Vector<double, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2233,9 +2233,9 @@ namespace Seldon
   void MltAdd(const float alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<float, Prop0, RowSymPacked, Allocator0>& A,
-	      const Vector<float, Vect_Full, Allocator1>& X,
+	      const Vector<float, VectFull, Allocator1>& X,
 	      const float beta,
-	      Vector<float, Vect_Full, Allocator2>& Y)
+	      Vector<float, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2253,9 +2253,9 @@ namespace Seldon
   void MltAdd(const double alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<double, Prop0, RowSymPacked, Allocator0>& A,
-	      const Vector<double, Vect_Full, Allocator1>& X,
+	      const Vector<double, VectFull, Allocator1>& X,
 	      const double beta,
-	      Vector<double, Vect_Full, Allocator2>& Y)
+	      Vector<double, VectFull, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -2283,8 +2283,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const float alpha,
-		   const Vector<float, Vect_Full, Allocator1>& X,
-		   const Vector<float, Vect_Full, Allocator2>& Y,
+		   const Vector<float, VectFull, Allocator1>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
 		   Matrix<float, Prop0, ColMajor, Allocator0>& A)
   {
 
@@ -2301,8 +2301,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const double alpha,
-		   const Vector<double, Vect_Full, Allocator1>& X,
-		   const Vector<double, Vect_Full, Allocator2>& Y,
+		   const Vector<double, VectFull, Allocator1>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
 		   Matrix<double, Prop0, ColMajor, Allocator0>& A)
   {
 
@@ -2319,8 +2319,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const complex<float> alpha,
-		   const Vector<complex<float>, Vect_Full, Allocator1>& X,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& Y,
+		   const Vector<complex<float>, VectFull, Allocator1>& X,
+		   const Vector<complex<float>, VectFull, Allocator2>& Y,
 		   Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A)
   {
 
@@ -2340,8 +2340,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const complex<double> alpha,
-		   const Vector<complex<double>, Vect_Full, Allocator1>& X,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& Y,
+		   const Vector<complex<double>, VectFull, Allocator1>& X,
+		   const Vector<complex<double>, VectFull, Allocator2>& Y,
 		   Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A)
   {
 
@@ -2364,9 +2364,9 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const complex<float> alpha,
-		   const Vector<complex<float>, Vect_Full, Allocator1>& X,
+		   const Vector<complex<float>, VectFull, Allocator1>& X,
 		   const SeldonConjugate& ConjY,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& Y,
+		   const Vector<complex<float>, VectFull, Allocator2>& Y,
 		   Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A)
   {
 
@@ -2393,9 +2393,9 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const complex<double> alpha,
-		   const Vector<complex<double>, Vect_Full, Allocator1>& X,
+		   const Vector<complex<double>, VectFull, Allocator1>& X,
 		   const SeldonConjugate& ConjY,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& Y,
+		   const Vector<complex<double>, VectFull, Allocator2>& Y,
 		   Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A)
   {
 
@@ -2425,8 +2425,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const float alpha,
-		   const Vector<float, Vect_Full, Allocator1>& X,
-		   const Vector<float, Vect_Full, Allocator2>& Y,
+		   const Vector<float, VectFull, Allocator1>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
 		   Matrix<float, Prop0, RowMajor, Allocator0>& A)
   {
 
@@ -2443,8 +2443,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const double alpha,
-		   const Vector<double, Vect_Full, Allocator1>& X,
-		   const Vector<double, Vect_Full, Allocator2>& Y,
+		   const Vector<double, VectFull, Allocator1>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
 		   Matrix<double, Prop0, RowMajor, Allocator0>& A)
   {
 
@@ -2461,8 +2461,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const complex<float> alpha,
-		   const Vector<complex<float>, Vect_Full, Allocator1>& X,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& Y,
+		   const Vector<complex<float>, VectFull, Allocator1>& X,
+		   const Vector<complex<float>, VectFull, Allocator2>& Y,
 		   Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A)
   {
 
@@ -2482,8 +2482,8 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const complex<double> alpha,
-		   const Vector<complex<double>, Vect_Full, Allocator1>& X,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& Y,
+		   const Vector<complex<double>, VectFull, Allocator1>& X,
+		   const Vector<complex<double>, VectFull, Allocator2>& Y,
 		   Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A)
   {
 
@@ -2506,9 +2506,9 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const complex<float> alpha,
-		   const Vector<complex<float>, Vect_Full, Allocator1>& X,
+		   const Vector<complex<float>, VectFull, Allocator1>& X,
 		   const SeldonConjugate& ConjY,
-		   const Vector<complex<float>, Vect_Full, Allocator2>& Y,
+		   const Vector<complex<float>, VectFull, Allocator2>& Y,
 		   Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A)
   {
 
@@ -2535,9 +2535,9 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const complex<double> alpha,
-		   const Vector<complex<double>, Vect_Full, Allocator1>& X,
+		   const Vector<complex<double>, VectFull, Allocator1>& X,
 		   const SeldonConjugate& ConjY,
-		   const Vector<complex<double>, Vect_Full, Allocator2>& Y,
+		   const Vector<complex<double>, VectFull, Allocator2>& Y,
 		   Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A)
   {
 
@@ -2567,7 +2567,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const float alpha,
-		   const Vector<float, Vect_Full, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator0>& X,
 		   Matrix<float, Prop1, ColSymPacked, Allocator1>& A)
   {
 
@@ -2583,7 +2583,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const double alpha,
-		   const Vector<double, Vect_Full, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator0>& X,
 		   Matrix<double, Prop1, ColSymPacked, Allocator1>& A)
   {
 
@@ -2600,7 +2600,7 @@ namespace Seldon
 	    class Prop1, class Allocator1>
   void
   Rank1Update(const float alpha,
-	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
 	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
@@ -2618,7 +2618,7 @@ namespace Seldon
 	    class Prop1, class Allocator1>
   void
   Rank1Update(const double alpha,
-	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
@@ -2638,7 +2638,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const float alpha,
-		   const Vector<float, Vect_Full, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator0>& X,
 		   const SeldonUplo& Uplo,
 		   Matrix<float, Prop1, ColSymPacked, Allocator1>& A)
   {
@@ -2655,7 +2655,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const double alpha,
-		   const Vector<double, Vect_Full, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator0>& X,
 		   const SeldonUplo& Uplo,
 		   Matrix<double, Prop1, ColSymPacked, Allocator1>& A)
   {
@@ -2673,7 +2673,7 @@ namespace Seldon
 	    class Prop1, class Allocator1>
   void
   Rank1Update(const float alpha,
-	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
@@ -2692,7 +2692,7 @@ namespace Seldon
 	    class Prop1, class Allocator1>
   void
   Rank1Update(const double alpha,
-	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
   {
@@ -2713,7 +2713,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const float alpha,
-		   const Vector<float, Vect_Full, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator0>& X,
 		   Matrix<float, Prop1, RowSymPacked, Allocator1>& A)
   {
 
@@ -2729,7 +2729,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const double alpha,
-		   const Vector<double, Vect_Full, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator0>& X,
 		   Matrix<double, Prop1, RowSymPacked, Allocator1>& A)
   {
 
@@ -2746,7 +2746,7 @@ namespace Seldon
 	    class Prop1, class Allocator1>
   void
   Rank1Update(const float alpha,
-	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
 	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
@@ -2764,7 +2764,7 @@ namespace Seldon
 	    class Prop1, class Allocator1>
   void
   Rank1Update(const double alpha,
-	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
@@ -2784,7 +2784,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const float alpha,
-		   const Vector<float, Vect_Full, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator0>& X,
 		   const SeldonUplo& Uplo,
 		   Matrix<float, Prop1, RowSymPacked, Allocator1>& A)
   {
@@ -2801,7 +2801,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const double alpha,
-		   const Vector<double, Vect_Full, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator0>& X,
 		   const SeldonUplo& Uplo,
 		   Matrix<double, Prop1, RowSymPacked, Allocator1>& A)
   {
@@ -2819,7 +2819,7 @@ namespace Seldon
 	    class Prop1, class Allocator1>
   void
   Rank1Update(const float alpha,
-	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
@@ -2838,7 +2838,7 @@ namespace Seldon
 	    class Prop1, class Allocator1>
   void
   Rank1Update(const double alpha,
-	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
   {
@@ -2869,8 +2869,8 @@ namespace Seldon
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void Rank2Update(const float alpha,
-		   const Vector<float, Vect_Full, Allocator0>& X,
-		   const Vector<float, Vect_Full, Allocator2>& Y,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
 		   Matrix<float, Prop1, ColSymPacked, Allocator1>& A)
   {
 
@@ -2888,8 +2888,8 @@ namespace Seldon
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void Rank2Update(const double alpha,
-		   const Vector<double, Vect_Full, Allocator0>& X,
-		   const Vector<double, Vect_Full, Allocator2>& Y,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
 		   Matrix<double, Prop1, ColSymPacked, Allocator1>& A)
   {
 
@@ -2908,8 +2908,8 @@ namespace Seldon
 	    class Allocator2>
   void
   Rank2Update(const complex<float> alpha,
-	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
-	      const Vector<complex<float>, Vect_Full, Allocator2>& Y,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator2>& Y,
 	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
@@ -2931,8 +2931,8 @@ namespace Seldon
 	    class Allocator2>
   void
   Rank2Update(const complex<double> alpha,
-	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
-	      const Vector<complex<double>, Vect_Full, Allocator2>& Y,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator2>& Y,
 	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
   {
 
@@ -2956,8 +2956,8 @@ namespace Seldon
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void Rank2Update(const float alpha,
-		   const Vector<float, Vect_Full, Allocator0>& X,
-		   const Vector<float, Vect_Full, Allocator2>& Y,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
 		   const SeldonUplo& Uplo,
 		   Matrix<float, Prop1, ColSymPacked, Allocator1>& A)
   {
@@ -2976,8 +2976,8 @@ namespace Seldon
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void Rank2Update(const double alpha,
-		   const Vector<double, Vect_Full, Allocator0>& X,
-		   const Vector<double, Vect_Full, Allocator2>& Y,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
 		   const SeldonUplo& Uplo,
 		   Matrix<double, Prop1, ColSymPacked, Allocator1>& A)
   {
@@ -2997,8 +2997,8 @@ namespace Seldon
 	    class Allocator2>
   void
   Rank2Update(const complex<float> alpha,
-	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
-	      const Vector<complex<float>, Vect_Full, Allocator2>& Y,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator2>& Y,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
@@ -3021,8 +3021,8 @@ namespace Seldon
 	    class Allocator2>
   void
   Rank2Update(const complex<double> alpha,
-	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
-	      const Vector<complex<double>, Vect_Full, Allocator2>& Y,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator2>& Y,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
   {
@@ -3047,8 +3047,8 @@ namespace Seldon
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void Rank2Update(const float alpha,
-		   const Vector<float, Vect_Full, Allocator0>& X,
-		   const Vector<float, Vect_Full, Allocator2>& Y,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
 		   Matrix<float, Prop1, RowSymPacked, Allocator1>& A)
   {
 
@@ -3066,8 +3066,8 @@ namespace Seldon
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void Rank2Update(const double alpha,
-		   const Vector<double, Vect_Full, Allocator0>& X,
-		   const Vector<double, Vect_Full, Allocator2>& Y,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
 		   Matrix<double, Prop1, RowSymPacked, Allocator1>& A)
   {
 
@@ -3086,8 +3086,8 @@ namespace Seldon
 	    class Allocator2>
   void
   Rank2Update(const complex<float> alpha,
-	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
-	      const Vector<complex<float>, Vect_Full, Allocator2>& Y,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator2>& Y,
 	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
@@ -3109,8 +3109,8 @@ namespace Seldon
 	    class Allocator2>
   void
   Rank2Update(const complex<double> alpha,
-	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
-	      const Vector<complex<double>, Vect_Full, Allocator2>& Y,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator2>& Y,
 	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
   {
 
@@ -3134,8 +3134,8 @@ namespace Seldon
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void Rank2Update(const float alpha,
-		   const Vector<float, Vect_Full, Allocator0>& X,
-		   const Vector<float, Vect_Full, Allocator2>& Y,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
 		   const SeldonUplo& Uplo,
 		   Matrix<float, Prop1, RowSymPacked, Allocator1>& A)
   {
@@ -3154,8 +3154,8 @@ namespace Seldon
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void Rank2Update(const double alpha,
-		   const Vector<double, Vect_Full, Allocator0>& X,
-		   const Vector<double, Vect_Full, Allocator2>& Y,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
 		   const SeldonUplo& Uplo,
 		   Matrix<double, Prop1, RowSymPacked, Allocator1>& A)
   {
@@ -3175,8 +3175,8 @@ namespace Seldon
 	    class Allocator2>
   void
   Rank2Update(const complex<float> alpha,
-	      const Vector<complex<float>, Vect_Full, Allocator0>& X,
-	      const Vector<complex<float>, Vect_Full, Allocator2>& Y,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator2>& Y,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
@@ -3199,8 +3199,8 @@ namespace Seldon
 	    class Allocator2>
   void
   Rank2Update(const complex<double> alpha,
-	      const Vector<complex<double>, Vect_Full, Allocator0>& X,
-	      const Vector<complex<double>, Vect_Full, Allocator2>& Y,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator2>& Y,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
   {
@@ -3233,7 +3233,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, ColUpTriang, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3248,7 +3248,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<double, Prop0, ColUpTriang, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3264,7 +3264,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Solve(const Matrix<complex<float>, Prop0, ColUpTriang, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3282,7 +3282,7 @@ namespace Seldon
   void
   Solve(const Matrix<complex<double>, Prop0,
 	ColUpTriang, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3303,7 +3303,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<float, Prop0, ColUpTriang, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3320,7 +3320,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<double, Prop0, ColUpTriang, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3338,7 +3338,7 @@ namespace Seldon
   Solve(const SeldonTranspose& TransA,
 	const SeldonDiag& DiagA,
 	const Matrix<complex<float>, Prop0, ColUpTriang, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3358,7 +3358,7 @@ namespace Seldon
 	const SeldonDiag& DiagA,
 	const Matrix<complex<double>, Prop0,
 	ColUpTriang, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3377,7 +3377,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, ColLoTriang, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3392,7 +3392,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<double, Prop0, ColLoTriang, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3408,7 +3408,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Solve(const Matrix<complex<float>, Prop0, ColLoTriang, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3426,7 +3426,7 @@ namespace Seldon
   void
   Solve(const Matrix<complex<double>, Prop0,
 	ColLoTriang, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3447,7 +3447,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<float, Prop0, ColLoTriang, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3464,7 +3464,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<double, Prop0, ColLoTriang, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3482,7 +3482,7 @@ namespace Seldon
   Solve(const SeldonTranspose& TransA,
 	const SeldonDiag& DiagA,
 	const Matrix<complex<float>, Prop0, ColLoTriang, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3502,7 +3502,7 @@ namespace Seldon
 	const SeldonDiag& DiagA,
 	const Matrix<complex<double>, Prop0,
 	ColLoTriang, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3521,7 +3521,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, RowUpTriang, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3536,7 +3536,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<double, Prop0, RowUpTriang, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3552,7 +3552,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Solve(const Matrix<complex<float>, Prop0, RowUpTriang, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3570,7 +3570,7 @@ namespace Seldon
   void
   Solve(const Matrix<complex<double>, Prop0,
 	RowUpTriang, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3591,7 +3591,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<float, Prop0, RowUpTriang, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3608,7 +3608,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<double, Prop0, RowUpTriang, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3626,7 +3626,7 @@ namespace Seldon
   Solve(const SeldonTranspose& TransA,
 	const SeldonDiag& DiagA,
 	const Matrix<complex<float>, Prop0, RowUpTriang, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3646,7 +3646,7 @@ namespace Seldon
 	const SeldonDiag& DiagA,
 	const Matrix<complex<double>, Prop0,
 	RowUpTriang, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3665,7 +3665,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, RowLoTriang, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3680,7 +3680,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<double, Prop0, RowLoTriang, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3696,7 +3696,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Solve(const Matrix<complex<float>, Prop0, RowLoTriang, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3714,7 +3714,7 @@ namespace Seldon
   void
   Solve(const Matrix<complex<double>, Prop0,
 	RowLoTriang, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3735,7 +3735,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<float, Prop0, RowLoTriang, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3752,7 +3752,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<double, Prop0, RowLoTriang, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3770,7 +3770,7 @@ namespace Seldon
   Solve(const SeldonTranspose& TransA,
 	const SeldonDiag& DiagA,
 	const Matrix<complex<float>, Prop0, RowLoTriang, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3790,7 +3790,7 @@ namespace Seldon
 	const SeldonDiag& DiagA,
 	const Matrix<complex<double>, Prop0,
 	RowLoTriang, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3809,7 +3809,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, ColUpTriangPacked, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3824,7 +3824,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<double, Prop0, ColUpTriangPacked, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3840,7 +3840,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Solve(const Matrix<complex<float>, Prop0, ColUpTriangPacked, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3858,7 +3858,7 @@ namespace Seldon
   void
   Solve(const Matrix<complex<double>, Prop0,
 	ColUpTriangPacked, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3879,7 +3879,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<float, Prop0, ColUpTriangPacked, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3896,7 +3896,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<double, Prop0, ColUpTriangPacked, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3914,7 +3914,7 @@ namespace Seldon
   Solve(const SeldonTranspose& TransA,
 	const SeldonDiag& DiagA,
 	const Matrix<complex<float>, Prop0, ColUpTriangPacked, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3934,7 +3934,7 @@ namespace Seldon
 	const SeldonDiag& DiagA,
 	const Matrix<complex<double>, Prop0,
 	ColUpTriangPacked, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3953,7 +3953,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, ColLoTriangPacked, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3968,7 +3968,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<double, Prop0, ColLoTriangPacked, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -3984,7 +3984,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Solve(const Matrix<complex<float>, Prop0, ColLoTriangPacked, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4002,7 +4002,7 @@ namespace Seldon
   void
   Solve(const Matrix<complex<double>, Prop0,
 	ColLoTriangPacked, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4023,7 +4023,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<float, Prop0, ColLoTriangPacked, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4040,7 +4040,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<double, Prop0, ColLoTriangPacked, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4058,7 +4058,7 @@ namespace Seldon
   Solve(const SeldonTranspose& TransA,
 	const SeldonDiag& DiagA,
 	const Matrix<complex<float>, Prop0, ColLoTriangPacked, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4078,7 +4078,7 @@ namespace Seldon
 	const SeldonDiag& DiagA,
 	const Matrix<complex<double>, Prop0,
 	ColLoTriangPacked, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4097,7 +4097,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, RowUpTriangPacked, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4112,7 +4112,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<double, Prop0, RowUpTriangPacked, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4128,7 +4128,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Solve(const Matrix<complex<float>, Prop0, RowUpTriangPacked, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4146,7 +4146,7 @@ namespace Seldon
   void
   Solve(const Matrix<complex<double>, Prop0,
 	RowUpTriangPacked, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4167,7 +4167,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<float, Prop0, RowUpTriangPacked, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4184,7 +4184,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<double, Prop0, RowUpTriangPacked, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4202,7 +4202,7 @@ namespace Seldon
   Solve(const SeldonTranspose& TransA,
 	const SeldonDiag& DiagA,
 	const Matrix<complex<float>, Prop0, RowUpTriangPacked, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4222,7 +4222,7 @@ namespace Seldon
 	const SeldonDiag& DiagA,
 	const Matrix<complex<double>, Prop0,
 	RowUpTriangPacked, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4241,7 +4241,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, RowLoTriangPacked, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4256,7 +4256,7 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<double, Prop0, RowLoTriangPacked, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4272,7 +4272,7 @@ namespace Seldon
 	    class Allocator1>
   void
   Solve(const Matrix<complex<float>, Prop0, RowLoTriangPacked, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4290,7 +4290,7 @@ namespace Seldon
   void
   Solve(const Matrix<complex<double>, Prop0,
 	RowLoTriangPacked, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4311,7 +4311,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<float, Prop0, RowLoTriangPacked, Allocator0>& A,
-	     Vector<float, Vect_Full, Allocator1>& X)
+	     Vector<float, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4328,7 +4328,7 @@ namespace Seldon
   void Solve(const SeldonTranspose& TransA,
 	     const SeldonDiag& DiagA,
 	     const Matrix<double, Prop0, RowLoTriangPacked, Allocator0>& A,
-	     Vector<double, Vect_Full, Allocator1>& X)
+	     Vector<double, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4346,7 +4346,7 @@ namespace Seldon
   Solve(const SeldonTranspose& TransA,
 	const SeldonDiag& DiagA,
 	const Matrix<complex<float>, Prop0, RowLoTriangPacked, Allocator0>& A,
-	Vector<complex<float>, Vect_Full, Allocator1>& X)
+	Vector<complex<float>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES
@@ -4366,7 +4366,7 @@ namespace Seldon
 	const SeldonDiag& DiagA,
 	const Matrix<complex<double>, Prop0,
 	RowLoTriangPacked, Allocator0>& A,
-	Vector<complex<double>, Vect_Full, Allocator1>& X)
+	Vector<complex<double>, VectFull, Allocator1>& X)
   {
 
 #ifdef SELDON_CHECK_BOUNDARIES

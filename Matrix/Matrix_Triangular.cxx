@@ -347,7 +347,7 @@ namespace Seldon
       {
 	// Storing the previous values of the matrix.
 	int iold = this->m_;
-	Vector<value_type, Vect_Full, Allocator> xold(this->GetDataSize());
+	Vector<value_type, VectFull, Allocator> xold(this->GetDataSize());
 	for (int k = 0; k < this->GetDataSize(); k++)
 	  xold(k) = this->data_[k];
 	

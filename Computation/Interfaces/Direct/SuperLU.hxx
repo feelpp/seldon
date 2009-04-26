@@ -74,7 +74,7 @@ namespace Seldon
 			 bool keep_matrix = false);
     
     template<class Allocator2>
-    void Solve(Vector<double,Vect_Full,Allocator2>& x);
+    void Solve(Vector<double,VectFull,Allocator2>& x);
     
   };
   
@@ -92,7 +92,7 @@ namespace Seldon
 			 bool keep_matrix = false);
     
     template<class Allocator2>
-    void Solve(Vector<complex<double>,Vect_Full,Allocator2>& x);
+    void Solve(Vector<complex<double>,VectFull,Allocator2>& x);
   };
 }
 

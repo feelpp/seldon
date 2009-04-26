@@ -25,8 +25,8 @@ namespace Seldon
   
   //! Sparse vector class.
   template <class T, class Allocator>
-  class Vector<T, Vect_Sparse, Allocator>:
-    public Vector<T, Vect_Full, Allocator>
+  class Vector<T, VectSparse, Allocator>:
+    public Vector<T, VectFull, Allocator>
   {
     // typedef declarations.
   public:
@@ -49,7 +49,7 @@ namespace Seldon
     // Constructor.
     explicit Vector()  throw();
     explicit Vector(int i);
-    Vector(const Vector<T, Vect_Sparse, Allocator>& A);
+    Vector(const Vector<T, VectSparse, Allocator>& A);
     
     // Destructor.
     ~Vector();
@@ -60,7 +60,7 @@ namespace Seldon
     void Resize(int i);
     void SetData(int nz, T* data, int* index);
     template<class Allocator2>
-    void SetData(Vector<T, Vect_Full, Allocator2>& data,
+    void SetData(Vector<T, VectFull, Allocator2>& data,
 		 Vector<int>& index);
     void Nullify();
 
@@ -72,10 +72,10 @@ namespace Seldon
     reference operator() (int i);
 #ifndef SWIG
     value_type operator() (int i) const;
-    Vector<T, Vect_Sparse, Allocator>& operator= (const Vector<T, Vect_Sparse,
+    Vector<T, VectSparse, Allocator>& operator= (const Vector<T, VectSparse,
 						  Allocator>& X);
 #endif
-    void Copy(const Vector<T, Vect_Sparse, Allocator>& X);
+    void Copy(const Vector<T, VectSparse, Allocator>& X);
     
     // Basic functions.
     int* GetIndex() const;
@@ -83,7 +83,7 @@ namespace Seldon
     // Convenient functions.
     template <class T0>
 #ifndef SWIG
-    Vector<T, Vect_Sparse, Allocator>& operator= (const T0& X);
+    Vector<T, VectSparse, Allocator>& operator= (const T0& X);
 #endif
     void Print() const;
     void Assemble();
@@ -93,7 +93,7 @@ namespace Seldon
     void AddInteractionRow(int, int*, T*, bool);
     template<class Allocator0>
     void AddInteractionRow(int nb, Vector<int> col,
-			   Vector<T, Vect_Full, Allocator0> val, bool);
+			   Vector<T, VectFull, Allocator0> val, bool);
     
     // Input/output functions.
     void Write(string FileName) const;
@@ -118,13 +118,13 @@ namespace Seldon
 #ifndef SWIG
   template <class T, class Allocator>
   ostream& operator << (ostream& out,
-			const Vector<T, Vect_Sparse, Allocator>& V);
+			const Vector<T, VectSparse, Allocator>& V);
 #endif
 
   
   template<class T, class Allocator>
   SELDON_DEFAULT_ALLOCATOR<int>
-  Vector<T, Vect_Sparse, Allocator>::index_allocator_;
+  Vector<T, VectSparse, Allocator>::index_allocator_;
 
 
 } // namespace Seldon.
