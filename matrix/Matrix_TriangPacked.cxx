@@ -592,7 +592,6 @@ namespace Seldon
     
     T one(1);
     bool storage_col = (Storage::GetFirst(1,0) == 0);
-    int index(-1);
     if ((Storage::UpLo() && storage_col)||(!Storage::UpLo() && !storage_col))
       {
 	int index(-1);
