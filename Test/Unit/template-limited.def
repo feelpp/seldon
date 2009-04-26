@@ -28,7 +28,28 @@
  RowSymPacked);
 
 // Full storage, only complex accepted.
-(define @storage_full_complex = ColHerm, RowHerm);
+(define @storage_full_complex = );
+
+// Blas matrices.
+(define @storage_blas = ColMajor, RowMajor, ColSym, RowSym, ColSymPacked,
+ RowSymPacked);
+
+// Blas matrices, complex and real values accepted.
+(define @storage_blas_real_complex = ColMajor, RowMajor, ColSym, RowSym,
+ ColSymPacked, RowSymPacked);
+
+// Blas matrices, only complex accepted.
+(define @storage_blas_complex = );
+
+// Blas matrices per category.
+(define @storage_blasGE = ColMajor, RowMajor);
+(define @storage_blasHE = ColHerm, RowHerm);
+(define @storage_blasHP = );
+(define @storage_blasSY = ColSym, RowSym);
+(define @storage_blasSP = ColSymPacked, RowSymPacked);
+(define @storage_blasTR = ColUpTriang, ColLoTriang, RowUpTriang, RowLoTriang);
+(define @storage_blasTP = );
+(define @storage_blasT = );
 
 (define @storage_sparse = ColSparse, RowSparse, ColSymSparse, RowSymSparse);
 
@@ -49,3 +70,16 @@
 (define @complex = complexdouble);
 
 (define @real_complex = double, complexdouble);
+
+// Seldon objects.
+(define @trans = SeldonTrans, SeldonNoTrans, SeldonConjTrans);
+(define @trans+ = SeldonTrans, SeldonNoTrans, SeldonConjTrans);
+(define @diag = SeldonUnit, SeldonNonUnit);
+(define @uplo = SeldonUpper, SeldonLower);
+(define @norm = SeldonNorm1, SeldonNormInf);
+(define @conj = SeldonConj, SeldonUnconj);
+(define @side = SeldonLeft, SeldonRight);
+
+// Miscellaneous.
+(define @colrow = Col, Row);
+(define @ul = Up, Lo);
