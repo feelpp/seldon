@@ -1,4 +1,4 @@
-import os
+import os, glob
 
 # Path where "Seldon.hxx" may be found.
 seldon_path = "../.."
@@ -12,5 +12,9 @@ seldon_path = "../.."
 include_path = []
 library_path = []
 
+# Generates the tests.
+template_file = ARGUMENTS.get("template", "template-limited.def")
+for filename in glob.glob("template-*.hpp"):
+    os.system("python expand.py " + template_file + " " + filename)
 
 execfile(os.path.join(seldon_path, "Share/SConstruct"))
