@@ -15,6 +15,10 @@ library_path = []
 # Generates the tests.
 template_file = ARGUMENTS.get("template", "template-limited.def")
 for filename in glob.glob("template-*.hpp"):
-    os.system("python expand.py " + template_file + " " + filename)
+    if GetOption("clean"):
+        if os.path.isfile(filename[9:]):
+            os.remove(filename[9:])
+    else:
+        os.system("python expand.py " + template_file + " " + filename)
 
 execfile(os.path.join(seldon_path, "Share/SConstruct"))
