@@ -23,6 +23,9 @@
 #include "Seldon.hxx"
 using namespace Seldon;
 
+typedef complex<float> complexfloat;
+typedef complex<double> complexdouble;
+
 
 class MatrixTest: public CppUnit::TestFixture
 {
@@ -51,85 +54,75 @@ public:
   void test_constructor()
   {
     {
-      Matrix<@real, General, @storage_rectangular_full> M@storage_rectangular_full_@real(m_, n_);
-      Matrix<complex<@real>, General, @storage_rectangular_full> M@storage_rectangular_full_complex_@real(m_, n_);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == m_);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == n_);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_complex_@real.GetM() == m_);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_complex_@real.GetN() == n_);
+      Matrix<@real_complex, General, @storage_rectangular_full> M@storage_rectangular_full_@real_complex(m_, n_);
+      CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == m_);
+      CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == n_);
     }
     {
-      Matrix<@real, General, @storage_rectangular_full> M@storage_rectangular_full_@real(0, n_);
-      Matrix<complex<@real>, General, @storage_rectangular_full> M@storage_rectangular_full_complex_@real(0, n_);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == 0);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == n_);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_complex_@real.GetM() == 0);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_complex_@real.GetN() == n_);
+      Matrix<@real_complex, General, @storage_rectangular_full> M@storage_rectangular_full_@real_complex(0, n_);
+      CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == 0);
+      CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == n_);
     }
     {
-      Matrix<@real, General, @storage_rectangular_full> M@storage_rectangular_full_@real(m_, 0);
-      Matrix<complex<@real>, General, @storage_rectangular_full> M@storage_rectangular_full_complex_@real(m_, 0);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == m_);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == 0);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_complex_@real.GetM() == m_);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_complex_@real.GetN() == 0);
+      Matrix<@real_complex, General, @storage_rectangular_full> M@storage_rectangular_full_@real_complex(m_, 0);
+      CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == m_);
+      CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == 0);
     }
     {
-      Matrix<@real, General, @storage_full> M@storage_full_@real(0, 0);
-      Matrix<complex<@real>, General, @storage_full> M@storage_full_complex_@real(0, 0);
-      CPPUNIT_ASSERT(M@storage_full_@real.GetM() == 0);
-      CPPUNIT_ASSERT(M@storage_full_@real.GetN() == 0);
-      CPPUNIT_ASSERT(M@storage_full_complex_@real.GetM() == 0);
-      CPPUNIT_ASSERT(M@storage_full_complex_@real.GetN() == 0);
+      Matrix<@real_complex, General, @storage_full_real_complex> M@storage_full_real_complex_@real_complex(0, 0);
+      CPPUNIT_ASSERT(M@storage_full_real_complex_@real_complex.GetM() == 0);
+      CPPUNIT_ASSERT(M@storage_full_real_complex_@real_complex.GetN() == 0);
+      Matrix<@complex, General, @storage_full_complex> M@storage_full_complex_@complex(0, 0);
+      CPPUNIT_ASSERT(M@storage_full_complex_@complex.GetM() == 0);
+      CPPUNIT_ASSERT(M@storage_full_complex_@complex.GetN() == 0);
     }
     {
-      Matrix<@real, General, @storage_full> M@storage_full_@real(m_, m_);
-      Matrix<complex<@real>, General, @storage_full> M@storage_full_complex_@real(m_, m_);
-      CPPUNIT_ASSERT(M@storage_full_@real.GetM() == m_);
-      CPPUNIT_ASSERT(M@storage_full_@real.GetN() == m_);
-      CPPUNIT_ASSERT(M@storage_full_complex_@real.GetM() == m_);
-      CPPUNIT_ASSERT(M@storage_full_complex_@real.GetN() == m_);
+      Matrix<@real_complex, General, @storage_full_real_complex> M@storage_full_real_complex_@real_complex(m_, m_);
+      CPPUNIT_ASSERT(M@storage_full_real_complex_@real_complex.GetM() == m_);
+      CPPUNIT_ASSERT(M@storage_full_real_complex_@real_complex.GetN() == m_);
+      Matrix<@complex, General, @storage_full_complex> M@storage_full_complex_@complex(m_, m_);
+      CPPUNIT_ASSERT(M@storage_full_complex_@complex.GetM() == m_);
+      CPPUNIT_ASSERT(M@storage_full_complex_@complex.GetN() == m_);
     }
   }
 
 
   void test_reallocate()
   {
-    Matrix<@real, General, @storage_rectangular_full> M@storage_rectangular_full_@real(m_, n_);
-    Matrix<complex<@real>, General, @storage_rectangular_full> M@storage_rectangular_full_complex_@real(m_, n_);
+    Matrix<@real_complex, General, @storage_rectangular_full> M@storage_rectangular_full_@real_complex(m_, n_);
 
-    M@storage_rectangular_full_@real.Reallocate(0, 0);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == 0);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == 0);
-    M@storage_rectangular_full_@real.Reallocate(m_, n_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == m_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == n_);
-    M@storage_rectangular_full_@real.Reallocate(m_, n_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == m_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == n_);
-    M@storage_rectangular_full_@real.Reallocate(2 * m_, n_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == 2 * m_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == n_);
-    M@storage_rectangular_full_@real.Reallocate(2 * m_, 2 * n_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == 2 * m_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == 2 * n_);
-    M@storage_rectangular_full_@real.Reallocate(m_, 0);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == m_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == 0);
-    M@storage_rectangular_full_@real.Reallocate(0, n_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == 0);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == n_);
-    M@storage_rectangular_full_@real.Reallocate(0, 0);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == 0);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == 0);
-    M@storage_rectangular_full_@real.Reallocate(0, n_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == 0);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == n_);
-    M@storage_rectangular_full_@real.Reallocate(m_, n_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == m_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == n_);
-    M@storage_rectangular_full_@real.Reallocate(0, n_);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetM() == 0);
-    CPPUNIT_ASSERT(M@storage_rectangular_full_@real.GetN() == n_);
+    M@storage_rectangular_full_@real_complex.Reallocate(0, 0);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == 0);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == 0);
+    M@storage_rectangular_full_@real_complex.Reallocate(m_, n_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == m_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == n_);
+    M@storage_rectangular_full_@real_complex.Reallocate(m_, n_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == m_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == n_);
+    M@storage_rectangular_full_@real_complex.Reallocate(2 * m_, n_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == 2 * m_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == n_);
+    M@storage_rectangular_full_@real_complex.Reallocate(2 * m_, 2 * n_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == 2 * m_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == 2 * n_);
+    M@storage_rectangular_full_@real_complex.Reallocate(m_, 0);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == m_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == 0);
+    M@storage_rectangular_full_@real_complex.Reallocate(0, n_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == 0);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == n_);
+    M@storage_rectangular_full_@real_complex.Reallocate(0, 0);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == 0);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == 0);
+    M@storage_rectangular_full_@real_complex.Reallocate(0, n_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == 0);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == n_);
+    M@storage_rectangular_full_@real_complex.Reallocate(m_, n_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == m_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == n_);
+    M@storage_rectangular_full_@real_complex.Reallocate(0, n_);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == 0);
+    CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == n_);
   }
 };

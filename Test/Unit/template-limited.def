@@ -20,7 +20,15 @@
 (define @storage = ColMajor, RowMajor, ColSparse, RowSparse, ColSymSparse,
  RowSymSparse, ColSymPacked, RowSymPacked);
 
+// Dense matrices.
 (define @storage_full = ColMajor, RowMajor, ColSymPacked, RowSymPacked);
+
+// Full storage, complex and real values accepted.
+(define @storage_full_real_complex = ColMajor, RowMajor, ColSymPacked,
+ RowSymPacked);
+
+// Full storage, only complex accepted.
+(define @storage_full_complex = ColHerm, RowHerm);
 
 (define @storage_sparse = ColSparse, RowSparse, ColSymSparse, RowSymSparse);
 
@@ -38,6 +46,6 @@
 
 (define @real = double);
 
-(define @complex = complex<double>);
+(define @complex = complexdouble);
 
-(define @real_complex = double, complex<double>);
+(define @real_complex = double, complexdouble);
