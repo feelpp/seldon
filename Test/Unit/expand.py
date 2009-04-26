@@ -93,6 +93,10 @@ def expand_string(input_string, replacement_list, recursive = True):
     tmp_string = input_string
     for markup in key_list:
         active.append(markup in tmp_string)
+        # If any active markup is not to be expanded, an empty list should be
+        # returned.
+        if markup in tmp_string and replacement_list[markup] == []:
+            return []
         tmp_string = tmp_string.replace(markup, "")
     # Is any replacement needed?
     if any(active):
@@ -160,9 +164,16 @@ def read_markup_list(filename):
         if "(" in line[8:-2]:
             raise Exception, "Syntax error in \"define\":\n" + line
         line_list = re.split("[ \n\t,:=]+", line[8:-2].strip())
-        if len(line_list) < 2:
+        if line_list != [] and line_list[-1] == "":
+            # Removes the empty string.
+            line_list = line_list[:-1]
+        if line_list == []:
             raise Exception, "Syntax error in \"define\":\n" + line
-        dictionary[line_list[0]] = line_list[1:]
+        if len(line_list) == 1:
+            # Empty: no replacement.
+            dictionary[line_list[0]] = []
+        else:
+            dictionary[line_list[0]] = line_list[1:]
 
     return dictionary
         
