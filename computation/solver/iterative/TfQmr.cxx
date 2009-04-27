@@ -40,25 +40,25 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int TfQmr(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int TfQmr(Matrix1& A, Vector1& x, const Vector1& b,
 	    Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    Vector tmp(N), r0(N), v(N), h(N), w(N),
-      y1(N), g(N), y0(N), rtilde(N), d(N);
+    Vector1 tmp(b), r0(b), v(b), h(b), w(b),
+      y1(b), g(b), y0(b), rtilde(b), d(b);
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     Complexe sigma, alpha, beta, eta, rho, rho0;
     Titer c, kappa, tau, theta;
     
     tmp.Zero();
     // x is initial value
     // 1. r0 = M^{-1} (b - A x)
-    Seldon::Copy(b, tmp);
+    Copy(b, tmp);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), tmp);
     else
@@ -72,16 +72,16 @@ namespace Seldon
       return iter.ErrorCode();
     
     // 2. w=y=r
-    Seldon::Copy(r0, w);
-    Seldon::Copy(r0, y1);
+    Copy(r0, w);
+    Copy(r0, y1);
     
     // 3. g=v=M^{-1}Ay
-    Seldon::Copy(y1, v);
+    Copy(y1, v);
     Mlt(A, v, tmp);
     M.Solve(A, tmp, v);
     ++iter;
     
-    Seldon::Copy(v, g);
+    Copy(v, g);
     
     // 4. d=0
     d.Zero();
@@ -94,7 +94,7 @@ namespace Seldon
     eta = 0.0;
     
     // 7. rtilde = r
-    Seldon::Copy(r0, rtilde);
+    Copy(r0, rtilde);
     
     // 8. rho=dot(rtilde, r)
     rho = DotProd(rtilde, r0);
@@ -118,11 +118,11 @@ namespace Seldon
 	alpha = rho / sigma;
 	
 	//y0 = y1 - alpha * v;
-	Seldon::Copy(y1, y0);
-	Seldon::Add(-alpha, v, y0);
+	Copy(y1, y0);
+	Add(-alpha, v, y0);
 	
 	// 12. h=M^{-1}*A*y
-	Seldon::Copy(y0, h);
+	Copy(y0, h);
 	Mlt(A, h, tmp);
 	M.Solve(A, tmp, h);
 	//split the loop of "for m = 2k-1, 2k"
@@ -130,7 +130,7 @@ namespace Seldon
 	//The first one
 	// 13. w = w-alpha*M^{-1} A y0
 	//w = w - alpha * g;
-	Seldon::Add(-alpha, g, w);
+	Add(-alpha, g, w);
 	// 18. d=y0+((theta0^2)*eta0/alpha)*d         //need check breakdown
 	if (alpha == Complexe(0))
 	  {
@@ -139,7 +139,7 @@ namespace Seldon
 	  }
 	//d = y1 + ( theta * theta * eta / alpha ) * d;
 	Mlt(theta * theta * eta / alpha,d);
-	Seldon::Add(Complexe(1), y1, d);
+	Add(Complexe(1), y1, d);
 	
 	// 14. theta=||w||_2/tau0       //need check breakdown
 	if (tau == Titer(0))
@@ -159,7 +159,7 @@ namespace Seldon
 	eta = c * c * alpha;
 	
 	// 19. x = x+eta*d
-	Seldon::Add(eta, d, x);
+	Add(eta, d, x);
 	// 20. kappa = tau*sqrt(m+1)
 	kappa = tau * sqrt( 2.* (iter.GetNumberIteration()+1) );
 	
@@ -170,15 +170,15 @@ namespace Seldon
 	  }
 	++iter;
 	// g = h;
-	Seldon::Copy(h, g);
+	Copy(h, g);
 	//The second one
 	
 	// 13. w = w-alpha*M^{-1} A y0
 	// w = w - alpha * g;
-	Seldon::Add(-alpha,g,w);
+	Add(-alpha,g,w);
 	// 18. d = y0+((theta0^2)*eta0/alpha)*d
 	Mlt(theta * theta * eta / alpha,d);
-	Seldon::Add(Complexe(1), y0, d);
+	Add(Complexe(1), y0, d);
 	// 14. theta=||w||_2/tau0
 	if (tau == Titer(0))
 	  {
@@ -197,7 +197,7 @@ namespace Seldon
 	eta = c * c * alpha;
 	
 	// 19. x = x+eta*d
-	Seldon::Add(eta, d, x);
+	Add(eta, d, x);
 	
 	// 20. kappa = tau*sqrt(m+1)
 	kappa = tau * sqrt(2.* (iter.GetNumberIteration()+1)  + 1.);
@@ -221,19 +221,19 @@ namespace Seldon
 	beta = rho/rho0;
 	
 	// 24. y = w+beta*y0
-	Seldon::Copy(w, y1);
-	Seldon::Add(beta, y0, y1);
+	Copy(w, y1);
+	Add(beta, y0, y1);
 	
 	// 25. g=M^{-1} A y
-	Seldon::Copy(y1, g);
+	Copy(y1, g);
 	Mlt(A, g, tmp);
 	M.Solve(A, tmp, g);
 	
 	// 26. v = M^{-1}A y + beta*( M^{-1} A y0 + beta*v)
 	
 	Mlt(beta*beta, v);
-	Seldon::Add(beta, h, v);
-	Seldon::Add(Complexe(1), g, v);
+	Add(beta, h, v);
+	Add(Complexe(1), g, v);
 	
 	++iter;
       }

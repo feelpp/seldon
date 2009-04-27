@@ -69,6 +69,7 @@ namespace Seldon
     // Constructors.
     Array3D();
     Array3D(int i, int j, int k);
+    Array3D(const Array3D<T, Allocator>& A);
   
     // Destructor.
     ~Array3D();

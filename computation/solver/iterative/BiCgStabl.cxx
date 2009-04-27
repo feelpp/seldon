@@ -39,36 +39,37 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int BiCgStabl(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int BiCgStabl(Matrix1& A, Vector1& x, const Vector1& b,
 		Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     int m = iter.GetRestart();
     int l = m;
     Complexe rho_0, rho_1, alpha, beta, omega, sigma, zero, unity;
     zero = 0.0; unity = 1.0;
     
     // q temporary vector before preconditioning, r0 initial residual
-    Vector q(N), r0(N), gamma(l+1), gamma_prime(l+1), gamma_twice(l+1);
-    Seldon::Matrix<Complexe, General, RowMajor> tau(l+1,l+1);
+    Vector1 q(b), r0(b);
+    Vector<Complexe> gamma(l+1), gamma_prime(l+1), gamma_twice(l+1);
+    Matrix<Complexe, General, RowMajor> tau(l+1,l+1);
     // history of u and residual r
-    Seldon::Vector<Vector, VectFull, NewAlloc<Vector> > r(l+1), u(l+1);
+    std::vector<Vector1> r(l+1, b), u(l+1, b);
     for (int i = 0; i <= l; i++)
       {
-	r(i).Reallocate(N); r(i).Zero();
-	u(i).Reallocate(N); u(i).Zero();
+	r[i].Zero();
+	u[i].Zero();
       }
     tau.Zero(); gamma.Zero(); gamma_prime.Zero(); gamma_twice.Zero();
     
     // we compute the residual r = (b - Ax)
-    Seldon::Copy(b, r(0));
+    Copy(b, r[0]);
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), r(0));
+      MltAdd(Complexe(-1), A, x, Complexe(1), r[0]);
     else
       x.Zero();
     
@@ -77,21 +78,21 @@ namespace Seldon
     if (success_init !=0 )
       return iter.ErrorCode();
     
-    Seldon::Copy(r(0), r0); // we keep the first residual
+    Copy(r[0], r0); // we keep the first residual
     
     // we initialize constants
     rho_0 = unity; alpha = zero; omega = unity; tau.Zero();
     
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
-    while (! iter.Finished(r(0)))
+    while (! iter.Finished(r[0]))
       {
 	rho_0 *= -omega;
 	
 	// Bi-CG Part
 	for (int j = 0; j < l; j++)
 	  {
-	    rho_1 = DotProd(r(j), r0);
+	    rho_1 = DotProd(r[j], r0);
 	    if (rho_0 == zero)
 	      {
 		iter.Fail(1, "Bicgstabl breakdown #1");
@@ -101,25 +102,25 @@ namespace Seldon
 	    rho_0 = rho_1;
 	    for (int i = 0; i <= j; i++)
 	      {
-		Mlt(-beta, u(i)); Seldon::Add(unity, r(i), u(i));
+		Mlt(-beta, u[i]); Add(unity, r[i], u[i]);
 	      }
-	    M.Solve(A, u(j), q); // preconditioning
-	    Mlt(A, q, u(j+1)); // product Matrix Vector
+	    M.Solve(A, u[j], q); // preconditioning
+	    Mlt(A, q, u[j+1]); // product Matrix Vector
 	    
 	    ++iter;
-	    sigma = DotProd(u(j+1), r0);
+	    sigma = DotProd(u[j+1], r0);
 	    if (sigma == zero)
 	      {
 		iter.Fail(2, "Bicgstabl Breakdown #2");
 		break;
 	      }
 	    alpha = rho_1/sigma;
-	    Seldon::Add(alpha, u(0), x);
+	    Add(alpha, u[0], x);
 	    for (int i = 0; i <= j; i++)
-	      Seldon::Add(-alpha, u(i+1), r(i));
+	      Add(-alpha, u[i+1], r[i]);
 	    
-	    M.Solve(A, r(j), q); // preconditioning
-	    Mlt(A, q, r(j+1)); // product matrix vector
+	    M.Solve(A, r[j], q); // preconditioning
+	    Mlt(A, q, r[j+1]); // product matrix vector
 	    
 	    ++iter;
 	  }
@@ -131,13 +132,13 @@ namespace Seldon
 	      {
 		if (gamma(i) != zero)
 		  {
-		    tau(i,j) = DotProd(r(j), r(i))/gamma(i);
-		    Seldon::Add(-tau(i,j), r(i), r(j));
+		    tau(i,j) = DotProd(r[j], r[i])/gamma(i);
+		    Add(-tau(i,j), r[i], r[j]);
 		  }
 	      }
-	    gamma(j) = DotProd(r(j), r(j));
+	    gamma(j) = DotProd(r[j], r[j]);
 	    if (gamma(j) != zero)
-	      gamma_prime(j) = DotProd(r(0), r(j))/gamma(j);
+	      gamma_prime(j) = DotProd(r[0], r[j])/gamma(j);
 	  }
 	
 	// gamma = tau-1 * gamma_prime
@@ -162,18 +163,18 @@ namespace Seldon
 	  }
 	  
 	// update
-	Seldon::Add(gamma(1), r(0), x);
-	Seldon::Add(-gamma_prime(l), r(l), r(0));
-	Seldon::Add(-gamma(l), u(l), u(0));
+	Add(gamma(1), r[0], x);
+	Add(-gamma_prime(l), r[l], r[0]);
+	Add(-gamma(l), u[l], u[0]);
 	for (int j = 1;j <= l-1; j++)
 	  {
-	    Seldon::Add(-gamma(j), u(j), u(0));
-	    Seldon::Add(gamma_twice(j), r(j), x);
-	    Seldon::Add(-gamma_prime(j), r(j), r(0));
+	    Add(-gamma(j), u[j], u[0]);
+	    Add(gamma_twice(j), r[j], x);
+	    Add(-gamma_prime(j), r[j], r[0]);
 	  }
       }
     // change of coordinates (right preconditioning)
-    Seldon::Copy(x,q); M.Solve(A, q, x);
+    Copy(x,q); M.Solve(A, q, x);
     return iter.ErrorCode();
   }
   

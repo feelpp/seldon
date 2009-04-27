@@ -383,10 +383,10 @@ int main()
   //Matrix<double, Symmetric, ColSym> A4;
   //TestSymmetricMatrix(A4);
   
-  Matrix<double, Symmetric, RowSymPacked> A5;
+  Matrix<complex<double>, Symmetric, RowSymPacked> A5;
   TestSymmetricMatrix(A5);
   
-  Matrix<double, Symmetric, ColSymPacked> A6;
+  Matrix<complex<double>, Symmetric, ColSymPacked> A6;
   TestSymmetricMatrix(A6);
 
   //Matrix<complex<double>, General, RowHerm> A7

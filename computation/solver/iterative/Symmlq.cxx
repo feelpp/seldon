@@ -42,20 +42,20 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int Symmlq(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Symmlq(Matrix1& A, Vector1& x, const Vector1& b,
 	     Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     Complexe alpha, beta, ibeta, beta_old, beta1,
       ceta(0), ceta_oold, ceta_old, ceta_bar;
     Complexe c, cold, s, sold, coold, soold, rho0, rho1, rho2, rho3, dp;
 
-    Vector r(N), z(N), u(N), v(N), w(N), u_old(N), v_old(N), w_bar(N);
+    Vector1 r(b), z(b), u(b), v(b), w(b), u_old(b), v_old(b), w_bar(b);
     
     Titer np, s_prod;
     u_old.Zero(); v_old.Zero(); w.Zero(); w_bar.Zero();
@@ -64,7 +64,7 @@ namespace Seldon
     if (success_init != 0)
       return iter.ErrorCode();
     
-    Seldon::Copy(b, r);
+    Copy(b, r);
     // r = b - A x
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r);
@@ -79,10 +79,10 @@ namespace Seldon
     dp = sqrt(dp); beta = dp; beta1 = beta;
     s_prod = abs(beta1);
     
-    Seldon::Copy(r, v); Seldon::Copy(z, u);
+    Copy(r, v); Copy(z, u);
     ibeta = 1.0/beta;
     Mlt(ibeta, v); Mlt(ibeta, u);
-    Seldon::Copy(u, w_bar);
+    Copy(u, w_bar);
     np = Norm2(b);
     
     iter.SetNumberIteration(0);
@@ -92,18 +92,18 @@ namespace Seldon
 	// update
 	if (!iter.First())
 	  {
-	    Seldon::Copy(v, v_old); Seldon::Copy(u, u_old);
+	    Copy(v, v_old); Copy(u, u_old);
 	    ibeta = 1.0/beta;
 	    // v = ibeta r
 	    // u = ibeta z
-	    Seldon::Copy(r, v); Mlt(ibeta, v);
-	    Seldon::Copy(z, u); Mlt(ibeta, u);
+	    Copy(r, v); Mlt(ibeta, v);
+	    Copy(z, u); Mlt(ibeta, u);
 	    // w = c*w_bar + s*u
-	    Seldon::Copy(w_bar, w); Mlt(c, w); Seldon::Add(s, u, w);
+	    Copy(w_bar, w); Mlt(c, w); Add(s, u, w);
 	    // w_bar = -s*w_bar + c*u
-	    Mlt(Complexe(-s),w_bar); Seldon::Add(c,u,w_bar);
+	    Mlt(Complexe(-s),w_bar); Add(c,u,w_bar);
 	    // x = x+ceta*w
-	    Seldon::Add(ceta,w,x);
+	    Add(ceta,w,x);
 	    
 	    ceta_oold = ceta_old;
 	    ceta_old = ceta;
@@ -117,13 +117,13 @@ namespace Seldon
 	
 	// r = r - alpha*v
 	// z = z - alpha*u
-	Seldon::Add(-alpha,v,r);
-	Seldon::Add(-alpha,u,z);
+	Add(-alpha,v,r);
+	Add(-alpha,u,z);
 	
 	// r = r - beta*v_old
 	// z = z - beta*u_old
-	Seldon::Add(-beta,v_old,r);
-	Seldon::Add(-beta,u_old,z);
+	Add(-beta,v_old,r);
+	Add(-beta,u_old,z);
 	
 	beta_old = beta;
 	dp = DotProd(r,z);
@@ -157,7 +157,7 @@ namespace Seldon
     else
       ceta_bar = ceta/c;
     
-    Seldon::Add(ceta_bar,w_bar,x);
+    Add(ceta_bar,w_bar,x);
     
     return iter.ErrorCode();
   }

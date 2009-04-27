@@ -37,24 +37,24 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int Lsqr(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Lsqr(Matrix1& A, Vector1& x, const Vector1& b,
 	   Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     Complexe rho, rho_bar, phi, phi_bar, theta, c, s, tmp;
     Titer beta, alpha, rnorm;
-    Vector v(N), v1(N), u(N), u1(N),w(N);
+    Vector1 v(b), v1(b), u(b), u1(b), w(b);
         
     int success_init = iter.Init(b);
     if (success_init != 0)
       return iter.ErrorCode();
     
-    Seldon::Copy(b, u);
+    Copy(b, u);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), u);
     else
@@ -62,7 +62,7 @@ namespace Seldon
     
     rnorm = Norm2(u);
     
-    Seldon::Copy(b, u);
+    Copy(b, u);
     beta = Norm2(u);
     tmp = 1.0/beta; Mlt(tmp, u);
     // matrix vector product
@@ -70,7 +70,7 @@ namespace Seldon
     alpha = Norm2(v);
     tmp = 1.0/alpha; Mlt(tmp, v);
     
-    Seldon::Copy(v,w); x.Zero();
+    Copy(v,w); x.Zero();
     
     phi_bar = beta; rho_bar = alpha;
     
@@ -81,7 +81,7 @@ namespace Seldon
 	// matrix vector product u1 = A*v
 	Mlt(A, v, u1);
 	// u1 = u1 - alpha*u
-	Seldon::Add(-alpha, u, u1);
+	Add(-alpha, u, u1);
 	beta = Norm2(u1);
 	if (beta == Complexe(0) )
 	  {
@@ -93,7 +93,7 @@ namespace Seldon
 	// matrix vector  product v1 = A^t u1
 	Mlt(SeldonTrans, A, u1, v1);
 	// v1 = v1 - beta*v
-	Seldon::Add(-beta, v, v1);
+	Add(-beta, v, v1);
 	alpha = Norm2(v1);
 	if (alpha == Complexe(0) )
 	  {
@@ -118,10 +118,10 @@ namespace Seldon
 	
 	// x = x + (phi/rho) w
 	tmp = phi/rho;
-	Seldon::Add(tmp, w, x);
+	Add(tmp, w, x);
 	// w = v1 - (theta/rho) w
 	tmp  = -theta/rho;
-	Mlt(tmp,w); Seldon::Add(Complexe(1), v1, w);
+	Mlt(tmp,w); Add(Complexe(1), v1, w);
 	
 	rnorm = abs(phi_bar);
 	

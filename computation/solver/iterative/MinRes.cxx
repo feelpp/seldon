@@ -42,17 +42,17 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int MinRes(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int MinRes(Matrix1& A, Vector1& x, const Vector1& b,
 	     Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
-    Vector u_old(N), u(N), r(N), v_old(N), v(N),
-      w_old(N), w(N), z(N), w_oold(N);
+    typedef typename Vector1::value_type Complexe;
+    Vector1 u_old(b), u(b), r(b), v_old(b), v(b),
+      w_old(b), w(b), z(b), w_oold(b);
     
     Complexe dp, beta, ibeta, beta_old, alpha, eta, ceta;
     Complexe cold, coold, c, soold, sold, s, rho0, rho1, rho2, rho3;
@@ -61,7 +61,7 @@ namespace Seldon
     if (success_init != 0)
       return iter.ErrorCode();
     
-    Seldon::Copy(b,r);
+    Copy(b,r);
     // r = b - A x
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r);
@@ -73,7 +73,7 @@ namespace Seldon
     M.Solve(A, r, z);
     dp = DotProd(r, z);
     dp = sqrt(dp); beta = dp; eta = beta;
-    Seldon::Copy(r, v); Seldon::Copy(z, u);
+    Copy(r, v); Copy(z, u);
     
     ibeta = 1.0 / beta;
     Mlt(ibeta, v); Mlt(ibeta, u);
@@ -93,12 +93,12 @@ namespace Seldon
 	
 	//  r = r - alpha v
 	//  z = z - alpha u
-	Seldon::Add(-alpha, v, r);
-	Seldon::Add(-alpha, u, z);
+	Add(-alpha, v, r);
+	Add(-alpha, u, z);
 	//  r = r - beta v_old
 	//  z = z - beta u_old
-	Seldon::Add(-beta, v_old, r);
-	Seldon::Add(-beta, u_old, z);
+	Add(-beta, v_old, r);
+	Add(-beta, u_old, z);
 	
 	beta_old = beta;
 	
@@ -123,19 +123,19 @@ namespace Seldon
 	s = beta / rho1;
 	 
 	// update
-	Seldon::Copy(w_old, w_oold); Seldon::Copy(w, w_old);
-	Seldon::Copy(u, w);
+	Copy(w_old, w_oold); Copy(w, w_old);
+	Copy(u, w);
 	 
-	Seldon::Add(-rho2, w_old, w);
-	Seldon::Add(-rho3, w_oold, w);
+	Add(-rho2, w_old, w);
+	Add(-rho3, w_oold, w);
 	Mlt(Complexe(1./rho1), w);
 	 
 	ceta = c*eta;
-	Seldon::Add(ceta, w, x);
+	Add(ceta, w, x);
 	eta = -s*eta;
 	 
-	Seldon::Copy(v, v_old); Seldon::Copy(u, u_old);
-	Seldon::Copy(r, v); Seldon::Copy(z, u);
+	Copy(v, v_old); Copy(u, u_old);
+	Copy(r, v); Copy(z, u);
 	if (beta == Complexe(0) )
 	  {
 	    iter.Fail(2, "MinRes breakdown #2");

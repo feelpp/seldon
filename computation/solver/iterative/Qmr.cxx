@@ -37,23 +37,23 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int Qmr(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Qmr(Matrix1& A, Vector1& x, const Vector1& b,
 	  Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     Complexe delta, ep(0), beta;
     Titer  rho, rho_1, xi;
     Complexe theta_1, gamma_1;
     Complexe theta(0), gamma(1), eta(-1);
     
-    Vector r(N), y(N), z_tld(N); r.Zero();
-    Vector v(N), w(N), p_tld(N);
-    Vector p(N), q(N), d(N), s(N);
+    Vector1 r(b), y(b), z_tld(b); r.Zero();
+    Vector1 v(b), w(b), p_tld(b);
+    Vector1 p(b), q(b), d(b), s(b);
     
     // we initialize iter
     int success_init = iter.Init(b);
@@ -61,18 +61,18 @@ namespace Seldon
       return iter.ErrorCode();
     
     // r = b - Ax
-    Seldon::Copy(b, r);
+    Copy(b, r);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r);
     else
       x.Zero();
     
-    Seldon::Copy(r, v);
+    Copy(r, v);
     
     M.Solve(A, v, y);
     rho = Norm2(y);
     
-    Seldon::Copy(r, w);
+    Copy(r, w);
     xi = Norm2(w);
     
     iter.SetNumberIteration(0);
@@ -109,17 +109,17 @@ namespace Seldon
 	
 	if (iter.First())
 	  {
-	    Seldon::Copy(y, p);
-	    Seldon::Copy(z_tld, q);
+	    Copy(y, p);
+	    Copy(z_tld, q);
 	  }
 	else
 	  {
 	    // p = y - (xi delta / ep) p
 	    // q = z_tld - (rho delta / ep) q
 	    Mlt(Complexe(-(xi  * delta / ep)), p);
-	    Seldon::Add(Complexe(1), y, p);
+	    Add(Complexe(1), y, p);
 	    Mlt(Complexe(-(rho  * delta / ep)), q);
-	    Seldon::Add(Complexe(1), z_tld, q);
+	    Add(Complexe(1), z_tld, q);
 	  }
 	
 	// product matrix vector p_tld = A*p
@@ -141,7 +141,7 @@ namespace Seldon
 	  
 	// v = -beta v + p_tld
 	Mlt(Complexe(-beta), v);
-	Seldon::Add(Complexe(1), p_tld, v);
+	Add(Complexe(1), p_tld, v);
 	M.Solve(A, v, y);
 	
 	rho_1 = rho;
@@ -150,7 +150,7 @@ namespace Seldon
 	// product matrix vector z_tld = A q
 	Mlt(SeldonTrans, A, q, z_tld);
 	// w = z_tld - beta*w
-	Mlt(Complexe(-beta), w); Seldon::Add(Complexe(1), z_tld, w);
+	Mlt(Complexe(-beta), w); Add(Complexe(1), z_tld, w);
 	
 	xi = Norm2(w);
 	
@@ -171,21 +171,21 @@ namespace Seldon
 	
 	if (iter.First())
 	  {
-	    Seldon::Copy(p, d);
+	    Copy(p, d);
 	    Mlt(eta, d);
-	    Seldon::Copy(p_tld, s);
+	    Copy(p_tld, s);
 	    Mlt(eta, s);
 	  }
 	else
 	  {
 	    Complexe tmp = (theta_1 * theta_1 * gamma * gamma);
 	    Mlt(tmp, d);
-	    Seldon::Add(eta, p, d);
+	    Add(eta, p, d);
 	    Mlt(tmp, s);
-	    Seldon::Add(eta, p_tld, s);
+	    Add(eta, p_tld, s);
 	  }
-	Seldon::Add(Complexe(1), d, x);
-	Seldon::Add(-Complexe(1), s, r);
+	Add(Complexe(1), d, x);
+	Add(-Complexe(1), s, r);
 	
 	++iter;
       }

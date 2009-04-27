@@ -44,77 +44,58 @@ namespace Seldon
   template<class T>
   inline MatrixMumps<T>::MatrixMumps()
   {
-    // MPI initialization for sequential execution
-    int ierr = MPI_Init(0, 0);
-    ierr = MPI_Comm_rank(-987654, &rank);
-    
+#ifdef SELDON_WITH_MPI
+    // MPI initialization for parallel version
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+#endif
+    // struct_mumps.comm_fortran = MPI_Comm_c2f(MPI_COMM_WORLD);
+    struct_mumps.comm_fortran = -987654;
+      
     // parameters for mumps
     struct_mumps.job = -1;
     struct_mumps.par = 1;
     struct_mumps.sym = 0; // 0 -> unsymmetric matrix
-    struct_mumps.comm_fortran = -987654;
     
     // mumps is called
     CallMumps();
     
     // other parameters
     struct_mumps.n = 0;
-    struct_mumps.icntl[6] = 7;
-    type_ordering = -1; // default : we let Mumps choose the ordering
+    type_ordering = 7; // default : we let Mumps choose the ordering
     print_level = 0;
+    out_of_core = false;
   }
   
   
-  //! informs mumps that the matrix is symmetric
-  template<class T>
-  inline void MatrixMumps<T>::InitSymmetricMatrix()
+  //! initialization of the computation
+  template<class T> template<class MatrixSparse>
+  inline void MatrixMumps<T>::InitMatrix(const MatrixSparse& A)
   {
+    // we clear previous factorization
+    Clear();
+    
     // the user has to infom the symmetry during the initialization stage
     struct_mumps.job = -1;
     struct_mumps.par = 1;
-    struct_mumps.sym = 2; // general symmetric matrix
+    if (IsSymmetricMatrix(A))
+      struct_mumps.sym = 2; // general symmetric matrix
+    else
+      struct_mumps.sym = 0; // unsymmetric matrix
     
     // mumps is called
     CallMumps();
     
     struct_mumps.icntl[13] = 20;
+    struct_mumps.icntl[6] = type_ordering;
     // setting out of core parameters
     if (out_of_core)
       struct_mumps.icntl[21] = 1;
     else
       struct_mumps.icntl[21] = 0;
+
+    struct_mumps.icntl[17] = 0;    
     
     // the print level is set in mumps
-    if (print_level >= 0)
-      {
-	struct_mumps.icntl[0] = 6;
-	struct_mumps.icntl[1] = 0;
-	struct_mumps.icntl[2] = 6;
-	struct_mumps.icntl[3] = 2;
-      }
-    else
-      {
-	struct_mumps.icntl[0] = -1;
-	struct_mumps.icntl[1] = -1;
-	struct_mumps.icntl[2] = -1;
-	struct_mumps.icntl[3] = 0;
-      }
-  }
-  
-  
-  //! informs mumps that the matrix is unsymmetric
-  template<class T>
-  inline void MatrixMumps<T>::InitUnSymmetricMatrix()
-  {
-    // the user has to infom the symmetry during the initialization stage
-    struct_mumps.job = -1;
-    struct_mumps.par = 1;
-    struct_mumps.sym = 0; // general unsymmetric matrix
-    
-    // mumps is called
-    CallMumps();
-    
-    struct_mumps.icntl[13] = 20;
     if (print_level >= 0)
       {
 	struct_mumps.icntl[0] = 6;
@@ -136,7 +117,7 @@ namespace Seldon
   template<class T>
   inline void MatrixMumps<T>::SelectOrdering(int num_ordering)
   {
-    struct_mumps.icntl[6] = num_ordering;
+    type_ordering = num_ordering;
   }
   
   
@@ -156,7 +137,7 @@ namespace Seldon
       {
 	struct_mumps.job = -2;
 	CallMumps(); /* Terminate instance */
-	MPI_Finalize();
+	
 	struct_mumps.n = 0;
       }
   }
@@ -214,6 +195,8 @@ namespace Seldon
   void MatrixMumps<T>::FindOrdering(Matrix<T, Prop, Storage, Allocator> & mat,
 				    IVect& numbers, bool keep_matrix)
   {
+    InitMatrix(mat);
+    
     int n = mat.GetM(), nnz = mat.GetNonZeros();
     // conversion in coordinate format
     IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
@@ -250,6 +233,8 @@ namespace Seldon
   void MatrixMumps<T>::FactorizeMatrix(Matrix<T,Prop,Storage,Allocator> & mat,
 				       bool keep_matrix)
   {
+    InitMatrix(mat);
+    
     int n = mat.GetM(), nnz = mat.GetNonZeros();
     // conversion in coordinate format with fortran convention (1-index)
     IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
@@ -257,6 +242,7 @@ namespace Seldon
     if (!keep_matrix)
       mat.Clear();
     
+    // DISP(num_row); DISP(num_col); DISP(values); DISP(nnz); DISP(values.GetM()); DISP(n);
     /* Define the problem on the host */
     if (rank == 0)
       {
@@ -293,6 +279,8 @@ namespace Seldon
 		 Matrix<T, Prop2, Storage2, Allocator2> & mat_schur,
 		 bool keep_matrix)
   {
+    InitMatrix(mat);
+    
     int n_schur = num.GetM(), n = mat.GetM();
     // Subscripts are changed to respect fortran convention
     IVect index_schur(n_schur);
@@ -332,20 +320,173 @@ namespace Seldon
     \param[in,out] x right-hand-side on input, solution on output
     It is assumed that a call to FactorizeMatrix has been done before
   */
-  template<class T> template<class Allocator2>
-  void MatrixMumps<T>::Solve(Vector<T,VectFull,Allocator2>& x)
+  template<class T> template<class Allocator2, class Transpose_status>
+  void MatrixMumps<T>::Solve(const Transpose_status& TransA,
+			     Vector<T, VectFull, Allocator2>& x)
   {
+    if (TransA.Trans())
+      struct_mumps.icntl[8] = 0;
+    else
+      struct_mumps.icntl[8] = 1;
+    
     struct_mumps.rhs = reinterpret_cast<pointer>(x.GetData());
     struct_mumps.job = 3; // we solve system
     CallMumps();
   }
+
+
+
+  template<class T> template<class Allocator2>
+  void MatrixMumps<T>::Solve(Vector<T, VectFull, Allocator2>& x)
+  {
+    Solve(SeldonNoTrans, x);
+  }
+  
+  
+#ifdef SELDON_WITH_MPI
+  //! factorization of a given matrix in distributed form (parallel execution)
+  /*!
+    \param[inout] mat columns of the matrix to factorize
+    \param[in] sym Symmetric or General
+    \param[in] glob_number row numbers (in the global matrix)
+    \param[in] keep_matrix if false, the given matrix is cleared
+  */
+  template<class T> template<class Prop, class Allocator>
+  void MatrixMumps<T>::
+  FactorizeDistributedMatrix(Matrix<T, General, ColSparse, Allocator> & mat,
+			     const Prop& sym, const IVect& glob_number,
+			     bool keep_matrix)
+  {
+    // initialization depending on symmetric of the matrix
+    Matrix<T, Prop, RowSparse, Allocator> Atest;
+    InitMatrix(Atest);
+    
+    // distributed matrix
+    struct_mumps.icntl[17] = 3;    
+
+    // global number of rows : mat.GetM()
+    int N = mat.GetM();    
+    int nnz = mat.GetNonZeros();
+    // conversion in coordinate format with C-convention (0-index)
+    IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
+    ConvertMatrix_to_Coordinates(mat, num_row,
+				 num_col, values, 0);
+    
+    // we replace num_col with global numbers
+    for (int i = 0; i < num_row.GetM(); i++)
+      {
+	num_row(i)++;
+	num_col(i) = glob_number(num_col(i)) + 1;
+      }
+    
+    if (!keep_matrix)
+      mat.Clear();
+    
+    /* Define the problem on the host */
+    struct_mumps.n = N; struct_mumps.nz_loc = nnz;
+    struct_mumps.irn_loc = num_row.GetData();
+    struct_mumps.jcn_loc = num_col.GetData();
+    struct_mumps.a_loc = reinterpret_cast<pointer>(values.GetData());
+        
+    /* Call the MUMPS package. */
+    struct_mumps.job = 4; // we analyse and factorize the system
+    CallMumps();
+    cout<<"Factorization completed"<<endl;
+  }  
+  
+  
+  //! solves linear system with parallel execution
+  /*!
+    \param[in] TransA we solve A x = b or A^T x = b
+    \param[inout] x right-hand-side then solution
+    \param[inout] glob_num global row numbers
+   */
+  template<class T> template<class Allocator2, class Transpose_status>
+  void MatrixMumps<T>::SolveDistributed(const Transpose_status& TransA,
+					Vector<T, VectFull, Allocator2>& x,
+					const IVect& glob_num)
+  {
+    Vector<T, VectFull, Allocator2> rhs;
+    int cplx = sizeof(T)/8;
+    // allocating the global right hand side
+    rhs.Reallocate(struct_mumps.n); rhs.Zero();
+    
+    if (rank == 0)
+      {
+	// on the host, we retrieve datas of all the other processors
+	int nb_procs; MPI_Status status;
+	MPI_Comm_size(MPI_COMM_WORLD, &nb_procs);
+	if (nb_procs > 1)
+	  {
+	    // assembling the right hand side
+	    Vector<T, VectFull, Allocator2> xp;
+	    IVect nump;
+	    for (int i = 0; i < nb_procs; i++)
+	      {
+		
+		if (i != 0)
+		  {
+		    int nb_dof;
+		    MPI_Recv(&nb_dof, 1, MPI_INT, i, 34, MPI_COMM_WORLD, &status);
+		    xp.Reallocate(nb_dof);
+		    nump.Reallocate(nb_dof);
+		    MPI_Recv(xp.GetDataVoid(), cplx*nb_dof, MPI_DOUBLE, i, 35, MPI_COMM_WORLD, &status);
+		    MPI_Recv(nump.GetData(), nb_dof, MPI_INT, i, 36, MPI_COMM_WORLD, &status);
+		  }
+		else
+		  {
+		    xp = x; nump = glob_num;
+		  }
+		
+		for (int j = 0; j < nump.GetM(); j++)
+		  rhs(nump(j)) = xp(j);
+	      }	    
+	  }
+	else
+	  Copy(x, rhs);
+	
+	struct_mumps.rhs = reinterpret_cast<pointer>(rhs.GetData());
+      }
+    else
+      {
+	// on other processors, we send solution
+	int nb = x.GetM();
+	MPI_Send(&nb, 1, MPI_INT, 0, 34, MPI_COMM_WORLD);
+	MPI_Send(x.GetDataVoid(), cplx*nb, MPI_DOUBLE, 0, 35, MPI_COMM_WORLD);
+	MPI_Send(glob_num.GetData(), nb, MPI_INT, 0, 36, MPI_COMM_WORLD);
+      }
+    
+    // we solve system
+    if (TransA.Trans())
+      struct_mumps.icntl[8] = 0;
+    else
+      struct_mumps.icntl[8] = 1;
+    
+    struct_mumps.job = 3; 
+    CallMumps();
+    
+    // we distribute solution on all the processors
+    MPI_Bcast(rhs.GetDataVoid(), cplx*rhs.GetM(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    
+    // and we extract the solution on provided numbers
+    for (int i = 0; i < x.GetM(); i++)
+      x(i) = rhs(glob_num(i));
+  }
+
+
+  template<class T> template<class Allocator2>
+  void MatrixMumps<T>::SolveDistributed(Vector<T, VectFull, Allocator2>& x,
+					const IVect& glob_num)
+  {
+    SolveDistributed(SeldonNoTrans, x, glob_num);
+  }
+#endif
   
   
   template<class T, class Storage, class Allocator>
   void GetLU(Matrix<T,Symmetric,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
 	     bool keep_matrix = false)
   {
-    mat_lu.InitSymmetricMatrix();
     mat_lu.FactorizeMatrix(A, keep_matrix);
   }
   
@@ -354,7 +495,6 @@ namespace Seldon
   void GetLU(Matrix<T,General,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
 	     bool keep_matrix = false)
   {
-    mat_lu.InitUnSymmetricMatrix();
     mat_lu.FactorizeMatrix(A, keep_matrix);
   }
   
@@ -363,7 +503,6 @@ namespace Seldon
   void GetSchurMatrix(Matrix<T,Symmetric,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
 		      const IVect& num, MatrixFull& schur_matrix, bool keep_matrix = false)
   {
-    mat_lu.InitSymmetricMatrix();
     mat_lu.GetSchurMatrix(A, num, schur_matrix, keep_matrix);
   }
   
@@ -372,7 +511,6 @@ namespace Seldon
   void GetSchurMatrix(Matrix<T,General,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
 		      const IVect& num, MatrixFull& schur_matrix, bool keep_matrix = false)
   {
-    mat_lu.InitUnSymmetricMatrix();
     mat_lu.GetSchurMatrix(A, num, schur_matrix, keep_matrix);
   }
   
@@ -382,6 +520,15 @@ namespace Seldon
   {
     mat_lu.Solve(x);
   }
+  
+  
+  template<class T, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixMumps<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
+  {
+    mat_lu.Solve(TransA, x);
+  }
+  
 }
 
 #define SELDON_FILE_MUMPS_CXX

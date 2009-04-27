@@ -37,23 +37,23 @@ namespace Seldon
     \param[in] M Left preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int QmrSym(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int QmrSym(Matrix1& A, Vector1& x, const Vector1& b,
 	     Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     Complexe delta, ep(0), beta;
     Titer  rho, rho_1;
     Complexe theta_1, gamma_1;
     Complexe theta(0), gamma(1), eta(-1);
     
-    Vector r(N), y(N);
-    Vector v(N), p_tld(N);
-    Vector p(N), d(N), s(N);
+    Vector1 r(b), y(b);
+    Vector1 v(b), p_tld(b);
+    Vector1 p(b), d(b), s(b);
     
     // we initialize iter
     int success_init = iter.Init(b);
@@ -61,13 +61,13 @@ namespace Seldon
       return iter.ErrorCode();
     
     // r = b - Ax
-    Seldon::Copy(b, r);
+    Copy(b, r);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r);
     else
       x.Zero();
     
-    Seldon::Copy(r, v);
+    Copy(r, v);
     
     M.Solve(A, v, y);
     rho = Norm2(y);
@@ -96,12 +96,12 @@ namespace Seldon
 	  }
 	
 	if (iter.First())
-	  Seldon::Copy(y, p);
+	  Copy(y, p);
 	else
 	  {
 	    // p = y - (rho delta / ep) p
 	    Mlt(Complexe(-(rho  * delta / ep)), p);
-	    Seldon::Add(Complexe(1), y, p);
+	    Add(Complexe(1), y, p);
 	  }
 	
 	// product matrix vector p_tld = A*p
@@ -122,7 +122,7 @@ namespace Seldon
 	  }
 	  
 	// v = -beta v + p_tld
-	Mlt(Complexe(-beta), v); Seldon::Add(Complexe(1), p_tld, v);
+	Mlt(Complexe(-beta), v); Add(Complexe(1), p_tld, v);
 	M.Solve(A, v, y);
 	
 	rho_1 = rho;
@@ -144,21 +144,21 @@ namespace Seldon
 	
 	if (iter.First())
 	  {
-	    Seldon::Copy(p, d);
+	    Copy(p, d);
 	    Mlt(eta, d);
-	    Seldon::Copy(p_tld, s);
+	    Copy(p_tld, s);
 	    Mlt(eta, s);
 	  }
 	else
 	  {
 	    Complexe tmp = (theta_1 * theta_1 * gamma * gamma);
 	    Mlt(tmp, d);
-	    Seldon::Add(eta, p, d);
+	    Add(eta, p, d);
 	    Mlt(tmp, s);
-	    Seldon::Add(eta, p_tld, s);
+	    Add(eta, p_tld, s);
 	  }
-	Seldon::Add(Complexe(1), d, x);
-	Seldon::Add(-Complexe(1), s, r);
+	Add(Complexe(1), d, x);
+	Add(-Complexe(1), s, r);
 	
 	++iter;
       }

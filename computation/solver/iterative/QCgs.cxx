@@ -42,18 +42,18 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int QCgs(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int QCgs(Matrix1& A, Vector1& x, const Vector1& b,
 	   Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     Complexe rho_1, rho_2, mu,nu,alpha,beta,sigma,delta;
-    Vector p(N), q(N), r(N), rtilde(N), u(N),
-      phat(N), r_qcgs(N), x_qcgs(N), v(N);
+    Vector1 p(b), q(b), r(b), rtilde(b), u(b),
+      phat(b), r_qcgs(b), x_qcgs(b), v(b);
     
     // we initialize iter
     int success_init = iter.Init(b);
@@ -61,18 +61,18 @@ namespace Seldon
       return iter.ErrorCode();
     
     // we compute the residual r = b - Ax
-    Seldon::Copy(b,r);
+    Copy(b,r);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r);
     else
       x.Zero();
     
-    Seldon::Copy(r, rtilde);
+    Copy(r, rtilde);
     rho_1 = Complexe(1);
     q.Zero(); p.Zero();
-    Seldon::Copy(r, r_qcgs); Seldon::Copy(x, x_qcgs);
-    Seldon::Matrix<Complexe, Symmetric, RowSymPacked> bt_b(2,2),bt_b_m1(2,2);
-    Seldon::Vector<Complexe> bt_rn(2);
+    Copy(r, r_qcgs); Copy(x, x_qcgs);
+    Matrix<Complexe, Symmetric, RowSymPacked> bt_b(2,2),bt_b_m1(2,2);
+    Vector<Complexe> bt_rn(2);
     
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are reached
@@ -89,12 +89,12 @@ namespace Seldon
 	
 	// u = r + beta*q
 	// p = beta*(beta*p +q) + u  where beta = rho_i/rho_{i-1}
-	Seldon::Copy(r, u);
-	Seldon::Add(beta, q, u);
+	Copy(r, u);
+	Add(beta, q, u);
 	Mlt(beta, p);
-	Seldon::Add(Complexe(1), q, p);
+	Add(Complexe(1), q, p);
 	Mlt(beta, p);
-	Seldon::Add(Complexe(1), u, p);
+	Add(Complexe(1), u, p);
 	
 	// preconditioning phat = M^{-1} p
 	M.Solve(A, p, phat);
@@ -109,23 +109,23 @@ namespace Seldon
 	  }
 	// q = u-alpha*v  where alpha = rho_i/(rtilde,v)
 	alpha = rho_2 /sigma;
-	Seldon::Copy(u, q);
-	Seldon::Add(-alpha, v, q);
+	Copy(u, q);
+	Add(-alpha, v, q);
 	
 	// u = u +q
-	Seldon::Add(Complexe(1), q, u);
+	Add(Complexe(1), q, u);
 	// x = x + alpha u
-	Seldon::Add(alpha, u, x);
+	Add(alpha, u, x);
 	// preconditioning phat = M^{-1} u
 	M.Solve(A, u, phat);
 	// product matrix vector q = A*phat
 	Mlt(A, phat, u);
 	
 	// r = r - alpha u
-	Seldon::Add(-alpha, u, r);
+	Add(-alpha, u, r);
 	// u = r_qcgs - r_n
-	Seldon::Copy(r_qcgs, u);
-	Seldon::Add(-Complexe(1), r, u);
+	Copy(r_qcgs, u);
+	Add(-Complexe(1), r, u);
 	bt_b(0,0) = DotProd(u,u);
 	bt_b(1,1) = DotProd(v,v);
 	bt_b(1,0) = DotProd(u,v);
@@ -147,12 +147,12 @@ namespace Seldon
 	
 	// smoothing step
 	// r_qcgs = r + mu (r_qcgs - r) + nu v
-	Seldon::Copy(r, r_qcgs); Seldon::Add(mu, u, r_qcgs);
-	Seldon::Add(nu, v, r_qcgs);
+	Copy(r, r_qcgs); Add(mu, u, r_qcgs);
+	Add(nu, v, r_qcgs);
 	// x_qcgs = x + mu (x_qcgs - x) - nu p
 	Mlt(mu,x_qcgs);
-	Seldon::Add(Complexe(1)-mu, x, x_qcgs);
-	Seldon::Add(-nu, p, x_qcgs);
+	Add(Complexe(1)-mu, x, x_qcgs);
+	Add(-nu, p, x_qcgs);
 	
 	rho_1 = rho_2;
 	

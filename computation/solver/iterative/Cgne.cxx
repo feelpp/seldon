@@ -37,17 +37,17 @@ namespace Seldon
     \param[in] M Left preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int Cgne(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Cgne(Matrix1& A, Vector1& x, const Vector1& b,
 	   Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     Complexe rho(1), rho_1(0), alpha, beta, delta;
-    Vector p(N), q(N), r(N), z(N);
+    Vector1 p(b), q(b), r(b), z(b);
     Titer dp;
     
     // x should be equal to 0
@@ -67,11 +67,11 @@ namespace Seldon
 	// r = A^t b - A^t A x
 	Mlt(A, x, p);
 	Mlt(SeldonTrans, A, p, r); Mlt(Complexe(-1), r);
-	Seldon::Add(Complexe(1), q, r);
+	Add(Complexe(1), q, r);
       }
     else
       {
-	Seldon::Copy(q, r);
+	Copy(q, r);
 	x.Zero();
       }
     
@@ -92,12 +92,12 @@ namespace Seldon
 	  }
 	
 	if (iter.First())
-	  Seldon::Copy(z, p);
+	  Copy(z, p);
 	else
 	  {
 	    beta = rho / rho_1;
 	    Mlt(beta, p);
-	    Seldon::Add(Complexe(1), z, p);
+	    Add(Complexe(1), z, p);
 	  }
 	
 	// instead of q = A*p, we compute q = A^t A *p
@@ -112,8 +112,8 @@ namespace Seldon
 	  }
 	alpha = rho / delta;
 	
-	Seldon::Add(alpha, p, x);
-	Seldon::Add(-alpha, z, r);
+	Add(alpha, p, x);
+	Add(-alpha, z, r);
 	
 	rho_1 = rho;
 	dp = Norm2(r);

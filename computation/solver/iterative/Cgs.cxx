@@ -41,18 +41,18 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int Cgs(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Cgs(Matrix1& A, Vector1& x, const Vector1& b,
 	  Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     Complexe rho_1, rho_2(0), alpha, beta, delta;
-    Vector p(N), phat(N), q(N), qhat(N), vhat(N), u(N), uhat(N),
-      r(N), rtilde(N);
+    Vector1 p(b), phat(b), q(b), qhat(b), vhat(b), u(b), uhat(b),
+      r(b), rtilde(b);
     
     // we initialize iter
     int success_init = iter.Init(b);
@@ -60,13 +60,13 @@ namespace Seldon
       return iter.ErrorCode();
     
     // we compute the initial residual r = b - Ax
-    Seldon::Copy(b,r);
+    Copy(b,r);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r);
     else
       x.Zero();
     
-    Seldon::Copy(r, rtilde);
+    Copy(r, rtilde);
     
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are reached
@@ -82,20 +82,20 @@ namespace Seldon
 	  
 	if (iter.First())
 	  {
-	    Seldon::Copy(r, u);
-	    Seldon::Copy(u, p);
+	    Copy(r, u);
+	    Copy(u, p);
 	  }
 	else
 	  {
 	    // u = r + beta*q
 	    // p = beta*(beta*p +q) + u  where beta = rho_i/rho_{i-1}
 	    beta = rho_1 / rho_2;
-	    Seldon::Copy(r, u);
-	    Seldon::Add(beta, q, u);
+	    Copy(r, u);
+	    Add(beta, q, u);
 	    Mlt(beta, p);
-	    Seldon::Add(Complexe(1), q, p);
+	    Add(Complexe(1), q, p);
 	    Mlt(beta, p);
-	    Seldon::Add(Complexe(1), u, p);
+	    Add(Complexe(1), u, p);
 	  }
 	
 	// preconditioning phat = M^{-1} p
@@ -111,16 +111,16 @@ namespace Seldon
 	  }
 	// q = u-alpha*vhat  where alpha = rho_i/(rtilde,vhat)
 	alpha = rho_1 /delta;
-	Seldon::Copy(u,q);
-	Seldon::Add(-alpha, vhat, q);
+	Copy(u,q);
+	Add(-alpha, vhat, q);
 	
 	//  u =u+q
-	Seldon::Add(Complexe(1), q, u);
+	Add(Complexe(1), q, u);
 	M.Solve(A, u, uhat);
 	
-	Seldon::Add(alpha, uhat, x);
+	Add(alpha, uhat, x);
 	Mlt(A, uhat, qhat);
-	Seldon::Add(-alpha, qhat, r);
+	Add(-alpha, qhat, r);
 	
 	rho_2 = rho_1;
 	

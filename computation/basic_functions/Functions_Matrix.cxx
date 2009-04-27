@@ -617,7 +617,30 @@ namespace Seldon
   
   // TRANSPOSE //
   ///////////////
+
   
+  ///////////////////////
+  // ISSYMMETRICMATRIX //
+  
+  
+  //! returns true if the matrix is symmetric
+  template<class T, class Prop, class Storage, class Allocator>
+  bool IsSymmetricMatrix(const Matrix<T, Prop, Storage, Allocator>& A)
+  {
+    return false;
+  }
+
+  
+  //! returns true if the matrix is symmetric
+  template<class T, class Storage, class Allocator>
+  bool IsSymmetricMatrix(const Matrix<T, Symmetric, Storage, Allocator>& A)
+  {
+    return true;
+  }
+
+
+  // ISSYMMETRICMATRIX //
+  ///////////////////////
   
 } // namespace Seldon.
 

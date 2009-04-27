@@ -41,20 +41,20 @@ namespace Seldon
     \param[in] M Left preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int CoCg(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int CoCg(Matrix1& A, Vector1& x, const Vector1& b,
 	   Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     Complexe rho, rho_1(0), alpha, beta, delta, zero;
     zero = b(0)*Titer(0);
     rho = zero+Titer(1);
     
-    Vector p(N), q(N), r(N), z(N);
+    Vector1 p(b), q(b), r(b), z(b);
     p.Fill(zero); q.Fill(zero); r.Fill(zero); z.Fill(zero);
     
     // for implementation see Cg
@@ -63,7 +63,7 @@ namespace Seldon
     if (success_init != 0)
       return iter.ErrorCode();
     
-    Seldon::Copy(b,r);
+    Copy(b,r);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r);
     else
@@ -75,10 +75,10 @@ namespace Seldon
       {
 	// preconditioning
 	M.Solve(A, r, z);
-	
+
 	// instead of (bar(r),z) in CG we compute (r,z)
 	rho = DotProd(r, z);
-	
+
 	if (rho == zero)
 	  {
 	    iter.Fail(1, "Cocg breakdown #1");
@@ -86,12 +86,12 @@ namespace Seldon
 	  }
 	
 	if (iter.First())
-	  Seldon::Copy(z, p);
+	  Copy(z, p);
 	else
 	  {
 	    beta = rho / rho_1;
 	    Mlt(beta, p);
-	    Seldon::Add(Complexe(1), z, p);
+	    Add(Complexe(1), z, p);
 	  }
 	// product matrix vector
 	Mlt(A, p, q);
@@ -104,8 +104,8 @@ namespace Seldon
 	  }
 	alpha = rho / delta;
 	
-	Seldon::Add(alpha, p, x);
-	Seldon::Add(-alpha, q, r);
+	Add(alpha, p, x);
+	Add(-alpha, q, r);
 	
 	rho_1 = rho;
 	

@@ -109,6 +109,9 @@ namespace Seldon
   FactorizeMatrix(Matrix<double,Prop,Storage,Allocator> & mat,
 		  bool keep_matrix)
   {
+    // we clear previous factorization
+    Clear();
+    
     // conversion in CSR Format
     Copy(mat, Acsr);
     if (!keep_matrix)

@@ -293,6 +293,20 @@ namespace Seldon
   }
 
 
+  //! Copy constructor
+  template <class T, class Prop, class Storage, class Allocator>
+  inline Matrix_SymSparse<T, Prop, Storage, Allocator>::
+  Matrix_SymSparse(const Matrix_SymSparse<T, Prop, Storage, Allocator>& A)
+  {
+    this->m_ = 0;
+    this->n_ = 0;
+    this->nz_ = 0;
+    ptr_ = NULL;
+    ind_ = NULL;
+    this->Copy(A);
+  }
+  
+  
   /**************
    * DESTRUCTOR *
    **************/
@@ -405,6 +419,7 @@ namespace Seldon
 	  Vector<int, Storage1, Allocator1>& ptr,
 	  Vector<int, Storage2, Allocator2>& ind)
   {
+    this->Clear();
     this->m_ = i;
     this->n_ = i;
     this->nz_ = values.GetLength();
@@ -524,6 +539,155 @@ namespace Seldon
     ind_ = NULL;
   }
 
+  
+  //! Copies a matrix
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymSparse<T, Prop, Storage, Allocator>::
+  Copy(const Matrix_SymSparse<T, Prop, Storage, Allocator>& A)
+  {    
+    this->Clear();
+    int nz = A.GetNonZeros();
+    int i = A.GetM();
+    int j = A.GetN();
+    this->nz_ = nz;
+    this->m_ = i;
+    this->n_ = j;
+    if ((i == 0)||(j == 0))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	this->nz_ = 0;
+	return;
+      }
+    
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (static_cast<long int>(2 * nz_ - 2) / static_cast<long int>(i + 1)
+	>= static_cast<long int>(i))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim("Matrix_SymSparse::Matrix_SymSparse(int, int, int)",
+		       string("There are more values (") + to_str(nz)
+		       + string(" values) than elements in the upper")
+		       + " part of the matrix ("
+		       + to_str(i) + " by " + to_str(i) + ").");
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	ptr_ = reinterpret_cast<int*>( calloc(i + 1, sizeof(int)) );
+	memcpy(this->ptr_, A.ptr_, i+1);
+	
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL && i != 0)
+      throw NoMemory("Matrix_SymSparse::Matrix_SymSparse(int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * (i+1) ) + " bytes to store "
+		     + to_str(i+1) + " row or column start indices, for a "
+		     + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+	
+	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
+	memcpy(this->ind_, A.ind_, nz_);
+	
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ind_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ind_ == NULL && i != 0)
+      throw NoMemory("Matrix_SymSparse::Matrix_SymSparse(int, int, int)",
+		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
+		     + " bytes to store " + to_str(nz)
+		     + " row or column indices, for a "
+		     + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	this->data_ = this->allocator_.allocate(nz_, this);
+	this->allocator_.memorycpy(this->data_, A.data_, nz_);
+	
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	free(ind_);
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (this->data_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	free(ind_);
+	ind_ = NULL;
+      }
+    if (this->data_ == NULL && i != 0)
+      throw NoMemory("Matrix_SymSparse::Matrix_SymSparse(int, int, int)",
+		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
+		     + " bytes to store " + to_str(nz) + " values, for a "
+		     + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+
+  }
+  
 
   /*******************
    * BASIC FUNCTIONS *
@@ -666,6 +830,23 @@ namespace Seldon
   }
 
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: 'A' is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline Matrix_SymSparse<T, Prop, Storage, Allocator>&
+  Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::operator= (const Matrix_SymSparse<T, Prop, Storage, Allocator>& A)
+  {
+    this->Copy(A);
+    
+    return *this;
+  }
+
+  
   /************************
    * CONVENIENT FUNCTIONS *
    ************************/

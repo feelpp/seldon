@@ -92,7 +92,23 @@ namespace Seldon
 
   }
 
+  
+  //! Copy constructor.
+  template <class T, class Allocator>
+  Array3D<T, Allocator>::Array3D(const Array3D<T, Allocator>& A)
+  {
+    length1_ = 0;
+    length2_ = 0;
+    length3_ = 0;
 
+    length23_ = 0;
+
+    data_ = NULL;
+    
+    Copy(A);
+  }
+
+  
   /**************
    * DESTRUCTOR *
    **************/

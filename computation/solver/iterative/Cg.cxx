@@ -41,17 +41,17 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int Cg(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Cg(Matrix1& A, Vector1& x, const Vector1& b,
 	 Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     Complexe rho(1), rho_1(1), alpha, beta,delta;
-    Vector p(N), q(N), r(N), z(N);
+    Vector1 p(b), q(b), r(b), z(b);
     
     // we initialize iter
     int success_init = iter.Init(b);
@@ -59,7 +59,7 @@ namespace Seldon
       return iter.ErrorCode();
     
     // we compute the initial residual r = b - Ax
-    Seldon::Copy(b, r);
+    Copy(b, r);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r);
     else
@@ -83,13 +83,13 @@ namespace Seldon
 	  }
 	
 	if (iter.First())
-	  Seldon::Copy(z, p);
+	  Copy(z, p);
 	else
 	  {
 	    // p = beta*p + z  where  beta = rho_i/rho_{i-1}
 	    beta = rho / rho_1;
 	    Mlt(beta, p);
-	    Seldon::Add(Complexe(1), z, p);
+	    Add(Complexe(1), z, p);
 	  }
 	
 	// matrix vector product q = A*p
@@ -103,8 +103,8 @@ namespace Seldon
 	alpha = rho / delta;
 	
 	// x = x + alpha*p  and r = r - alpha*q  where alpha = rho/(bar(p),q)
-	Seldon::Add(alpha, p, x);
-	Seldon::Add(-alpha, q, r);
+	Add(alpha, p, x);
+	Add(-alpha, q, r);
 	
 	rho_1 = rho;
 	

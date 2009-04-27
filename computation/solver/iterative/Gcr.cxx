@@ -41,37 +41,35 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] outer Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int Gcr(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Gcr(Matrix1& A, Vector1& x, const Vector1& b,
 	  Preconditioner& M, Iteration<Titer> & outer)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     int m = outer.GetRestart();
     // we initialize outer
     int success_init = outer.Init(b);
     if (success_init != 0)
       return outer.ErrorCode();
     
-    Seldon::Vector<Vector,VectFull,NewAlloc<Vector> > p(m+1), w(m+1);
+    std::vector<Vector1> p(m+1, b), w(m+1, b);
     
-    Vector beta(m+1);
+    Vector<Complexe> beta(m+1);
     
-    Vector r(N), q(N), u(N);
+    Vector1 r(b), q(b), u(b);
     
     for (int i = 0; i < (m+1); i++)
       {
-	p(i).Reallocate(N);
-	p(i).Zero();
-	w(i).Reallocate(N);
-	w(i).Zero();
+	p[i].Zero();
+	w[i].Zero();
       }
 
     // we compute initial residual
-    Seldon::Copy(b,u);
+    Copy(b,u);
     if (!outer.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), u);
     else
@@ -90,20 +88,20 @@ namespace Seldon
 	Iteration<Titer> inner(outer);
 	inner.SetNumberIteration(outer.GetNumberIteration());
 	inner.SetMaxNumberIteration(outer.GetNumberIteration()+m);
-	Seldon::Copy(r, p(0));
-	Mlt(Titer(1)/normr, p(0));
+	Copy(r, p[0]);
+	Mlt(Titer(1)/normr, p[0]);
 	
 	int j = 0;
 	
 	while (! inner.Finished(r) )
 	  {
 	    // product matrix vector u=A*p(j)
-	    Mlt(A, p(j), u);
+	    Mlt(A, p[j], u);
 	    
 	    // preconditioning
-	    M.Solve(A, u, w(j));
+	    M.Solve(A, u, w[j]);
 	    
-	    beta(j) = DotProdConj(w(j), w(j));
+	    beta(j) = DotProdConj(w[j], w[j]);
 	    if (beta(j) == Complexe(0))
 	      {
 		outer.Fail(1, "Gcr breakdown #1");
@@ -112,9 +110,9 @@ namespace Seldon
 	    
 	    // new iterate x = x + alpha*p(j) new residual r = r - alpha*w(j)
 	    // where alpha = (conj(r_j),A*p_j)/(A*p_j,A*p_j)
-	    alpha = DotProdConj(w(j), r) / beta(j);
-	    Seldon::Add(alpha, p(j), x);
-	    Seldon::Add(-alpha, w(j), r);
+	    alpha = DotProdConj(w[j], r) / beta(j);
+	    Add(alpha, p[j], x);
+	    Add(-alpha, w[j], r);
 	    
 	    ++inner;
 	    ++outer;
@@ -122,13 +120,13 @@ namespace Seldon
 	    Mlt(A, r, u);
 	    M.Solve(A, u, q);
 	    
-	    Seldon::Copy(r, p(j+1));
+	    Copy(r, p[j+1]);
 	    // we compute direction p(j+1) = r(j+1) +
 	    // \sum_{i=0..j} ( -(A*r_j+1,A*p_i)/(A*p_i,A*p_i) p(i))
 	    for (int i = 0; i <= j; i++)
 	      {
-		delta = -DotProdConj(w(i), q)/beta(i);
-		Seldon::Add(delta, p(i), p(j+1));
+		delta = -DotProdConj(w[i], q)/beta(i);
+		Add(delta, p[i], p[j+1]);
 	      }
 	    
 	    ++inner;

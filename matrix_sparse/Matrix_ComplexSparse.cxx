@@ -585,7 +585,28 @@ namespace Seldon
     imag_values.Nullify();
   }
 
-
+  
+  //! Copy constructor
+  template <class T, class Prop, class Storage, class Allocator>
+  Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+  ::Matrix_ComplexSparse(const Matrix_ComplexSparse<T, Prop,
+			 Storage, Allocator>& A)
+  {
+    this->m_ = 0;
+    this->n_ = 0;
+    real_nz_ = 0;
+    imag_nz_ = 0;
+    real_ptr_ = NULL;
+    imag_ptr_ = NULL;
+    real_ind_ = NULL;
+    imag_ind_ = NULL;
+    real_data_ = NULL;
+    imag_data_ = NULL;
+    
+    this->Copy(A);
+  }
+  
+  
   /**************
    * DESTRUCTOR *
    **************/
@@ -767,7 +788,7 @@ namespace Seldon
 	  Vector<int, Storage1, Allocator1>& imag_ptr,
 	  Vector<int, Storage2, Allocator2>& imag_ind)
   {
-    
+    this->Clear();
     this->m_ = i;
     this->n_ = j;
     real_nz_ = real_values.GetLength();
@@ -980,7 +1001,352 @@ namespace Seldon
     imag_data_ = NULL;
   }
 
+  
+  //! Copies a matrix
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ComplexSparse<T, Prop, Storage, Allocator>::
+  Copy(const Matrix_ComplexSparse<T, Prop, Storage, Allocator>& A)
+  {    
+    this->Clear();
+    int i = A.m_;
+    int j = A.n_;
+    real_nz_ = A.real_nz_;
+    imag_nz_ = A.imag_nz_;
+    this->m_ = i;
+    this->n_ = j;
+    if ((i == 0)||(j == 0))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	this->real_nz_ = 0;
+	this->imag_nz_ = 0;
+	return;
+      }
+    
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ( (static_cast<long int>(real_nz_-1) / static_cast<long int>(j)
+	  >= static_cast<long int>(i)) ||
+	 (static_cast<long int>(imag_nz_-1) / static_cast<long int>(j)
+	  >= static_cast<long int>(i)) )
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+	throw WrongDim(string("Matrix_ComplexSparse::")
+		       + "Matrix_ComplexSparse(int, int, int, int)",
+		       string("There are more values (") + to_str(real_nz_)
+		       + " values for the real part and " + to_str(imag_nz_)
+		       + string(" values for the imaginary part) than")
+		       + " elements in the matrix (" + to_str(i) + " by "
+		       + to_str(j) + ").");
+      }
+#endif
 
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	real_ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
+						   sizeof(int)) );
+	memcpy(this->real_ptr_, A.real_ptr_, Storage::GetFirst(i, j)+1);
+	
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_ptr_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	imag_ptr_ = 0;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_ptr_ == NULL && i != 0 && j != 0)
+      throw NoMemory(string("Matrix_ComplexSparse::")
+		     + "Matrix_ComplexSparse(int, int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * (Storage::GetFirst(i, j)+1))
+		     + " bytes to store " + to_str(Storage::GetFirst(i, j)+1)
+		     + string(" row or column start indices (for the real")
+		     + " part), for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	imag_ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
+						   sizeof(int)) );
+	memcpy(this->imag_ptr_, A.imag_ptr_, Storage::GetFirst(i, j)+1);
+	
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	free(real_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (imag_ptr_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	free(real_ptr_);
+	real_ptr_ = 0;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (imag_ptr_ == NULL && i != 0 && j != 0)
+      throw NoMemory(string("Matrix_ComplexSparse::")
+		     + "Matrix_ComplexSparse(int, int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * (Storage::GetFirst(i, j)+1))
+		     + " bytes to store " + to_str(Storage::GetFirst(i, j)+1)
+		     + string(" row or column start indices (for the")
+		     + string(" imaginary part), for a ")
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+	
+	real_ind_ = reinterpret_cast<int*>( calloc(real_nz_, sizeof(int)) );
+	memcpy(this->real_ind_, A.real_ind_, real_nz_);
+	
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_ind_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_ind_ == NULL && i != 0 && j != 0)
+      throw NoMemory(string("Matrix_ComplexSparse::")
+		     + "Matrix_ComplexSparse(int, int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * real_nz_)
+		     + " bytes to store " + to_str(real_nz_)
+		     + " row or column indices (real part), for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+	
+	imag_ind_ = reinterpret_cast<int*>( calloc(imag_nz_, sizeof(int)) );
+	memcpy(this->imag_ind_, A.imag_ind_, imag_nz_);
+	
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	free(imag_ind_);
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_ind_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	free(imag_ind_);
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (imag_ind_ == NULL && i != 0 && j != 0)
+      throw NoMemory(string("Matrix_ComplexSparse::")
+		     + "Matrix_ComplexSparse(int, int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * imag_nz_)
+		     + " bytes to store " + to_str(imag_nz_)
+		     + " row or column indices (imaginary part), for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	this->real_data_ = this->allocator_.allocate(real_nz_, this);
+	this->allocator_.memorycpy(this->real_data_, A.real_data_, real_nz_);
+	
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	free(real_ind_);
+	free(imag_ind_);
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_data_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	free(real_ind_);
+	free(imag_ind_);
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	imag_data_ = NULL;
+      }
+    if (real_data_ == NULL && i != 0 && j != 0)
+      throw NoMemory(string("Matrix_ComplexSparse::")
+		     + "Matrix_ComplexSparse(int, int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * real_nz_)
+		     + " bytes to store " + to_str(real_nz_)
+		     + " values (real part), for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	this->imag_data_ = this->allocator_.allocate(imag_nz_, this);
+	this->allocator_.memorycpy(this->imag_data_, A.imag_data_, imag_nz_);
+	
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	free(real_ind_);
+	free(imag_ind_);
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->allocator_.deallocate(this->real_data_, real_nz_);
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_data_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	free(real_ind_);
+	free(imag_ind_);
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->allocator_.deallocate(this->real_data_, real_nz_);
+	real_data_ = NULL;
+      }
+    if (imag_data_ == NULL && i != 0 && j != 0)
+      throw NoMemory(string("Matrix_ComplexSparse::")
+		     + "Matrix_ComplexSparse(int, int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * imag_nz_)
+		     + " bytes to store " + to_str(imag_nz_)
+		     + " values (imaginary part), for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+    
+  }
+  
+  
   /*******************
    * BASIC FUNCTIONS *
    *******************/
@@ -1230,7 +1596,24 @@ namespace Seldon
 
   }
 
+  
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: 'A' is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline Matrix_ComplexSparse<T, Prop, Storage, Allocator>&
+  Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+  ::operator= (const Matrix_ComplexSparse<T, Prop, Storage, Allocator>& A)
+  {
+    this->Copy(A);
 
+    return *this;
+  }
+  
+  
   /************************
    * CONVENIENT FUNCTIONS *
    ************************/

@@ -28,13 +28,14 @@
   xSPTRF   (GetLU)
   xHETRF   (GetLU)
   xHPTRF   (GetLU)
+  xPPTRF   (GetCholesky)
   xGETRS   (SolveLU)
   xSYTRS   (SolveLU)
   xSPTRS   (SolveLU)
   xHETRS   (SolveLU)
   xHPTRS   (SolveLU)
   xTRTRS   (SolveLU)
-  xTPTRS   (SolveLU)
+  xTPTRS   (SolveLU, SolveCholesky)
   xGECON   (ReciprocalConditionNumber)
   xSYCON   (ReciprocalConditionNumber)
   xSPCON   (ReciprocalConditionNumber)
@@ -10525,6 +10526,57 @@ namespace Seldon
   
   // GetScalingFactors //
   ///////////////////////
+  
+  
+  /////////////////
+  // GetCholesky //
+  
+  
+  template<class Prop, class Allocator>
+  void GetCholesky(Matrix<double, Prop, RowSymPacked, Allocator>& A,
+		   LapackInfo& info = lapack_info)
+  {
+    int n = A.GetN();
+#ifdef SELDON_CHECK_BOUNDARIES
+    if (n <= 0)
+      throw WrongDim("GetLU", "Provide a non-empty matrix");
+#endif
+    
+    char uplo('L');
+    dpptrf_(&uplo, &n, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetCholesky",
+			"An error occured during the factorization.");
+#endif
+    
+  }
+  
+  
+  // GetCholesky //
+  /////////////////
+  
+  
+  ///////////////////
+  // SolveCholesky //
+  
+  
+  template<class Transp, class Prop, class Allocator, class Allocator2>
+  void SolveCholesky(const Transp& TransA,
+		     const Matrix<double, Prop, RowSymPacked, Allocator>& A,
+		     Vector<double, Vect_Full, Allocator2>& X,
+		     LapackInfo& info = lapack_info)
+  {
+    // basic triangular solve
+    char uplo('L'); char trans(TransA.RevChar()); char diag('N');
+    int n = A.GetM(); int nrhs = 1;
+    dtptrs_(&uplo, &trans, &diag, &n, &nrhs, A.GetData(), X.GetData(), &n, &info.GetInfoRef());
+  }
+
+
+  // SolveCholesky //
+  ///////////////////
   
   
   // Generic method, which factorizes a matrix and solve the linear system

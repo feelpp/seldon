@@ -24,7 +24,13 @@ extern "C"
 {
 #include "dmumps_c.h"
 #include "zmumps_c.h"
+
+// including mpi from sequential version of Mumps if the
+// compilation is not made on a parallel machine
+#ifndef SELDON_WITH_MPI
 #include "mpi.h"
+#endif
+
 }
 
 namespace Seldon
@@ -69,8 +75,10 @@ namespace Seldon
     int print_level;
     bool out_of_core;
     
-    // internal method
+    // internal methods
     void CallMumps();
+    template<class MatrixSparse>
+    void InitMatrix(const MatrixSparse&);
     
   public :
     MatrixMumps();
@@ -78,13 +86,14 @@ namespace Seldon
     
     void Clear();
     
-    void InitSymmetricMatrix();
-    void InitUnSymmetricMatrix();
     void SelectOrdering(int num_ordering);
+    
     void HideMessages();
     void ShowMessages();
+    
     void EnableOutOfCore();
     void DisableOutOfCore();
+    
     int GetInfoFactorization() const;
     
     template<class Prop,class Storage,class Allocator>
@@ -103,7 +112,28 @@ namespace Seldon
 			bool keep_matrix = false);
     
     template<class Allocator2>
-    void Solve(Vector<T,VectFull,Allocator2>& x);
+    void Solve(Vector<T, VectFull, Allocator2>& x);
+    
+    template<class Allocator2, class Transpose_status>
+    void Solve(const Transpose_status& TransA,
+	       Vector<T, VectFull, Allocator2>& x);
+
+#ifdef SELDON_WITH_MPI
+    template<class Prop, class Allocator>
+    void FactorizeDistributedMatrix(Matrix<T, General,
+				    ColSparse, Allocator> & mat,
+				    const Prop& sym, const IVect& glob_number,
+				    bool keep_matrix = false);    
+    
+    template<class Allocator2, class Transpose_status>
+    void SolveDistributed(const Transpose_status& TransA,
+			  Vector<T, VectFull, Allocator2>& x,
+			  const IVect& glob_num);
+    
+    template<class Allocator2>
+    void SolveDistributed(Vector<T, VectFull, Allocator2>& x, const IVect& );
+    
+#endif
     
   };
   

@@ -39,9 +39,12 @@ namespace Seldon
     void SetNumberIterations(int nb_iterations) { nb_iter = nb_iterations; }
     
     template<class Vector, class Matrix>
-    void Solve(const Matrix& A, const Vector& r, Vector& z, bool init_guess_null = true);
+    void Solve(const Matrix& A, const Vector& r, Vector& z,
+	       bool init_guess_null = true);
+    
     template<class Vector, class Matrix>
-    void TransSolve(const Matrix& A, const Vector& r, Vector& z, bool init_guess_null = true);
+    void TransSolve(const Matrix& A, const Vector& r, Vector& z,
+		    bool init_guess_null = true);
     
   };
   

@@ -1364,7 +1364,143 @@ namespace Seldon
 	B.AssembleRow(i);
       }
   }
+  
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
+	    Matrix<T1, Prop1, ArrayColSparse, Allocator1>& B)
+  {
+    int i, j;
 
+    int nnz = A.GetDataSize();
+    int n = A.GetM();
+    IVect IndRow(nnz), IndCol(nnz);
+    Vector<T1> Val(nnz);
+    int ind = 0;
+    for (i = 0; i < n; i++)
+      for (j = 0; j < A.GetRowSize(i); j++)
+	if (A.Index(i, j) != i)
+	  {
+	    IndRow(ind) = i;
+	    IndCol(ind) = A.Index(i, j);
+	    Val(ind) = A.Value(i, j);
+	    ind++;
+	  }
+    Sort(ind, IndCol, IndRow, Val);
+    nnz = ind;
+    ind = 0;
+    
+    B.Reallocate(n, n);
+    for (i = 0; i < n; i++)
+      {
+	int first_index = ind;
+	while (ind < nnz && IndCol(ind) <= i)
+	  ind++;
+	int size_lower = ind - first_index;
+	int size_upper = A.GetRowSize(i);
+	int size_row = size_lower + size_upper;
+	B.ResizeColumn(i, size_row);
+	ind = first_index;
+	for (j = 0; j < size_lower; j++)
+	  {
+	    B.Index(i, j) = IndRow(ind);
+	    B.Value(i, j) = Val(ind);
+	    ind++;
+	  }
+	for (j = 0; j < size_upper; j++)
+	  {
+	    B.Index(i, size_lower + j) = A.Index(i, j);
+	    B.Value(i, size_lower + j) = A.Value(i, j);
+	  }
+	B.AssembleColumn(i);
+      }
+  }
+  
+  
+  //! Conversion from ArrayColSparse to ColSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayColSparse, Allocator0>& mat_array,
+	    Matrix<T1, Prop1, ColSparse, Allocator1>& mat_csc)
+  {
+    int i, k;
+
+    // Matrix (m,n) with 'nnz' entries.
+    int nnz = mat_array.GetDataSize();
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    
+    // Allocating arrays needed for CSC format.
+    Vector<T1> Val(nnz);
+    IVect IndRow(nnz);
+    IVect IndCol(n+1);
+    
+    // Filling the arrays.
+    int ind = 0;
+    IndCol(0) = 0;
+    for (i = 0; i < n; i++)
+      {
+	for (k = 0; k < mat_array.GetColumnSize(i); k++)
+	  {
+	    IndRow(ind) = mat_array.Index(i, k);
+	    Val(ind) = mat_array.Value(i, k);
+	    ind++;
+	  }
+	IndCol(i + 1) = ind;
+      }
+    
+    mat_csc.SetData(m, n, Val, IndCol, IndRow);
+  }
+  
+  
+  //! Conversion from ArrayRowSparse to ArrayColSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& A,
+	    Matrix<T1, Prop1, ArrayColSparse, Allocator1>& B)
+  {
+    int i;
+    
+    // Matrix (m,n) with nnz entries.
+    int nnz = A.GetDataSize();
+    int n = A.GetN();
+   
+    // Conversion in coordinate format.
+    Vector<T1> Val;
+    IVect IndRow, IndCol;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
+    
+    // Sorting with respect to column numbers.
+    Sort(IndCol, IndRow, Val);
+    
+    // Constructing pointer array 'Ptr'.
+    IVect Ptr(n + 1);
+    
+    // Counting non-zero entries per column.
+    for (i = 0; i < nnz; i++)
+      Ptr(IndCol(i) + 1)++;
+    
+    // Accumulation to get pointer array.
+    Ptr(0) = 0;
+    for (i = 0; i < n; i++)
+      Ptr(i + 1) += Ptr(i);
+    
+    // we fill matrix B
+    for (int i = 0; i < n; i++)
+      {
+	int size_col = Ptr(i+1) - Ptr(i);
+	if (size_col > 0)
+	  {
+	    B.ReallocateColumn(i, size_col);
+	    for (int j = Ptr(i); j < Ptr(i+1); j++)
+	      {
+		B.Index(i, j-Ptr(i)) = IndRow(j);
+		B.Value(i, j-Ptr(i)) = Val(j);
+	      }
+	  }
+      }
+  }
   
 } // namespace Seldon.
 

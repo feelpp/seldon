@@ -19,6 +19,8 @@
 
 #ifndef SELDON_FILE_ITERATIVE_CXX
 
+#include <vector>
+
 // headers of class Iteration and Preconditioner_Base
 #include "Iterative.hxx"
 
@@ -55,10 +57,9 @@ namespace Seldon
   /*!
     Identity preconditioner M = I
   */
-  template<class T2, class Storage2, class Allocator2, class Matrix>
-  void Preconditioner_Base::Solve(const Matrix& A,
-				  const Vector<T2, Storage2, Allocator2> & r,
-				  Vector<T2, Storage2, Allocator2> & z)
+  template<class Matrix1, class Vector1>
+  void Preconditioner_Base::Solve(const Matrix1& A, const Vector1& r,
+				  Vector1& z)
   {
     Copy(r,z);
   }
@@ -68,10 +69,9 @@ namespace Seldon
   /*!
     Identity preconditioner M = I
   */
-  template<class T2, class Storage2, class Allocator2, class Matrix>
+  template<class Matrix1, class Vector1>
   void Preconditioner_Base::
-  TransSolve(const Matrix& A, const Vector<T2, Storage2, Allocator2> & r,
-	     Vector<T2, Storage2, Allocator2> & z)
+  TransSolve(const Matrix1& A, const Vector1 & r, Vector1 & z)
   {
     Solve(A, r, z);
   }
@@ -232,8 +232,8 @@ namespace Seldon
   
   
   //! Initialization with the right hand side
-  template<class Titer> template<class T, class Storage, class Allocator>
-  int Iteration<Titer>::Init(const Vector<T, Storage, Allocator>& r)
+  template<class Titer> template<class Vector1>
+  int Iteration<Titer>::Init(const Vector1& r)
   {
     Titer norme_rhs = Titer(Norm2(r));
     // test of a null right hand side
@@ -269,9 +269,9 @@ namespace Seldon
   
   
   //! Returns true if the iterative solver has reached its end
-  template<class Titer> template<class T, class Storage, class Allocator>
+  template<class Titer> template<class Vector1>
   inline bool Iteration<Titer>::
-  Finished(const Vector<T, Storage, Allocator>& r) const
+  Finished(const Vector1& r) const
   {
     // absolute residual
     Titer reste = Norm2(r);

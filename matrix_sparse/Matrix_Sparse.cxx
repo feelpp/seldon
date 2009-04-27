@@ -293,6 +293,20 @@ namespace Seldon
   }
 
 
+  //! Copy constructor
+  template <class T, class Prop, class Storage, class Allocator>
+  inline Matrix_Sparse<T, Prop, Storage, Allocator>::
+  Matrix_Sparse(const Matrix_Sparse<T, Prop, Storage, Allocator>& A)
+  {
+    this->m_ = 0;
+    this->n_ = 0;
+    this->nz_ = 0;
+    ptr_ = NULL;
+    ind_ = NULL;
+    this->Copy(A);
+  }
+  
+  
   /**************
    * DESTRUCTOR *
    **************/
@@ -404,6 +418,7 @@ namespace Seldon
 	  Vector<int, Storage1, Allocator1>& ptr,
 	  Vector<int, Storage2, Allocator2>& ind)
   {
+    this->Clear();
     this->m_ = i;
     this->n_ = j;
     this->nz_ = values.GetLength();
@@ -523,6 +538,156 @@ namespace Seldon
   }
 
 
+  //! Copies a matrix
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Sparse<T, Prop, Storage, Allocator>::
+  Copy(const Matrix_Sparse<T, Prop, Storage, Allocator>& A)
+  {    
+    this->Clear();
+    int nz = A.nz_;
+    int i = A.m_;
+    int j = A.n_;
+    this->nz_ = nz;
+    this->m_ = i;
+    this->n_ = j;
+    if ((i == 0)||(j == 0))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	this->nz_ = 0;
+	return;
+      }
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (static_cast<long int>(nz_-1) / static_cast<long int>(j)
+	>= static_cast<long int>(i))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		       string("There are more values (") + to_str(nz)
+		       + " values) than elements in the matrix ("
+		       + to_str(i) + " by " + to_str(j) + ").");
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
+					      sizeof(int)) );	
+	memcpy(this->ptr_, A.ptr_, Storage::GetFirst(i, j)+1);
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL && i != 0 && j != 0)
+      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * (Storage::GetFirst(i, j)+1) )
+		     + " bytes to store " + to_str(Storage::GetFirst(i, j)+1)
+		     + " row or column start indices, for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+	
+	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
+	memcpy(this->ind_, A.ind_, nz_);
+	
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ind_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ind_ == NULL && i != 0 && j != 0)
+      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
+		     + " bytes to store " + to_str(nz)
+		     + " row or column indices, for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	this->data_ = this->allocator_.allocate(nz_, this);
+	this->allocator_.memorycpy(this->data_, A.data_, nz_);
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	free(ind_);
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (this->data_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	free(ind_);
+	ind_ = NULL;
+      }
+    if (this->data_ == NULL && i != 0 && j != 0)
+      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
+		     + " bytes to store " + to_str(nz) + " values, for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+    
+  }
+
+  
   /*******************
    * BASIC FUNCTIONS *
    *******************/
@@ -654,6 +819,23 @@ namespace Seldon
   }
 
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: 'A' is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline Matrix_Sparse<T, Prop, Storage, Allocator>&
+  Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::operator= (const Matrix_Sparse<T, Prop, Storage, Allocator>& A)
+  {
+    this->Copy(A);
+
+    return *this;
+  }
+  
+  
   /************************
    * CONVENIENT FUNCTIONS *
    ************************/
@@ -677,7 +859,66 @@ namespace Seldon
   }
 
 
- 
+  //! Writes the matrix in a file.
+  /*!
+    Stores the matrix in a file in ascii format.
+    The entries are written in coordinate format (row column value)
+    1-index convention is used
+    \param FileName output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::
+  WriteText(string FileName) const
+  {
+    ofstream FileStream; FileStream.precision(14);
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_ArraySparse::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->WriteText(FileStream);
+
+    FileStream.close();
+  }
+  
+  
+  //! Writes the matrix to an output stream.
+  /*!
+    Stores the matrix in a file in ascii format.
+    The entries are written in coordinate format (row column value)
+    1-index convention is used
+    \param FileStream output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::
+  WriteText(ostream& FileStream) const
+  {
+    
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_ArraySparse::Write(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+    
+    // conversion in coordinate format (1-index convention)
+    IVect IndRow, IndCol; Vector<T> Value;
+    const Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this);
+    
+    ConvertMatrix_to_Coordinates(leaf_class, IndRow, IndCol,
+				 Value, 1, true);
+    
+    for (int i = 0; i < IndRow.GetM(); i++)
+      FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
+    
+  }
+  
+  
   ///////////////////////
   // MATRIX<COLSPARSE> //
   ///////////////////////

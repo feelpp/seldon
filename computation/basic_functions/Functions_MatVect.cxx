@@ -47,6 +47,7 @@ namespace Seldon
 	   const Vector<T1, Storage1, Allocator1>& X,
 	   Vector<T2, Storage2, Allocator2>& Y)
   {
+    Y.Fill(T2(0));
     MltAdd(T2(1), M, X, T2(0), Y);
   }
 
@@ -60,6 +61,7 @@ namespace Seldon
 	   const Vector<T2, Storage2, Allocator2>& X,
 	   Vector<T3, Storage3, Allocator3>& Y)
   {
+    Y.Fill(T2(0));
     MltAdd(alpha, M, X, T3(0), Y);
   }
 

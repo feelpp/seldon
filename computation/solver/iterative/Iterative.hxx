@@ -29,14 +29,12 @@ namespace Seldon
     Preconditioner_Base();
     
     // solving M z = r
-    template<class T2, class Storage2, class Allocator2, class Matrix>
-    void Solve(const Matrix& A, const Vector<T2,Storage2,Allocator2> & r,
-	       Vector<T2,Storage2,Allocator2> & z);
+    template<class Matrix1, class Vector1>
+    void Solve(const Matrix1& A, const Vector1 & r, Vector1 & z);
     
     // solving M^t z = r
-    template<class T2, class Storage2, class Allocator2, class Matrix>
-    void TransSolve(const Matrix& A, const Vector<T2,Storage2,Allocator2> & r,
-		    Vector<T2,Storage2,Allocator2> & z);
+    template<class Matrix1, class Vector1>
+    void TransSolve(const Matrix1& A, const Vector1& r, Vector1 & z);
     
   };
   
@@ -90,15 +88,15 @@ namespace Seldon
     void ShowFullHistory();
     void HideMessages();
     
-    template<class T,class Storage,class Allocator>
-    int Init(const Vector<T,Storage,Allocator>& r);
+    template<class Vector1>
+    int Init(const Vector1& r);
     bool First() const;
 
     bool IsInitGuess_Null() const;
     void SetInitGuess(bool type) { init_guess_null = type; }
 
-    template<class T,class Storage,class Allocator>
-    bool Finished(const Vector<T,Storage,Allocator>& r) const;
+    template<class Vector1>
+    bool Finished(const Vector1& r) const;
     bool Finished(const Titer& r) const;
     
     void Fail(int i, const string& s);

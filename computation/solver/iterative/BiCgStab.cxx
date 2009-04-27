@@ -39,17 +39,17 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int BiCgStab(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int BiCgStab(Matrix1& A, Vector1& x, const Vector1& b,
 	       Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     Complexe rho_1, rho_2(0), alpha(0), beta, omega(0), sigma;
-    Vector p(N), phat(N), s(N), shat(N), t(N), v(N), r(N), rtilde(N);
+    Vector1 p(b), phat(b), s(b), shat(b), t(b), v(b), r(b), rtilde(b);
     
     // we initialize iter
     int success_init = iter.Init(b);
@@ -57,13 +57,13 @@ namespace Seldon
       return iter.ErrorCode();
     
     // we compute the residual r = b - Ax
-    Seldon::Copy(b, r);
+    Copy(b, r);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r);
     else
       x.Zero();
     
-    Seldon::Copy(r, rtilde);
+    Copy(r, rtilde);
     
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
@@ -78,7 +78,7 @@ namespace Seldon
 	  }
 	
 	if (iter.First())
-	  Seldon::Copy(r, p);
+	  Copy(r, p);
 	else
 	  {
 	    if (omega == Complexe(0))
@@ -89,9 +89,9 @@ namespace Seldon
 	    // p= r + beta*(p-omega*v)
 	    // beta = rho_i/rho_{i-1} * alpha/omega
 	    beta = (rho_1 / rho_2) * (alpha / omega);
-	    Seldon::Add(-omega, v, p);
+	    Add(-omega, v, p);
 	    Mlt(beta, p);
-	    Seldon::Add(Complexe(1), r, p);
+	    Add(Complexe(1), r, p);
 	  }
 	// preconditioning phat = M^{-1} p
 	M.Solve(A, p, phat);
@@ -107,15 +107,15 @@ namespace Seldon
 	    break;
 	  }
 	alpha = rho_1 / sigma;
-	Seldon::Copy(r, s);
-	Seldon::Add(-alpha, v, s);
+	Copy(r, s);
+	Add(-alpha, v, s);
 	
 	// we increment iter, bicgstab has two products matrix vector
 	++iter;
 	if (iter.Finished(s))
 	  {
 	    // x=x+alpha*phat
-	    Seldon::Add(alpha, phat, x);
+	    Add(alpha, phat, x);
 	    break;
 	  }
 	
@@ -128,12 +128,12 @@ namespace Seldon
 	omega = DotProdConj(t, s) / DotProdConj(t, t);
 	
 	// new iterate x=x+alpha*phat+omega*shat
-	Seldon::Add(alpha, phat, x);
-	Seldon::Add(omega, shat, x);
+	Add(alpha, phat, x);
+	Add(omega, shat, x);
 	
 	// new residual r=s-omega*t
-	Seldon::Copy(s, r);
-	Seldon::Add(-omega, t, r);
+	Copy(s, r);
+	Add(-omega, t, r);
 	
 	rho_2 = rho_1;
 	

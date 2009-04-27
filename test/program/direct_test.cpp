@@ -8,6 +8,10 @@
 //#define SELDON_WITH_MUMPS
 #endif
 
+#ifdef SELDON_WITH_MPI
+#include "mpi.h"
+#endif
+
 #include "Seldon.hxx"
 #include "SeldonSolver.hxx"
 
@@ -53,6 +57,10 @@ bool CheckSolution(Vector& x)
 
 int main(int argc, char **argv)
 {
+#ifdef SELDON_WITH_MPI
+  MPI_Init(&argc, &argv);
+#endif
+  
   // Number of rows.
   int n = 5;
   
@@ -83,7 +91,7 @@ int main(int argc, char **argv)
     A.SetData(n, n, Values, Row, Col);
     DISP(A);
     // Computation of right hand side.
-    DVect x_sol(n), b_vec(n);
+    DVect x_sol(n), b_vec(n); b_vec.Zero();
     x_sol.Fill();
     Mlt(1.0, A, x_sol, b_vec);
     DISP(b_vec);
@@ -121,7 +129,7 @@ int main(int argc, char **argv)
     DISP(A);
     // Computation of right hand side
     ZVect x_sol(n), b_vec(n);
-    x_sol.Fill();
+    x_sol.Fill(); b_vec.Zero();
     Mlt(1.0, A, x_sol, b_vec);
     DISP(b_vec);
     x_sol.Zero();
@@ -156,7 +164,7 @@ int main(int argc, char **argv)
     DISP(A);
     // Computation of right hand side.
     DVect x_sol(n), b_vec(n);
-    x_sol.Fill();
+    x_sol.Fill(); b_vec.Zero();
     Mlt(1.0, A, x_sol, b_vec);
     DISP(b_vec);
     x_sol.Zero();
@@ -192,10 +200,9 @@ int main(int argc, char **argv)
     A.SetData(n, n, Values, Col, Row);
     DISP(A);
     // Computation of right hand side.
-    ZVect x_sol(n), b_vec(n);
-    x_sol.Fill();
+    ZVect x_sol(n), b_vec(n); b_vec.Fill(0);
+    x_sol.Fill(); b_vec.Zero();
     Mlt(1.0, A, x_sol, b_vec);
-    DISP(b_vec);
     x_sol.Zero();
     
     // We solve the linear system.
@@ -229,7 +236,7 @@ int main(int argc, char **argv)
     DISP(A);
     // computation of right hand side
     DVect x_sol(n), b_vec(n);
-    x_sol.Fill();
+    x_sol.Fill();  b_vec.Zero();
     Mlt(1.0, A, x_sol, b_vec);
     DISP(b_vec);
     x_sol.Zero();
@@ -268,7 +275,7 @@ int main(int argc, char **argv)
     DISP(A);
     // Computation of right hand side.
     ZVect x_sol(n), b_vec(n);
-    x_sol.Fill();
+    x_sol.Fill();  b_vec.Zero();
     Mlt(1.0, A, x_sol, b_vec);
     DISP(b_vec);
     x_sol.Zero();
@@ -303,7 +310,7 @@ int main(int argc, char **argv)
     DISP(A);
     // Computation of right hand side.
     DVect x_sol(n), b_vec(n);
-    x_sol.Fill();
+    x_sol.Fill();  b_vec.Zero();
     Mlt(1.0, A, x_sol, b_vec);
     DISP(b_vec);
     x_sol.Zero();
@@ -342,7 +349,7 @@ int main(int argc, char **argv)
     DISP(A);
     // Computation of right hand side.
     ZVect x_sol(n), b_vec(n);
-    x_sol.Fill();
+    x_sol.Fill();  b_vec.Zero();
     Mlt(1.0, A, x_sol, b_vec);
     DISP(b_vec);
     x_sol.Zero();

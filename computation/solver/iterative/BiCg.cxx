@@ -42,19 +42,19 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int BiCg(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int BiCg(Matrix1& A, Vector1& x, const Vector1& b,
 	   Preconditioner& M, Iteration<Titer> & iter)
   {
     int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     Complexe rho_1, rho_2(0), alpha, beta, delta;
     
-    Vector r(N), z(N), p(N), q(N);
-    Vector r_tilde(N), z_tilde(N), p_tilde(N), q_tilde(N);
+    Vector1 r(b), z(b), p(b), q(b);
+    Vector1 r_tilde(b), z_tilde(b), p_tilde(b), q_tilde(b);
     
     // we initialize iter
     int success_init = iter.Init(b);
@@ -62,13 +62,13 @@ namespace Seldon
       return iter.ErrorCode();
     
     // we compute the residual r = b - Ax
-    Seldon::Copy(b, r);
+    Copy(b, r);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r);
     else
       x.Zero();
     
-    Seldon::Copy(r,r_tilde);
+    Copy(r, r_tilde);
     
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are reached
@@ -88,8 +88,8 @@ namespace Seldon
 	
 	if (iter.First())
 	  {
-	    Seldon::Copy(z, p);
-	    Seldon::Copy(z_tilde, p_tilde);
+	    Copy(z, p);
+	    Copy(z_tilde, p_tilde);
 	  }
 	else
 	  {
@@ -97,9 +97,9 @@ namespace Seldon
 	    // p_tilde=beta*p_tilde+z_tilde
 	    beta = rho_1 / rho_2;
 	    Mlt(beta, p);
-	    Seldon::Add(Complexe(1), z, p);
+	    Add(Complexe(1), z, p);
 	    Mlt(beta, p_tilde);
-	    Seldon::Add(Complexe(1), z_tilde, p_tilde);
+	    Add(Complexe(1), z_tilde, p_tilde);
 	  }
 	
 	// we do the product matrix vector and transpose matrix vector
@@ -119,9 +119,9 @@ namespace Seldon
 	
 	// the new iterate x=x+alpha*p and residual r=r-alpha*q
 	// where alpha = rho_i/delta
-	Seldon::Add(alpha, p, x);
-	Seldon::Add(-alpha, q, r);
-	Seldon::Add(-alpha, q_tilde, r_tilde);
+	Add(alpha, p, x);
+	Add(-alpha, q, r);
+	Add(-alpha, q_tilde, r_tilde);
 	
 	rho_2 = rho_1;
 	

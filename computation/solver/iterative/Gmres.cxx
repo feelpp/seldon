@@ -41,22 +41,22 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] outer Iteration parameters
   */
-  template <class Titer, class MatrixSparse, class Vector, class Preconditioner>
-  int Gmres(MatrixSparse& A, Vector& x, const Vector& b,
+  template <class Titer, class MatrixSparse, class Vector1, class Preconditioner>
+  int Gmres(MatrixSparse& A, Vector1& x, const Vector1& b,
 	    Preconditioner& M, Iteration<Titer> & outer)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
-    Complexe zero = b(0)*Titer(0);
+    typedef typename Vector1::value_type Complexe;
+    Complexe zero(0);
     
     int m = outer.GetRestart();
     // V is the array of orthogonal basis contructed
     // from the Krylov subspace (v0,A*v0,A^2*v0,...,A^m*v0)
-    Seldon::Vector<Vector,VectFull,NewAlloc<Vector> > V(m+1);
-  
+    std::vector<Vector1> V(m+1, b);
+    
     // Upper triangular hessenberg matrix
     // we don't store the sub-diagonal
     // we apply rotations to eliminate this sub-diagonal
@@ -66,22 +66,20 @@ namespace Seldon
     // w is used in the Arnoldi algorithm
     // u is a temporary vector which contains the product A*v(i)
     // r is the residual
-    Vector s(m+1), w(N), r(N), u(N);
+    Vector1 w(b), r(b), u(b);
+    Vector<Complexe> s(m+1);
     s.Fill(zero); w.Fill(zero); r.Fill(zero); u.Fill(zero);
     
     for (int i = 0; i < m+1; i++)
-      {
-	V(i).Reallocate(N);
-	V(i).Fill(zero);
-      }
+      V[i].Fill(zero);
     
-    Vector rotations_sin(m+1);
+    Vector<Complexe> rotations_sin(m+1);
     rotations_sin.Fill(zero);
-    Seldon::Vector<Titer> rotations_cos(m+1);
+    Vector<Titer> rotations_cos(m+1);
     rotations_cos.Fill(Titer(0));
     
     // we compute residual
-    Seldon::Copy(b, w);
+    Copy(b, w);
     if (!outer.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), w);
     else
@@ -104,8 +102,8 @@ namespace Seldon
     while (! outer.Finished(beta))
       {
 	// we normalize V(0) and we init s
-	Seldon::Copy(r, V(0));
-	Mlt(Complexe(Complexe(1)/beta), V(0));
+	Copy(r, V[0]);
+	Mlt(Complexe(Complexe(1)/beta), V[0]);
 	s.Fill(zero);
 	s(0) = beta;
 	
@@ -120,7 +118,7 @@ namespace Seldon
 	do
 	  {
 	    // product matrix vector u=A*V(i)
-	    Mlt(A, V(i), u);
+	    Mlt(A, V[i], u);
 	    
 	    // preconditioning
 	    M.Solve(A, u, w);
@@ -129,17 +127,17 @@ namespace Seldon
 	    for (k = 0; k <= i; k++)
 	      {
 		// h_{k,i} = \bar{v(k)} w
-		H.Val(k, i) = DotProdConj(V(k), w);
-		Seldon::Add(-H(k,i), V(k), w);
+		H.Val(k, i) = DotProdConj(V[k], w);
+		Add(-H(k,i), V[k], w);
 	      }
 	    
 	    // we compute h(i+1,i)
 	    hi_ip1 = Norm2(w);
-	    Seldon::Copy(w, V(i+1));
+	    Copy(w, V[i+1]);
 	    
 	    // we normalize V(i+1)
 	    if (hi_ip1 != zero)
-	      Mlt(Complexe(1)/hi_ip1, V(i+1));
+	      Mlt(Complexe(1)/hi_ip1, V[i+1]);
 	    
 	    // we apply precedent generated rotations
 	    // to the last column we computed.
@@ -169,10 +167,10 @@ namespace Seldon
 	
 	// new iterate x = x + sum_0^{i-1} s(k)*V(k)
 	for (k = 0; k < i; k++)
-	  Seldon::Add(s(k), V(k), x);
+	  Add(s(k), V[k], x);
 		
 	// we compute the new residual
-	Seldon::Copy(b, w);
+	Copy(b, w);
 	MltAdd(Complexe(-1), A, x, Complexe(1), w);
 	M.Solve(A, w, r);
 	

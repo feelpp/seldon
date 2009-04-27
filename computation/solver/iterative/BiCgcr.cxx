@@ -40,17 +40,17 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
-  template <class Titer, class Matrix, class Vector, class Preconditioner>
-  int BiCgcr(Matrix& A, Vector& x, const Vector& b,
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int BiCgcr(Matrix1& A, Vector1& x, const Vector1& b,
 	     Preconditioner& M, Iteration<Titer> & iter)
   {
     const int N = A.GetM();
     if (N <= 0)
       return 0;
     
-    typedef typename Vector::value_type Complexe;
+    typedef typename Vector1::value_type Complexe;
     Complexe rho, mu, alpha, beta, tau;
-    Vector v(N), w(N), s(N), z(N), p(N), a(N);
+    Vector1 v(b), w(b), s(b), z(b), p(b), a(b);
     v.Zero(); w.Zero(); s.Zero(); z.Zero();  p.Zero(); a.Zero();
     
     // we initialize iter
@@ -59,7 +59,7 @@ namespace Seldon
       return iter.ErrorCode();
     
     // we compute the residual v = b - Ax
-    Seldon::Copy(b, v);
+    Copy(b, v);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), v);
     else
@@ -67,7 +67,7 @@ namespace Seldon
     
     iter.SetNumberIteration(0);
     // s = M*v   p = s
-    M.Solve(A, v, s); Seldon::Copy(s, p);
+    M.Solve(A, v, s); Copy(s, p);
     // a = A*p   w = M*a
     Mlt(A, p, a); M.Solve(A, a, w);
     // we made one product matrix vector
@@ -85,12 +85,12 @@ namespace Seldon
 	    break;
 	  }
 	alpha = rho/mu;
-	Seldon::Add(alpha, p, x);
+	Add(alpha, p, x);
 	
 	// new residual r0 = r0 - alpha * p1
 	// r1 = r1 - alpha*p2
-	Seldon::Add(-alpha, a, v);
-	Seldon::Add(-alpha, w, s);
+	Add(-alpha, a, v);
+	Add(-alpha, w, s);
 	
 	Mlt(A, s, z);
 	tau = DotProd(w, z);
@@ -104,9 +104,9 @@ namespace Seldon
 	beta = tau/mu;
 	
 	Mlt(Complexe(-beta), p);
-	Seldon::Add(Complexe(1), s, p);
+	Add(Complexe(1), s, p);
 	Mlt(Complexe(-beta), a);
-	Seldon::Add(Complexe(1), z, a);
+	Add(Complexe(1), z, a);
 	
 	M.Solve(A, a, w);
 
