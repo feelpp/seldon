@@ -93,7 +93,7 @@ namespace Seldon
     else
       struct_mumps.icntl[21] = 0;
 
-    struct_mumps.icntl[17] = 0;    
+    struct_mumps.icntl[17] = 0;
     
     // the print level is set in mumps
     if (print_level >= 0)
@@ -362,10 +362,10 @@ namespace Seldon
     InitMatrix(Atest);
     
     // distributed matrix
-    struct_mumps.icntl[17] = 3;    
+    struct_mumps.icntl[17] = 3;
 
     // global number of rows : mat.GetM()
-    int N = mat.GetM();    
+    int N = mat.GetM();
     int nnz = mat.GetNonZeros();
     // conversion in coordinate format with C-convention (0-index)
     IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
@@ -392,7 +392,7 @@ namespace Seldon
     struct_mumps.job = 4; // we analyse and factorize the system
     CallMumps();
     cout<<"Factorization completed"<<endl;
-  }  
+  }
   
   
   //! solves linear system with parallel execution
@@ -400,7 +400,7 @@ namespace Seldon
     \param[in] TransA we solve A x = b or A^T x = b
     \param[inout] x right-hand-side then solution
     \param[inout] glob_num global row numbers
-   */
+  */
   template<class T> template<class Allocator2, class Transpose_status>
   void MatrixMumps<T>::SolveDistributed(const Transpose_status& TransA,
 					Vector<T, VectFull, Allocator2>& x,
@@ -440,7 +440,7 @@ namespace Seldon
 		
 		for (int j = 0; j < nump.GetM(); j++)
 		  rhs(nump(j)) = xp(j);
-	      }	    
+	      }
 	  }
 	else
 	  Copy(x, rhs);
@@ -462,7 +462,7 @@ namespace Seldon
     else
       struct_mumps.icntl[8] = 1;
     
-    struct_mumps.job = 3; 
+    struct_mumps.job = 3;
     CallMumps();
     
     // we distribute solution on all the processors

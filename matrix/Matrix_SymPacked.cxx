@@ -84,7 +84,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_SymPacked<T, Prop, Storage, Allocator>
   ::Matrix_SymPacked(const Matrix_SymPacked<T, Prop, Storage, Allocator>& A)
-  : Matrix_Base<T, Allocator>()
+    : Matrix_Base<T, Allocator>()
   {
     this->m_ = 0;
     this->n_ = 0;

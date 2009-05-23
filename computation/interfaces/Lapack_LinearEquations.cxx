@@ -161,7 +161,7 @@ namespace Seldon
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
 
-    P.Reallocate(min(m, n));    
+    P.Reallocate(min(m, n));
     dgetrf_(&m, &n, A.GetData(), &m,
 	    P.GetData(), &info.GetInfoRef());
 
@@ -188,7 +188,7 @@ namespace Seldon
       throw WrongDim("GetLU", "Provide a non-empty matrix");
 #endif
 
-    P.Reallocate(min(m, n));    
+    P.Reallocate(min(m, n));
     cgetrf_(&m, &n, A.GetDataVoid(), &m,
 	    P.GetData(), &info.GetInfoRef());
 

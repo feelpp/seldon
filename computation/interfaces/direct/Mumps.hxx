@@ -25,8 +25,8 @@ extern "C"
 #include "dmumps_c.h"
 #include "zmumps_c.h"
 
-// including mpi from sequential version of Mumps if the
-// compilation is not made on a parallel machine
+  // including mpi from sequential version of Mumps if the
+  // compilation is not made on a parallel machine
 #ifndef SELDON_WITH_MPI
 #include "mpi.h"
 #endif
@@ -123,7 +123,7 @@ namespace Seldon
     void FactorizeDistributedMatrix(Matrix<T, General,
 				    ColSparse, Allocator> & mat,
 				    const Prop& sym, const IVect& glob_number,
-				    bool keep_matrix = false);    
+				    bool keep_matrix = false);
     
     template<class Allocator2, class Transpose_status>
     void SolveDistributed(const Transpose_status& TransA,

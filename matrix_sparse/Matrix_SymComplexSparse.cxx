@@ -1003,7 +1003,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::
   Copy(const Matrix_SymComplexSparse<T, Prop, Storage, Allocator>& A)
-  {    
+  {
     this->Clear();
     int i = A.m_;
     int j = A.n_;

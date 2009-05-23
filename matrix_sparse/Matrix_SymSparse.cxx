@@ -545,7 +545,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_SymSparse<T, Prop, Storage, Allocator>::
   Copy(const Matrix_SymSparse<T, Prop, Storage, Allocator>& A)
-  {    
+  {
     this->Clear();
     int nz = A.GetNonZeros();
     int i = A.GetM();

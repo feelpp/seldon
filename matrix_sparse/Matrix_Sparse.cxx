@@ -543,7 +543,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_Sparse<T, Prop, Storage, Allocator>::
   Copy(const Matrix_Sparse<T, Prop, Storage, Allocator>& A)
-  {    
+  {
     this->Clear();
     int nz = A.nz_;
     int i = A.m_;
@@ -582,7 +582,7 @@ namespace Seldon
 #endif
 
 	ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
-					      sizeof(int)) );	
+					      sizeof(int)) );
 	memcpy(this->ptr_, A.ptr_, Storage::GetFirst(i, j)+1);
 
 #ifdef SELDON_CHECK_MEMORY

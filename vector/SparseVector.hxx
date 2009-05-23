@@ -74,7 +74,7 @@ namespace Seldon
 #ifndef SWIG
     value_type operator() (int i) const;
     Vector<T, VectSparse, Allocator>& operator= (const Vector<T, VectSparse,
-						  Allocator>& X);
+						 Allocator>& X);
 #endif
     void Copy(const Vector<T, VectSparse, Allocator>& X);
     

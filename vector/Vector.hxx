@@ -123,7 +123,7 @@ namespace Seldon
 #ifndef SWIG
     const_reference operator() (int i) const;
     Vector<T, VectFull, Allocator>& operator= (const Vector<T, VectFull,
-						Allocator>& X);
+					       Allocator>& X);
 #endif
     void Copy(const Vector<T, VectFull, Allocator>& X);
     void Append(const T& x);
