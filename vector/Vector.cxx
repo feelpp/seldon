@@ -837,9 +837,13 @@ namespace Seldon
     Sets the vector according to a binary file that stores the length of the
     vector (integer) and all elements.
     \param FileName file name.
+    \param with_size if set to 'false', the length of the vector is not
+    available in the file. In this case, the current size N of the vector is
+    unchanged, and N elements are read in the file.
   */
   template <class T, class Allocator>
-  void Vector<T, VectFull, Allocator>::Read(string FileName)
+  void Vector<T, VectFull, Allocator>
+  ::Read(string FileName, bool with_size = true)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -851,7 +855,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->Read(FileStream);
+    this->Read(FileStream, with_size);
 
     FileStream.close();
   }
@@ -862,9 +866,13 @@ namespace Seldon
     Sets the vector according to a binary file stream that stores the length
     of the vector (integer) and all elements.
     \param FileStream file stream.
+    \param with_size if set to 'false', the length of the vector is not
+    available in the stream. In this case, the current size N of the vector is
+    unchanged, and N elements are read in the stream.
   */
   template <class T, class Allocator>
-  void Vector<T, VectFull, Allocator>::Read(istream& FileStream)
+  void Vector<T, VectFull, Allocator>
+  ::Read(istream& FileStream, bool with_size = true)
   {
 
 #ifdef SELDON_CHECK_IO
@@ -874,12 +882,15 @@ namespace Seldon
                     "The stream is not ready.");
 #endif
 
-    int new_size;
-    FileStream.read(reinterpret_cast<char*>(&new_size), sizeof(int));
-    this->Reallocate(new_size);
+    if (with_size)
+      {
+        int new_size;
+        FileStream.read(reinterpret_cast<char*>(&new_size), sizeof(int));
+        this->Reallocate(new_size);
+      }
 
     FileStream.read(reinterpret_cast<char*>(this->data_),
-		    new_size * sizeof(value_type));
+		    this->GetLength() * sizeof(value_type));
 
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.

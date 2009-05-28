@@ -945,9 +945,13 @@ namespace Seldon
     are read, and matrix elements are then read in the same order
     as it should be in memory (e.g. row-major storage).
     \param FileName input file name.
+    \param with_size if set to 'false', the dimensions of the matrix are not
+    available in the file. In this case, the current dimensions (M, N) of the
+    matrix are unchanged, and MxN elements are read in the file.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Pointers<T, Prop, Storage, Allocator>::Read(string FileName)
+  void Matrix_Pointers<T, Prop, Storage, Allocator>
+  ::Read(string FileName, bool with_size = true)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -959,7 +963,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->Read(FileStream);
+    this->Read(FileStream, with_size);
 
     FileStream.close();
   }
@@ -972,10 +976,13 @@ namespace Seldon
     are read, and matrix elements are then read in the same order
     as it should be in memory (e.g. row-major storage).
     \param FileStream input stream.
+    \param with_size if set to 'false', the dimensions of the matrix are not
+    available in the stream. In this case, the current dimensions (M, N) of
+    the matrix are unchanged, and MxN elements are read in the stream.
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Pointers<T, Prop, Storage, Allocator>
-  ::Read(istream& FileStream)
+  ::Read(istream& FileStream, bool with_size = true)
   {
 
 #ifdef SELDON_CHECK_IO
@@ -985,13 +992,16 @@ namespace Seldon
                     "The stream is not ready.");
 #endif
 
-    int new_m, new_n;
-    FileStream.read(reinterpret_cast<char*>(&new_m), sizeof(int));
-    FileStream.read(reinterpret_cast<char*>(&new_n), sizeof(int));
-    this->Reallocate(new_m, new_n);
+    if (with_size)
+      {
+        int new_m, new_n;
+        FileStream.read(reinterpret_cast<char*>(&new_m), sizeof(int));
+        FileStream.read(reinterpret_cast<char*>(&new_n), sizeof(int));
+        this->Reallocate(new_m, new_n);
+      }
 
     FileStream.read(reinterpret_cast<char*>(this->data_),
-		    new_m * new_n * sizeof(value_type));
+		    this->GetM() * this->GetN() * sizeof(value_type));
 
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.
