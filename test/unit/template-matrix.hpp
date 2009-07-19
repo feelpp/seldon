@@ -20,6 +20,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Seldon.hxx"
+#include "SeldonSolver.hxx"
 using namespace Seldon;
 
 typedef complex<float> complexfloat;
@@ -53,9 +54,9 @@ public:
   void test_constructor()
   {
     {
-      Matrix<@real_complex, General, @storage_rectangular_full> M@storage_rectangular_full_@real_complex(m_, n_);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetM() == m_);
-      CPPUNIT_ASSERT(M@storage_rectangular_full_@real_complex.GetN() == n_);
+      Matrix<@real_complex, General, @storage_rectangular> M@storage_rectangular_@real_complex(m_, n_);
+      CPPUNIT_ASSERT(M@storage_rectangular_@real_complex.GetM() == m_);
+      CPPUNIT_ASSERT(M@storage_rectangular_@real_complex.GetN() == n_);
     }
     {
       Matrix<@real_complex, General, @storage_rectangular_full> M@storage_rectangular_full_@real_complex(0, n_);
