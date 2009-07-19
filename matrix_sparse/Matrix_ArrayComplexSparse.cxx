@@ -56,8 +56,8 @@ namespace Seldon
   Matrix_ArrayComplexSparse(int i, int j):
     val_real_(Storage::GetFirst(i, j)), val_imag_(Storage::GetFirst(i, j))
   {
-    this->m_ = Storage::GetFirst(i, j);
-    this->n_ = Storage::GetSecond(i, j);
+    this->m_ = i;
+    this->n_ = j;
   }
   
   
