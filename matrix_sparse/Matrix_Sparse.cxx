@@ -47,7 +47,7 @@ namespace Seldon
 
   //! Constructor.
   /*!
-    Builds an empty i by j sparse matrix.
+    Builds a i by j sparse matrix.
     \param i number of rows.
     \param j number of columns.
   */

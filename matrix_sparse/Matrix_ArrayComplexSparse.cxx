@@ -33,7 +33,7 @@ namespace Seldon
   
   //! Default constructor.
   /*!
-    Builds a empty matrix.
+    Builds an empty matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
@@ -47,7 +47,7 @@ namespace Seldon
   
   //! Constructor.
   /*!
-    Builds an empty i by j sparse matrix.
+    Builds a i by j sparse matrix.
     \param i number of rows.
     \param j number of columns.
   */
@@ -1143,7 +1143,7 @@ namespace Seldon
   
   //! Default constructor.
   /*!
-    Builds a empty matrix.
+    Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::Matrix()  throw():
@@ -1433,7 +1433,7 @@ namespace Seldon
   
   //! Default constructor.
   /*!
-    Builds a empty matrix.
+    Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::Matrix()  throw():
@@ -1770,7 +1770,7 @@ namespace Seldon
   
   //! Default constructor.
   /*!
-    Builds a empty matrix.
+    Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
   inline Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::Matrix()  throw():

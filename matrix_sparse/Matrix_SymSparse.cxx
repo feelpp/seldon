@@ -33,7 +33,7 @@ namespace Seldon
 
   //! Default constructor.
   /*!
-    Builds a empty matrix.
+    Builds an empty matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_SymSparse<T, Prop, Storage, Allocator>::Matrix_SymSparse():
@@ -47,7 +47,7 @@ namespace Seldon
 
   //! Constructor.
   /*!
-    Builds an empty i by j sparse matrix.
+    Builds a i by j sparse matrix.
     \param i number of rows.
     \param j number of columns.
     \note 'j' is assumed to be equal to 'i' and is therefore discarded.
