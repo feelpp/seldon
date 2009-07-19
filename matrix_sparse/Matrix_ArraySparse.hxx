@@ -37,6 +37,16 @@ namespace Seldon
 	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
   class Matrix_ArraySparse
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef typename Allocator::pointer pointer;
+    typedef typename Allocator::const_pointer const_pointer;
+    typedef typename Allocator::reference reference;
+    typedef typename Allocator::const_reference const_reference;
+    typedef T& access_type;
+    typedef T const_access_type;
+
     // Attributes.
   protected:
     //! Number of rows.
@@ -119,6 +129,13 @@ namespace Seldon
   class Matrix<T, Prop, ArrayColSparse, Allocator> :
     public Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef ArrayColSparse storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);
@@ -153,6 +170,13 @@ namespace Seldon
   class Matrix<T, Prop, ArrayRowSparse, Allocator> :
     public Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef ArrayRowSparse storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);
@@ -186,6 +210,13 @@ namespace Seldon
   class Matrix<T, Prop, ArrayColSymSparse, Allocator>:
     public Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef ArrayColSymSparse storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);
@@ -223,6 +254,13 @@ namespace Seldon
   class Matrix<T, Prop, ArrayRowSymSparse, Allocator>:
     public Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef ArrayRowSymSparse storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);

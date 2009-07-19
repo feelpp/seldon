@@ -50,6 +50,8 @@ namespace Seldon
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
+    typedef value_type access_type;
+    typedef value_type const_access_type;
 
     // Attributes.
   protected:
@@ -115,6 +117,13 @@ namespace Seldon
   class Matrix<T, Prop, ColSparse, Allocator>:
     public Matrix_Sparse<T, Prop, ColSparse, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef ColSparse storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);
@@ -134,6 +143,13 @@ namespace Seldon
   class Matrix<T, Prop, RowSparse, Allocator>:
     public Matrix_Sparse<T, Prop, RowSparse, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef RowSparse storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);

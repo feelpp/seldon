@@ -36,6 +36,16 @@ namespace Seldon
 	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
   class Matrix_ArrayComplexSparse
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef typename Allocator::pointer pointer;
+    typedef typename Allocator::const_pointer const_pointer;
+    typedef typename Allocator::reference reference;
+    typedef typename Allocator::const_reference const_reference;
+    typedef complex<T> access_type;
+    typedef complex<T> const_access_type;
+
     // Attributes.
   protected:
     //! Number of rows.
@@ -124,6 +134,13 @@ namespace Seldon
   class Matrix<T, Prop, ArrayColComplexSparse, Allocator> :
     public Matrix_ArrayComplexSparse<T, Prop, ArrayColComplexSparse, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef ArrayColComplexSparse storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);
@@ -164,6 +181,13 @@ namespace Seldon
   class Matrix<T, Prop, ArrayRowComplexSparse, Allocator> :
     public Matrix_ArrayComplexSparse<T, Prop, ArrayRowComplexSparse, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef ArrayRowComplexSparse storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);
@@ -204,6 +228,13 @@ namespace Seldon
   class Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>:
     public Matrix_ArrayComplexSparse<T, Prop, ArrayColSymComplexSparse, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef ArrayColSymComplexSparse storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);
@@ -246,6 +277,13 @@ namespace Seldon
   class Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>:
     public Matrix_ArrayComplexSparse<T, Prop, ArrayRowSymComplexSparse, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef ArrayRowSymComplexSparse storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);

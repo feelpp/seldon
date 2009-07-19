@@ -44,6 +44,8 @@ namespace Seldon
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
+    typedef typename Allocator::value_type access_type;
+    typedef typename Allocator::value_type const_access_type;
 
     // Attributes.
   protected:
@@ -112,6 +114,13 @@ namespace Seldon
   class Matrix<T, Prop, ColUpTriang, Allocator>:
     public Matrix_Triangular<T, Prop, ColUpTriang, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef ColUpTriang storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);
@@ -129,6 +138,13 @@ namespace Seldon
   class Matrix<T, Prop, ColLoTriang, Allocator>:
     public Matrix_Triangular<T, Prop, ColLoTriang, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef ColLoTriang storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);
@@ -146,6 +162,13 @@ namespace Seldon
   class Matrix<T, Prop, RowUpTriang, Allocator>:
     public Matrix_Triangular<T, Prop, RowUpTriang, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef RowUpTriang storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);
@@ -163,6 +186,13 @@ namespace Seldon
   class Matrix<T, Prop, RowLoTriang, Allocator>:
     public Matrix_Triangular<T, Prop, RowLoTriang, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef RowLoTriang storage;
+    typedef Allocator allocator;
+
   public:
     Matrix()  throw();
     Matrix(int i, int j);

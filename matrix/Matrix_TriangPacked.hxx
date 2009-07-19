@@ -44,6 +44,8 @@ namespace Seldon
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
+    typedef typename Allocator::reference access_type;
+    typedef typename Allocator::const_reference const_access_type;
 
     // Attributes.
   protected:
@@ -110,6 +112,13 @@ namespace Seldon
   class Matrix<T, Prop, ColUpTriangPacked, Allocator>:
     public Matrix_TriangPacked<T, Prop, ColUpTriangPacked, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef ColUpTriangPacked storage;
+    typedef Allocator allocator;
+
   public:
     Matrix();
     Matrix(int i, int j = 0);
@@ -127,6 +136,13 @@ namespace Seldon
   class Matrix<T, Prop, ColLoTriangPacked, Allocator>:
     public Matrix_TriangPacked<T, Prop, ColLoTriangPacked, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef ColLoTriangPacked storage;
+    typedef Allocator allocator;
+
   public:
     Matrix();
     Matrix(int i, int j = 0);
@@ -144,6 +160,13 @@ namespace Seldon
   class Matrix<T, Prop, RowUpTriangPacked, Allocator>:
     public Matrix_TriangPacked<T, Prop, RowUpTriangPacked, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef RowUpTriangPacked storage;
+    typedef Allocator allocator;
+
   public:
     Matrix();
     Matrix(int i, int j = 0);
@@ -161,6 +184,13 @@ namespace Seldon
   class Matrix<T, Prop, RowLoTriangPacked, Allocator>:
     public Matrix_TriangPacked<T, Prop, RowLoTriangPacked, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef typename Allocator::value_type value_type;
+    typedef Prop property;
+    typedef RowLoTriangPacked storage;
+    typedef Allocator allocator;
+
   public:
     Matrix();
     Matrix(int i, int j = 0);
