@@ -941,6 +941,18 @@ namespace Seldon
 
 
   //! Constructor.
+  /*! Builds a i by j matrix.
+    \param i number of rows.
+    \param j number of columns.
+  */
+  template <class T, class Prop, class Allocator>
+  Matrix<T, Prop, ColSparse, Allocator>::Matrix(int i, int j):
+    Matrix_Sparse<T, Prop, ColSparse, Allocator>(i, j, 0)
+  {
+  }
+
+
+  //! Constructor.
   /*! Builds a i by j matrix with nz non-zero elements.
     \param i number of rows.
     \param j number of columns.
@@ -997,6 +1009,18 @@ namespace Seldon
   template <class T, class Prop, class Allocator>
   Matrix<T, Prop, RowSparse, Allocator>::Matrix()  throw():
     Matrix_Sparse<T, Prop, RowSparse, Allocator>()
+  {
+  }
+
+
+  //! Constructor.
+  /*! Builds a i by j matrix.
+    \param i number of rows.
+    \param j number of columns.
+  */
+  template <class T, class Prop, class Allocator>
+  Matrix<T, Prop, RowSparse, Allocator>::Matrix(int i, int j):
+    Matrix_Sparse<T, Prop, RowSparse, Allocator>(i, j, 0)
   {
   }
 

@@ -1659,6 +1659,18 @@ namespace Seldon
   }
 
 
+  //! Builds a i by j matrix.
+  /*!
+    \param i number of rows.
+    \param j number of columns.
+  */
+  template <class T, class Prop, class Allocator>
+  Matrix<T, Prop, ColComplexSparse, Allocator>::Matrix(int i, int j):
+    Matrix_ComplexSparse<T, Prop, ColComplexSparse, Allocator>(i, j, 0, 0)
+  {
+  }
+
+
   //! Constructor.
   /*! Builds a i by j matrix with real_nz and imag_nz non-zero elements for
     the real part and the imaginary part respectively.
@@ -1738,6 +1750,18 @@ namespace Seldon
   template <class T, class Prop, class Allocator>
   Matrix<T, Prop, RowComplexSparse, Allocator>::Matrix()  throw():
     Matrix_ComplexSparse<T, Prop, RowComplexSparse, Allocator>()
+  {
+  }
+
+
+  //! Builds a i by j matrix.
+  /*!
+    \param i number of rows.
+    \param j number of columns.
+  */
+  template <class T, class Prop, class Allocator>
+  Matrix<T, Prop, RowComplexSparse, Allocator>::Matrix(int i, int j):
+    Matrix_ComplexSparse<T, Prop, RowComplexSparse, Allocator>(i, j, 0, 0)
   {
   }
 
