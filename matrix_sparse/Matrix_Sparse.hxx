@@ -50,6 +50,7 @@ namespace Seldon
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
+    typedef value_type entry_type;
     typedef value_type access_type;
     typedef value_type const_access_type;
 

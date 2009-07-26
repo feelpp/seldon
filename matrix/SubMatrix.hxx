@@ -41,6 +41,7 @@ namespace Seldon
     typedef typename M::const_pointer const_pointer;
     typedef typename M::reference reference;
     typedef typename M::const_reference const_reference;
+    typedef typename M::entry_type entry_type;
     typedef typename M::access_type access_type;
     typedef typename M::const_access_type const_access_type;
 

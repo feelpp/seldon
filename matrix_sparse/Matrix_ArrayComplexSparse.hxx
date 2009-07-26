@@ -43,6 +43,7 @@ namespace Seldon
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
+    typedef complex<T> entry_type;
     typedef complex<T> access_type;
     typedef complex<T> const_access_type;
 
