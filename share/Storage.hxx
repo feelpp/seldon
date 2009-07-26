@@ -309,6 +309,17 @@ namespace Seldon
   };
 
 
+  //////////////////
+  // SUB-MATRICES //
+  //////////////////
+
+
+  template <class M>
+  class SubStorage
+  {
+  };
+
+
 } // namespace Seldon.
 
 #define SELDON_FILE_STORAGE_HXX

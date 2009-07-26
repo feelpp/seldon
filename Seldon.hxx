@@ -377,6 +377,9 @@ namespace Seldon
 #include "computation/basic_functions/Functions_Vector.cxx"
 #include "computation/basic_functions/Functions_MatVect.cxx"
 
+#include "matrix/SubMatrix_Base.cxx"
+#include "matrix/SubMatrix.cxx"
+
 // Blas interface.
 #ifdef SELDON_WITH_CBLAS
 #include "computation/interfaces/Blas_1.cxx"

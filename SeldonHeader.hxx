@@ -328,6 +328,9 @@ namespace Seldon
 #include "vector/SparseVector.hxx"
 #include "matrix/Functions.hxx"
 
+#include "matrix/SubMatrix_Base.hxx"
+#include "matrix/SubMatrix.hxx"
+
 // Lapack interface.
 #ifdef SELDON_WITH_LAPACK
 #undef LAPACK_INTEGER
