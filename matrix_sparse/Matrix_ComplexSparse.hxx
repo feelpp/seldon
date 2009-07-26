@@ -132,6 +132,8 @@ namespace Seldon
     
     // Element acess and affectation.
     complex<value_type> operator() (int i, int j) const;
+    complex<value_type>& Val(int i, int j);
+    const complex<value_type>& Val(int i, int j) const;
     Matrix_ComplexSparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_ComplexSparse<T, Prop, Storage, Allocator>& A);
     

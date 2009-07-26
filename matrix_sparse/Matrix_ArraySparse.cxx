@@ -321,8 +321,64 @@ namespace Seldon
     
     return this->val_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j));
   }
-  
-  
+
+
+  //! Access method.
+  /*! Returns the value of element (\a i, \a j).
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline T&
+  Matrix_ArraySparse<T, Prop, Storage, Allocator>::Val(int i, int j)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_ArraySparse::operator()",
+		     "Index should be in [0, " + to_str(this->m_-1) +
+		     "], but is equal to " + to_str(i) + ".");
+
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_ArraySparse::operator()",
+		     "Index should be in [0, " + to_str(this->n_-1) +
+		     "], but is equal to " + to_str(j) + ".");
+#endif
+
+    return
+      this->val_(Storage::GetFirst(i, j)).Val(Storage::GetSecond(i, j));
+  }
+
+
+  //! Access method.
+  /*! Returns the value of element (\a i, \a j).
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const T&
+  Matrix_ArraySparse<T, Prop, Storage, Allocator>::Val(int i, int j) const
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_ArraySparse::operator()",
+		     "Index should be in [0, " + to_str(this->m_-1) +
+		     "], but is equal to " + to_str(i) + ".");
+
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_ArraySparse::operator()",
+		     "Index should be in [0, " + to_str(this->n_-1) +
+		     "], but is equal to " + to_str(j) + ".");
+#endif
+
+    return
+      this->val_(Storage::GetFirst(i, j)).Val(Storage::GetSecond(i, j));
+  }
+
+
   //! Returns j-th non-zero value of row/column i.
   /*!
     \param[in] i row/column number.

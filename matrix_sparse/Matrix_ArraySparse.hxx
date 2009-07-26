@@ -86,6 +86,8 @@ namespace Seldon
     // Element acess and affectation.
     T operator() (int i, int j) const;
     T& operator() (int i, int j);
+    T& Val(int i, int j);
+    const T& Val(int i, int j) const;
     
     const T& Value(int num_row, int i) const;
     T& Value(int num_row, int i);

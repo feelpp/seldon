@@ -1602,6 +1602,41 @@ namespace Seldon
   }
 
 
+  //! Unavailable access method.
+  /*! This method is declared for consistency with other classes, but it is
+    not defined because no reference can possiblity be returned.
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Raises an exception.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline complex<typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::value_type>&
+  Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::Val(int i, int j)
+  {
+    throw Undefined("Matrix_SymComplexSparse::Val(int i, int j)");
+  }
+
+
+  //! Unavailable access method.
+  /*! This method is declared for consistency with other classes, but it is
+    not defined because no reference can possiblity be returned.
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Raises an exception.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline
+  const complex<typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::value_type>&
+  Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::Val(int i, int j) const
+  {
+    throw Undefined("Matrix_SymComplexSparse::Val(int i, int j)");
+  }
+
+
   //! Duplicates a matrix (assignment operator).
   /*!
     \param A matrix to be copied.

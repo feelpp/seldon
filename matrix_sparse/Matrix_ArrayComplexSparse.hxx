@@ -93,6 +93,8 @@ namespace Seldon
     
     // Element acess and affectation.
     complex<T> operator() (int i, int j) const;
+    complex<T>& Val(int i, int j);
+    const complex<T>& Val(int i, int j) const;
     const T& ValueReal(int num_row,int i) const;
     T& ValueReal(int num_row,int i);
     int IndexReal(int num_row,int i) const;

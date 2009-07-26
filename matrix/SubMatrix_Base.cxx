@@ -94,6 +94,36 @@ namespace Seldon
   }
 
 
+  //! Access operator.
+  /*!
+    Returns the value of element (\a i, \a j).
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the sub-matrix.
+  */
+  template <class T, class Prop, class M, class Allocator>
+  inline typename SubMatrix_Base<T, Prop, M, Allocator>::entry_type&
+  SubMatrix_Base<T, Prop, M, Allocator>::Val(int i, int j)
+  {
+    return this->matrix_->Val(this->row_list_(i), this->column_list_(j));
+  }
+
+
+  //! Access operator.
+  /*!
+    Returns the value of element (\a i, \a j).
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the sub-matrix.
+  */
+  template <class T, class Prop, class M, class Allocator>
+  inline const typename SubMatrix_Base<T, Prop, M, Allocator>::entry_type&
+  SubMatrix_Base<T, Prop, M, Allocator>::Val(int i, int j) const
+  {
+    return this->matrix_->Val(this->row_list_(i), this->column_list_(j));
+  }
+
+
   /*****************
    * BASIC METHODS *
    *****************/

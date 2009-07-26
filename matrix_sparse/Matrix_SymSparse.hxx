@@ -104,6 +104,8 @@ namespace Seldon
 
     // Element acess and affectation.
     value_type operator() (int i, int j) const;
+    value_type& Val(int i, int j);
+    const value_type& Val(int i, int j) const;
     Matrix_SymSparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_SymSparse<T, Prop, Storage, Allocator>& A);
     

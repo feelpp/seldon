@@ -61,6 +61,10 @@ namespace Seldon
 #ifndef SWIG
     const_access_type operator() (int i, int j) const;
 #endif
+    entry_type& Val(int i, int j);
+#ifndef SWIG
+    const entry_type& Val(int i, int j) const;
+#endif
 
     // Basic methods.
     int GetM() const;

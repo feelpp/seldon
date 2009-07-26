@@ -820,6 +820,109 @@ namespace Seldon
   }
 
 
+  //! Access method.
+  /*! Returns the value of element (\a i, \a j) if it can be returned as a
+    reference.
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the matrix).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type&
+  Matrix_Sparse<T, Prop, Storage, Allocator>::Val(int i, int j)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_Sparse::Val(int, int)",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_Sparse::Val(int, int)",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int k, l;
+    int a, b;
+
+    a = ptr_[Storage::GetFirst(i, j)];
+    b = ptr_[Storage::GetFirst(i, j) + 1];
+
+    if (a == b)
+      throw WrongArgument("Matrix_Sparse::Val(int, int)",
+                          "No reference to element (" + to_str(i) + ", "
+                          + to_str(j)
+                          + ") can be returned: it is a zero entry.");
+
+    l = Storage::GetSecond(i, j);
+
+    for (k = a; (k < b-1) && (ind_[k] < l); k++);
+
+    if (ind_[k] == l)
+      return this->data_[k];
+    else
+      throw WrongArgument("Matrix_Sparse::Val(int, int)",
+                          "No reference to element (" + to_str(i) + ", "
+                          + to_str(j)
+                          + ") can be returned: it is a zero entry.");
+  }
+
+
+  //! Access method.
+  /*! Returns the value of element (\a i, \a j) if it can be returned as a
+    reference.
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the matrix).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline
+  const typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type&
+  Matrix_Sparse<T, Prop, Storage, Allocator>::Val(int i, int j) const
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_Sparse::Val(int, int)",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_Sparse::Val(int, int)",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int k, l;
+    int a, b;
+
+    a = ptr_[Storage::GetFirst(i, j)];
+    b = ptr_[Storage::GetFirst(i, j) + 1];
+
+    if (a == b)
+      throw WrongArgument("Matrix_Sparse::Val(int, int)",
+                          "No reference to element (" + to_str(i) + ", "
+                          + to_str(j)
+                          + ") can be returned: it is a zero entry.");
+
+    l = Storage::GetSecond(i, j);
+
+    for (k = a; (k < b-1) && (ind_[k] < l); k++);
+
+    if (ind_[k] == l)
+      return this->data_[k];
+    else
+      throw WrongArgument("Matrix_Sparse::Val(int, int)",
+                          "No reference to element (" + to_str(i) + ", "
+                          + to_str(j)
+                          + ") can be returned: it is a zero entry.");
+  }
+
+
   //! Duplicates a matrix (assignment operator).
   /*!
     \param A matrix to be copied.
