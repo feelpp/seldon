@@ -19,6 +19,7 @@
 
 #include "array3d.hpp"
 #include "matrix.hpp"
+#include "submatrix.hpp"
 
 #include <cppunit/TestResult.h>
 #include <cppunit/ui/text/TestRunner.h>
@@ -26,10 +27,13 @@
 using namespace CppUnit;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MatrixTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(SubMatrixTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(Array3DTest);
 
 int main()
 {
+  TRY;
+
   TextUi::TestRunner runner;
 
   TestFactoryRegistry &registry = TestFactoryRegistry::getRegistry();
@@ -37,4 +41,6 @@ int main()
   runner.addTest(registry.makeTest());
 
   return runner.run("", false);
+
+  END;
 }
