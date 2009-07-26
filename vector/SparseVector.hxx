@@ -73,6 +73,10 @@ namespace Seldon
     reference operator() (int i);
 #ifndef SWIG
     value_type operator() (int i) const;
+#endif
+    reference Val(int i);
+#ifndef SWIG
+    const_reference Val(int i) const;
     Vector<T, VectSparse, Allocator>& operator= (const Vector<T, VectSparse,
 						 Allocator>& X);
 #endif

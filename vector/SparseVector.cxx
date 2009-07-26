@@ -437,8 +437,47 @@ namespace Seldon
     
     return this->data_[k];
   }
-  
-  
+
+
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+  */
+  template <class T, class Allocator>
+  inline typename Vector<T, VectSparse, Allocator>::reference
+  Vector<T, VectSparse, Allocator>::Val(int i)
+  {
+    return (*this)(i);
+  }
+
+
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the vector).
+  */
+  template <class T, class Allocator>
+  inline typename Vector<T, VectSparse, Allocator>::const_reference
+  Vector<T, VectSparse, Allocator>::Val(int i) const
+  {
+    int k = 0;
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      // The entry does not exist, no reference can be returned.
+      throw WrongArgument("Vector<VectSparse>::Val(int)",
+                          "No reference to element " + to_str(i)
+                          + " can be returned: it is a zero entry.");
+
+    return this->data_[k];
+  }
+
+
   //! Duplicates a vector (assignment operator).
   /*!
     \param X vector to be copied.
