@@ -110,6 +110,46 @@ namespace Seldon
 
 
 
+  ///////////////
+  // UNDEFINED //
+  ///////////////
+
+
+  //! Main constructor.
+  /*! Error associated with both a function and a comment.
+    \param[in] function function with which the error is associated.
+    \param[in] comment comment associated with the error.
+  */
+  Undefined::Undefined(string function = "", string comment = "")
+    throw(): Error("", function, comment)
+  {
+#ifdef SELDON_WITH_ABORT
+    this->CoutWhat();
+    abort();
+#endif
+  }
+
+
+  //! Delivers information about the error.
+  /*! Displays available information, i.e.
+    the error description, the function and/or the comment.
+  */
+  string Undefined::What()
+  {
+    string message;
+    if (!this->function_.empty())
+      message = this->function_;
+    else
+      message = "A function or a method";
+    message += " is undefined.\nEither its implementation is missing,"
+      + string(" or it does not make sense or it is impossible ")
+      + "to implement it.\n";
+    if (!this->comment_.empty())
+      message += "   " + this->comment_;
+    return message;
+  }
+
+
   ///////////////////
   // WRONGARGUMENT //
   ///////////////////

@@ -46,7 +46,20 @@ namespace Seldon
     void CoutWhat();
   };
 
-  
+
+  ///////////////
+  // UNDEFINED //
+  ///////////////
+
+  class Undefined: public Error
+  {
+  public:
+    Undefined(string function, string comment)  throw();
+
+    virtual string What();
+  };
+
+
   ///////////////////
   // WRONGARGUMENT //
   ///////////////////
