@@ -29,7 +29,7 @@ using namespace Seldon;
 int main()
 {
   cout << "Seldon: compilation test of sparse vectors" << endl;
-  
+
   Vector<double, VectSparse> U(3), V;
   V.Reallocate(2); V.Reallocate(3);
   // U and V are not initialized
@@ -52,7 +52,7 @@ int main()
   cout << "Number of elements in V : " << V.GetLength() << endl;
   cout << " U : " << U << endl;
   cout << " V : " << V << endl;
-  
+
   // Reallocate doesn't keep previous elements
   V.Reallocate(5);
   cout << "Number of elements in V : " << V.GetSize() << endl;
@@ -71,7 +71,7 @@ int main()
   // again if new numbers are not sorted, you have to call Assemble
   U.Assemble();
   cout << "Vector U : " << U << endl;
-  
+
   // you can erase a vector
   V.Clear();
   cout << "Number of elements in V : " << V.GetDataSize() << endl;
@@ -88,7 +88,7 @@ int main()
   // = can be used as an equivalent of method Fill
   W = 1.5;
   cout << "Vector W : " << W << endl;
-  
+
   // you can use functions GetData, SetData and Nullify
   // for low level manipulations
   Vector<int> num(4); Vector<double> values(4);
@@ -110,7 +110,7 @@ int main()
   // release both the same memory, you can use nullify
   num.Nullify();  // num is now empty
   values.Nullify(); // values is now empty
-  
+
   // you can insert elements by using AddInteraction
   Vector<double, VectSparse> A, B;
   A.AddInteraction(4, 1.5);
@@ -130,7 +130,7 @@ int main()
   cout << "A(3) = " << A(3) << endl;
   A(3) = 0.5;
   cout << "A(3) = " << A(3) << endl;
-    
+
   // GetNormInfIndex returns the index
   // where the absolute highest value is reached
   int imax = A.GetNormInfIndex();
@@ -139,7 +139,7 @@ int main()
   // don't forget to use Index and Value
   cout << "Maximum " << A.Value(imax)
        << " is reached for row " << A.Index(imax) << endl;
-  
+
   // you can write and read vectors in files
   U.Write("vec_binary.dat");
   U.WriteText("vec_ascii.dat");
@@ -148,33 +148,33 @@ int main()
   cout << " V = " << V << endl;
   W.ReadText("vec_ascii.dat");
   cout << " W = " << W << endl;
-  
+
   // you can use functions Mlt, Add, Copy, Swap, DotProd, Norm1, Norm2
   {
     // for real numbers
     Vector<double, VectSparse> X(4), Y(4);
-    
+
     X.Index(0) = 2; X.Value(0) = -0.4;
     X.Index(1) = 5; X.Value(1) = 1.6;
     X.Index(2) = 11; X.Value(2) = 0.8;
     X.Index(3) = 12; X.Value(3) = -1.1;
-    
+
     Y.Index(0) = 0; Y.Value(0) = 1.7;
     Y.Index(1) = 5; Y.Value(1) = -2.2;
     Y.Index(2) = 7; Y.Value(2) = 0.6;
     Y.Index(3) = 12; Y.Value(3) = 0.9;
-    
+
     Mlt(1.3, X);
     Add(2.2, X, Y);
     cout << " Y = " << Y << endl;
-    
+
     Swap(X, Y);
     cout << " X = " << X << endl;
     cout << " Y = " << Y << endl;
-    
+
     Copy(X, Y);
     cout << " Y = " << Y << endl;
-    
+
     Y.Fill(-1.6);
     double scal = DotProd(X, Y);
     cout << "Scalar product " << scal << endl;
@@ -185,32 +185,32 @@ int main()
     scal = Norm1(X);
     cout << "1-Norm of X " << scal << endl;
   }
-  
+
   {
     // for complex numbers
     Vector<complex<double> , VectSparse> X(4), Y(4);
-    
+
     X.Index(0) = 2; X.Value(0) = complex<double>(-0.4, 0.4);
     X.Index(1) = 5; X.Value(1) = complex<double>(1.6, -0.2);
     X.Index(2) = 11; X.Value(2) = complex<double>(0.8, 0.3);
     X.Index(3) = 12; X.Value(3) = complex<double>(-1.1, 0);
-    
+
     Y.Index(0) = 0; Y.Value(0) = complex<double>(1.7, -0.1);
     Y.Index(1) = 5; Y.Value(1) = complex<double>(-2.2, 2.8);
     Y.Index(2) = 7; Y.Value(2) = complex<double>(0.6, -1.4);
     Y.Index(3) = 12; Y.Value(3) = complex<double>(0.9, 3.5);
-    
+
     Mlt(complex<double>(1.3, 0.5), X);
     Add(complex<double>(2.2, -0.7), X, Y);
     cout << " Y = " << Y << endl;
-    
+
     Swap(X, Y);
     cout << " X = " << X << endl;
     cout << " Y = " << Y << endl;
-    
+
     Copy(X, Y);
     cout << " Y = " << Y << endl;
-    
+
     Y.Fill(complex<double>(-1.6, 0.3) );
     complex<double> scal = DotProd(X, Y);
     cout << "Scalar product " << scal << endl;
@@ -220,12 +220,12 @@ int main()
 
     scalb = Norm1(X);
     cout << "1-Norm of X " << scalb << endl;
-    
+
     // vector can be conjugated
     Conjugate(X);
     cout << " X = " << X << endl;
   }
-  
+
   return 0;
 
 }

@@ -32,31 +32,31 @@ void TestGeneralMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   // Test of General dense matrices
   Matrix<T, Prop, Storage, Allocator> A(3,2), B;
   B.Reallocate(4,4);
-  
+
   // A and B are not initialized
   // you can initialize them with Zero and SetIdentity for example
   A.Zero();
   B.SetIdentity();
-  
+
   cout << "Number of rows in A : " << A.GetM() << endl;
   cout << "Number of columns in A : " << A.GetN() << endl;
   cout << "Number of elements in A : " << A.GetSize() << endl;
   cout << " A = " << endl << A << endl; // should return zero matrix
   cout << " B = " << endl << B << endl; // should return identity matrix
-  
+
   // Reallocate doesn't keep previous elements
   B.Reallocate(3,3);
   // so you can initialize B with Fill for example
   B.FillRand();
   // Resize keeps previous elements
-  A.Fill(); 
+  A.Fill();
   cout << " A = " << A << endl;
   A.Resize(2, 4);
   // but new elements need to be initialized
   A(0, 2) = -2.5; A(0, 3) = 1.0;
   A(1, 2) = 3.2; A(1, 3) = -0.5;
   cout << " A = " << A << endl;
-  
+
   // you can clear a matrix
   A.Clear();
   cout << "Number of elements in A : " << A.GetDataSize() << endl;
@@ -65,13 +65,13 @@ void TestGeneralMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   Matrix<T, Prop, Storage, Allocator> C(A);
   cout << "C = " << C << endl;
   // operators = and *= are available
-  C = A; 
+  C = A;
   C *= -2.5;
   cout << "C = " << C << endl;
   // = can be used as an equivalent of method Fill
   C = 1.5;
   cout << "C = " << C << endl;
-  
+
   // you can use functions GetData, GetIndex, SetData and Nullify
   // for low level manipulations
   Matrix<T, Prop, Storage, Allocator> num(4,2), num2;
@@ -82,7 +82,7 @@ void TestGeneralMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   // in order to avoid that the destructor of num and num2
   // release both the same memory, you can use nullify
   num.Nullify();  // num is now empty
-  
+
   // you can write and read matrices in files
   A.Fill();
   A.Write("mat_binary.dat");
@@ -92,7 +92,7 @@ void TestGeneralMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   cout << " B = " << B << endl;
   B.ReadText("mat_ascii.dat");
   cout << " B = " << B << endl;
-  
+
   // a row of A is extracted
   Vector<T> rowA;
   GetRow(A, 1, rowA);
@@ -101,7 +101,7 @@ void TestGeneralMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   rowA.Fill(2.3);
   SetRow(rowA, 2, A);
   cout << "A = " << A << endl;
-  
+
   // same stuff for columns
   Vector<T> colA;
   GetCol(A, 0, colA);
@@ -118,18 +118,18 @@ void TestSymmetricMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   // Test of General dense matrices
   Matrix<T, Prop, Storage, Allocator> A(3,3), B;
   B.Reallocate(4,4);
-  
+
   // A and B are not initialized
   // you can initialize them with Zero and SetIdentity for example
   A.Zero();
   B.SetIdentity();
-  
+
   cout << "Number of rows in A : " << A.GetM() << endl;
   cout << "Number of columns in A : " << A.GetN() << endl;
   cout << "Number of elements in A : " << A.GetSize() << endl;
-  
+
   cout << " B = " << endl << B << endl; // should return identity matrix
-  
+
   // Reallocate doesn't keep previous elements
   B.Reallocate(3,3);
   // so you can initialize B with Fill for example
@@ -141,7 +141,7 @@ void TestSymmetricMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   A(0, 3) = -2.5; A(1, 3) = 1.0;
   A(2, 3) = 3.0; A(3, 3) = -0.5;
   cout << " A = " << A << endl;
-  
+
   // you can clear a matrix
   A.Clear();
   cout << "Number of elements in A : " << A.GetDataSize() << endl;
@@ -149,13 +149,13 @@ void TestSymmetricMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   A.Fill(-4.1);
   Matrix<T, Prop, Storage, Allocator> C(A);
   // operators = and *= are available
-  C = A; 
+  C = A;
   C *= -2.5;
   cout << "C = " << C << endl;
   // = can be used as an equivalent of method Fill
   C = 1.5;
   cout << "C = " << C << endl;
-  
+
   // you can use functions GetData, GetIndex, SetData and Nullify
   // for low level manipulations
   Matrix<T, Prop, Storage, Allocator> num(4,4), num2;
@@ -166,7 +166,7 @@ void TestSymmetricMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   // in order to avoid that the destructor of num and num2
   // release both the same memory, you can use nullify
   num.Nullify();  // num is now empty
-  
+
   // you can write and read matrices in files
   A.Fill();
   A.Write("mat_binary.dat");
@@ -176,7 +176,7 @@ void TestSymmetricMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   cout << " B = " << B << endl;
   B.ReadText("mat_ascii.dat");
   cout << " B = " << B << endl;
-  
+
 }
 
 
@@ -186,18 +186,18 @@ void TestHermitianMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   // Test of General dense matrices
   Matrix<T, Prop, Storage, Allocator> A(3,3), B;
   B.Reallocate(4,4);
-  
+
   // A and B are not initialized
   // you can initialize them with Zero and SetIdentity for example
   A.Zero();
   B.SetIdentity();
-  
+
   cout << "Number of rows in A : " << A.GetM() << endl;
   cout << "Number of columns in A : " << A.GetN() << endl;
   cout << "Number of elements in A : " << A.GetSize() << endl;
-  
+
   cout << " B = " << endl << B << endl; // should return identity matrix
-  
+
   // Reallocate doesn't keep previous elements
   B.Reallocate(3,3);
   // so you can initialize B with Fill for example
@@ -210,7 +210,7 @@ void TestHermitianMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   A(0, 3) = T(-2.5, 1.0); A(1, 3) = T(1.0, -1.5);
   A(2, 3) = T(3.0, 2.0); A(3, 3) = T(-0.5, 0.0);
   cout << " A = " << A << endl;
-  
+
   // you can clear a matrix
   A.Clear();
   cout << "Number of elements in A : " << A.GetDataSize() << endl;
@@ -219,13 +219,13 @@ void TestHermitianMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   Matrix<T, Prop, Storage, Allocator> C(A);
   cout << " C = " << C << endl;
   // operators = and *= are available
-  C = A; 
+  C = A;
   C *= T(-2.5, 1.8);
   cout << "C = " << C << endl;
   // = can be used as an equivalent of method Fill
   C = 1.5;
   cout << "C = " << C << endl;
-  
+
   // you can use functions GetData, GetIndex, SetData and Nullify
   // for low level manipulations
   Matrix<T, Prop, Storage, Allocator> num(4,4), num2;
@@ -236,7 +236,7 @@ void TestHermitianMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   // in order to avoid that the destructor of num and num2
   // release both the same memory, you can use nullify
   num.Nullify();  // num is now empty
-  
+
   // you can write and read matrices in files
   A.Fill();
   A.Write("mat_binary.dat");
@@ -246,7 +246,7 @@ void TestHermitianMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   cout << " B = " << B << endl;
   B.ReadText("mat_ascii.dat");
   cout << " B = " << B << endl;
-  
+
 }
 
 
@@ -256,18 +256,18 @@ void TestUpperTriangularMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   // Test of General dense matrices
   Matrix<T, Prop, Storage, Allocator> A(3,3), B;
   B.Reallocate(4,4);
-  
+
   // A and B are not initialized
   // you can initialize them with Zero and SetIdentity for example
   A.Zero();
   B.SetIdentity();
-  
+
   cout << "Number of rows in A : " << A.GetM() << endl;
   cout << "Number of columns in A : " << A.GetN() << endl;
   cout << "Number of elements in A : " << A.GetSize() << endl;
-  
+
   cout << " B = " << endl << B << endl; // should return identity matrix
-  
+
   // Reallocate doesn't keep previous elements
   B.Reallocate(3,3);
   // so you can initialize B with Fill for example
@@ -279,7 +279,7 @@ void TestUpperTriangularMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   A(0, 3) = -2.5; A(1, 3) = 1.0;
   A(2, 3) = 3.2; A(3, 3) = -0.5;
   cout << " A = " << A << endl;
-  
+
   // you can clear a matrix
   A.Clear();
   cout << "Number of elements in A : " << A.GetDataSize() << endl;
@@ -287,13 +287,13 @@ void TestUpperTriangularMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   A.Fill(-1.9);
   Matrix<T, Prop, Storage, Allocator> C(A);
   // operators = and *= are available
-  C = A; 
+  C = A;
   C *= -2.5;
   cout << "C = " << C << endl;
   // = can be used as an equivalent of method Fill
   C = 1.5;
   cout << "C = " << C << endl;
-  
+
   // you can use functions GetData, GetIndex, SetData and Nullify
   // for low level manipulations
   Matrix<T, Prop, Storage, Allocator> num(4,4), num2;
@@ -304,7 +304,7 @@ void TestUpperTriangularMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   // in order to avoid that the destructor of num and num2
   // release both the same memory, you can use nullify
   num.Nullify();  // num is now empty
-  
+
   // you can write and read matrices in files
   A.Fill();
   A.Write("mat_binary.dat");
@@ -314,7 +314,7 @@ void TestUpperTriangularMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   cout << " B = " << B << endl;
   B.ReadText("mat_ascii.dat");
   cout << " B = " << B << endl;
-  
+
 }
 
 
@@ -324,18 +324,18 @@ void TestLowerTriangularMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   // Test of General dense matrices
   Matrix<T, Prop, Storage, Allocator> A(3,3), B;
   B.Reallocate(4,4);
-  
+
   // A and B are not initialized
   // you can initialize them with Zero and SetIdentity for example
   A.Zero();
   B.SetIdentity();
-  
+
   cout << "Number of rows in A : " << A.GetM() << endl;
   cout << "Number of columns in A : " << A.GetN() << endl;
   cout << "Number of elements in A : " << A.GetSize() << endl;
-  
+
   cout << " B = " << endl << B << endl; // should return identity matrix
-  
+
   // Reallocate doesn't keep previous elements
   B.Reallocate(3,3);
   // so you can initialize B with Fill for example
@@ -347,7 +347,7 @@ void TestLowerTriangularMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   A(3, 0) = -2.5; A(3, 1) = 1.0;
   A(3, 2) = 3.2; A(3, 3) = -0.5;
   cout << " A = " << A << endl;
-  
+
   // you can clear a matrix
   A.Clear();
   cout << "Number of elements in A : " << A.GetDataSize() << endl;
@@ -355,13 +355,13 @@ void TestLowerTriangularMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   A.Fill(-1.9);
   Matrix<T, Prop, Storage, Allocator> C(A);
   // operators = and *= are available
-  C = A; 
+  C = A;
   C *= -2.5;
   cout << "C = " << C << endl;
   // = can be used as an equivalent of method Fill
   C = 1.5;
   cout << "C = " << C << endl;
-  
+
   // you can use functions GetData, GetIndex, SetData and Nullify
   // for low level manipulations
   Matrix<T, Prop, Storage, Allocator> num(4,4), num2;
@@ -372,7 +372,7 @@ void TestLowerTriangularMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   // in order to avoid that the destructor of num and num2
   // release both the same memory, you can use nullify
   num.Nullify();  // num is now empty
-  
+
   // you can write and read matrices in files
   A.Fill();
   A.Write("mat_binary.dat");
@@ -382,65 +382,65 @@ void TestLowerTriangularMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   cout << " B = " << B << endl;
   B.ReadText("mat_ascii.dat");
   cout << " B = " << B << endl;
-  
+
 }
 
 
 int main()
 {
   cout << "Seldon: compilation test of class Matrix without Blas" << endl;
-  
+
   Matrix<double, General, RowMajor> A1;
   TestGeneralMatrix(A1);
-  
+
   Matrix<double, General, ColMajor> A2;
   TestGeneralMatrix(A2);
-  
+
   //Matrix<double, Symmetric, RowSym> A3;
   //TestSymmetricMatrix(A3);
-  
+
   //Matrix<double, Symmetric, ColSym> A4;
   //TestSymmetricMatrix(A4);
-  
+
   Matrix<complex<double>, Symmetric, RowSymPacked> A5;
   TestSymmetricMatrix(A5);
-  
+
   Matrix<complex<double>, Symmetric, ColSymPacked> A6;
   TestSymmetricMatrix(A6);
 
   //Matrix<complex<double>, General, RowHerm> A7
   //TestHermitianMatrix(A7);
-  
+
   //Matrix<complex<double>, General, ColHerm> A8;
   //TestHermitianMatrix(A8);
-  
+
   Matrix<complex<double>, General, RowHermPacked> A9;
   TestHermitianMatrix(A9);
-  
+
   Matrix<complex<double>, General, ColHermPacked> A10;
   TestHermitianMatrix(A10);
-  
+
   //Matrix<double, General, RowLoTriang> A11;
   //TestLowerTriangularMatrix(A11);
-  
+
   //Matrix<double, General, ColLoTriang> A12;
   //TestLowerTriangularMatrix(A12);
-    
+
   Matrix<double, General, RowLoTriangPacked> A13;
   TestLowerTriangularMatrix(A13);
-  
+
   Matrix<double, General, ColLoTriangPacked> A14;
   TestLowerTriangularMatrix(A14);
-  
+
   //Matrix<double, General, RowUpTriang> A15;
   //TestLowerTriangularMatrix(A15);
-  
+
   //Matrix<double, General, ColUpTriang> A16;
   //TestLowerTriangularMatrix(A16);
-  
+
   Matrix<double, General, RowUpTriangPacked> A17;
   TestUpperTriangularMatrix(A17);
-  
+
   Matrix<double, General, ColUpTriangPacked> A18;
   TestUpperTriangularMatrix(A18);
 

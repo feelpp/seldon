@@ -33,7 +33,7 @@ namespace Seldon
   /****************
    * CONSTRUCTORS *
    ****************/
-  
+
 
   //! Main constructor.
   /*! Error associated with both a function and a comment.
@@ -67,7 +67,7 @@ namespace Seldon
   /**************
    * DESTRUCTOR *
    **************/
-  
+
 
   //! Destructor.
   /*!
@@ -81,7 +81,7 @@ namespace Seldon
   /***********
    * METHODS *
    ***********/
-  
+
 
   //! Delivers information about the error.
   /*! Displays available information, i.e. the error description, the function
@@ -154,7 +154,7 @@ namespace Seldon
   // WRONGARGUMENT //
   ///////////////////
 
-  
+
   //! Main constructor.
   /*! Error associated with both a function and a comment.
     \param function function with which the error is associated.
@@ -190,7 +190,7 @@ namespace Seldon
   // NOMEMORY //
   //////////////
 
-  
+
   //! Main constructor.
   /*! Error associated with both a function and a comment.
     \param function function with which the error is associated.
@@ -211,7 +211,7 @@ namespace Seldon
   // WRONGDIM //
   //////////////
 
-  
+
   //! Main constructor.
   /*! Error associated with both a function and a comment.
     \param function function with which the error is associated.
@@ -232,7 +232,7 @@ namespace Seldon
   // WRONGINDEX //
   ////////////////
 
-  
+
   //! Main constructor.
   /*! Error associated with both a function and a comment.
     \param function function with which the error is associated.
@@ -274,7 +274,7 @@ namespace Seldon
   // WRONGCOL //
   //////////////
 
-  
+
   //! Main constructor.
   /*! Error associated with both a function and a comment.
     \param function function with which the error is associated.
@@ -295,7 +295,7 @@ namespace Seldon
   // IOERROR //
   /////////////
 
-  
+
   //! Main constructor.
   /*! Error associated with both a function and a comment.
     \param function function with which the error is associated.
@@ -316,7 +316,7 @@ namespace Seldon
   // LAPACKERROR //
   /////////////////
 
-  
+
   //! Main constructor.
   /*! Error associated with a diagnostic integer, a function and a comment.
     \param info Lapack diagnostic integer.

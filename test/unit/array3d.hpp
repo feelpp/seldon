@@ -43,7 +43,7 @@ public:
     length3_ = 9;
   }
 
-  
+
   void tearDown()
   {
   }

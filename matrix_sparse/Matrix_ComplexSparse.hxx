@@ -29,7 +29,7 @@
 
 namespace Seldon
 {
-  
+
 
   //! Complex sparse-matrix class.
   /*!
@@ -92,7 +92,7 @@ namespace Seldon
 			 Vector<int, Storage2, Allocator2>& imag_ind);
     Matrix_ComplexSparse(const Matrix_ComplexSparse<T, Prop,
 			 Storage, Allocator>& A);
-    
+
     // Destructor.
     ~Matrix_ComplexSparse();
     void Clear();
@@ -115,7 +115,7 @@ namespace Seldon
 		 int* imag_ind);
     void Nullify();
     void Copy(const Matrix_ComplexSparse<T, Prop, Storage, Allocator>& A);
-    
+
     // Basic methods.
     int GetNonZeros() const;
     int GetDataSize() const;
@@ -129,14 +129,14 @@ namespace Seldon
     int GetImagIndSize() const;
     T* GetRealData() const;
     T* GetImagData() const;
-    
+
     // Element acess and affectation.
     complex<value_type> operator() (int i, int j) const;
     complex<value_type>& Val(int i, int j);
     const complex<value_type>& Val(int i, int j) const;
     Matrix_ComplexSparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_ComplexSparse<T, Prop, Storage, Allocator>& A);
-    
+
     // Convenient functions.
     void Print() const;
   };

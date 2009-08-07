@@ -52,7 +52,7 @@ public :
   int n;
   T beta;
   Seldon::Vector<T> lambda;
-  
+
   BlackBoxMatrix(int n_)
   {
     beta = 0.9;
@@ -61,7 +61,7 @@ public :
     for (int i = 0; i < n; i++)
       lambda(i) = i+1;
   }
-  
+
   BlackBoxMatrix(int n_, const T& beta_)
   {
     beta = beta_; n = n_;
@@ -69,17 +69,17 @@ public :
     for (int i = 0; i < n; i++)
       lambda(i) = i+1;
   }
-  
+
   int GetM() const
   {
     return n;
   }
-  
+
   int GetN() const
   {
     return n;
   }
-  
+
 };
 
 
@@ -92,21 +92,21 @@ void MltAdd(const T& alpha, const BlackBoxMatrix<T>& A,
     Y.Fill(T(0));
   else
     Mlt(beta, Y);
-  
+
   int n = A.GetM();
   Vector C(X);
   // C = S^{-1} C
   for (int i = (n-2); i >= 0; i--)
     C(i) -= A.beta*C(i+1);
-  
+
   // C = B C
   for (int i=0 ; i<n ; i++)
     C(i) *= A.lambda(i);
-  
+
   // C = S C
   for (int i=0 ; i<(n-1) ; i++)
     C(i) += A.beta*C(i+1);
-  
+
   // Y = Y + alpha C
   Add(alpha, C, Y);
 }
@@ -122,22 +122,22 @@ void MltAdd(const T& alpha, const class_SeldonTrans& Trans,
     Y.Fill(T(0));
   else
     Mlt(beta, Y);
-  
+
   int n = A.GetM();
   // Transpose of S B S^{-1} is S^{-t} B S^t
   Vector C(X);
   // Y = S^t Y
   for (int i = (n-1); i >= 1; i--)
     C(i) += A.beta*C(i-1);
-  
+
   // Y = B Y
   for (int i = 0; i < n; i++)
     C(i) *= A.lambda(i);
-  
+
   // Y = S^{-t} Y
   for (int i = 1; i < n; i++)
     C(i) -= A.beta*C(i-1);
-  
+
   // Y = Y + alpha C
   Add(alpha, C, Y);
 }
@@ -167,9 +167,9 @@ int main(int argc, char **argv)
   int n = 5;
   int nb_max_iter = 5*n;
   double stopping_criterion = 1e-6;
-  
+
   srand(time(NULL));
-  
+
   // Resolution of unsymmetric real system.
   cout << "Resolution of an unsymmetric real system " << endl << endl;
   {
@@ -181,11 +181,11 @@ int main(int argc, char **argv)
     DISP(b_rhs);
     x_sol.Zero();
     Preconditioner_Base prec;
-    
+
     Iteration<double> iter(nb_max_iter, stopping_criterion);
     iter.ShowFullHistory();
     iter.SetRestart(restart);
-    
+
     // You can use iterative solvers for unsymmetric real systems not using
     // matrix-vector product with transpose matrix.
     x_sol.Zero(); cout<<"BiCgStab"<<endl;
@@ -204,7 +204,7 @@ int main(int argc, char **argv)
     TfQmr(A, x_sol, b_rhs, prec, iter);
     x_sol.Zero(); cout<<"Lsqr"<<endl;
     Lsqr(A, x_sol, b_rhs, prec, iter);
-    
+
     // And iterative solvers using transpose matrix.
     x_sol.Zero(); cout<<"BiCg"<<endl;
     BiCg(A, x_sol, b_rhs, prec, iter);
@@ -213,7 +213,7 @@ int main(int argc, char **argv)
     x_sol.Zero(); cout<<"Qmr"<<endl;
     Qmr(A, x_sol, b_rhs, prec, iter);
   }
-  
+
   cout << endl << endl
        << "Resolution of an unsymmetric complex system " << endl;
   {
@@ -225,11 +225,11 @@ int main(int argc, char **argv)
     DISP(b_rhs);
     x_sol.Zero();
     Preconditioner_Base prec;
-    
+
     Iteration<double> iter(nb_max_iter, stopping_criterion);
     iter.ShowFullHistory();
     iter.SetRestart(restart);
-    
+
     // You can use iterative solvers for unsymmetric complex systems not using
     // matrix-vector product with transpose matrix.
     x_sol.Zero(); cout<<"BiCgStab"<<endl;
@@ -246,7 +246,7 @@ int main(int argc, char **argv)
     QCgs(A, x_sol, b_rhs, prec, iter);
     x_sol.Zero(); cout<<"TfQmr"<<endl;
     TfQmr(A, x_sol, b_rhs, prec, iter);
-    
+
     // And iterative solvers using transpose matrix.
     x_sol.Zero(); cout<<"BiCg"<<endl;
     BiCg(A, x_sol, b_rhs, prec, iter);
@@ -255,21 +255,21 @@ int main(int argc, char **argv)
     x_sol.Zero(); cout<<"Qmr"<<endl;
     Qmr(A, x_sol, b_rhs, prec, iter);
   }
-  
+
   // Resolution of symmetric real system.
   cout << "Resolution of a symmetric real system " << endl << endl;
   {
     Matrix<double, Symmetric, RowSymPacked> A(n,n);
     A.FillRand();
     DISP(A);
-    
+
     DVect b_rhs(n), x_sol(n);
     x_sol.Fill();
     Mlt(A, x_sol, b_rhs);
     DISP(b_rhs);
     x_sol.Zero();
     Preconditioner_Base prec;
-    
+
     Iteration<double> iter(nb_max_iter, stopping_criterion);
     iter.ShowFullHistory();
     iter.SetRestart(restart);
@@ -287,7 +287,7 @@ int main(int argc, char **argv)
     cout << "MinRes" << endl;
     MinRes(A, x_sol, b_rhs, prec, iter);
   }
-  
+
   // Resolution of symmetric complex system.
   cout << "Resolution of a symmetric complex system " << endl << endl;
   {
@@ -297,20 +297,20 @@ int main(int argc, char **argv)
     for (int i = 0; i < n; i++)
       for (int j = i; j < n; j++)
 	A(i,j) = complex<double>(Ar(i,j), Ai(i,j));
-        
+
     DISP(A);
-    
+
     ZVect b_rhs(n), x_sol(n);
     x_sol.Fill();
     Mlt(A, x_sol, b_rhs);
     DISP(b_rhs);
     x_sol.Zero();
     Preconditioner_Base prec;
-    
+
     Iteration<double> iter(nb_max_iter, stopping_criterion);
     iter.ShowFullHistory();
     iter.SetRestart(restart);
-    
+
     x_sol.Zero();
     cout << "BiCgcr" << endl;
     BiCgcr(A, x_sol, b_rhs, prec, iter);
@@ -324,6 +324,6 @@ int main(int argc, char **argv)
     cout << "MinRes" << endl;
     MinRes(A, x_sol, b_rhs, prec, iter);
   }
- 
+
   return 0;
 }

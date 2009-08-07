@@ -23,7 +23,7 @@
 
 namespace Seldon
 {
-    
+
   //! Sparse Array-matrix class.
   /*!
     Sparse matrices are defined by: (1) the number of rows and columns;
@@ -59,21 +59,21 @@ namespace Seldon
     //! imaginary part rows or columns
     Vector<Vector<T, VectSparse, Allocator>, VectFull,
 	   NewAlloc<Vector<T, VectSparse, Allocator> > > val_imag_;
-    
+
     // Methods.
   public:
     // Constructors.
     Matrix_ArrayComplexSparse();
     Matrix_ArrayComplexSparse(int i, int j);
-    
+
     // Destructor.
     ~Matrix_ArrayComplexSparse();
     void Clear();
-    
+
     // Memory management.
     void Reallocate(int i, int j);
     void Resize(int i, int j);
-        
+
     // Basic methods.
     int GetM() const;
     int GetN() const;
@@ -90,7 +90,7 @@ namespace Seldon
     T* GetImagData(int i) const;
     Vector<T, VectSparse, Allocator>* GetRealData() const;
     Vector<T, VectSparse, Allocator>* GetImagData() const;
-    
+
     // Element acess and affectation.
     complex<T> operator() (int i, int j) const;
     complex<T>& Val(int i, int j);
@@ -103,7 +103,7 @@ namespace Seldon
     T& ValueImag(int num_row,int i);
     int IndexImag(int num_row,int i) const;
     int& IndexImag(int num_row,int i);
-    
+
     void SetRealData(int, int, Vector<T, VectSparse, Allocator>*);
     void SetImagData(int, int, Vector<T, VectSparse, Allocator>*);
     void SetRealData(int, int, T*, int*);
@@ -112,13 +112,13 @@ namespace Seldon
     void NullifyImag(int i);
     void NullifyReal();
     void NullifyImag();
-    
+
     // Convenient functions.
     void Print() const;
     void Assemble();
     template<class T0>
     void RemoveSmallEntry(const T0& epsilon);
-    
+
     void SetIdentity();
     void Zero();
     void Fill();
@@ -128,10 +128,10 @@ namespace Seldon
     Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>& operator=
     (const complex<T0>& x);
     void FillRand();
-    
+
   };
-  
-  
+
+
   //! Column-major sparse-matrix class.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayColComplexSparse, Allocator> :
@@ -147,7 +147,7 @@ namespace Seldon
   public:
     Matrix()  throw();
     Matrix(int i, int j);
-    
+
     // Memory management.
     void ClearRealColumn(int i);
     void ClearImagColumn(int i);
@@ -159,16 +159,16 @@ namespace Seldon
     void SwapImagColumn(int i, int i_);
     void ReplaceRealIndexColumn(int i, IVect& new_index);
     void ReplaceImagIndexColumn(int i, IVect& new_index);
-    
+
     int GetRealColumnSize(int i) const;
     int GetImagColumnSize(int i) const;
     void PrintRealColumn(int i) const;
     void PrintImagColumn(int i) const;
     void AssembleRealColumn(int i);
     void AssembleImagColumn(int i);
-    
+
     void AddInteraction(int i, int j, const complex<T>& val);
-    
+
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
 			   const Vector<complex<T>, VectFull, Alloc1>& val);
@@ -177,8 +177,8 @@ namespace Seldon
 			      const Vector<complex<T>, VectFull,
 			      Alloc1>& val);
   };
-  
-  
+
+
   //! Row-major sparse-matrix class.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayRowComplexSparse, Allocator> :
@@ -194,7 +194,7 @@ namespace Seldon
   public:
     Matrix()  throw();
     Matrix(int i, int j);
-    
+
     // Memory management.
     void ClearRealRow(int i);
     void ClearImagRow(int i);
@@ -206,16 +206,16 @@ namespace Seldon
     void SwapImagRow(int i, int i_);
     void ReplaceRealIndexRow(int i, IVect& new_index);
     void ReplaceImagIndexRow(int i, IVect& new_index);
-    
+
     int GetRealRowSize(int i) const;
     int GetImagRowSize(int i) const;
     void PrintRealRow(int i) const;
     void PrintImagRow(int i) const;
     void AssembleRealRow(int i);
     void AssembleImagRow(int i);
-    
+
     void AddInteraction(int i, int j, const complex<T>& val);
-    
+
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
 			   const Vector<complex<T>, VectFull, Alloc1>& val);
@@ -224,8 +224,8 @@ namespace Seldon
 			      const Vector<complex<T>, VectFull,
 			      Alloc1>& val);
   };
-  
-  
+
+
   //! Column-major symmetric sparse-matrix class.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>:
@@ -241,9 +241,9 @@ namespace Seldon
   public:
     Matrix()  throw();
     Matrix(int i, int j);
-    
+
     complex<T> operator() (int i, int j) const;
-    
+
     // Memory management.
     void ClearRealColumn(int i);
     void ClearImagColumn(int i);
@@ -255,16 +255,16 @@ namespace Seldon
     void SwapImagColumn(int i, int i_);
     void ReplaceRealIndexColumn(int i, IVect& new_index);
     void ReplaceImagIndexColumn(int i, IVect& new_index);
-    
+
     int GetRealColumnSize(int i) const;
     int GetImagColumnSize(int i) const;
     void PrintRealColumn(int i) const;
     void PrintImagColumn(int i) const;
     void AssembleRealColumn(int i);
     void AssembleImagColumn(int i);
-    
+
     void AddInteraction(int i, int j, const complex<T>& val);
-    
+
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
 			   const Vector<complex<T>, VectFull, Alloc1>& val);
@@ -273,8 +273,8 @@ namespace Seldon
 			      const Vector<complex<T>, VectFull,
 			      Alloc1>& val);
   };
-  
-  
+
+
   //! Row-major symmetric sparse-matrix class.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>:
@@ -290,9 +290,9 @@ namespace Seldon
   public:
     Matrix()  throw();
     Matrix(int i, int j);
-    
+
     complex<T> operator() (int i, int j) const;
-    
+
     // Memory management.
     void ClearRealRow(int i);
     void ClearImagRow(int i);
@@ -304,16 +304,16 @@ namespace Seldon
     void SwapImagRow(int i, int i_);
     void ReplaceRealIndexRow(int i, IVect& new_index);
     void ReplaceImagIndexRow(int i, IVect& new_index);
-    
+
     int GetRealRowSize(int i) const;
     int GetImagRowSize(int i) const;
     void PrintRealRow(int i) const;
     void PrintImagRow(int i) const;
     void AssembleRealRow(int i);
     void AssembleImagRow(int i);
-    
+
     void AddInteraction(int i, int j, const complex<T>& val);
-    
+
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
 			   const Vector<complex<T>, VectFull, Alloc1>& val);
@@ -322,8 +322,8 @@ namespace Seldon
 			      const Vector<complex<T>, VectFull,
 			      Alloc1>& val);
   };
-  
-  
+
+
 } // namespace Seldon
 
 #define SELDON_FILE_MATRIX_ARRAY_COMPLEX_SPARSE_HXX

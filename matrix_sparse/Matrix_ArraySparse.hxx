@@ -24,7 +24,7 @@
 
 namespace Seldon
 {
-    
+
   //! Sparse Array-matrix class.
   /*!
     Sparse matrices are defined by: (1) the number of rows and columns;
@@ -57,20 +57,20 @@ namespace Seldon
     //! rows or columns
     Vector<Vector<T, VectSparse, Allocator>, VectFull,
 	   NewAlloc<Vector<T, VectSparse, Allocator> > > val_;
-    
+
   public:
     // Constructors.
     Matrix_ArraySparse();
     Matrix_ArraySparse(int i, int j);
-    
+
     // Destructor.
     ~Matrix_ArraySparse();
     void Clear();
-    
+
     // Memory management.
     void Reallocate(int i,int j);
     void Resize(int i,int j);
-    
+
     // Basic methods.
     int GetM() const;
     int GetN() const;
@@ -80,31 +80,31 @@ namespace Seldon
     int GetDataSize() const;
     int* GetIndex(int i) const;
     T* GetData(int i) const;
-    
+
     Vector<T, VectSparse, Allocator>* GetData() const;
-    
+
     // Element acess and affectation.
     T operator() (int i, int j) const;
     T& operator() (int i, int j);
     T& Val(int i, int j);
     const T& Val(int i, int j) const;
-    
+
     const T& Value(int num_row, int i) const;
     T& Value(int num_row, int i);
     int Index(int num_row, int i) const;
     int& Index(int num_row, int i);
-    
+
     void SetData(int, int, Vector<T, VectSparse, Allocator>*);
     void SetData(int, int, T*, int*);
     void Nullify(int i);
     void Nullify();
-    
+
     // Convenient functions.
     void Print() const;
     void Assemble();
     template<class T0>
     void RemoveSmallEntry(const T0& epsilon);
-    
+
     void SetIdentity();
     void Zero();
     void Fill();
@@ -113,7 +113,7 @@ namespace Seldon
     template <class T0>
     Matrix_ArraySparse<T, Prop, Storage, Allocator>& operator= (const T0& x);
     void FillRand();
-    
+
     // Input/output functions.
     void Write(string FileName) const;
     void Write(ostream& FileStream) const;
@@ -123,10 +123,10 @@ namespace Seldon
     void Read(istream& FileStream);
     void ReadText(string FileName);
     void ReadText(istream& FileStream);
-    
+
   };
-  
-  
+
+
   //! Column-major sparse-matrix class.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayColSparse, Allocator> :
@@ -142,23 +142,23 @@ namespace Seldon
   public:
     Matrix()  throw();
     Matrix(int i, int j);
-    
+
     // Memory management.
     void ClearColumn(int i);
     void ReallocateColumn(int i, int j);
     void ResizeColumn(int i, int j);
     void SwapColumn(int i, int i_);
     void ReplaceIndexColumn(int i, IVect& new_index);
-    
+
     int GetColumnSize(int i) const;
     void PrintColumn(int i) const;
     void AssembleColumn(int i);
-    
+
     void AddInteraction(int i, int j, const T& val);
-    
+
     void AddInteractionRow(int, int, int*, T*);
     void AddInteractionColumn(int, int, int*, T*);
-    
+
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
 			   const Vector<T, VectFull, Alloc1>& val);
@@ -166,8 +166,8 @@ namespace Seldon
     void AddInteractionColumn(int i, int nb, const IVect& row,
 			      const Vector<T, VectFull, Alloc1>& val);
   };
-  
-  
+
+
   //! Row-major sparse-matrix class.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayRowSparse, Allocator> :
@@ -183,23 +183,23 @@ namespace Seldon
   public:
     Matrix()  throw();
     Matrix(int i, int j);
-    
+
     // Memory management.
     void ClearRow(int i);
     void ReallocateRow(int i, int j);
     void ResizeRow(int i, int j);
     void SwapRow(int i, int i_);
     void ReplaceIndexRow(int i, IVect& new_index);
-    
+
     int GetRowSize(int i) const;
     void PrintRow(int i) const;
     void AssembleRow(int i);
-    
+
     void AddInteraction(int i, int j, const T& val);
-    
+
     void AddInteractionRow(int, int, int*, T*);
     void AddInteractionColumn(int, int, int*, T*);
-    
+
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
 			   const Vector<T, VectFull, Alloc1>& val);
@@ -207,7 +207,7 @@ namespace Seldon
     void AddInteractionColumn(int i, int nb, const IVect& row,
 			      const Vector<T, VectFull, Alloc1>& val);
   };
-  
+
   //! Column-major symmetric sparse-matrix class.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayColSymSparse, Allocator>:
@@ -223,26 +223,26 @@ namespace Seldon
   public:
     Matrix()  throw();
     Matrix(int i, int j);
-    
+
     T operator() (int i, int j) const;
     T& operator() (int i, int j);
-    
+
     // Memory management.
     void ClearColumn(int i);
     void ReallocateColumn(int i, int j);
     void ResizeColumn(int i, int j);
     void SwapColumn(int i, int i_);
     void ReplaceIndexColumn(int i, IVect& new_index);
-    
+
     int GetColumnSize(int i) const;
     void PrintColumn(int i) const;
     void AssembleColumn(int i);
-    
+
     void AddInteraction(int i, int j, const T& val);
-    
+
     void AddInteractionRow(int, int, int*, T*);
     void AddInteractionColumn(int, int, int*, T*);
-    
+
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
 			   const Vector<T, VectFull, Alloc1>& val);
@@ -250,8 +250,8 @@ namespace Seldon
     void AddInteractionColumn(int i, int nb, const IVect& row,
 			      const Vector<T, VectFull, Alloc1>& val);
   };
-  
-  
+
+
   //! Row-major symmetric sparse-matrix class.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayRowSymSparse, Allocator>:
@@ -267,26 +267,26 @@ namespace Seldon
   public:
     Matrix()  throw();
     Matrix(int i, int j);
-    
+
     T operator() (int i, int j) const;
     T& operator() (int i, int j);
-    
+
     // Memory management.
     void ClearRow(int i);
     void ReallocateRow(int i, int j);
     void ResizeRow(int i, int j);
     void SwapRow(int i, int i_);
     void ReplaceIndexRow(int i, IVect& new_index);
-    
+
     int GetRowSize(int i) const;
     void PrintRow(int i) const;
     void AssembleRow(int i);
-    
+
     void AddInteraction(int i, int j, const T& val);
-    
+
     void AddInteractionRow(int, int, int*, T*);
     void AddInteractionColumn(int, int, int*, T*);
-    
+
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
 			   const Vector<T, VectFull, Alloc1>& val);
@@ -294,7 +294,7 @@ namespace Seldon
     void AddInteractionColumn(int i, int nb, const IVect& row,
 			      const Vector<T, VectFull, Alloc1>& val);
   };
-  
+
 } // namespace Seldon
 
 #define SELDON_FILE_MATRIX_ARRAY_SPARSE_HXX

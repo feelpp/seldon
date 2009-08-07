@@ -45,7 +45,7 @@ public:
     n_ = 10;
   }
 
-  
+
   void tearDown()
   {
   }

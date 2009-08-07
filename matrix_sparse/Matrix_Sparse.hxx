@@ -29,7 +29,7 @@
 
 namespace Seldon
 {
-  
+
 
   //! Sparse-matrix class.
   /*!
@@ -76,7 +76,7 @@ namespace Seldon
 		  Vector<int, Storage1, Allocator1>& ptr,
 		  Vector<int, Storage2, Allocator2>& ind);
     Matrix_Sparse(const Matrix_Sparse<T, Prop, Storage, Allocator>& A);
-    
+
     // Destructor.
     ~Matrix_Sparse();
     void Clear();
@@ -92,7 +92,7 @@ namespace Seldon
     void SetData(int i, int j, int nz, pointer values, int* ptr, int* ind);
     void Nullify();
     void Copy(const Matrix_Sparse<T, Prop, Storage, Allocator>& A);
-    
+
     // Basic methods.
     int GetNonZeros() const;
     int GetDataSize() const;
@@ -107,7 +107,7 @@ namespace Seldon
     const value_type& Val(int i, int j) const;
     Matrix_Sparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_Sparse<T, Prop, Storage, Allocator>& A);
-    
+
     // Convenient functions.
     void Print() const;
     void WriteText(string FileName) const;
