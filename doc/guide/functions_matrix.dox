@@ -1,0 +1,445 @@
+/*! \file functions_matrix.dox
+    \brief Functions for Matrices.
+*/
+
+/*!
+\page functions_matrix Functions for Matrices
+
+<p> In that page, we detail functions that are not related to
+<a href="functions_lapack.php">Lapack</a> </p>
+
+<table class="category-table">
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="#transpose">Transpose </a></td> 
+ <td class="category-table-td"> replaces a matrix by its transpose
+ </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="#transpose">TransposeConj </a></td> 
+ <td class="category-table-td"> replaces a matrix by its conjugate transpose
+ </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="#setrow">SetRow </a></td> 
+ <td class="category-table-td"> modifies a row of the matrix </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="#getrow">GetRow </a></td> 
+ <td class="category-table-td"> extracts a row from the matrix</td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="#setcol">SetCol </a></td> 
+ <td class="category-table-td"> modifies a column of the matrix </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="#getcol">GetCol </a></td> 
+ <td class="category-table-td"> extracts a column from the matrix
+ </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="#maxabs">MaxAbs </a></td> 
+ <td class="category-table-td"> returns highest absolute value of A
+ </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="#norm1">Norm1 </a></td> 
+ <td class="category-table-td"> returns 1-norm of A
+ </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="#norminf">NormInf </a></td> 
+ <td class="category-table-td"> returns infinity-norm of A </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="#permutematrix">PermuteMatrix </a></td> 
+ <td class="category-table-td"> permutes row and column numbers of a matrix </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="#scalematrix">ScaleMatrix </a></td> 
+ <td class="category-table-td"> multiplies rows and columns of a matrix by coefficients </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="#scaleleftmatrix">ScaleLeftMatrix </a></td> 
+ <td class="category-table-td"> multiplies rows of a matrix by coefficients</td> </tr>
+</table>
+
+
+
+<div class="separator"><a name="transpose"></a></div>
+
+
+
+<h3>Transpose, TransposeConj</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void Transpose(Matrix&amp;);
+  void TransposeConj(Matrix&amp;);
+</pre>
+
+
+<p><code>Transpose</code> overwrites a matrix by its transpose, while 
+<code>TransposeConj</code> overwrites a matrix by its conjugate
+transpose. These functions are only available for dense matrices.</p>
+
+
+<h4> Example : </h4>
+\precode
+Matrix<double> A(5, 5);
+A.Fill();
+
+Transpose(A);
+
+Matrix<complex<double> > B(5, 5);
+// you fill B as you want, then overwrites it by conj(transpose(B))
+TransposeConj(B);
+\endprecode
+
+
+<h4>Location :</h4>
+<p><a href="file.php?name=computation/basic_functions/Functions_Matrix.cxx">Functions_Matrix.cxx</a></p>
+
+
+
+<div class="separator"><a name="setrow"></a></div>
+
+
+
+<h3>SetRow</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void SetRow(const Vector&amp;, int, Matrix&amp;);
+</pre>
+
+
+<p>This function modifies a row in the provided matrix. This function is
+ available only for dense matrices.</p>
+
+
+<h4> Example : </h4>
+\precode
+Matrix<double> A(5, 5);
+A.Fill();
+
+// now you construct a row
+Vector<double> row(5);
+row.FillRand();
+
+// and you put it in A
+int irow = 1;
+SetRow(row, irow, A);
+\endprecode
+
+
+<h4>Location :</h4>
+<p><a href="file.php?name=matrix/Functions.cxx">Functions.cxx</a></p>
+
+
+
+<div class="separator"><a name="getrow"></a></div>
+
+
+
+<h3>GetRow</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void GetRow(const Matrix&amp;, int, Vector&amp;);
+</pre>
+
+
+<p>This function extracts a row from the provided matrix. This function is
+ available only for dense matrices.</p>
+
+
+<h4> Example : </h4>
+\precode
+Matrix<double> A(5, 5);
+A.Fill();
+
+// now you extract the first row
+Vector<double> row;
+GetRow(A, 0, row);
+\endprecode
+
+
+<h4>Location :</h4>
+<p> <a href="file.php?name=matrix/Functions.cxx">Functions.cxx</a></p>
+
+
+
+<div class="separator"><a name="setcol"></a></div>
+
+
+
+<h3>SetCol</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void SetCol(const Vector&amp;, int, Matrix&amp;);
+</pre>
+
+
+<p>This function modifies a column in the provided matrix. This function is
+ available only for dense matrices.</p>
+
+
+<h4> Example : </h4>
+\precode
+Matrix<double> A(5, 5);
+A.Fill();
+
+// now you construct a column
+Vector<double> col(5);
+col.FillRand();
+
+// and you put it in A
+int icol = 1;
+SetCol(col, icol, A);
+\endprecode
+
+
+<h4>Location :</h4>
+<p><a href="file.php?name=matrix/Functions.cxx">Functions.cxx</a></p>
+
+
+
+<div class="separator"><a name="getcol"></a></div>
+
+
+
+<h3>GetCol</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void GetCol(const Matrix&amp;, int, Vector&amp;);
+</pre>
+
+
+<p>This function extracts a column from the provided matrix. This function is
+ available only for dense matrices.</p>
+
+
+<h4> Example : </h4>
+\precode
+Matrix<double> A(5, 5);
+A.Fill();
+
+// now you extract the first column
+Vector<double> col;
+GetCol(A, 0, col);
+\endprecode
+
+
+<h4>Location :</h4>
+<p><a href="file.php?name=matrix/Functions.cxx">Functions.cxx</a></p>
+
+
+
+<div class="separator"><a name="maxabs"></a></div>
+
+
+
+<h3>MaxAbs</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  T MaxAbs(const Matrix&lt;T&gt;&amp;);
+</pre>
+
+
+<p>This function returns the highest absolute value of a matrix.</p>
+
+
+<h4> Example : </h4>
+\precode
+Matrix<complex<double> > A(5, 5);
+A.Fill();
+
+double module_max = MaxAbs(A);
+\endprecode
+
+
+<h4>Location :</h4>
+<p><a href="file.php?name=computation/basic_functions/Functions_Matrix.cxx">Functions_Matrix.cxx</a></p>
+
+
+
+<div class="separator"><a name="norm1"></a></div>
+
+
+
+<h3>Norm1</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  T Norm1(const Matrix&lt;T&gt;&amp;);
+</pre>
+
+
+<p>This function returns the 1-norm of a matrix.</p>
+
+
+<h4> Example : </h4>
+\precode
+Matrix<complex<double> > A(5, 5);
+A.Fill();
+
+double anorm_one = Norm1(A);
+\endprecode
+
+
+<h4>Location :</h4>
+<p><a href="file.php?name=computation/basic_functions/Functions_Matrix.cxx">Functions_Matrix.cxx</a></p>
+
+
+
+<div class="separator"><a name="norminf"></a></div>
+
+
+
+<h3>NormInf</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  T NormInf(const Matrix&lt;T&gt;&amp;);
+</pre>
+
+
+<p>This function returns the infinite norm of a matrix.</p>
+
+
+<h4> Example : </h4>
+\precode
+Matrix<complex<double> > A(5, 5);
+A.Fill();
+
+double anorm_inf = NormInf(A);
+\endprecode
+
+
+<h4>Location :</h4>
+<p><a href="file.php?name=computation/basic_functions/Functions_Matrix.cxx">Functions_Matrix.cxx</a></p>
+
+
+
+<div class="separator"><a name="permutematrix"></a></div>
+
+
+
+<h3>PermuteMatrix</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void PermuteMatrix(Matrix&amp;, const Vector&lt;int&gt;&amp;, const Vector&lt;int&gt;&amp;);
+</pre>
+
+
+<p>This function permutes a given matrix with the provided new row
+numbers and column numbers. <code>PermuteMatrix(A, row, col)</code>
+does the same operation as <code>A(row, col) = A</code> in
+Matlab. This function is only available for ArrayRowSparse,
+ArrayRowSymSparse, ArrayRowComplexSparse and
+ArrayRowSymComplexSparse. </p>
+
+
+<h4> Example : </h4>
+\precode
+// you fill A as you wish
+Matrix<double, Symmetric, ArrayRowSymSparse> A(5, 5);
+// then new row and column numbers
+IVect row(5);
+// for symmetric matrix, row and column permutation must be the same
+// if you want to keep symmetry
+PermuteMatrix(A, row, row);
+
+// for unsymmetric matrices, you can specify different permutations
+IVect col(5);
+Matrix<double, General, ArrayRowSparse> B(5, 5);
+PermuteMatrix(B, row, col);
+\endprecode
+
+
+<h4>Location :</h4>
+<p><a href="file.php?name=matrix_sparse/Permutation_ScalingMatrix.cxx">Permutation_ScalingMatrix.cxx</a></p>
+
+
+
+<div class="separator"><a name="scalematrix"></a></div>
+
+
+
+<h3>ScaleMatrix</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void ScaleMatrix(Matrix&amp;, const Vector&amp;, const Vector&amp;);
+</pre>
+
+
+<p>This function multiplies each row and column with a coefficient,
+i.e. <code>A</code> is replaced by <code>L*A*R</code> where
+<code>L</code> and <code>R</code> are diagonal matrices and you
+provide the diagonal when you call <code>ScaleMatrix</code>.
+ This function is only available for ArrayRowSparse,
+ArrayRowSymSparse, ArrayRowComplexSparse and
+ArrayRowSymComplexSparse. </p>
+
+
+<h4> Example : </h4>
+\precode
+// you fill A as you wish
+Matrix<double, Symmetric, ArrayRowSymSparse> A(5, 5);
+// then scaling vectors
+Vector<double> scale(5);
+// for symmetric matrix, row and column scaling must be the same
+// if you want to keep symmetry
+ScaleMatrix(A, scale, scale);
+
+// for unsymmetric matrices, you can specify different scalings
+IVect scale_right(5);
+Matrix<double, General, ArrayRowSparse> B(5, 5);
+PermuteMatrix(B, scale, scale_right);
+\endprecode
+
+
+<h4>Location :</h4>
+<p><a href="file.php?name=matrix_sparse/Permutation_ScalingMatrix.cxx">Permutation_ScalingMatrix.cxx</a></p>
+
+
+
+<div class="separator"><a name="scaleleftmatrix"></a></div>
+
+
+
+<h3>ScaleLeftMatrix</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void ScaleLeftMatrix(Matrix&amp;, const Vector&amp;);
+</pre>
+
+
+<p>This function multiplies each row with a coefficient,
+i.e. <code>A</code> is replaced by <code>L*A</code> where
+<code>L</code> is diagonal and you
+provide the diagonal when you call <code>ScaleLeftMatrix</code>.
+ This function is only available for ArrayRowSparse,
+ and ArrayRowComplexSparse. </p>
+
+
+<h4> Example : </h4>
+\precode
+// you fill A as you wish
+Matrix<double, General, ArrayRowSparse> A(5, 5);
+// then scaling vector
+Vector<double> scale(5);
+ScaleLeftMatrix(A, scale);
+\endprecode
+
+
+<h4>Location :</h4>
+<p><a href="file.php?name=matrix_sparse/Permutation_ScalingMatrix.cxx">Permutation_ScalingMatrix.cxx</a></p>
+
+*/
