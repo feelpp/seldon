@@ -38,14 +38,14 @@ else
 <li class="jelly"> <b>USER'S GUIDE</b> </li>
 <li class="jelly"> <?php HL($file, "installation", "Installation");?> </li>
 <li class="jelly"> <?php HL($file, "overview", "Overview");?> </li>
-<li class="jelly"> <?php HL($file, "vectors", "Vectors");?> </li>
+<li class="jelly"> <?php HL($file, "vectors", "Vectors");?>
 
 <?php if (basename($_SERVER['REQUEST_URI'], ".php") == "vectors"
 or basename($_SERVER['REQUEST_URI'], ".php") == "class_vector"
 or basename($_SERVER['REQUEST_URI'], ".php") == "class_sparse_vector"
 or basename($_SERVER['REQUEST_URI'], ".php") == "functions_vector")
 {
-  echo '<li><ul> <li class="jelly">';
+  echo '<ul class="navsubul"> <li class="jelly">';
   HL($file, "class_vector", "Dense Vectors");
   echo '</li>';
   echo '<li class="jelly">';
@@ -53,17 +53,19 @@ or basename($_SERVER['REQUEST_URI'], ".php") == "functions_vector")
   echo '</li>';
   echo '<li class="jelly">';
   HL($file, "functions_vector", "Functions");
-  echo '</li> </ul> </li>';
+  echo '</li> </ul>';
 } ?>
 
-<li class="jelly"> <?php HL($file, "matrices", "Matrices");?> </li>
+</li>
+
+<li class="jelly"> <?php HL($file, "matrices", "Matrices");?>
 
 <?php if (basename($_SERVER['REQUEST_URI'], ".php") == "matrices"
 or basename($_SERVER['REQUEST_URI'], ".php") == "class_matrix"
 or basename($_SERVER['REQUEST_URI'], ".php") == "class_sparse_matrix"
 or basename($_SERVER['REQUEST_URI'], ".php") == "functions_matrix")
 {
-  echo '<li> <ul> <li class="jelly">';
+  echo '<ul class="navsubul"> <li class="jelly">';
   HL($file, "class_matrix", "Dense Matrices");
   echo '</li>';
   echo '<li class="jelly">';
@@ -71,13 +73,15 @@ or basename($_SERVER['REQUEST_URI'], ".php") == "functions_matrix")
   echo '</li>';
   echo '<li class="jelly">';
   HL($file, "functions_matrix", "Functions");
-  echo '</li> </ul> </li>';
+  echo '</li> </ul>';
 } ?>
+
+</li>
 
 <li class="jelly"> <?php HL($file, "array3d", "3D&nbsp;Arrays");?>  </li>
 <li class="jelly"> <?php HL($file, "allocators", "Allocators");?>  </li>
 <li class="jelly"> <?php HL($file, "exceptions", "Exceptions");?>  </li>
-<li class="jelly"> <?php HL($file, "computations", "Computations");?>  </li>
+<li class="jelly"> <?php HL($file, "computations", "Computations");?>
 
 <?php if (basename($_SERVER['REQUEST_URI'], ".php") == "computations"
 or basename($_SERVER['REQUEST_URI'], ".php") == "functions_blas"
@@ -85,7 +89,7 @@ or basename($_SERVER['REQUEST_URI'], ".php") == "functions_lapack"
 or basename($_SERVER['REQUEST_URI'], ".php") == "direct"
 or basename($_SERVER['REQUEST_URI'], ".php") == "iterative")
 {
-  echo '<li> <ul> <li class="jelly">';
+  echo '<ul class="navsubul"> <li class="jelly">';
   HL($file, "functions_blas", "Blas");
   echo '</li>';
   echo '<li class="jelly">';
@@ -96,14 +100,16 @@ or basename($_SERVER['REQUEST_URI'], ".php") == "iterative")
   echo '</li>';
   echo '<li class="jelly">';
   HL($file, "iterative", "Iterative Solvers");
-  echo '</li> </ul> </li>';
+  echo '</li> </ul>';
 } ?>
+
+</li>
 
 <li class="jelly"> <?php HL($file, "python", "Python Interface");?> </li>
 <li class="jelly"> <?php HL($file, "glossary", "Index");?> </li>
 <li class="jelly"> <b>API REFERENCE</b> </li>
-<li class="jelly"> <?php HL($file, "annotated", "Classes");?> </li>
-<li> <ul> <li class="jelly"> <?php HL($file, "annotated", "Class List");?> </li> 
+<li class="jelly"> <?php HL($file, "annotated", "Classes");?>
+<ul class="navsubul"> <li class="jelly"> <?php HL($file, "annotated", "Class List");?> </li> 
 <li class="jelly"> <?php HL($file, "hierarchy", "Class Hierarchy");?> </li>
 <li class="jelly"> <?php HL($file, "functions", "Class Members");?>
 </li> </ul> </li>

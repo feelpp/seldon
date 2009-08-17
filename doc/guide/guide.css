@@ -29,49 +29,52 @@ h2 {
 
 /* browsing menu */
 .nav {
-	width: 240px;
+	width: 200px;
         float: left;
-	padding: 0px;
-	margin: 0px 10px 0px 0px;
-        background-color: white;
+	padding: 15px 10px 0px 15px;
+	margin: 0px;
         font-family: arial;
+        background-color: white;
 }
 
 .nav ul {
 	border: 0;
         list-style: none;
-	color: #9c3;
-        padding: 0px 0px 0px 20px;
-        margin: 0px;
-}
-.nav ul * {
-	border: 0;
-        list-style: none;
-	color: #9c3;
-}
-.nav a:hover, .nav .jelly a:hover { color:#8b2 }
-.jelly { margin-bottom: 0.5em }
-.nav .jelly a, .nav .jelly em {
-	font-weight: bold;
 	padding: 0px;
 	margin: 0px;
-        text-decoration: none;
 }
 
-.nav .jelly ul a, .nav .jelly ul em {
-	font-weight: normal;
-	padding: 0px;
+.nav ul .navsubul {
+	border: 0;
+        list-style: none;
+	padding: 0.5em 0px 0px 25px;
 	margin: 0px;
 }
-.nav ul a, .nav ul em {
-	color:#06c;
+
+.nav .jelly {
 	padding: 0px;
-	margin: 0px;
+	margin: 0px 0px 0.5em 0px;
 }
-.nav ul em {
-	color:#ccc;
-	font-style:normal;
+
+.nav a
+{
+    font-weight: bold;
+    color: #06c;
+    text-decoration: none;
 }
+.nav a:hover
+{
+    color: #8b2;
+    text-decoration: none;
+}
+.nav em
+{
+    color: #ccc;
+    text-decoration: none;
+    font-style: normal;
+    font-weight: bold;
+}
+
 
 /* the box around the actual syntax content */
 .syntax-box {
