@@ -249,9 +249,9 @@ GetLU(A, mat_lu);
 
 
 <h4>Location :</h4>
-<p><a href="file.php?name=computation/interfaces/direct/Mumps.cxx">Mumps.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/UmfPack.cxx">UmfPack.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/SuperLU.cxx">SuperLU.cxx</a></p>
+<p>Mumps.cxx<br/>
+UmfPack.cxx<br/>
+SuperLU.cxx</p>
 
 
 
@@ -277,7 +277,7 @@ you are using <a href="#getlu">GetLU</a> and <a href="#solvelu">SolveLU</a>, you
 
 
 <h4>Location :</h4>
-<p><a href="file.php?name=computation/interfaces/direct/Mumps.cxx">Mumps.cxx</a></p>
+<p>Mumps.cxx</p>
 
 
 
@@ -313,7 +313,7 @@ GetLU(A, mat_lu);
 
 
 <h4>Location :</h4>
-<p><a href="file.php?name=computation/interfaces/direct/Mumps.cxx">Mumps.cxx</a></p>
+<p>Mumps.cxx</p>
 
 
 
@@ -351,7 +351,7 @@ mat_lu.FindOrdering(A, permutation, true);
 
 
 <h4>Location :</h4>
-<p><a href="file.php?name=computation/interfaces/direct/Mumps.cxx">Mumps.cxx</a></p>
+<p>Mumps.cxx</p>
 
 
 
@@ -386,9 +386,9 @@ GetLU(A, mat_lu);
 
 
 <h4>Location :</h4>
-<p><a href="file.php?name=computation/interfaces/direct/Mumps.cxx">Mumps.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/UmfPack.cxx">UmfPack.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/SuperLU.cxx">SuperLU.cxx</a></p>
+<p>Mumps.cxx<br/>
+UmfPack.cxx<br/>
+SuperLU.cxx</p>
 
 
 <div class="separator"><a name="getinfofactorization"></a></div>
@@ -420,9 +420,9 @@ int info = mat_lu.GetInfoFactorization();
 
 
 <h4>Location :</h4>
-<p><a href="file.php?name=computation/interfaces/direct/Mumps.cxx">Mumps.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/UmfPack.cxx">UmfPack.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/SuperLU.cxx">SuperLU.cxx</a></p>
+<p>Mumps.cxx<br/>
+UmfPack.cxx<br/>
+SuperLU.cxx</p>
 
 
 
@@ -445,9 +445,9 @@ int info = mat_lu.GetInfoFactorization();
 <code>InitSymmetricMatrix</code> is called before (for Mumps).</p>
 
 <h4>Location :</h4>
-<p><a href="file.php?name=computation/interfaces/direct/Mumps.cxx">Mumps.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/UmfPack.cxx">UmfPack.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/SuperLU.cxx">SuperLU.cxx</a></p>
+<p>Mumps.cxx<br/>
+UmfPack.cxx<br/>
+SuperLU.cxx</p>
 
 
 
@@ -473,7 +473,7 @@ you don't need to call <code>InitSymmetricMatrix</code> before.
 
 
 <h4>Location :</h4>
-<p><a href="file.php?name=computation/interfaces/direct/Mumps.cxx">Mumps.cxx</a></p>
+<p>Mumps.cxx</p>
 
 
 
@@ -495,9 +495,9 @@ that <code>GetLU</code> has been called before to factorize matrix A.
  This is equivalent to use function <a href="#solvelu">SolveLU</a>.</p>
 
 <h4>Location :</h4>
-<p><a href="file.php?name=computation/interfaces/direct/Mumps.cxx">Mumps.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/UmfPack.cxx">UmfPack.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/SuperLU.cxx">SuperLU.cxx</a></p>
+<p>Mumps.cxx<br/>
+UmfPack.cxx<br/>
+SuperLU.cxx</p>
 
 
 
@@ -541,9 +541,9 @@ GetLU(Asp, mat_lu, true);
 \endprecode
 
 <h4>Location :</h4>
-<p><a href="file.php?name=computation/interfaces/direct/Mumps.cxx">Mumps.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/UmfPack.cxx">UmfPack.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/SuperLU.cxx">SuperLU.cxx</a></p>
+<p>Mumps.cxx<br/>
+UmfPack.cxx<br/>
+SuperLU.cxx</p>
 
 
 <div class="separator"><a name="solvelu"></a></div>
@@ -567,9 +567,9 @@ side is overwritten by the result.</p>
 
 
 <h4>Location :</h4>
-<p><a href="file.php?name=computation/interfaces/direct/Mumps.cxx">Mumps.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/UmfPack.cxx">UmfPack.cxx</a><br/>
-<a href="file.php?name=computation/interfaces/direct/SuperLU.cxx">SuperLU.cxx</a></p>
+<p>Mumps.cxx<br/>
+UmfPack.cxx<br/>
+SuperLU.cxx</p>
 
 
 
@@ -609,6 +609,6 @@ GetSchurMatrix(A, mat_lu, num, mat_schur);
 
 
 <h4>Location :</h4>
-<p><a href="file.php?name=computation/interfaces/direct/Mumps.cxx">Mumps.cxx</a></p>
+<p>Mumps.cxx</p>
 
 */

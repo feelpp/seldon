@@ -72,7 +72,7 @@ QuickSort(0, X.GetM()-1, X, Y, Z);
 
 
 <h4>Location :</h4>
-<p> <a href="file.php?name=vector/Functions_Arrays.cxx">Functions_Arrays.cxx</a></p>
+<p> Functions_Arrays.cxx</p>
 
 
 
@@ -121,7 +121,7 @@ MergeSort(0, X.GetM()-1, X, Y, Z);
 
 
 <h4>Location :</h4>
-<p> <a href="file.php?name=vector/Functions_Arrays.cxx">Functions_Arrays.cxx</a></p>
+<p> Functions_Arrays.cxx</p>
 
 
 
@@ -183,7 +183,7 @@ Sort(start_index, end_index, X);
 
 
 <h4>Location :</h4>
-<p> <a href="file.php?name=vector/Functions_Arrays.cxx">Functions_Arrays.cxx</a></p>
+<p> Functions_Arrays.cxx</p>
 
 
 
@@ -234,7 +234,7 @@ Assemble(nb, num, values);
 
 
 <h4>Location :</h4>
-<p> <a href="file.php?name=vector/Functions_Arrays.cxx">Functions_Arrays.cxx</a></p>
+<p> Functions_Arrays.cxx</p>
 
 
 
@@ -285,6 +285,6 @@ RemoveDuplicate(nb_elt, num, permutation);
 
 
 <h4>Location :</h4>
-<p> <a href="file.php?name=vector/Functions_Arrays.cxx">Functions_Arrays.cxx</a></p>
+<p> Functions_Arrays.cxx</p>
 
 */

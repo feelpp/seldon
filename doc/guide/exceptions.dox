@@ -141,8 +141,7 @@ exact line where the error occurred and the sequence of calls. Then, you have
 two options, using a debugger.</p>
 
 <p>One option is to place a breakpoint in <code>Error::Error(string function =
-"", string comment = "")</code> (see file <a
-href="file.php?name=share/Errors.cxx">share/Errors.cxx</a>) because this
+"", string comment = "")</code> (see file share/Errors.cxx) because this
 constructor should be called before the exception is actually raised.</p>
 
 <p>Another option, more convenient because no breakpoint is to be placed, is
