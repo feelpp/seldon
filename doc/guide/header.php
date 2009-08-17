@@ -120,7 +120,7 @@ or basename($_SERVER['REQUEST_URI'], ".php") == "iterative")
 </li>
 <!-- <li class="jelly"> <?php HL($file, "faq", "F.A.Q.");?> </li>-->
 <li class="jelly"> <a
-href="mailto:Marc.Durufle@math.u-bordeaux1.fr,Vivien.Mallet@inria.fr"
+href="mailto:seldon-help@lists.sourceforge.net"
 style="color:black">Support</a></li>
 </ul>
 
