@@ -157,7 +157,18 @@ PRE.fragment {
 }
 
 .doxygen h2 {
+        margin: 15px 0px 10px 0px;
 	font-size: 120%;
+}
+
+.doxygen h2 a {
+        font-weight: bold;
+	color: #8b2;
+	text-decoration: none;
+}
+
+.doxygen h2 a:hover {
+	text-decoration: none;
 }
 
 .doxygen h3 {
