@@ -30,7 +30,7 @@ else
   echo '<a href="'.$section_.'.php">'.$string_.'</a>';
 }; ?>
 
-<?php $file=basename($file, ".php"); $file = explode(".", $file); $file = $file[0];?>
+<?php $file=basename($_SERVER['REQUEST_URI'], ".php"); $file = explode(".", $file); $file = $file[0];?>
 
 <div class="nav">
 

@@ -42,6 +42,7 @@ h2 {
         list-style: none;
 	padding: 0px;
 	margin: 0px;
+        color: #8b2;
 }
 
 .nav ul .navsubul {
@@ -69,9 +70,9 @@ h2 {
 }
 .nav em
 {
-    color: #ccc;
+    color: #06c;
     text-decoration: none;
-    font-style: normal;
+    font-style: italic;
     font-weight: bold;
 }
 
