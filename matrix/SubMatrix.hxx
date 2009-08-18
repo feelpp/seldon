@@ -61,6 +61,9 @@ namespace Seldon
 
 
   //! Sub-matrix class.
+  /*!
+    \extends SubMatrix_Base<T, Prop, M, Allocator>
+   */
   template <class M>
   class SubMatrix:
     public Matrix<typename M::value_type, typename M::property,
