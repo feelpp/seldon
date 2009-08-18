@@ -183,6 +183,23 @@ namespace Seldon
   }
 
 
+  //! Prints a matrix on screen.
+  /*! Displays all elements on the standard output, in text format. Each row
+    is displayed on a single line, and the elements of a row are delimited by
+    tabulations.
+  */
+  template <class T, class Prop, class M, class Allocator>
+  void SubMatrix_Base<T, Prop, M, Allocator>::Print() const
+  {
+    for (int i = 0; i < this->GetM(); i++)
+      {
+	for (int j = 0; j < this->GetN(); j++)
+	  cout << (*this)(i, j) << "\t";
+	cout << endl;
+      }
+  }
+
+
 } // namespace Seldon.
 
 
