@@ -40,6 +40,15 @@ namespace Seldon
   // MLT //
 
 
+  //! Performs the multiplication of a matrix with a vector.
+  /*! It performs the operation \f$ Y = M X \f$ where \f$ M \f$ is a \f$ m
+    \times n \f$ matrix, and \f$ X \f$ is a vector of length \f$ n \f$. The
+    returned vector \f$ Y \f$ must be of length \f$ m \f$.
+    \param[in] M m by n matrix.
+    \param[in] X vector of length n.
+    \param[out] Y vector of length m, result of the product of \a M by \a
+    X. It must have the right length on entry: it will not be resized.
+  */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
@@ -52,6 +61,18 @@ namespace Seldon
   }
 
 
+  //! Performs the multiplication of a matrix with a vector.
+  /*! It performs the operation \f$ Y = \alpha M X \f$ where \f$ \alpha \f$ is
+    a scalar, \f$ M \f$ is a \f$ m \times n \f$ matrix, and \f$ X \f$ is a
+    vector of length \f$ n \f$. The returned vector \f$ Y \f$ must be of
+    length \f$ m \f$.
+    \param[in] alpha scalar.
+    \param[in] M m by n matrix.
+    \param[in] X vector of length n.
+    \param[out] Y vector of length m, result of the product of \a M by \a X,
+    times \a alpha. It must have the right length on entry: it will not be
+    resized.
+  */
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -638,6 +659,20 @@ namespace Seldon
   // MltAdd //
 
 
+  /*! \brief Performs the multiplication of a matrix with a vector, and adds
+    the result to another vector.
+   */
+  /*! It performs the operation \f$ Y = \alpha M X + \beta Y \f$ where \f$
+    \alpha \f$ and \f$ \beta \f$ are scalars, \f$ M \f$ is a \f$ m \times n
+    \f$ matrix, and \f$ X \f$ is a vector of length \f$ n \f$. The vector \f$
+    Y \f$ must be of length \f$ m \f$.
+    \param[in] alpha scalar.
+    \param[in] M m by n matrix.
+    \param[in] X vector of length n.
+    \param[in] beta scalar.
+    \param[in,out] Y vector of length m, result of the product of \a M by \a
+    X, times \a alpha, plus \a Y (on entry) times \a beta.
+  */
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -672,6 +707,25 @@ namespace Seldon
   }
 
 
+  /*! \brief Performs the multiplication of a matrix (possibly transposed)
+    with a vector, and adds the result to another vector.
+   */
+  /*! It performs the operation \f$ Y = \alpha M X + \beta Y \f$ or \f$ Y =
+    \alpha M^T X + \beta Y \f$ where \f$ \alpha \f$ and \f$ \beta \f$ are
+    scalars, \f$ M \f$ is a \f$ m \times n \f$ matrix or a \f$ n \times m \f$
+    matrix, and \f$ X \f$ is a vector of length \f$ n \f$. The vector \f$ Y
+    \f$ must be of length \f$ m \f$.
+    \param[in] alpha scalar.
+    \param[in] Trans transposition status of \a M: it may be SeldonNoTrans or
+    SeldonTrans.
+    \param[in] M m by n matrix, or n by m matrix if transposed.
+    \param[in] X vector of length n.
+    \param[in] beta scalar.
+    \param[in,out] Y vector of length m, result of the product of \a M by \a
+    X, times \a alpha, plus \a Y (on entry) times \a beta.
+    \note \a Trans must be either SeldonNoTrans or SeldonTrans: ConjTrans is
+    not supported.
+  */
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -870,8 +924,19 @@ namespace Seldon
   // SolveLU //
 
 
-  // Solves M.X = Y where A has been decomposed in a LU form.
-  // Y is overwritten (Y <- X).
+  //! Solves a linear system whose matrix has been LU-factorized.
+  /*! This function solves \f$ M X = Y \f$ where \f$ M \f$ is a matrix, and
+    \f$ X \f$ and \f$ Y \f$ are vectors. The matrix \a M cannot be provided as
+    such to this function: it must already be factorized in LU form.
+    \param[in] M the matrix of the linear system, already factorized in LU
+    form. The lower part of \a M should be \a L, and the upper part should be
+    \a U. The diagonal of \a M should be the diagonal of \a U. The diagonal
+    elements of \a L are assumed to be ones.
+    \param[in,out] Y on entry, the right-hand side \f$ Y \f$; on exit, the
+    solution \f$ X \f$ of the system.
+    \sa Seldon::GetLU(Matrix<T0, Prop0, Storage0, Allocator0>& A) to factorize
+    a matrix before using this function.
+  */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void SolveLU(const Matrix<T0, Prop0, Storage0, Allocator0>& M,

@@ -61,6 +61,11 @@ namespace Seldon
   // MLT //
 
 
+  //! Multiplies a matrix by a scalar.
+  /*!
+    \param[in] alpha scalar.
+    \param[in,out] M matrix to be multiplied.
+  */
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
   void Mlt(const T0 alpha,
@@ -76,6 +81,15 @@ namespace Seldon
   }
 
 
+  //! Multiplies two matrices.
+  /*! It performs the operation \f$ C = \alpha A B \f$ where \f$ \alpha \f$ is
+    a scalar, and \f$ A \f$, \f$ B \f$ and \f$ C \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] A matrix.
+    \param[in] B matrix.
+    \param[out] C matrix, result of the product of \a A with \a B, times \a
+    alpha.
+  */
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2,
@@ -90,6 +104,13 @@ namespace Seldon
   }
 
 
+  //! Multiplies two matrices.
+  /*! It performs the operation \f$ C = A B \f$ where \f$ A \f$, \f$ B \f$ and
+    \f$ C \f$ are matrices.
+    \param[in] A matrix.
+    \param[in] B matrix.
+    \param[out] C matrix, result of the product of \a A with \a B.
+  */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2>
@@ -111,6 +132,17 @@ namespace Seldon
   // MLTADD //
 
 
+  //! Multiplies two matrices, and adds the result to a third matrix.
+  /*! It performs the operation \f$ C = \alpha A B + \beta C \f$ where \f$
+    \alpha \f$ and \f$ \beta \f$ are scalars, and \f$ A \f$, \f$ B \f$ and \f$
+    C \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] A matrix.
+    \param[in] B matrix.
+    \param[in] beta scalar.
+    \param[in,out] C matrix, result of the product of \a A with \a B, times \a
+    alpha, plus \a beta times \a C.
+  */
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2,
@@ -166,6 +198,14 @@ namespace Seldon
   // ADD //
 
 
+  //! Adds two matrices.
+  /*! It performs the operation \f$ B = \alpha A + B \f$ where \f$ \alpha \f$
+    is a scalar, and \f$ A \f$ and \f$ B \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] A matrix.
+    \param[in,out] B matrix, result of the addition of \a B (on entry) and \a
+    A times \a alpha.
+  */
   template<class T0, class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
   void Add(const T0& alpha,
@@ -201,8 +241,17 @@ namespace Seldon
   // GETLU //
 
 
-  // Returns the LU decomposition of A = LU (in A)
-  // where L diagonal elements are set to unit value.
+  //! Returns the LU factorization of a matrix.
+  /*! It factorizes the matrix \a A into \a L and \a U, so that \f$ A = L U
+    \f$, \a L is a lower triangular matrix with ones on the diagonal, and \a U
+    is an upper triangular matrix. On exit, the LU factorization is stored
+    inside \a A: \a L in the lower part and \a U in the upper part. The
+    diagonal elements are those of \a U. The diagonal elements of \a L are
+    known to be ones.
+    \param[in,out] A on entry, the matrix to be factorized; on exit, the LU
+    factorization.
+    \sa Seldon::SolveLU(const Matrix<T0, Prop0, Storage0, Allocator0>& M, Vector<T1, Storage1, Allocator1>& Y)
+  */
   template <class T0, class Prop0, class Storage0, class Allocator0>
   void GetLU(Matrix<T0, Prop0, Storage0, Allocator0>& A)
   {
@@ -422,8 +471,8 @@ namespace Seldon
 
   //! Returns the maximum (in absolute value) of a matrix.
   /*!
-    \param A matrix.
-    \return The maximum (in absolute value) of matrix A.
+    \param[in] A matrix.
+    \return The maximum (in absolute value) of all elements of \a A.
   */
   template <class T, class Prop, class Storage, class Allocator>
   T MaxAbs(const Matrix<T, Prop, Storage, Allocator>& A)
@@ -439,7 +488,7 @@ namespace Seldon
 
   //! Returns the 1-norm of a matrix.
   /*!
-    \param A matrix.
+    \param[in] A matrix.
     \return \f$ max_j \sum_i |A_{ij}| \f$
   */
   template <class T, class Prop, class Storage, class Allocator>
@@ -461,7 +510,7 @@ namespace Seldon
 
   //! Returns the infinity-norm of a matrix.
   /*!
-    \param A matrix.
+    \param[in] A matrix.
     \return \f$ max_i \sum_j |A_{ij}| \f$
   */
   template <class T, class Prop, class Storage, class Allocator>
@@ -483,8 +532,8 @@ namespace Seldon
 
   //! Returns the maximum (in modulus) of a matrix.
   /*!
-    \param A matrix.
-    \return The maximum (in modulus) of matrix A.
+    \param[in] A matrix.
+    \return The maximum (in modulus) of all elements of \a A.
   */
   template <class T, class Prop, class Storage, class Allocator>
   T MaxAbs(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
@@ -502,7 +551,7 @@ namespace Seldon
 
   //! Returns the 1-norm of a matrix.
   /*!
-    \param A matrix.
+    \param[in] A matrix.
     \return \f$ max_j \sum_i |A_{ij}| \f$
   */
   template <class T, class Prop, class Storage, class Allocator>
@@ -524,7 +573,7 @@ namespace Seldon
 
   //! Returns the infinity-norm of a matrix.
   /*!
-    \param A matrix.
+    \param[in] A matrix.
     \return \f$ max_i \sum_j |A_{ij}| \f$
   */
   template <class T, class Prop, class Storage, class Allocator>
