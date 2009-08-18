@@ -280,18 +280,18 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_TriangPacked::Val(int, int)",
+      throw WrongRow("Matrix_TriangPacked::operator()(int, int)",
 		     string("Index should be in [0, ") + to_str(this->m_-1)
 		     + "], but is equal to " + to_str(i) + ".");
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_TriangPacked::Val(int, int)",
+      throw WrongCol("Matrix_TriangPacked::operator()(int, int)",
 		     string("Index should be in [0, ") + to_str(this->n_-1)
 		     + "], but is equal to " + to_str(j) + ".");
 
     if (Storage::UpLo())
       {
 	if (i > j)
-	  throw WrongRow("Matrix_TriangPacked::Val(int, int)",
+	  throw WrongRow("Matrix_TriangPacked::operator()(int, int)",
 			 string("Attempted to access to element (")
 			 + to_str(i) + ", " + to_str(j) + string(") but row")
 			 + string(" index should not be strictly more")
@@ -303,7 +303,7 @@ namespace Seldon
     else
       {
 	if (j > i)
-	  throw WrongCol("Matrix_TriangPacked::Val(int, int)",
+	  throw WrongCol("Matrix_TriangPacked::operator()(int, int)",
 			 string("Attempted to access to element (")
 			 + to_str(i) + ", " + to_str(j) + string(") but")
 			 + string(" column index should not be strictly more")
