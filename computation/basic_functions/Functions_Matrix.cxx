@@ -123,6 +123,154 @@ namespace Seldon
   }
 
 
+  //! Multiplies two row-major sparse matrices in Harwell-Boeing format.
+  /*! It performs the operation \f$ C = A B \f$ where \f$ A \f$, \f$ B \f$ and
+    \f$ C \f$ are row-major sparse matrices in Harwell-Boeing format.
+    \param[in] A row-major sparse matrix in Harwell-Boeing format.
+    \param[in] B row-major sparse matrix in Harwell-Boeing format.
+    \param[out] C row-major sparse matrix in Harwell-Boeing format, result of
+    the product of \a A with \a B. It does not need to have the right non-zero
+    entries.
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Prop2, class Allocator2>
+  void Mlt(const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
+	   const Matrix<T1, Prop1, RowSparse, Allocator1>& B,
+	   Matrix<T2, Prop2, RowSparse, Allocator2>& C)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    CheckDim(SeldonLeft, A, B,
+             "Mlt(Matrix<T0, Prop0, RowSparse>& A, "
+             "Matrix<T1, Prop1, RowSparse>& B, "
+             "Matrix<T2, Prop2, RowSparse>& C)");
+#endif
+
+    int h, i, k, l, col;
+    int Nnonzero, Nnonzero_row, Nnonzero_row_max;
+    IVect column_index;
+    Vector<T2> row_value;
+    T1 value;
+    int m = A.GetM();
+
+    int* c_ptr = NULL;
+    int* c_ind = NULL;
+    T2* c_data = NULL;
+    C.Clear();
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	c_ptr = reinterpret_cast<int*>(calloc(m + 1, sizeof(int)));
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+        c_ptr = NULL;
+      }
+
+    if (c_ptr == NULL)
+      throw NoMemory("Mlt(const Matrix<RowSparse>& A, "
+                     "const Matrix<RowSparse>& B, Matrix<RowSparse>& C)",
+		     "Unable to allocate memory for an array of "
+		     + to_str(m + 1) + " integers.");
+#endif
+
+    c_ptr[0] = 0;
+
+    // Number of non-zero elements in C.
+    Nnonzero = 0;
+    for (i = 0; i < m; i++)
+      {
+        c_ptr[i + 1] = c_ptr[i];
+
+        if (A.GetPtr()[i + 1] != A.GetPtr()[i])
+          // There are elements in the i-th row of A, so there can be non-zero
+          // entries in C as well. Checks whether any column in B has an
+          // element whose row index matches a column index of a non-zero in
+          // the i-th row of A.
+          {
+            // Maximum number of non-zero entry on the i-th row of C.
+            Nnonzero_row_max = 0;
+            // For every element in the i-th row.
+            for (k = A.GetPtr()[i]; k < A.GetPtr()[i + 1]; k++)
+              {
+                col = A.GetInd()[k];
+                Nnonzero_row_max += B.GetPtr()[col + 1] - B.GetPtr()[col];
+              }
+            // Now gets the column indexes.
+            column_index.Reallocate(Nnonzero_row_max);
+            row_value.Reallocate(Nnonzero_row_max);
+            h = 0;
+            // For every element in the i-th row.
+            for (k = A.GetPtr()[i]; k < A.GetPtr()[i + 1]; k++)
+              {
+                // The k-th column index (among the nonzero entries) on the
+                // i-th row, and the corresponding value.
+                col = A.GetInd()[k];
+                value = A.GetData()[k];
+                // Loop on all elements in the col-th row in B. These elements
+                // are multiplied with the element (i, col) of A.
+                for (l = B.GetPtr()[col]; l < B.GetPtr()[col + 1]; l++)
+                  {
+                    column_index(h) = B.GetInd()[l];
+                    row_value(h) = value * B.GetData()[l];
+                    h++;
+                  }
+              }
+            // Now gathers and sorts all elements on the i-th row of C.
+            Nnonzero_row = column_index.GetLength();
+            Assemble(Nnonzero_row, column_index, row_value);
+
+#ifdef SELDON_CHECK_MEMORY
+            try
+              {
+#endif
+
+                // Reallocates 'c_ind' and 'c_data' in order to append the
+                // elements of the i-th row of C.
+                c_ind = reinterpret_cast<int*>
+                  (realloc(reinterpret_cast<void*>(c_ind),
+                           (Nnonzero + Nnonzero_row) * sizeof(int)));
+                c_data = reinterpret_cast<T2*>
+                  (C.GetAllocator().reallocate(c_data,
+                                               Nnonzero + Nnonzero_row));
+
+#ifdef SELDON_CHECK_MEMORY
+              }
+            catch (...)
+              {
+                c_ind = NULL;
+                c_data = NULL;
+              }
+
+            if (c_ind == NULL || c_data == NULL)
+              throw NoMemory("Mlt(const Matrix<RowSparse>& A, const "
+                             "Matrix<RowSparse>& B, Matrix<RowSparse>& C)",
+                             "Unable to allocate memory for an array of "
+                             + to_str(Nnonzero + Nnonzero_row) + " integers "
+                             "and for an array of "
+                             + to_str(sizeof(T2) * (Nnonzero + Nnonzero_row))
+                             + " bytes.");
+#endif
+
+            c_ptr[i + 1] += Nnonzero_row;
+            for (h = 0; h < Nnonzero_row; h++)
+              {
+                c_ind[Nnonzero + h] = column_index(h);
+                c_data[Nnonzero + h] = row_value(h);
+              }
+            Nnonzero += Nnonzero_row;
+          }
+      }
+
+    C.SetData(A.GetM(), B.GetN(), Nnonzero, c_data, c_ptr, c_ind);
+  }
+
+
   // MLT //
   /////////
 

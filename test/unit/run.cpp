@@ -20,6 +20,7 @@
 #include "array3d.hpp"
 #include "matrix.hpp"
 #include "submatrix.hpp"
+#include "sparse_linear_algebra.hpp"
 
 #include <cppunit/TestResult.h>
 #include <cppunit/ui/text/TestRunner.h>
@@ -29,6 +30,7 @@ using namespace CppUnit;
 CPPUNIT_TEST_SUITE_REGISTRATION(MatrixTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(SubMatrixTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(Array3DTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(SparseLinearAlgebraTest);
 
 int main()
 {
