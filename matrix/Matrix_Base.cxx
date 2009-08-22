@@ -244,6 +244,17 @@ namespace Seldon
   }
 
 
+  //! Returns the allocator of the matrix.
+  /*!
+    \return The allocator.
+  */
+  template <class T, class Allocator>
+  Allocator& Matrix_Base<T, Allocator>::GetAllocator()
+  {
+    return allocator_;
+  }
+
+
   // operator<< overloaded for matrices.
   /*!
     \param out output stream.

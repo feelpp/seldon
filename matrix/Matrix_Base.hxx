@@ -85,6 +85,8 @@ namespace Seldon
     void* GetDataVoid() const;
     const void* GetDataConstVoid() const;
 
+    Allocator& GetAllocator();
+
   };
 
 
