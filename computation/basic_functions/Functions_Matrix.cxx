@@ -425,7 +425,6 @@ namespace Seldon
 #endif
 
 
-#ifdef SELDON_WITH_CBLAS
   //! Checks the compatibility of the dimensions.
   /*! Checks that A.B or B.A is possible according to the dimensions of
     the matrices A and B. If the dimensions are incompatible,
@@ -438,19 +437,19 @@ namespace Seldon
   */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
-  void CheckDim(const enum CBLAS_SIDE side,
+  void CheckDim(const SeldonSide& side,
 		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		string function = "")
   {
-    if (SeldonSide(side).Left() && B.GetM() != A.GetN())
+    if (side.Left() && B.GetM() != A.GetN())
       throw WrongDim(function, string("Operation A.B not permitted:")
 		     + string("\n     A (") + to_str(&A) + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
 		     + string(" matrix;\n     B (") + to_str(&B)
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix."));
-    else if (SeldonSide(side).Right() && B.GetN() != A.GetM())
+    else if (side.Right() && B.GetN() != A.GetM())
       throw WrongDim(function, string("Operation B.A not permitted:")
 		     + string("\n     A (") + to_str(&A) + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
@@ -458,7 +457,6 @@ namespace Seldon
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix."));
   }
-#endif
 
 
   // CHECKDIM //
