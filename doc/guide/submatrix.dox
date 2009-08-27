@@ -27,7 +27,7 @@ column_list(2) = 5;
 SubMatrix<Matrix<double> > SubA(A, row_list, column_list);
 \endprecode
 
-The template argument of <code>SubMatrix</code> must the exact type of the
+The template argument of <code>SubMatrix</code> must be the exact type of the
 base matrix <code>A</code>.
 
 \section more Flexible Definition
