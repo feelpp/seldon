@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <vector>
 #include <complex>
 #include <cstring>
 #include <string>

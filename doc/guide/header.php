@@ -65,7 +65,8 @@ or basename($_SERVER['REQUEST_URI'], ".php") == "functions_vector")
 or basename($_SERVER['REQUEST_URI'], ".php") == "class_matrix"
 or basename($_SERVER['REQUEST_URI'], ".php") == "class_sparse_matrix"
 or basename($_SERVER['REQUEST_URI'], ".php") == "functions_matrix"
-or basename($_SERVER['REQUEST_URI'], ".php") == "submatrix")
+or basename($_SERVER['REQUEST_URI'], ".php") == "submatrix"
+or basename($_SERVER['REQUEST_URI'], ".php") == "matrix_miscellaneous")
 {
   echo '<ul class="navsubul"> <li class="jelly">';
   HL($file, "class_matrix", "Dense Matrices");
@@ -78,6 +79,9 @@ or basename($_SERVER['REQUEST_URI'], ".php") == "submatrix")
   echo '</li>';
   echo '<li class="jelly">';
   HL($file, "submatrix", "Sub-Matrices");
+  echo '</li>';
+  echo '<li class="jelly">';
+  HL($file, "matrix_miscellaneous", "Miscellaneous");
   echo '</li> </ul>';
 } ?>
 
