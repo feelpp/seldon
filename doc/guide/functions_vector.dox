@@ -269,6 +269,7 @@ num(0) = 2;
 num(1) = 1;
 num(2) = 3;
 num(3) = 1;
+permutation.Fill();
 
 // you remove duplicate elements, and find the permutation vector
 // vectors are resized
@@ -276,8 +277,7 @@ RemoveDuplicate(num, permutation);
 
 
 // you can also provide the number of elements to treat
-// and vectors will not be resized, but you get the new number of
-elements
+// and vectors will not be resized, but you get the new number of elements
 int nb_elt = num.GetM();
 RemoveDuplicate(nb_elt, num, permutation);
 
