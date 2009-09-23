@@ -179,7 +179,7 @@ Matrix<double, General, RowSparse> Asp(3, 3, nnz, values, ptr, ind);
 // computation of B = beta*B + alpha*Asp*X
 MltAdd(alpha, Asp, X, beta, B);
 
-// you can compute B = beta*B + alpha*transpose(A)*X
+// you can compute B = beta*B + alpha*transpose(Asp)*X
 MltAdd(alpha, SeldonTrans, Asp, X, beta, B);
 
 // similar method for matrix-matrix product
