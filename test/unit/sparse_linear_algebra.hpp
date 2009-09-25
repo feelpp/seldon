@@ -33,6 +33,7 @@ class SparseLinearAlgebraTest: public CppUnit::TestFixture
 
   CPPUNIT_TEST_SUITE(SparseLinearAlgebraTest);
   CPPUNIT_TEST(test_mlt);
+  CPPUNIT_TEST(test_add);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -50,6 +51,133 @@ public:
 
   void tearDown()
   {
+  }
+
+
+  void test_add()
+  {
+    Nloop_ = 1;
+
+    m_ = 1;
+    n_ = 1;
+    Nelement_ = 1;
+    add();
+
+    Nloop_ = 5;
+
+    m_ = 10;
+    n_ = 1;
+    Nelement_ = 20;
+    add();
+
+    m_ = 1;
+    n_ = 10;
+    Nelement_ = 20;
+    add();
+
+    Nloop_ = 100;
+
+    m_ = 10;
+    n_ = 1;
+    Nelement_ = 5;
+    add();
+
+    m_ = 1;
+    n_ = 10;
+    Nelement_ = 5;
+    add();
+
+    Nloop_ = 200;
+
+    m_ = 10;
+    n_ = 25;
+    Nelement_ = 1;
+    add();
+
+    m_ = 5;
+    n_ = 5;
+    Nelement_ = 2;
+    add();
+
+    m_ = 4;
+    n_ = 4;
+    Nelement_ = 2;
+    add();
+
+    m_ = 4;
+    n_ = 4;
+    Nelement_ = 10;
+    add();
+
+    m_ = 10;
+    n_ = 25;
+    Nelement_ = 3;
+    add();
+
+    m_ = 10;
+    n_ = 25;
+    Nelement_ = 20;
+    add();
+
+    m_ = 100;
+    n_ = 250;
+    Nelement_ = 20;
+    add();
+
+    m_ = 10;
+    n_ = 10;
+    Nelement_ = 200;
+    add();
+  }
+
+
+  void add()
+  {
+    srand(time(NULL));
+
+    int i, j;
+    double value;
+
+    for (int k = 0; k < Nloop_; k++)
+      {
+        Matrix<double> A_full(m_, n_);
+        Matrix<double> B_full(m_, n_);
+        A_full.Zero();
+        B_full.Zero();
+
+        Matrix<double, General, ArrayRowSparse> A_array(m_, n_);
+        Matrix<double, General, ArrayRowSparse> B_array(m_, n_);
+        for (int l = 0; l < Nelement_; l++)
+          {
+            i = rand() % m_;
+            j = rand() % n_;
+            value = double(rand());
+            A_array.AddInteraction(i, j, value);
+            A_full(i, j) += value;
+          }
+        for (int l = 0; l < Nelement_; l++)
+          {
+            i = rand() % m_;
+            j = rand() % n_;
+            value = double(rand());
+            B_array.AddInteraction(i, j, value);
+            B_full(i, j) += value;
+          }
+
+        Matrix<double, General, RowSparse> A;
+        Matrix<double, General, RowSparse> B;
+
+        Copy(A_array, A);
+        Copy(B_array, B);
+
+        Add(1., A, B);
+        Add(1., A_full, B_full);
+
+        for (int i = 0; i < m_; i++)
+          for (int j = 0; j < n_; j++)
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(B_full(i, j), B(i, j),
+                                         1.e-14 * B_full(i, j));
+      }
   }
 
 
