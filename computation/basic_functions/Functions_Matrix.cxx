@@ -354,11 +354,11 @@ namespace Seldon
     \param[in,out] B matrix, result of the addition of \a B (on entry) and \a
     A times \a alpha.
   */
-  template<class T0, class T1, class Storage1, class Allocator1,
-	   class T2, class Storage2, class Allocator2>
+  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
+	   class T2, class Prop2, class Storage2, class Allocator2>
   void Add(const T0& alpha,
-	   const Matrix<T1, General, Storage1, Allocator1>& A,
-	   Matrix<T2, General, Storage2, Allocator2>& B)
+	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
+	   Matrix<T2, Prop2, Storage2, Allocator2>& B)
   {
     int i, j;
     for (i = 0; i < A.GetM(); i++)
