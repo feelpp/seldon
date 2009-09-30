@@ -247,7 +247,8 @@ namespace Seldon
                 c_data = NULL;
               }
 
-            if (c_ind == NULL || c_data == NULL)
+            if ((c_ind == NULL || c_data == NULL)
+                && Nnonzero + Nnonzero_row != 0)
               throw NoMemory("Mlt(const Matrix<RowSparse>& A, const "
                              "Matrix<RowSparse>& B, Matrix<RowSparse>& C)",
                              "Unable to allocate memory for an array of "
@@ -488,12 +489,13 @@ namespace Seldon
         c_data = NULL;
       }
 
-    if (c_ind == NULL || c_data == NULL)
+    if ((c_ind == NULL || c_data == NULL)
+        && Nnonzero != 0)
       throw NoMemory("Add(alpha, const Matrix<RowSparse>& A, "
                      "Matrix<RowSparse>& B)",
                      "Unable to allocate memory for an array of "
                      + to_str(Nnonzero) + " integers and for an array of "
-                     + to_str(sizeof(T2) * Nonzero) + " bytes.");
+                     + to_str(sizeof(T2) * Nnonzero) + " bytes.");
 #endif
 
     // The pointers of the first i rows are correct.
@@ -509,7 +511,7 @@ namespace Seldon
 
     int Nnonzero_row_max;
     int Nnonzero_max;
-    int ja, jb, ka, kb;
+    int ja, jb(0), ka, kb;
     // Now deals with the remaining lines.
     for (; i < A.GetM(); i++)
       {
@@ -537,17 +539,19 @@ namespace Seldon
             c_data = NULL;
           }
 
-        if (c_ind == NULL || c_data == NULL)
+        if ((c_ind == NULL || c_data == NULL)
+            && Nnonzero_max != 0)
           throw NoMemory("Add(alpha, const Matrix<RowSparse>& A, "
                          "Matrix<RowSparse>& B)",
                          "Unable to allocate memory for an array of "
                          + to_str(Nnonzero_max) + " integers and for an "
                          "array of "
-                         + to_str(sizeof(T2) * Nonzero_max) + " bytes.");
+                         + to_str(sizeof(T2) * Nnonzero_max) + " bytes.");
 #endif
 
         kb = B.GetPtr()[i];
-        jb = B.GetInd()[kb];
+        if (kb < B.GetPtr()[i + 1])
+          jb = B.GetInd()[kb];
         for (ka = A.GetPtr()[i]; ka < A.GetPtr()[i + 1]; ka++)
           {
             ja = A.GetInd()[ka];
@@ -568,7 +572,8 @@ namespace Seldon
                 c_ind[Nnonzero] = jb;
                 c_data[Nnonzero] = B.GetData()[kb] + alpha * A.GetData()[ka];
                 kb++;
-                jb = B.GetInd()[kb];
+                if (kb < B.GetPtr()[i + 1])
+                  jb = B.GetInd()[kb];
               }
             else
               {
