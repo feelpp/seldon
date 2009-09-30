@@ -58,6 +58,11 @@ public:
   {
     Nloop_ = 1;
 
+    m_ = 5;
+    n_ = 10;
+    Nelement_ = 0;
+    add();
+
     m_ = 1;
     n_ = 1;
     Nelement_ = 1;
@@ -183,6 +188,14 @@ public:
 
   void test_mlt()
   {
+    Nloop_ = 1;
+
+    m_ = 10;
+    n_ = 25;
+    p_ = 9;
+    Nelement_ = 0;
+    mlt();
+
     Nloop_ = 20;
 
     m_ = 10;
