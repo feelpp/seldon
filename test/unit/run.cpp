@@ -16,6 +16,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Seldon. If not, see http://www.gnu.org/licenses/.
 
+#define SELDON_DEBUG_LEVEL_4
+#define SELDON_WITH_ABORT
+
+#define SELDON_WITH_CBLAS
 
 #include "array3d.hpp"
 #include "matrix.hpp"
