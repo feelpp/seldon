@@ -272,6 +272,155 @@ namespace Seldon
   }
 
 
+  //! Multiplies two row-major sparse matrices in Harwell-Boeing format.
+  /*! It performs the operation \f$ C = A B^T \f$ where \f$ A \f$, \f$ B \f$
+    and \f$ C \f$ are row-major sparse matrices in Harwell-Boeing format.
+    \param[in] A row-major sparse matrix in Harwell-Boeing format.
+    \param[in] B row-major sparse matrix in Harwell-Boeing format.
+    \param[out] C row-major sparse matrix in Harwell-Boeing format, result of
+    the product of \a A with \a B transposed. It does not need to have the
+    right non-zero entries.
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Prop2, class Allocator2>
+  void MltNoTransTrans(const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
+                       const Matrix<T1, Prop1, RowSparse, Allocator1>& B,
+                       Matrix<T2, Prop2, RowSparse, Allocator2>& C)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    CheckDim(SeldonNoTrans, A, SeldonTrans, B,
+             "MltNoTransTrans(const Matrix<RowSparse>& A, "
+             "const Matrix<RowSparse>& B, Matrix<RowSparse>& C)");
+#endif
+
+    int h, i, k, col;
+    int ib, kb;
+    int Nnonzero_row;
+    int Nnonzero;
+
+    // 'MallocAlloc' is specified so that reallocations may be efficient.
+    // There will be no need for 'Resize': 'Reallocate' will do the job.
+    Vector<int, VectFull, MallocAlloc<int> > column_index;
+    Vector<T2, VectFull, MallocAlloc<T2> > row_value;
+    T2 value = 0;
+
+    int m = A.GetM();
+    int n = B.GetM();
+
+    int* c_ptr = NULL;
+    int* c_ind = NULL;
+    T2* c_data = NULL;
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	c_ptr = reinterpret_cast<int*>(calloc(m + 1, sizeof(int)));
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+        c_ptr = NULL;
+      }
+
+    if (c_ptr == NULL)
+      throw NoMemory("MltNoTransTrans(const Matrix<RowSparse>& A, "
+                     "const Matrix<RowSparse>& B, Matrix<RowSparse>& C)",
+		     "Unable to allocate memory for an array of "
+		     + to_str(m + 1) + " integers.");
+#endif
+
+    c_ptr[0] = 0;
+
+    // Number of non-zero elements in C.
+    Nnonzero = 0;
+
+    for (i = 0; i < m; i++)
+      {
+        c_ptr[i + 1] = c_ptr[i];
+
+        if (A.GetPtr()[i + 1] != A.GetPtr()[i])
+          // There are elements in the i-th row of A, so there can be non-zero
+          // entries in C as well. It is checked below whether any row in B
+          // has an element whose row index matches a column index of a
+          // non-zero in the i-th row of A.
+          {
+            // For every element in the i-th row.
+            for (k = A.GetPtr()[i]; k < A.GetPtr()[i + 1]; k++)
+              {
+                col = A.GetInd()[k];
+                // For every row in B.
+                for (ib = 0; ib < n; ib++)
+                  {
+                    for (kb = B.GetPtr()[ib]; kb < B.GetPtr()[ib + 1]; kb++)
+                      if (col == B.GetInd()[kb])
+                        value += A.GetData()[k] * B.GetData()[kb];
+                    if (value != T2(0))
+                      {
+                        row_value.Append(value);
+                        column_index.Append(ib);
+                        value = T2(0);
+                      }
+                  }
+              }
+
+            Nnonzero_row = column_index.GetLength();
+            Assemble(Nnonzero_row, column_index, row_value);
+
+#ifdef SELDON_CHECK_MEMORY
+            try
+              {
+#endif
+
+                // Reallocates 'c_ind' and 'c_data' in order to append the
+                // elements of the i-th row of C.
+                c_ind = reinterpret_cast<int*>
+                  (realloc(reinterpret_cast<void*>(c_ind),
+                           (Nnonzero + Nnonzero_row) * sizeof(int)));
+                c_data = reinterpret_cast<T2*>
+                  (C.GetAllocator().reallocate(c_data,
+                                               Nnonzero + Nnonzero_row));
+
+#ifdef SELDON_CHECK_MEMORY
+              }
+            catch (...)
+              {
+                c_ind = NULL;
+                c_data = NULL;
+              }
+
+            if ((c_ind == NULL || c_data == NULL)
+                && Nnonzero_row != 0)
+              throw NoMemory("MltNoTransTrans(const Matrix<RowSparse>& A, "
+                             "const Matrix<RowSparse>& B, "
+                             "Matrix<RowSparse>& C)",
+                             "Unable to allocate memory for an array of "
+                             + to_str(Nnonzero + Nnonzero_row) + " integers "
+                             "and for an array of "
+                             + to_str(sizeof(T2) * (Nnonzero + Nnonzero_row))
+                             + " bytes.");
+#endif
+
+            c_ptr[i + 1] += Nnonzero_row;
+            for (h = 0; h < Nnonzero_row; h++)
+              {
+                c_ind[Nnonzero + h] = column_index(h);
+                c_data[Nnonzero + h] = row_value(h);
+              }
+            Nnonzero += Nnonzero_row;
+          }
+
+        column_index.Clear();
+        row_value.Clear();
+      }
+
+    C.SetData(A.GetM(), B.GetM(), Nnonzero, c_data, c_ptr, c_ind);
+  }
+
+
   // MLT //
   /////////
 
@@ -739,6 +888,51 @@ namespace Seldon
 		     + string(" x ") + to_str(C.GetN()) + string(" matrix."));
   }
 #endif
+
+
+  //! Checks the compatibility of the dimensions.
+  /*! Checks that A B -> C is possible according to the dimensions of the
+    matrices A and B. If the dimensions are incompatible, an exception is
+    raised (a WrongDim object is thrown).
+    \param TransA status of A, e.g. transposed.
+    \param A matrix.
+    \param TransB status of B, e.g. transposed.
+    \param B matrix.
+    \function (optional) function in which the compatibility is checked.
+    Default: "".
+  */
+  template <class T0, class Prop0, class Storage0, class Allocator0,
+	    class T1, class Prop1, class Storage1, class Allocator1>
+  void CheckDim(const enum CBLAS_TRANSPOSE TransA,
+		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		const enum CBLAS_TRANSPOSE TransB,
+		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
+		string function = "")
+  {
+    SeldonTranspose status_A(TransA);
+    SeldonTranspose status_B(TransB);
+    string op;
+    if (status_A.Trans())
+      op = string("A'");
+    else if (status_A.ConjTrans())
+      op = string("A*");
+    else
+      op = string("A");
+    if (status_B.Trans())
+      op += string(" B'");
+    else if (status_B.ConjTrans())
+      op += string(" B*");
+    else
+      op += string(" B");
+    op = string("Operation ") + op + string(" not permitted:");
+    if (B.GetM(status_B) != A.GetN(status_A))
+      throw WrongDim(function, op
+		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
+		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
+		     + to_str(B.GetN()) + string(" matrix."));
+  }
 
 
 #ifdef SELDON_WITH_CBLAS

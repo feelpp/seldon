@@ -32,8 +32,9 @@ class SparseLinearAlgebraTest: public CppUnit::TestFixture
 
 
   CPPUNIT_TEST_SUITE(SparseLinearAlgebraTest);
-  CPPUNIT_TEST(test_mlt);
   CPPUNIT_TEST(test_add);
+  CPPUNIT_TEST(test_mlt);
+  CPPUNIT_TEST(test_mlt_trans);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -262,6 +263,91 @@ public:
 
         Mlt(A, B, C);
         Mlt(A_full, B_full, C_full);
+
+        for (int i = 0; i < m_; i++)
+          for (int j = 0; j < p_; j++)
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(C_full(i, j), C(i, j),
+                                         1.e-14 * C_full(i, j));
+      }
+  }
+
+
+  void test_mlt_trans()
+  {
+    Nloop_ = 1;
+
+    m_ = 10;
+    n_ = 25;
+    p_ = 9;
+    Nelement_ = 0;
+    mlt_trans();
+
+    Nloop_ = 20;
+
+    m_ = 10;
+    n_ = 25;
+    p_ = 9;
+    Nelement_ = 20;
+    mlt_trans();
+
+    m_ = 100;
+    n_ = 250;
+    p_ = 9;
+    Nelement_ = 20;
+    mlt_trans();
+
+    m_ = 10;
+    n_ = 10;
+    p_ = 2000;
+    Nelement_ = 200;
+    mlt_trans();
+  }
+
+
+  void mlt_trans()
+  {
+    srand(time(NULL));
+
+    int i, j;
+    double value;
+
+    for (int k = 0; k < Nloop_; k++)
+      {
+        Matrix<double> A_full(m_, n_);
+        Matrix<double> B_full(p_, n_);
+        Matrix<double> C_full(m_, p_);
+        A_full.Zero();
+        B_full.Zero();
+        C_full.Zero();
+
+        Matrix<double, General, ArrayRowSparse> A_array(m_, n_);
+        Matrix<double, General, ArrayRowSparse> B_array(p_, n_);
+        for (int l = 0; l < Nelement_; l++)
+          {
+            i = rand() % m_;
+            j = rand() % n_;
+            value = double(rand());
+            A_array.AddInteraction(i, j, value);
+            A_full(i, j) += value;
+          }
+        for (int l = 0; l < Nelement_; l++)
+          {
+            i = rand() % p_;
+            j = rand() % n_;
+            value = double(rand());
+            B_array.AddInteraction(i, j, value);
+            B_full(i, j) += value;
+          }
+
+        Matrix<double, General, RowSparse> A;
+        Matrix<double, General, RowSparse> B;
+        Matrix<double, General, RowSparse> C;
+
+        Copy(A_array, A);
+        Copy(B_array, B);
+
+        MltNoTransTrans(A, B, C);
+        MltAdd(1., SeldonNoTrans, A_full, SeldonTrans, B_full, 0., C_full);
 
         for (int i = 0; i < m_; i++)
           for (int j = 0; j < p_; j++)
