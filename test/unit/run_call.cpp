@@ -20,6 +20,9 @@
 // These tests modify Seldon calls. They cannot be run along with regular
 // tests.
 
+#define SELDON_DEBUG_LEVEL_4
+#define SELDON_WITH_ABORT
+
 #include "blas_call.hpp"
 
 #include <cppunit/TestResult.h>
