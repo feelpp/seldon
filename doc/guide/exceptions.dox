@@ -147,8 +147,8 @@ constructor should be called before the exception is actually raised.</p>
 <p>Another option, more convenient because no breakpoint is to be placed, is
 to define <code>SELDON_WITH_ABORT</code>. With that flag activated, if a
 %Seldon exception is raised, the program will simply abort. The call stack is
-then at hand. See the example below, using gdb under Linux. The program <a
-href="error.cpp">error.cpp</a> demonstrates the technique:</p>
+then at hand. See the example below, using gdb under Linux. The program <code>
+error.cpp</code> demonstrates the technique:</p>
 
 \precode
 #define SELDON_WITH_ABORT
