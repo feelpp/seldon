@@ -23,19 +23,19 @@
 /*
   Function defined in this file:
 
-  alpha.A -> A
+  alpha A -> A
   Mlt(alpha, A)
 
-  A*B -> C
+  A B -> C
   Mlt(A, B, C)
 
-  alpha.A*B -> C
+  alpha A B -> C
   Mlt(alpha, A, B, C)
 
-  alpha.A*B + beta.C -> C
+  alpha A B + beta C -> C
   MltAdd(alpha, A, B, beta, C)
 
-  alpha*A + B -> B
+  alpha A + B -> B
   Add(alpha, A, B)
 
   LU factorization of matrix A without pivoting.
@@ -140,10 +140,8 @@ namespace Seldon
 	   Matrix<T2, Prop2, RowSparse, Allocator2>& C)
   {
 #ifdef SELDON_CHECK_BOUNDS
-    CheckDim(SeldonLeft, A, B,
-             "Mlt(Matrix<T0, Prop0, RowSparse>& A, "
-             "Matrix<T1, Prop1, RowSparse>& B, "
-             "Matrix<T2, Prop2, RowSparse>& C)");
+    CheckDim(A, B, "Mlt(const Matrix<RowSparse>& A, const "
+             "Matrix<RowSparse>& B, Matrix<RowSparse>& C)");
 #endif
 
     int h, i, k, l, col;
@@ -173,8 +171,8 @@ namespace Seldon
       }
 
     if (c_ptr == NULL)
-      throw NoMemory("Mlt(const Matrix<RowSparse>& A, "
-                     "const Matrix<RowSparse>& B, Matrix<RowSparse>& C)",
+      throw NoMemory("Mlt(const Matrix<RowSparse>& A, const "
+                     "Matrix<RowSparse>& B, Matrix<RowSparse>& C)",
 		     "Unable to allocate memory for an array of "
 		     + to_str(m + 1) + " integers.");
 #endif
@@ -814,7 +812,7 @@ namespace Seldon
 
 
   //! Checks the compatibility of the dimensions.
-  /*! Checks that A.B + C -> C is possible according to the dimensions of
+  /*! Checks that A B + C -> C is possible according to the dimensions of
     the matrices A, B and C. If the dimensions are incompatible,
     an exception is raised (a WrongDim object is thrown).
     \param A matrix.
@@ -832,7 +830,7 @@ namespace Seldon
 		string function = "")
   {
     if (B.GetM() != A.GetN() || C.GetM() != A.GetM() || B.GetN() != C.GetN())
-      throw WrongDim(function, string("Operation A.B + C -> C not permitted:")
+      throw WrongDim(function, string("Operation A B + C -> C not permitted:")
 		     + string("\n     A (") + to_str(&A) + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
 		     + string(" matrix;\n     B (") + to_str(&B)
@@ -843,9 +841,8 @@ namespace Seldon
   }
 
 
-#ifdef SELDON_WITH_CBLAS
   //! Checks the compatibility of the dimensions.
-  /*! Checks that A.B + C -> C or B.A + C -> C is possible according to the
+  /*! Checks that A B + C -> C or B A + C -> C is possible according to the
     dimensions of the matrices A, B and C. If the dimensions are incompatible,
     an exception is raised (a WrongDim object is thrown).
     \param side side by which A is multiplied by B.
@@ -858,7 +855,7 @@ namespace Seldon
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2>
-  void CheckDim(const enum CBLAS_SIDE side,
+  void CheckDim(const SeldonSide& side,
 		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
@@ -867,7 +864,7 @@ namespace Seldon
     if ( SeldonSide(side).Left() &&
 	 (B.GetM() != A.GetN() || C.GetM() != A.GetM()
 	  || B.GetN() != C.GetN()) )
-      throw WrongDim(function, string("Operation A.B + C -> C not permitted:")
+      throw WrongDim(function, string("Operation A B + C -> C not permitted:")
 		     + string("\n     A (") + to_str(&A) + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
 		     + string(" matrix;\n     B (") + to_str(&B)
@@ -878,7 +875,7 @@ namespace Seldon
     else if ( SeldonSide(side).Right() &&
 	      (B.GetN() != A.GetM() || C.GetM() != B.GetM()
 	       || A.GetN() != C.GetN()) )
-      throw WrongDim(function, string("Operation B.A + C -> C not permitted:")
+      throw WrongDim(function, string("Operation B A + C -> C not permitted:")
 		     + string("\n     A (") + to_str(&A) + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
 		     + string(" matrix;\n     B (") + to_str(&B)
@@ -887,7 +884,6 @@ namespace Seldon
 		     + to_str(&C) + string(") is a ") + to_str(C.GetM())
 		     + string(" x ") + to_str(C.GetN()) + string(" matrix."));
   }
-#endif
 
 
   //! Checks the compatibility of the dimensions.
@@ -903,9 +899,9 @@ namespace Seldon
   */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
-  void CheckDim(const enum CBLAS_TRANSPOSE TransA,
+  void CheckDim(const SeldonTranspose& TransA,
 		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		const enum CBLAS_TRANSPOSE TransB,
+		const SeldonTranspose& TransB,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		string function = "")
   {
@@ -935,11 +931,10 @@ namespace Seldon
   }
 
 
-#ifdef SELDON_WITH_CBLAS
   //! Checks the compatibility of the dimensions.
-  /*! Checks that A.B + C -> C is possible according to the dimensions of
-    the matrices A, B and C. If the dimensions are incompatible,
-    an exception is raised (a WrongDim object is thrown).
+  /*! Checks that A B + C -> C is possible according to the dimensions of the
+    matrices A, B and C. If the dimensions are incompatible, an exception is
+    raised (a WrongDim object is thrown).
     \param TransA status of A, e.g. transposed.
     \param A matrix.
     \param TransB status of B, e.g. transposed.
@@ -951,31 +946,29 @@ namespace Seldon
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2>
-  void CheckDim(const enum CBLAS_TRANSPOSE TransA,
+  void CheckDim(const SeldonTranspose& TransA,
 		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		const enum CBLAS_TRANSPOSE TransB,
+		const SeldonTranspose& TransB,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
 		string function = "")
   {
-    SeldonTranspose status_A(TransA);
-    SeldonTranspose status_B(TransB);
     string op;
-    if (status_A.Trans())
+    if (TransA.Trans())
       op = string("A'");
-    else if (status_A.ConjTrans())
+    else if (TransA.ConjTrans())
       op = string("A*");
     else
       op = string("A");
-    if (status_B.Trans())
-      op += string(".B' + C");
-    else if (status_B.ConjTrans())
-      op += string(".B* + C");
+    if (TransB.Trans())
+      op += string(" B' + C");
+    else if (TransB.ConjTrans())
+      op += string(" B* + C");
     else
-      op += string(".B + C");
+      op += string(" B + C");
     op = string("Operation ") + op + string(" not permitted:");
-    if (B.GetM(status_B) != A.GetN(status_A) || C.GetM() != A.GetM(status_A)
-	|| B.GetN(status_B) != C.GetN())
+    if (B.GetM(TransB) != A.GetN(TransA) || C.GetM() != A.GetM(TransA)
+	|| B.GetN(TransB) != C.GetN())
       throw WrongDim(function, op
 		     + string("\n     A (") + to_str(&A) + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
@@ -985,11 +978,29 @@ namespace Seldon
 		     + to_str(&C) + string(") is a ") + to_str(C.GetM())
 		     + string(" x ") + to_str(C.GetN()) + string(" matrix."));
   }
-#endif
 
 
   //! Checks the compatibility of the dimensions.
-  /*! Checks that A.B or B.A is possible according to the dimensions of
+  /*! Checks that A B is possible according to the dimensions of the matrices
+    A and B. If the dimensions are incompatible, an exception is raised (a
+    WrongDim object is thrown).
+    \param A matrix.
+    \param B matrix.
+    \function (optional) function in which the compatibility is checked.
+    Default: "".
+  */
+  template <class T0, class Prop0, class Storage0, class Allocator0,
+	    class T1, class Prop1, class Storage1, class Allocator1>
+  void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
+		string function = "")
+  {
+    CheckDim(SeldonLeft, A, B, function);
+  }
+
+
+  //! Checks the compatibility of the dimensions.
+  /*! Checks that A B or B A is possible according to the dimensions of
     the matrices A and B. If the dimensions are incompatible,
     an exception is raised (a WrongDim object is thrown).
     \param side side by which A is multiplied by B.
@@ -1006,14 +1017,14 @@ namespace Seldon
 		string function = "")
   {
     if (side.Left() && B.GetM() != A.GetN())
-      throw WrongDim(function, string("Operation A.B not permitted:")
+      throw WrongDim(function, string("Operation A B not permitted:")
 		     + string("\n     A (") + to_str(&A) + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
 		     + string(" matrix;\n     B (") + to_str(&B)
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix."));
     else if (side.Right() && B.GetN() != A.GetM())
-      throw WrongDim(function, string("Operation B.A not permitted:")
+      throw WrongDim(function, string("Operation B A not permitted:")
 		     + string("\n     A (") + to_str(&A) + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
 		     + string(" matrix;\n     B (") + to_str(&B)

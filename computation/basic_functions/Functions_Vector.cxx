@@ -23,10 +23,10 @@
 /*
   Functions defined in this file:
 
-  alpha.X -> X
+  alpha X -> X
   Mlt(alpha, X)
 
-  alpha.X + Y -> Y
+  alpha X + Y -> Y
   Add(alpha, X, Y)
 
   X -> Y
@@ -44,7 +44,7 @@
   Norm2(X)
   GetMaxAbsIndex(X)
 
-  Omega*X
+  Omega X
   GenRot(x, y, cos, sin)
   ApplyRot(x, y, cos, sin)
 

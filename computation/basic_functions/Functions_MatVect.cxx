@@ -22,13 +22,13 @@
 /*
   Functions defined in this file:
 
-  M*X -> Y
+  M X -> Y
   Mlt(M, X, Y)
 
-  alpha.M*X -> Y
+  alpha M X -> Y
   Mlt(alpha, M, X, Y)
 
-  alpha.M*X + beta.Y -> Y
+  alpha M X + beta Y -> Y
   MltAdd(alpha, M, X, beta, Y)
 */
 
@@ -985,7 +985,7 @@ namespace Seldon
 
 
   //! Checks the compatibility of the dimensions.
-  /*! Checks that M.X + Y -> Y is possible according to the dimensions of
+  /*! Checks that M X + Y -> Y is possible according to the dimensions of
     the matrix M and the vectors X and Y. If the dimensions are incompatible,
     an exception is raised (a WrongDim object is thrown).
     \param M matrix.
@@ -1003,7 +1003,7 @@ namespace Seldon
 		string function = "")
   {
     if (X.GetLength() != M.GetN() || Y.GetLength() != M.GetM())
-      throw WrongDim(function, string("Operation M.X + Y -> Y not permitted:")
+      throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
 		     + string("\n     M (") + to_str(&M) + string(") is a ")
 		     + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
 		     + string(" matrix;\n     X (") + to_str(&X)
@@ -1015,50 +1015,7 @@ namespace Seldon
 
 
   //! Checks the compatibility of the dimensions.
-  /*! Checks that M.X + Y -> Y is possible according to the dimensions of
-    the matrix M and the vectors X and Y. If the dimensions are incompatible,
-    an exception is raised (a WrongDim object is thrown).
-    \param status status of the matrix M, e.g. transposed.
-    \param M matrix.
-    \param X vector.
-    \param Y vector.
-    \param function (optional) function in which the compatibility is checked.
-    Default: "".
-    \param op (optional) operation to be performed on the vectors.
-    Default: "M.X + Y -> Y".
-  */
-  template <class T0, class Prop0, class Storage0, class Allocator0,
-	    class T1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2>
-  void CheckDim(const SeldonTranspose& status,
-		const Matrix<T0, Prop0, Storage0, Allocator0>& M,
-		const Vector<T1, Storage1, Allocator1>& X,
-		const Vector<T2, Storage2, Allocator2>& Y,
-		string function = "", string op = "M.X + Y -> Y")
-  {
-    if (op == "M.X + Y -> Y")
-      if (status.Trans())
-	op = string("Operation M'.X + Y -> Y not permitted:");
-      else if (status.ConjTrans())
-	op = string("Operation M*.X + Y -> Y not permitted:");
-      else
-	op = string("Operation M.X + Y -> Y not permitted:");
-    else
-      op = string("Operation ") + op + string(" not permitted:");
-    if (X.GetLength() != M.GetN(status) || Y.GetLength() != M.GetM(status))
-      throw WrongDim(function, op + string("\n     M (") + to_str(&M)
-		     + string(") is a ") + to_str(M.GetM()) + string(" x ")
-		     + to_str(M.GetN()) + string(" matrix;\n     X (")
-		     + to_str(&X) + string(") is vector of length ")
-		     + to_str(X.GetLength()) + string(";\n     Y (")
-		     + to_str(&Y) + string(") is vector of length ")
-		     + to_str(Y.GetLength()) + string("."));
-  }
-
-
-#ifdef SELDON_WITH_CBLAS
-  //! Checks the compatibility of the dimensions.
-  /*! Checks that M.X + Y -> Y is possible according to the dimensions of
+  /*! Checks that M X + Y -> Y is possible according to the dimensions of
     the matrix M and the vectors X and Y. If the dimensions are incompatible,
     an exception is raised (a WrongDim object is thrown).
     \param trans status of the matrix M, e.g. transposed.
@@ -1068,28 +1025,27 @@ namespace Seldon
     \param function (optional) function in which the compatibility is checked.
     Default: "".
     \param op (optional) operation to be performed on the vectors.
-    Default: "M.X + Y -> Y".
+    Default: "M X + Y -> Y".
   */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
-  void CheckDim(const enum CBLAS_TRANSPOSE trans,
+  void CheckDim(const SeldonTranspose& trans,
 		const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 		const Vector<T1, Storage1, Allocator1>& X,
 		const Vector<T2, Storage2, Allocator2>& Y,
-		string function = "", string op = "M.X + Y -> Y")
+		string function = "", string op = "M X + Y -> Y")
   {
-    SeldonTranspose status(trans);
-    if (op == "M.X + Y -> Y")
-      if (status.Trans())
-	op = string("Operation M'.X + Y -> Y not permitted:");
-      else if (status.ConjTrans())
-	op = string("Operation M*.X + Y -> Y not permitted:");
+    if (op == "M X + Y -> Y")
+      if (trans.Trans())
+	op = string("Operation M' X + Y -> Y not permitted:");
+      else if (trans.ConjTrans())
+	op = string("Operation M* X + Y -> Y not permitted:");
       else
-	op = string("Operation M.X + Y -> Y not permitted:");
+	op = string("Operation M X + Y -> Y not permitted:");
     else
       op = string("Operation ") + op + string(" not permitted:");
-    if (X.GetLength() != M.GetN(status) || Y.GetLength() != M.GetM(status))
+    if (X.GetLength() != M.GetN(trans) || Y.GetLength() != M.GetM(trans))
       throw WrongDim(function, op + string("\n     M (") + to_str(&M)
 		     + string(") is a ") + to_str(M.GetM()) + string(" x ")
 		     + to_str(M.GetN()) + string(" matrix;\n     X (")
@@ -1098,24 +1054,23 @@ namespace Seldon
 		     + to_str(&Y) + string(") is vector of length ")
 		     + to_str(Y.GetLength()) + string("."));
   }
-#endif
 
 
   //! Checks the compatibility of the dimensions.
-  /*! Checks that M.X is possible according to the dimensions of
+  /*! Checks that M X is possible according to the dimensions of
     the matrix M and the vector X. If the dimensions are incompatible,
     an exception is raised (a WrongDim object is thrown).
     \param M matrix.
     \param X vector.
     \param function (optional) function in which the compatibility is checked.
     Default: "".
-    \param op (optional) operation to be performed. Default: "M.X".
+    \param op (optional) operation to be performed. Default: "M X".
   */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 		const Vector<T1, Storage1, Allocator1>& X,
-		string function = "", string op = "M.X")
+		string function = "", string op = "M X")
   {
     if (X.GetLength() != M.GetN())
       throw WrongDim(function, string("Operation ") + op + " not permitted:"
