@@ -268,6 +268,15 @@ public:
           for (int j = 0; j < p_; j++)
             CPPUNIT_ASSERT_DOUBLES_EQUAL(C_full(i, j), C(i, j),
                                          1.e-14 * C_full(i, j));
+
+        MltAdd(-0.3, SeldonNoTrans, A, SeldonNoTrans, B, 0.9, C);
+        MltAdd(-0.3, SeldonNoTrans, A_full,
+               SeldonNoTrans, B_full, 0.9, C_full);
+
+        for (int i = 0; i < m_; i++)
+          for (int j = 0; j < p_; j++)
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(C_full(i, j), C(i, j),
+                                         1.e-14 * C_full(i, j));
       }
   }
 
@@ -346,8 +355,11 @@ public:
         Copy(A_array, A);
         Copy(B_array, B);
 
-        MltNoTransTrans(A, B, C);
-        MltAdd(1., SeldonNoTrans, A_full, SeldonTrans, B_full, 0., C_full);
+        MltAdd(-0.1, SeldonNoTrans, A, SeldonTrans, B, 0., C);
+        MltAdd(-0.1, SeldonNoTrans, A_full, SeldonTrans, B_full, 0., C_full);
+
+        MltAdd(2.1, SeldonNoTrans, A, SeldonTrans, B, -1.5, C);
+        MltAdd(2.1, SeldonNoTrans, A_full, SeldonTrans, B_full, -1.5, C_full);
 
         for (int i = 0; i < m_; i++)
           for (int j = 0; j < p_; j++)

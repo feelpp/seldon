@@ -485,6 +485,157 @@ namespace Seldon
   }
 
 
+  //! Multiplies two row-major sparse matrices and adds the result to a third.
+  /*! It performs the operation \f$ C = \alpha A B + \beta C \f$ where \f$ A
+    \f$, \f$ B \f$ and \f$ C \f$ are row-major sparse matrices in
+    Harwell-Boeing format, and \f$ \alpha \f$ and \f$ \beta \f$ are scalars.
+    \param[in] alpha scalar.
+    \param[in] A row-major sparse matrix in Harwell-Boeing format.
+    \param[in] B row-major sparse matrix in Harwell-Boeing format.
+    \param[in] beta scalar.
+    \param[in,out] C row-major sparse matrix in Harwell-Boeing format. On
+    exit, it is equal to \f$ \alpha A B + \beta C \f$.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Prop2, class Allocator2,
+	    class T3,
+            class T4, class Prop4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
+              const Matrix<T2, Prop2, RowSparse, Allocator2>& B,
+              const T3 beta,
+              Matrix<T4, Prop4, RowSparse, Allocator4>& C)
+  {
+    if (beta == T3(0))
+      {
+        if (alpha == T0(0))
+          Mlt(alpha, C);
+        else
+          {
+            Mlt(A, B, C);
+            if (alpha != T0(1))
+              Mlt(alpha, C);
+          }
+      }
+    else
+      {
+        if (alpha == T0(0))
+          Mlt(beta, C);
+        else
+          {
+            Matrix<T4, Prop4, RowSparse, Allocator4> tmp;
+            Mlt(A, B, tmp);
+            if (beta != T0(1))
+              Mlt(beta, C);
+            Add(alpha, tmp, C);
+          }
+      }
+  }
+
+
+  //! Multiplies two row-major sparse matrices and adds the result to a third.
+  /*! It performs the operation \f$ C = \alpha A B^T + \beta C \f$ where \f$ A
+    \f$, \f$ B \f$ and \f$ C \f$ are row-major sparse matrices in
+    Harwell-Boeing format, and \f$ \alpha \f$ and \f$ \beta \f$ are scalars.
+    \param[in] alpha scalar.
+    \param[in] A row-major sparse matrix in Harwell-Boeing format.
+    \param[in] B row-major sparse matrix in Harwell-Boeing format.
+    \param[in] beta scalar.
+    \param[in,out] C row-major sparse matrix in Harwell-Boeing format. On
+    exit, it is equal to \f$ \alpha A B^T + \beta C \f$.
+    \warning It is not recommended to call that function directly: it might be
+    removed in next versions of Seldon. Use MltAdd instead.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Prop2, class Allocator2,
+	    class T3,
+            class T4, class Prop4, class Allocator4>
+  void MltNoTransTransAdd(const T0 alpha,
+                          const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
+                          const Matrix<T2, Prop2, RowSparse, Allocator2>& B,
+                          const T3 beta,
+                          Matrix<T4, Prop4, RowSparse, Allocator4>& C)
+  {
+    if (beta == T3(0))
+      {
+        if (alpha == T0(0))
+          Mlt(alpha, C);
+        else
+          {
+            MltNoTransTrans(A, B, C);
+            if (alpha != T0(1))
+              Mlt(alpha, C);
+          }
+      }
+    else
+      {
+        if (alpha == T0(0))
+          Mlt(beta, C);
+        else
+          {
+            Matrix<T4, Prop4, RowSparse, Allocator4> tmp;
+            MltNoTransTrans(A, B, tmp);
+            if (beta != T0(1))
+              Mlt(beta, C);
+            Add(alpha, tmp, C);
+          }
+      }
+  }
+
+
+  //! Multiplies two row-major sparse matrices and adds the result to a third.
+  /*! It performs the operation \f$ C = \alpha A B + \beta C \f$ or \f$ C =
+    \alpha A B^T + \beta C \f$ where \f$ A \f$, \f$ B \f$ and \f$ C \f$ are
+    row-major sparse matrices in Harwell-Boeing format, and \f$ \alpha \f$ and
+    \f$ \beta \f$ are scalars.
+    \param[in] alpha scalar.
+    \param[in] TransA status of A: it must be SeldonNoTrans. This argument
+    is required for consistency with the interface for full matrices.
+    \param[in] A row-major sparse matrix in Harwell-Boeing format.
+    \param[in] TransB status of B: SeldonNoTrans or SeldonTrans.
+    \param[in] B row-major sparse matrix in Harwell-Boeing format.
+    \param[in] beta scalar.
+    \param[in,out] C row-major sparse matrix in Harwell-Boeing format. On
+    exit, it is equal to \f$ \alpha A B + \beta C \f$ or \f$ \alpha A B^T +
+    \beta C \f$.
+    \note If \a TransA is not SeldonNoTrans, an exception will be thrown.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Prop2, class Allocator2,
+	    class T3,
+            class T4, class Prop4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const SeldonTranspose& TransA,
+              const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
+	      const SeldonTranspose& TransB,
+              const Matrix<T2, Prop2, RowSparse, Allocator2>& B,
+              const T3 beta,
+              Matrix<T4, Prop4, RowSparse, Allocator4>& C)
+  {
+    if (!TransA.NoTrans())
+      throw WrongArgument("MltAdd(T0 alpha, SeldonTranspose TransA, "
+                          "const Matrix<RowSparse>& A, SeldonTranspose "
+                          "TransB, const Matrix<RowSparse>& B, T3 beta, "
+                          "Matrix<RowSparse>& C)",
+                          "'TransA' must be equal to 'SeldonNoTrans'.");
+    if (!TransB.NoTrans() && !TransB.Trans())
+      throw WrongArgument("MltAdd(T0 alpha, SeldonTranspose TransA, "
+                          "const Matrix<RowSparse>& A, SeldonTranspose "
+                          "TransB, const Matrix<RowSparse>& B, T3 beta, "
+                          "Matrix<RowSparse>& C)",
+                          "'TransB' must be equal to 'SeldonNoTrans' or "
+                          "'SeldonTrans'.");
+
+    if (TransB.Trans())
+      MltNoTransTransAdd(alpha, A, B, beta, C);
+    else
+      MltAdd(alpha, A, B, beta, C);
+  }
+
+
   // MLTADD //
   ////////////
 
