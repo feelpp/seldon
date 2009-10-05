@@ -20,10 +20,12 @@
 #define SELDON_WITH_ABORT
 
 #define SELDON_WITH_CBLAS
+#define SELDON_WITH_LAPACK
 
 #include "array3d.hpp"
 #include "matrix.hpp"
 #include "submatrix.hpp"
+#include "lapack.hpp"
 #include "sparse_linear_algebra.hpp"
 
 #include <cppunit/TestResult.h>
@@ -35,6 +37,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(MatrixTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(SubMatrixTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(Array3DTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(SparseLinearAlgebraTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(LapackTest);
 
 int main()
 {

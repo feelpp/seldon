@@ -174,6 +174,11 @@
 /* Subroutine */ int cgesv_(LAPACK_INTEGER *n, LAPACK_INTEGER *nrhs, LAPACK_COMPLEX *a, LAPACK_INTEGER *
 			    lda, LAPACK_INTEGER *ipiv, LAPACK_COMPLEX *b, LAPACK_INTEGER *ldb, LAPACK_INTEGER *info);
  
+/* Subroutine */ int cgesvd_(char *jobu, char *jobvt, LAPACK_INTEGER *m, LAPACK_INTEGER *n, 
+			     LAPACK_COMPLEX *a, LAPACK_INTEGER *lda, LAPACK_REAL *s, LAPACK_COMPLEX *u, LAPACK_INTEGER *
+			     ldu, LAPACK_COMPLEX *vt, LAPACK_INTEGER *ldvt, LAPACK_COMPLEX *work, LAPACK_INTEGER *lwork, 
+			     LAPACK_REAL *rwork, LAPACK_INTEGER *info);
+ 
 /* Subroutine */ int cgesvx_(char *fact, char *trans, LAPACK_INTEGER *n, LAPACK_INTEGER *
 			     nrhs, LAPACK_COMPLEX *a, LAPACK_INTEGER *lda, LAPACK_COMPLEX *af, LAPACK_INTEGER *ldaf, LAPACK_INTEGER *
 			     ipiv, char *equed, LAPACK_REAL *r__, LAPACK_REAL *c__, LAPACK_COMPLEX *b, LAPACK_INTEGER *ldb, 
@@ -4001,6 +4006,11 @@ LAPACK_INTEGER izmax1_(LAPACK_INTEGER *n, LAPACK_DOUBLECOMPLEX *cx, LAPACK_INTEG
 /* Subroutine */ int zgesv_(LAPACK_INTEGER *n, LAPACK_INTEGER *nrhs, LAPACK_DOUBLECOMPLEX *a, 
 			    LAPACK_INTEGER *lda, LAPACK_INTEGER *ipiv, LAPACK_DOUBLECOMPLEX *b, LAPACK_INTEGER *ldb, LAPACK_INTEGER *
 			    info);
+ 
+/* Subroutine */ int zgesvd_(char *jobu, char *jobvt, LAPACK_INTEGER *m, LAPACK_INTEGER *n, 
+			     LAPACK_DOUBLECOMPLEX *a, LAPACK_INTEGER *lda, LAPACK_DOUBLEREAL *s, LAPACK_DOUBLECOMPLEX *u, LAPACK_INTEGER *
+			     ldu, LAPACK_DOUBLECOMPLEX *vt, LAPACK_INTEGER *ldvt, LAPACK_DOUBLECOMPLEX *work, LAPACK_INTEGER *lwork, 
+			     LAPACK_DOUBLEREAL *rwork, LAPACK_INTEGER *info);
  
 /* Subroutine */ int zgesvx_(char *fact, char *trans, LAPACK_INTEGER *n, LAPACK_INTEGER *
 			     nrhs, LAPACK_DOUBLECOMPLEX *a, LAPACK_INTEGER *lda, LAPACK_DOUBLECOMPLEX *af, LAPACK_INTEGER *

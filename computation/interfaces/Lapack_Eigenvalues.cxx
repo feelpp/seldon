@@ -3565,12 +3565,19 @@ namespace Seldon
 	      Matrix<float, General, RowMajor, Allocator3>& v,
 	      LapackInfo& info = lapack_info)
   {
-    int m = A.GetM(); int n = A.GetM();
+    int m = A.GetM();
+    int n = A.GetN();
     char jobl('A'), jobr('A');
-    int lwork = max(3*min(m,n)+max(m,n), 5*min(m,n));
+    int lwork = max(3 * min(m, n) + max(m, n), 5 * min(m, n));
     Vector<float> work(lwork);
-    sgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &n, lambda.GetData(),
-	    u.GetData(), &n, v.GetData(), &n, work.GetData(),
+    lambda.Reallocate(min(m, n));
+    lambda.Zero();
+    u.Reallocate(m, m);
+    u.Zero();
+    v.Reallocate(n, n);
+    v.Zero();
+    sgesvd_(&jobl, &jobr, &n, &m, A.GetData(), &n, lambda.GetData(),
+	    v.GetData(), &n, u.GetData(), &m, work.GetData(),
 	    &lwork, &info.GetInfoRef());
   }
 
@@ -3578,20 +3585,28 @@ namespace Seldon
   template<class Prop1, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetSVD(Matrix<complex<float>, Prop1, RowMajor, Allocator1>& A,
-	      Vector<complex<float>, VectFull, Allocator4>& lambda,
+	      Vector<float, VectFull, Allocator4>& lambda,
 	      Matrix<complex<float>, General, RowMajor, Allocator2>& u,
 	      Matrix<complex<float>, General, RowMajor, Allocator3>& v,
 	      LapackInfo& info = lapack_info)
   {
-    int m = A.GetM(); int n = A.GetM();
+    int m = A.GetM();
+    int n = A.GetN();
     char jobl('A'), jobr('A');
-    int lwork = 2*min(m,n)+max(m,n);
+    int lwork = 2 * min(m, n) + max(m, n);
     Vector<complex<float> > work(lwork);
-    Vector<float> rwork(5*min(m,n));
-    cgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &n, lambda.GetDataVoid(),
-	    u.GetDataVoid(), &n, v.GetDataVoid(), &n, work.GetDataVoid(),
+    Vector<float> rwork(5 * min(m, n));
+    lambda.Reallocate(min(m, n));
+    lambda.Zero();
+    u.Reallocate(m, m);
+    u.Zero();
+    v.Reallocate(n, n);
+    v.Zero();
+    cgesvd_(&jobl, &jobr, &n, &m, A.GetDataVoid(), &n, lambda.GetData(),
+	    v.GetDataVoid(), &n, u.GetDataVoid(), &m, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &info.GetInfoRef());
   }
+
 
   template<class Prop1, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
@@ -3601,12 +3616,19 @@ namespace Seldon
 	      Matrix<double, General, RowMajor, Allocator3>& v,
 	      LapackInfo& info = lapack_info)
   {
-    int m = A.GetM(); int n = A.GetM();
+    int m = A.GetM();
+    int n = A.GetN();
     char jobl('A'), jobr('A');
-    int lwork = max(3*min(m,n)+max(m,n), 5*min(m,n));
+    int lwork = max(3 * min(m, n) + max(m, n), 5 * min(m, n));
     Vector<double> work(lwork);
-    dgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &n, lambda.GetData(),
-	    u.GetData(), &n, v.GetData(), &n, work.GetData(),
+    lambda.Reallocate(min(m, n));
+    lambda.Zero();
+    u.Reallocate(m, m);
+    u.Zero();
+    v.Reallocate(n, n);
+    v.Zero();
+    dgesvd_(&jobl, &jobr, &n, &m, A.GetData(), &n, lambda.GetData(),
+	    v.GetData(), &n, u.GetData(), &m, work.GetData(),
 	    &lwork, &info.GetInfoRef());
   }
 
@@ -3614,18 +3636,25 @@ namespace Seldon
   template<class Prop1, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetSVD(Matrix<complex<double>, Prop1, RowMajor, Allocator1>& A,
-	      Vector<complex<double>, VectFull, Allocator4>& lambda,
+	      Vector<double, VectFull, Allocator4>& lambda,
 	      Matrix<complex<double>, General, RowMajor, Allocator2>& u,
 	      Matrix<complex<double>, General, RowMajor, Allocator3>& v,
 	      LapackInfo& info = lapack_info)
   {
-    int m = A.GetM(); int n = A.GetM();
+    int m = A.GetM();
+    int n = A.GetN();
     char jobl('A'), jobr('A');
-    int lwork = 2*min(m,n)+max(m,n);
+    int lwork = 2 * min(m, n) + max(m, n);
     Vector<complex<double> > work(lwork);
-    Vector<double> rwork(5*min(m,n));
-    zgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &n, lambda.GetDataVoid(),
-	    u.GetDataVoid(), &n, v.GetDataVoid(), &n, work.GetDataVoid(),
+    Vector<double> rwork(5 * min(m, n));
+    lambda.Reallocate(min(m, n));
+    lambda.Zero();
+    u.Reallocate(m, m);
+    u.Zero();
+    v.Reallocate(n, n);
+    v.Zero();
+    zgesvd_(&jobl, &jobr, &n, &m, A.GetDataVoid(), &n, lambda.GetData(),
+	    v.GetDataVoid(), &n, u.GetDataVoid(), &m, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &info.GetInfoRef());
   }
 
@@ -3641,13 +3670,17 @@ namespace Seldon
 	      Matrix<float, General, ColMajor, Allocator3>& v,
 	      LapackInfo& info = lapack_info)
   {
-    int m = A.GetM(); int n = A.GetN();
+    int m = A.GetM();
+    int n = A.GetN();
     char jobl('A'), jobr('A');
-    int lwork = max(3*min(m,n)+max(m,n), 5*min(m,n));
+    int lwork = max(3 * min(m, n) + max(m, n), 5 * min(m, n));
     Vector<float> work(lwork);
-    lambda.Reallocate(min(m, n)); lambda.Zero();
-    u.Reallocate(m, m); u.Zero();
-    v.Reallocate(n, n); v.Zero();
+    lambda.Reallocate(min(m, n));
+    lambda.Zero();
+    u.Reallocate(m, m);
+    u.Zero();
+    v.Reallocate(n, n);
+    v.Zero();
     sgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &m, lambda.GetData(),
 	    u.GetData(), &m, v.GetData(), &n, work.GetData(),
 	    &lwork, &info.GetInfoRef());
@@ -3657,20 +3690,24 @@ namespace Seldon
   template<class Prop1, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetSVD(Matrix<complex<float>, Prop1, ColMajor, Allocator1>& A,
-	      Vector<complex<float>, VectFull, Allocator4>& lambda,
+	      Vector<float, VectFull, Allocator4>& lambda,
 	      Matrix<complex<float>, General, ColMajor, Allocator2>& u,
 	      Matrix<complex<float>, General, ColMajor, Allocator3>& v,
 	      LapackInfo& info = lapack_info)
   {
-    int m = A.GetM(); int n = A.GetN();
+    int m = A.GetM();
+    int n = A.GetN();
     char jobl('A'), jobr('A');
-    int lwork = 2*min(m,n)+max(m,n);
+    int lwork = 2 * min(m, n) + max(m, n);
     Vector<complex<float> > work(lwork);
-    Vector<float> rwork(5*min(m,n));
-    lambda.Reallocate(min(m, n)); lambda.Zero();
-    u.Reallocate(m, m); u.Zero();
-    v.Reallocate(n, n); v.Zero();
-    cgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &m, lambda.GetDataVoid(),
+    Vector<float> rwork(5 * min(m, n));
+    lambda.Reallocate(min(m, n));
+    lambda.Zero();
+    u.Reallocate(m, m);
+    u.Zero();
+    v.Reallocate(n, n);
+    v.Zero();
+    cgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &m, lambda.GetData(),
 	    u.GetDataVoid(), &m, v.GetDataVoid(), &n, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &info.GetInfoRef());
   }
@@ -3684,37 +3721,44 @@ namespace Seldon
 	      Matrix<double, General, ColMajor, Allocator3>& v,
 	      LapackInfo& info = lapack_info)
   {
-    int m = A.GetM(); int n = A.GetN();
+    int m = A.GetM();
+    int n = A.GetN();
     char jobl('A'), jobr('A');
-    int lwork =10*max(m,n);
+    int lwork = 10 * max(m, n);
     Vector<double> work(lwork);
-    lambda.Reallocate(min(m, n)); lambda.Zero();
-    u.Reallocate(m, m); u.Zero();
-    v.Reallocate(n, n); v.Zero();
+    lambda.Reallocate(min(m, n));
+    lambda.Zero();
+    u.Reallocate(m, m);
+    u.Zero();
+    v.Reallocate(n, n);
+    v.Zero();
     dgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &m, lambda.GetData(),
 	    u.GetData(), &m, v.GetData(), &n, work.GetData(),
 	    &lwork, &info.GetInfoRef());
-
   }
 
 
   template<class Prop1, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetSVD(Matrix<complex<double>, Prop1, ColMajor, Allocator1>& A,
-	      Vector<complex<double>, VectFull, Allocator4>& lambda,
+	      Vector<double, VectFull, Allocator4>& sigma,
 	      Matrix<complex<double>, General, ColMajor, Allocator2>& u,
 	      Matrix<complex<double>, General, ColMajor, Allocator3>& v,
 	      LapackInfo& info = lapack_info)
   {
-    int m = A.GetM(); int n = A.GetN();
+    int m = A.GetM();
+    int n = A.GetN();
     char jobl('A'), jobr('A');
-    int lwork = 2*min(m,n)+max(m,n);
+    int lwork = 2 * min(m, n) + max(m, n);
     Vector<complex<double> > work(lwork);
-    Vector<double> rwork(5*min(m,n));
-    lambda.Reallocate(min(m, n)); lambda.Zero();
-    u.Reallocate(m, m); u.Zero();
-    v.Reallocate(n, n); v.Zero();
-    zgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &m, lambda.GetDataVoid(),
+    Vector<double> rwork(5 * min(m, n));
+    sigma.Reallocate(min(m, n));
+    sigma.Zero();
+    u.Reallocate(m, m);
+    u.Zero();
+    v.Reallocate(n, n);
+    v.Zero();
+    zgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &m, sigma.GetData(),
 	    u.GetDataVoid(), &m, v.GetDataVoid(), &n, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &info.GetInfoRef());
   }
