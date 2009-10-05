@@ -364,7 +364,7 @@ cout << "Number of elements "<< V.GetDataSize() << endl; // should return 0
 
 // the two other constructors are useless
 Matrix<double, Symmetric, ArrayRowSymSparse> W(4, 4);
-Matrix<double, General, RowSparse> A(5, 4, 20);
+Matrix<double, General, RowSparse> A(3, 4, 10);
 
 // in the last constructor you provide
 int m = 5; // number of rows
@@ -400,6 +400,11 @@ ptr(3) = 7;
 ptr(4) = 9;
 ptr(5) = 12;
 // values on the row are to be seeked between ptr(i) and ptr(i+1)
+
+// Now the constructor:
+Matrix<double, General, RowSparse> M(m, n, values, ptr, columns);
+// Note that 'values', 'ptr' and 'columns' are nullified (that is, emptied):
+// the arrays to which they pointed have been transferred to M.
 \endprecode
 
 
