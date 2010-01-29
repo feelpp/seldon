@@ -1,4 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2001-2010 INRIA, Vivien Mallet
+// Author(s): Marc Fragu, Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -25,6 +26,33 @@ namespace Seldon
 {
 
 
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetRow(const Matrix<T0, General, RowSparse, Allocator0>& M,
+	      int i, Vector<T1, Vect_Sparse, Allocator1>& X)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    int m = M.GetM();
+    if (i < 0 || i >= m)
+      throw WrongIndex("GetRow()",
+                       string("Index should be in [0, ") + to_str(m - 1)
+                       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    int* ptr = M.GetPtr();
+    int* ind = M.GetInd();
+    double* data = M.GetData();
+    int size_row = ptr[i+1] - ptr[i];
+
+    X.Reallocate(size_row);
+    int shift = ptr[i];
+    for (int j = 0; j < size_row; j++)
+      {
+	X.Index(j) = ind[shift + j];
+	X.Value(j) = data[shift + j];
+      }
+  }
+
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void GetRow(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
@@ -33,6 +61,37 @@ namespace Seldon
     X.Reallocate(M.GetN());
     for (int j = 0; j < M.GetN(); j++)
       X(j) = M(i, j);
+  }
+
+
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetCol(const Matrix<T0, General, RowSparse, Allocator0>& M,
+	      int j, Vector<T1, Vect_Sparse, Allocator1>& X)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    int n = M.GetN();
+    if (j < 0 || j >= n)
+      throw WrongIndex("GetCol()",
+                       string("Index should be in [0, ") + to_str(n - 1)
+                       + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int* ptr = M.GetPtr();
+    int* ind = M.GetInd();
+    double* data = M.GetData();
+    int m = M.GetM();
+    Vector<int> index;
+    Vector<double> value;
+
+    for (int i = 0; i < m; i++)
+      for (int k = ptr[i]; k < ptr[i+1]; k++)
+	if (ind[k] == j)
+	  {
+	    index.PushBack(i);
+	    value.PushBack(data[k]);
+	  }
+
+    X.SetData(value, index);
   }
 
 
