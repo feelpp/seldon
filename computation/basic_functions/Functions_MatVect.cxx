@@ -139,7 +139,7 @@ namespace Seldon
   {
     int ma = M.GetM();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -180,7 +180,7 @@ namespace Seldon
 
     int ma = M.GetM();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -231,7 +231,7 @@ namespace Seldon
   {
     int ma = M.GetM();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -275,7 +275,7 @@ namespace Seldon
   {
     int ma = M.GetM();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -355,7 +355,7 @@ namespace Seldon
 
     int ma = M.GetM();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(Trans, M, X, Y, "MltAdd(alpha, SeldonTrans, M, X, beta, Y)");
 #endif
 
@@ -388,7 +388,7 @@ namespace Seldon
 
     int ma = M.GetM();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(Trans, M, X, Y, "MltAdd(alpha, SeldonConjTrans, M, X, beta, Y)");
 #endif
 
@@ -440,7 +440,7 @@ namespace Seldon
 
     int ma = M.GetM();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(Trans, M, X, Y, "MltAdd(alpha, SeldonTrans, M, X, beta, Y)");
 #endif
 
@@ -481,7 +481,7 @@ namespace Seldon
 
     int ma = M.GetM();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(Trans, M, X, Y, "MltAdd(alpha, SeldonConjTrans, M, X, beta, Y)");
 #endif
 
@@ -555,7 +555,7 @@ namespace Seldon
   {
     int ma = M.GetM();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(Trans, M, X, Y, "MltAdd(alpha, SeldonConjTrans, M, X, beta, Y)");
 #endif
 
@@ -633,7 +633,7 @@ namespace Seldon
   {
     int ma = M.GetM();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(Trans, M, X, Y, "MltAdd(alpha, SeldonConjTrans, M, X, beta, Y)");
 #endif
 
@@ -715,7 +715,7 @@ namespace Seldon
     int ma = M.GetM();
     int na = M.GetN();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
@@ -778,7 +778,7 @@ namespace Seldon
     int ma = M.GetM();
     int na = M.GetN();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(Trans, M, X, Y, "MltAdd(alpha, trans, M, X, beta, Y)");
 #endif
 
@@ -823,7 +823,7 @@ namespace Seldon
     int ma = M.GetM();
     int na = M.GetN();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     if (na != ma)
       throw WrongDim("Gauss(M, X)",
 		     "The matrix must be squared.");
@@ -875,7 +875,7 @@ namespace Seldon
     int ma = M.GetM();
     int na = M.GetN();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     if (na != ma)
       throw WrongDim("GaussSeidel(M, X, Y, iter)",
 		     "The matrix must be squared.");
@@ -922,7 +922,7 @@ namespace Seldon
     int ma = M.GetM();
     int na = M.GetN();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     if (na != ma)
       throw WrongDim("SOR(M, X, Y, omega, iter)",
 		     "The matrix must be squared.");
@@ -975,7 +975,7 @@ namespace Seldon
 
     int ma = M.GetM();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     int na = M.GetN();
     if (na != ma)
       throw WrongDim("SolveLU(M, Y)",

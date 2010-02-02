@@ -139,7 +139,7 @@ namespace Seldon
 	   const Matrix<T1, Prop1, RowSparse, Allocator1>& B,
 	   Matrix<T2, Prop2, RowSparse, Allocator2>& C)
   {
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(A, B, "Mlt(const Matrix<RowSparse>& A, const "
              "Matrix<RowSparse>& B, Matrix<RowSparse>& C)");
 #endif
@@ -286,7 +286,7 @@ namespace Seldon
                        const Matrix<T1, Prop1, RowSparse, Allocator1>& B,
                        Matrix<T2, Prop2, RowSparse, Allocator2>& C)
   {
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(SeldonNoTrans, A, SeldonTrans, B,
              "MltNoTransTrans(const Matrix<RowSparse>& A, "
              "const Matrix<RowSparse>& B, Matrix<RowSparse>& C)");
@@ -454,7 +454,7 @@ namespace Seldon
     int mc = C.GetM();
     int nc = C.GetN();
 
-#ifdef SELDON_CHECK_BOUNDS
+#ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
 #endif
 
