@@ -27,6 +27,7 @@
 #include "submatrix.hpp"
 #include "lapack.hpp"
 #include "sparse_linear_algebra.hpp"
+#include "sparse_matrix.hpp"
 
 #include <cppunit/TestResult.h>
 #include <cppunit/ui/text/TestRunner.h>
@@ -37,6 +38,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(MatrixTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(SubMatrixTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(Array3DTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(SparseLinearAlgebraTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(SparseMatrixTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(LapackTest);
 
 int main()
