@@ -452,6 +452,14 @@ namespace Seldon
 
 
   //! Conversion from coordinate format to RowSparse.
+  /*! Contrary to the other conversion functions
+    ConvertMatrix_from_Coordinates, this one accepts duplicates.
+    \param[in] IndRow row indexes of the non-zero elements.
+    \param[in] IndCol column indexes of the non-zero elements.
+    \param[in] Val values of the non-zero elements.
+    \param[out] A matrix defined by \a IndRow, \a IndCol and \a Val.
+    \param[in] index index of the first column and of the first row.
+  */
   template<class T, class Prop, class Allocator>
   void
   ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
@@ -459,39 +467,40 @@ namespace Seldon
 				 Matrix<T, Prop, RowSparse, Allocator>& A,
 				 int index = 0)
   {
-    // Assuming that there is no duplicate value.
-    if (IndRow.GetM() <= 0)
-      return;
+    int i, j;
 
-    int i;
+    int Nelement = IndRow.GetLength();
 
-    int row_max = IndRow.GetNormInf();
-    int col_max = IndCol.GetNormInf();
-    int m = row_max - index + 1;
-    int n = col_max - index + 1;
-    int nnz = IndRow.GetM();
+    for (i = 0; i < Nelement; i++)
+      IndRow(i) -= index;
+    for (i = 0; i < Nelement; i++)
+      IndCol(i) -= index;
 
-    // Sorts the array 'IndRow'.
     Sort(IndRow, IndCol, Val);
 
-    // Construction of array 'Ptr'.
-    IVect Ptr(m + 1);
-    Ptr.Zero();
-    for (int i = 0; i < nnz; i++)
-      {
-	IndRow(i) -= index;
-	IndCol(i) -= index;
-	Ptr(IndRow(i) + 1)++;
-      }
+    Vector<int> ptr(A.GetM() + 1);
+    for (i = 0; i <= IndRow(0); i++)
+      ptr(i) = 0;
 
-    for (i = 0; i < m; i++)
-      Ptr(i + 1) += Ptr(i);
+    int row = IndRow(0);
+    int previous_i = 0;
 
-    // Sorts 'IndCol'.
-    for (i = 0; i < m; i++)
-      Sort(Ptr(i), Ptr(i + 1) - 1, IndCol, Val);
+    for (i = 1; i < Nelement; i++)
+      if (IndRow(i) != row)
+        {
+          for (j = row + 1; j <= IndRow(i); j++)
+            ptr(j) = i;
 
-    A.SetData(m, n, Val, Ptr, IndCol);
+          Sort(previous_i, i-1, IndCol, Val);
+          row = IndRow(i);
+          previous_i = i;
+        }
+
+    Sort(previous_i, Nelement - 1, IndCol, Val);
+    for (i = IndRow(Nelement - 1); i < A.GetM(); i++)
+      ptr(i + 1) = Nelement;
+
+    A.SetData(A.GetM(), A.GetN(), Val, ptr, IndCol);
   }
 
 
