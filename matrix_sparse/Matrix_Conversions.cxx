@@ -491,7 +491,7 @@ namespace Seldon
     for (i = 0; i < m; i++)
       Sort(Ptr(i), Ptr(i + 1) - 1, IndCol, Val);
 
-    A.SetData(m, n, nnz, Val, Ptr, IndCol);
+    A.SetData(m, n, Val, Ptr, IndCol);
   }
 
 
@@ -535,7 +535,7 @@ namespace Seldon
     for (i = 0; i < n; i++)
       Sort(Ptr(i), Ptr(i + 1) - 1, IndRow, Val);
 
-    A.SetData(m, n, nnz, Val, Ptr, IndRow);
+    A.SetData(m, n, Val, Ptr, IndRow);
   }
 
 
@@ -603,7 +603,7 @@ namespace Seldon
     for (int i = 0; i < m; i++)
       Sort(Ptr(i), Ptr(i + 1) - 1, IndCol, Val);
 
-    A.SetData(m, n, nnz, Val, Ptr, IndCol);
+    A.SetData(m, n, Val, Ptr, IndCol);
   }
 
 
@@ -671,7 +671,7 @@ namespace Seldon
     for (int i = 0; i < m; i++)
       Sort(Ptr(i), Ptr(i + 1) - 1, IndCol, Val);
 
-    A.SetData(m, n, nnz, Val, Ptr, IndCol);
+    A.SetData(m, n, Val, Ptr, IndCol);
   }
 
 
