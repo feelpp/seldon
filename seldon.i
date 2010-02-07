@@ -22,9 +22,32 @@
 #include "SeldonHeader.hxx"
   %}
 
+%include "std_iostream.i"
 %include "std_string.i"
 
 using namespace std;
+
+namespace std
+{
+  class ifstream: public istream
+  {
+  public:
+    ifstream(const char *fname);
+    ~ifstream();
+    bool is_open();
+    void close();
+  };
+
+  class ofstream: public ostream
+  {
+  public:
+    ofstream(const char *fname);
+    ~ofstream();
+    bool is_open();
+    void close();
+  };
+
+}
 
 %include "share/Errors.hxx"
 %exception
