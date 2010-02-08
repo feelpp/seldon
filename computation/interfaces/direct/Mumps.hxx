@@ -74,11 +74,17 @@ namespace Seldon
     typedef typename TypeMumps<T>::pointer pointer;
     int print_level;
     bool out_of_core;
+#ifdef SELDON_WITH_MPI
+    MPI_Group single_group;
+    MPI_Comm single_comm;
+#endif
+    IVect num_row_glob, num_col_glob;
+    bool new_communicator;
 
     // internal methods
     void CallMumps();
     template<class MatrixSparse>
-    void InitMatrix(const MatrixSparse&);
+    void InitMatrix(const MatrixSparse&, bool dist = false);
 
   public :
     MatrixMumps();
@@ -96,19 +102,25 @@ namespace Seldon
 
     int GetInfoFactorization() const;
 
-    template<class Prop,class Storage,class Allocator>
+    template<class Prop, class Storage, class Allocator>
     void FindOrdering(Matrix<T, Prop, Storage, Allocator> & mat,
 		      IVect& numbers, bool keep_matrix = false);
 
-    template<class Prop,class Storage,class Allocator>
-    void FactorizeMatrix(Matrix<T,Prop,Storage,Allocator> & mat,
+    template<class Prop, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<T, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
+    template<class Prop, class Storage, class Allocator>
+    void PerformAnalysis(Matrix<T, Prop, Storage, Allocator> & mat);
+
+    template<class Prop, class Storage, class Allocator>
+    void PerformFactorization(Matrix<T, Prop, Storage, Allocator> & mat);
+    
     template<class Prop1, class Storage1, class Allocator1,
 	     class Prop2, class Storage2, class Allocator2>
-    void GetSchurMatrix(Matrix<T,Prop1,Storage1,Allocator1>& mat,
+    void GetSchurMatrix(Matrix<T, Prop1, Storage1, Allocator1>& mat,
 			const IVect& num,
-			Matrix<T,Prop2,Storage2,Allocator2> & mat_schur,
+			Matrix<T, Prop2, Storage2, Allocator2> & mat_schur,
 			bool keep_matrix = false);
 
     template<class Allocator2>

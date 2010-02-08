@@ -44,10 +44,6 @@ namespace Seldon
   template<class T>
   inline MatrixMumps<T>::MatrixMumps()
   {
-#ifdef SELDON_WITH_MPI
-    // MPI initialization for parallel version
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-#endif
     // struct_mumps.comm_fortran = MPI_Comm_c2f(MPI_COMM_WORLD);
     struct_mumps.comm_fortran = -987654;
 
@@ -64,19 +60,38 @@ namespace Seldon
     type_ordering = 7; // default : we let Mumps choose the ordering
     print_level = 0;
     out_of_core = false;
+    new_communicator = false;
   }
 
 
   //! initialization of the computation
   template<class T> template<class MatrixSparse>
-  inline void MatrixMumps<T>::InitMatrix(const MatrixSparse& A)
+  inline void MatrixMumps<T>::InitMatrix(const MatrixSparse& A, bool distributed)
   {
     // we clear previous factorization
     Clear();
 
-    // the user has to infom the symmetry during the initialization stage
+#ifdef SELDON_WITH_MPI
+    // MPI initialization for parallel version
+    if (distributed)
+      {
+	// for distributed matrix, every processor is assumed to be involved
+	struct_mumps.comm_fortran = -987654;
+      }
+    else
+      {
+	// centralized matrix => a linear system per processor
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	MPI_Comm_group(MPI_COMM_WORLD, &single_group);
+	MPI_Group_incl(single_group, 1, &rank, &single_group);
+	MPI_Comm_create(MPI_COMM_WORLD, single_group, &single_comm);
+	struct_mumps.comm_fortran = MPI_Comm_c2f(single_comm);
+	new_communicator = true;
+      }
+#endif
+
+    // symmetry is specified during the initialization stage
     struct_mumps.job = -1;
-    struct_mumps.par = 1;
     if (IsSymmetricMatrix(A))
       struct_mumps.sym = 2; // general symmetric matrix
     else
@@ -137,9 +152,20 @@ namespace Seldon
       {
 	struct_mumps.job = -2;
 	CallMumps(); /* Terminate instance */
-
+	
+	num_row_glob.Clear(); num_col_glob.Clear();
 	struct_mumps.n = 0;
+	
       }
+
+#ifdef SELDON_WITH_MPI    
+    if (new_communicator)
+      {
+	MPI_Comm_free(&single_comm);
+	new_communicator = false;
+      }
+#endif
+
   }
 
 
@@ -169,8 +195,8 @@ namespace Seldon
     struct_mumps.icntl[3] = 2;
 
   }
-
-
+  
+  
   template<class T>
   inline void MatrixMumps<T>::EnableOutOfCore()
   {
@@ -183,8 +209,8 @@ namespace Seldon
   {
     out_of_core = false;
   }
-
-
+  
+  
   //! computes row numbers
   /*!
     \param[in,out] mat matrix whose we want to find the ordering
@@ -206,18 +232,14 @@ namespace Seldon
     if (!keep_matrix)
       mat.Clear();
 
-    /* Define the problem on the host */
-    if (rank == 0)
-      {
-	struct_mumps.n = n; struct_mumps.nz = nnz;
-	struct_mumps.irn = num_row.GetData();
-	struct_mumps.jcn = num_col.GetData();
-      }
-
+    struct_mumps.n = n; struct_mumps.nz = nnz;
+    struct_mumps.irn = num_row.GetData();
+    struct_mumps.jcn = num_col.GetData();
+    
     /* Call the MUMPS package. */
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
-
+    
     numbers.Reallocate(n);
     for (int i = 0; i < n; i++)
       numbers(i) = struct_mumps.sym_perm[i]-1;
@@ -234,7 +256,7 @@ namespace Seldon
 				       bool keep_matrix)
   {
     InitMatrix(mat);
-
+    
     int n = mat.GetM(), nnz = mat.GetNonZeros();
     // conversion in coordinate format with fortran convention (1-index)
     IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
@@ -242,21 +264,60 @@ namespace Seldon
     if (!keep_matrix)
       mat.Clear();
 
-    // DISP(num_row); DISP(num_col); DISP(values); DISP(nnz); DISP(values.GetM()); DISP(n);
-    /* Define the problem on the host */
-    if (rank == 0)
-      {
-	struct_mumps.n = n; struct_mumps.nz = nnz;
-	struct_mumps.irn = num_row.GetData(); struct_mumps.jcn = num_col.GetData();
-	struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
-      }
-
+    struct_mumps.n = n; struct_mumps.nz = nnz;
+    struct_mumps.irn = num_row.GetData(); struct_mumps.jcn = num_col.GetData();
+    struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
+    
     /* Call the MUMPS package. */
     struct_mumps.job = 4; // we analyse and factorize the system
     CallMumps();
   }
 
+  
+  //! Symbolic factorization
+  template<class T> template<class Prop, class Storage, class Allocator>
+  void MatrixMumps<T>
+  ::PerformAnalysis(Matrix<T, Prop, Storage, Allocator> & mat)
+  {
+    InitMatrix(mat);
+    
+    int n = mat.GetM(), nnz = mat.GetNonZeros();
+    // conversion in coordinate format with fortran convention (1-index)
+    Vector<T, VectFull, Allocator> values;
+    ConvertMatrix_to_Coordinates(mat, num_row_glob, num_col_glob, values, 1);
+    
+    struct_mumps.n = n; struct_mumps.nz = nnz;
+    struct_mumps.irn = num_row_glob.GetData();
+    struct_mumps.jcn = num_col_glob.GetData();
+    struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
+    
+    /* Call the MUMPS package. */
+    struct_mumps.job = 1; // we analyse the system
+    CallMumps();
+  }
 
+  
+  //! Numerical factorization
+  /*!
+    Be careful, because no conversion is performed in the method, 
+    so you have to choose RowSparse/ColSparse for unsymmetric matrices
+    and RowSymSparse/ColSymSparse for symmetric matrices.
+    The other formats should not work
+   */
+  template<class T> template<class Prop, class Storage, class Allocator>
+  void MatrixMumps<T>
+  ::PerformFactorization(Matrix<T, Prop, Storage, Allocator> & mat)
+  {
+    // we consider that the values are corresponding
+    // to the row/column numbers given for the analysis
+    struct_mumps.a = reinterpret_cast<pointer>(mat.GetData());
+    
+    /* Call the MUMPS package. */
+    struct_mumps.job = 2; // we factorize the system
+    CallMumps();
+  }
+  
+  
   //! returns information about factorization performed
   template<class T>
   int MatrixMumps<T>::GetInfoFactorization() const
@@ -359,7 +420,7 @@ namespace Seldon
   {
     // initialization depending on symmetric of the matrix
     Matrix<T, Prop, RowSparse, Allocator> Atest;
-    InitMatrix(Atest);
+    InitMatrix(Atest, true);
 
     // distributed matrix
     struct_mumps.icntl[17] = 3;
