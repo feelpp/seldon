@@ -29,12 +29,14 @@ namespace Seldon
   //////////////////////
 
 
+#ifndef SWIG
   class ColMajor
   {
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
   };
+#endif
 
 
   class RowMajor
@@ -60,12 +62,14 @@ namespace Seldon
   ////////////
 
 
+#ifndef SWIG
   class ColSparse
   {
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
   };
+#endif
 
 
   class RowSparse
@@ -76,6 +80,7 @@ namespace Seldon
   };
 
 
+#ifndef SWIG
   class ColComplexSparse
   {
   public:
@@ -307,6 +312,7 @@ namespace Seldon
     static int GetSecond(int i, int j);
     static bool UpLo();
   };
+#endif
 
 
   //////////////////
