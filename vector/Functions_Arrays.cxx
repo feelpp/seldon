@@ -632,7 +632,7 @@ namespace Seldon
   template<class T, class Storage, class Allocator>
   void Sort(int m, int n, Vector<T, Storage, Allocator>& V)
   {
-    QuickSort(m, n, V);
+    MergeSort(m, n, V);
   }
 
 
@@ -645,7 +645,7 @@ namespace Seldon
   void Sort(int m, int n, Vector<T1, Storage1, Allocator1>& V,
 	    Vector<T2, Storage2, Allocator2>& V2)
   {
-    QuickSort(m, n, V, V2);
+    MergeSort(m, n, V, V2);
   }
 
 
@@ -660,7 +660,7 @@ namespace Seldon
 	    Vector<T2, Storage2, Allocator2>& V2,
 	    Vector<T3, Storage3, Allocator3>& V3)
   {
-    QuickSort(m, n, V, V2, V3);
+    MergeSort(m, n, V, V2, V3);
   }
 
 
