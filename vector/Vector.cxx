@@ -57,6 +57,7 @@ namespace Seldon
   inline Vector_Base<T, Allocator>::Vector_Base(int i)
   {
     m_ = i;
+    data_ = NULL;
   }
 
 
@@ -70,6 +71,7 @@ namespace Seldon
   Vector_Base(const Vector_Base<T, Allocator>& A)
   {
     m_ = A.GetM();
+    data_ = NULL;
   }
 
 
