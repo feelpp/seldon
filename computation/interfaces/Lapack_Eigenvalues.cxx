@@ -34,8 +34,8 @@
   xSPGV   (GetEigenvalues, GetEigenvaluesEigenvectors)
   xHPGV   (GetEigenvalues, GetEigenvaluesEigenvectors)
   xGESVD  (GetSVD)
-  xGEQRF  (GetHessian)
-  ZGEQRF + ZUNGQR + ZUNMQR + ZGGHRD   (GetHessian)
+  xGEQRF  (GetHessenberg)
+  ZGEQRF + ZUNGQR + ZUNMQR + ZGGHRD   (GetHessenberg)
   ZGEQRF + ZUNGQR + ZUNMQR + ZGGHRD + ZHGEQZ   (GetQZ)
   (SolveSylvester)
 */
@@ -3793,11 +3793,14 @@ namespace Seldon
   //////////////////////////////////
 
 
+  ///////////////////////////////////
+  // RESOLUTION SYLVESTER EQUATION //
 
-  void GetHessian(Matrix<complex<double>, General, ColMajor>& A,
-		  Matrix<complex<double>, General, ColMajor>& B,
-		  Matrix<complex<double>, General, ColMajor>& Q,
-		  Matrix<complex<double>, General, ColMajor>& Z)
+
+  void GetHessenberg(Matrix<complex<double>, General, ColMajor>& A,
+                     Matrix<complex<double>, General, ColMajor>& B,
+                     Matrix<complex<double>, General, ColMajor>& Q,
+                     Matrix<complex<double>, General, ColMajor>& Z)
   {
     char compq('V'), compz('I');
     int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4 * n;
@@ -3865,59 +3868,591 @@ namespace Seldon
   }
 
 
-  void SolveSylvester(Matrix<complex<double>, General, ColMajor>& A,
-		      Matrix<complex<double>, General, ColMajor>& B,
-		      Matrix<complex<double>, General, ColMajor>& C,
-		      Matrix<complex<double>, General, ColMajor>& D,
-		      Matrix<complex<double>, General, ColMajor>& E)
+  void GetHessenberg(Matrix<complex<double>, General, RowMajor>& A,
+                     Matrix<complex<double>, General, RowMajor>& B,
+                     Matrix<complex<double>, General, RowMajor>& Q,
+                     Matrix<complex<double>, General, RowMajor>& Z)
+  {
+    char compq('V'), compz('I');
+    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4 * n;
+    Transpose(A); Transpose(B);
+    Vector<complex<double> > tau(n);
+    Vector<complex<double> > work(lwork);
+    zgeqrf_(&n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info);
+
+    Q = B;
+    zungqr_(&n, &n, &n, Q.GetDataVoid(), &n, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info);
+
+    char side('L'), trans('C');
+    zunmqr_(&side, &trans, &n, &n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
+	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info);
+
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < i; j++)
+	B(j, i) = 0;
+
+    zgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n,
+	    B.GetDataVoid(), &n, Q.GetDataVoid(), &n, Z.GetDataVoid(),
+	    &n, &info);
+
+    Transpose(A); Transpose(B);
+    Transpose(Q); Transpose(Z);
+  }
+
+
+  void GetQZ(Matrix<complex<double>, General, RowMajor>& A,
+	     Matrix<complex<double>, General, RowMajor>& B,
+	     Matrix<complex<double>, General, RowMajor>& Q,
+	     Matrix<complex<double>, General, RowMajor>& Z)
+  {
+    char compq('V'), compz('I');
+    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4*n;
+    Transpose(A); Transpose(B);
+    Vector<complex<double> > tau(n);
+    Vector<complex<double> > work(lwork);
+    zgeqrf_(&n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info);
+
+    Q = B;
+    zungqr_(&n, &n, &n, Q.GetDataVoid(), &n, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info);
+
+    char side('L'), trans('C');
+    zunmqr_(&side, &trans, &n, &n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
+	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info);
+
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < i; j++)
+	B(j,i) = 0;
+
+    zgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n,
+	    B.GetDataVoid(), &n, Q.GetDataVoid(), &n, Z.GetDataVoid(),
+	    &n, &info);
+
+    char job('S');
+    compq = 'V';
+    compz = 'V';
+    Vector<complex<double> > alpha(n), beta(n);
+    Vector<double> rwork(lwork);
+    zhgeqz_(&job, &compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n,
+	    B.GetDataVoid(), &n, alpha.GetDataVoid(), beta.GetDataVoid(),
+	    Q.GetDataVoid(), &n, Z.GetDataVoid(), &n, work.GetDataVoid(),
+	    &lwork, rwork.GetData(), &info);
+
+    Transpose(A); Transpose(B);
+    Transpose(Q); Transpose(Z);
+  }
+
+
+  //! Gaussian elimination to solve A X = B with A an Hessenberg matrix
+  template<class T, class Prop, class Storage, class Allocator, class Vector1>
+  void SolveHessenberg(Matrix<T, Prop, Storage, Allocator>& A, Vector1& B)
+  {
+    int n = A.GetM();
+    T tmp, pivot, invDiag;
+    // loop over rows
+    for (int i = 0; i < n-1; i++)
+      {
+        // pivoting
+        if (abs(A(i+1, i)) > abs(A(i, i)))
+          {
+            // swapping rows
+            for (int j = i; j < n; j++)
+              {
+                tmp = A(i, j);
+                A(i, j) = A(i+1, j);
+                A(i+1, j) = tmp;
+              }
+
+            tmp = B(i);
+            B(i) = B(i+1);
+            B(i+1) = tmp;
+          }
+
+        // performing elimination of A(i+1, i)
+        invDiag = 1.0/A(i, i);
+        pivot = A(i+1, i)*invDiag;
+        A(i, i) = invDiag;
+        A(i+1, i) = 0;
+        for (int j = i+1; j < n; j++)
+          A(i+1, j) -= pivot*A(i, j);
+
+        B(i+1) -= pivot*B(i);
+      }
+
+    // inverting last element
+    A(n-1, n-1) = 1.0/A(n-1, n-1);
+
+    // then solving triangular system
+    for (int i = n-1; i >= 0; i--)
+      {
+        tmp = B(i);
+        for (int j = i+1; j < n; j++)
+          tmp -= A(i, j)*B(j);
+
+        B(i) = tmp*A(i, i);
+      }
+  }
+
+
+  /*! \brief Gaussian elimination to solve A X = B with A matrix so that a_ij
+    = 0 for i > j+2 */
+  template<class T, class Prop, class Storage, class Allocator, class Vector1>
+  void SolveHessenbergTwo(Matrix<T, Prop, Storage, Allocator>& A, Vector1& B)
+  {
+    int n = A.GetM();
+    T tmp, pivot, invDiag;
+    T a1, a2, a3;
+    // loop over rows
+    for (int i = 0; i < n-2; i++)
+      {
+        // pivoting
+        a1 = abs(A(i, i));
+        a2 = abs(A(i+1, i));
+        a3 = abs(A(i+2, i));
+        if (a2 > max(a1, a3))
+          {
+            // swapping rows i and i+1
+            for (int j = i; j < n; j++)
+              {
+                tmp = A(i, j);
+                A(i, j) = A(i+1, j);
+                A(i+1, j) = tmp;
+              }
+
+            tmp = B(i);
+            B(i) = B(i+1);
+            B(i+1) = tmp;
+          }
+        else if (a3 > max(a1, a2))
+          {
+            // swapping rows i+1 and i+2
+            for (int j = i; j < n; j++)
+              {
+                tmp = A(i, j);
+                A(i, j) = A(i+2, j);
+                A(i+2, j) = tmp;
+              }
+
+            tmp = B(i);
+            B(i) = B(i+2);
+            B(i+2) = tmp;
+          }
+
+        // performing elimination of A(i+1, i)
+        invDiag = 1.0/A(i, i);
+        pivot = A(i+1, i)*invDiag;
+        A(i, i) = invDiag;
+        A(i+1, i) = 0;
+        for (int j = i+1; j < n; j++)
+          A(i+1, j) -= pivot*A(i, j);
+
+        B(i+1) -= pivot*B(i);
+
+        // then elimination of A(i+2, i)
+        pivot = A(i+2, i)*invDiag;
+        A(i+2, i) = 0;
+        for (int j = i+1; j < n; j++)
+          A(i+2, j) -= pivot*A(i, j);
+
+        B(i+2) -= pivot*B(i);
+      }
+
+    // elimination of A(n, n-1)
+    if (abs(A(n-1, n-2)) > abs(A(n-2, n-2)))
+      {
+        for (int j = n-2; j < n; j++)
+          {
+            tmp = A(n-2, j);
+            A(n-2, j) = A(n-1, j);
+            A(n-1, j) = tmp;
+          }
+
+        tmp = B(n-2);
+        B(n-2) = B(n-1);
+        B(n-1) = tmp;
+      }
+
+    invDiag = 1.0/A(n-2, n-2);
+    pivot = A(n-1, n-2)*invDiag;
+    A(n-2, n-2) = invDiag;
+    A(n-1, n-2) = 0;
+    A(n-1, n-1) -= pivot*A(n-2, n-1);
+    B(n-1) -= pivot*B(n-2);
+
+    // inverting last element
+    A(n-1, n-1) = 1.0/A(n-1, n-1);
+
+    // then solving triangular system
+    for (int i = n-1; i >= 0; i--)
+      {
+        tmp = B(i);
+        for (int j = i+1; j < n; j++)
+          tmp -= A(i, j)*B(j);
+
+        B(i) = tmp*A(i, i);
+      }
+  }
+
+
+  template<class Prop, class Storage, class Allocator>
+  void SolveSylvester(Matrix<complex<double>, Prop, Storage, Allocator>& A,
+		      Matrix<complex<double>, Prop, Storage, Allocator>& B,
+		      Matrix<complex<double>, Prop, Storage, Allocator>& C,
+		      Matrix<complex<double>, Prop, Storage, Allocator>& D,
+		      Matrix<complex<double>, Prop, Storage, Allocator>& E)
   {
     complex<double> one(1), zero(0);
     int n = A.GetM();
-    Matrix<complex<double>, General, ColMajor> Q1(n, n), Q2(n, n),
+    Matrix<complex<double>, Prop, Storage, Allocator> Q1(n, n), Q2(n, n),
       Z1(n, n), Z2(n, n);
-    Matrix<complex<double>, General, ColMajor> Y(n, n), F(n, n);
+    Matrix<complex<double>, Prop, Storage, Allocator> Y(n, n), F(n, n);
 
-    GetHessian(A, C, Q1, Z1);
+    GetHessenberg(A, C, Q1, Z1);
     GetQZ(D, B, Q2, Z2);
 
     Y.Zero();
     MltAdd(one, SeldonConjTrans, Q1, SeldonNoTrans, E, zero, Y);
     MltAdd(one, SeldonNoTrans, Y, SeldonNoTrans, Q2, zero, F);
-    Y.Zero();
 
-    Vector<complex<double> > ftemp(n), Yvec(n), ytmp(n), xtmp(n);
-    Vector<int> pivot(n);
+    // Q1 = A y_j, Q2 = C y_j
+    Vector<complex<double> > Yvec(n);
+    Q1.Zero(); Q2.Zero(); E.Zero();
+    complex<double> coef_b, coef_d;
     for (int k = n-1; k >= 0; k--)
       {
+        // computation of Yvec = F_k
+        // - \sum_{j=k+1}^n conj(b_{k, j}) A y_j + conj(d_{k, j}) C y_j
 	for (int j = 0; j < n; j++)
-	  ftemp(j) = F(j,k);
+	  Yvec(j) = F(j, k);
 
 	for (int j = k+1; j < n; j++)
-	  {
-	    for (int i = 0; i < n; i++)
-	      Yvec(i) = Y(i, j);
+          {
+            coef_b = conj(B(k, j));
+            coef_d = conj(D(k, j));
+            for (int i = 0; i < n; i++)
+              Yvec(i) -=  coef_b * Q1(i, j) + coef_d * Q2(i, j);
+          }
 
-	    Mlt(A, Yvec, xtmp); Mlt(C, Yvec, ytmp);
-	    for (int i = 0; i < n; i++)
-	      ftemp(i) -= (conj(B(k, j)) * xtmp(i) + conj(D(k, j)) * ytmp(i));
-
-	  }
-
+        coef_b = conj(B(k, k)); coef_d = conj(D(k, k));
 	for (int i = 0; i < n; i++)
-	  for (int j = 0; j < n; j++)
-	    E(i,j) = conj(B(k, k)) * A(i, j) + conj(D(k, k)) * C(i, j);
+	  for (int j = max(0, i-1); j < n; j++)
+	    E(i, j) = coef_b * A(i, j) + coef_d * C(i, j);
 
-	GetLU(E, pivot);
-	Yvec = ftemp;
-	SolveLU(E, pivot, Yvec);
-
+        SolveHessenberg(E, Yvec);
 	for (int i = 0; i < n; i++)
 	  Y(i, k) = Yvec(i);
+
+        // computation of A y_k and C y_k
+        for (int i = 0; i < n; i++)
+          for (int m = max(0, i-1); m < n; m++)
+            Q1(i, k) += A(i, m)*Yvec(m);
+
+        for (int i = 0; i < n; i++)
+          for (int m = i; m < n; m++)
+            Q2(i, k) += C(i, m)*Yvec(m);
       }
 
     MltAdd(one, SeldonNoTrans, Y, SeldonConjTrans, Z2, zero, F);
     MltAdd(one, Z1, F, zero, E);
   }
+
+
+  void GetHessenberg(Matrix<double, General, ColMajor>& A,
+                     Matrix<double, General, ColMajor>& B,
+                     Matrix<double, General, ColMajor>& Q,
+                     Matrix<double, General, ColMajor>& Z)
+  {
+    char compq('V'), compz('I');
+    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4 * n;
+    Vector<double> tau(n);
+    Vector<double> work(lwork);
+    dgeqrf_(&n, &n, B.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info);
+
+    Q = B;
+    dorgqr_(&n, &n, &n, Q.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info);
+
+    char side('L'), trans('T');
+    dormqr_(&side, &trans, &n, &n, &n, B.GetData(), &n, tau.GetData(),
+	    A.GetData(), &n, work.GetData(), &lwork, &info);
+
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < i; j++)
+	B(i, j) = 0;
+
+    dgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetData(), &n,
+	    B.GetData(), &n, Q.GetData(), &n, Z.GetData(),
+	    &n, &info);
+
+  }
+
+
+  void GetQZ(Matrix<double, General, ColMajor>& A,
+	     Matrix<double, General, ColMajor>& B,
+	     Matrix<double, General, ColMajor>& Q,
+	     Matrix<double, General, ColMajor>& Z)
+  {
+    char compq('V'), compz('I');
+    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4*n;
+    Vector<double> tau(n);
+    Vector<double> work(lwork);
+    dgeqrf_(&n, &n, B.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info);
+
+    Q = B;
+    dorgqr_(&n, &n, &n, Q.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info);
+
+    char side('L'), trans('T');
+    dormqr_(&side, &trans, &n, &n, &n, B.GetData(), &n, tau.GetData(),
+	    A.GetData(), &n, work.GetData(), &lwork, &info);
+
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < i; j++)
+	B(i,j) = 0;
+
+    dgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetData(), &n,
+	    B.GetData(), &n, Q.GetData(), &n, Z.GetData(),
+	    &n, &info);
+
+    char job('S');
+    compq = 'V';
+    compz = 'V';
+    Vector<double> alphar(n), alphai(n), beta(n);
+    Vector<double> rwork(lwork);
+    dhgeqz_(&job, &compq, &compz, &n, &ilo, &ihi, A.GetData(), &n,
+	    B.GetData(), &n, alphar.GetData(), alphai.GetData(), beta.GetData(),
+	    Q.GetData(), &n, Z.GetData(), &n, work.GetData(),
+	    &lwork, &info);
+  }
+
+
+  void GetHessenberg(Matrix<double, General, RowMajor>& A,
+                     Matrix<double, General, RowMajor>& B,
+                     Matrix<double, General, RowMajor>& Q,
+                     Matrix<double, General, RowMajor>& Z)
+  {
+    char compq('V'), compz('I');
+    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4 * n;
+    Transpose(A); Transpose(B);
+    Vector<double> tau(n);
+    Vector<double> work(lwork);
+    dgeqrf_(&n, &n, B.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info);
+
+    Q = B;
+    dorgqr_(&n, &n, &n, Q.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info);
+
+    char side('L'), trans('T');
+    dormqr_(&side, &trans, &n, &n, &n, B.GetData(), &n, tau.GetData(),
+	    A.GetData(), &n, work.GetData(), &lwork, &info);
+
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < i; j++)
+	B(j, i) = 0;
+
+    dgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetData(), &n,
+	    B.GetData(), &n, Q.GetData(), &n, Z.GetData(),
+	    &n, &info);
+
+    Transpose(A); Transpose(B);
+    Transpose(Q); Transpose(Z);
+
+  }
+
+
+  void GetQZ(Matrix<double, General, RowMajor>& A,
+	     Matrix<double, General, RowMajor>& B,
+	     Matrix<double, General, RowMajor>& Q,
+	     Matrix<double, General, RowMajor>& Z)
+  {
+    char compq('V'), compz('I');
+    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4*n;
+    Transpose(A); Transpose(B);
+    Vector<double> tau(n);
+    Vector<double> work(lwork);
+    dgeqrf_(&n, &n, B.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info);
+
+    Q = B;
+    dorgqr_(&n, &n, &n, Q.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info);
+
+    char side('L'), trans('T');
+    dormqr_(&side, &trans, &n, &n, &n, B.GetData(), &n, tau.GetData(),
+	    A.GetData(), &n, work.GetData(), &lwork, &info);
+
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < i; j++)
+	B(j, i) = 0;
+
+    dgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetData(), &n,
+	    B.GetData(), &n, Q.GetData(), &n, Z.GetData(),
+	    &n, &info);
+
+    char job('S');
+    compq = 'V';
+    compz = 'V';
+    Vector<double> alphar(n), alphai(n), beta(n);
+    Vector<double> rwork(lwork);
+    dhgeqz_(&job, &compq, &compz, &n, &ilo, &ihi, A.GetData(), &n,
+	    B.GetData(), &n, alphar.GetData(), alphai.GetData(), beta.GetData(),
+	    Q.GetData(), &n, Z.GetData(), &n, work.GetData(),
+	    &lwork, &info);
+
+    Transpose(A); Transpose(B);
+    Transpose(Q); Transpose(Z);
+  }
+
+
+  template<class Prop, class Storage, class Allocator>
+  void SolveSylvester(Matrix<double, Prop, Storage, Allocator>& A,
+		      Matrix<double, Prop, Storage, Allocator>& B,
+		      Matrix<double, Prop, Storage, Allocator>& C,
+		      Matrix<double, Prop, Storage, Allocator>& D,
+		      Matrix<double, Prop, Storage, Allocator>& E)
+  {
+    double one(1), zero(0);
+    int n = A.GetM();
+    Matrix<double, Prop, Storage, Allocator> Q1(n, n), Z1(n, n);
+    Matrix<double, Prop, Storage, Allocator> Q2(n, n), Z2(n, n);
+    Matrix<double, Prop, Storage, Allocator> Y(n, n), F(n, n);
+
+    GetHessenberg(A, C, Q1, Z1);
+    GetQZ(D, B, Q2, Z2);
+
+    Y.Zero();
+    MltAdd(one, SeldonTrans, Q1, SeldonNoTrans, E, zero, Y);
+    MltAdd(one, SeldonNoTrans, Y, SeldonNoTrans, Q2, zero, F);
+    Y.Zero();
+
+    // Q1 = A y_j, Q2 = C y_j
+    Vector<double> Yvec(n);
+    Q1.Zero(); Q2.Zero(); E.Zero();
+    double coef_b, coef_d, coef_bm1, coef_dm1, coef_b2, coef_d2, coef_d3;
+    Vector<double> Yr(2*n);
+    Matrix<double, Prop, Storage, Allocator> Er(2*n, 2*n);
+    Yr.Zero(); Er.Zero();
+    int k = n-1;
+    while (k >= 0)
+      {
+        if ((k==0) || (D(k, k-1) == 0))
+          {
+            // 1x1 block : same case as for complex matrix
+
+            // computation of Yvec = F_k
+            // - \sum_{j=k+1}^n b_{k, j} A y_j + d_{k, j} C y_j
+            for (int j = 0; j < n; j++)
+              Yvec(j) = F(j, k);
+
+            for (int j = k+1; j < n; j++)
+              {
+                coef_b = B(k, j);
+                coef_d = D(k, j);
+                for (int i = 0; i < n; i++)
+                  Yvec(i) -=  coef_b * Q1(i, j) + coef_d * Q2(i, j);
+              }
+
+            coef_b = B(k, k); coef_d = D(k, k);
+            for (int i = 0; i < n; i++)
+              for (int j = max(0, i-1); j < n; j++)
+                E(i, j) = coef_b * A(i, j) + coef_d * C(i, j);
+
+            SolveHessenberg(E, Yvec);
+            for (int i = 0; i < n; i++)
+              Y(i, k) = Yvec(i);
+
+            // computation of A y_k and C y_k
+            for (int i = 0; i < n; i++)
+              for (int m = max(0, i-1); m < n; m++)
+                Q1(i, k) += A(i, m)*Yvec(m);
+
+            for (int i = 0; i < n; i++)
+              for (int m = i; m < n; m++)
+                Q2(i, k) += C(i, m)*Yvec(m);
+
+            k--;
+          }
+        else
+          {
+            // 2x2 block, we have to solve 2n x 2n linear system
+
+            // computation of Yr = (f_k-1, f_k)
+            for (int j = 0; j < n; j++)
+              {
+                Yr(2*j) = F(j, k-1);
+                Yr(2*j+1) = F(j, k);
+              }
+
+            for (int j = k+1; j < n; j++)
+              {
+                coef_b = B(k-1, j);
+                coef_d = D(k-1, j);
+                for (int i = 0; i < n; i++)
+                  Yr(2*i) -=  coef_b * Q1(i, j) + coef_d * Q2(i, j);
+
+                coef_b = B(k, j);
+                coef_d = D(k, j);
+                for (int i = 0; i < n; i++)
+                  Yr(2*i+1) -=  coef_b * Q1(i, j) + coef_d * Q2(i, j);
+              }
+
+            // computation of linear system
+            // b_{k-1, k-1} A + d_{k-1, k-1} C   b_{k-1,k} A + d_{k-1,k} C
+            //           d_{k, k-1} C              b_{k,k} A + d_{k,k} C
+            coef_bm1 = B(k-1, k-1); coef_dm1 = D(k-1, k-1);
+            coef_b2 = B(k-1, k); coef_d2 = D(k-1, k); coef_d3 = D(k, k-1);
+            coef_b = B(k, k); coef_d = D(k, k);
+            for (int i = 0; i < n; i++)
+              for (int j = max(0, i-1); j < n; j++)
+                {
+                  Er(2*i, 2*j) = coef_bm1 * A(i, j) + coef_dm1 * C(i, j);
+                  Er(2*i, 2*j+1) = coef_b2 * A(i, j) + coef_d2 * C(i, j);
+                  Er(2*i+1, 2*j) = coef_d3 * C(i, j);
+                  Er(2*i+1, 2*j+1) = coef_b * A(i, j) + coef_d * C(i, j);
+                }
+
+            SolveHessenbergTwo(Er, Yr);
+
+            for (int i = 0; i < n; i++)
+              {
+                Y(i, k-1) = Yr(2*i);
+                Y(i, k) = Yr(2*i+1);
+              }
+
+            // computation of A y_k and C y_k
+            for (int i = 0; i < n; i++)
+              for (int m = max(0, i-1); m < n; m++)
+                Q1(i, k-1) += A(i, m)*Yr(2*m);
+
+            for (int i = 0; i < n; i++)
+              for (int m = i; m < n; m++)
+                Q2(i, k-1) += C(i, m)*Yr(2*m);
+
+            for (int i = 0; i < n; i++)
+              for (int m = max(0, i-1); m < n; m++)
+                Q1(i, k) += A(i, m)*Yr(2*m+1);
+
+            for (int i = 0; i < n; i++)
+              for (int m = i; m < n; m++)
+                Q2(i, k) += C(i, m)*Yr(2*m+1);
+
+            k -= 2;
+          }
+      }
+
+    MltAdd(one, SeldonNoTrans, Y, SeldonTrans, Z2, zero, F);
+    MltAdd(one, Z1, F, zero, E);
+  }
+
+
+  // RESOLUTION SYLVESTER EQUATION //
+  ///////////////////////////////////
 
 
 } // end namespace
