@@ -143,13 +143,12 @@ namespace Seldon
   // SWAP //
 
 
-  template <class T1, class Storage1, class Allocator1,
-	    class Storage2, class Allocator2>
-  void Swap(Vector<T1, Storage1, Allocator1>& X,
-	    Vector<T1, Storage2, Allocator2>& Y)
+  template <class T, class Storage, class Allocator>
+  void Swap(Vector<T, Storage, Allocator>& X,
+	    Vector<T, Storage, Allocator>& Y)
   {
     int nx = X.GetM();
-    T1* data = X.GetData();
+    T* data = X.GetData();
     X.Nullify();
     X.SetData(Y.GetM(), Y.GetData());
     Y.Nullify();
@@ -157,12 +156,12 @@ namespace Seldon
   }
 
 
-  template <class T1, class Allocator1, class Allocator2>
-  void Swap(Vector<T1, VectSparse, Allocator1>& X,
-	    Vector<T1, VectSparse, Allocator2>& Y)
+  template <class T, class Allocator>
+  void Swap(Vector<T, VectSparse, Allocator>& X,
+	    Vector<T, VectSparse, Allocator>& Y)
   {
     int nx = X.GetM();
-    T1* data = X.GetData();
+    T* data = X.GetData();
     int* index = X.GetIndex();
     X.Nullify();
     X.SetData(Y.GetM(), Y.GetData(), Y.GetIndex());
