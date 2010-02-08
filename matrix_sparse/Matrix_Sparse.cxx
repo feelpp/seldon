@@ -945,6 +945,44 @@ namespace Seldon
    ************************/
 
 
+  //! Fills the non-zero entries with 0, 1, 2, ...
+  /*! On exit, the non-zero entries are 0, 1, 2, 3, ... The order of the
+    numbers depends on the storage.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::Fill()
+  {
+    for (int i = 0; i < this->GetDataSize(); i++)
+      this->data_[i] = i;
+  }
+
+
+  //! Fills the non-zero entries with a given value.
+  /*!
+    \param x the value to set the non-zero entries to.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  template <class T0>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::Fill(const T0& x)
+  {
+    for (int i = 0; i < this->GetDataSize(); i++)
+      this->data_[i] = x;
+  }
+
+
+  //! Fills the non-zero entries randomly.
+  /*!
+    \note The random generator is very basic.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::FillRand()
+  {
+    srand(time(NULL));
+    for (int i = 0; i < this->GetDataSize(); i++)
+      this->data_[i] = rand();
+  }
+
+
   //! Displays the matrix on the standard output.
   /*!
     Displays elements on the standard output, in text format.
@@ -1165,6 +1203,69 @@ namespace Seldon
 	 Vector<int, Storage2, Allocator2>& ind):
     Matrix_Sparse<T, Prop, RowSparse, Allocator>(i, j, values, ptr, ind)
   {
+  }
+
+
+  //! Fills the matrix with random elements.
+  /*! The matrix is cleared and then filled with \a n random elements. Both
+    the position of the elements and their values are randomly generated. On
+    exit, the matrix may not have \a n non-zero elements: it is possible that
+    the randomly-generated positions of two elements are the same.
+    \param[in] Nelement the number of random elements to be inserted in the
+    matrix.
+    \note The random generator is very basic.
+  */
+  template <class T, class Prop, class Allocator>
+  void Matrix<T, Prop, RowSparse, Allocator>::FillRand(int Nelement)
+  {
+    if (this->m_ == 0 || this->n_ == 0)
+      return;
+
+    Vector<int> i(Nelement), j(Nelement);
+    Vector<T> value(Nelement);
+
+    srand(time(NULL));
+    for (int l = 0; l < Nelement; l++)
+      {
+        i(l) = rand() % this->m_;
+        j(l) = rand() % this->n_;
+        value(l) = double(rand());
+      }
+
+    ConvertMatrix_from_Coordinates(i, j, value, *this);
+  }
+
+
+  //! Fills the matrix with one value inserted at random positions.
+  /*! The matrix is cleared and then filled with \a n random elements. Only
+    the position of the elements is randomly generated. Their value will
+    always be \a x. On exit, the matrix may not have \a n non-zero elements:
+    it is possible that the randomly-generated positions of two elements are
+    the same.
+    \param[in] Nelement the number of random elements to be inserted in the
+    matrix.
+    \param[in] x the value to be inserted.
+    \note The random generator is very basic.
+  */
+  template <class T, class Prop, class Allocator>
+  void Matrix<T, Prop, RowSparse, Allocator>
+  ::FillRand(int Nelement, const T& x)
+  {
+    if (this->m_ == 0 || this->n_ == 0)
+      return;
+
+    Vector<int> i(Nelement), j(Nelement);
+    Vector<T> value(Nelement);
+    value.Fill(x);
+
+    srand(time(NULL));
+    for (int l = 0; l < Nelement; l++)
+      {
+        i(l) = rand() % this->m_;
+        j(l) = rand() % this->n_;
+      }
+
+    ConvertMatrix_from_Coordinates(i, j, value, *this);
   }
 
 

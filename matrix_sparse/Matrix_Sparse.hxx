@@ -109,6 +109,10 @@ namespace Seldon
     operator= (const Matrix_Sparse<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.
+    void Fill();
+    template <class T0>
+    void Fill(const T0& x);
+    void FillRand();
     void Print() const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
@@ -164,6 +168,9 @@ namespace Seldon
 	   Vector<T, Storage0, Allocator0>& values,
 	   Vector<int, Storage1, Allocator1>& ptr,
 	   Vector<int, Storage2, Allocator2>& ind);
+
+    void FillRand(int Nelement);
+    void FillRand(int Nelement, const T& x);
   };
 
 

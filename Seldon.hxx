@@ -373,6 +373,7 @@ namespace Seldon
 #include "vector/Functions_Arrays.cxx"
 #include "vector/SparseVector.cxx"
 #include "matrix/Functions.cxx"
+#include "matrix_sparse/Matrix_Conversions.cxx"
 #include "computation/basic_functions/Functions_Matrix.cxx"
 #include "computation/basic_functions/Functions_Vector.cxx"
 #include "computation/basic_functions/Functions_MatVect.cxx"
