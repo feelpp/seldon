@@ -67,9 +67,13 @@ namespace Seldon
 
     // Element access and affectation.
     reference Value(int i);
+#ifndef SWIG
     const_reference Value(int i) const;
+#endif
     int& Index(int i);
+#ifndef SWIG
     int Index(int i) const;
+#endif
     reference operator() (int i);
 #ifndef SWIG
     value_type operator() (int i) const;
@@ -102,21 +106,13 @@ namespace Seldon
 
     // Input/output functions.
     void Write(string FileName) const;
-#ifndef SWIG
     void Write(ostream& FileStream) const;
-#endif
     void WriteText(string FileName) const;
-#ifndef SWIG
     void WriteText(ostream& FileStream) const;
-#endif
     void Read(string FileName);
-#ifndef SWIG
     void Read(istream& FileStream);
-#endif
     void ReadText(string FileName);
-#ifndef SWIG
     void ReadText(istream& FileStream);
-#endif
 
   };
 

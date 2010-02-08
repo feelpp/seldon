@@ -88,8 +88,10 @@ namespace std
 %include "share/Storage.hxx"
 %include "share/Properties.hxx"
 %include "vector/Vector.hxx"
+%include "vector/SparseVector.hxx"
 %include "matrix/Matrix_Base.hxx"
 %include "matrix/Matrix_Pointers.hxx"
+%include "matrix_sparse/Matrix_Sparse.hxx"
 %include "share/Allocator.hxx"
 
 namespace Seldon
@@ -193,4 +195,9 @@ namespace Seldon
   %template(MatrixBaseDouble) Matrix_Base<double, MallocAlloc<double> >;
   %template(MatrixPointersDouble) Matrix_Pointers<double, General, RowMajor, MallocAlloc<double> >;
   %template(MatrixDouble) Matrix<double, General, RowMajor, MallocAlloc<double> >;
+
+  %template(VectorSparseDouble) Vector<double, VectSparse, MallocAlloc<double> >;
+
+  %template(BaseMatrixSparseDouble) Matrix_Sparse<double, General, RowSparse, MallocAlloc<double> >;
+  %template(MatrixSparseDouble) Matrix<double, General, RowSparse, MallocAlloc<double> >;
 }

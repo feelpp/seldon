@@ -36,6 +36,21 @@ namespace Seldon
   template class Matrix_Base<double, MallocAlloc<double> >;
   template class Matrix_Pointers<double, General, RowMajor, MallocAlloc<double> >;
   template class Matrix<double, General, RowMajor, MallocAlloc<double> >;
+
+  template class Vector<double, VectSparse, MallocAlloc<double> >;
+
+  template class Matrix_Sparse<double, General, RowSparse, MallocAlloc<double> >;
+  template class Matrix<double, General, RowSparse, MallocAlloc<double> >;
+
+  template void ConvertMatrix_to_Coordinates(const Matrix<double, General, RowSparse, MallocAlloc<double> >& A,
+                                             Vector<int>& IndRow, Vector<int>& IndCol,
+                                             Vector<double, VectFull>& Val,
+                                             int index = 0, bool sym = false);
+
+  template void ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
+                                               Vector<double, VectFull>& Val,
+                                               Matrix<double, General, RowSparse, MallocAlloc<double> >& A,
+                                               int index = 0);
 }
 
 

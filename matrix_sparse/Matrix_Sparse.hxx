@@ -104,9 +104,11 @@ namespace Seldon
     // Element acess and affectation.
     value_type operator() (int i, int j) const;
     value_type& Val(int i, int j);
+#ifndef SWIG
     const value_type& Val(int i, int j) const;
     Matrix_Sparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_Sparse<T, Prop, Storage, Allocator>& A);
+#endif
 
     // Convenient functions.
     void Fill();

@@ -140,8 +140,8 @@ namespace Seldon
     void Fill();
     template <class T0>
     void Fill(const T0& x);
-    template <class T0>
 #ifndef SWIG
+    template <class T0>
     Vector<T, VectFull, Allocator>& operator= (const T0& X);
 #endif
     template <class T0>
