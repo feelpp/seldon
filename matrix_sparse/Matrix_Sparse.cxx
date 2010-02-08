@@ -923,6 +923,21 @@ namespace Seldon
   }
 
 
+  //! Add a value to a non-zero entry.
+  /*! This function adds \a val to the element (\a i, \a j), providing that
+    this element is already a non-zero entry.
+    \param[in] i row index.
+    \param[in] j column index.
+    \param[in] val value to be added to the element (\a i, \a j).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::AddInteraction(int i, int j, const T& val)
+  {
+    Val(i, j) += val;
+  }
+
+
   //! Duplicates a matrix (assignment operator).
   /*!
     \param A matrix to be copied.
@@ -943,6 +958,16 @@ namespace Seldon
   /************************
    * CONVENIENT FUNCTIONS *
    ************************/
+
+
+  //! Resets all non-zero entries to 0-value.
+  /*! The sparsity pattern remains unchanged. */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::Zero()
+  {
+    this->allocator_.memoryset(this->data_, char(0),
+			       this->nz_ * sizeof(value_type));
+  }
 
 
   //! Fills the non-zero entries with 0, 1, 2, ...

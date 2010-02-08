@@ -106,11 +106,15 @@ namespace Seldon
     value_type& Val(int i, int j);
 #ifndef SWIG
     const value_type& Val(int i, int j) const;
+#endif
+    void AddInteraction(int i, int j, const T& val);
+#ifndef SWIG
     Matrix_Sparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_Sparse<T, Prop, Storage, Allocator>& A);
 #endif
 
     // Convenient functions.
+    void Zero();
     void Fill();
     template <class T0>
     void Fill(const T0& x);
