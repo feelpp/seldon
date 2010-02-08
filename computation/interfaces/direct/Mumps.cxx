@@ -156,10 +156,10 @@ namespace Seldon
 
 	num_row_glob.Clear(); num_col_glob.Clear();
 	struct_mumps.n = 0;
-	
+
       }
 
-#ifdef SELDON_WITH_MPI    
+#ifdef SELDON_WITH_MPI
     if (new_communicator)
       {
 	MPI_Comm_free(&single_comm);
@@ -387,6 +387,15 @@ namespace Seldon
   void MatrixMumps<T>::Solve(const Transpose_status& TransA,
 			     Vector<T, VectFull, Allocator2>& x)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (x.GetM() != struct_mumps.n)
+      throw WrongDim("Mumps::Solve(TransA, c)",
+                     string("The length of x is equal to ")
+                     + to_str(x.GetM())
+                     + " while the size of the matrix is equal to "
+                     + to_str(struct_mumps.n) + ".");
+#endif
+
     if (TransA.Trans())
       struct_mumps.icntl[8] = 0;
     else
