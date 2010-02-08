@@ -27,6 +27,7 @@ using namespace Seldon;
 class SparseMatrixTest: public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE(SparseMatrixTest);
+  CPPUNIT_TEST(test_get_rowcol);
   CPPUNIT_TEST(test_conversion);
   CPPUNIT_TEST_SUITE_END();
 
@@ -44,6 +45,30 @@ public:
 
   void tearDown()
   {
+  }
+
+
+  void test_get_rowcol()
+  {
+    srand(time(NULL));
+
+    m_ = 25;
+    n_ = 10;
+    Nelement_ = 30;
+    Nloop_ = 10;
+    get_rowcol();
+
+    m_ = 10;
+    n_ = 25;
+    Nelement_ = 1;
+    Nloop_ = 10;
+    get_rowcol();
+
+    m_ = 20;
+    n_ = 20;
+    Nelement_ = 300;
+    Nloop_ = 10;
+    get_rowcol();
   }
 
 
@@ -84,6 +109,53 @@ public:
     Nelement_ = 100;
     Nloop_ = 2;
     conversion();
+  }
+
+
+  void get_rowcol()
+  {
+    int i, j, k;
+    for (k = 0; k < Nloop_; k++)
+      {
+        Matrix<double, General, RowSparse> A(m_, n_);
+        A.FillRand(Nelement_);
+
+        /*** To full vectors ***/
+
+        Vector<double> row, column;
+        // Rows.
+        for (i = 0; i < m_; i++)
+          {
+            GetRow(A, i, row);
+            for (j = 0; j < n_; j++)
+              CPPUNIT_ASSERT(A(i, j) == row(j));
+          }
+        // Columns.
+        for (j = 0; j < n_; j++)
+          {
+            GetCol(A, j, column);
+            for (i = 0; i < m_; i++)
+              CPPUNIT_ASSERT(A(i, j) == column(i));
+          }
+
+        /*** To sparse vectors ***/
+
+        Vector<double, VectSparse> row_sparse, column_sparse;
+        // Rows.
+        for (i = 0; i < m_; i++)
+          {
+            GetRow(A, i, row_sparse);
+            for (j = 0; j < n_; j++)
+              CPPUNIT_ASSERT(A(i, j) == row_sparse(j));
+          }
+        // Columns.
+        for (j = 0; j < n_; j++)
+          {
+            GetCol(A, j, column_sparse);
+            for (i = 0; i < m_; i++)
+              CPPUNIT_ASSERT(A(i, j) == column_sparse(i));
+          }
+      }
   }
 
 
