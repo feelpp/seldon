@@ -1048,29 +1048,11 @@ namespace Seldon
 
 
   //! B = A.
-  template<class T, class Prop, class Alloc1, class Alloc2>
-  void Copy(const Matrix<T, Prop, ColSparse, Alloc1>& A,
-	    Matrix<T, Prop, ColSparse, Alloc2>& B)
+  template<class T, class Prop, class Storage, class Allocator>
+  void Copy(const Matrix<T, Prop, Storage, Allocator>& A,
+	    Matrix<T, Prop, Storage, Allocator>& B)
   {
-    int i;
-
-    int m = A.GetM(), n = A.GetN(), nnz = A.GetDataSize();
-    int* ptr_ = A.GetPtr();
-    int* ind_ = A.GetInd();
-    T* data_ = A.GetData();
-
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(n+1), Ind(nnz);
-    Vector<T, VectFull, Alloc2> Val(nnz);
-    for (i = 0; i <= n; i++)
-      Ptr(i) = ptr_[i];
-
-    for (i = 0; i < nnz; i++)
-      {
-	Ind(i) = ind_[i];
-	Val(i) = data_[i];
-      }
-
-    B.SetData(m, n, Val, Ptr, Ind);
+    B = A;
   }
 
 
