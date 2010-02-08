@@ -28,6 +28,10 @@
   alpha M X -> Y
   Mlt(alpha, M, X, Y)
 
+  M X -> Y
+  M^T X -> Y
+  Mlt(Trans, M, X, Y)
+
   alpha M X + beta Y -> Y
   MltAdd(alpha, M, X, beta, Y)
 */
@@ -84,6 +88,30 @@ namespace Seldon
   {
     Y.Fill(T2(0));
     MltAdd(alpha, M, X, T3(0), Y);
+  }
+
+
+  //! Performs the multiplication of a matrix with a vector.
+  /*! It performs the operation \f$ Y = M X \f$ or \f$ Y = M^T X \f$ where \f$
+    M \f$ is a \f$ m \times n \f$ matrix, and \f$ X \f$ is a vector of length
+    \f$ m \f$. The returned vector \f$ Y \f$ must be of length \f$ n \f$.
+    \param[in] Trans transposition status of \a M: it may be SeldonNoTrans or
+    SeldonTrans.
+    \param[in] M m by n matrix.
+    \param[in] X vector of length m.
+    \param[out] Y vector of length n, result of the product of \a M^T by \a
+    X. It must have the right length on entry: it will not be resized.
+  */
+  template <class T1, class Prop1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3, class Storage3, class Allocator3>
+  void Mlt(const class_SeldonTrans& Trans,
+	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+	   const Vector<T2, Storage2, Allocator2>& X,
+	   Vector<T3, Storage3, Allocator3>& Y)
+  {
+    Y.Fill(T2(0));
+    MltAdd(T2(1), Trans, M, X, T3(0), Y);
   }
 
 
