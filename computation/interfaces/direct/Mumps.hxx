@@ -115,7 +115,7 @@ namespace Seldon
 
     template<class Prop, class Storage, class Allocator>
     void PerformFactorization(Matrix<T, Prop, Storage, Allocator> & mat);
-    
+
     template<class Prop1, class Storage1, class Allocator1,
 	     class Prop2, class Storage2, class Allocator2>
     void GetSchurMatrix(Matrix<T, Prop1, Storage1, Allocator1>& mat,

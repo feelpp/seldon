@@ -66,7 +66,8 @@ namespace Seldon
 
   //! initialization of the computation
   template<class T> template<class MatrixSparse>
-  inline void MatrixMumps<T>::InitMatrix(const MatrixSparse& A, bool distributed)
+  inline void MatrixMumps<T>
+  ::InitMatrix(const MatrixSparse& A, bool distributed)
   {
     // we clear previous factorization
     Clear();
@@ -152,7 +153,7 @@ namespace Seldon
       {
 	struct_mumps.job = -2;
 	CallMumps(); /* Terminate instance */
-	
+
 	num_row_glob.Clear(); num_col_glob.Clear();
 	struct_mumps.n = 0;
 	
@@ -195,8 +196,8 @@ namespace Seldon
     struct_mumps.icntl[3] = 2;
 
   }
-  
-  
+
+
   template<class T>
   inline void MatrixMumps<T>::EnableOutOfCore()
   {
@@ -209,8 +210,8 @@ namespace Seldon
   {
     out_of_core = false;
   }
-  
-  
+
+
   //! computes row numbers
   /*!
     \param[in,out] mat matrix whose we want to find the ordering
@@ -235,11 +236,11 @@ namespace Seldon
     struct_mumps.n = n; struct_mumps.nz = nnz;
     struct_mumps.irn = num_row.GetData();
     struct_mumps.jcn = num_col.GetData();
-    
+
     /* Call the MUMPS package. */
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
-    
+
     numbers.Reallocate(n);
     for (int i = 0; i < n; i++)
       numbers(i) = struct_mumps.sym_perm[i]-1;
@@ -256,7 +257,7 @@ namespace Seldon
 				       bool keep_matrix)
   {
     InitMatrix(mat);
-    
+
     int n = mat.GetM(), nnz = mat.GetNonZeros();
     // conversion in coordinate format with fortran convention (1-index)
     IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
@@ -265,45 +266,46 @@ namespace Seldon
       mat.Clear();
 
     struct_mumps.n = n; struct_mumps.nz = nnz;
-    struct_mumps.irn = num_row.GetData(); struct_mumps.jcn = num_col.GetData();
+    struct_mumps.irn = num_row.GetData();
+    struct_mumps.jcn = num_col.GetData();
     struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
-    
+
     /* Call the MUMPS package. */
     struct_mumps.job = 4; // we analyse and factorize the system
     CallMumps();
   }
 
-  
+
   //! Symbolic factorization
   template<class T> template<class Prop, class Storage, class Allocator>
   void MatrixMumps<T>
   ::PerformAnalysis(Matrix<T, Prop, Storage, Allocator> & mat)
   {
     InitMatrix(mat);
-    
+
     int n = mat.GetM(), nnz = mat.GetNonZeros();
     // conversion in coordinate format with fortran convention (1-index)
     Vector<T, VectFull, Allocator> values;
     ConvertMatrix_to_Coordinates(mat, num_row_glob, num_col_glob, values, 1);
-    
+
     struct_mumps.n = n; struct_mumps.nz = nnz;
     struct_mumps.irn = num_row_glob.GetData();
     struct_mumps.jcn = num_col_glob.GetData();
     struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
-    
+
     /* Call the MUMPS package. */
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
   }
 
-  
+
   //! Numerical factorization
   /*!
-    Be careful, because no conversion is performed in the method, 
+    Be careful, because no conversion is performed in the method,
     so you have to choose RowSparse/ColSparse for unsymmetric matrices
     and RowSymSparse/ColSymSparse for symmetric matrices.
     The other formats should not work
-   */
+  */
   template<class T> template<class Prop, class Storage, class Allocator>
   void MatrixMumps<T>
   ::PerformFactorization(Matrix<T, Prop, Storage, Allocator> & mat)
@@ -311,13 +313,13 @@ namespace Seldon
     // we consider that the values are corresponding
     // to the row/column numbers given for the analysis
     struct_mumps.a = reinterpret_cast<pointer>(mat.GetData());
-    
+
     /* Call the MUMPS package. */
     struct_mumps.job = 2; // we factorize the system
     CallMumps();
   }
-  
-  
+
+
   //! returns information about factorization performed
   template<class T>
   int MatrixMumps<T>::GetInfoFactorization() const
@@ -488,11 +490,14 @@ namespace Seldon
 		if (i != 0)
 		  {
 		    int nb_dof;
-		    MPI_Recv(&nb_dof, 1, MPI_INT, i, 34, MPI_COMM_WORLD, &status);
+		    MPI_Recv(&nb_dof, 1, MPI_INT, i, 34,
+                             MPI_COMM_WORLD, &status);
 		    xp.Reallocate(nb_dof);
 		    nump.Reallocate(nb_dof);
-		    MPI_Recv(xp.GetDataVoid(), cplx*nb_dof, MPI_DOUBLE, i, 35, MPI_COMM_WORLD, &status);
-		    MPI_Recv(nump.GetData(), nb_dof, MPI_INT, i, 36, MPI_COMM_WORLD, &status);
+		    MPI_Recv(xp.GetDataVoid(), cplx*nb_dof,
+                             MPI_DOUBLE, i, 35, MPI_COMM_WORLD, &status);
+		    MPI_Recv(nump.GetData(), nb_dof, MPI_INT, i, 36,
+                             MPI_COMM_WORLD, &status);
 		  }
 		else
 		  {
@@ -527,7 +532,8 @@ namespace Seldon
     CallMumps();
 
     // we distribute solution on all the processors
-    MPI_Bcast(rhs.GetDataVoid(), cplx*rhs.GetM(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(rhs.GetDataVoid(), cplx*rhs.GetM(),
+              MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     // and we extract the solution on provided numbers
     for (int i = 0; i < x.GetM(); i++)
@@ -561,16 +567,18 @@ namespace Seldon
 
 
   template<class T, class Storage, class Allocator, class MatrixFull>
-  void GetSchurMatrix(Matrix<T,Symmetric,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
-		      const IVect& num, MatrixFull& schur_matrix, bool keep_matrix = false)
+  void GetSchurMatrix(Matrix<T, Symmetric, Storage, Allocator>& A,
+                      MatrixMumps<T>& mat_lu, const IVect& num,
+                      MatrixFull& schur_matrix, bool keep_matrix = false)
   {
     mat_lu.GetSchurMatrix(A, num, schur_matrix, keep_matrix);
   }
 
 
   template<class T, class Storage, class Allocator, class MatrixFull>
-  void GetSchurMatrix(Matrix<T,General,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
-		      const IVect& num, MatrixFull& schur_matrix, bool keep_matrix = false)
+  void GetSchurMatrix(Matrix<T, General, Storage, Allocator>& A,
+                      MatrixMumps<T>& mat_lu, const IVect& num,
+                      MatrixFull& schur_matrix, bool keep_matrix = false)
   {
     mat_lu.GetSchurMatrix(A, num, schur_matrix, keep_matrix);
   }
