@@ -35,14 +35,13 @@ namespace Seldon
     void *Symbolic, *Numeric ; //!< pointers of UmfPack objects
     int n; //!< number of rows in the matrix
     bool display_info; //!< true if display is allowed
+    bool transpose; //! transpose system to solve ?
 
   public :
     MatrixUmfPack_Base();
-    ~MatrixUmfPack_Base();
 
     void HideMessages();
     void ShowMessages();
-    void Clear();
 
   };
 
@@ -56,50 +55,63 @@ namespace Seldon
   template<>
   class MatrixUmfPack<double> : public MatrixUmfPack_Base<double>
   {
+
+  protected :
+    //! arrays containing matrix pattern in csc format
+    int* ind_, *ptr_;
+    //! non-zero values
+    double* data_;
+
   public :
-    //! unsymmetric matrix in Column Sparse Row Format
-    Matrix<double, General, ColSparse> Acsr;
 
     MatrixUmfPack();
     ~MatrixUmfPack();
 
-    void Clear(){this->~MatrixUmfPack();}
+    void Clear();
 
-    template<class Prop, class Storage,class Allocator>
-    void FactorizeMatrix(Matrix<double,Prop,Storage,Allocator> & mat,
+    template<class Prop, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
+
+    template<class Prop, class Allocator>
+    void PerformAnalysis(Matrix<double, Prop, RowSparse, Allocator> & mat);
+
+    template<class Prop, class Allocator>
+    void
+    PerformFactorization(Matrix<double, Prop, RowSparse, Allocator> & mat);
 
     template<class Allocator2>
     void Solve(Vector<double, VectFull, Allocator2>& x);
 
   };
 
+
   //! class to solve linear system in complex double precision with UmfPack
   template<>
   class MatrixUmfPack<complex<double> >
     : public MatrixUmfPack_Base<complex<double> >
   {
-  public:
-    //! Index of unsymmetric matrix in Column Sparse Row Format
-    IVect Ptr, Ind;
 
-    //! imaginary part of unsymmetric matrix in Column Sparse Row Format
-    Vector<double> ValuesImag;
+  protected:
+    //! arrays containing matrix pattern in csc format
+    int* ptr_, *ind_;
+    //! non-zero values
+    double* data_real_, *data_imag_;
 
-    //! real part of unsymmetric matrix in Column Sparse Row Format
-    Vector<double> ValuesReal;
+  public :
 
     MatrixUmfPack();
     ~MatrixUmfPack();
 
-    void Clear(){this->~MatrixUmfPack();}
+    void Clear();
 
-    template<class Prop, class Storage,class Allocator>
-    void FactorizeMatrix(Matrix<complex<double>,Prop,Storage,Allocator> & mat,
-			 bool keep_matrix = false);
+    template<class Prop, class Storage, class Allocator>
+    void
+    FactorizeMatrix(Matrix<complex<double>, Prop, Storage, Allocator> & mat,
+                    bool keep_matrix = false);
 
     template<class Allocator2>
-    void Solve(Vector<complex<double>,VectFull,Allocator2>& x);
+    void Solve(Vector<complex<double>, VectFull, Allocator2>& x);
 
   };
 
