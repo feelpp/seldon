@@ -253,26 +253,27 @@ namespace Seldon
   template<class T, class Storage, class Allocator>
   void MergeSort(int m, int n, Vector<T, Storage, Allocator>& tab1)
   {
-    if (m <= n)
+    if (m >= n)
       return;
 
     int inc = 1, ind = 0, current, i, j, sup;
-    Vector<T, Storage, Allocator> tab1t(m-n+1);
+    Vector<T, Storage, Allocator> tab1t(n - m + 1);
     // Performs a merge sort with a recurrence.
     // inc = 1, 2, 4, 8, ...
-    while (inc < n)
+    while (inc < (n - m + 1) )
       {
 	// 'i' is the first index of the sub array of size 2*inc.
 	// A loop is performed on these sub-arrays.
 	// Each sub array is divided in two sub-arrays of size 'inc'.
 	// These two sub-arrays are then merged.
-	for (i = m; i < n - inc; i += 2 * inc)
+	for (i = m; i <= n - inc; i += 2 * inc)
 	  {
 	    ind = i;
 	    current = i + inc; // Index of the second sub-array.
 	    sup = i + 2 * inc; // End of the merged array.
-	    if (sup >= n)
-	      sup = n;
+	    if (sup >= n + 1)
+	      sup = n + 1;
+
 	    j = i;
 	    // Loop on values of the first sub-array.
 	    while (j < i + inc)
@@ -288,10 +289,12 @@ namespace Seldon
 			current++;
 			ind++;
 		      }
+
 		    // Inserts the element of the first sub-array now.
 		    tab1t(ind - m) = tab1(j);
 		    ind++;
 		    j++;
+
 		    // If the first sub-array is sorted, all remaining
 		    // elements of the second sub-array are inserted.
 		    if (j == i + inc)
@@ -334,22 +337,23 @@ namespace Seldon
   void MergeSort(int m, int n, Vector<T1, Storage1, Allocator1>& tab1,
 		 Vector<T2, Storage2, Allocator2>& tab2)
   {
-    if (m <= n)
+    if (m >= n)
       return;
 
     int inc = 1, ind = 0, current, i, j, sup;
-    Vector<T1, Storage1, Allocator1> tab1t(m - n + 1);
-    Vector<T2, Storage2, Allocator2> tab2t(m - n + 1);
+    Vector<T1, Storage1, Allocator1> tab1t(n - m + 1);
+    Vector<T2, Storage2, Allocator2> tab2t(n - m + 1);
 
-    while (inc < n)
+    while (inc < n - m + 1)
       {
-	for (i = 0; i < n - inc; i += 2 * inc)
+	for (i = m; i <= n - inc; i += 2 * inc)
 	  {
 	    ind = i;
 	    current = i + inc;
 	    sup = i + 2 * inc;
-	    if (sup >= n)
-	      sup = n;
+	    if (sup >= n+1)
+	      sup = n+1;
+
 	    j = i;
 	    while (j < i + inc)
 	      {
@@ -388,7 +392,7 @@ namespace Seldon
 		  }
 	      }
 	  }
-	for (i = 0; i < ind; i++)
+	for (i = m; i < ind; i++)
 	  {
 	    tab1(i) = tab1t(i - m);
 	    tab2(i) = tab2t(i - m);
@@ -409,7 +413,7 @@ namespace Seldon
 		 Vector<T2, Storage2, Allocator2>& tab2,
 		 Vector<T3, Storage3, Allocator3>& tab3)
   {
-    if (m <= n)
+    if (m >= n)
       return;
 
     int inc = 1, ind = 0, current, i, j, sup;
@@ -417,15 +421,16 @@ namespace Seldon
     Vector<T2, Storage2, Allocator2> tab2t(n - m + 1);
     Vector<T3, Storage3, Allocator3> tab3t(n - m + 1);
 
-    while (inc < n)
+    while (inc < n - m + 1)
       {
-	for (i = 0; i < n - inc; i += 2 * inc)
+	for (i = m; i <= n - inc; i += 2 * inc)
 	  {
 	    ind = i;
 	    current = i + inc;
 	    sup = i + 2 * inc;
-	    if (sup >= n)
-	      sup = n;
+	    if (sup >= n+1)
+	      sup = n+1;
+
 	    j = i;
 	    while (j < i + inc)
 	      {
@@ -468,7 +473,7 @@ namespace Seldon
 		  }
 	      }
 	  }
-	for (i = 0; i < ind; i++)
+	for (i = m; i < ind; i++)
 	  {
 	    tab1(i) = tab1t(i - m);
 	    tab2(i) = tab2t(i - m);
