@@ -42,6 +42,10 @@
 #include "computation/interfaces/direct/SuperLU.cxx"
 #endif
 
+#ifdef SELDON_WITH_PASTIX
+#include "computation/interfaces/direct/Pastix.cxx"
+#endif
+
 // iterative solvers and preconditioning
 
 #include "computation/solver/iterative/Iterative.cxx"
