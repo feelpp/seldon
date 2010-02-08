@@ -10537,12 +10537,34 @@ namespace Seldon
 		   LapackInfo& info = lapack_info)
   {
     int n = A.GetN();
-#ifdef SELDON_CHECK_BOUNDARIES
+#ifdef SELDON_CHECK_BOUNDS
     if (n <= 0)
-      throw WrongDim("GetLU", "Provide a non-empty matrix");
+      throw WrongDim("GetCholesky", "Provide a non-empty matrix");
 #endif
 
     char uplo('L');
+    dpptrf_(&uplo, &n, A.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetCholesky",
+			"An error occured during the factorization.");
+#endif
+
+  }
+
+
+  template<class Prop, class Allocator>
+  void GetCholesky(Matrix<double, Prop, ColSymPacked, Allocator>& A,
+		   LapackInfo& info = lapack_info)
+  {
+    int n = A.GetN();
+#ifdef SELDON_CHECK_BOUNDS
+    if (n <= 0)
+      throw WrongDim("GetCholesky", "Provide a non-empty matrix");
+#endif
+
+    char uplo('U');
     dpptrf_(&uplo, &n, A.GetData(), &info.GetInfoRef());
 
 #ifdef SELDON_LAPACK_CHECK_INFO
@@ -10565,18 +10587,101 @@ namespace Seldon
   template<class Transp, class Prop, class Allocator, class Allocator2>
   void SolveCholesky(const Transp& TransA,
 		     const Matrix<double, Prop, RowSymPacked, Allocator>& A,
-		     Vector<double, Vect_Full, Allocator2>& X,
+		     Vector<double, VectFull, Allocator2>& X,
 		     LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_BOUNDS
+    if (X.GetM() != A.GetM())
+      throw WrongDim("SolveCholesky",
+                     "The vector should have a dimension compatible "
+                     "with the matrix.");
+#endif
+
     // basic triangular solve
-    char uplo('L'); char trans(TransA.RevChar()); char diag('N');
+    char uplo('L'); char trans(TransA.Char()); char diag('N');
     int n = A.GetM(); int nrhs = 1;
-    dtptrs_(&uplo, &trans, &diag, &n, &nrhs, A.GetData(), X.GetData(), &n, &info.GetInfoRef());
+    dtptrs_(&uplo, &trans, &diag, &n, &nrhs, A.GetData(), X.GetData(),
+            &n, &info.GetInfoRef());
+  }
+
+
+  template<class Transp, class Prop, class Allocator, class Allocator2>
+  void SolveCholesky(const Transp& TransA,
+		     const Matrix<double, Prop, ColSymPacked, Allocator>& A,
+		     Vector<double, VectFull, Allocator2>& X,
+		     LapackInfo& info = lapack_info)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    if (X.GetM() != A.GetM())
+      throw WrongDim("SolveCholesky",
+                     "The vector should have a dimension compatible "
+                     "with the matrix.");
+#endif
+
+    // basic triangular solve
+    char uplo('U'); char trans(TransA.RevChar()); char diag('N');
+    int n = A.GetM(); int nrhs = 1;
+    dtptrs_(&uplo, &trans, &diag, &n, &nrhs, A.GetData(), X.GetData(),
+            &n, &info.GetInfoRef());
   }
 
 
   // SolveCholesky //
   ///////////////////
+
+
+  /////////////////
+  // MltCholesky //
+
+
+  template<class Transp, class Prop, class Allocator, class Allocator2>
+  void MltCholesky(const Transp& TransA,
+                   const Matrix<double, Prop, RowSymPacked, Allocator>& A,
+                   Vector<double, VectFull, Allocator2>& X,
+                   LapackInfo& info = lapack_info)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    if (X.GetM() != A.GetM())
+      throw WrongDim("MltCholesky",
+                     "The vector should have a dimension compatible "
+                     "with the matrix.");
+#endif
+
+    // matrix-vector product with a triangular matrix
+    if (TransA.Trans())
+      cblas_dtpmv(CblasRowMajor, CblasUpper, CblasNoTrans, CblasNonUnit,
+                  A.GetM(), A.GetData(), X.GetData(), 1);
+    else
+      cblas_dtpmv(CblasRowMajor, CblasUpper, CblasTrans, CblasNonUnit,
+                  A.GetM(), A.GetData(), X.GetData(), 1);
+  }
+
+
+  template<class Transp, class Prop, class Allocator, class Allocator2>
+  void MltCholesky(const Transp& TransA,
+                   const Matrix<double, Prop, ColSymPacked, Allocator>& A,
+                   Vector<double, VectFull, Allocator2>& X,
+                   LapackInfo& info = lapack_info)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    if (X.GetM() != A.GetM())
+      throw WrongDim("MltCholesky",
+                     "The vector should have a dimension compatible "
+                     "with the matrix.");
+#endif
+
+    // matrix-vector product with a triangular matrix
+    if (TransA.Trans())
+      cblas_dtpmv(CblasColMajor, CblasUpper, CblasNoTrans, CblasNonUnit,
+                  A.GetM(), A.GetData(), X.GetData(), 1);
+    else
+      cblas_dtpmv(CblasColMajor, CblasUpper, CblasTrans, CblasNonUnit,
+                  A.GetM(), A.GetData(), X.GetData(), 1);
+  }
+
+
+  // MltCholesky //
+  /////////////////
 
 
   // Generic method, which factorizes a matrix and solve the linear system
