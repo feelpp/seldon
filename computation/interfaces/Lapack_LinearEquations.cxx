@@ -83,24 +83,24 @@ namespace Seldon
   };
 
 
-  LapackInfo::LapackInfo(int info): info_(info)
+  inline LapackInfo::LapackInfo(int info): info_(info)
   {
   }
 
 
-  LapackInfo::operator int ()
-  {
-    return info_;
-  }
-
-
-  int LapackInfo::GetInfo()
+  inline LapackInfo::operator int ()
   {
     return info_;
   }
 
 
-  int& LapackInfo::GetInfoRef()
+  inline int LapackInfo::GetInfo()
+  {
+    return info_;
+  }
+
+
+  inline int& LapackInfo::GetInfoRef()
   {
     return info_;
   }
