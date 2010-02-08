@@ -30,43 +30,47 @@ namespace Seldon
   */
 
 
-  //! Conversion from RowSparse to coordinate format.
-  template<class T, class Prop, class Allocator1, class Allocator2>
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Allocator3, class Allocator4>
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, RowSparse,
 			       Allocator1>& A,
-			       Vector<int>& IndRow, Vector<int>& IndCol,
-			       Vector<T, VectFull, Allocator2>& Val,
+			       Vector<int, VectFull, Allocator2>& IndRow,
+			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
 
-  //! Conversion from ColSparse to coordinate format.
-  template<class T, class Prop, class Allocator1, class Allocator2>
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Allocator3, class Allocator4>
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ColSparse,
 			       Allocator1>& A,
-			       Vector<int>& IndRow, Vector<int>& IndCol,
-			       Vector<T, VectFull, Allocator2>& Val,
+			       Vector<int, VectFull, Allocator2>& IndRow,
+			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
 
-  //! Conversion from RowSymSparse to coordinate format.
-  template<class T, class Prop, class Allocator1, class Allocator2>
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Allocator3, class Allocator4>
   void
-  ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
-			       RowSymSparse, Allocator1>& A,
-			       Vector<int>& IndRow, Vector<int>& IndCol,
-			       Vector<T, VectFull, Allocator2>& Val,
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, RowSymSparse,
+			       Allocator1>& A,
+			       Vector<int, VectFull, Allocator2>& IndRow,
+			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
 
-  //! Conversion from ColSymSparse to coordinate format.
-  template<class T, class Prop, class Allocator1, class Allocator2>
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Allocator3, class Allocator4>
   void
-  ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
-			       ColSymSparse, Allocator1>& A,
-			       Vector<int>& IndRow, Vector<int>& IndCol,
-			       Vector<T, VectFull, Allocator2>& Val,
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ColSymSparse,
+			       Allocator1>& A,
+			       Vector<int, VectFull, Allocator2>& IndRow,
+			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
 
@@ -75,43 +79,47 @@ namespace Seldon
   */
 
 
-  //! Conversion from ArrayRowSparse to coordinate format.
-  template<class T, class Prop, class Allocator1, class Allocator2>
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Allocator3, class Allocator4>
   void
-  ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
-			       ArrayRowSparse, Allocator1>& A,
-			       Vector<int>& IndRow, Vector<int>& IndCol,
-			       Vector<T, VectFull, Allocator2>& Val,
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayRowSparse,
+			       Allocator1>& A,
+			       Vector<int, VectFull, Allocator2>& IndRow,
+			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
 
-  //! Conversion from ArrayColSparse to coordinate format.
-  template<class T, class Prop, class Allocator1, class Allocator2>
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Allocator3, class Allocator4>
   void
-  ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
-			       ArrayColSparse, Allocator1>& A,
-			       Vector<int>& IndRow, Vector<int>& IndCol,
-			       Vector<T, VectFull, Allocator2>& Val,
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayColSparse,
+			       Allocator1>& A,
+			       Vector<int, VectFull, Allocator2>& IndRow,
+			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
 
-  //! Conversion from ArrayRowSymSparse to coordinate format.
-  template<class T, class Prop, class Allocator1, class Allocator2>
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Allocator3, class Allocator4>
   void
-  ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
-			       ArrayRowSymSparse, Allocator1>& A,
-			       Vector<int>& IndRow, Vector<int>& IndCol,
-			       Vector<T, VectFull, Allocator2>& Val,
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayRowSymSparse,
+			       Allocator1>& A,
+			       Vector<int, VectFull, Allocator2>& IndRow,
+			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
 
-  //! Conversion from ArrayColSymSparse to coordinate format.
-  template<class T, class Prop, class Allocator1, class Allocator2>
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Allocator3, class Allocator4>
   void
-  ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
-			       ArrayColSymSparse, Allocator1>& A,
-			       Vector<int>& IndRow, Vector<int>& IndCol,
-			       Vector<T, VectFull, Allocator2>& Val,
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayColSymSparse,
+			       Allocator1>& A,
+			       Vector<int, VectFull, Allocator2>& IndRow,
+			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
 
@@ -120,47 +128,43 @@ namespace Seldon
   */
 
 
-  //! Conversion from coordinate format to RowSparse.
-  /*! Contrary to the other conversion functions
-    ConvertMatrix_from_Coordinates, this one accepts duplicates.
-    \param[in] IndRow row indexes of the non-zero elements.
-    \param[in] IndCol column indexes of the non-zero elements.
-    \param[in] Val values of the non-zero elements.
-    \param[out] A matrix defined by \a IndRow, \a IndCol and \a Val.
-    \param[in] index index of the first column and of the first row.
-  */
-  template<class T, class Prop, class Allocator>
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3>
   void
-  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
-				 Vector<T, VectFull, Allocator>& Val,
-				 Matrix<T, Prop, RowSparse, Allocator>& A,
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow_,
+				 Vector<int, VectFull, Allocator2>& IndCol_,
+				 Vector<T, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, RowSparse, Allocator3>& A,
 				 int index = 0);
 
 
-  //! Conversion from coordinate format to ColSparse.
-  template<class T, class Prop, class Allocator>
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3>
   void
-  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
-				 Vector<T, VectFull, Allocator>& Val,
-				 Matrix<T, Prop, ColSparse, Allocator>& A,
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow_,
+				 Vector<int, VectFull, Allocator2>& IndCol_,
+				 Vector<T, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ColSparse, Allocator3>& A,
 				 int index = 0);
 
 
-  //! Conversion from coordinate format to RowSymSparse.
-  template<class T, class Prop, class Allocator>
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3>
   void
-  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
-				 Vector<T, VectFull, Allocator>& Val,
-				 Matrix<T, Prop, RowSymSparse, Allocator>& A,
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow_,
+				 Vector<int, VectFull, Allocator2>& IndCol_,
+				 Vector<T, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, RowSymSparse, Allocator3>& A,
 				 int index = 0);
 
 
-  //! Conversion from coordinate format to ColSymSparse.
-  template<class T, class Prop, class Allocator>
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3>
   void
-  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
-				 Vector<T, VectFull, Allocator>& Val,
-				 Matrix<T, Prop, ColSymSparse, Allocator>& A,
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow_,
+				 Vector<int, VectFull, Allocator2>& IndCol_,
+				 Vector<T, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ColSymSparse, Allocator3>& A,
 				 int index = 0);
 
 
@@ -169,43 +173,47 @@ namespace Seldon
   */
 
 
-  //! Conversion from coordinate format to ArrayRowSparse.
-  template<class T, class Prop, class Allocator>
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3>
   void
-  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
-				 Vector<T, VectFull, Allocator>& Val,
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow_,
+				 Vector<int, VectFull, Allocator2>& IndCol_,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayRowSparse,
-				 Allocator>& A,
+				 Allocator3>& A,
 				 int index = 0);
 
 
-  //! Conversion from coordinate format to ArrayColSparse.
-  template<class T, class Prop, class Allocator>
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3>
   void
-  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
-				 Vector<T, VectFull, Allocator>& Val,
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow_,
+				 Vector<int, VectFull, Allocator2>& IndCol_,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayColSparse,
-				 Allocator>& A,
+				 Allocator3>& A,
 				 int index = 0);
 
 
-  //! Conversion from coordinate format to ArrayRowSymSparse.
-  template<class T, class Prop, class Allocator>
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3>
   void
-  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
-				 Vector<T, VectFull, Allocator>& Val,
-				 Matrix<T, Prop,
-				 ArrayRowSymSparse, Allocator>& A,
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow_,
+				 Vector<int, VectFull, Allocator2>& IndCol_,
+				 Vector<T, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ArrayRowSymSparse,
+				 Allocator3>& A,
 				 int index = 0);
 
 
-  //! Conversion from coordinate format to ArrayColSymSparse.
-  template<class T, class Prop, class Allocator>
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3>
   void
-  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
-				 Vector<T, VectFull, Allocator>& Val,
-				 Matrix<T, Prop,
-				 ArrayColSymSparse, Allocator>& A,
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow_,
+				 Vector<int, VectFull, Allocator2>& IndCol_,
+				 Vector<T, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ArrayColSymSparse,
+				 Allocator3>& A,
 				 int index = 0);
 
 
