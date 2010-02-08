@@ -20,6 +20,10 @@
 
 #ifndef SELDON_FILE_MATRIX_CONVERSIONS_CXX
 
+
+#include "Matrix_Conversions.hxx"
+
+
 namespace Seldon
 {
 
@@ -33,7 +37,7 @@ namespace Seldon
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, RowSparse,
 			       Allocator1>& A,
-			       IVect& IndRow, IVect& IndCol,
+			       Vector<int>& IndRow, Vector<int>& IndCol,
 			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -61,7 +65,7 @@ namespace Seldon
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ColSparse,
 			       Allocator1>& A,
-			       IVect& IndRow, IVect& IndCol,
+			       Vector<int>& IndRow, Vector<int>& IndCol,
 			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -89,7 +93,7 @@ namespace Seldon
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
 			       RowSymSparse, Allocator1>& A,
-			       IVect& IndRow, IVect& IndCol,
+			       Vector<int>& IndRow, Vector<int>& IndCol,
 			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -109,7 +113,7 @@ namespace Seldon
 	IndRow.Reallocate(nnz);
 	IndCol.Reallocate(nnz);
 	Val.Reallocate(nnz);
-	IVect Ptr(m);
+	Vector<int> Ptr(m);
 	Ptr.Zero();
 	int nb = 0;
 	for (i = 0; i < m; i++)
@@ -164,7 +168,7 @@ namespace Seldon
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
 			       ColSymSparse, Allocator1>& A,
-			       IVect& IndRow, IVect& IndCol,
+			       Vector<int>& IndRow, Vector<int>& IndCol,
 			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -185,7 +189,7 @@ namespace Seldon
 	IndRow.Reallocate(nnz);
 	IndCol.Reallocate(nnz);
 	Val.Reallocate(nnz);
-	IVect Ptr(m);
+	Vector<int> Ptr(m);
 	Ptr.Zero();
 	int nb = 0;
 	for (i = 0; i < m; i++)
@@ -245,7 +249,7 @@ namespace Seldon
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
 			       ArrayRowSparse, Allocator1>& A,
-			       IVect& IndRow, IVect& IndCol,
+			       Vector<int>& IndRow, Vector<int>& IndCol,
 			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -273,7 +277,7 @@ namespace Seldon
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
 			       ArrayColSparse, Allocator1>& A,
-			       IVect& IndRow, IVect& IndCol,
+			       Vector<int>& IndRow, Vector<int>& IndCol,
 			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -301,7 +305,7 @@ namespace Seldon
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
 			       ArrayRowSymSparse, Allocator1>& A,
-			       IVect& IndRow, IVect& IndCol,
+			       Vector<int>& IndRow, Vector<int>& IndCol,
 			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -319,7 +323,7 @@ namespace Seldon
 	IndRow.Reallocate(nnz);
 	IndCol.Reallocate(nnz);
 	Val.Reallocate(nnz);
-	IVect Ptr(m);
+	Vector<int> Ptr(m);
 	Ptr.Zero();
 	int nb = 0;
 	for (i = 0; i < m; i++)
@@ -376,7 +380,7 @@ namespace Seldon
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop,
 			       ArrayColSymSparse, Allocator1>& A,
-			       IVect& IndRow, IVect& IndCol,
+			       Vector<int>& IndRow, Vector<int>& IndCol,
 			       Vector<T, VectFull, Allocator2>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -394,7 +398,7 @@ namespace Seldon
 	IndRow.Reallocate(nnz);
 	IndCol.Reallocate(nnz);
 	Val.Reallocate(nnz);
-	IVect Ptr(m);
+	Vector<int> Ptr(m);
 	Ptr.Zero();
 	int nb = 0;
 	for (i = 0; i < m; i++)
@@ -462,7 +466,7 @@ namespace Seldon
   */
   template<class T, class Prop, class Allocator>
   void
-  ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
+  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
 				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop, RowSparse, Allocator>& A,
 				 int index = 0)
@@ -507,7 +511,7 @@ namespace Seldon
   //! Conversion from coordinate format to ColSparse.
   template<class T, class Prop, class Allocator>
   void
-  ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
+  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
 				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop, ColSparse, Allocator>& A,
 				 int index = 0)
@@ -528,7 +532,7 @@ namespace Seldon
     Sort(IndCol, IndRow, Val);
 
     // Construction of array 'Ptr'.
-    IVect Ptr(n + 1);
+    Vector<int> Ptr(n + 1);
     Ptr.Zero();
     for (i = 0; i < nnz; i++)
       {
@@ -551,7 +555,7 @@ namespace Seldon
   //! Conversion from coordinate format to RowSymSparse.
   template<class T, class Prop, class Allocator>
   void
-  ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
+  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
 				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop, RowSymSparse, Allocator>& A,
 				 int index = 0)
@@ -596,7 +600,7 @@ namespace Seldon
     Sort(IndRow, IndCol, Val);
 
     // Construction of array 'Ptr'.
-    IVect Ptr(m + 1);
+    Vector<int> Ptr(m + 1);
     Ptr.Zero();
     for (int i = 0; i < nnz; i++)
       {
@@ -619,7 +623,7 @@ namespace Seldon
   //! Conversion from coordinate format to ColSymSparse.
   template<class T, class Prop, class Allocator>
   void
-  ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
+  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
 				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop, ColSymSparse, Allocator>& A,
 				 int index = 0)
@@ -664,7 +668,7 @@ namespace Seldon
     Sort(IndRow, IndCol, Val);
 
     // Construction of array 'Ptr'.
-    IVect Ptr(m + 1);
+    Vector<int> Ptr(m + 1);
     Ptr.Zero();
     for (i = 0; i < nnz; i++)
       {
@@ -692,7 +696,7 @@ namespace Seldon
   //! Conversion from coordinate format to ArrayRowSparse.
   template<class T, class Prop, class Allocator>
   void
-  ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
+  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
 				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop, ArrayRowSparse,
 				 Allocator>& A,
@@ -713,7 +717,7 @@ namespace Seldon
     Sort(IndRow, IndCol, Val);
 
     // Number of elements per row.
-    IVect Ptr(m);
+    Vector<int> Ptr(m);
     Ptr.Zero();
     for (i = 0; i < nnz; i++)
       {
@@ -745,7 +749,7 @@ namespace Seldon
   //! Conversion from coordinate format to ArrayColSparse.
   template<class T, class Prop, class Allocator>
   void
-  ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
+  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
 				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop, ArrayColSparse,
 				 Allocator>& A,
@@ -767,7 +771,7 @@ namespace Seldon
     Sort(IndCol, IndRow, Val);
 
     // Construction of array 'Ptr'.
-    IVect Ptr(n);
+    Vector<int> Ptr(n);
     Ptr.Zero();
     for (i = 0; i < nnz; i++)
       {
@@ -799,7 +803,7 @@ namespace Seldon
   //! Conversion from coordinate format to ArrayRowSymSparse.
   template<class T, class Prop, class Allocator>
   void
-  ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
+  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
 				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop,
 				 ArrayRowSymSparse, Allocator>& A,
@@ -845,7 +849,7 @@ namespace Seldon
     Sort(IndRow, IndCol, Val);
 
     // Construction of array 'Ptr'.
-    IVect Ptr(m);
+    Vector<int> Ptr(m);
     Ptr.Zero();
     for (i = 0; i < nnz; i++)
       {
@@ -877,7 +881,7 @@ namespace Seldon
   //! Conversion from coordinate format to ArrayColSymSparse.
   template<class T, class Prop, class Allocator>
   void
-  ConvertMatrix_from_Coordinates(IVect& IndRow, IVect& IndCol,
+  ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
 				 Vector<T, VectFull, Allocator>& Val,
 				 Matrix<T, Prop,
 				 ArrayColSymSparse, Allocator>& A,
@@ -923,7 +927,7 @@ namespace Seldon
     Sort(IndRow, IndCol, Val);
 
     // Construction of array 'Ptr'.
-    IVect Ptr(m);
+    Vector<int> Ptr(m);
     Ptr.Zero();
     for (i = 0; i < nnz; i++)
       {
@@ -969,7 +973,7 @@ namespace Seldon
     int* ind_ = A.GetInd();
     T* data_ = A.GetData();
 
-    IVect Ptr(n+1), Ind(nnz);
+    Vector<int> Ptr(n+1), Ind(nnz);
     Vector<T, VectFull, Alloc2> Val(nnz);
     for (i = 0; i <= n; i++)
       Ptr(i) = ptr_[i];
@@ -997,7 +1001,7 @@ namespace Seldon
     T* data_ = A.GetData();
 
     // Computation of the indices of the beginning of columns.
-    IVect Ptr(n + 1);
+    Vector<int> Ptr(n + 1);
     Ptr.Fill(0);
     // Counting the number of entries per column.
     for (i = 0; i < nnz; i++)
@@ -1015,8 +1019,8 @@ namespace Seldon
     Ptr(n) = increment;
 
     // 'Offset' will be used to get current positions of new entries.
-    IVect Offset = Ptr;
-    IVect Ind(nnz);
+    Vector<int> Offset = Ptr;
+    Vector<int> Ind(nnz);
     Vector<T, VectFull, Alloc2> Val(nnz);
 
     // Loop over rows.
@@ -1049,7 +1053,7 @@ namespace Seldon
     T* data_ = A.GetData();
 
     // Computation of the indices of the beginning of columns.
-    IVect Ptr(n + 1);
+    Vector<int> Ptr(n + 1);
     Ptr.Fill(0);
     // Counting the number of entries per column.
     for (i = 0; i < m; i++)
@@ -1072,8 +1076,8 @@ namespace Seldon
     Ptr(n) = nnz;
 
     // 'Offset' will be used to get current positions of new entries.
-    IVect Offset = Ptr;
-    IVect Ind(nnz);
+    Vector<int> Offset = Ptr;
+    Vector<int> Ind(nnz);
     Vector<T, VectFull, Alloc2> Val(nnz);
 
     // Loop over rows.
@@ -1134,8 +1138,8 @@ namespace Seldon
 
     // Allocating arrays needed for CSR format.
     Vector<T1> Val(nnz);
-    IVect IndRow(m + 1);
-    IVect IndCol(nnz);
+    Vector<int> IndRow(m + 1);
+    Vector<int> IndCol(nnz);
 
     // Filling the arrays.
     int ind = 0;
@@ -1170,14 +1174,14 @@ namespace Seldon
 
     // Conversion in coordinate format.
     Vector<T1> Val;
-    IVect IndRow, IndCol;
+    Vector<int> IndRow, IndCol;
     ConvertMatrix_to_Coordinates(mat_array, IndRow, IndCol, Val);
 
     // Sorting with respect to column numbers.
     Sort(IndCol, IndRow, Val);
 
     // Constructing pointer array 'Ptr'.
-    IVect Ptr(n + 1);
+    Vector<int> Ptr(n + 1);
 
     // Counting non-zero entries per column.
     for (i = 0; i < nnz; i++)
@@ -1242,8 +1246,8 @@ namespace Seldon
 
     // Allocation of arrays for CSR.
     Vector<T0> Val_real(nnz_real), Val_imag(nnz_imag);
-    IVect IndRow_real(m + 1), IndRow_imag(m + 1);
-    IVect IndCol_real(nnz_real), IndCol_imag(nnz_imag);
+    Vector<int> IndRow_real(m + 1), IndRow_imag(m + 1);
+    Vector<int> IndCol_real(nnz_real), IndCol_imag(nnz_imag);
 
     int ind_real = 0, ind_imag = 0;
     IndRow_real(0) = 0;
@@ -1291,8 +1295,8 @@ namespace Seldon
 
     // Allocation of arrays for CSR.
     Vector<T0> Val_real(nnz_real), Val_imag(nnz_imag);
-    IVect IndRow_real(m + 1), IndRow_imag(m + 1);
-    IVect IndCol_real(nnz_real), IndCol_imag(nnz_imag);
+    Vector<int> IndRow_real(m + 1), IndRow_imag(m + 1);
+    Vector<int> IndCol_real(nnz_real), IndCol_imag(nnz_imag);
 
     int ind_real = 0, ind_imag = 0;
     IndRow_real(0) = 0;
@@ -1332,7 +1336,7 @@ namespace Seldon
 
     int nnz = A.GetDataSize();
     int n = A.GetM();
-    IVect IndRow(nnz),IndCol(nnz);
+    Vector<int> IndRow(nnz),IndCol(nnz);
     Vector<T1> Val(nnz);
     int ind = 0;
     for (i = 0; i < n; i++)
@@ -1384,7 +1388,7 @@ namespace Seldon
 
     int nnz = A.GetDataSize();
     int n = A.GetM();
-    IVect IndRow(nnz), IndCol(nnz);
+    Vector<int> IndRow(nnz), IndCol(nnz);
     Vector<T1> Val(nnz);
     int ind = 0;
     for (i = 0; i < n; i++)
@@ -1442,8 +1446,8 @@ namespace Seldon
 
     // Allocating arrays needed for CSC format.
     Vector<T1> Val(nnz);
-    IVect IndRow(nnz);
-    IVect IndCol(n+1);
+    Vector<int> IndRow(nnz);
+    Vector<int> IndCol(n+1);
 
     // Filling the arrays.
     int ind = 0;
@@ -1477,14 +1481,14 @@ namespace Seldon
 
     // Conversion in coordinate format.
     Vector<T1> Val;
-    IVect IndRow, IndCol;
+    Vector<int> IndRow, IndCol;
     ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
 
     // Sorting with respect to column numbers.
     Sort(IndCol, IndRow, Val);
 
     // Constructing pointer array 'Ptr'.
-    IVect Ptr(n + 1);
+    Vector<int> Ptr(n + 1);
 
     // Counting non-zero entries per column.
     for (i = 0; i < nnz; i++)
@@ -1513,5 +1517,5 @@ namespace Seldon
 
 } // namespace Seldon.
 
-#define SELDON_FILE_FUNCTIONS_MATRIX_CXX
+#define SELDON_FILE_MATRIX_CONVERSIONS_CXX
 #endif
