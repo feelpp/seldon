@@ -33,9 +33,12 @@ namespace Seldon
     //   permc_spec = 3: use approximate mininum degree column ordering
     n = 0;
     permc_spec = 2;
+    Lstore = NULL;
+    Ustore = NULL;
     StatInit(&stat);
     set_default_options(&options);
     ShowMessages();
+    display_info = true;
   }
 
 
@@ -58,6 +61,7 @@ namespace Seldon
 	Destroy_SuperMatrix_Store(&B);
 	Destroy_SuperNode_Matrix(&L);
 	Destroy_CompCol_Matrix(&U);
+	perm_r.Clear(); perm_c.Clear();
 	n = 0;
       }
   }
@@ -80,17 +84,17 @@ namespace Seldon
 
 
   //! factorization of matrix in double precision using SuperLU
-  template<class Prop,class Storage,class Allocator>
+  template<class Prop, class Storage, class Allocator>
   void MatrixSuperLU<double>::
-  FactorizeMatrix(Matrix<double,Prop,Storage,Allocator> & mat,
+  FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
 		  bool keep_matrix)
   {
     // clearing previous factorization
     Clear();
 
-    // conversion in CSR format
+    // conversion in CSC format
     n = mat.GetN();
-    Matrix<double,General,ColSparse> Acsr;
+    Matrix<double, General, ColSparse> Acsr;
     Copy(mat, Acsr);
     if (!keep_matrix)
       mat.Clear();
@@ -107,7 +111,8 @@ namespace Seldon
     int nb_rhs = 0, info;
     dCreate_Dense_Matrix(&B, n, nb_rhs, NULL, n, SLU_DN, SLU_D, SLU_GE);
 
-    dgssv(&options, &A, perm_c.GetData(), perm_r.GetData(), &L, &U, &B, &stat, &info);
+    dgssv(&options, &A, perm_c.GetData(), perm_r.GetData(),
+          &L, &U, &B, &stat, &info);
 
     if ((info==0)&&(display_info))
       {
@@ -128,7 +133,7 @@ namespace Seldon
 
   //! resolution of linear system A x = b
   template<class Allocator2>
-  void MatrixSuperLU<double>::Solve(Vector<double,VectFull,Allocator2>& x)
+  void MatrixSuperLU<double>::Solve(Vector<double, VectFull, Allocator2>& x)
   {
     trans_t trans = NOTRANS;
     int nb_rhs = 1, info;
@@ -143,9 +148,9 @@ namespace Seldon
 
 
   //! factorization of matrix in complex double precision using SuperLU
-  template<class Prop, class Storage,class Allocator>
+  template<class Prop, class Storage, class Allocator>
   void MatrixSuperLU<complex<double> >::
-  FactorizeMatrix(Matrix<complex<double>,Prop,Storage,Allocator> & mat,
+  FactorizeMatrix(Matrix<complex<double>, Prop, Storage, Allocator> & mat,
 		  bool keep_matrix)
   {
     // clearing previous factorization
@@ -153,7 +158,7 @@ namespace Seldon
 
     // conversion in CSR format
     n = mat.GetN();
-    Matrix<complex<double>,General,ColSparse> Acsr;
+    Matrix<complex<double>, General, ColSparse> Acsr;
     Copy(mat, Acsr);
     if (!keep_matrix)
       mat.Clear();
@@ -194,7 +199,7 @@ namespace Seldon
   //! resolution of linear system A x = b
   template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
-  Solve(Vector<complex<double>,VectFull,Allocator2>& x)
+  Solve(Vector<complex<double>, VectFull, Allocator2>& x)
   {
     trans_t trans = NOTRANS;
     int nb_rhs = 1, info;
@@ -208,7 +213,7 @@ namespace Seldon
 
 
   template<class T, class Prop, class Storage, class Allocator>
-  void GetLU(Matrix<T,Prop,Storage,Allocator>& A, MatrixSuperLU<T>& mat_lu,
+  void GetLU(Matrix<T, Prop, Storage, Allocator>& A, MatrixSuperLU<T>& mat_lu,
 	     bool keep_matrix = false)
   {
     mat_lu.FactorizeMatrix(A, keep_matrix);

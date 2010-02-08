@@ -66,17 +66,16 @@ namespace Seldon
   {
   public:
     MatrixSuperLU() : MatrixSuperLU_Base<double>() {}
-    ~MatrixSuperLU() {}
-
 
     template<class Prop, class Storage, class Allocator>
-    void FactorizeMatrix(Matrix<double,Prop,Storage,Allocator> & mat,
+    void FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
     template<class Allocator2>
-    void Solve(Vector<double,VectFull,Allocator2>& x);
+    void Solve(Vector<double, VectFull, Allocator2>& x);
 
   };
+
 
   //! class interfacing SuperLU functions in complex double precision
   template<>
@@ -85,14 +84,14 @@ namespace Seldon
   {
   public:
     MatrixSuperLU() : MatrixSuperLU_Base<complex<double> >() {}
-    ~MatrixSuperLU() {}
 
-    template<class Prop, class Storage,class Allocator>
-    void FactorizeMatrix(Matrix<complex<double>,Prop,Storage,Allocator> & mat,
+    template<class Prop, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<complex<double>, Prop,
+			 Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
     template<class Allocator2>
-    void Solve(Vector<complex<double>,VectFull,Allocator2>& x);
+    void Solve(Vector<complex<double>, VectFull, Allocator2>& x);
   };
 }
 
