@@ -1052,7 +1052,7 @@ namespace Seldon
 #endif
 
 	real_ptr_ = reinterpret_cast<int*>( calloc(i + 1, sizeof(int)) );
-	memcpy(this->real_ptr_, A.real_ptr_, i+1);
+	memcpy(this->real_ptr_, A.real_ptr_, (i + 1) * sizeof(int));
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -1097,7 +1097,7 @@ namespace Seldon
 #endif
 
 	imag_ptr_ = reinterpret_cast<int*>( calloc(i + 1, sizeof(int)) );
-	memcpy(this->imag_ptr_, A.imag_ptr_, i+1);
+	memcpy(this->imag_ptr_, A.imag_ptr_, (i + 1) * sizeof(int));
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -1144,7 +1144,7 @@ namespace Seldon
 #endif
 
 	real_ind_ = reinterpret_cast<int*>( calloc(real_nz_, sizeof(int)) );
-	memcpy(this->real_ind_, A.real_ind_, real_nz_);
+	memcpy(this->real_ind_, A.real_ind_, real_nz_ * sizeof(int));
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -1192,7 +1192,7 @@ namespace Seldon
 #endif
 
 	imag_ind_ = reinterpret_cast<int*>( calloc(imag_nz_, sizeof(int)) );
-	memcpy(this->imag_ind_, A.imag_ind_, imag_nz_);
+	memcpy(this->imag_ind_, A.imag_ind_, imag_nz_ * sizeof(int));
 
 #ifdef SELDON_CHECK_MEMORY
       }

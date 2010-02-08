@@ -583,8 +583,8 @@ namespace Seldon
 
 	ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
 					      sizeof(int)) );
-	memcpy(this->ptr_, A.ptr_, Storage::GetFirst(i, j)+1);
-
+	memcpy(this->ptr_, A.ptr_,
+               (Storage::GetFirst(i, j) + 1) * sizeof(int));
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -619,7 +619,7 @@ namespace Seldon
 #endif
 
 	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
-	memcpy(this->ind_, A.ind_, nz_);
+	memcpy(this->ind_, A.ind_, nz_ * sizeof(int));
 
 #ifdef SELDON_CHECK_MEMORY
       }

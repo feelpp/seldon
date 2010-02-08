@@ -585,7 +585,7 @@ namespace Seldon
 #endif
 
 	ptr_ = reinterpret_cast<int*>( calloc(i + 1, sizeof(int)) );
-	memcpy(this->ptr_, A.ptr_, i+1);
+	memcpy(this->ptr_, A.ptr_, (i + 1) * sizeof(int));
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -620,7 +620,7 @@ namespace Seldon
 #endif
 
 	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
-	memcpy(this->ind_, A.ind_, nz_);
+	memcpy(this->ind_, A.ind_, nz_ * sizeof(int));
 
 #ifdef SELDON_CHECK_MEMORY
       }
