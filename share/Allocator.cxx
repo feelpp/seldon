@@ -133,6 +133,9 @@ namespace Seldon
   template <class T>
   inline void* MallocObject<T>::reallocate(pointer data, int num, void* h)
   {
+    if (data == NULL)
+      return allocate(num, h);
+
     void* memory_block = static_cast<void*>(reinterpret_cast<char*>(data)
 					    - sizeof(int));
     int initial_num = *reinterpret_cast<int*>(memory_block);
@@ -151,7 +154,8 @@ namespace Seldon
 			       sizeof(int) + num * sizeof(T));
       }
     else
-      return;
+      return data;
+
     memcpy(memory_block, &num, sizeof(int));
     return reinterpret_cast<pointer>(static_cast<char*>(memory_block) +
 				     sizeof(int));
