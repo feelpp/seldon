@@ -87,7 +87,20 @@ or basename($_SERVER['REQUEST_URI'], ".php") == "matrix_miscellaneous")
 
 </li>
 
-<li class="jelly"> <?php HL($file, "array3d", "3D&nbsp;Arrays");?>  </li>
+<li class="jelly"> <?php HL($file, "other_structures", "Other Structures");?>
+<?php if (basename($_SERVER['REQUEST_URI'], ".php") == "other_structures"
+or basename($_SERVER['REQUEST_URI'], ".php") == "vector2"
+or basename($_SERVER['REQUEST_URI'], ".php") == "array3d")
+{
+  echo '<ul class="navsubul"> <li class="jelly">';
+  HL($file, "vector2", "Vector2");
+  echo '</li>';
+  echo '<li class="jelly">';
+  HL($file, "array3d", "3D&nbsp;Array");
+  echo '</li> </ul>';
+} ?>
+</li>
+
 <li class="jelly"> <?php HL($file, "allocators", "Allocators");?>  </li>
 <li class="jelly"> <?php HL($file, "exceptions", "Exceptions");?>  </li>
 <li class="jelly"> <?php HL($file, "computations", "Computations");?>
