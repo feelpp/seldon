@@ -79,13 +79,24 @@ namespace Seldon
 
     /*** Management of the vectors ***/
 
+    bool IsEmpty() const;
     int GetLength() const;
     int GetSize() const;
     int GetLength(int i) const;
     int GetSize(int i) const;
+    int GetNelement() const;
+    int GetNelement(int beg, int end) const;
+    Vector<int> GetShape() const;
+    void GetShape(Vector<int>& shape) const;
     void Reallocate(int M);
     void Reallocate(int i, int N);
     void Reallocate(const Vector<int>& length);
+    void Select(int beg, int end);
+    template <class Td, class Allocatord>
+    void Flatten(Vector<Td, VectFull, Allocatord>& data) const;
+    template <class Td, class Allocatord>
+    void Flatten(int beg, int end, Vector<Td, VectFull, Allocatord>& data)
+      const;
 
     void PushBack(int i, const T& x);
     void PushBack(const Vector<T, VectFull, Allocator0>& X);
@@ -106,6 +117,8 @@ namespace Seldon
     Vector<T, VectFull, Allocator0>& GetVector(int i);
     const Vector<T, VectFull, Allocator0>& GetVector(int i) const;
 
+    void Copy(const Vector2<T, Allocator0, Allocator1>& V);
+
     /*** Element access and assignment ***/
 
     const Vector<T, VectFull, Allocator0>& operator() (int i) const;
@@ -116,7 +129,7 @@ namespace Seldon
     /*** Convenient methods ***/
 
     template <class V2>
-    bool HasSameStructure(const V2& V) const;
+    bool HasSameShape(const V2& V) const;
     void Print() const;
   };
 

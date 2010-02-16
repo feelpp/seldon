@@ -92,6 +92,20 @@ namespace Seldon
    *****************************/
 
 
+  //! Checks whether no elements are contained in the inner vectors.
+  /*!
+    \return True is no inner vector contains an element, false otherwise.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  bool Vector2<T, Allocator0, Allocator1>::IsEmpty() const
+  {
+    for (int i = 0; i < GetLength(); i++)
+      if (GetLength(i) > 0)
+        return false;
+    return true;
+  }
+
+
   //! Returns the size along dimension 1.
   /*!
     \return The size along dimension 1.
@@ -138,6 +152,76 @@ namespace Seldon
   }
 
 
+  //! Returns the total number of elements in the inner vectors.
+  /*!
+    \return The sum of the lengths of the inner vectors.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  int Vector2<T, Allocator0, Allocator1>::GetNelement() const
+  {
+    int total = 0;
+    for (int i = 0; i < GetLength(); i++)
+      total += GetLength(i);
+    return total;
+  }
+
+
+  //! Returns the total number of elements in a range of inner vectors.
+  /*! Returns the total number of elements in the range [\a beg, \a end[ of
+    inner vectors.
+    \param[in] beg inclusive lower-bound for the indexes.
+    \param[in] end exclusive upper-bound for the indexes.
+    \return The sum of the lengths of the inner vectors with index \a beg to
+    \a end-1.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  int Vector2<T, Allocator0, Allocator1>::GetNelement(int beg, int end) const
+  {
+    if (beg > end)
+      throw WrongArgument("Vector2::GetNelement(int beg, int end)",
+                          "The lower bound of the range of inner vectors, ["
+                          + to_str(beg) + ", " + to_str(end)
+                          + "[, is strictly greater than its upper bound.");
+    if (beg < 0 || end > GetLength())
+      throw WrongArgument("Vector2::GetNelement(int beg, int end)",
+        		  "The inner-vector indexes should be in [0,"
+        		  + to_str(GetLength()) + "] but [" + to_str(beg)
+                          + ", " + to_str(end) + "[ was provided.");
+
+    int total = 0;
+    for (int i = beg; i < end; i++)
+      total += GetLength(i);
+    return total;
+  }
+
+
+  //! Returns the shape.
+  /*!
+    \return A vector with the lengths of the inner vectors.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  Vector<int> Vector2<T, Allocator0, Allocator1>::GetShape() const
+  {
+    Vector<int> shape(GetLength());
+    for (int i = 0; i < GetLength(); i++)
+      shape(i) = GetLength(i);
+    return shape;
+  }
+
+
+  //! Returns the shape.
+  /*!
+    \param[out] shape the lengths of the inner vectors.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  void Vector2<T, Allocator0, Allocator1>::GetShape(Vector<int>& shape) const
+  {
+    shape.Reallocate(GetLength());
+    for (int i = 0; i < GetLength(); i++)
+      shape(i) = GetLength(i);
+  }
+
+
   //! Reallocates the vector of vector.
   /*!
     \param[in] M the new size of the vector of vectors.
@@ -174,6 +258,84 @@ namespace Seldon
     data_.Reallocate(m);
     for(int i = 0; i < m; i++)
       data_(i).Reallocate(length(i));
+  }
+
+
+  //! Selects a range of inner vectors.
+  /*! Only the inner vectors with index in [\a beg, \a end[ are kept. The
+    other vectors are destroyed.
+    \param[in] beg inclusive lower-bound for the indexes.
+    \param[in] end exclusive upper-bound for the indexes.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  void Vector2<T, Allocator0, Allocator1>::Select(int beg, int end)
+  {
+    if (beg > end)
+      throw WrongArgument("Vector2::SelectInnerVector(int beg, int end)",
+                          "The lower bound of the range of inner vectors, ["
+                          + to_str(beg) + ", " + to_str(end)
+                          + "[, is strictly greater than its upper bound.");
+    if (beg < 0 || end > GetLength())
+      throw WrongArgument("Vector2::SelectInnerVector(int beg, int end)",
+        		  "The inner-vector indexes should be in [0,"
+        		  + to_str(GetLength()) + "] but [" + to_str(beg)
+                          + ", " + to_str(end) + "[ was provided.");
+
+    if (beg > 0)
+      for (int i = 0; i < end - beg; i++)
+        data_(i) = data_(beg + i);
+    data_.Reallocate(end - beg);
+  }
+
+
+  //! Returns all values in a vector.
+  /*! The output vector \a data contains all inner vectors concatenated in the
+    same order as they appear in the current Vector2 instance.
+    \param[out] data all values from the current Vector2 instance.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  template <class Td, class Allocatord>
+  void Vector2<T, Allocator0, Allocator1>
+  ::Flatten(Vector<Td, VectFull, Allocatord>& data) const
+  {
+    data.Reallocate(GetNelement());
+    int i, j, n(0);
+    for (i = 0; i < GetLength(); i++)
+      for (j = 0; j < GetLength(i); j++)
+        data(n++) = data_(i)(j);
+  }
+
+
+  //! Returns in a vector all values from a range of inner vectors.
+  /*! The output vector \a data contains all inner vectors, in the index range
+    [\a beg, \a end[, concatenated in the same order as they appear in the
+    current Vector2 instance.
+    \param[in] beg inclusive lower-bound for the indexes.
+    \param[in] end exclusive upper-bound for the indexes.
+    \param[out] data the values contained in the inner vectors [\a beg, \a
+    end[.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  template <class Td, class Allocatord>
+  void Vector2<T, Allocator0, Allocator1>
+  ::Flatten(int beg, int end, Vector<Td, VectFull, Allocatord>& data) const
+  {
+    if (beg > end)
+      throw WrongArgument("Vector2::Flatten(int beg, int end, Vector& data)",
+                          "The lower bound of the range of inner vectors, ["
+                          + to_str(beg) + ", " + to_str(end)
+                          + "[, is strictly greater than its upper bound.");
+    if (beg < 0 || end > GetLength())
+      throw WrongArgument("Vector2::Flatten(int beg, int end, Vector& data)",
+        		  "The inner-vector indexes should be in [0,"
+        		  + to_str(GetLength()) + "] but [" + to_str(beg)
+                          + ", " + to_str(end) + "[ was provided.");
+
+    data.Reallocate(GetNelement(beg, end));
+    int i, j, n(0);
+    for (i = beg; i < end; i++)
+      for (j = 0; j < GetLength(i); j++)
+        data(n++) = data_(i)(j);
   }
 
 
@@ -310,6 +472,23 @@ namespace Seldon
   }
 
 
+  //! Copies a Vector2 instance.
+  /*!
+    \param[in] V Vector2 instance to be copied.
+    \note The current instance and \a V do not share memory on exit: \a V is
+    duplicated in memory.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  void Vector2<T, Allocator0, Allocator1>
+  ::Copy(const Vector2<T, Allocator0, Allocator1>& V)
+  {
+    Clear();
+    Reallocate(V.GetLength());
+    for (int i = 0; i < V.GetLength(); i++)
+      data_(i) = V(i);
+  }
+
+
   /*********************************
    * ELEMENT ACCESS AND ASSIGNMENT *
    *********************************/
@@ -374,19 +553,18 @@ namespace Seldon
    **********************/
 
 
-  //! Checks whether another Vector2 instance has the same structure.
-  /*! Checks whether another Vector2 instance has the same structure as the
-    current instance. The structures are the same if both instances have the
-    same number of inner vectors, and if the inner vectors have the same
-    lengths.
-    \param[in] V Vector2 instance whose structure is compared to that of the
+  //! Checks whether another Vector2 instance has the same shape.
+  /*! Checks whether another Vector2 instance has the same shape as the
+    current instance. The shapes are the same if both instances have the same
+    number of inner vectors, and if the inner vectors have the same lengths.
+    \param[in] V Vector2 instance whose shape is compared to that of the
     current instance.
-    \return True if the current instance as the same structure as \a V, false
+    \return True if the current instance as the same shape as \a V, false
     otherwise.
   */
   template <class T, class Allocator0, class Allocator1>
   template <class V2>
-  bool Vector2<T, Allocator0, Allocator1>::HasSameStructure(const V2& V) const
+  bool Vector2<T, Allocator0, Allocator1>::HasSameShape(const V2& V) const
   {
     if (V.GetLength() != GetLength())
       return false;
