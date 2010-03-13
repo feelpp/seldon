@@ -130,6 +130,10 @@ namespace Seldon
     void Solve(const Transpose_status& TransA,
 	       Vector<T, VectFull, Allocator2>& x);
 
+    template<class Allocator2, class Transpose_status, class Prop>
+    void Solve(const Transpose_status& TransA,
+	       Matrix<T, Prop, ColMajor, Allocator2>& x);
+
 #ifdef SELDON_WITH_MPI
     template<class Prop, class Allocator>
     void FactorizeDistributedMatrix(Matrix<T, General,

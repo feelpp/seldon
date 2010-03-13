@@ -415,6 +415,37 @@ namespace Seldon
   }
 
 
+  //! Resolution of a linear system using a computed factorization.
+  /*!
+    \param[in,out] x on entry, the right-hand-side; on exit, the solution.
+    It is assumed that 'FactorizeMatrix' has already been called.
+  */
+  template<class T>
+  template<class Allocator2, class Transpose_status, class Prop>
+  void MatrixMumps<T>::Solve(const Transpose_status& TransA,
+			     Matrix<T, Prop, ColMajor, Allocator2>& x)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (x.GetM() != struct_mumps.n)
+      throw WrongDim("Mumps::Solve", string("Row size of x is equal to ")
+                     + to_str(x.GetM()) + " while size of matrix is equal to "
+                     + to_str(struct_mumps.n));
+#endif
+
+    if (TransA.Trans())
+      struct_mumps.icntl[8] = 0;
+    else
+      struct_mumps.icntl[8] = 1;
+
+    struct_mumps.nrhs = x.GetN();
+    struct_mumps.lrhs = x.GetM();
+    struct_mumps.rhs = reinterpret_cast<pointer>(x.GetData());
+    struct_mumps.job = 3; // we solve system
+    CallMumps();
+  }
+
+
 #ifdef SELDON_WITH_MPI
   //! factorization of a given matrix in distributed form (parallel execution)
   /*!
@@ -603,6 +634,22 @@ namespace Seldon
   template<class T, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixMumps<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
+  {
+    mat_lu.Solve(TransA, x);
+  }
+
+
+  template<class T, class Prop, class Allocator>
+  void SolveLU(MatrixMumps<T>& mat_lu,
+               Matrix<T, Prop, ColMajor, Allocator>& x)
+  {
+    mat_lu.Solve(SeldonNoTrans, x);
+  }
+
+
+  template<class T, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixMumps<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
   }
