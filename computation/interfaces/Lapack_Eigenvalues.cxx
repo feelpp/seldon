@@ -4097,6 +4097,8 @@ namespace Seldon
   }
 
 
+  /*! \brief Solves A X B^H + C X D^H = E, E is overwritten with result X. A,
+    B, C and D are modified */
   template<class Prop, class Storage, class Allocator>
   void SolveSylvester(Matrix<complex<double>, Prop, Storage, Allocator>& A,
 		      Matrix<complex<double>, Prop, Storage, Allocator>& B,
@@ -4106,6 +4108,16 @@ namespace Seldon
   {
     complex<double> one(1), zero(0);
     int n = A.GetM();
+
+    if (n <= 0)
+      return;
+
+    if (n == 1)
+      {
+        E(0, 0) /= A(0, 0) * conj(B(0, 0)) + C(0, 0) * conj(D(0, 0));
+        return;
+      }
+
     Matrix<complex<double>, Prop, Storage, Allocator> Q1(n, n), Q2(n, n),
       Z1(n, n), Z2(n, n);
     Matrix<complex<double>, Prop, Storage, Allocator> Y(n, n), F(n, n);
@@ -4310,6 +4322,8 @@ namespace Seldon
   }
 
 
+  /*! Solves A X B^T + C X D^T = E, E is overwritten with result X.  A, B, C
+    and D are modified */
   template<class Prop, class Storage, class Allocator>
   void SolveSylvester(Matrix<double, Prop, Storage, Allocator>& A,
 		      Matrix<double, Prop, Storage, Allocator>& B,
@@ -4319,6 +4333,15 @@ namespace Seldon
   {
     double one(1), zero(0);
     int n = A.GetM();
+    if (n <= 0)
+      return;
+
+    if (n == 1)
+      {
+        E(0,0) /= A(0, 0) * B(0, 0) + C(0, 0) * D(0, 0);
+        return;
+      }
+
     Matrix<double, Prop, Storage, Allocator> Q1(n, n), Z1(n, n);
     Matrix<double, Prop, Storage, Allocator> Q2(n, n), Z2(n, n);
     Matrix<double, Prop, Storage, Allocator> Y(n, n), F(n, n);
