@@ -111,6 +111,8 @@ namespace Seldon
 
     // Convenient functions.
     void Print() const;
+    void WriteText(string FileName) const;
+    void WriteText(ostream& FileStream) const;
   };
 
 
