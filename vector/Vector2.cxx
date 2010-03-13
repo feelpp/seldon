@@ -371,7 +371,7 @@ namespace Seldon
   template <class T, class Allocator0, class Allocator1>
   void Vector2<T, Allocator0, Allocator1>
   ::PushBack(const Vector<Vector<T, VectFull, Allocator0>,
-                          VectFull, Allocator1>& V)
+	     VectFull, Allocator1>& V)
   {
     for (int i = 0; i < V.GetLength(); i++)
       data_.PushBack(V(i));

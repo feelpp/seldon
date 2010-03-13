@@ -1522,7 +1522,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline complex<typename Matrix_ComplexSparse<T, Prop, Storage, Allocator>
-  ::value_type>
+		 ::value_type>
   Matrix_ComplexSparse<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
   {
@@ -1609,7 +1609,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline complex<typename Matrix_ComplexSparse<T, Prop, Storage, Allocator>
-  ::value_type>&
+		 ::value_type>&
   Matrix_ComplexSparse<T, Prop, Storage, Allocator>::Val(int i, int j)
   {
     throw Undefined("Matrix_ComplexSparse::Val(int i, int j)");
@@ -1626,7 +1626,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline
   const complex<typename Matrix_ComplexSparse<T, Prop, Storage, Allocator>
-  ::value_type>&
+		::value_type>&
   Matrix_ComplexSparse<T, Prop, Storage, Allocator>::Val(int i, int j) const
   {
     throw Undefined("Matrix_ComplexSparse::Val(int i, int j)");

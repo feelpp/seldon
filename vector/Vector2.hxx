@@ -101,7 +101,7 @@ namespace Seldon
     void PushBack(int i, const T& x);
     void PushBack(const Vector<T, VectFull, Allocator0>& X);
     void PushBack(const Vector<Vector<T, VectFull, Allocator0>,
-                               VectFull, Allocator1>& V);
+		  VectFull, Allocator1>& V);
     void PushBack(const Vector2<T, Allocator0, Allocator1>& V);
 
     void Clear();

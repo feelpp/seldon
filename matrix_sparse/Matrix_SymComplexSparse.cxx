@@ -1517,7 +1517,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline complex<typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
-  ::value_type>
+		 ::value_type>
   Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
   {
@@ -1611,7 +1611,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline complex<typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
-  ::value_type>&
+		 ::value_type>&
   Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
   ::Val(int i, int j)
   {
@@ -1629,7 +1629,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline
   const complex<typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
-  ::value_type>&
+		::value_type>&
   Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
   ::Val(int i, int j) const
   {
@@ -1729,8 +1729,8 @@ namespace Seldon
 							  int real_nz,
 							  int imag_nz):
     Matrix_SymComplexSparse<T, Prop,
-			    ColSymComplexSparse, Allocator>(i, j,
-							    real_nz, imag_nz)
+    ColSymComplexSparse, Allocator>(i, j,
+				    real_nz, imag_nz)
   {
   }
 
@@ -1768,13 +1768,13 @@ namespace Seldon
 	 Vector<int, Storage1, Allocator1>& imag_ptr,
 	 Vector<int, Storage2, Allocator2>& imag_ind):
     Matrix_SymComplexSparse<T, Prop,
-			    ColSymComplexSparse, Allocator>(i, j,
-							    real_values,
-							    real_ptr,
-							    real_ind,
-							    imag_values,
-							    imag_ptr,
-							    imag_ind)
+    ColSymComplexSparse, Allocator>(i, j,
+				    real_values,
+				    real_ptr,
+				    real_ind,
+				    imag_values,
+				    imag_ptr,
+				    imag_ind)
   {
   }
 
@@ -1868,13 +1868,13 @@ namespace Seldon
 	 Vector<int, Storage1, Allocator1>& imag_ptr,
 	 Vector<int, Storage2, Allocator2>& imag_ind):
     Matrix_SymComplexSparse<T, Prop,
-			    RowSymComplexSparse, Allocator>(i, j,
-							    real_values,
-							    real_ptr,
-							    real_ind,
-							    imag_values,
-							    imag_ptr,
-							    imag_ind)
+    RowSymComplexSparse, Allocator>(i, j,
+				    real_values,
+				    real_ptr,
+				    real_ind,
+				    imag_values,
+				    imag_ptr,
+				    imag_ind)
   {
   }
 

@@ -73,7 +73,7 @@ namespace Seldon
   inline SubMatrix<M>
   ::SubMatrix(M& A, Vector<int>& row_list, Vector<int>& column_list):
     Matrix<typename M::value_type, typename M::property,
-           SubStorage<M>, typename M::allocator>(A, row_list, column_list)
+    SubStorage<M>, typename M::allocator>(A, row_list, column_list)
   {
   }
 
