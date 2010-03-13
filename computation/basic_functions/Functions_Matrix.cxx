@@ -1368,12 +1368,18 @@ namespace Seldon
       {
 	T tmp;
 	for (i = 0; i < m; i++)
-	  for (j = 0; j < i; j++)
-	    {
-	      tmp = A(i, j);
-	      A(i, j) = conj(A(j, i));
-	      A(j, i) = conj(tmp);
-	    }
+	  {
+            // Extra-diagonal part.
+            for (j = 0; j < i; j++)
+              {
+                tmp = A(i, j);
+                A(i, j) = conj(A(j, i));
+                A(j, i) = conj(tmp);
+              }
+
+            // Diagonal part.
+            A(i, i) = conj(A(i, i));
+          }
       }
     else
       {
