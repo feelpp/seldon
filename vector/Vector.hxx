@@ -158,12 +158,12 @@ namespace Seldon
 #endif
 
     // Input/output functions.
-    void Write(string FileName, bool with_size) const;
-    void Write(ostream& FileStream, bool with_size) const;
+    void Write(string FileName, bool with_size = true) const;
+    void Write(ostream& FileStream, bool with_size = true) const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
-    void Read(string FileName, bool with_size);
-    void Read(istream& FileStream, bool with_size);
+    void Read(string FileName, bool with_size = true);
+    void Read(istream& FileStream, bool with_size = true);
 #ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
 #ifndef SWIG
     void ReadText(string FileName);
