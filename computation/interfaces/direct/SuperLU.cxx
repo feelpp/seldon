@@ -38,7 +38,7 @@ namespace Seldon
     StatInit(&stat);
     set_default_options(&options);
     ShowMessages();
-    display_info = true;
+    display_info = false;
   }
 
 
