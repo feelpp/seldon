@@ -36,7 +36,7 @@ namespace Seldon
     Control.Reallocate(UMFPACK_CONTROL);
     Info.Reallocate(UMFPACK_INFO);
 
-    display_info = true;
+    display_info = false;
     transpose = false;
   }
 
@@ -66,7 +66,7 @@ namespace Seldon
     ind_ = NULL;
     data_ = NULL;
     umfpack_di_defaults(this->Control.GetData());
-    this->ShowMessages();
+    this->HideMessages();
   }
 
 
@@ -79,7 +79,7 @@ namespace Seldon
     data_real_ = NULL;
     data_imag_ = NULL;
     umfpack_zi_defaults(this->Control.GetData());
-    this->ShowMessages();
+    this->HideMessages();
   }
 
 

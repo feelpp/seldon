@@ -58,7 +58,7 @@ namespace Seldon
     // other parameters
     struct_mumps.n = 0;
     type_ordering = 7; // default : we let Mumps choose the ordering
-    print_level = 0;
+    print_level = -1;
     out_of_core = false;
     new_communicator = false;
   }

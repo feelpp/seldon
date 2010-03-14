@@ -36,7 +36,7 @@ namespace Seldon
     // initializing parameters
     pastix_initParam(iparm, dparm);
     iparm[IPARM_RHS_MAKING]          = API_RHS_B;
-    iparm[IPARM_VERBOSE]          = API_VERBOSE_NO;
+    iparm[IPARM_VERBOSE]          = API_VERBOSE_NOT;
   }
 
 
