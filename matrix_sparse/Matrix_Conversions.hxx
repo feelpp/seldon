@@ -223,9 +223,9 @@ namespace Seldon
 
 
   //! B = A.
-  template<class T, class Prop, class Alloc1, class Alloc2>
-  void Copy(const Matrix<T, Prop, ColSparse, Alloc1>& A,
-	    Matrix<T, Prop, ColSparse, Alloc2>& B);
+  template<class T, class Prop, class Storage, class Allocator>
+  void Copy(const Matrix<T, Prop, Storage, Allocator>& A,
+	    Matrix<T, Prop, Storage, Allocator>& B);
 
 
   //! Conversion from row-sparse to column-sparse.
