@@ -17,6 +17,8 @@ is more efficient for the matrix-vector product. </p>
 
 <h2>Basic declaration of easily modifiable sparse matrices:</h2>
 
+<i>These matrices are available only after <code>SeldonSolver.hxx</code> has
+been included.</i>
 
 <h4>Classes :</h4>
 <p><a>Matrix&lt;T, Prop, ArrayRowSparse&gt;</a> <br/>
