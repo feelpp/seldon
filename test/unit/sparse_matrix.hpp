@@ -192,6 +192,14 @@ public:
               CPPUNIT_ASSERT(A_full(i, j) == A_array(i, j));
             }
 
+        Matrix<double, General, ColSparse> A_col;
+
+        Copy(A, A_col);
+
+        for (int i = 0; i < m_; i++)
+          for (int j = 0; j < n_; j++)
+            CPPUNIT_ASSERT(A_full(i, j) == A_col(i, j));
+
         Vector<int> row_index, col_index;
         Vector<double> value;
         ConvertMatrix_to_Coordinates(A_array, row_index, col_index, value);

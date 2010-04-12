@@ -1168,6 +1168,63 @@ namespace Seldon
   }
 
 
+  //! Conversion from column-oriented sparse to row-oriented sparse.
+  /*!
+    \param[in] A matrix to be converted.
+    \param[out] B converted matrix.
+  */
+  template<class T1, class T2, class Prop1, class Prop2,
+           class Alloc1, class Alloc2>
+  void Copy(const Matrix<T1, Prop1, ColSparse, Alloc1>& A,
+	    Matrix<T2, Prop2, RowSparse, Alloc2>& B)
+  {
+    int i, j;
+
+    int m = A.GetM();
+    int n = A.GetN();
+    int  nnz = A.GetDataSize();
+
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T1* data = A.GetData();
+
+    // Computation of the indexes of the beginning of rows.
+    Vector<int, VectFull, CallocAlloc<int> > Ptr(n + 1);
+    Ptr.Fill(0);
+    // Counting the number of entries per row.
+    for (i = 0; i < nnz; i++)
+      Ptr(ind[i])++;
+
+    // Incrementing in order to get the row indexes.
+    int increment = 0, size, num_row;
+    for (i = 0; i < n; i++)
+      {
+	size = Ptr(i);
+	Ptr(i) = increment;
+	increment += size;
+      }
+    // Last index.
+    Ptr(n) = increment;
+
+    // 'Offset' will be used to get current positions of new entries.
+    Vector<int, VectFull, CallocAlloc<int> > Offset = Ptr;
+    Vector<int, VectFull, CallocAlloc<int> > Ind(nnz);
+    Vector<T2, VectFull, Alloc2> Val(nnz);
+
+    // Loop over the columns.
+    for (j = 0; j < n; j++)
+      for (i = ptr[j]; i < ptr[j + 1]; i++)
+	{
+	  num_row = ind[i];
+	  Ind(Offset(num_row)) = j;
+	  Val(Offset(num_row)) = data[i];
+	  Offset(num_row)++;
+	}
+
+    B.SetData(m, n, Val, Ptr, Ind);
+  }
+
+
   //! Conversion from RowSymSparse to column-sparse.
   template<class T, class Prop1, class Prop2, class Alloc1, class Alloc2>
   void Copy(const Matrix<T, Prop1, RowSymSparse, Alloc1>& A,

@@ -243,6 +243,13 @@ namespace Seldon
 				      Matrix<T, Prop2, ColSparse, Alloc2>& B);
 
 
+  // Conversion from column-oriented sparse to row-oriented sparse.
+  template<class T1, class T2, class Prop1, class Prop2,
+           class Alloc1, class Alloc2>
+  void Copy(const Matrix<T1, Prop1, ColSparse, Alloc1>& A,
+	    Matrix<T2, Prop2, RowSparse, Alloc2>& B);
+
+
   //! Conversion from RowSymSparse to column-sparse.
   template<class T, class Prop1, class Prop2, class Alloc1, class Alloc2>
   void Copy(const Matrix<T, Prop1, RowSymSparse, Alloc1>& A,
