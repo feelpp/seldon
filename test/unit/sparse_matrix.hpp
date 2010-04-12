@@ -29,6 +29,7 @@ class SparseMatrixTest: public CppUnit::TestFixture
   CPPUNIT_TEST_SUITE(SparseMatrixTest);
   CPPUNIT_TEST(test_get_rowcol);
   CPPUNIT_TEST(test_conversion);
+  CPPUNIT_TEST(test_permutation);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -109,6 +110,46 @@ public:
     Nelement_ = 100;
     Nloop_ = 2;
     conversion();
+  }
+
+
+  void test_permutation()
+  {
+    m_ = 25;
+    n_ = 10;
+    Nelement_ = 30;
+    Nloop_ = 10;
+    permutation();
+
+    m_ = 50;
+    n_ = 60;
+    Nelement_ = 5;
+    Nloop_ = 10;
+    permutation();
+
+    m_ = 50;
+    n_ = 50;
+    Nelement_ = 1;
+    Nloop_ = 10;
+    permutation();
+
+    m_ = 10;
+    n_ = 25;
+    Nelement_ = 30;
+    Nloop_ = 10;
+    permutation();
+
+    m_ = 10;
+    n_ = 5;
+    Nelement_ = 40;
+    Nloop_ = 10;
+    permutation();
+
+    m_ = 5;
+    n_ = 10;
+    Nelement_ = 100;
+    Nloop_ = 2;
+    permutation();
   }
 
 
@@ -209,6 +250,69 @@ public:
         for (int i = 0; i < m_; i++)
           for (int j = 0; j < n_; j++)
             CPPUNIT_ASSERT(A_full(i, j) == A(i, j));
+      }
+  }
+
+
+  void permutation()
+  {
+    int i, j;
+    double value;
+
+    for (int k = 0; k < Nloop_; k++)
+      {
+        Matrix<double> A_full(m_, n_);
+        A_full.Zero();
+
+        Matrix<double, General, ArrayRowSparse> A_array(m_, n_);
+        for (int l = 0; l < Nelement_; l++)
+          {
+            i = rand() % m_;
+            j = rand() % n_;
+            value = double(rand());
+            A_array.AddInteraction(i, j, value);
+            A_full(i, j) += value;
+          }
+
+        Matrix<double, General, RowSparse> A;
+        Copy(A_array, A);
+        Matrix<double, General, ColSparse> A_col;
+        Copy(A_array, A_col);
+
+        Vector<int> row_permutation(m_);
+        row_permutation.Fill();
+        int tmp;
+        for (int l = 0; l < m_; l++)
+          {
+            i = rand() % m_;
+            j = rand() % m_;
+            tmp = row_permutation(i);
+            row_permutation(i) = row_permutation(j);
+            row_permutation(j) = tmp;
+          }
+
+        Vector<int> col_permutation(n_);
+        col_permutation.Fill();
+        for (int l = 0; l < n_; l++)
+          {
+            i = rand() % n_;
+            j = rand() % n_;
+            tmp = col_permutation(i);
+            col_permutation(i) = col_permutation(j);
+            col_permutation(j) = tmp;
+          }
+
+        PermuteMatrix(A, row_permutation, col_permutation);
+        PermuteMatrix(A_col, row_permutation, col_permutation);
+
+        for (i = 0; i < m_; i++)
+          for (j = 0; j < n_; j++)
+            {
+              CPPUNIT_ASSERT(A_full(i, j) == A(row_permutation(i),
+                                               col_permutation(j)));
+              CPPUNIT_ASSERT(A_full(i, j) == A_col(row_permutation(i),
+                                                   col_permutation(j)));
+            }
       }
   }
 };

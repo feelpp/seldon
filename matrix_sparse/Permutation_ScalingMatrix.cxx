@@ -33,6 +33,179 @@
 namespace Seldon
 {
 
+
+  //! Permutation of a general matrix stored by rows.
+  /*!
+    B(row_perm(i), col_perm(j)) = A(i,j) and A = B.
+    Equivalent Matlab operation: A(row_perm, col_perm) = A.
+  */
+  template<class T, class Prop, class Allocator>
+  void PermuteMatrix(Matrix<T, Prop, RowSparse, Allocator>& A,
+		     const Vector<int>& row_perm, const Vector<int>& col_perm)
+  {
+    int i, j, k, l, nnz;
+    int m = A.GetM();
+    int n = A.GetN();
+    int* ind = A.GetInd();
+    int* ptr = A.GetPtr();
+    T* data = A.GetData();
+
+    /*** Permutation of the columns ***/
+
+    Vector<T, VectFull, Allocator> row_data;
+    // Column indexes of a given row.
+    Vector<int> row_index;
+    for (i = 0; i < m; i++)
+      if ((nnz = ptr[i + 1] - ptr[i]) != 0)
+        {
+          row_index.Reallocate(nnz);
+          row_data.Reallocate(nnz);
+          for (k = 0, l = ptr[i]; k < nnz; k++, l++)
+            {
+              // Applies the permutation on the columns.
+              row_index(k) = col_perm(ind[l]);
+              row_data(k) = data[l];
+            }
+
+          // The columns must remain in increasing order.
+          Sort(row_index, row_data);
+
+          // Putting back the data into the array.
+          for (k = 0, l = ptr[i]; k < nnz; k++, l++)
+            {
+              ind[l] = row_index(k);
+              data[l] = row_data(k);
+            }
+        }
+    row_index.Clear();
+    row_data.Clear();
+
+    /*** Perturbation of the rows ***/
+
+    // Total number of non-zero elements.
+    nnz = ptr[m];
+
+    // 'row_perm' is const, so it must be copied.
+    Vector<int> row_permutation(row_perm);
+    // Row indexes in the origin matrix: prev_row_index(i) should be the
+    // location of the i-th row (from the permuted matrix) in the matrix
+    // before permutation.
+    Vector<int> prev_row_index(m);
+    prev_row_index.Fill();
+
+    Sort(row_permutation, prev_row_index);
+    row_permutation.Clear();
+
+    // Description of the matrix after permutations.
+    Vector<int, VectFull, CallocAlloc<int> > new_ptr(m + 1);
+    Vector<int, VectFull, CallocAlloc<int> > new_ind(nnz);
+    Vector<T, VectFull, Allocator> new_data(nnz);
+
+    int ptr_count = 0, length, source_position;
+    for (i = 0; i < m; i++)
+      {
+        length = ptr[prev_row_index(i) + 1] - ptr[prev_row_index(i)];
+        source_position = ptr[prev_row_index(i)];
+        for (j = 0; j < length; j++)
+          {
+            new_data(ptr_count + j) = data[ptr[prev_row_index(i)] + j];
+            new_ind(ptr_count + j) = ind[ptr[prev_row_index(i)] + j];
+          }
+        new_ptr(i) = ptr_count;
+        ptr_count += length;
+      }
+    new_ptr(m) = ptr_count;
+
+    A.SetData(m, n, new_data, new_ptr, new_ind);
+  }
+
+
+  //! Permutation of a general matrix stored by columns.
+  /*!
+    B(row_perm(i), col_perm(j)) = A(i,j) and A = B.
+    Equivalent Matlab operation: A(row_perm, col_perm) = A.
+  */
+  template<class T, class Prop, class Allocator>
+  void PermuteMatrix(Matrix<T, Prop, ColSparse, Allocator>& A,
+		     const Vector<int>& row_perm, const Vector<int>& col_perm)
+  {
+    int i, j, k, l, nnz;
+    int m = A.GetM();
+    int n = A.GetN();
+    int* ind = A.GetInd();
+    int* ptr = A.GetPtr();
+    T* data = A.GetData();
+
+    /*** Permutation of the rows ***/
+
+    Vector<T, VectFull, Allocator> col_data;
+    // Row indexes of a given column.
+    Vector<int> col_index;
+    for (i = 0; i < n; i++)
+      if ((nnz = ptr[i + 1] - ptr[i]) != 0)
+        {
+          col_index.Reallocate(nnz);
+          col_data.Reallocate(nnz);
+          for (k = 0, l = ptr[i]; k < nnz; k++, l++)
+            {
+              // Applies the permutation on the rows.
+              col_index(k) = row_perm(ind[l]);
+              col_data(k) = data[l];
+            }
+
+          // The rows must remain in increasing order.
+          Sort(col_index, col_data);
+
+          // Putting back the data into the array.
+          for (k = 0, l = ptr[i]; k < nnz; k++, l++)
+            {
+              ind[l] = col_index(k);
+              data[l] = col_data(k);
+            }
+        }
+    col_index.Clear();
+    col_data.Clear();
+
+    /*** Perturbation of the columns ***/
+
+    // Total number of non-zero elements.
+    nnz = ptr[n];
+
+    // 'col_perm' is const, so it must be copied.
+    Vector<int> col_permutation(col_perm);
+    // Column indexes in the origin matrix: prev_col_index(i) should be the
+    // location of the i-th column (from the permuted matrix) in the matrix
+    // before permutation.
+    Vector<int> prev_col_index(n);
+    prev_col_index.Fill();
+
+    Sort(col_permutation, prev_col_index);
+    col_permutation.Clear();
+
+    // Description of the matrix after permutations.
+    Vector<int, VectFull, CallocAlloc<int> > new_ptr(n + 1);
+    Vector<int, VectFull, CallocAlloc<int> > new_ind(nnz);
+    Vector<T, VectFull, Allocator> new_data(nnz);
+
+    int ptr_count = 0, length, source_position;
+    for (i = 0; i < n; i++)
+      {
+        length = ptr[prev_col_index(i) + 1] - ptr[prev_col_index(i)];
+        source_position = ptr[prev_col_index(i)];
+        for (j = 0; j < length; j++)
+          {
+            new_data(ptr_count + j) = data[ptr[prev_col_index(i)] + j];
+            new_ind(ptr_count + j) = ind[ptr[prev_col_index(i)] + j];
+          }
+        new_ptr(i) = ptr_count;
+        ptr_count += length;
+      }
+    new_ptr(n) = ptr_count;
+
+    A.SetData(m, n, new_data, new_ptr, new_ind);
+  }
+
+
   //! Permutation of a general matrix stored by rows.
   /*!
     B(row_perm(i), col_perm(j)) = A(i,j) and A = B.
