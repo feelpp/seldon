@@ -38,7 +38,7 @@ namespace Seldon
     SuperLUStat_t stat; //!< statistics
     superlu_options_t options; //!< options
     //! permutation array
-    IVect perm_r, perm_c;
+    Vector<int> perm_r, perm_c;
 
     int permc_spec; //!< ordering scheme
     int n; //!< number of rows
@@ -47,6 +47,17 @@ namespace Seldon
   public :
     MatrixSuperLU_Base();
     ~MatrixSuperLU_Base();
+
+    template<class Prop, class Allocator>
+    void GetLU(Matrix<double, Prop, ColSparse, Allocator>& Lmat,
+               Matrix<double, Prop, ColSparse, Allocator>& Umat,
+               bool permuted = true);
+    template<class Prop, class Allocator>
+    void GetLU(Matrix<double, Prop, RowSparse, Allocator>& Lmat,
+               Matrix<double, Prop, RowSparse, Allocator>& Umat,
+               bool permuted = true);
+    const Vector<int>& GetRowPermutation() const;
+    const Vector<int>& GetColPermutation() const;
 
     void Clear();
     void HideMessages();

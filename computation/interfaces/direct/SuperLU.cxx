@@ -21,6 +21,70 @@
 
 #include "SuperLU.hxx"
 
+// The function comes from the Matlab interface to SuperLU. It is part of
+// SuperLU package. Its copyright is held by University of California
+// Berkeley, Xerox Palo Alto Research Center and Lawrence Berkeley National
+// Lab. It is released under a license compatible with the GNU LGPL.
+void LUextract(SuperMatrix *L, SuperMatrix *U, double *Lval, int *Lrow,
+               int *Lcol, double *Uval, int *Urow, int *Ucol, int *snnzL,
+               int *snnzU)
+{
+  int         i, j, k;
+  int         upper;
+  int         fsupc, istart, nsupr;
+  int         lastl = 0, lastu = 0;
+  SCformat    *Lstore;
+  NCformat    *Ustore;
+  double      *SNptr;
+
+  Lstore = static_cast<SCformat*>(L->Store);
+  Ustore = static_cast<NCformat*>(U->Store);
+  Lcol[0] = 0;
+  Ucol[0] = 0;
+
+  /* for each supernode */
+  for (k = 0; k <= Lstore->nsuper; ++k) {
+
+    fsupc = L_FST_SUPC(k);
+    istart = L_SUB_START(fsupc);
+    nsupr = L_SUB_START(fsupc+1) - istart;
+    upper = 1;
+
+    /* for each column in the supernode */
+    for (j = fsupc; j < L_FST_SUPC(k+1); ++j) {
+      SNptr = &(static_cast<double*>(Lstore->nzval))[L_NZ_START(j)];
+
+      /* Extract U */
+      for (i = U_NZ_START(j); i < U_NZ_START(j+1); ++i) {
+        Uval[lastu] = (static_cast<double*>(Ustore->nzval))[i];
+        Urow[lastu++] = U_SUB(i);
+      }
+      for (i = 0; i < upper; ++i) { /* upper triangle in the supernode */
+        Uval[lastu] = SNptr[i];
+        Urow[lastu++] = L_SUB(istart+i);
+      }
+      Ucol[j+1] = lastu;
+
+      /* Extract L */
+      Lval[lastl] = 1.0; /* unit diagonal */
+      Lrow[lastl++] = L_SUB(istart + upper - 1);
+      for (i = upper; i < nsupr; ++i) {
+        Lval[lastl] = SNptr[i];
+        Lrow[lastl++] = L_SUB(istart+i);
+      }
+      Lcol[j+1] = lastl;
+
+      ++upper;
+
+    } /* for j ... */
+
+  } /* for k ... */
+
+  *snnzL = lastl;
+  *snnzU = lastu;
+}
+
+
 namespace Seldon
 {
   //! default constructor
@@ -47,6 +111,128 @@ namespace Seldon
   MatrixSuperLU_Base<T>::~MatrixSuperLU_Base()
   {
     Clear();
+  }
+
+
+  //! Returns the LU factorization.
+  /*!
+    \param[out] Lmat matrix L in the LU factorization.
+    \param[out] Umat matrix U in the LU factorization.
+    \param[in] permuted should the permuted matrices be provided? SuperLU
+    permutes the rows and columns of the factorized matrix. If \a permuted is
+    set to true, L and U are returned as SuperLU computed them, hence with
+    permuted rows and columns. If \a permuted is set to false, the matrices L
+    and U are "unpermuted" so that L times U is equal to the initial matrix.
+  */
+  template<class T>
+  template<class Prop, class Allocator>
+  void MatrixSuperLU_Base<T>
+  ::GetLU(Matrix<double, Prop, ColSparse, Allocator>& Lmat,
+          Matrix<double, Prop, ColSparse, Allocator>& Umat,
+          bool permuted)
+  {
+    Lstore = static_cast<SCformat*>(L.Store);
+    Ustore = static_cast<NCformat*>(U.Store);
+
+    int Lnnz = Lstore->nnz;
+    int Unnz = Ustore->nnz;
+
+    int m = U.nrow;
+    int n = U.ncol;
+
+    Vector<double, VectFull, Allocator> Lval(Lnnz);
+    Vector<int, VectFull, CallocAlloc<int> > Lrow(Lnnz);
+    Vector<int, VectFull, CallocAlloc<int> > Lcol(n + 1);
+
+    Vector<double, VectFull, Allocator> Uval(Unnz);
+    Vector<int, VectFull, CallocAlloc<int> > Urow(Unnz);
+    Vector<int, VectFull, CallocAlloc<int> > Ucol(n + 1);
+
+    int Lsnnz;
+    int Usnnz;
+    LUextract(&L, &U, Lval.GetData(), Lrow.GetData(), Lcol.GetData(),
+              Uval.GetData(), Urow.GetData(), Ucol.GetData(), &Lsnnz, &Usnnz);
+
+    Lmat.SetData(m, n, Lval, Lcol, Lrow);
+    Umat.SetData(m, n, Uval, Ucol, Urow);
+
+    if (!permuted)
+      {
+        Vector<int> row_perm_orig = perm_r;
+        Vector<int> col_perm_orig = perm_c;
+
+        Vector<int> row_perm(n);
+        Vector<int> col_perm(n);
+        row_perm.Fill();
+        col_perm.Fill();
+
+        Sort(row_perm_orig, row_perm);
+        Sort(col_perm_orig, col_perm);
+
+        PermuteMatrix(Lmat, row_perm, col_perm);
+        PermuteMatrix(Umat, row_perm, col_perm);
+      }
+  }
+
+
+  //! Returns the LU factorization.
+  /*!
+    \param[out] Lmat matrix L in the LU factorization.
+    \param[out] Umat matrix U in the LU factorization.
+    \param[in] permuted should the permuted matrices be provided? SuperLU
+    permutes the rows and columns of the factorized matrix. If \a permuted is
+    set to true, L and U are returned as SuperLU computed them, hence with
+    permuted rows and columns. If \a permuted is set to false, the matrices L
+    and U are "unpermuted" so that L times U is equal to the initial matrix.
+    \note This method will first retrieve the L and U matrices in 'ColSparse'
+    format and then convert them into 'RowSparse'.
+  */
+  template<class T>
+  template<class Prop, class Allocator>
+  void MatrixSuperLU_Base<T>
+  ::GetLU(Matrix<double, Prop, RowSparse, Allocator>& Lmat,
+          Matrix<double, Prop, RowSparse, Allocator>& Umat,
+          bool permuted)
+  {
+    Lmat.Clear();
+    Umat.Clear();
+
+    Matrix<double, Prop, ColSparse, Allocator> Lmat_col;
+    Matrix<double, Prop, ColSparse, Allocator> Umat_col;
+    GetLU(Lmat_col, Umat_col, permuted);
+
+    Copy(Lmat_col, Lmat);
+    Lmat_col.Clear();
+    Copy(Umat_col, Umat);
+    Umat_col.Clear();
+  }
+
+
+  //! Returns the permutation of rows.
+  /*! In order to retain the sparsity as much as possible, SuperLU permutes
+    rows and columns before the factorization. This method returns the row
+    permutation that was employed in the factorization. This method is
+    obviously to be called after the factorization has been performed.
+    \return The permutation of the rows.
+   */
+  template<class T>
+  const Vector<int>& MatrixSuperLU_Base<T>::GetRowPermutation() const
+  {
+    return perm_r;
+  }
+
+
+  //! Returns the permutation of columns.
+  /*! In order to retain the sparsity as much as possible, SuperLU permutes
+    rows and columns before the factorization. This method returns the column
+    permutation that was employed in the factorization. This method is
+    obviously to be called after the factorization has been performed.
+    \return The permutation of the columns.
+   */
+  template<class T>
+  const Vector<int>& MatrixSuperLU_Base<T>::GetColPermutation() const
+  {
+    return perm_c;
   }
 
 
