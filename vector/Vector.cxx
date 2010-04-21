@@ -670,7 +670,7 @@ namespace Seldon
     for (int i = 0; i < this->GetLength(); i++)
       {
 	res = max(res, this->data_[i]);
-	res = max(res, -(this->data_[i]));
+	res = max(res, T(-this->data_[i]));
       }
 
     return res;
@@ -697,7 +697,7 @@ namespace Seldon
       {
 	temp = res;
 	res = max(res, this->data_[i]);
-	res = max(res, -(this->data_[i]));
+	res = max(res, T(-this->data_[i]));
 	if (temp != res) j = i;
       }
 
