@@ -1,4 +1,4 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2001-2010 Vivien Mallet, Marc Fragu
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -29,7 +29,7 @@
 #include "sparse_linear_algebra.hpp"
 #include "sparse_matrix.hpp"
 #include "vector2.hpp"
-
+#include "vector3.hpp"
 #include <cppunit/TestResult.h>
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -42,6 +42,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SparseLinearAlgebraTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(SparseMatrixTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(LapackTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(Vector2Test);
+CPPUNIT_TEST_SUITE_REGISTRATION(Vector3Test);
+
 
 int main()
 {
