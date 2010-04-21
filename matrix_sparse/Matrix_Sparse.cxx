@@ -435,7 +435,7 @@ namespace Seldon
 	ptr_ = NULL;
 	ind_ = NULL;
 	this->data_ = NULL;
-	throw WrongDim(string("Matrix_Sparse::Reallocate(int, int, ")
+	throw WrongDim(string("Matrix_Sparse::SetData(int, int, ")
 		       + "const Vector&, const Vector&, const Vector&)",
 		       string("There are ") + to_str(nz_) + " values but "
 		       + to_str(ind.GetLength()) + " row or column indices.");
@@ -449,7 +449,7 @@ namespace Seldon
 	ptr_ = NULL;
 	ind_ = NULL;
 	this->data_ = NULL;
-	throw WrongDim(string("Matrix_Sparse::Reallocate(int, int, ")
+	throw WrongDim(string("Matrix_Sparse::SetData(int, int, ")
 		       + "const Vector&, const Vector&, const Vector&)",
 		       string("The vector of start indices contains ")
 		       + to_str(ptr.GetLength()-1) + string(" row or column")
@@ -469,7 +469,7 @@ namespace Seldon
 	ptr_ = NULL;
 	ind_ = NULL;
 	this->data_ = NULL;
-	throw WrongDim(string("Matrix_Sparse::Reallocate(int, int, ")
+	throw WrongDim(string("Matrix_Sparse::SetData(int, int, ")
 		       + "const Vector&, const Vector&, const Vector&)",
 		       string("There are more values (")
 		       + to_str(values.GetLength())
