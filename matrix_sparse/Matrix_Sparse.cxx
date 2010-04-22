@@ -22,6 +22,11 @@
 
 #include "Matrix_Sparse.hxx"
 
+#include "../vector/Functions_Arrays.cxx"
+
+#include <set>
+
+
 namespace Seldon
 {
 
@@ -1249,12 +1254,21 @@ namespace Seldon
     Vector<int> i(Nelement), j(Nelement);
     Vector<T> value(Nelement);
 
+    set<pair<int, int> > skeleton;
+    set<pair<int, int> >::iterator it;
+
     srand(time(NULL));
-    for (int l = 0; l < Nelement; l++)
+
+    while (static_cast<int>(skeleton.size()) != Nelement)
+      skeleton.insert(make_pair(rand() % this->m_, rand() % this->n_));
+
+    int l = 0;
+    for (it = skeleton.begin(); it != skeleton.end(); it++)
       {
-        i(l) = rand() % this->m_;
-        j(l) = rand() % this->n_;
-        value(l) = double(rand());
+	i(l) = it->first;
+	j(l) = it->second;
+	value(l) = double(rand());
+	l++;
       }
 
     ConvertMatrix_from_Coordinates(i, j, value, *this);
