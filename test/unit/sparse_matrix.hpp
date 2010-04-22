@@ -30,6 +30,7 @@ class SparseMatrixTest: public CppUnit::TestFixture
   CPPUNIT_TEST(test_get_rowcol);
   CPPUNIT_TEST(test_conversion);
   CPPUNIT_TEST(test_permutation);
+  CPPUNIT_TEST(test_transposition);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -150,6 +151,46 @@ public:
     Nelement_ = 100;
     Nloop_ = 2;
     permutation();
+  }
+
+
+  void test_transposition()
+  {
+    m_ = 25;
+    n_ = 10;
+    Nelement_ = 30;
+    Nloop_ = 10;
+    transposition();
+
+    m_ = 50;
+    n_ = 60;
+    Nelement_ = 5;
+    Nloop_ = 10;
+    transposition();
+
+    m_ = 50;
+    n_ = 50;
+    Nelement_ = 1;
+    Nloop_ = 10;
+    transposition();
+
+    m_ = 10;
+    n_ = 25;
+    Nelement_ = 30;
+    Nloop_ = 10;
+    transposition();
+
+    m_ = 10;
+    n_ = 5;
+    Nelement_ = 40;
+    Nloop_ = 10;
+    transposition();
+
+    m_ = 5;
+    n_ = 10;
+    Nelement_ = 100;
+    Nloop_ = 2;
+    transposition();
   }
 
 
@@ -315,4 +356,137 @@ public:
             }
       }
   }
+
+
+  void transposition()
+  {
+    srand(time(NULL));
+
+    int i, j;
+    double value;
+
+    for (int k = 0; k < Nloop_; k++)
+      {
+	{
+	  Matrix<double, General, ArrayRowSparse> A_array(m_, n_),
+            A_array_t(m_, n_);
+	  for (int l = 0; l < Nelement_; l++)
+	    {
+	      i = rand() % m_;
+	      j = rand() % n_;
+	      value = double(rand());
+	      A_array.AddInteraction(i, j, value);
+	    }
+
+	  Copy(A_array, A_array_t);
+	  Transpose(A_array_t);
+
+	  Matrix<double, General, RowSparse, MallocAlloc<double> > A(m_, n_);
+	  Copy(A_array, A);
+
+	  Transpose(A);
+
+	  for (int i = 0; i < m_; i++)
+	    for (int j = 0; j < n_; j++)
+	      CPPUNIT_ASSERT(A_array_t(j, i) == A(j, i));
+
+	  Transpose(A);
+
+	  for (int i = 0; i < m_; i++)
+	    for (int j = 0; j < n_; j++)
+	      CPPUNIT_ASSERT(A_array(i, j) == A(i, j));
+	}
+
+	{
+	  Matrix<double, General, ArrayRowSparse> A_array(m_, n_),
+            A_array_t(m_, n_);
+	  for (int l = 0; l < Nelement_; l++)
+	    {
+	      i = rand() % m_;
+	      j = rand() % n_;
+	      value = double(rand());
+	      A_array.AddInteraction(i, j, value);
+	    }
+
+	  Copy(A_array, A_array_t);
+	  Transpose(A_array_t);
+
+	  Matrix<double, General, RowSparse, CallocAlloc<double> > A(m_, n_);
+	  Copy(A_array, A);
+
+	  Transpose(A);
+
+	  for (int i = 0; i < m_; i++)
+	    for (int j = 0; j < n_; j++)
+	      CPPUNIT_ASSERT(A_array_t(j, i) == A(j, i));
+
+	  Transpose(A);
+
+	  for (int i = 0; i < m_; i++)
+	    for (int j = 0; j < n_; j++)
+	      CPPUNIT_ASSERT(A_array(i, j) == A(i, j));
+	}
+
+	{
+	  Matrix<double, General, ArrayRowSparse> A_array(m_, n_),
+            A_array_t(m_, n_);
+	  for (int l = 0; l < Nelement_; l++)
+	    {
+	      i = rand() % m_;
+	      j = rand() % n_;
+	      value = double(rand());
+	      A_array.AddInteraction(i, j, value);
+	    }
+
+	  Copy(A_array, A_array_t);
+	  Transpose(A_array_t);
+
+	  Matrix<double, General, RowSparse, MallocObject<double> > A(m_, n_);
+	  Copy(A_array, A);
+
+	  Transpose(A);
+
+	  for (int i = 0; i < m_; i++)
+	    for (int j = 0; j < n_; j++)
+	      CPPUNIT_ASSERT(A_array_t(j, i) == A(j, i));
+
+	  Transpose(A);
+
+	  for (int i = 0; i < m_; i++)
+	    for (int j = 0; j < n_; j++)
+	      CPPUNIT_ASSERT(A_array(i, j) == A(i, j));
+	}
+
+	{
+	  Matrix<double, General, ArrayRowSparse> A_array(m_, n_),
+            A_array_t(m_, n_);
+	  for (int l = 0; l < Nelement_; l++)
+	    {
+	      i = rand() % m_;
+	      j = rand() % n_;
+	      value = double(rand());
+	      A_array.AddInteraction(i, j, value);
+	    }
+
+	  Copy(A_array, A_array_t);
+	  Transpose(A_array_t);
+
+	  Matrix<double, General, RowSparse, NewAlloc<double> > A(m_, n_);
+	  Copy(A_array, A);
+
+	  Transpose(A);
+
+	  for (int i = 0; i < m_; i++)
+	    for (int j = 0; j < n_; j++)
+	      CPPUNIT_ASSERT(A_array_t(j, i) == A(j, i));
+
+	  Transpose(A);
+
+	  for (int i = 0; i < m_; i++)
+	    for (int j = 0; j < n_; j++)
+	      CPPUNIT_ASSERT(A_array(i, j) == A(i, j));
+	}
+      }
+  }
+
 };

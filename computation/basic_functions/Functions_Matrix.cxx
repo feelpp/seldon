@@ -1355,6 +1355,54 @@ namespace Seldon
   }
 
 
+  //! Matrix transposition.
+  template<class T, class Allocator>
+  void Transpose(Matrix<T, General, RowSparse, Allocator>& A)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int nnz = A.GetDataSize();
+    Vector<int, VectFull, CallocAlloc<int> > ptr_T(n+1), ptr;
+    Vector<int, VectFull, CallocAlloc<int> > ind_T(nnz), ind;
+    Vector<T, VectFull, Allocator> data_T(nnz), data;
+
+    ptr.SetData(m+1, A.GetPtr());
+    ind.SetData(nnz,  A.GetInd());
+    data.SetData(nnz, A.GetData());
+
+    ptr_T.Zero();
+    ind_T.Zero();
+    data_T.Zero();
+
+    // For each column j, computes number of its non-zeroes and stores it in
+    // ptr_T[j].
+    for (int i = 0; i < nnz; i++)
+      ptr_T(ind(i) + 1)++;
+
+    // Computes the required number of non-zeroes ptr_T(j).
+    for (int j = 1; j < n + 1; j++)
+      ptr_T(j) += ptr_T(j - 1);
+
+    Vector<int, VectFull, CallocAlloc<int> > row_ind(n+1);
+    row_ind.Fill(0);
+    for (int i = 0; i < m; i++)
+      for (int jp = ptr(i); jp < ptr(i+1); jp++)
+    	{
+	  int j = ind(jp);
+	  int k = ptr_T(j) + row_ind(j);
+	  ++row_ind(j);
+	  data_T(k) = data(jp);
+	  ind_T(k) = i;
+    	}
+
+    A.SetData(n, m, data_T, ptr_T, ind_T);
+
+    data.Nullify();
+    ptr.Nullify();
+    ind.Nullify();
+  }
+
+
   //! Matrix transposition and conjugation.
   template<class T, class Prop, class Storage, class Allocator>
   void TransposeConj(Matrix<T, Prop, Storage, Allocator>& A)
