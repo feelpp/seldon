@@ -31,6 +31,7 @@ class SparseMatrixTest: public CppUnit::TestFixture
   CPPUNIT_TEST(test_conversion);
   CPPUNIT_TEST(test_permutation);
   CPPUNIT_TEST(test_transposition);
+  CPPUNIT_TEST(test_set_rowcol);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -191,6 +192,40 @@ public:
     Nelement_ = 100;
     Nloop_ = 2;
     transposition();
+  }
+
+
+  void test_set_rowcol()
+  {
+    m_ = 15;
+    n_ = 5;
+    Nelement_ = 20;
+    Nloop_ = 10;
+    set_rowcol();
+
+    m_ = 50;
+    n_ = 60;
+    Nelement_ = 5;
+    Nloop_ = 10;
+    set_rowcol();
+
+    m_ = 50;
+    n_ = 50;
+    Nelement_ = 1;
+    Nloop_ = 10;
+    set_rowcol();
+
+    m_ = 10;
+    n_ = 25;
+    Nelement_ = 30;
+    Nloop_ = 10;
+    set_rowcol();
+
+    m_ = 10;
+    n_ = 5;
+    Nelement_ = 40;
+    Nloop_ = 10;
+    set_rowcol();
   }
 
 
@@ -485,6 +520,54 @@ public:
 	  for (int i = 0; i < m_; i++)
 	    for (int j = 0; j < n_; j++)
 	      CPPUNIT_ASSERT(A_array(i, j) == A(i, j));
+	}
+      }
+  }
+
+
+  void set_rowcol()
+  {
+    srand(time(NULL));
+
+    int i, j, k, Nrow_sparse, Ncol_sparse;
+
+    for (k = 0; k < Nloop_; k++)
+      {
+	{
+	  Matrix<double, General, RowSparse, MallocAlloc<double> > A(m_, n_);
+	  A.FillRand(Nelement_);
+	  for (i = 0; i < m_; i++)
+	    {
+	      Nrow_sparse =  rand() % n_ + 1;
+	      Vector<double, VectSparse> row_sparse(Nrow_sparse);
+	      for (int l = 0; l < Nrow_sparse; l++)
+		row_sparse.Index(l) = rand() % n_;
+	      row_sparse.FillRand();
+	      row_sparse.Assemble();
+
+	      SetRow(row_sparse, i, A);
+
+	      for (j = 0; j < n_; j++)
+		CPPUNIT_ASSERT(A(i, j) == row_sparse(j));
+	    }
+	}
+	{
+	  Matrix<double, General, RowSparse, MallocAlloc<double> > A(m_, n_);
+	  A.FillRand(Nelement_);
+	  for (j = 0; j < n_; j++)
+	    {
+	      Ncol_sparse =  rand() % m_ + 1;
+	      Vector<double, VectSparse> col_sparse(Ncol_sparse);
+	      for (int l = 0; l < Ncol_sparse; l++)
+		col_sparse.Index(l) = rand() % m_;
+	      col_sparse.FillRand();
+	      col_sparse.Assemble();
+
+	      SetCol(col_sparse, j, A);
+
+	      for (i = 0; i < m_; i++)
+		CPPUNIT_ASSERT(A(i, j) == col_sparse(i));
+	    }
 	}
       }
   }

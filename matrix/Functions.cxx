@@ -22,6 +22,8 @@
 
 #include "Functions.hxx"
 
+#include "../computation/basic_functions/Functions_Vector.cxx"
+
 namespace Seldon
 {
 
@@ -116,6 +118,63 @@ namespace Seldon
   }
 
 
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void SetRow(const Vector<T1, Vect_Sparse, Allocator1>& X,
+	      int i, Matrix<T0, General, RowSparse, Allocator0>& M)
+  {
+    int m = M.GetM();
+    int n = M.GetN();
+    int nnz = M.GetDataSize();
+    int Nx = X.GetSize();
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= m)
+      throw WrongIndex("SetRow(Vector, int, Matrix<RowSparse>)",
+                       string("Index should be in [0, ") + to_str(m - 1)
+                       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    int *ptr_vector =  M.GetPtr();
+    int ptr_i0 =  ptr_vector[i], ptr_i1 = ptr_vector[i + 1];
+    int row_size_difference = Nx - ptr_i1 + ptr_i0;
+
+    if (row_size_difference == 0)
+      {
+	for (int k = 0; k < Nx; k++)
+	  M.GetInd()[k + ptr_i0] = X.Index(k);
+	for (int k = 0; k < Nx; k++)
+	  M.GetData()[k + ptr_i0] = X.Value(k);
+	return;
+      }
+
+    Vector<int, VectFull, CallocAlloc<int> >
+      new_ind_vector(nnz + row_size_difference);
+    for (int k = 0; k <  ptr_i0; k++)
+      new_ind_vector(k) = M.GetInd()[k];
+    for (int k = 0; k < Nx; k++)
+      new_ind_vector(k + ptr_i0) = X.Index(k);
+    for (int k = 0; k < nnz - ptr_i1; k++)
+      new_ind_vector(k + ptr_i0 + Nx) =  M.GetInd()[k + ptr_i1];
+
+    Vector<T1, VectFull, Allocator0 >
+      new_data_vector(nnz + row_size_difference);
+    for (int k = 0; k <  ptr_i0; k++)
+      new_data_vector(k) = M.GetData()[k];
+    for (int k = 0; k < Nx; k++)
+      new_data_vector(k + ptr_i0) = X.Value(k);
+    for (int k = 0; k < nnz - ptr_i1; k++)
+      new_data_vector(k + ptr_i0 + Nx) =  M.GetData()[k + ptr_i1];
+
+    Vector<int, VectFull, CallocAlloc<int> > new_ptr_vector(m + 1);
+    for (int j = 0; j < i + 1; j++)
+      new_ptr_vector(j) = ptr_vector[j];
+    for (int j = i + 1; j < m+1; j++)
+      new_ptr_vector(j) =  ptr_vector[j] + row_size_difference;
+
+    M.SetData(m, n, new_data_vector, new_ptr_vector, new_ind_vector);
+  }
+
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void SetCol(const Vector<T1, Storage1, Allocator1>& X,
@@ -123,6 +182,165 @@ namespace Seldon
   {
     for (int i = 0; i < M.GetM(); i++)
       M(i, j) = X(i);
+  }
+
+
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void SetCol(const Vector<T1, VectSparse, Allocator1>& X,
+	      int j, Matrix<T0, General, RowSparse, Allocator0>& M)
+  {
+    int m = M.GetM();
+    int n = M.GetN();
+    int nnz = M.GetDataSize();
+    int Nx = X.GetSize();
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (j < 0 || j >= n)
+      throw WrongIndex("SetCol(Vector, int, Matrix<RowSparse>)",
+                       string("Index should be in [0, ") + to_str(n - 1)
+                       + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    // The column to be changed.
+    Vector<T1, VectSparse, Allocator1> column_j;
+    GetCol(M, j, column_j);
+    int Ncolumn_j = column_j.GetSize();
+    int column_size_difference = Nx - Ncolumn_j;
+
+    // Built a vector indexed with the rows of column_j and X.
+    Vector<int, Vect_Sparse> column_j_mask;
+    Vector<int> index_j(Ncolumn_j);
+    Vector<int> value_j(Ncolumn_j);
+    for (int p = 0; p < Ncolumn_j; p++)
+      index_j(p) = column_j.Index(p);
+    value_j.Fill(-1);
+    column_j_mask.SetData(value_j, index_j);
+    value_j.Nullify();
+    index_j.Nullify();
+    Vector<int, Vect_Sparse> X_mask;
+    Vector<int> index_x(Nx);
+    Vector<int> value_x(Nx);
+    for (int p = 0; p < Nx; p++)
+      index_x(p) = X.Index(p);
+    value_x.Fill(1);
+    X_mask.SetData(value_x, index_x);
+    value_x.Nullify();
+    index_x.Nullify();
+    X_mask.AddInteractionRow(column_j_mask.GetSize(),
+			     column_j_mask.GetIndex(),
+			     column_j_mask.GetData(), true);
+
+    // Built the new pointer vector.
+    Vector<int, VectFull, CallocAlloc<int> > ptr_vector;
+    ptr_vector.SetData(m + 1, M.GetPtr());
+    Vector<int, VectFull, CallocAlloc<int> > new_ptr_vector(m + 1);
+    new_ptr_vector.Zero();
+    for (int p = 0; p < X_mask.GetSize(); p++)
+      new_ptr_vector(X_mask.Index(p) + 1) = X_mask.Value(p);
+    for (int p = 0; p < m; p++)
+      new_ptr_vector(p + 1) += new_ptr_vector(p);
+
+    Add(1, ptr_vector, new_ptr_vector);
+
+    // Built the new index and the new data vectors row by row.
+    Vector<int, VectFull, CallocAlloc<int> >
+      new_ind_vector(nnz + column_size_difference);
+    Vector<T0, VectFull, Allocator0>
+      new_data_vector(nnz + column_size_difference);
+
+    Vector<T0, Vect_Sparse, Allocator0> working_vector;
+    int Nworking_vector;
+
+    int line = 0;
+    for (int interaction = 0; interaction < X_mask.GetSize(); interaction++)
+      {
+	int ind_x =  X_mask.Index(interaction);
+	for (int k = 0; k < ptr_vector(ind_x) -  ptr_vector(line); k++)
+	  new_ind_vector.GetData()[k + new_ptr_vector(line)] =
+	    M.GetInd()[k + ptr_vector(line)];
+	for (int k = 0; k < ptr_vector(ind_x) -  ptr_vector(line); k++)
+	  new_data_vector.GetData()[k + new_ptr_vector(line)] =
+	    M.GetData()[k + ptr_vector(line)];
+
+	int ind_j;
+	Nworking_vector = ptr_vector(ind_x + 1) - ptr_vector(ind_x);
+	working_vector.SetData(Nworking_vector,
+			       M.GetData() + ptr_vector(ind_x),
+			       M.GetInd() + ptr_vector(ind_x));
+	switch(X_mask.Value(interaction))
+	  {
+	    // Collision.
+	  case 0:
+	    working_vector(j) = X(ind_x);
+	    for (int k = 0; k < Nworking_vector; k++)
+	      new_ind_vector.GetData()[k + new_ptr_vector(ind_x)] =
+		working_vector.GetIndex()[k];
+	    for (int k = 0; k < Nworking_vector; k++)
+	      new_data_vector.GetData()[k + new_ptr_vector(ind_x)] =
+		working_vector.GetData()[k];
+	    break;
+
+	    // Suppression.
+	  case -1:
+	    ind_j = 0;
+	    while (ind_j < Nworking_vector &&
+		   working_vector.Index(ind_j) != j)
+	      ind_j++;
+
+	    for (int k = 0; k < ind_j; k++)
+	      new_ind_vector.GetData()[k + new_ptr_vector(ind_x)] =
+		working_vector.GetIndex()[k];
+	    for (int k = 0; k < Nworking_vector - ind_j - 1; k++)
+	      new_ind_vector.GetData()[k + new_ptr_vector(ind_x) + ind_j] =
+		working_vector.GetIndex()[k + ind_j + 1];
+
+	    for (int k = 0; k < ind_j; k++)
+	      new_data_vector.GetData()[k + new_ptr_vector(ind_x)] =
+		working_vector.GetData()[k];
+	    for (int k = 0; k < Nworking_vector - ind_j - 1; k++)
+	      new_data_vector.GetData()[k + new_ptr_vector(ind_x) + ind_j] =
+		working_vector.GetData()[k + ind_j + 1];
+	    break;
+
+	    // Addition.
+	  case 1:
+	    ind_j = 0;
+	    while (ind_j < Nworking_vector &&
+		   working_vector.Index(ind_j) < j)
+	      ind_j++;
+	    for (int k = 0; k < ind_j; k++)
+	      new_ind_vector.GetData()[k + new_ptr_vector(ind_x)] =
+		working_vector.GetIndex()[k];
+	    new_ind_vector.GetData()[new_ptr_vector(ind_x) + ind_j] = j;
+	    for (int k = 0; k < Nworking_vector - ind_j; k++)
+	      new_ind_vector.GetData()[k + new_ptr_vector(ind_x) + ind_j + 1]
+		= working_vector.GetIndex()[k + ind_j];
+
+	    for (int k = 0; k < ind_j; k++)
+	      new_data_vector.GetData()[k + new_ptr_vector(ind_x)] =
+		working_vector.GetData()[k];
+	    new_data_vector.GetData()[new_ptr_vector(ind_x)  + ind_j]
+	      = X(ind_x);
+	    for (int k = 0; k < Nworking_vector - ind_j; k++)
+	      new_data_vector.GetData()[k + new_ptr_vector(ind_x) + ind_j + 1]
+		= working_vector.GetData()[k + ind_j];
+	  }
+
+	line = ind_x + 1;
+	working_vector.Nullify();
+      }
+    for (int k = 0; k < ptr_vector(m) -  ptr_vector(line); k++)
+      new_ind_vector.GetData()[k + new_ptr_vector(line)] =
+	M.GetInd()[k + ptr_vector(line)];
+    for (int k = 0; k < ptr_vector(m) -  ptr_vector(line); k++)
+      new_data_vector.GetData()[k + new_ptr_vector(line)] =
+	M.GetData()[k + ptr_vector(line)];
+
+    M.SetData(m, n, new_data_vector, new_ptr_vector, new_ind_vector);
+    ptr_vector.Nullify();
+    new_data_vector.Nullify();
+    new_ind_vector.Nullify();
+    new_ptr_vector.Nullify();
   }
 
 
