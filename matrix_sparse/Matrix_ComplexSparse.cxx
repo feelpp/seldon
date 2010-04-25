@@ -91,10 +91,15 @@ namespace Seldon
     this->imag_nz_ = imag_nz;
 
 #ifdef SELDON_CHECK_DIMENSIONS
-    if ( (static_cast<long int>(real_nz_-1) / static_cast<long int>(j)
-	  >= static_cast<long int>(i)) ||
-	 (static_cast<long int>(imag_nz_-1) / static_cast<long int>(j)
-	  >= static_cast<long int>(i)) )
+    if ((real_nz_ > 0
+         && (j == 0
+             || static_cast<long int>(real_nz_-1) / static_cast<long int>(j)
+             >= static_cast<long int>(i)))
+        ||
+        (imag_nz_ > 0
+         && (j == 0
+             || static_cast<long int>(imag_nz_-1) / static_cast<long int>(j)
+             >= static_cast<long int>(i))))
       {
 	this->m_ = 0;
 	this->n_ = 0;
@@ -542,10 +547,15 @@ namespace Seldon
 		       + to_str(i) + " by " + to_str(j) + " matrix).");
       }
 
-    if ( (static_cast<long int>(real_nz_-1) / static_cast<long int>(j)
-	  >= static_cast<long int>(i)) ||
-	 (static_cast<long int>(imag_nz_-1) / static_cast<long int>(j)
-	  >= static_cast<long int>(i)) )
+    if ((real_nz_ > 0
+         && (j == 0
+             || static_cast<long int>(real_nz_-1) / static_cast<long int>(j)
+             >= static_cast<long int>(i)))
+        ||
+        (imag_nz_ > 0
+         && (j == 0
+             || static_cast<long int>(imag_nz_-1) / static_cast<long int>(j)
+             >= static_cast<long int>(i))))
       {
 	this->m_ = 0;
 	this->n_ = 0;
@@ -888,10 +898,15 @@ namespace Seldon
 		       + to_str(i) + " by " + to_str(j) + " matrix).");
       }
 
-    if ( (static_cast<long int>(real_nz_-1) / static_cast<long int>(j)
-	  >= static_cast<long int>(i)) ||
-	 (static_cast<long int>(imag_nz_-1) / static_cast<long int>(j)
-	  >= static_cast<long int>(i)) )
+    if ((real_nz_ > 0
+         && (j == 0
+             || static_cast<long int>(real_nz_-1) / static_cast<long int>(j)
+             >= static_cast<long int>(i)))
+        ||
+        (imag_nz_ > 0
+         && (j == 0
+             || static_cast<long int>(imag_nz_-1) / static_cast<long int>(j)
+             >= static_cast<long int>(i))))
       {
 	this->m_ = 0;
 	this->n_ = 0;
@@ -1025,10 +1040,15 @@ namespace Seldon
       }
 
 #ifdef SELDON_CHECK_DIMENSIONS
-    if ( (static_cast<long int>(real_nz_-1) / static_cast<long int>(j)
-	  >= static_cast<long int>(i)) ||
-	 (static_cast<long int>(imag_nz_-1) / static_cast<long int>(j)
-	  >= static_cast<long int>(i)) )
+    if ((real_nz_ > 0
+         && (j == 0
+             || static_cast<long int>(real_nz_-1) / static_cast<long int>(j)
+             >= static_cast<long int>(i)))
+        ||
+        (imag_nz_ > 0
+         && (j == 0
+             || static_cast<long int>(imag_nz_-1) / static_cast<long int>(j)
+             >= static_cast<long int>(i))))
       {
 	this->m_ = 0;
 	this->n_ = 0;
