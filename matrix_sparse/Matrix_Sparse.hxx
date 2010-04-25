@@ -115,6 +115,7 @@ namespace Seldon
 
     // Convenient functions.
     void Zero();
+    void SetIdentity();
     void Fill();
     template <class T0>
     void Fill(const T0& x);

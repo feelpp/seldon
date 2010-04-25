@@ -995,6 +995,38 @@ namespace Seldon
   }
 
 
+  //! Sets the matrix to identity.
+  /*! This method fills the diagonal of the matrix with ones. It can be
+    applied to non square matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::SetIdentity()
+  {
+    int m = this->m_;
+    int n = this->n_;
+    int nz = min(m, n);
+
+    if (nz == 0)
+      return;
+
+    Clear();
+
+    Vector<T, VectFull, Allocator> values(nz);
+    Vector<int, VectFull, CallocAlloc<int> > ptr(Storage::GetFirst(m, n) + 1);
+    Vector<int, VectFull, CallocAlloc<int> > ind(nz);
+
+    values.Fill(T(1));
+    ind.Fill();
+    int i;
+    for (i = 0; i < nz + 1; i++)
+      ptr(i) = i;
+    for (i = nz + 1; i < ptr.GetLength(); i++)
+      ptr(i) = nz;
+
+    SetData(m, n, values, ptr, ind);
+  }
+
+
   //! Fills the non-zero entries with 0, 1, 2, ...
   /*! On exit, the non-zero entries are 0, 1, 2, 3, ... The order of the
     numbers depends on the storage.

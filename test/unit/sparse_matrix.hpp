@@ -27,6 +27,7 @@ using namespace Seldon;
 class SparseMatrixTest: public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE(SparseMatrixTest);
+  CPPUNIT_TEST(test_set_identity);
   CPPUNIT_TEST(test_get_rowcol);
   CPPUNIT_TEST(test_conversion);
   CPPUNIT_TEST(test_permutation);
@@ -48,6 +49,22 @@ public:
 
   void tearDown()
   {
+  }
+
+
+  void test_set_identity()
+  {
+    m_ = 25;
+    n_ = 10;
+    set_identity();
+
+    m_ = 10;
+    n_ = 25;
+    set_identity();
+
+    m_ = 20;
+    n_ = 20;
+    set_identity();
   }
 
 
@@ -226,6 +243,52 @@ public:
     Nelement_ = 40;
     Nloop_ = 10;
     set_rowcol();
+  }
+
+
+  void set_identity()
+  {
+    Matrix<double, General, ColSparse> A_col(m_, n_);
+    Matrix<double, General, RowSparse> A_row(m_, n_);
+    Matrix<double> A_full(m_, n_);
+
+    A_col.SetIdentity();
+    A_row.SetIdentity();
+    A_full.SetIdentity();
+
+    for (int i = 0; i < m_; i++)
+      for (int j = 0; j < n_; j++)
+        if (i == j)
+        {
+          CPPUNIT_ASSERT(A_col(i, j) == double(1));
+          CPPUNIT_ASSERT(A_row(i, j) == double(1));
+          CPPUNIT_ASSERT(A_full(i, j) == double(1));
+        }
+        else
+        {
+          CPPUNIT_ASSERT(A_col(i, j) == double(0));
+          CPPUNIT_ASSERT(A_row(i, j) == double(0));
+          CPPUNIT_ASSERT(A_full(i, j) == double(0));
+        }
+
+    // Testing the function applied to a non-empty matrix.
+    A_row.FillRand(m_ + n_);
+    A_full.FillRand();
+    A_row.SetIdentity();
+    A_full.SetIdentity();
+
+    for (int i = 0; i < m_; i++)
+      for (int j = 0; j < n_; j++)
+        if (i == j)
+        {
+          CPPUNIT_ASSERT(A_row(i, j) == double(1));
+          CPPUNIT_ASSERT(A_full(i, j) == double(1));
+        }
+        else
+        {
+          CPPUNIT_ASSERT(A_row(i, j) == double(0));
+          CPPUNIT_ASSERT(A_full(i, j) == double(0));
+        }
   }
 
 
