@@ -91,6 +91,24 @@ namespace Seldon
     this->imag_nz_ = imag_nz;
 
 #ifdef SELDON_CHECK_DIMENSIONS
+    if (real_nz_ < 0 || imag_nz_ < 0)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+	throw WrongDim(string("Matrix_ComplexSparse::")
+		       + "Matrix_ComplexSparse(int, int, int, int)",
+		       "Invalid number of non-zero elements: "
+                       + to_str(real_nz) + " in the real part and "
+                       + to_str(imag_nz) + " in the imaginary part.");
+      }
     if ((real_nz_ > 0
          && (j == 0
              || static_cast<long int>(real_nz_-1) / static_cast<long int>(j)

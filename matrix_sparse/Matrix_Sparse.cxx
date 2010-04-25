@@ -84,6 +84,18 @@ namespace Seldon
     this->nz_ = nz;
 
 #ifdef SELDON_CHECK_DIMENSIONS
+    if (nz_ < 0)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		       "Invalid number of non-zero elements: " + to_str(nz)
+                       + ".");
+      }
     if (nz_ > 0
         && (j == 0
             || static_cast<long int>(nz_-1) / static_cast<long int>(j)
