@@ -52,6 +52,13 @@ namespace Seldon
   template <class T, class Allocator>
   inline Matrix_Base<T, Allocator>::Matrix_Base(int i, int j)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (i < 0 || j < 0)
+      throw WrongDim("Matrix_Base::Matrix_Base(int, int)",
+                     "Unable to define a matrix with size "
+                     + to_str(i) + " by " + to_str(j) + ".");
+#endif
+
     m_ = i;
     n_ = j;
     data_ = NULL;
