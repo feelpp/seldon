@@ -46,6 +46,8 @@
 #include "computation/interfaces/direct/Pastix.cxx"
 #endif
 
+#include "computation/interfaces/direct/SparseSolver.cxx"
+
 // iterative solvers and preconditioning
 
 #include "computation/solver/iterative/Iterative.cxx"
