@@ -42,6 +42,8 @@
   SOR(M, X, Y, omega, iter)
 
   SolveLU(M, Y)
+
+  Solve(M, Y)
 */
 
 namespace Seldon
@@ -1013,6 +1015,38 @@ namespace Seldon
 
   // SolveLU //
   /////////////
+
+
+  ///////////
+  // SOLVE //
+
+
+  //! Solves a linear system using LU factorization.
+  /*! This function solves \f$ M X = Y \f$ where \f$ M \f$ is a matrix, and
+    \f$ X \f$ and \f$ Y \f$ are vectors.
+    \param[in] M the matrix of the linear system, to be factorized in LU
+    form. On exit, \a M contains its LU factorization.
+    \param[in,out] Y on entry, the right-hand side \f$ Y \f$; on exit, the
+    solution \f$ X \f$ of the system.
+  */
+  template <class T0, class Prop0, class Storage0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void Solve(Matrix<T0, Prop0, Storage0, Allocator0>& M,
+             Vector<T1, Storage1, Allocator1>& Y)
+  {
+#ifdef SELDON_WITH_LAPACK
+    Vector<int> P;
+    GetLU(M, P);
+    SolveLU(M, P, Y);
+#else
+    GetLU(M);
+    SolveLU(M, Y);
+#endif
+  }
+
+
+  // SOLVE //
+  ///////////
 
 
 
