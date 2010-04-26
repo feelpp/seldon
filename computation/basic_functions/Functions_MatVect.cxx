@@ -34,6 +34,14 @@
 
   alpha M X + beta Y -> Y
   MltAdd(alpha, M, X, beta, Y)
+
+  Gauss(M, X)
+
+  GaussSeidel(M, X, Y, iter)
+
+  SOR(M, X, Y, omega, iter)
+
+  SolveLU(M, Y)
 */
 
 namespace Seldon
@@ -943,8 +951,8 @@ namespace Seldon
   }
 
 
-  // Gauss-Seidel //
-  //////////////////
+  // S.O.R. method //
+  ///////////////////
 
 
 
