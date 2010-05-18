@@ -98,6 +98,8 @@ namespace Seldon
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
 
+    typedef VectFull storage;
+
     // Attributes.
   private:
 

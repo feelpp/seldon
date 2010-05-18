@@ -37,6 +37,8 @@ namespace Seldon
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
 
+    typedef VectSparse storage;
+
   protected :
     static SELDON_DEFAULT_ALLOCATOR<int> index_allocator_;
 
