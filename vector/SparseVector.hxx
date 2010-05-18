@@ -65,6 +65,8 @@ namespace Seldon
     template<class Allocator2>
     void SetData(Vector<T, VectFull, Allocator2>& data,
 		 Vector<int>& index);
+    template<class Allocator2>
+    void SetData(const Vector<T, VectSparse, Allocator2>& V);
     void Nullify();
 
     // Element access and affectation.

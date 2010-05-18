@@ -408,6 +408,27 @@ namespace Seldon
   }
 
 
+  //! Lets the current vector point to the data of another vector.
+  /*! Sets the length and the data of the current vector to that of \a V. On
+    exit, the current vector shares it data array with \a V.
+    \param V vector whose data should be shared with current instance.
+    \warning On exit, \a V and the current instance share the same data array,
+    and they are likely to free it. As a consequence, before the vectors are
+    destructed, it is necessary to call 'Nullify' on either \a V or the
+    current instance. In addition, if the current instance is to deallocate
+    the data array, its allocator should be compatible with the allocator that
+    allocated the data array (probably the allocator of \a V).
+    \note This method should only be used by advanced users.
+  */
+  template <class T, class Allocator>
+  template <class Allocator0>
+  inline void Vector<T, VectFull, Allocator>
+  ::SetData(const Vector<T, VectFull, Allocator0>& V)
+  {
+    SetData(V.GetLength(), V.GetData());
+  }
+
+
   //! Clears the vector without releasing memory.
   /*!
     On exit, the vector is empty and the memory has not been released.

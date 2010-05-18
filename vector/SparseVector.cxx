@@ -293,6 +293,27 @@ namespace Seldon
     index.Nullify();
   }
 
+
+  /*! \brief Lets the current vector point to the data of a second vector (low
+    level method). */
+  /*! Reallocates the current vector and lets its data point to those of \a V.
+    \param V the vector to which the current vector points to (on exit).
+    \warning On exit, both \a V and the current vector point to the same
+    arrays in memory. Only one of them should eventually deallocate the memory
+    blocks. The other one should be nullified by the user. In case the current
+    vector is responsible for the deallocations, its allocator should be
+    compatible with the allocator that created the memory blocks (which is
+    probably the allocator of \a V).
+  */
+  template <class T, class Allocator>
+  template<class Allocator2>
+  void Vector<T, VectSparse, Allocator>
+  ::SetData(const Vector<T, VectSparse, Allocator2>& V)
+  {
+    SetData(V.GetM(), V.GetData(), V.GetIndex());
+  }
+
+
   //! Clears the vector without releasing memory.
   /*!
     On exit, the vector is empty and the memory has not been released.

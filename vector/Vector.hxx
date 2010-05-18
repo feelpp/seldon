@@ -118,6 +118,8 @@ namespace Seldon
     void Reallocate(int i);
     void Resize(int i);
     void SetData(int i, pointer data);
+    template <class Allocator0>
+    void SetData(const Vector<T, VectFull, Allocator0>& V);
     void Nullify();
 
     // Element access and affectation.
