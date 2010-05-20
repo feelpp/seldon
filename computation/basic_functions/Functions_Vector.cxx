@@ -116,6 +116,23 @@ namespace Seldon
   }
 
 
+  template <class T0,
+	    class T1, class Allocator1,
+	    class T2, class Allocator2>
+  void Add(const T0 alpha,
+	   const Vector<T1, Collection, Allocator1>& X,
+	   Vector<T2, Collection, Allocator2>& Y)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(X, Y, "Add(X, Y)", "X + Y");
+#endif
+
+    for (int i = 0; i < X.GetNvector(); i++)
+      Add(alpha, X.GetVector(i), Y.GetVector(i));
+  }
+
+
   // ADD //
   /////////
 
@@ -194,6 +211,24 @@ namespace Seldon
     for (int i = 0; i < X.GetM(); i++)
       value += X(i) * Y(i);
 
+    return value;
+  }
+
+
+  //! Scalar product between two vector collections.
+  template<class T1, class Allocator1,
+	   class T2, class Allocator2>
+  typename T1::value_type DotProd(const Vector<T1, Collection, Allocator1>& X,
+				  const Vector<T2, Collection, Allocator2>& Y)
+  {
+    typename T1::value_type value(0);
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(X, Y, "DotProd(X, Y)", "<X, Y>");
+#endif
+
+    for (int i = 0; i < X.GetNvector(); i++)
+      value += DotProd(X.GetVector(i), Y.GetVector(i));
     return value;
   }
 
@@ -544,6 +579,123 @@ namespace Seldon
 		     + string("vector of length ") + to_str(X.GetLength())
 		     + string(";\n     Y (") + to_str(&Y) + string(") is a ")
 		     + string("vector of length ") + to_str(Y.GetLength())
+		     + string("."));
+  }
+
+
+  //! Checks the compatibility of the dimensions.
+  /*! Checks that X + Y is possible according to the dimensions of
+    the vectors X and Y. If the dimensions are incompatible,
+    an exception is raised (a WrongDim object is thrown).
+    \param X vector.
+    \param Y vector.
+    \param function (optional) function in which the compatibility is checked.
+    Default: "".
+    \param op (optional) operation to be performed on the vectors.
+    Default: "X + Y".
+  */
+  template <class T0, class Allocator0,
+	    class T1, class Allocator1>
+  void CheckDim(const Vector<T0, Vect_Sparse, Allocator0>& X,
+		const Vector<T1, Vect_Sparse, Allocator1>& Y,
+		string function = "", string op = "X + Y")
+  {
+    // The dimension of a Vector<Vect_Sparse> is infinite,
+    // so no vector dimension checking has to be done.
+  }
+
+
+   //! Checks the compatibility of the dimensions.
+  /*! Checks that X + Y is possible according to the dimensions of
+    the vectors X and Y. If the dimensions are incompatible,
+    an exception is raised (a WrongDim object is thrown).
+    \param X vector.
+    \param Y vector.
+    \param function (optional) function in which the compatibility is checked.
+    Default: "".
+    \param op (optional) operation to be performed on the vectors.
+    Default: "X + Y".
+  */
+  template <class T0, class Allocator0,
+	    class T1, class Allocator1>
+  void CheckDim(const Vector<T0, Collection, Allocator0>& X,
+		const Vector<T1, Collection, Allocator1>& Y,
+		string function = "", string op = "X + Y")
+  {
+    if (X.GetLength() != Y.GetLength())
+      throw WrongDim(function, string("Operation ") + op
+		     + string(" not permitted:")
+		     + string("\n     X (") + to_str(&X) + string(") is a ")
+		     + string("vector of length ") + to_str(X.GetLength())
+		     + string(";\n     Y (") + to_str(&Y) + string(") is a ")
+		     + string("vector of length ") + to_str(Y.GetLength())
+		     + string("."));
+
+    if (X.GetNvector() != Y.GetNvector())
+      throw WrongDim(function, string("Operation ") + op
+		     + string(" not permitted:")
+		     + string("\n     X (") + to_str(&X) + string(") is a ")
+		     + string("vector of length ") + to_str(X.GetNvector())
+		     + string(";\n     Y (") + to_str(&Y) + string(") is a ")
+		     + string("vector of length ") + to_str(Y.GetNvector())
+		     + string("."));
+  }
+
+
+  //! Checks the compatibility of the dimensions.
+  /*! Checks that X + Y is possible according to the dimensions of
+    the vectors X and Y. If the dimensions are incompatible,
+    an exception is raised (a WrongDim object is thrown).
+    \param X vector.
+    \param Y vector.
+    \param function (optional) function in which the compatibility is checked.
+    Default: "".
+    \param op (optional) operation to be performed on the vectors.
+    Default: "X + Y".
+  */
+  template <class T0, class Allocator0, class Allocator00,
+	    class T1, class Allocator1, class Allocator11>
+  void CheckDim(const Vector<Vector<T0, Vect_Sparse, Allocator0>,
+                Collection, Allocator00>& X,
+		const Vector<Vector<T1, Vect_Sparse, Allocator1>,
+                Collection, Allocator11>& Y,
+		string function = "", string op = "X + Y")
+  {
+    if (X.GetNvector() != Y.GetNvector())
+      throw WrongDim(function, string("Operation ") + op
+		     + string(" not permitted:")
+		     + string("\n     X (") + to_str(&X) + string(") is a ")
+		     + string("vector of length ") + to_str(X.GetNvector())
+		     + string(";\n     Y (") + to_str(&Y) + string(") is a ")
+		     + string("vector of length ") + to_str(Y.GetNvector())
+		     + string("."));
+  }
+
+
+  //! Checks the compatibility of the dimensions.
+  /*! Checks that X + Y is possible according to the dimensions of
+    the vectors X and Y. If the dimensions are incompatible,
+    an exception is raised (a WrongDim object is thrown).
+    \param X vector.
+    \param Y vector.
+    \param function (optional) function in which the compatibility is checked.
+    Default: "".
+    \param op (optional) operation to be performed on the vectors.
+    Default: "X + Y".
+  */
+  template <class T0, class Allocator0,
+	    class T1, class Allocator1>
+  void CheckDim(const Vector<T0, VectFull, Allocator0>& X,
+		Vector<T1, Collection, Allocator1>& Y,
+		string function = "", string op = "X + Y")
+  {
+    if (X.GetLength() != Y.GetM())
+      throw WrongDim(function, string("Operation ") + op
+		     + string(" not permitted:")
+		     + string("\n     X (") + to_str(&X) + string(") is a ")
+		     + string("vector of length ") + to_str(X.GetLength())
+		     + string(";\n     Y (") + to_str(&Y) + string(") is a ")
+		     + string("vector of length ") + to_str(Y.GetM())
 		     + string("."));
   }
 

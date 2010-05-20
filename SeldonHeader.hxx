@@ -202,6 +202,10 @@ namespace Seldon
   template <class T, class Allocator>
   class Vector<T, VectSparse, Allocator>;
 
+  // Vector collection.
+  template <class T, class Allocator>
+  class Vector<T, Collection, Allocator>;
+
   // Matrix class - specialized for each used type.
   template <class T, class Prop = General,
 	    class Storage = RowMajor,

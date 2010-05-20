@@ -815,7 +815,6 @@ namespace Seldon
   ////////////
 
 
-
   ///////////
   // Gauss //
 
@@ -1073,6 +1072,36 @@ namespace Seldon
 		string function = "")
   {
     if (X.GetLength() != M.GetN() || Y.GetLength() != M.GetM())
+      throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
+		     + string("\n     M (") + to_str(&M) + string(") is a ")
+		     + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
+		     + string(" matrix;\n     X (") + to_str(&X)
+		     + string(") is vector of length ")
+		     + to_str(X.GetLength()) + string(";\n     Y (")
+		     + to_str(&Y) + string(") is vector of length ")
+		     + to_str(Y.GetLength()) + string("."));
+  }
+
+
+  //! Checks the compatibility of the dimensions.
+  /*! Checks that M X + Y -> Y is possible according to the dimensions of
+    the matrix M and the vectors X and Y. If the dimensions are incompatible,
+    an exception is raised (a WrongDim object is thrown).
+    \param M matrix.
+    \param X vector.
+    \param Y vector.
+    \param function (optional) function in which the compatibility is checked.
+    Default: "".
+  */
+  template <class T0, class Prop0, class Storage0, class Allocator0,
+	    class T1, class Allocator1,
+	    class T2, class Storage2, class Allocator2>
+  void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
+		const Vector<T1, Collection, Allocator1>& X,
+		const Vector<T2, Storage2, Allocator2>& Y,
+		string function = "")
+  {
+    if (X.GetM() != M.GetN() || Y.GetLength() != M.GetM())
       throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
 		     + string("\n     M (") + to_str(&M) + string(") is a ")
 		     + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())

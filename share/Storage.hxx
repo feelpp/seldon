@@ -55,6 +55,7 @@ namespace Seldon
 
   class VectFull;
   class VectSparse;
+  class Collection;
 
 
   ////////////

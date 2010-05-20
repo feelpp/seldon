@@ -30,6 +30,7 @@
 #include "sparse_matrix.hpp"
 #include "vector2.hpp"
 #include "vector3.hpp"
+#include "vector_collection.hpp"
 #include <cppunit/TestResult.h>
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -43,6 +44,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SparseMatrixTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(LapackTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(Vector2Test);
 CPPUNIT_TEST_SUITE_REGISTRATION(Vector3Test);
+CPPUNIT_TEST_SUITE_REGISTRATION(VectorCollectionTest);
 
 
 int main()

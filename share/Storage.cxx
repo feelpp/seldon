@@ -66,6 +66,11 @@ namespace Seldon
   };
 
 
+  class Collection
+  {
+  };
+
+
   ////////////
   // SPARSE //
   ////////////
