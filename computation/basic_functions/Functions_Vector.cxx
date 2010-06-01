@@ -133,6 +133,51 @@ namespace Seldon
   }
 
 
+  template <class T0,
+	    class T1, template <class U1> class Allocator1,
+	    class T2, template <class U2> class Allocator2>
+  void Add(const T0 alpha,
+	   const
+           Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
+	   Vector<FloatDouble, DenseSparseCollection, Allocator2<T2> >& Y)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(X, Y, "Add(X, Y)");
+#endif
+
+    Add(alpha, X.GetFloatDense(), Y.GetFloatDense());
+    Add(alpha, X.GetFloatSparse(), Y.GetFloatSparse());
+    Add(alpha, X.GetDoubleDense(), Y.GetDoubleDense());
+    Add(alpha, X.GetDoubleSparse(), Y.GetDoubleSparse());
+  }
+
+
+  template <class T0,
+	    class T1, template <class U1> class Allocator1,
+	    class T2, class Storage2, class Allocator2>
+  void Add(const T0 alpha,
+	   const
+           Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
+	   Vector<T2, Storage2, Allocator2>& Y)  throw(WrongDim, NoMemory)
+  {
+    if (alpha != T0(0))
+      {
+	double alpha_ = alpha;
+
+	int ma = X.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+	CheckDim(X, Y, "Add(alpha, X, Y)");
+#endif
+
+	for (int i = 0; i < ma; i++)
+	  Y(i) += alpha_ * X(i);
+
+      }
+  }
+
+
   // ADD //
   /////////
 
@@ -229,6 +274,29 @@ namespace Seldon
 
     for (int i = 0; i < X.GetNvector(); i++)
       value += DotProd(X.GetVector(i), Y.GetVector(i));
+    return value;
+  }
+
+
+  //! Scalar product between two vector collections.
+  template<class T1, template <class U1> class Allocator1,
+	   class T2, template <class U2> class Allocator2>
+  double
+  DotProd(const
+          Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
+          const
+          Vector<FloatDouble, DenseSparseCollection, Allocator2<T2> >& Y)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(X, Y, "DotProd(X, Y)");
+#endif
+
+    double value(0.);
+    value += DotProd(X.GetFloatDense(), Y.GetFloatDense());
+    value += DotProd(X.GetFloatSparse(), Y.GetFloatSparse());
+    value += DotProd(X.GetDoubleDense(), Y.GetDoubleDense());
+    value += DotProd(X.GetDoubleSparse(), Y.GetDoubleSparse());
     return value;
   }
 
@@ -605,7 +673,7 @@ namespace Seldon
   }
 
 
-   //! Checks the compatibility of the dimensions.
+  //! Checks the compatibility of the dimensions.
   /*! Checks that X + Y is possible according to the dimensions of
     the vectors X and Y. If the dimensions are incompatible,
     an exception is raised (a WrongDim object is thrown).
@@ -696,6 +764,37 @@ namespace Seldon
 		     + string("vector of length ") + to_str(X.GetLength())
 		     + string(";\n     Y (") + to_str(&Y) + string(") is a ")
 		     + string("vector of length ") + to_str(Y.GetM())
+		     + string("."));
+  }
+
+
+   //! Checks the compatibility of the dimensions.
+  /*! Checks that X + Y is possible according to the dimensions of
+    the vectors X and Y. If the dimensions are incompatible,
+    an exception is raised (a WrongDim object is thrown).
+    \param X vector.
+    \param Y vector.
+    \param function (optional) function in which the compatibility is checked.
+    Default: "".
+    \param op (optional) operation to be performed on the vectors.
+    Default: "X + Y".
+  */
+  template <class T0, template <class U0> class Allocator0,
+	    class T1, template <class U1> class Allocator1>
+  void
+  CheckDim(const
+           Vector<FloatDouble, DenseSparseCollection, Allocator0<T0> >& X,
+           const
+           Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& Y,
+           string function = "", string op = "X + Y")
+  {
+    if (X.GetNvector() != Y.GetNvector())
+      throw WrongDim(function, string("Operation ") + op
+		     + string(" not permitted:")
+		     + string("\n     X (") + to_str(&X) + string(") is a ")
+		     + string("vector of length ") + to_str(X.GetNvector())
+		     + string(";\n     Y (") + to_str(&Y) + string(") is a ")
+		     + string("vector of length ") + to_str(Y.GetNvector())
 		     + string("."));
   }
 

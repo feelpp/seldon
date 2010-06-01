@@ -56,6 +56,7 @@ namespace Seldon
   class VectFull;
   class VectSparse;
   class Collection;
+  class DenseSparseCollection;
 
 
   ////////////
@@ -323,6 +324,16 @@ namespace Seldon
 
   template <class M>
   class SubStorage
+  {
+  };
+
+
+  ///////////
+  // TYPES //
+  ///////////
+
+
+  class FloatDouble
   {
   };
 

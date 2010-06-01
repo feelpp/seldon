@@ -71,6 +71,11 @@ namespace Seldon
   };
 
 
+  class DenseSparseCollection
+  {
+  };
+
+
   ////////////
   // SPARSE //
   ////////////
