@@ -60,8 +60,8 @@ namespace Seldon
     void ShowMessages();
 
 
-    template<class Prop, class Storage, class Allocator>
-    void FindOrdering(Matrix<T, Prop, Storage, Allocator> & mat,
+    template<class T0, class Prop, class Storage, class Allocator>
+    void FindOrdering(Matrix<T0, Prop, Storage, Allocator> & mat,
 		      IVect& numbers, bool keep_matrix = false);
 
     template<class Storage, class Allocator>

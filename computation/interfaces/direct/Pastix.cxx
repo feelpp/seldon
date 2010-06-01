@@ -151,12 +151,49 @@ namespace Seldon
   }
 
 
-  template<class T> template<class Prop, class Storage, class Allocator>
-  void MatrixPastix<T>
-  ::FindOrdering(Matrix<T, Prop, Storage, Allocator> & mat,
-                 IVect& numbers, bool keep_matrix)
+  template<class T>
+  template<class T0, class Prop, class Storage, class Allocator>
+  void MatrixPastix<T>::
+  FindOrdering(Matrix<T0, Prop, Storage, Allocator> & mat,
+               IVect& numbers, bool keep_matrix)
   {
+    // We clear the previous factorization, if any.
+    Clear();
 
+    n = mat.GetN();
+    if (n <= 0)
+      return;
+
+    int nrhs = 1, nnz = 0;
+    int* ptr_ = NULL; int* rows_ = NULL;
+    Matrix<int, Symmetric, RowSymSparse> As;
+
+    iparm[IPARM_SYM] = API_SYM_YES;
+    iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
+    GetSymmetricPattern(mat, As);
+    if (!keep_matrix)
+      mat.Clear();
+
+    ptr_ = As.GetPtr();
+    // Changing to 1-index notation.
+    for (int i = 0; i <= n; i++)
+      ptr_[i]++;
+
+    nnz = As.GetNonZeros();
+    rows_ = As.GetInd();
+    for (int i = 0; i < nnz; i++)
+      rows_[i]++;
+
+    perm.Reallocate(n); invp.Reallocate(n);
+    perm.Fill(); invp.Fill();
+
+    // We get ordering only.
+    iparm[IPARM_START_TASK] = API_TASK_ORDERING;
+    iparm[IPARM_END_TASK] = API_TASK_ORDERING;
+
+    CallPastix(MPI_COMM_WORLD, ptr_, rows_, NULL, NULL, nrhs);
+
+    numbers = perm;
   }
 
 
