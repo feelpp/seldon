@@ -947,7 +947,7 @@ namespace Seldon
 	col_numbers.Resize(nb_elt);
 	values.Resize(nb_elt);
 	ConvertMatrix_from_Coordinates(row_numbers, col_numbers, values,
-				       leaf_class, 1);
+                                       leaf_class, 1);
       }
   }
 

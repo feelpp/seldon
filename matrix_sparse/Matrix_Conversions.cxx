@@ -359,7 +359,7 @@ namespace Seldon
 		}
 	    }
 
-	// Sorting the row numbers...
+        // Sorting the row numbers...
 	Sort(IndRow, IndCol, Val);
 
 	// ...and the column numbers.
@@ -936,22 +936,24 @@ namespace Seldon
       }
 
     // Fills matrix 'A'.
-    A.Reallocate(m, n);
+    A.Clear(); A.Reallocate(m, n);
     int offset = 0;
     for (int i = 0; i < m; i++)
       if (Ptr(i) > 0)
 	{
+          // sorting column numbers
+          Sort(offset, offset+Ptr(i)-1, IndCol, Val);
+
+          // putting values in A
 	  A.ReallocateRow(i, Ptr(i));
 	  for (int j = 0; j < Ptr(i); j++)
 	    {
 	      A.Index(i, j) = IndCol(offset + j);
 	      A.Value(i, j) = Val(offset + j);
-	    }
+            }
+
 	  offset += Ptr(i);
 	}
-
-    // Assembles 'A' to sort column numbers.
-    A.Assemble();
   }
 
 
