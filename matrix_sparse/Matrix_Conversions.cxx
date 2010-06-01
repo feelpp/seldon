@@ -1757,6 +1757,96 @@ namespace Seldon
       }
   }
 
+
+  /***********************
+   * GetSymmetricPattern *
+   ***********************/
+
+
+  template<class T, class Prop, class Storage, class Allocator, class AllocI>
+  void GetSymmetricPattern(const Matrix<T, Prop, Storage, Allocator>& A,
+                           Matrix<int, Symmetric, RowSymSparse, AllocI>& B)
+  {
+    int n = A.GetM();
+
+    // Converting to coordinates.
+    Vector<int, VectFull, CallocAlloc<int> > IndRow, IndCol;
+    Vector<T> Value;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Value);
+
+    // clearing values
+    Value.Clear();
+
+    // Sorting columns too.
+    Vector<int, VectFull, CallocAlloc<int> > IndRow2, IndCol2, Index(n);
+    IndRow2 = IndRow;
+    IndCol2 = IndCol;
+    Sort(IndCol2.GetM(), IndCol2, IndRow2);
+
+    int max_nnz = 0;
+    for (int i = 0; i < IndRow.GetM(); i++)
+      if (IndRow(i) <= IndCol(i))
+        max_nnz++;
+
+    for (int i = 0; i < IndRow.GetM(); i++)
+      if (IndCol2(i) <= IndRow2(i))
+        max_nnz++;
+
+    // then symmetrization of pattern and conversion to csr.
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind, Val;
+    Ptr.Reallocate(n+1);
+    Ind.Reallocate(max_nnz);
+    int j_begin = 0, j_end = 0, size_row = 0;
+    int j2_begin = 0, j2_end = 0;
+    Ptr(0) = 0;
+    for (int i = 0; i < A.GetM(); i++)
+      {
+        j_begin = j_end;
+        size_row = 0;
+        // We retrieve column numbers.
+        while ( (j_end < IndRow.GetM()) && (IndRow(j_end) == i))
+          {
+            if (IndRow(j_end) <= IndCol(j_end))
+              {
+                Index(size_row) = IndCol(j_end);
+                size_row++;
+              }
+
+            j_end++;
+          }
+
+        j2_begin = j2_end;
+        while ( (j2_end < IndCol2.GetM()) && (IndCol2(j2_end) == i))
+          {
+            if (IndCol2(j2_end) <= IndRow2(j2_end))
+              {
+                Index(size_row) = IndRow2(j2_end);
+                size_row++;
+              }
+
+            j2_end++;
+          }
+
+        // Sorting indexes.
+        Assemble(size_row, Index);
+
+        // Updating Ptr, Ind.
+        for (int j = 0; j < size_row; j++)
+          Ind(Ptr(i) + j) = Index(j);
+
+        Ptr(i+1) = Ptr(i) + size_row;
+      }
+
+    IndRow2.Clear(); IndCol2.Clear();
+    IndRow.Clear(); IndCol.Clear();
+    Ind.Resize(Ptr(n));
+    Val.Reallocate(Ptr(n));
+
+    // We put Ptr and Ind into the matrix B.
+    B.SetData(n, n, Val, Ptr, Ind);
+  }
+
+
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_CONVERSIONS_CXX
