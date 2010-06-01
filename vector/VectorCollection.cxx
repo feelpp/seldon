@@ -43,7 +43,7 @@ namespace Seldon
   */
   template <class T, class Allocator>
   inline Vector<T, Collection, Allocator>::Vector() throw():
-    Vector_Base<T, Allocator>()
+    Vector_Base<T, Allocator>(), label_map_(), label_vector_()
   {
     Nvector_ = 0;
   }
@@ -55,7 +55,8 @@ namespace Seldon
   */
   template <class T, class Allocator>
   Vector<T, Collection, Allocator>::Vector(int i):
-    Vector_Base<T, Allocator>(i), length_(i), length_sum_(i), vector_(i)
+    Vector_Base<T, Allocator>(i), length_(i), length_sum_(i), vector_(i),
+    label_map_(), label_vector_()
   {
     Nvector_ = i;
     for (int k = 0; k < i; k++)
@@ -90,6 +91,8 @@ namespace Seldon
   {
     for (int i = 0; i < Nvector_; i++)
       vector_(i).Nullify();
+    label_map_.clear();
+    label_vector_.clear();
   }
 
 
@@ -107,6 +110,8 @@ namespace Seldon
     length_.Clear();
     Nvector_ = 0;
     this->m_ = 0;
+    label_map_.clear();
+    label_vector_.clear();
   }
 
 
@@ -124,6 +129,8 @@ namespace Seldon
     length_.Clear();
     Nvector_ = 0;
     this->m_ = 0;
+    label_map_.clear();
+    label_vector_.clear();
   }
 
 
@@ -162,6 +169,23 @@ namespace Seldon
   }
 
 
+  //! Adds a vector to the list of vectors.
+  /*! The vector is "appended" to the existing data.
+    \param[in] vector vector to be appended.
+    \param[in] name name of the vector to be appended.
+  */
+  template <class T, class Allocator >
+  template <class Allocator0>
+  void Vector<T, Collection, Allocator>
+  ::AddVector(const Vector<typename T::value_type,
+              typename T::storage, Allocator0>& vector,
+	      string name)
+  {
+    AddVector(vector);
+    SetName(Nvector_ - 1, name);
+  }
+
+
   //! Sets a vector in the list of vectors.
   /*!
     \param[in] i a given index.
@@ -182,6 +206,73 @@ namespace Seldon
 
     vector_(i).Nullify();
     vector_(i).SetData(vector);
+  }
+
+
+  //! Sets a vector in the list of vectors.
+  /*!
+    \param[in] i index of the vector to be set.
+    \param[in] vector vector to which the \a i th vector is set.
+    \param[in] name new name of the  \a i th vector.
+  */
+  template <class T, class Allocator >
+  template <class Allocator0>
+  void Vector<T, Collection, Allocator>
+  ::SetVector(int i, const Vector<typename T::value_type,
+              typename T::storage, Allocator0>& vector,
+	      string name)
+  {
+    SetVector(i, vector);
+    SetName(i, name);
+  }
+
+
+  //! Sets a vector in the list of vectors.
+  /*!
+    \param[in] name name of the vector to be set.
+    \param[in] vector new value of the vector.
+  */
+  template <class T, class Allocator >
+  template <class Allocator0>
+  void Vector<T, Collection, Allocator>
+  ::SetVector(string name, const Vector<typename T::value_type,
+              typename T::storage, Allocator0>& vector)
+  {
+    map<string,int>::iterator label_iterator;
+    label_iterator = label_map_.find(name);
+    if (label_iterator == label_map_.end())
+      throw WrongArgument("VectorCollection::SetVector(string name, Vector)",
+			  string("Unknown vector name \"") + name + "\".");
+    SetVector(label_iterator->second, vector);
+  }
+
+
+  //! Sets the name of a given underlying vector.
+  /*!
+    \param[in] i a given index.
+    \param[in] name name of the underlying vector.
+  */
+  template <class T, class Allocator >
+  void Vector<T, Collection, Allocator>
+  ::SetName(int i, string name)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= Nvector_)
+      throw WrongIndex("VectorCollection::SetName(int i, string name)",
+		       string("Index should be in [0, ")
+                       + to_str(Nvector_ - 1)
+		       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    if (i >= int(label_vector_.size()))
+      label_vector_.resize(Nvector_, "");
+
+    if (label_vector_[i] != "")
+      label_map_.erase(label_vector_[i]);
+
+    label_vector_[i] = name;
+    label_map_[name] = i;
   }
 
 
@@ -309,6 +400,43 @@ namespace Seldon
   }
 
 
+  //! Returns one of the aggregated vectors.
+  /*!
+    \param[in] name the name of the vector to be returned.
+    \return The aggregated vector named \a name.
+  */
+  template <class T, class Allocator >
+  inline typename Vector<T, Collection, Allocator>::vector_reference
+  Vector<T, Collection, Allocator>::GetVector(string name)
+  {
+    map<string,int>::iterator label_iterator;
+    label_iterator = label_map_.find(name);
+    if (label_iterator == label_map_.end())
+      throw WrongArgument("VectorCollection::SetVector(string name)",
+			  string("Unknown vector name \"") + name + "\".");
+    return GetVector(label_iterator->second);
+  }
+
+
+  //! Returns one of the aggregated vectors.
+  /*!
+    \param[in] name the name of the vector to be returned.
+    \return The aggregated vector named \a name.
+  */
+  template <class T, class Allocator >
+  inline typename
+  Vector<T, Collection, Allocator>::const_vector_reference
+  Vector<T, Collection, Allocator>::GetVector(string name) const
+  {
+    map<string,int>::const_iterator label_iterator;
+    label_iterator = label_map_.find(name);
+    if (label_iterator == label_map_.end())
+      throw WrongArgument("VectorCollection::SetVector(string name)",
+			  string("Unknown vector name \"") + name + "\".");
+    return GetVector(label_iterator->second);
+  }
+
+
   /*********************************
    * ELEMENT ACCESS AND ASSIGNMENT *
    *********************************/
@@ -391,6 +519,8 @@ namespace Seldon
     Clear();
     for (int i = 0; i < X.GetNvector(); i++)
       AddVector(X.GetVector(i));
+    label_map_.insert(X.label_map_.begin(), X.label_map_.end());
+    label_vector_.assign(X.label_vector_.begin(), X.label_vector_.end());
   }
 
 
@@ -420,7 +550,13 @@ namespace Seldon
   void Vector<T, Collection, Allocator>::Print() const
   {
     for (int i = 0; i < GetNvector(); i++)
-      vector_(i).Print();
+      {
+        if (i < int(label_vector_.size()) && label_vector_[i] != "")
+          cout << label_vector_[i] << ":" << endl;
+        else
+          cout << "(noname):" << endl;
+	vector_(i).Print();
+      }
     cout << endl;
   }
 

@@ -38,6 +38,7 @@ class VectorCollectionTest: public CppUnit::TestFixture
   CPPUNIT_TEST(test_dot_product);
   CPPUNIT_TEST(test_mlt_add);
   CPPUNIT_TEST(test_write_read);
+  CPPUNIT_TEST(test_label);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -162,6 +163,15 @@ public:
     Nsub_vector_max_ = 10;
     m_ = 50;
     write_read();
+  }
+
+
+  void test_label()
+  {
+    Nloop_ = 10;
+    Nvector_ = 1000;
+    Nsub_vector_max_ = 10;
+    label();
   }
 
 
@@ -722,5 +732,40 @@ public:
 	B.Deallocate();
       }
   }
+
+
+  void label()
+  {
+    typedef Vector<double> vector_real_dense;
+    int length;
+
+    srand(time(NULL));
+
+    Vector<vector_real_dense, Collection> A;
+    vector_real_dense vector1, vector2;
+
+    length = rand() % Nsub_vector_max_ + 1;
+    vector1.Reallocate(length);
+    vector1.FillRand();
+    A.AddVector(vector1, "vector1");
+
+    length = rand() % Nsub_vector_max_ + 1;
+    vector2.Reallocate(length);
+    vector2.FillRand();
+    A.AddVector(vector2, "vector2");
+
+    vector_real_dense U, V;
+
+    U.Copy(A.GetVector("vector1"));
+    V.Copy(A.GetVector("vector2"));
+
+    for (int l = 0; l < U.GetM(); l++)
+      CPPUNIT_ASSERT(vector1(l) == U(l));
+    for (int l = 0; l < V.GetM(); l++)
+      CPPUNIT_ASSERT(vector2(l) == V(l));
+
+    A.Nullify();
+  }
+
 
 };

@@ -66,7 +66,12 @@ namespace Seldon
     // Pointers of the underlying vectors.
     collection_type vector_;
 
-    // Methods.
+    //! Indexes of the inner vectors that have a name.
+    map<string, int> label_map_;
+    //! Names associated with the inner vectors.
+    vector<string> label_vector_;
+
+    //! Methods.
   public:
     // Constructor.
     explicit Vector()  throw();
@@ -82,9 +87,20 @@ namespace Seldon
     template <class Allocator0>
     void AddVector(const Vector<typename T::value_type,
                    typename T::storage, Allocator0>& vector);
+    //! Management of the vectors.
+    template <class Allocator0>
+    void AddVector(const Vector<typename T::value_type,
+                   typename T::storage, Allocator0>& vector, string name);
     template <class Allocator0>
     void SetVector(int i, const Vector<typename T::value_type,
                    typename T::storage, Allocator0>& vector);
+    template <class Allocator0>
+    void SetVector(int i, const Vector<typename T::value_type,
+                   typename T::storage, Allocator0>& vector, string name);
+    template <class Allocator0>
+    void SetVector(string name, const Vector<typename T::value_type,
+                   typename T::storage, Allocator0>& vector);
+    void SetName(int i, string name);
 
     void Nullify();
 
@@ -100,6 +116,8 @@ namespace Seldon
     const_collection_reference GetVector() const;
     vector_reference GetVector(int i);
     const_vector_reference GetVector(int i) const;
+    vector_reference GetVector(string name);
+    const_vector_reference GetVector(string name) const;
 
     // Element access and assignment.
     const_reference operator() (int i) const;
