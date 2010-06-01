@@ -1106,6 +1106,54 @@ namespace Seldon
 
 
   //! Conversion from row-sparse to column-sparse.
+  template<class T, class Prop, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop, ColSymSparse, Alloc1>& A,
+	    Matrix<T, Prop, RowSymSparse, Alloc2>& B)
+  {
+    IVect IndRow, IndCol;
+    Vector<T> Val;
+
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val, 0, true);
+
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<T, VectFull, Alloc2> Value;
+
+    int m = A.GetM();
+    int n = A.GetM();
+    Ptr.Reallocate(m+1);
+    Ptr.Zero();
+    // counting number of non-zero entries
+    int nnz = 0;
+    for (int i = 0; i < IndCol.GetM(); i++)
+      if (IndRow(i) <= IndCol(i))
+        {
+          Ptr(IndRow(i) + 1)++;
+          nnz++;
+        }
+
+    // incrementing Ptr
+    for (int i = 2; i <= m; i++)
+      Ptr(i) += Ptr(i-1);
+
+    // filling Ind and Value
+    Ind.Reallocate(nnz);
+    Value.Reallocate(nnz);
+    nnz = 0;
+    for (int i = 0; i < IndCol.GetM(); i++)
+      if (IndRow(i) <= IndCol(i))
+        {
+          Ind(nnz) = IndCol(i);
+          Value(nnz) = Val(i);
+          nnz++;
+        }
+
+    // creating the matrix
+    B.SetData(m, n, Value, Ptr, Ind);
+
+  }
+
+
+  //! Conversion from row-sparse to column-sparse.
   template<class T, class Prop1, class Prop2,
 	   class Storage, class Alloc1, class Alloc2>
   void
@@ -1352,6 +1400,69 @@ namespace Seldon
       }
 
     mat_csr.SetData(m, m, Val, IndRow, IndCol);
+  }
+
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
+	    Matrix<T1, Prop1, ColSparse, Allocator1>& B)
+  {
+    int i, j;
+
+    int nnz = A.GetDataSize();
+    int n = A.GetM();
+    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
+    Vector<T1> Val(nnz);
+    int ind = 0;
+    for (i = 0; i < n; i++)
+      for (j = 0; j < A.GetRowSize(i); j++)
+	if (A.Index(i, j) != i)
+	  {
+	    IndRow(ind) = i;
+	    IndCol(ind) = A.Index(i, j);
+	    Val(ind) = A.Value(i, j);
+	    ind++;
+	  }
+
+    Sort(ind, IndCol, IndRow, Val);
+
+    Vector<int, VectFull, CallocAlloc<int> > Ptr(n+1), Ind(nnz + ind);
+    Vector<T1> AllVal(nnz+ind);
+    nnz = ind;
+    ind = 0;
+
+    int offset = 0; Ptr(0) = 0;
+    for (i = 0; i < n; i++)
+      {
+	int first_index = ind;
+	while (ind < nnz && IndCol(ind) <= i)
+	  ind++;
+
+        int size_lower = ind - first_index;
+	int size_upper = A.GetRowSize(i);
+	int size_row = size_lower + size_upper;
+
+	ind = first_index;
+	for (j = 0; j < size_lower; j++)
+	  {
+	    Ind(offset+j) = IndRow(ind);
+	    AllVal(offset+j) = Val(ind);
+            ind++;
+	  }
+
+	for (j = 0; j < size_upper; j++)
+	  {
+	    Ind(offset + size_lower + j) = A.Index(i, j);
+	    AllVal(offset + size_lower + j) = A.Value(i, j);
+          }
+
+        offset += size_row; Ptr(i+1) = offset;
+      }
+
+    B.SetData(n, n, AllVal, Ptr, Ind);
+    //A.WriteText("Ah.dat");
+    //B.WriteText("Bh.dat");
   }
 
 
