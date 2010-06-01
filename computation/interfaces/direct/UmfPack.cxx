@@ -95,7 +95,11 @@ namespace Seldon
   {
     if (this->n > 0)
       {
-	//Acsr.Clear();
+        // memory used for matrix is released
+        free(ptr_);
+        free(ind_);
+        free(data_);
+
 	// memory for numbering scheme is released
 	umfpack_di_free_symbolic(&this->Symbolic) ;
 
@@ -105,6 +109,9 @@ namespace Seldon
 	this->n = 0;
 	this->Symbolic = NULL;
 	this->Numeric = NULL;
+        ptr_ = NULL;
+        ind_ = NULL;
+        data_ = NULL;
       }
   }
 
@@ -121,16 +128,26 @@ namespace Seldon
   {
     if (this->n > 0)
       {
-	//Ptr.Clear(); Ind.Clear(); ValuesImag.Clear(); ValuesReal.Clear();
+        // memory used for matrix is released
+        free(ptr_);
+        free(ind_);
+        free(data_real_);
+        free(data_imag_);
 
 	// memory for numbering scheme is released
 	umfpack_zi_free_symbolic(&this->Symbolic) ;
 
 	// memory used by LU factorization is released
 	umfpack_zi_free_numeric(&this->Numeric) ;
-	this->n = 0;
+
+        this->n = 0;
 	this->Symbolic = NULL;
 	this->Numeric = NULL;
+
+        ptr_ = NULL;
+        ind_ = NULL;
+        data_real_ = NULL;
+        data_imag_ = NULL;
       }
   }
 
@@ -145,7 +162,7 @@ namespace Seldon
     Clear();
 
     // conversion to unsymmetric matrix in Column Sparse Column Format
-    Matrix<double, General, ColSparse> Acsc;
+    Matrix<double, General, ColSparse, MallocAlloc<double> > Acsc;
     transpose = false;
 
     Copy(mat, Acsc);
@@ -186,7 +203,7 @@ namespace Seldon
     Clear();
 
     // conversion to unsymmetric matrix in Column Sparse Row Format
-    Matrix<double, General, RowSparse> Acsr;
+    Matrix<double, General, RowSparse, MallocAlloc<double> > Acsr;
     transpose = true;
 
     Copy(mat, Acsr);
@@ -261,7 +278,8 @@ namespace Seldon
 
     this->n = mat.GetM();
     // conversion to CSC format
-    Matrix<complex<double>, General, ColSparse, Allocator> Acsc;
+    Matrix<complex<double>, General, ColSparse,
+      MallocAlloc<complex<double> > > Acsc;
     transpose = false;
 
     Copy(mat, Acsc);
@@ -272,8 +290,10 @@ namespace Seldon
     complex<double>* data = Acsc.GetData();
     int* ptr = Acsc.GetPtr();
     int* ind = Acsc.GetInd();
-    Vector<double> ValuesReal(nnz), ValuesImag(nnz);
-    IVect Ptr(this->n+1), Ind(nnz);
+    Vector<double, VectFull, MallocAlloc<double> >
+      ValuesReal(nnz), ValuesImag(nnz);
+
+    Vector<int, VectFull, MallocAlloc<int> > Ptr(this->n+1), Ind(nnz);
 
     for (int i = 0; i < nnz; i++)
       {
