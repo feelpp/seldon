@@ -49,7 +49,6 @@
 #include "computation/interfaces/direct/SparseSolver.cxx"
 
 // iterative solvers and preconditioning
-
 #include "computation/solver/iterative/Iterative.cxx"
 #include "computation/solver/preconditioner/Precond_Ssor.cxx"
 
