@@ -543,6 +543,7 @@ namespace Seldon
       C.Fill(T3(0));
     else
       Mlt(beta, C);
+
     int m = A.GetM(), n, p;
     T1 val;
     if (alpha == T0(1))
@@ -568,7 +569,7 @@ namespace Seldon
 		p = A.Index(i, k);
 		val = A.Value(i, k);
 		C(i) += alpha * val * B(p);
-	      }
+              }
 	  }
       }
   }
