@@ -21,11 +21,15 @@
 // including Pastix headers
 extern "C"
 {
-#include "pastix_interface.h"
+#define _COMPLEX_H
+
+#include "pastix.h"
 }
 
 namespace Seldon
 {
+
+  template<class T>
   class MatrixPastix
   {
   protected :
@@ -38,6 +42,8 @@ namespace Seldon
     //! number of columns
     int n;
     IVect perm, invp, col_num;
+    bool distributed;
+    int print_level;
 
   public :
 
@@ -46,41 +52,45 @@ namespace Seldon
 
     void Clear();
 
+    void CallPastix(const MPI_Comm&, int* colptr, int* row, T* val,
+                    T* b, int nrhs);
+    void CheckMatrix(const MPI_Comm&, int**, int**, T**);
+
     void HideMessages();
     void ShowMessages();
 
 
-    template<class T, class Prop, class Storage, class Allocator>
+    template<class Prop, class Storage, class Allocator>
     void FindOrdering(Matrix<T, Prop, Storage, Allocator> & mat,
 		      IVect& numbers, bool keep_matrix = false);
 
-    template<class T, class Storage, class Allocator>
+    template<class Storage, class Allocator>
     void FactorizeMatrix(Matrix<T, General, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
-    template<class T, class Storage, class Allocator>
+    template<class Storage, class Allocator>
     void FactorizeMatrix(Matrix<T, Symmetric, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
-    template<class T, class Allocator2>
+    template<class Allocator2>
     void Solve(Vector<T, VectFull, Allocator2>& x);
 
-    template<class T, class Allocator2, class Transpose_status>
+    template<class Allocator2, class Transpose_status>
     void Solve(const Transpose_status& TransA,
 	       Vector<T, VectFull, Allocator2>& x);
 
 #ifdef SELDON_WITH_MPI
-    template<class T, class Prop, class Allocator>
+    template<class Prop, class Allocator>
     void
     FactorizeDistributedMatrix(Matrix<T, General, ColSparse, Allocator>& A,
                                const Prop& sym, const IVect& glob_number,
                                bool keep_matrix = false);
 
-    template<class T, class Allocator2>
+    template<class Allocator2>
     void SolveDistributed(Vector<T, Vect_Full, Allocator2>& x,
                           const IVect& glob_num);
 
-    template<class T, class Allocator2, class Transpose_status>
+    template<class Allocator2, class Transpose_status>
     void SolveDistributed(const Transpose_status& TransA,
 			  Vector<T, Vect_Full, Allocator2>& x,
                           const IVect& glob_num);

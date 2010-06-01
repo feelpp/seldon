@@ -21,7 +21,7 @@
 #define SELDON_WITH_CBLAS
 
 #if !defined(SELDON_WITH_UMFPACK) && !defined(SELDON_WITH_SUPERLU) \
-  && !defined(SELDON_WITH_MUMPS)
+  && !defined(SELDON_WITH_MUMPS) && !defined(SELDON_WITH_PASTIX)
 #define SELDON_WITH_UMFPACK
 //#define SELDON_WITH_SUPERLU
 //#define SELDON_WITH_MUMPS
@@ -54,6 +54,9 @@ void Solve(Matrix<T, Prop, Storage, Allocator1>& A,
 #endif
 #ifdef SELDON_WITH_MUMPS
   MatrixMumps<T> mat_lu;
+#endif
+#ifdef SELDON_WITH_PASTIX
+  MatrixPastix<T> mat_lu;
 #endif
 
   // The initial matrix is erased during the factorization process if you want
