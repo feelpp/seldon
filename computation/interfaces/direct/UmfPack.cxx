@@ -165,12 +165,12 @@ namespace Seldon
     Matrix<double, General, ColSparse, MallocAlloc<double> > Acsc;
     transpose = false;
 
+    this->n = mat.GetM();
     Copy(mat, Acsc);
     if (!keep_matrix)
       mat.Clear();
 
     // we retrieve pointers of Acsc and nullify this object
-    this->n = mat.GetM();
     ptr_ = Acsc.GetPtr();
     ind_ = Acsc.GetInd();
     data_ = Acsc.GetData();
@@ -178,12 +178,13 @@ namespace Seldon
 
     // factorization with UmfPack
     umfpack_di_symbolic(this->n, this->n, ptr_, ind_, data_, &this->Symbolic,
-			this->Control.GetData(), this->Info.GetData());
+                        this->Control.GetData(), this->Info.GetData());
 
+    // we display informations about the performed operation
     int status =
       umfpack_di_numeric(ptr_, ind_, data_,
-			 this->Symbolic, &this->Numeric,
-			 this->Control.GetData(), this->Info.GetData());
+                         this->Symbolic, &this->Numeric,
+                         this->Control.GetData(), this->Info.GetData());
 
     // we display informations about the performed operation
     if (this->display_info)
