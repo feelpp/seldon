@@ -190,7 +190,7 @@ namespace Seldon
       {
 	nnz *= 2;
 	for (i = 0; i < m; i++)
-	  for (j = ptr[i]; j < ptr[i + 1]; i++)
+	  for (j = ptr[i]; j < ptr[i + 1]; j++)
 	    if (ind[j] == i)
 	      nnz--;
 
