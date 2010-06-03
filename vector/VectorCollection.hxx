@@ -20,6 +20,7 @@
 #ifndef SELDON_FILE_VECTOR_VECTORCOLLECTION_HXX
 
 
+#include <map>
 #include "../share/Common.hxx"
 #include "../share/Properties.hxx"
 #include "../share/Storage.hxx"
