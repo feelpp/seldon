@@ -71,7 +71,7 @@ namespace Seldon
   template <class T, class Allocator>
   Vector<T, Collection, Allocator>::
   Vector(const Vector<T, Collection, Allocator>& V):
-    Vector_Base<T, Allocator>(V)
+    Vector_Base<T, Allocator>(V), Nvector_(0)
   {
     Copy(V);
   }
