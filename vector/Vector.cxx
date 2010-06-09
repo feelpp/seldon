@@ -250,6 +250,26 @@ namespace Seldon
   }
 
 
+  //! Builds a vector using pre-existing data.
+  /*!
+    \param i length of the vector.
+    \param data the data array. \a data contains the elements of the vector
+    and must therefore contain \a i elements.
+    \warning \a data has to be used carefully outside the object. Unless you
+    use 'Nullify', \a data will be freed by the destructor, which means that
+    \a data must have been allocated carefully. The vector allocator should be
+    compatible.
+    \note This constructor should only be used by advanced users.
+  */
+  template <class T, class Allocator>
+  Vector<T, VectFull, Allocator>
+  ::Vector(int i, typename Vector<T, VectFull, Allocator>::pointer data):
+    Vector_Base<T, Allocator>()
+  {
+    SetData(i, data);
+  }
+
+
   //! Copy constructor.
   /*! Builds a copy of a vector.
     \param V vector to be copied.

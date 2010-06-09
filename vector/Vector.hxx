@@ -108,6 +108,7 @@ namespace Seldon
     // Constructor.
     explicit Vector()  throw();
     explicit Vector(int i);
+    Vector(int i, pointer data);
     Vector(const Vector<T, VectFull, Allocator>& A);
 
     // Destructor.
