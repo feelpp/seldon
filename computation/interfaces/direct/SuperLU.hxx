@@ -85,6 +85,9 @@ namespace Seldon
     template<class Allocator2>
     void Solve(Vector<double, VectFull, Allocator2>& x);
 
+    template<class Allocator2>
+    void Solve(const SeldonTranspose& TransA,
+               Vector<double, VectFull, Allocator2>& x);
   };
 
 
@@ -103,6 +106,11 @@ namespace Seldon
 
     template<class Allocator2>
     void Solve(Vector<complex<double>, VectFull, Allocator2>& x);
+
+    template<class Allocator2>
+    void Solve(const SeldonTranspose& TransA,
+               Vector<complex<double>, VectFull, Allocator2>& x);
+
   };
 }
 

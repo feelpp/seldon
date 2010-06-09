@@ -333,6 +333,29 @@ namespace Seldon
   }
 
 
+  //! resolution of linear system A x = b
+  template<class Allocator2>
+  void MatrixSuperLU<double>::Solve(const SeldonTranspose& TransA,
+                                    Vector<double, VectFull, Allocator2>& x)
+  {
+    if (TransA.NoTrans())
+      {
+        Solve(x);
+        return;
+      }
+
+    trans_t trans = TRANS;
+    int nb_rhs = 1, info;
+    dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
+			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
+
+    SuperLUStat_t stat;
+    StatInit(&stat);
+    dgstrs(trans, &L, &U, perm_r.GetData(),
+	   perm_c.GetData(), &B, &stat, &info);
+  }
+
+
   //! factorization of matrix in complex double precision using SuperLU
   template<class Prop, class Storage, class Allocator>
   void MatrixSuperLU<complex<double> >::
@@ -398,6 +421,29 @@ namespace Seldon
   }
 
 
+  //! resolution of linear system A x = b
+  template<class Allocator2>
+  void MatrixSuperLU<complex<double> >::
+  Solve(const SeldonTranspose& TransA,
+        Vector<complex<double>, VectFull, Allocator2>& x)
+  {
+    if (TransA.NoTrans())
+      {
+        Solve(x);
+        return;
+      }
+
+    trans_t trans = TRANS;
+    int nb_rhs = 1, info;
+    zCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
+			 reinterpret_cast<doublecomplex*>(x.GetData()),
+			 x.GetM(), SLU_DN, SLU_Z, SLU_GE);
+
+    zgstrs (trans, &L, &U, perm_r.GetData(),
+	    perm_c.GetData(), &B, &stat, &info);
+  }
+
+
   template<class T, class Prop, class Storage, class Allocator>
   void GetLU(Matrix<T, Prop, Storage, Allocator>& A, MatrixSuperLU<T>& mat_lu,
 	     bool keep_matrix = false)
@@ -410,6 +456,14 @@ namespace Seldon
   void SolveLU(MatrixSuperLU<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
     mat_lu.Solve(x);
+  }
+
+
+  template<class T, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
+	       MatrixSuperLU<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
+  {
+    mat_lu.Solve(TransA, x);
   }
 
 }
