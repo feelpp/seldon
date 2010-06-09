@@ -386,6 +386,18 @@ namespace Seldon
     mat_lu.Solve(x);
   }
 
+
+  template<class T, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
+               MatrixUmfPack<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
+  {
+    if (!TransA.NoTrans())
+      throw
+        WrongArgument("SolveLU(SeldonTranspose&, MatrixUmfPack&, Vector&)",
+                      "Only non-transposed matrices are supported.");
+    mat_lu.Solve(x);
+  }
+
 }
 
 #define SELDON_FILE_UMFPACK_CXX
