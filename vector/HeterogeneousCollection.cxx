@@ -28,9 +28,9 @@ namespace Seldon
 {
 
 
-  //////////////////////
-  // VECTORCOLLECTION //
-  //////////////////////
+  ////////////////////////////////////
+  // VECTOR HETEROGENEOUSCOLLECTION //
+  ////////////////////////////////////
 
 
   /***************
@@ -44,7 +44,8 @@ namespace Seldon
   */
   template <class T, template <class U> class Allocator >
   inline Vector<FloatDouble, DenseSparseCollection, Allocator<T> >
-  ::Vector(): Vector_Base<T, Allocator<T> >()
+  ::Vector(): Vector_Base<T, Allocator<T> >(), label_map_(),
+	      label_vector_()
   {
     Nvector_ = 0;
   }
@@ -58,7 +59,7 @@ namespace Seldon
   Vector<FloatDouble, DenseSparseCollection, Allocator<T> >
   ::Vector(const
 	   Vector<FloatDouble, DenseSparseCollection, Allocator<T> >& V):
-    Vector_Base<T, Allocator<T> >(V)
+    Vector_Base<T, Allocator<T> >(V), label_map_(), label_vector_()
   {
     Copy(V);
   }
@@ -76,7 +77,18 @@ namespace Seldon
   template <class T, template <class U> class Allocator >
   inline Vector<FloatDouble, DenseSparseCollection, Allocator<T> >::~Vector()
   {
-    Clear();
+    float_dense_c_.Clear();
+    float_sparse_c_.Clear();
+    double_dense_c_.Clear();
+    double_sparse_c_.Clear();
+    collection_.Clear();
+    subvector_.Clear();
+    length_sum_.Clear();
+    length_.Clear();
+    Nvector_ = 0;
+    this->m_ = 0;
+    label_map_.clear();
+    label_vector_.clear();
   }
 
 
@@ -98,6 +110,8 @@ namespace Seldon
     length_.Clear();
     Nvector_ = 0;
     this->m_ = 0;
+    label_map_.clear();
+    label_vector_.clear();
   }
 
 
@@ -119,6 +133,8 @@ namespace Seldon
     length_.Clear();
     Nvector_ = 0;
     this->m_ = 0;
+    label_map_.clear();
+    label_vector_.clear();
   }
 
 
@@ -200,6 +216,21 @@ namespace Seldon
     collection_.PushBack(3);
     subvector_.PushBack(double_sparse_c_.GetNvector());
     double_sparse_c_.AddVector(vector);
+  }
+
+
+  //! Adds a vector to the list of vectors.
+  /*! The vector is "appended" to the existing data.
+    \param[in] vector vector to be appended.
+    \param[in] name name of the vector to be appended.
+  */
+  template <class T, template <class U> class Allocator >
+  template <class T0, class Storage0, class Allocator0>
+  void Vector<FloatDouble, DenseSparseCollection, Allocator<T> >
+  ::AddVector(const Vector<T0, Storage0, Allocator0>& vector, string name)
+  {
+    AddVector(vector);
+    SetName(Nvector_ - 1, name);
   }
 
 
@@ -343,6 +374,72 @@ namespace Seldon
     for (int k = i; k < Nvector_; k++)
       length_sum_(k) += size_difference;
     double_sparse_c_.SetVector(subvector_(i), vector);
+  }
+
+
+  //! Sets a vector in the list of vectors.
+  /*!
+    \param[in] i index of the vector to be set.
+    \param[in] vector new value of the vector.
+    \param[in] name new name of the vector.
+  */
+  template <class T, template <class U> class Allocator >
+  template <class T0, class Storage0, class Allocator0>
+  void Vector<FloatDouble, DenseSparseCollection, Allocator<T> >
+  ::SetVector(int i, const Vector<T0, Storage0, Allocator0>& vector,
+	      string name)
+  {
+    SetVector(i, vector);
+    SetName(i, name);
+  }
+
+
+  //! Sets a vector in the list of vectors.
+  /*!
+    \param[in] name name of the vector to be set.
+    \param[in] vector new value of the vector.
+  */
+  template <class T, template <class U> class Allocator >
+  template <class T0, class Storage0, class Allocator0>
+  void Vector<FloatDouble, DenseSparseCollection, Allocator<T> >
+  ::SetVector(string name, const Vector<T0, Storage0, Allocator0>& vector)
+  {
+    map<string,int>::iterator label_iterator;
+    label_iterator = label_map_.find(name);
+    if (label_iterator == label_map_.end())
+      throw WrongArgument("Vector<FloatDouble, DenseSparseCollection>"
+                          "::SetVector(string name, Vector)",
+			  string("Unknown vector name: \"") + name + "\".");
+    SetVector(label_iterator->second, vector);
+  }
+
+
+  //! Sets a vector in the list of vectors.
+  /*!
+    \param[in] i a given index.
+    \param[in] name name of the underlying vector.
+  */
+  template <class T, template <class U> class Allocator >
+  void Vector<FloatDouble, DenseSparseCollection, Allocator<T> >
+  ::SetName(int i, string name)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= Nvector_)
+      throw WrongIndex("Vector<FloatDouble, DenseSparseCollection>"
+		       "::SetVector(int i, string name)",
+		       string("Index should be in [0, ")
+                       + to_str(Nvector_ - 1)
+		       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    if (i >= int(label_vector_.size()))
+      label_vector_.resize(Nvector_, "");
+
+    if (label_vector_[i] != "")
+      label_map_.erase(label_vector_[i]);
+
+    label_vector_[i] = name;
+    label_map_[name] = i;
   }
 
 
@@ -680,6 +777,26 @@ namespace Seldon
   }
 
 
+  //! Returns one of the aggregated vectors.
+  /*!
+    \param[in] i the index of the vector to be returned.
+    \return The \a i th aggregated vector.
+  */
+  template <class T, template <class U> class Allocator >
+  template <class T0, class Storage0, class Allocator0>
+  inline void Vector<FloatDouble, DenseSparseCollection, Allocator<T> >
+  ::GetVector(string name,Vector<T0, Storage0, Allocator0>& vector) const
+  {
+    map<string,int>::const_iterator label_iterator;
+    label_iterator = label_map_.find(name);
+    if (label_iterator == label_map_.end())
+      throw WrongArgument("Vector<FloatDouble, DenseSparseCollection>"
+                          "::SetVector(string name)",
+			  string("Unknown vector name ") + name + ".");
+    GetVector(label_iterator->second, vector);
+  }
+
+
   /*********************************
    * ELEMENT ACCESS AND ASSIGNMENT *
    *********************************/
@@ -766,6 +883,9 @@ namespace Seldon
     float_sparse_c_.Copy(X.float_sparse_c_);
     double_dense_c_.Copy(X.double_dense_c_);
     double_sparse_c_.Copy(X.double_sparse_c_);
+
+    label_map_.insert(X.label_map_.begin(), X.label_map_.end());
+    label_vector_.assign(X.label_vector_.begin(), X.label_vector_.end());
   }
 
 
@@ -799,7 +919,12 @@ namespace Seldon
   {
     for (int i = 0; i < Nvector_; i++)
       {
-	switch (collection_(i))
+	if (i < int(label_vector_.size()) && label_vector_[i] != "")
+	  cout << label_vector_[i] << ":" << endl;
+	else
+          cout << "(noname):" << endl;
+
+	switch(collection_(i))
 	  {
 	  case 0:
 	    float_dense_c_.GetVector(subvector_(i)).Print();

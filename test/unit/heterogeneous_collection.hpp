@@ -39,6 +39,7 @@ class HeterogeneousCollectionTest: public CppUnit::TestFixture
   CPPUNIT_TEST(test_dot_product);
   CPPUNIT_TEST(test_mlt_add);
   CPPUNIT_TEST(test_write_read);
+  CPPUNIT_TEST(test_label);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -163,6 +164,15 @@ public:
     Nsub_vector_max_ = 10;
     m_ = 50;
     write_read();
+  }
+
+
+  void test_label()
+  {
+    Nloop_ = 10;
+    Nvector_ = 1000;
+    Nsub_vector_max_ = 10;
+    label();
   }
 
 
@@ -906,6 +916,86 @@ public:
 	A.Deallocate();
 	B.Deallocate();
       }
+  }
+
+
+  void label()
+  {
+    srand(time(NULL));
+
+    int length;
+
+    Vector<FloatDouble, DenseSparseCollection, NewAlloc<float> > A;
+
+    typedef Vector<float, VectFull, NewAlloc<float> > vector_float_dense;
+    vector_float_dense X0, Y0;
+    length = rand() % Nsub_vector_max_ + 1;
+    X0.Reallocate(length);
+    X0.FillRand();
+    A.AddVector(X0, "X0");
+
+    typedef Vector<float, VectSparse, NewAlloc<float> >
+      vector_float_sparse;
+    vector_float_sparse X1, Y1;
+    length = rand() % Nsub_vector_max_ + 1;
+    X1.Reallocate(length);
+    for (int l = 0; l < length; l++)
+      {
+	X1.Index(l) = rand() % length;
+	X1.Value(l) = rand();
+      }
+    X1.Assemble();
+    A.AddVector(X1, "X1");
+
+    typedef Vector<double, VectFull, NewAlloc<double> > vector_double_dense;
+    vector_double_dense X2, Y2;
+    length = rand() % Nsub_vector_max_ + 1;
+    X2.Reallocate(length);
+    X2.FillRand();
+    A.AddVector(X2, "X2");
+
+    typedef Vector<double, VectSparse, NewAlloc<double> >
+      vector_double_sparse;
+    vector_double_sparse X3, Y3;
+    X3.Reallocate(length);
+    for (int l = 0; l < length; l++)
+      {
+	X3.Index(l) = rand() % length;
+	X3.Value(l) = rand();
+      }
+    X3.Assemble();
+    A.AddVector(X3, "X3");
+
+    A.GetVector("X0", Y0);
+    A.GetVector("X1", Y1);
+    A.GetVector("X2", Y2);
+    A.GetVector("X3", Y3);
+
+    for (int l = 0; l < X0.GetM(); l++)
+      CPPUNIT_ASSERT(X0(l) == Y0(l));
+
+    for (int l = 0; l < X1.GetM(); l++)
+      {
+	CPPUNIT_ASSERT(X1.Index(l) == Y1.Index(l));
+	CPPUNIT_ASSERT(X1.Value(l) == Y1.Value(l));
+      }
+
+    for (int l = 0; l < X2.GetM(); l++)
+      CPPUNIT_ASSERT(X2(l) == Y2(l));
+
+
+    for (int l = 0; l < X3.GetM(); l++)
+      {
+	CPPUNIT_ASSERT(X3.Index(l) == Y3.Index(l));
+	CPPUNIT_ASSERT(X3.Value(l) == Y3.Value(l));
+      }
+
+
+    A.Nullify();
+    Y0.Nullify();
+    Y1.Nullify();
+    Y2.Nullify();
+    Y3.Nullify();
   }
 
 };

@@ -83,6 +83,10 @@ namespace Seldon
     //! Pointers of the underlying float sparse vectors.
     double_sparse_c double_sparse_c_;
 
+    //! Indexes of the inner vectors that have a name.
+    map<string, int> label_map_;
+    //! Names associated with the inner vectors.
+    vector<string> label_vector_;
 
     // Methods.
   public:
@@ -101,6 +105,9 @@ namespace Seldon
     void AddVector(const Vector<double, VectFull, Allocator<double> >&);
     void AddVector(const Vector<double, VectSparse, Allocator<double> >&);
 
+    template <class T0, class Storage0, class Allocator0>
+    void AddVector(const Vector<T0, Storage0, Allocator0>&, string name);
+
     void SetVector(int i,
 		   const Vector<float, VectFull, Allocator<float> >&);
     void SetVector(int i,
@@ -109,6 +116,13 @@ namespace Seldon
 		   const Vector<double, VectFull, Allocator<double> >&);
     void SetVector(int i,
 		   const Vector<double, VectSparse, Allocator<double> >&);
+
+    template <class T0, class Storage0, class Allocator0>
+    void SetVector(int i, const Vector<T0, Storage0, Allocator0>&,
+                   string name);
+    template <class T0, class Storage0, class Allocator0>
+    void SetVector(string name, const Vector<T0, Storage0, Allocator0>&);
+    void SetName(int i, string name);
 
     void Nullify();
 
@@ -137,6 +151,9 @@ namespace Seldon
     void GetVector(int i, float_sparse_v& vector) const;
     void GetVector(int i, double_dense_v& vector) const;
     void GetVector(int i, double_sparse_v& vector) const;
+    template <class T0, class Storage0, class Allocator0>
+    void GetVector(string name, Vector<T0, Storage0, Allocator0>& vector)
+      const;
 
     // Element access and assignment.
     double operator() (int i) const;
