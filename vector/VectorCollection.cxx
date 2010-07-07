@@ -1,4 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet, Marc Fragu
+// Copyright (C) 2010, INRIA
+// Author(s): Marc Fragu, Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -188,8 +189,8 @@ namespace Seldon
 
   //! Sets a vector in the list of vectors.
   /*!
-    \param[in] i a given index.
-    \param[in] vector vector to be appended.
+    \param[in] i index of the vector to be set.
+    \param[in] vector new value of the vector.
   */
   template <class T, class Allocator >
   template <class Allocator0>
@@ -242,7 +243,7 @@ namespace Seldon
     label_iterator = label_map_.find(name);
     if (label_iterator == label_map_.end())
       throw WrongArgument("VectorCollection::SetVector(string name, Vector)",
-			  string("Unknown vector name \"") + name + "\".");
+			  string("Unknown vector name: \"") + name + "\".");
     SetVector(label_iterator->second, vector);
   }
 
@@ -413,7 +414,7 @@ namespace Seldon
     label_iterator = label_map_.find(name);
     if (label_iterator == label_map_.end())
       throw WrongArgument("VectorCollection::SetVector(string name)",
-			  string("Unknown vector name \"") + name + "\".");
+			  string("Unknown vector name: \"") + name + "\".");
     return GetVector(label_iterator->second);
   }
 
@@ -432,7 +433,7 @@ namespace Seldon
     label_iterator = label_map_.find(name);
     if (label_iterator == label_map_.end())
       throw WrongArgument("VectorCollection::SetVector(string name)",
-			  string("Unknown vector name \"") + name + "\".");
+			  string("Unknown vector name: \"") + name + "\".");
     return GetVector(label_iterator->second);
   }
 
