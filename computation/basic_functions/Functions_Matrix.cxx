@@ -1,5 +1,7 @@
 // Copyright (C) 2001-2009 Vivien Mallet
 // Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2010 INRIA
+// Author(s): Marc Fragu
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -78,6 +80,40 @@ namespace Seldon
 
     for (int i = 0; i < A.GetDataSize(); i++)
       data[i] = alpha_ * data[i];
+  }
+
+
+  //! Multiplies a matrix by a scalar.
+  /*!
+    \param[in] alpha scalar.
+    \param[in,out] M matrix to be multiplied.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Allocator1>
+  void Mlt(const T0 alpha,
+	   Matrix<T1, Prop1, ColMajorCollection, Allocator1>& A)
+  {
+    typename T1::value_type alpha_ = alpha;
+    for (int i = 0; i < A.GetMmatrix(); i++)
+      for (int j = 0; j < A.GetNmatrix(); j++)
+	Mlt(alpha, A.GetMatrix(i, j));
+  }
+
+
+  //! Multiplies a matrix by a scalar.
+  /*!
+    \param[in] alpha scalar.
+    \param[in,out] M matrix to be multiplied.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Allocator1>
+  void Mlt(const T0 alpha,
+	   Matrix<T1, Prop1, RowMajorCollection, Allocator1>& A)
+  {
+    typename T1::value_type alpha_ = alpha;
+    for (int i = 0; i < A.GetMmatrix(); i++)
+      for (int j = 0; j < A.GetNmatrix(); j++)
+	Mlt(alpha_, A.GetMatrix(i, j));
   }
 
 
@@ -485,6 +521,90 @@ namespace Seldon
   }
 
 
+   //! Multiplies two matrices, and adds the result to a third matrix.
+  /*! It performs the operation \f$ C = \alpha A B + \beta C \f$ where \f$
+    \alpha \f$ and \f$ \beta \f$ are scalars, and \f$ A \f$, \f$ B \f$ and \f$
+    C \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] A matrix.
+    \param[in] B matrix.
+    \param[in] beta scalar.
+    \param[in,out] C matrix, result of the product of \a A with \a B, times \a
+    alpha, plus \a beta times \a C.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Prop2, class Allocator2,
+	    class T3,
+	    class T4, class Prop4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<T1, Prop1, RowMajorCollection, Allocator1>& A,
+	      const Matrix<T2, Prop2, RowMajorCollection, Allocator2>& B,
+	      const T3 beta,
+	      Matrix<T4, Prop4, RowMajorCollection, Allocator4>& C)
+  {
+    int na = A.GetNmatrix();
+    int mc = C.GetMmatrix();
+    int nc = C.GetNmatrix();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
+#endif
+
+    typedef typename T4::value_type value_type;
+
+    Mlt(value_type(beta), C);
+
+    for (int i = 0; i < mc; i++ )
+      for (int j = 0; j < nc; j++)
+	for (int k = 0; k < na; k++)
+	  MltAdd(value_type(alpha), A.GetMatrix(i, k), B.GetMatrix(k, j),
+		 value_type(1), C.GetMatrix(i, j));
+  }
+
+
+  //! Multiplies two matrices, and adds the result to a third matrix.
+  /*! It performs the operation \f$ C = \alpha A B + \beta C \f$ where \f$
+    \alpha \f$ and \f$ \beta \f$ are scalars, and \f$ A \f$, \f$ B \f$ and \f$
+    C \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] A matrix.
+    \param[in] B matrix.
+    \param[in] beta scalar.
+    \param[in,out] C matrix, result of the product of \a A with \a B, times \a
+    alpha, plus \a beta times \a C.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Prop2, class Allocator2,
+	    class T3,
+	    class T4, class Prop4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<T1, Prop1, ColMajorCollection, Allocator1>& A,
+	      const Matrix<T2, Prop2, ColMajorCollection, Allocator2>& B,
+	      const T3 beta,
+	      Matrix<T4, Prop4, ColMajorCollection, Allocator4>& C)
+  {
+    int na = A.GetNmatrix();
+    int mc = C.GetMmatrix();
+    int nc = C.GetNmatrix();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
+#endif
+
+    typedef typename T4::value_type value_type;
+
+    Mlt(value_type(beta), C);
+
+    for (int i = 0; i < mc; i++ )
+      for (int j = 0; j < nc; j++)
+	for (int k = 0; k < na; k++)
+	  MltAdd(value_type(alpha), A.GetMatrix(i, k), B.GetMatrix(k, j),
+		 value_type(1), C.GetMatrix(i, j));
+  }
+
+
   //! Multiplies two row-major sparse matrices and adds the result to a third.
   /*! It performs the operation \f$ C = \alpha A B + \beta C \f$ where \f$ A
     \f$, \f$ B \f$ and \f$ C \f$ are row-major sparse matrices in
@@ -663,6 +783,56 @@ namespace Seldon
     for (i = 0; i < A.GetM(); i++)
       for (j = 0; j < A.GetN(); j++)
 	B(i, j) += alpha * A(i, j);
+  }
+
+
+  //! Adds two matrices.
+  /*! It performs the operation \f$ B = \alpha A + B \f$ where \f$ \alpha \f$
+    is a scalar, and \f$ A \f$ and \f$ B \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] A matrix.
+    \param[in,out] B matrix, result of the addition of \a B (on entry) and \a
+    A times \a alpha.
+  */
+  template<class T0, class T1, class Prop1, class Allocator1,
+	   class T2, class Prop2, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, Prop1, RowMajorCollection, Allocator1>& A,
+	   Matrix<T2, Prop2, RowMajorCollection, Allocator2>& B)
+  {
+    int na = A.GetNmatrix();
+    int ma = A.GetMmatrix();
+
+    typedef typename T2::value_type value_type;
+
+    for (int i = 0; i < ma; i++ )
+      for (int j = 0; j < na; j++)
+	Add(value_type(alpha), A.GetMatrix(i, j), B.GetMatrix(i, j));
+  }
+
+
+   //! Adds two matrices.
+  /*! It performs the operation \f$ B = \alpha A + B \f$ where \f$ \alpha \f$
+    is a scalar, and \f$ A \f$ and \f$ B \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] A matrix.
+    \param[in,out] B matrix, result of the addition of \a B (on entry) and \a
+    A times \a alpha.
+  */
+  template<class T0, class T1, class Prop1, class Allocator1,
+	   class T2, class Prop2, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, Prop1, ColMajorCollection, Allocator1>& A,
+	   Matrix<T2, Prop2, ColMajorCollection, Allocator2>& B)
+  {
+    int na = A.GetNmatrix();
+    int ma = A.GetMmatrix();
+
+    typedef typename T2::value_type value_type;
+
+    for (int i = 0; i < ma; i++ )
+      for (int j = 0; j < na; j++)
+	Add(value_type(alpha), A.GetMatrix(i, j), B.GetMatrix(i, j));
   }
 
 

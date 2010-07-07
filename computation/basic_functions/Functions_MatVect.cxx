@@ -745,6 +745,90 @@ namespace Seldon
   }
 
 
+  /*! \brief Performs the multiplication of a matrix collection with a vector
+    collection, and adds the result to another vector.
+  */
+  /*! It performs the operation \f$ Y = \alpha M X + \beta Y \f$ where \f$
+    \alpha \f$ and \f$ \beta \f$ are scalars, \f$ M \f$ is a \f$ m \times n
+    \f$ matrix, and \f$ X \f$ is a vector of length \f$ n \f$. The vector \f$
+    Y \f$ must be of length \f$ m \f$.
+    \param[in] alpha scalar.
+    \param[in] M m by n matrix colection.
+    \param[in] X vector collection of length n.
+    \param[in] beta scalar.
+    \param[in,out] Y vector collection of length m, result of the product of
+    \a M by \a X, times \a alpha, plus \a Y (on entry) times \a beta.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Allocator2,
+	    class T3,
+	    class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<T1, Prop1, RowMajorCollection, Allocator1>& M,
+	      const Vector<T2, Collection, Allocator2>& X,
+	      const T3 beta,
+	      Vector<T4, Collection, Allocator4>& Y)
+  {
+    int ma = M.GetMmatrix();
+    int na = M.GetNmatrix();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
+#endif
+    typedef typename T4::value_type value_type;
+
+    Mlt(value_type(beta), Y);
+
+    for (int i = 0; i < ma; i++)
+      for (int j = 0; j < na; j++)
+      	MltAdd(alpha, M.GetMatrix(i, j), X.GetVector(j), value_type(1.),
+               Y.GetVector(i));
+  }
+
+
+   /*! \brief Performs the multiplication of a matrix collection with a vector
+    collection, and adds the result to another vector.
+  */
+  /*! It performs the operation \f$ Y = \alpha M X + \beta Y \f$ where \f$
+    \alpha \f$ and \f$ \beta \f$ are scalars, \f$ M \f$ is a \f$ m \times n
+    \f$ matrix, and \f$ X \f$ is a vector of length \f$ n \f$. The vector \f$
+    Y \f$ must be of length \f$ m \f$.
+    \param[in] alpha scalar.
+    \param[in] M m by n matrix colection.
+    \param[in] X vector collection of length n.
+    \param[in] beta scalar.
+    \param[in,out] Y vector collection of length m, result of the product of
+    \a M by \a X, times \a alpha, plus \a Y (on entry) times \a beta.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Allocator2,
+	    class T3,
+	    class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<T1, Prop1, ColMajorCollection, Allocator1>& M,
+	      const Vector<T2, Collection, Allocator2>& X,
+	      const T3 beta,
+	      Vector<T4, Collection, Allocator4>& Y)
+  {
+    int ma = M.GetMmatrix();
+    int na = M.GetNmatrix();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
+#endif
+    typedef typename T4::value_type value_type;
+
+    Mlt(value_type(beta), Y);
+
+    for (int i = 0; i < ma; i++)
+      for (int j = 0; j < na; j++)
+      	MltAdd(alpha, M.GetMatrix(i, j), X.GetVector(j), value_type(1.),
+               Y.GetVector(i));
+  }
+
+
   /*! \brief Performs the multiplication of a matrix (possibly transposed)
     with a vector, and adds the result to another vector.
    */
@@ -1093,6 +1177,66 @@ namespace Seldon
     \param function (optional) function in which the compatibility is checked.
     Default: "".
   */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Allocator1,
+	    class T2, class Allocator2>
+  void CheckDim(const Matrix<T0, Prop0, RowMajorCollection, Allocator0>& M,
+		const Vector<T1, Collection, Allocator1>& X,
+		const Vector<T2, Collection, Allocator2>& Y,
+		string function = "")
+  {
+    if (X.GetNvector() != M.GetNmatrix() || Y.GetNvector() != M.GetMmatrix())
+      throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
+		     + string("\n     M (") + to_str(&M) + string(") is a ")
+		     + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
+		     + string(" matrix;\n     X (") + to_str(&X)
+		     + string(") is vector of length ")
+		     + to_str(X.GetNvector()) + string(";\n     Y (")
+		     + to_str(&Y) + string(") is vector of length ")
+		     + to_str(Y.GetNvector()) + string("."));
+  }
+
+
+  //! Checks the compatibility of the dimensions.
+  /*! Checks that M X + Y -> Y is possible according to the dimensions of
+    the matrix M and the vectors X and Y. If the dimensions are incompatible,
+    an exception is raised (a WrongDim object is thrown).
+    \param M matrix.
+    \param X vector.
+    \param Y vector.
+    \param function (optional) function in which the compatibility is checked.
+    Default: "".
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Allocator1,
+	    class T2, class Allocator2>
+  void CheckDim(const Matrix<T0, Prop0, ColMajorCollection, Allocator0>& M,
+		const Vector<T1, Collection, Allocator1>& X,
+		const Vector<T2, Collection, Allocator2>& Y,
+		string function = "")
+  {
+    if (X.GetNvector() != M.GetNmatrix() || Y.GetNvector() != M.GetMmatrix())
+      throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
+		     + string("\n     M (") + to_str(&M) + string(") is a ")
+		     + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
+		     + string(" matrix;\n     X (") + to_str(&X)
+		     + string(") is vector of length ")
+		     + to_str(X.GetNvector()) + string(";\n     Y (")
+		     + to_str(&Y) + string(") is vector of length ")
+		     + to_str(Y.GetNvector()) + string("."));
+  }
+
+
+  //! Checks the compatibility of the dimensions.
+  /*! Checks that M X + Y -> Y is possible according to the dimensions of
+    the matrix M and the vectors X and Y. If the dimensions are incompatible,
+    an exception is raised (a WrongDim object is thrown).
+    \param M matrix.
+    \param X vector.
+    \param Y vector.
+    \param function (optional) function in which the compatibility is checked.
+    Default: "".
+  */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
@@ -1101,7 +1245,7 @@ namespace Seldon
 		const Vector<T2, Storage2, Allocator2>& Y,
 		string function = "")
   {
-    if (X.GetM() != M.GetN() || Y.GetLength() != M.GetM())
+    if (X.GetLength() != M.GetN() || Y.GetLength() != M.GetM())
       throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
 		     + string("\n     M (") + to_str(&M) + string(") is a ")
 		     + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())

@@ -32,10 +32,12 @@
 #include "vector3.hpp"
 #include "vector_collection.hpp"
 #include "heterogeneous_collection.hpp"
+#include "matrix_collection.hpp"
 #include <cppunit/TestResult.h>
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/extensions/HelperMacros.h>
 using namespace CppUnit;
+
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MatrixTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(SubMatrixTest);
@@ -47,6 +49,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(Vector2Test);
 CPPUNIT_TEST_SUITE_REGISTRATION(Vector3Test);
 CPPUNIT_TEST_SUITE_REGISTRATION(VectorCollectionTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(HeterogeneousCollectionTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(MatrixCollectionTest);
 
 int main()
 {

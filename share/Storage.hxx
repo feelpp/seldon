@@ -338,6 +338,41 @@ namespace Seldon
   };
 
 
+  ////////////////
+  // COLLECTION //
+  ////////////////
+
+
+  class ColMajorCollection
+  {
+  };
+
+
+  class RowMajorCollection
+  {
+  };
+
+
+  class ColSymPackedCollection
+  {
+  };
+
+
+  class RowSymPackedCollection
+  {
+  };
+
+
+  class ColUpTriangPackedCollection
+  {
+  };
+
+
+  class RowUpTriangPackedCollection
+  {
+  };
+
+
 } // namespace Seldon.
 
 #define SELDON_FILE_STORAGE_HXX
