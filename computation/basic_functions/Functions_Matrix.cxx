@@ -1091,7 +1091,8 @@ namespace Seldon
     \param[in,out] B matrix, result of the addition of \a B (on entry) and \a
     A times \a alpha.
   */
-  template<class T0, class T1, class Prop1, class Allocator1,
+  template<class T0,
+	   class T1, class Prop1, class Allocator1,
 	   class T2, class Prop2, class Allocator2>
   void Add(const T0& alpha,
 	   const Matrix<T1, Prop1, RowMajorCollection, Allocator1>& A,
@@ -1116,7 +1117,8 @@ namespace Seldon
     \param[in,out] B matrix, result of the addition of \a B (on entry) and \a
     A times \a alpha.
   */
-  template<class T0, class T1, class Prop1, class Allocator1,
+  template<class T0,
+	   class T1, class Prop1, class Allocator1,
 	   class T2, class Prop2, class Allocator2>
   void Add(const T0& alpha,
 	   const Matrix<T1, Prop1, ColMajorCollection, Allocator1>& A,
