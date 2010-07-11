@@ -117,6 +117,63 @@ namespace Seldon
   }
 
 
+  //! Multiplies a FloatDouble collection by a scalar.
+  /*!
+    \param[in] alpha scalar.
+    \param[in,out] M matrix to be multiplied.
+  */
+  template <class T0, class Allocator>
+  void Mlt(const T0 alpha,
+	   Matrix<FloatDouble, General, DenseSparseCollection, Allocator>& A)
+  {
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator>
+      ::float_dense_m m0;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator>
+      ::float_sparse_m m1;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator>
+      ::double_dense_m m2;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator>
+      ::double_sparse_m m3;
+
+    for (int i = 0; i < A.GetMmatrix(); i++)
+      for (int j = 0; j < A.GetNmatrix(); j++)
+	{
+	  switch (A.GetType(i, j))
+	    {
+	    case 0:
+	      A.GetMatrix(i, j, m0);
+	      Mlt(float(alpha), m0);
+	      A.SetMatrix(i, j, m0);
+	      m0.Nullify();
+	      break;
+	    case 1:
+	      A.GetMatrix(i, j, m1);
+	      Mlt(float(alpha), m1);
+	      A.SetMatrix(i, j, m1);
+	      m1.Nullify();
+	      break;
+	    case 2:
+	      A.GetMatrix(i, j, m2);
+	      Mlt(double(alpha), m2);
+	      A.SetMatrix(i, j, m2);
+	      m2.Nullify();
+	      break;
+	    case 3:
+	      A.GetMatrix(i, j, m3);
+	      Mlt(double(alpha), m3);
+	      A.SetMatrix(i, j, m3);
+	      m3.Nullify();
+	      break;
+	    default:
+	      throw WrongArgument("Mlt(alpha, Matrix<FloatDouble, "
+				  "DenseSparseCollection)",
+				  "Underlying matrix (" + to_str(i) + " ,"
+				  + to_str(j) + " ) not defined.");
+	    }
+	}
+  }
+
+
   //! Multiplies two matrices.
   /*! It performs the operation \f$ C = \alpha A B \f$ where \f$ \alpha \f$ is
     a scalar, and \f$ A \f$, \f$ B \f$ and \f$ C \f$ are matrices.
@@ -605,6 +662,246 @@ namespace Seldon
   }
 
 
+  template <class T0,
+	    class T1, class Allocator1,
+	    class T2, class Allocator2,
+	    class T3,
+	    class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<T1, General, RowMajor, Allocator1>& A,
+	      const Matrix<T2, General, RowMajor, Allocator2>& B,
+	      const T3 beta,
+	      Matrix<T4, General, RowSparse, Allocator4>& C)
+  {
+    throw Undefined("void MltAdd(const T0 alpha,"
+		    "const Matrix<T1, General, RowMajor, Allocator1>& A,"
+		    "const Matrix<T2, General, RowMajor, Allocator2>& B,"
+		    "const T3 beta,"
+		    "Matrix<T4, General, RowSparse, Allocator4>& C)");
+  }
+
+
+  template <class T0,
+	    class T1, class Allocator1,
+	    class T2, class Allocator2,
+	    class T3,
+	    class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<T1, General, RowMajor, Allocator1>& A,
+	      const Matrix<T2, General, RowSparse, Allocator2>& B,
+	      const T3 beta,
+	      Matrix<T4, General, RowSparse, Allocator4>& C)
+  {
+    throw Undefined("void MltAdd(const T0 alpha,"
+		    "const Matrix<T1, General, RowMajor, Allocator1>& A,"
+		    "const Matrix<T2, General, RowSparse, Allocator2>& B,"
+		    "const T3 beta,"
+		    "Matrix<T4, General, RowSparse, Allocator4>& C)");
+  }
+
+
+  template <class T0,
+	    class T1, class Allocator1,
+	    class T2, class Allocator2,
+	    class T3,
+	    class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<T1, General, RowSparse, Allocator1>& A,
+	      const Matrix<T2, General, RowMajor, Allocator2>& B,
+	      const T3 beta,
+	      Matrix<T4, General, RowSparse, Allocator4>& C)
+  {
+    throw Undefined("void MltAdd(const T0 alpha,"
+		    "const Matrix<T1, General, RowSparse, Allocator1>& A,"
+		    "const Matrix<T2, General, RowMajor, Allocator2>& B,"
+		    "const T3 beta,"
+		    "Matrix<T4, General, RowSparse, Allocator4>& C)");
+  }
+
+
+  template <class T0,
+	   class Allocator1,
+	   class Allocator2,
+	   class Allocator3,
+	   class T4, class Prop4, class Storage4, class Allocator4>
+  void MltAdd_heterogeneous(const T0 alpha,
+			    const Matrix<FloatDouble, General,
+			    DenseSparseCollection, Allocator1>& A,
+			    const Matrix<FloatDouble, General,
+			    DenseSparseCollection, Allocator2>& B,
+			    Matrix<FloatDouble, General,
+			    DenseSparseCollection, Allocator3>& C,
+			    Matrix<T4, Prop4, Storage4, Allocator4>& mc,
+			    int i, int j)
+  {
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator1>
+      ::float_dense_m m0a;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator1>
+      ::float_sparse_m m1a;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator1>
+      ::double_dense_m m2a;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator1>
+      ::double_sparse_m m3a;
+
+    int na = A.GetNmatrix();
+    for (int k = 0; k < na; k++)
+      {
+	switch (A.GetType(i, k))
+	  {
+	  case 0:
+	    A.GetMatrix(i, k, m0a);
+	    MltAdd_heterogeneous2(alpha, m0a, B, C, mc, j, k);
+	    m0a.Nullify();
+	    break;
+	  case 1:
+	    A.GetMatrix(i, k, m1a);
+	    MltAdd_heterogeneous2(alpha, m1a, B, C, mc, j, k);
+	    m1a.Nullify();
+	    break;
+	  case 2:
+	    A.GetMatrix(i, k, m2a);
+	    MltAdd_heterogeneous2(alpha, m2a, B, C, mc, j, k);
+	    m2a.Nullify();
+	    break;
+	  case 3:
+	    A.GetMatrix(i, k, m3a);
+	    MltAdd_heterogeneous2(alpha, m3a, B, C, mc, j, k);
+	    m3a.Nullify();
+	    break;
+	  default:
+	    throw WrongArgument("Matrix<FloatDouble, DenseSparseCollection>::"
+				"MltAdd_heterogeneous(alpha, A, B, beta, C) ",
+				"Underlying matrix  A (" + to_str(i) + " ,"
+				+ to_str(k) + " ) not defined.");
+	  }
+      }
+  }
+
+
+  template<class T0,
+	   class T1, class Prop1, class Storage1, class Allocator1,
+	   class Allocator2,
+	   class Allocator3,
+	   class T4, class Prop4, class Storage4, class Allocator4>
+  void MltAdd_heterogeneous2(const T0 alpha,
+			     const Matrix<T1, Prop1,
+                             Storage1, Allocator1>& ma,
+			     const Matrix<FloatDouble, General,
+			     DenseSparseCollection, Allocator2>& B,
+			     Matrix<FloatDouble, General,
+			     DenseSparseCollection, Allocator3>& C,
+			     Matrix<T4, Prop4, Storage4, Allocator4>& mc,
+			     int j, int k)
+  {
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>
+      ::float_dense_m m0b;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>
+      ::float_sparse_m m1b;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>
+      ::double_dense_m m2b;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>
+      ::double_sparse_m m3b;
+
+    switch (B.GetType(k, j))
+      {
+      case 0:
+	B.GetMatrix(k, j, m0b);
+	MltAdd(alpha, ma, m0b, 1., mc);
+	m0b.Nullify();
+	break;
+      case 1:
+	B.GetMatrix(k, j, m1b);
+	MltAdd(alpha, ma, m1b, 1., mc);
+	m1b.Nullify();
+	break;
+      case 2:
+	B.GetMatrix(k, j, m2b);
+	MltAdd(alpha, ma, m2b, 1., mc);
+	m2b.Nullify();
+	break;
+      case 3:
+	B.GetMatrix(k, j, m3b);
+	MltAdd(alpha, ma, m3b, 1., mc);
+	m3b.Nullify();
+	break;
+      default:
+	throw WrongArgument("Matrix<FloatDouble, DenseSparseCollection>"
+			    "::MltAdd_heterogeneous2(alpha, A, B, beta, C)",
+			    "Underlying matrix  B (" + to_str(k) + " ,"
+			    + to_str(j) + " ) not defined.");
+      }
+  }
+
+
+
+  //! Multiplies a FloatDouble collection by a scalar.
+  /*!
+    \param[in] alpha scalar.
+    \param[in,out] M matrix to be multiplied.
+  */
+  template <class T0, class Allocator1, class Allocator2, class T3,
+	    class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<FloatDouble, General, DenseSparseCollection,
+	      Allocator1>& A,
+	      const Matrix<FloatDouble, General, DenseSparseCollection,
+	      Allocator2>& B,
+	      const T3 beta,
+	      Matrix<FloatDouble, General, DenseSparseCollection,
+	      Allocator4>& C)
+  {
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator4>
+      ::float_dense_m m0c;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator4>
+      ::float_sparse_m m1c;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator4>
+      ::double_dense_m m2c;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator4>
+      ::double_sparse_m m3c;
+
+    Mlt(beta, C);
+
+    int mc = C.GetMmatrix();
+    int nc = C.GetNmatrix();
+    for (int i = 0; i < mc; i++ )
+      for (int j = 0; j < nc; j++)
+	{
+	  switch (C.GetType(i, j))
+	    {
+	    case 0:
+	      C.GetMatrix(i, j, m0c);
+	      MltAdd_heterogeneous(float(alpha), A, B, C, m0c, i, j);
+	      C.SetMatrix(i, j, m0c);
+	      m0c.Nullify();
+	      break;
+	    case 1:
+	      C.GetMatrix(i, j, m1c);
+	      MltAdd_heterogeneous(float(alpha), A, B, C, m1c, i, j);
+	      C.SetMatrix(i, j, m1c);
+	      m1c.Nullify();
+	      break;
+	    case 2:
+	      C.GetMatrix(i, j, m2c);
+	      MltAdd_heterogeneous(double(alpha), A, B, C, m2c, i, j);
+	      C.SetMatrix(i, j, m2c);
+	      m2c.Nullify();
+	      break;
+	    case 3:
+	      C.GetMatrix(i, j, m3c);
+	      MltAdd_heterogeneous(double(alpha), A, B, C, m3c, i, j);
+	      C.SetMatrix(i, j, m3c);
+	      m3c.Nullify();
+	      break;
+	    default:
+	      throw WrongArgument("Matrix<FloatDouble, DenseSparseCollection>"
+				  "::MltAdd(alpha, A, B, beta, C) ",
+				  "Underlying matrix  C (" + to_str(i) + " ,"
+				  + to_str(j) + " ) not defined.");
+	    }
+	}
+  }
+
+
   //! Multiplies two row-major sparse matrices and adds the result to a third.
   /*! It performs the operation \f$ C = \alpha A B + \beta C \f$ where \f$ A
     \f$, \f$ B \f$ and \f$ C \f$ are row-major sparse matrices in
@@ -833,6 +1130,145 @@ namespace Seldon
     for (int i = 0; i < ma; i++ )
       for (int j = 0; j < na; j++)
 	Add(value_type(alpha), A.GetMatrix(i, j), B.GetMatrix(i, j));
+  }
+
+
+  template <class T0,
+	    class T1, class Prop1, class Storage1, class Allocator1,
+	    class Allocator2>
+  void Add_heterogeneous(const T0 alpha,
+			 const  Matrix<T1, Prop1, Storage1, Allocator1 >& ma,
+			 Matrix<FloatDouble, General,
+                         DenseSparseCollection, Allocator2>& B,
+			 int i, int j)
+  {
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>
+      ::float_dense_m m0b;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>
+      ::float_sparse_m m1b;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>
+      ::double_dense_m m2b;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>
+      ::double_sparse_m m3b;
+
+    T0 alpha_ = alpha;
+
+    switch (B.GetType(i, j))
+      {
+      case 0:
+	B.GetMatrix(i, j, m0b);
+	Add(float(alpha_), ma, m0b);
+	B.SetMatrix(i, j, m0b);
+	m0b.Nullify();
+	break;
+      case 1:
+	B.GetMatrix(i, j, m1b);
+	Add(float(alpha_), ma, m1b);
+	B.SetMatrix(i, j, m1b);
+	m1b.Nullify();
+	break;
+      case 2:
+	B.GetMatrix(i, j, m2b);
+	Add(double(alpha_), ma, m2b);
+	B.SetMatrix(i, j, m2b);
+	m2b.Nullify();
+	break;
+      case 3:
+	B.GetMatrix(i, j, m3b);
+	Add(double(alpha_), ma, m3b);
+	B.SetMatrix(i, j, m3b);
+	m3b.Nullify();
+	break;
+      default:
+	throw WrongArgument("Add_heterogeneous(alpha, Matrix<FloatDouble, "
+			    "DenseSparseCollection>, Matrix<FloatDouble,"
+			    "DenseSparseCollection> )",
+			    "Underlying matrix (" + to_str(i) + " ,"
+			    + to_str(j) + " ) not defined.");
+      }
+  }
+
+
+  //! Multiplies a FloatDouble collection by a scalar.
+  /*!
+    \param[in] alpha scalar.
+    \param[in,out] M matrix to be multiplied.
+  */
+  template <class T0, class Allocator1, class Allocator2>
+  void Add(const T0 alpha,
+	   const Matrix<FloatDouble, General,
+           DenseSparseCollection, Allocator1>& A,
+	   Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>& B)
+  {
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>
+      ::float_dense_m m0a;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>
+      ::float_sparse_m m1a;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>
+      ::double_dense_m m2a;
+    typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>
+      ::double_sparse_m m3a;
+
+    T0 alpha_ = alpha;
+
+    for (int i = 0; i < B.GetMmatrix(); i++)
+      for (int j = 0; j < B.GetNmatrix(); j++)
+	{
+	  switch (B.GetType(i, j))
+	    {
+	    case 0:
+	      A.GetMatrix(i, j, m0a);
+	      Add_heterogeneous(float(alpha_), m0a, B, i, j);
+	      m0a.Nullify();
+	      break;
+	    case 1:
+	      A.GetMatrix(i, j, m1a);
+	      Add_heterogeneous(float(alpha_), m1a, B, i, j);
+	      m1a.Nullify();
+	      break;
+	    case 2:
+	      A.GetMatrix(i, j, m2a);
+	      Add_heterogeneous(double(alpha_), m2a, B, i, j);
+	      m2a.Nullify();
+	      break;
+	    case 3:
+	      A.GetMatrix(i, j, m3a);
+	      Add_heterogeneous(double(alpha_), m3a, B, i, j);
+	      m3a.Nullify();
+	      break;
+	    default:
+	      throw
+                WrongArgument("Add(alpha, Matrix<FloatDouble, "
+                              "DenseSparseCollection>, Matrix<FloatDouble,"
+                              "DenseSparseCollection> )",
+                              "Underlying matrix (" + to_str(i) + " ,"
+                              + to_str(j) + " ) not defined.");
+	    }
+	}
+  }
+
+
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, Prop1, RowMajor, Allocator1>& A,
+	   Matrix<T2, Prop2, RowSparse, Allocator2>& B) throw()
+  {
+    throw Undefined("void Add(const T0& alpha,"
+		    "const Matrix<T1, Prop1, RowMajor, Allocator1>& A,"
+		    "Matrix<T2, Prop2, RowSparse, Allocator2>& B)");
+  }
+
+
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, Prop1, ColMajor, Allocator1>& A,
+	   Matrix<T2, Prop2, RowSparse, Allocator2>& B) throw()
+  {
+    throw Undefined("void Add(const T0& alpha,"
+		    "const Matrix<T1, Prop1, RowMajor, Allocator1>& A,"
+		    "Matrix<T2, Prop2, RowSparse, Allocator2>& B)");
   }
 
 
