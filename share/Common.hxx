@@ -35,6 +35,18 @@ namespace Seldon
   template <class T>
   T to_num(std::string s);
 
+  template <class T>
+  void SetComplexZero(T& number);
+
+  template <class T>
+  void SetComplexZero(complex<T>& number);
+
+  template <class T>
+  void SetComplexOne(T& number);
+
+  template <class T>
+  void SetComplexOne(complex<T>& number);
+
 
 }  // namespace Seldon.
 

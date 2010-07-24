@@ -73,6 +73,50 @@ namespace Seldon
   }
 
 
+  //! Sets a number to zero.
+  /*!
+    \param[in,out] number number to be set to zero.
+  */
+  template <class T>
+  inline void SetComplexZero(T& number)
+  {
+    number = T(0);
+  }
+
+
+  //! Sets a complex number to zero.
+  /*!
+    \param[in,out] number complex number to be set to zero.
+  */
+  template <class T>
+  inline void SetComplexZero(complex<T>& number)
+  {
+    number = complex<T>(T(0), T(0));
+  }
+
+
+  //! Sets a number to one.
+  /*!
+    \param[in,out] number number to be set to one.
+  */
+  template <class T>
+  inline void SetComplexOne(T& number)
+  {
+    number = T(1);
+  }
+
+
+  //! Sets a complex number to (1, 0).
+  /*!
+    \param[in,out] number complex number to be set to (1, 0).
+  */
+  template <class T>
+  inline void SetComplexOne(complex<T>& number)
+  {
+    number = complex<T>(T(1), T(0));
+  }
+
+
 }  // namespace Seldon.
 
 #define SELDON_FILE_COMMON_CXX
