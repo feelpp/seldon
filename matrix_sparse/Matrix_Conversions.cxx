@@ -1058,10 +1058,12 @@ namespace Seldon
   }
 
 
-  //! Conversion from row-sparse to column-sparse.
-  template<class T, class Prop, class Alloc1, class Alloc2>
-  void Copy(const Matrix<T, Prop, RowSparse, Alloc1>& A,
-	    Matrix<T, Prop, ColSparse, Alloc2>& B)
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, RowSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& Ind,
+                    Vector<T, VectFull, Alloc4>& Val)
   {
     int i, j;
 
@@ -1071,7 +1073,7 @@ namespace Seldon
     T* data_ = A.GetData();
 
     // Computation of the indices of the beginning of columns.
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(n + 1);
+    Ptr.Reallocate(n + 1);
     Ptr.Fill(0);
     // Counting the number of entries per column.
     for (i = 0; i < nnz; i++)
@@ -1090,8 +1092,8 @@ namespace Seldon
 
     // 'Offset' will be used to get current positions of new entries.
     Vector<int, VectFull, CallocAlloc<int> > Offset = Ptr;
-    Vector<int, VectFull, CallocAlloc<int> > Ind(nnz);
-    Vector<T, VectFull, Alloc2> Val(nnz);
+    Ind.Reallocate(nnz);
+    Val.Reallocate(nnz);
 
     // Loop over rows.
     for (i = 0; i < m; i++)
@@ -1102,23 +1104,37 @@ namespace Seldon
 	  Val(Offset(num_col)) = data_[j];
 	  Offset(num_col)++;
 	}
-
-    B.SetData(m, n, Val, Ptr, Ind);
   }
 
 
   //! Conversion from row-sparse to column-sparse.
   template<class T, class Prop, class Alloc1, class Alloc2>
-  void Copy(const Matrix<T, Prop, ColSymSparse, Alloc1>& A,
-	    Matrix<T, Prop, RowSymSparse, Alloc2>& B)
+  void Copy(const Matrix<T, Prop, RowSparse, Alloc1>& A,
+	    Matrix<T, Prop, ColSparse, Alloc2>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr;
+    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<T, VectFull, Alloc2> Val;
+
+    int m = A.GetM(), n = A.GetN();
+    General sym;
+    ConvertToCSC(A, sym, Ptr, Ind, Val);
+
+    B.SetData(m, n, Val, Ptr, Ind);
+  }
+
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ColSymSparse, Alloc1>& A,
+                    Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& Ind,
+                    Vector<T, VectFull, Alloc4>& Value)
   {
     IVect IndRow, IndCol;
     Vector<T> Val;
 
     ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val, 0, true);
-
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
-    Vector<T, VectFull, Alloc2> Value;
 
     int m = A.GetM();
     int n = A.GetM();
@@ -1148,20 +1164,35 @@ namespace Seldon
           Value(nnz) = Val(i);
           nnz++;
         }
-
-    // creating the matrix
-    B.SetData(m, n, Value, Ptr, Ind);
-
   }
 
 
   //! Conversion from row-sparse to column-sparse.
-  template<class T, class Prop1, class Prop2,
-	   class Storage, class Alloc1, class Alloc2>
+  template<class T, class Prop, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop, ColSymSparse, Alloc1>& A,
+	    Matrix<T, Prop, RowSymSparse, Alloc2>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<T, VectFull, Alloc2> Value;
+
+    Symmetric sym;
+    ConvertToCSR(A, sym, Ptr, Ind, Value);
+
+    // creating the matrix
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, Ind);
+  }
+
+
+  //! Conversion from row-sparse to column-sparse.
+  template<class T, class Prop1, class Storage, class Tint,
+	   class Alloc1, class Alloc2, class Alloc3, class Alloc4>
   void
-  ConvertMatrixSymSparse_to_ColSparse(const Matrix<T, Prop1,
-				      Storage, Alloc1>& A,
-				      Matrix<T, Prop2, ColSparse, Alloc2>& B)
+  ConvertSymmetricToCSC(const Matrix<T, Prop1, Storage, Alloc1>& A,
+                        General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                        Vector<Tint, VectFull, Alloc3>& Ind,
+                        Vector<T, VectFull, Alloc4>& Val)
   {
     int i, j;
 
@@ -1171,7 +1202,7 @@ namespace Seldon
     T* data_ = A.GetData();
 
     // Computation of the indices of the beginning of columns.
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(n + 1);
+    Ptr.Reallocate(n + 1);
     Ptr.Fill(0);
     // Counting the number of entries per column.
     for (i = 0; i < m; i++)
@@ -1195,8 +1226,8 @@ namespace Seldon
 
     // 'Offset' will be used to get current positions of new entries.
     Vector<int, VectFull, CallocAlloc<int> > Offset = Ptr;
-    Vector<int, VectFull, CallocAlloc<int> > Ind(nnz);
-    Vector<T, VectFull, Alloc2> Val(nnz);
+    Ind.Reallocate(nnz);
+    Val.Reallocate(nnz);
 
     // Loop over rows.
     for (i = 0; i < m; i++)
@@ -1213,8 +1244,30 @@ namespace Seldon
 	      Offset(i)++;
 	    }
 	}
+  }
 
-    B.SetData(m, n, Val, Ptr, Ind);
+
+  template<class T, class Prop1, class Tint,
+	   class Alloc1, class Alloc2, class Alloc3, class Alloc4>
+  void
+  ConvertToCSC(const Matrix<T, Prop1, RowSymSparse, Alloc1>& A,
+               General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+               Vector<Tint, VectFull, Alloc3>& Ind,
+               Vector<T, VectFull, Alloc4>& Val)
+  {
+    ConvertSymmetricToCSC(A, sym, Ptr, Ind, Val);
+  }
+
+
+  template<class T, class Prop1, class Tint,
+	   class Alloc1, class Alloc2, class Alloc3, class Alloc4>
+  void
+  ConvertToCSC(const Matrix<T, Prop1, ColSymSparse, Alloc1>& A,
+               General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+               Vector<Tint, VectFull, Alloc3>& Ind,
+               Vector<T, VectFull, Alloc4>& Val)
+  {
+    ConvertSymmetricToCSC(A, sym, Ptr, Ind, Val);
   }
 
 
@@ -1280,7 +1333,15 @@ namespace Seldon
   void Copy(const Matrix<T, Prop1, RowSymSparse, Alloc1>& A,
 	    Matrix<T, Prop2, ColSparse, Alloc2>& B)
   {
-    ConvertMatrixSymSparse_to_ColSparse(A, B);
+    Vector<int, VectFull, CallocAlloc<int> > Ptr;
+    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<T, VectFull, Alloc2> Val;
+
+    int m = A.GetM(), n = A.GetN();
+    General sym;
+    ConvertToCSC(A, sym, Ptr, Ind, Val);
+
+    B.SetData(m, n, Val, Ptr, Ind);
   }
 
 
@@ -1289,7 +1350,15 @@ namespace Seldon
   void Copy(const Matrix<T, Prop1, ColSymSparse, Alloc1>& A,
 	    Matrix<T, Prop2, ColSparse, Alloc2>& B)
   {
-    ConvertMatrixSymSparse_to_ColSparse(A, B);
+    Vector<int, VectFull, CallocAlloc<int> > Ptr;
+    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<T, VectFull, Alloc2> Val;
+
+    int m = A.GetM(), n = A.GetN();
+    General sym;
+    ConvertToCSC(A, sym, Ptr, Ind, Val);
+
+    B.SetData(m, n, Val, Ptr, Ind);
   }
 
 
@@ -1298,65 +1367,79 @@ namespace Seldon
   */
 
 
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayRowSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& IndRow,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<T, VectFull, Alloc4>& Val)
+  {
+    // Matrix (m,n) with 'nnz' entries.
+    int nnz = A.GetDataSize();
+    int m = A.GetM();
+
+    // Allocating arrays needed for CSR format.
+    Val.Reallocate(nnz);
+    IndRow.Reallocate(m + 1);
+    IndCol.Reallocate(nnz);
+
+    // Filling the arrays.
+    int ind = 0;
+    IndRow(0) = 0;
+    for (int i = 0; i < m; i++)
+      {
+	for (int k = 0; k < A.GetRowSize(i); k++)
+	  {
+	    IndCol(ind) = A.Index(i, k);
+	    Val(ind) = A.Value(i, k);
+	    ind++;
+	  }
+	IndRow(i + 1) = ind;
+      }
+  }
+
+
   //! Conversion from ArrayRowSparse to RowSparse.
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& mat_array,
 	    Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
   {
-    int i, k;
+    Vector<T1, VectFull, Allocator1> Val;
+    Vector<int, VectFull, CallocAlloc<int> > IndRow;
+    Vector<int, VectFull, CallocAlloc<int> > IndCol;
 
-    // Matrix (m,n) with 'nnz' entries.
-    int nnz = mat_array.GetDataSize();
+    General sym;
+    ConvertToCSR(mat_array, sym, IndRow, IndCol, Val);
+
     int m = mat_array.GetM();
     int n = mat_array.GetN();
-
-    // Allocating arrays needed for CSR format.
-    Vector<T1, VectFull, Allocator1> Val(nnz);
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(m + 1);
-    Vector<int, VectFull, CallocAlloc<int> > IndCol(nnz);
-
-    // Filling the arrays.
-    int ind = 0;
-    IndRow(0) = 0;
-    for (i = 0; i < m; i++)
-      {
-	for (k = 0; k < mat_array.GetRowSize(i); k++)
-	  {
-	    IndCol(ind) = mat_array.Index(i, k);
-	    Val(ind) = mat_array.Value(i, k);
-	    ind++;
-	  }
-	IndRow(i + 1) = ind;
-      }
-
     mat_csr.SetData(m, n, Val, IndRow, IndCol);
   }
 
-
-  //! Conversion from ArrayRowSparse to ColSparse.
-  template<class T0, class Prop0, class Allocator0,
-	   class T1, class Prop1, class Allocator1>
-  void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& mat_array,
-	    Matrix<T1, Prop1, ColSparse, Allocator1>& mat_csr)
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayRowSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<T, VectFull, Alloc4>& Val)
   {
     int i;
 
     // Matrix (m,n) with nnz entries.
-    int nnz = mat_array.GetDataSize();
-    int m = mat_array.GetM();
-    int n = mat_array.GetN();
+    int nnz = A.GetDataSize();
+    int n = A.GetN();
 
     // Conversion in coordinate format.
-    Vector<T1, VectFull, Allocator1> Val;
-    Vector<int, VectFull, CallocAlloc<int> > IndRow, IndCol;
-    ConvertMatrix_to_Coordinates(mat_array, IndRow, IndCol, Val);
+    Vector<Tint, VectFull, CallocAlloc<Tint> > IndCol;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
 
     // Sorting with respect to column numbers.
     Sort(IndCol, IndRow, Val);
 
     // Constructing pointer array 'Ptr'.
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(n + 1);
+    Ptr.Reallocate(n + 1);
+    Ptr.Fill(0);
 
     // Counting non-zero entries per column.
     for (i = 0; i < nnz; i++)
@@ -1366,8 +1449,55 @@ namespace Seldon
     Ptr(0) = 0;
     for (i = 0; i < n; i++)
       Ptr(i + 1) += Ptr(i);
+  }
+
+
+  //! Conversion from ArrayRowSparse to ColSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& mat_array,
+	    Matrix<T1, Prop1, ColSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<T1, VectFull, Allocator1> Val;
+
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    General sym;
+    ConvertToCSC(mat_array, sym, Ptr, IndRow, Val);
 
     mat_csr.SetData(m, n, Val, Ptr, IndRow);
+  }
+
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayRowSymSparse, Alloc1>& A,
+                    Symmetric& sym, Vector<Tint, VectFull, Alloc2>& IndRow,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<T, VectFull, Alloc4>& Val)
+  {
+    // Number of rows and non-zero entries.
+    int nnz = A.GetDataSize();
+    int m = A.GetM();
+
+    // Allocation of arrays for CSR format.
+    Val.Reallocate(nnz);
+    IndRow.Reallocate(m + 1);
+    IndCol.Reallocate(nnz);
+
+    int ind = 0;
+    IndRow(0) = 0;
+    for (int i = 0; i < m; i++)
+      {
+	for (int k = 0; k < A.GetRowSize(i); k++)
+	  {
+	    IndCol(ind) = A.Index(i, k);
+	    Val(ind) = A.Value(i, k);
+	    ind++;
+	  }
+	IndRow(i + 1) = ind;
+      }
   }
 
 
@@ -1377,45 +1507,31 @@ namespace Seldon
   void Copy(const Matrix<T0, Prop0, ArrayRowSymSparse,Allocator0>& mat_array,
 	    Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
   {
-    int i, k;
+    Vector<T1, VectFull, Allocator1> Val;
+    Vector<int, VectFull, CallocAlloc<int> > IndRow;
+    Vector<int, VectFull, CallocAlloc<int> > IndCol;
 
-    // Number of rows and non-zero entries.
-    int nnz = mat_array.GetDataSize();
+    Symmetric sym;
+    ConvertToCSR(mat_array, sym, IndRow, IndCol, Val);
+
     int m = mat_array.GetM();
-
-    // Allocation of arrays for CSR format.
-    Vector<T1, VectFull, Allocator1> Val(nnz);
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(m + 1);
-    Vector<int, VectFull, CallocAlloc<int> > IndCol(nnz);
-
-    int ind = 0;
-    IndRow(0) = 0;
-    for (i = 0; i < m; i++)
-      {
-	for (k = 0; k < mat_array.GetRowSize(i); k++)
-	  {
-	    IndCol(ind) = mat_array.Index(i, k);
-	    Val(ind) = mat_array.Value(i, k);
-	    ind++;
-	  }
-	IndRow(i + 1) = ind;
-      }
-
     mat_csr.SetData(m, m, Val, IndRow, IndCol);
   }
 
 
-  template<class T0, class Prop0, class Allocator0,
-	   class T1, class Prop1, class Allocator1>
-  void Copy(const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
-	    Matrix<T1, Prop1, ColSparse, Allocator1>& B)
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayRowSymSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& Ind,
+                    Vector<T, VectFull, Alloc4>& AllVal)
   {
     int i, j;
 
     int nnz = A.GetDataSize();
     int n = A.GetM();
     Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
-    Vector<T1> Val(nnz);
+    Vector<T> Val(nnz);
     int ind = 0;
     for (i = 0; i < n; i++)
       for (j = 0; j < A.GetRowSize(i); j++)
@@ -1429,8 +1545,9 @@ namespace Seldon
 
     Sort(ind, IndCol, IndRow, Val);
 
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(n+1), Ind(nnz + ind);
-    Vector<T1> AllVal(nnz+ind);
+    Ptr.Reallocate(n+1);
+    Ind.Reallocate(nnz + ind);
+    AllVal.Reallocate(nnz+ind);
     nnz = ind;
     ind = 0;
 
@@ -1461,10 +1578,22 @@ namespace Seldon
 
         offset += size_row; Ptr(i+1) = offset;
       }
+  }
+
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
+	    Matrix<T1, Prop1, ColSparse, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<T1> AllVal;
+
+    int n = A.GetM();
+    General sym;
+    ConvertToCSC(A, sym, Ptr, Ind, AllVal);
 
     B.SetData(n, n, AllVal, Ptr, Ind);
-    //A.WriteText("Ah.dat");
-    //B.WriteText("Bh.dat");
   }
 
 
@@ -1673,37 +1802,57 @@ namespace Seldon
   }
 
 
-  //! Conversion from ArrayColSparse to ColSparse.
-  template<class T0, class Prop0, class Allocator0,
-	   class T1, class Prop1, class Allocator1>
-  void Copy(const Matrix<T0, Prop0, ArrayColSparse, Allocator0>& mat_array,
-	    Matrix<T1, Prop1, ColSparse, Allocator1>& mat_csc)
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayColSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& IndCol,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<T, VectFull, Alloc4>& Val)
   {
     int i, k;
 
     // Matrix (m,n) with 'nnz' entries.
-    int nnz = mat_array.GetDataSize();
-    int m = mat_array.GetM();
-    int n = mat_array.GetN();
+    int nnz = A.GetDataSize();
+    int m = A.GetM();
+    int n = A.GetN();
 
     // Allocating arrays needed for CSC format.
-    Vector<T1, VectFull, Allocator1> Val(nnz);
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz);
-    Vector<int, VectFull, CallocAlloc<int> > IndCol(n+1);
+    Val.Reallocate(nnz);
+    IndRow.Reallocate(nnz);
+    IndCol.Reallocate(n+1);
 
     // Filling the arrays.
     int ind = 0;
     IndCol(0) = 0;
     for (i = 0; i < n; i++)
       {
-	for (k = 0; k < mat_array.GetColumnSize(i); k++)
+	for (k = 0; k < A.GetColumnSize(i); k++)
 	  {
-	    IndRow(ind) = mat_array.Index(i, k);
-	    Val(ind) = mat_array.Value(i, k);
+	    IndRow(ind) = A.Index(i, k);
+	    Val(ind) = A.Value(i, k);
 	    ind++;
 	  }
+
 	IndCol(i + 1) = ind;
       }
+  }
+
+
+  //! Conversion from ArrayColSparse to ColSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayColSparse, Allocator0>& mat_array,
+	    Matrix<T1, Prop1, ColSparse, Allocator1>& mat_csc)
+  {
+    Vector<T1, VectFull, Allocator1> Val;
+    Vector<int, VectFull, CallocAlloc<int> > IndRow;
+    Vector<int, VectFull, CallocAlloc<int> > IndCol;
+
+    General sym;
+    ConvertToCSC(mat_array, sym, IndCol, IndRow, Val);
+
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
 
     mat_csc.SetData(m, n, Val, IndCol, IndRow);
   }
@@ -1763,9 +1912,11 @@ namespace Seldon
    ***********************/
 
 
-  template<class T, class Prop, class Storage, class Allocator, class AllocI>
+  template<class T, class Prop, class Storage, class Allocator,
+           class Tint, class Allocator2, class Allocator3>
   void GetSymmetricPattern(const Matrix<T, Prop, Storage, Allocator>& A,
-                           Matrix<int, Symmetric, RowSymSparse, AllocI>& B)
+                           Vector<Tint, VectFull, Allocator2>& Ptr,
+                           Vector<Tint, VectFull, Allocator3>& Ind)
   {
     int n = A.GetM();
 
@@ -1783,7 +1934,7 @@ namespace Seldon
     IndCol2 = IndCol;
     Sort(IndCol2.GetM(), IndCol2, IndRow2);
 
-    int max_nnz = 0;
+    Tint max_nnz = 0;
     for (int i = 0; i < IndRow.GetM(); i++)
       if (IndRow(i) <= IndCol(i))
         max_nnz++;
@@ -1793,11 +1944,10 @@ namespace Seldon
         max_nnz++;
 
     // then symmetrization of pattern and conversion to csr.
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind, Val;
     Ptr.Reallocate(n+1);
     Ind.Reallocate(max_nnz);
-    int j_begin = 0, j_end = 0, size_row = 0;
-    int j2_begin = 0, j2_end = 0;
+    Tint j_begin = 0, j_end = 0, size_row = 0;
+    Tint j2_begin = 0, j2_end = 0;
     Ptr(0) = 0;
     for (int i = 0; i < A.GetM(); i++)
       {
@@ -1840,8 +1990,19 @@ namespace Seldon
     IndRow2.Clear(); IndCol2.Clear();
     IndRow.Clear(); IndCol.Clear();
     Ind.Resize(Ptr(n));
-    Val.Reallocate(Ptr(n));
+  }
 
+
+  template<class T, class Prop, class Storage, class Allocator, class AllocI>
+  void GetSymmetricPattern(const Matrix<T, Prop, Storage, Allocator>& A,
+                           Matrix<int, Symmetric, RowSymSparse, AllocI>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+
+    GetSymmetricPattern(A, Ptr, Ind);
+
+    int n = A.GetM();
+    Vector<int, VectFull, CallocAlloc<int> > Val(Ptr(n));
     // We put Ptr and Ind into the matrix B.
     B.SetData(n, n, Val, Ptr, Ind);
   }
