@@ -293,7 +293,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       {
         permutation_row(i) = i;
-        permutation_col(i) = perm(i);
+        permutation_col(i) = i;
         inv_permutation(perm(i)) = i;
       }
 
@@ -304,15 +304,24 @@ namespace Seldon
           abort();
         }
 
+    IVect iperm = inv_permutation;
+
     // Rows of matrix are permuted.
-    PermuteMatrix(mat_unsym, perm, permutation_row);
+    PermuteMatrix(mat_unsym, perm, perm);
 
     // Temporary vector used for solving.
     xtmp.Reallocate(n);
 
     // Factorization is performed.
     // Columns are permuted during the factorization.
+    inv_permutation.Fill();
     GetIlut(*this, mat_unsym, permutation_col, inv_permutation);
+
+    // Combining permutations.
+    IVect itmp = permutation_col;
+    for (int i = 0; i < n; i++)
+      permutation_col(i) = iperm(itmp(i));
+
     permutation_row = perm;
   }
 
@@ -340,7 +349,7 @@ namespace Seldon
         SolveLU(mat_unsym, xtmp);
 
         for (int i = 0; i < r.GetM(); i++)
-          z(i) = xtmp(permutation_col(i));
+          z(permutation_col(i)) = xtmp(i);
       }
   }
 
@@ -355,7 +364,7 @@ namespace Seldon
     else
       {
         for (int i = 0; i < r.GetM(); i++)
-          xtmp(permutation_col(i)) = r(i);
+          xtmp(i) = r(permutation_col(i));
 
         SolveLU(SeldonTrans, mat_unsym, xtmp);
 
@@ -387,7 +396,7 @@ namespace Seldon
         SolveLU(mat_unsym, xtmp);
 
         for (int i = 0; i < z.GetM(); i++)
-          z(i) = xtmp(permutation_col(i));
+          z(permutation_col(i)) = xtmp(i);
       }
   }
 
@@ -401,7 +410,7 @@ namespace Seldon
     else
       {
         for (int i = 0; i < z.GetM(); i++)
-          xtmp(permutation_col(i)) = z(i);
+          xtmp(i) = z(permutation_col(i));
 
         SolveLU(SeldonTrans, mat_unsym, xtmp);
 
@@ -487,7 +496,7 @@ namespace Seldon
     int n = A.GetN();
     int type_factorisation = param.GetFactorisationType();
     int lfil = param.GetFillLevel();
-    real zero = 0.0;
+    real zero(0);
     real droptol = param.GetDroppingThreshold();
     real alpha = param.GetDiagonalCoefficient();
     bool variable_fill = false;
@@ -534,10 +543,13 @@ namespace Seldon
         abort();
       }
 
+    cplx czero, cone;
+    SetComplexZero(czero);
+    SetComplexOne(cone);
     typedef Vector<cplx, VectFull, Allocator2> VectCplx;
     VectCplx Row_Val(n);
     IVect Index(n), Row_Ind(n), Index_Diag(n);
-    Row_Val.Zero();
+    Row_Val.Fill(czero);
     Row_Ind.Fill(-1);
     Index_Diag.Fill(-1);
 
@@ -552,7 +564,7 @@ namespace Seldon
         // Progress bar if print level is high enough.
         if (print_level > 0)
           {
-            new_percent = int(real(i_row)/(n-1)*80);
+            new_percent = int(double(i_row)/(n-1)*80);
             for (int percent = old_percent; percent < new_percent; percent++)
               {
                 cout << "#"; cout.flush();
@@ -563,9 +575,11 @@ namespace Seldon
 
 	size_row = A.GetRowSize(i_row);
 	tnorm = zero;
-	dropsum = zero;
+
+	dropsum = czero;
 	for (k = 0 ; k < size_row; k++)
-          tnorm += abs(A.Value(i_row,k));
+          if (A.Value(i_row, k) != czero)
+            tnorm += abs(A.Value(i_row, k));
 
 	if (tnorm == zero)
 	  {
@@ -583,7 +597,7 @@ namespace Seldon
 	length_upper = 1;
 	length_lower = 0;
 	Row_Ind(i_row) = i_row;
-	Row_Val(i_row) = 0.0;
+	Row_Val(i_row) = czero;
 	Index(i_row) = i_row;
 
 	for (j = 0; j < size_row; j++)
@@ -663,7 +677,7 @@ namespace Seldon
 	    if (!element_dropped)
 	      {
 		// first_index_upper points now on the diagonal coefficient.
-		fact = Row_Val(j_col) * A.Value(jrow,Index_Diag(jrow));
+		fact = Row_Val(j_col) * A.Value(jrow, Index_Diag(jrow));
 
 		if (!standard_dropping)
 		  {
@@ -830,10 +844,10 @@ namespace Seldon
 	if (standard_dropping)
 	  Row_Val(i_row) += alpha*dropsum;
 
-	if (Row_Val(i_row) == zero)
+	if (Row_Val(i_row) == czero)
           Row_Val(i_row) = (droptol + 1e-4) * tnorm;
 
-	A.Value(i_row, index_diag) = 1.0 / Row_Val(i_row);
+	A.Value(i_row, index_diag) = cone / Row_Val(i_row);
 
       } // end main loop
 
@@ -859,7 +873,11 @@ namespace Seldon
     IVect jw(3*n), Index_Diag(n);
     Vector<IVect, VectFull, NewAlloc<IVect> > levs(n);
 
-    // Local variables.
+    cplx czero, cone;
+    SetComplexZero(czero);
+    SetComplexOne(cone);
+
+    // Local variables
     cplx fact, s, t;
     int length_lower,length_upper, jpos, jrow, i_row, j_col;
     int i, j, k, index_lu, length;
@@ -1064,7 +1082,7 @@ namespace Seldon
 
 	// Saves pointer to beginning of row i_row of U.
 	Index_Diag(i_row) = index_lu;
-	A.Value(i_row,index_lu) = 1.0 / w(i_row);
+	A.Value(i_row,index_lu) = cone / w(i_row);
 	A.Index(i_row,index_lu++) = i_row;
 
 	for (k = (i_row+1) ; k <= (i_row+length_upper-1) ; k++)
@@ -1086,6 +1104,10 @@ namespace Seldon
   {
     int j_col, jrow, jw, n = A.GetM();
     IVect Index(n), ju(n);
+
+    cplx czero, cone;
+    SetComplexZero(czero);
+    SetComplexOne(cone);
 
     // Initializes work vector to zero's.
     Index.Fill(-1); ju.Fill(-1);
@@ -1122,15 +1144,16 @@ namespace Seldon
 	      }
 	  }
 
+
         // Inverts and stores diagonal element.
-        if (A.Value(i_row,ju(i_row)) == 0.0)
+        if (A.Value(i_row, ju(i_row)) == czero)
           {
             cout << "Factorization fails because we found a null coefficient"
                  << " on diagonal " << i_row << endl;
             abort();
           }
 
-        A.Value(i_row,ju(i_row)) = 1.0 / A.Value(i_row,ju(i_row));
+        A.Value(i_row,ju(i_row)) = cone / A.Value(i_row,ju(i_row));
 
         // Resets pointer Index to zero.
         Index(i_row) = -1;
@@ -1146,6 +1169,10 @@ namespace Seldon
   {
     int j_col, jrow, jw, n = A.GetM();
     IVect Index(n), ju(n);
+
+    cplx czero, cone;
+    SetComplexZero(czero);
+    SetComplexOne(cone);
 
     // Initializes work vector to zero's.
     Index.Fill(-1); ju.Fill(-1);
@@ -1167,7 +1194,7 @@ namespace Seldon
 	int jm = ju(i_row)-1;
 	// Exit if diagonal element is reached.
 	// s accumulates fill-in values.
-	cplx s = 0.0;
+	cplx s(0);
 	for (int j = 0; j <= jm; j++)
 	  {
 	    jrow = A.Index(i_row, j);
@@ -1187,14 +1214,14 @@ namespace Seldon
 
 	// Inverts and stores diagonal element.
 	A.Value(i_row, ju(i_row)) -= s;
-	if (A.Value(i_row, ju(i_row)) == 0.0)
+	if (A.Value(i_row, ju(i_row)) == czero)
           {
             cout << "Factorization fails because we found a null coefficient"
                  << " on diagonal " << i_row << endl;
             abort();
           }
 
-	A.Value(i_row, ju(i_row)) = 1. / A.Value(i_row, ju(i_row));
+	A.Value(i_row, ju(i_row)) = cone /A.Value(i_row, ju(i_row));
 
         // Resets pointer Index to zero.
         Index(i_row) = -1;
@@ -1218,7 +1245,7 @@ namespace Seldon
     n = A.GetM();
 
     // Forward solve.
-    for (i = 0 ; i < n ; i++)
+    for (i = 0; i < n; i++)
       {
 	k_ = 0; k = A.Index(i,k_);
 	while ( k < i)
@@ -1230,7 +1257,7 @@ namespace Seldon
       }
 
     // Backward solve.
-    for (i = n-1 ; i>=0  ; i--)
+    for (i = n-1; i >= 0; i--)
       {
 	k_ = 0; k = A.Index(i,k_);
 	while ( k < i)
@@ -1249,8 +1276,9 @@ namespace Seldon
 
 
   template<class cplx, class Allocator, class Storage2, class Allocator2>
-  void TransSolveLU(const Matrix<cplx, General, ArrayRowSparse, Allocator>& A,
-                    Vector<cplx,Storage2,Allocator2>& x)
+  void SolveLU(const class_SeldonTrans& transA,
+               const Matrix<cplx, General, ArrayRowSparse, Allocator>& A,
+               Vector<cplx,Storage2,Allocator2>& x)
   {
     int i, k, n, k_;
     n = A.GetM();
