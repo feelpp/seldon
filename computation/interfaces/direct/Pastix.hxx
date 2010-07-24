@@ -36,33 +36,46 @@ namespace Seldon
     //! pastix structure
     pastix_data_t* pastix_data;
     //! options (integers)
-    int    iparm[64];
+    pastix_int_t iparm[64];
     //! options (floats)
     double dparm[64];
     //! number of columns
-    int n;
-    IVect perm, invp, col_num;
+    pastix_int_t n;
+    //! MPI communicator
+    MPI_Comm comm_facto;
+    //! permutation arrays
+    Vector<pastix_int_t> perm, invp;
+    //! local to global
+    Vector<pastix_int_t> col_num;
+    //! if true, resolution on several nodes
     bool distributed;
+    //! level of display
     int print_level;
+    //! if true, solution is refined
+    bool refine_solution;
 
   public :
 
     MatrixPastix();
     ~MatrixPastix();
 
+    void CreateCommunicator();
     void Clear();
 
-    void CallPastix(const MPI_Comm&, int* colptr, int* row, T* val,
-                    T* b, int nrhs);
-    void CheckMatrix(const MPI_Comm&, int**, int**, T**);
+    void CallPastix(const MPI_Comm&, pastix_int_t* colptr, pastix_int_t* row,
+                    T* val, T* b, pastix_int_t nrhs);
+
+    void CheckMatrix(const MPI_Comm&, pastix_int_t**, pastix_int_t**, T**);
 
     void HideMessages();
     void ShowMessages();
 
+    void RefineSolution();
+    void DoNotRefineSolution();
 
-    template<class T0, class Prop, class Storage, class Allocator>
+    template<class T0, class Prop, class Storage, class Allocator, class Tint>
     void FindOrdering(Matrix<T0, Prop, Storage, Allocator> & mat,
-		      IVect& numbers, bool keep_matrix = false);
+		      Vector<Tint>& numbers, bool keep_matrix = false);
 
     template<class Storage, class Allocator>
     void FactorizeMatrix(Matrix<T, General, Storage, Allocator> & mat,
@@ -80,20 +93,24 @@ namespace Seldon
 	       Vector<T, VectFull, Allocator2>& x);
 
 #ifdef SELDON_WITH_MPI
-    template<class Prop, class Allocator>
-    void
-    FactorizeDistributedMatrix(Matrix<T, General, ColSparse, Allocator>& A,
-                               const Prop& sym, const IVect& glob_number,
-                               bool keep_matrix = false);
 
-    template<class Allocator2>
+    void SetNbThreadPerNode(int);
+
+    template<class Alloc1, class Alloc2, class Alloc3, class Tint>
+    void FactorizeDistributedMatrix(Vector<pastix_int_t, VectFull, Alloc1>&,
+                                    Vector<pastix_int_t, VectFull, Alloc2>&,
+                                    Vector<T, VectFull, Alloc3>&,
+                                    const Vector<Tint>& glob_number,
+				    bool sym, bool keep_matrix = false);
+
+    template<class Allocator2, class Tint>
     void SolveDistributed(Vector<T, Vect_Full, Allocator2>& x,
-                          const IVect& glob_num);
+                          const Vector<Tint>& glob_num);
 
-    template<class Allocator2, class Transpose_status>
+    template<class Allocator2, class Transpose_status, class Tint>
     void SolveDistributed(const Transpose_status& TransA,
 			  Vector<T, Vect_Full, Allocator2>& x,
-                          const IVect& glob_num);
+                          const Vector<Tint>& glob_num);
 #endif
 
   };

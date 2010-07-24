@@ -23,6 +23,7 @@
 namespace Seldon
 {
 
+  //! Default constructor.
   template<class T>
   MatrixPastix<T>::MatrixPastix()
   {
@@ -34,7 +35,11 @@ namespace Seldon
 	dparm[i] = 0;
       }
 
+    // Factorization of a matrix on a single processor.
     distributed = false;
+
+    // No refinement by default.
+    refine_solution = false;
 
     // initializing parameters
     pastix_initParam(iparm, dparm);
@@ -45,6 +50,7 @@ namespace Seldon
   }
 
 
+  //! destructor
   template<class T>
   MatrixPastix<T>::~MatrixPastix()
   {
@@ -52,10 +58,11 @@ namespace Seldon
   }
 
 
+  //! Calling main C-function pastix.
   template<>
   void MatrixPastix<double>::
-  CallPastix(const MPI_Comm& comm, int* colptr, int* row,
-             double* val, double* b, int nrhs)
+  CallPastix(const MPI_Comm& comm, pastix_int_t* colptr, pastix_int_t* row,
+             double* val, double* b, pastix_int_t nrhs)
   {
     if (distributed)
       d_dpastix(&pastix_data, comm, n, colptr, row, val,
@@ -67,25 +74,32 @@ namespace Seldon
   }
 
 
+  //! Calling C-function checkMatrix to enforce graph symmetry.
   template<>
   void MatrixPastix<double>::
-  CheckMatrix(const MPI_Comm& comm, int** ptr_, int** row_, double** val_)
+  CheckMatrix(const MPI_Comm& comm, pastix_int_t** ptr_,
+              pastix_int_t** row_, double** val_)
   {
     if (distributed)
-      d_pastix_checkMatrix(comm, iparm[IPARM_VERBOSE],
-                           iparm[IPARM_SYM], API_YES, n, ptr_, row_,
-                           val_, NULL, 1);
+      {
+        d_pastix_checkMatrix(comm, iparm[IPARM_VERBOSE],
+                             iparm[IPARM_SYM], API_YES, n,
+                             ptr_, row_, val_, NULL, 1);
+      }
     else
-      d_pastix_checkMatrix(comm, iparm[IPARM_VERBOSE],
-                           iparm[IPARM_SYM], API_YES, n, ptr_, row_,
-                           val_, NULL, 1);
+      {
+        d_pastix_checkMatrix(comm, iparm[IPARM_VERBOSE],
+                             iparm[IPARM_SYM], API_YES, n,
+                             ptr_, row_, val_, NULL, 1);
+      }
   }
 
 
+  //! Calling C-function checkMatrix to enforce graph symmetry.
   template<>
   void MatrixPastix<complex<double> >::
-  CheckMatrix(const MPI_Comm& comm, int** ptr_, int** row_,
-              complex<double>** val_)
+  CheckMatrix(const MPI_Comm& comm, pastix_int_t** ptr_,
+              pastix_int_t** row_, complex<double>** val_)
   {
     if (distributed)
       z_pastix_checkMatrix(comm, iparm[IPARM_VERBOSE],
@@ -98,10 +112,11 @@ namespace Seldon
   }
 
 
+  //! Calling main C-function pastix.
   template<>
   void MatrixPastix<complex<double> >::
-  CallPastix(const MPI_Comm& comm, int* colptr, int* row,
-             complex<double>* val, complex<double>* b, int nrhs)
+  CallPastix(const MPI_Comm& comm, pastix_int_t* colptr, pastix_int_t* row,
+             complex<double>* val, complex<double>* b, pastix_int_t nrhs)
   {
     if (distributed)
       z_dpastix(&pastix_data, comm, n, colptr, row,
@@ -120,23 +135,31 @@ namespace Seldon
   }
 
 
+  //! Clearing factorization.
   template<class T>
   void MatrixPastix<T>::Clear()
   {
     if (n > 0)
       {
-	int nrhs = 1;
+	pastix_int_t nrhs = 1;
 	iparm[IPARM_START_TASK] = API_TASK_CLEAN;
 	iparm[IPARM_END_TASK] = API_TASK_CLEAN;
 
 	CallPastix(MPI_COMM_WORLD, NULL, NULL, NULL, NULL, nrhs);
 
-	perm.Clear(); invp.Clear(); col_num.Clear();
-	n = 0; pastix_data = NULL; distributed = false;
+	perm.Clear();
+        invp.Clear();
+        col_num.Clear();
+	n = 0;
+        pastix_data = NULL;
+        distributed = false;
+
+        MPI_Comm_free(&comm_facto);
       }
   }
 
 
+  //! no message will be displayed
   template<class T>
   void MatrixPastix<T>::HideMessages()
   {
@@ -144,46 +167,93 @@ namespace Seldon
   }
 
 
+  //! Low level of display.
   template<class T>
   void MatrixPastix<T>::ShowMessages()
   {
     iparm[IPARM_VERBOSE] = API_VERBOSE_NO;
   }
 
+  //! You can require that solution is refined after LU resolution.
+  template<class T>
+  void MatrixPastix<T>::RefineSolution()
+  {
+    refine_solution = true;
+  }
+
+
+  //! You can require that solution is not refined (faster).
+  template<class T>
+  void MatrixPastix<T>::DoNotRefineSolution()
+  {
+    refine_solution = false;
+  }
+
 
   template<class T>
-  template<class T0, class Prop, class Storage, class Allocator>
+  void MatrixPastix<T>::CreateCommunicator()
+  {
+    MPI_Group single_group;
+    int rank, nb_cpu;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &nb_cpu);
+
+    if (distributed)
+      {
+        IVect rank_(nb_cpu); rank_.Fill();
+        MPI_Comm_group(MPI_COMM_WORLD, &single_group);
+	MPI_Group_incl(single_group, nb_cpu, rank_.GetData(), &single_group);
+	MPI_Comm_create(MPI_COMM_WORLD, single_group, &comm_facto);
+      }
+    else
+      {
+        MPI_Comm_group(MPI_COMM_WORLD, &single_group);
+	MPI_Group_incl(single_group, 1, &rank, &single_group);
+	MPI_Comm_create(MPI_COMM_WORLD, single_group, &comm_facto);
+      }
+  }
+
+
+  //! Returning ordering found by Scotch.
+  template<class T>
+  template<class T0, class Prop, class Storage, class Allocator, class Tint>
   void MatrixPastix<T>::
   FindOrdering(Matrix<T0, Prop, Storage, Allocator> & mat,
-               IVect& numbers, bool keep_matrix)
+               Vector<Tint>& numbers, bool keep_matrix)
   {
     // We clear the previous factorization, if any.
     Clear();
+
+    distributed = false;
+    CreateCommunicator();
 
     n = mat.GetN();
     if (n <= 0)
       return;
 
-    int nrhs = 1, nnz = 0;
-    int* ptr_ = NULL; int* rows_ = NULL;
-    Matrix<int, Symmetric, RowSymSparse> As;
+    pastix_int_t nrhs = 1, nnz = 0;
+    pastix_int_t* ptr_ = NULL;
+    pastix_int_t* ind_ = NULL;
+    Vector<pastix_int_t> Ptr, Ind;
 
     iparm[IPARM_SYM] = API_SYM_YES;
     iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
-    GetSymmetricPattern(mat, As);
+    GetSymmetricPattern(mat, Ptr, Ind);
     if (!keep_matrix)
       mat.Clear();
 
-    ptr_ = As.GetPtr();
+    ptr_ = Ptr.GetData();
     // Changing to 1-index notation.
     for (int i = 0; i <= n; i++)
       ptr_[i]++;
 
-    nnz = As.GetNonZeros();
-    rows_ = As.GetInd();
+    nnz = Ind.GetM();
+    ind_ = Ind.GetData();
     for (int i = 0; i < nnz; i++)
-      rows_[i]++;
+      ind_[i]++;
 
+    Ptr.Clear();
+    Ind.Clear();
     perm.Reallocate(n); invp.Reallocate(n);
     perm.Fill(); invp.Fill();
 
@@ -191,12 +261,13 @@ namespace Seldon
     iparm[IPARM_START_TASK] = API_TASK_ORDERING;
     iparm[IPARM_END_TASK] = API_TASK_ORDERING;
 
-    CallPastix(MPI_COMM_WORLD, ptr_, rows_, NULL, NULL, nrhs);
+    CallPastix(comm_facto, ptr_, ind_, NULL, NULL, nrhs);
 
     numbers = perm;
   }
 
 
+  //! Factorization of unsymmetric matrix
   template<class T> template<class Storage, class Allocator>
   void MatrixPastix<T>
   ::FactorizeMatrix(Matrix<T, General, Storage, Allocator> & mat,
@@ -205,39 +276,48 @@ namespace Seldon
     // we clear previous factorization if present
     Clear();
 
+    distributed = false;
+    CreateCommunicator();
     n = mat.GetN();
     if (n <= 0)
       return;
 
-    int nrhs = 1, nnz = 0;
-    int* ptr_ = NULL; int* rows_ = NULL;
+    pastix_int_t nrhs = 1, nnz = 0;
+    pastix_int_t* ptr_ = NULL;
+    pastix_int_t* ind_ = NULL;
     T* values_ = NULL;
-    Matrix<T, General, ColSparse, MallocAlloc<T> > A;
+    Vector<pastix_int_t, VectFull, MallocAlloc<pastix_int_t> > Ptr, IndRow;
+    Vector<T, VectFull, MallocAlloc<T> > Val;
 
     iparm[IPARM_SYM] = API_SYM_NO;
     iparm[IPARM_FACTORIZATION] = API_FACT_LU;
 
-    Copy(mat, A);
+    General prop;
+    ConvertToCSC(mat, prop, Ptr, IndRow, Val);
     if (!keep_matrix)
       mat.Clear();
 
-    ptr_ = A.GetPtr();
+    ptr_ = Ptr.GetData();
     // changing to 1-index notation
     for (int i = 0; i <= n; i++)
       ptr_[i]++;
 
-    nnz = A.GetNonZeros();
-    rows_ = A.GetInd();
+    nnz = IndRow.GetM();
+    ind_ = IndRow.GetData();
     for (int i = 0; i < nnz; i++)
-      rows_[i]++;
+      ind_[i]++;
 
-    values_ = A.GetData();
+    values_ = Val.GetData();
 
     // destruction of pointers will be performed at the end
-    A.Nullify();
+    Ptr.Nullify(); IndRow.Nullify(); Val.Nullify();
 
     // pattern is symmetrized if needed
-    CheckMatrix(MPI_COMM_WORLD, &ptr_, &rows_, &values_);
+    int nb_thread = iparm[IPARM_THREAD_NBR];
+    iparm[IPARM_THREAD_NBR] = 1;
+    CheckMatrix(comm_facto, &ptr_, &ind_, &values_);
+
+    iparm[IPARM_THREAD_NBR] = nb_thread;
 
     perm.Reallocate(n); invp.Reallocate(n);
     perm.Fill(); invp.Fill();
@@ -246,17 +326,18 @@ namespace Seldon
     iparm[IPARM_START_TASK] = API_TASK_ORDERING;
     iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
 
-    CallPastix(MPI_COMM_WORLD, ptr_, rows_, values_, NULL, nrhs);
+    CallPastix(comm_facto, ptr_, ind_, values_, NULL, nrhs);
 
     if (iparm[IPARM_VERBOSE] != API_VERBOSE_NOT)
       cout << "Factorization successful" << endl;
 
     // deallocation of pointers
-    free(ptr_); free(rows_); free(values_);
+    free(ptr_); free(ind_); free(values_);
 
   }
 
 
+  //! Factorization of symmetric matrix.
   template<class T> template<class Storage, class Allocator>
   void MatrixPastix<T>::
   FactorizeMatrix(Matrix<T, Symmetric, Storage, Allocator> & mat,
@@ -265,36 +346,39 @@ namespace Seldon
     // we clear previous factorization if present
     Clear();
 
+    distributed = false;
+    CreateCommunicator();
     n = mat.GetN();
     if (n <= 0)
       return;
 
-    //col_num.Reallocate(n);
-    //for (int i = 0; i < n; i++)
-    //col_num(i) = i+1;
+    pastix_int_t nrhs = 1, nnz = 0;
+    pastix_int_t* ptr_ = NULL;
+    pastix_int_t* ind_ = NULL;
 
-    int nrhs = 1, nnz = 0;
-    int* ptr_ = NULL; int* rows_ = NULL;
     T* values_ = NULL;
-    Matrix<T, Symmetric, RowSymSparse, Allocator> As;
+    Vector<pastix_int_t, VectFull, MallocAlloc<pastix_int_t> > Ptr, IndRow;
+    Vector<T, VectFull, MallocAlloc<T> > Val;
+
+    Symmetric prop;
+    ConvertToCSR(mat, prop, Ptr, IndRow, Val);
 
     iparm[IPARM_SYM]           = API_SYM_YES;
     iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
-    Copy(mat, As);
     if (!keep_matrix)
       mat.Clear();
 
-    ptr_ = As.GetPtr();
+    ptr_ = Ptr.GetData();
     // changing to 1-index notation
     for (int i = 0; i <= n; i++)
       ptr_[i]++;
 
-    nnz = As.GetNonZeros();
-    rows_ = As.GetInd();
+    nnz = IndRow.GetM();
+    ind_ = IndRow.GetData();
     for (int i = 0; i < nnz; i++)
-      rows_[i]++;
+      ind_[i]++;
 
-    values_ = As.GetData();
+    values_ = Val.GetData();
 
     perm.Reallocate(n); invp.Reallocate(n);
     perm.Fill(); invp.Fill();
@@ -304,11 +388,11 @@ namespace Seldon
     iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
     // iparm[IPARM_VERBOSE]          = 4;
 
-    CallPastix(MPI_COMM_WORLD, ptr_, rows_, values_, NULL, nrhs);
-
+    CallPastix(comm_facto, ptr_, ind_, values_, NULL, nrhs);
   }
 
 
+  //! solving A x = b (A is already factorized)
   template<class T> template<class Allocator2>
   void MatrixPastix<T>::Solve(Vector<T, VectFull, Allocator2>& x)
   {
@@ -316,56 +400,75 @@ namespace Seldon
   }
 
 
+  //! solving A x = b or A^T x = b (A is already factorized)
   template<class T> template<class Allocator2, class Transpose_status>
   void MatrixPastix<T>::Solve(const Transpose_status& TransA,
                               Vector<T, VectFull, Allocator2>& x)
   {
-    int nrhs = 1;
+    pastix_int_t nrhs = 1;
     T* rhs_ = x.GetData();
 
     iparm[IPARM_START_TASK] = API_TASK_SOLVE;
-    iparm[IPARM_END_TASK] = API_TASK_SOLVE;
+    if (refine_solution)
+      iparm[IPARM_END_TASK] = API_TASK_REFINE;
+    else
+      iparm[IPARM_END_TASK] = API_TASK_SOLVE;
 
-    CallPastix(MPI_COMM_WORLD, NULL, NULL, NULL, rhs_, nrhs);
-
+    CallPastix(comm_facto, NULL, NULL, NULL, rhs_, nrhs);
   }
 
 
 #ifdef SELDON_WITH_MPI
-  template<class T> template<class Prop, class Allocator>
-  void MatrixPastix<T>
-  ::FactorizeDistributedMatrix(Matrix<T, General, ColSparse, Allocator>& A,
-                               const Prop& sym, const IVect& glob_number,
-                               bool keep_matrix)
+
+  //! Modifies the number of threads per node.
+  template<class T>
+  void MatrixPastix<T>::SetNbThreadPerNode(int nb_thread)
+  {
+    iparm[IPARM_THREAD_NBR] = nb_thread;
+  }
+
+
+  //! Distributed factorization (on several nodes).
+  template<class T>
+  template<class Alloc1, class Alloc2, class Alloc3, class Tint>
+  void MatrixPastix<T>::
+  FactorizeDistributedMatrix(Vector<pastix_int_t, VectFull, Alloc1>& Ptr,
+                             Vector<pastix_int_t, VectFull, Alloc2>& IndRow,
+                             Vector<T, VectFull, Alloc3>& Val,
+                             const Vector<Tint>& glob_number,
+                             bool sym, bool keep_matrix)
   {
     // we clear previous factorization if present
     Clear();
 
-    n = A.GetN();
+    n = Ptr.GetM() - 1;
     if (n <= 0)
       return;
 
     distributed = true;
 
+    CreateCommunicator();
+
     iparm[IPARM_SYM] = API_SYM_YES;
+
     iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
     iparm[IPARM_GRAPHDIST] = API_YES;
 
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    int* ptr_ = A.GetPtr();
-    int nrhs = 1;
+    pastix_int_t* ptr_ = Ptr.GetData();
+    pastix_int_t nrhs = 1;
     // changing to 1-index notation
     for (int i = 0; i <= n; i++)
       ptr_[i]++;
 
-    int nnz = A.GetNonZeros();
-    int* rows_ = A.GetInd();
+    pastix_int_t nnz = IndRow.GetM();
+    pastix_int_t* ind_ = IndRow.GetData();
     for (int i = 0; i < nnz; i++)
-      rows_[i]++;
+      ind_[i]++;
 
-    T* values_ = A.GetData();
+    T* values_ = Val.GetData();
 
     col_num.Reallocate(n);
     perm.Reallocate(n); invp.Reallocate(n);
@@ -377,35 +480,35 @@ namespace Seldon
     // iparm[IPARM_VERBOSE] = API_VERBOSE_YES;
     iparm[IPARM_START_TASK] = API_TASK_ORDERING;
     iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
-    // iparm[IPARM_VERBOSE] = 4;
 
-    CallPastix(MPI_COMM_WORLD, ptr_, rows_, values_, NULL, nrhs);
-
+    CallPastix(comm_facto, ptr_, ind_, values_, NULL, nrhs);
   }
 
 
-  template<class T> template<class Allocator2>
-  void MatrixPastix<T>
-  ::SolveDistributed(Vector<T, Vect_Full, Allocator2>& x,
-                     const IVect& glob_num)
+  template<class T> template<class Allocator2, class Tint>
+  void MatrixPastix<T>::SolveDistributed(Vector<T, Vect_Full, Allocator2>& x,
+                                         const Vector<Tint>& glob_num)
   {
     SolveDistributed(SeldonNoTrans, x, glob_num);
   }
 
 
-  template<class T> template<class Allocator2, class Transpose_status>
+  template<class T>
+  template<class Allocator2, class Transpose_status, class Tint>
   void MatrixPastix<T>::SolveDistributed(const Transpose_status& TransA,
                                          Vector<T, Vect_Full, Allocator2>& x,
-                                         const IVect& glob_num)
+                                         const Vector<Tint>& glob_num)
   {
-    int nrhs = 1;
+    pastix_int_t nrhs = 1;
     T* rhs_ = x.GetData();
 
     iparm[IPARM_START_TASK] = API_TASK_SOLVE;
-    iparm[IPARM_END_TASK] = API_TASK_SOLVE;
+    if (refine_solution)
+      iparm[IPARM_END_TASK] = API_TASK_REFINE;
+    else
+      iparm[IPARM_END_TASK] = API_TASK_SOLVE;
 
-    CallPastix(MPI_COMM_WORLD, NULL, NULL, NULL, rhs_, nrhs);
-
+    CallPastix(comm_facto, NULL, NULL, NULL, rhs_, nrhs);
   }
 #endif
 
