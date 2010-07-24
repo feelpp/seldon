@@ -1114,8 +1114,8 @@ namespace Seldon
   */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
-  void Solve(Matrix<T0, Prop0, Storage0, Allocator0>& M,
-             Vector<T1, Storage1, Allocator1>& Y)
+  void GetAndSolveLU(Matrix<T0, Prop0, Storage0, Allocator0>& M,
+                     Vector<T1, Storage1, Allocator1>& Y)
   {
 #ifdef SELDON_WITH_LAPACK
     Vector<int> P;
