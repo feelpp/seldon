@@ -75,7 +75,7 @@ namespace Seldon
     int GetN() const;
     int GetM(const SeldonTranspose& status) const;
     int GetN(const SeldonTranspose& status) const;
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
     int GetM(const CBLAS_TRANSPOSE& status) const;
     int GetN(const CBLAS_TRANSPOSE& status) const;
 #endif

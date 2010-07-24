@@ -33,7 +33,12 @@
 #include <exception>
 #include <stdexcept>
 
+// For backward compatibility.
 #ifdef SELDON_WITH_CBLAS
+#define SELDON_WITH_BLAS
+#endif
+
+#ifdef SELDON_WITH_BLAS
 extern "C"
 {
 #include "computation/interfaces/cblas.h"

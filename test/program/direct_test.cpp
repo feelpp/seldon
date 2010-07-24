@@ -18,7 +18,7 @@
 
 
 #define SELDON_DEBUG_LEVEL_4
-#define SELDON_WITH_CBLAS
+#define SELDON_WITH_BLAS
 
 #if !defined(SELDON_WITH_UMFPACK) && !defined(SELDON_WITH_SUPERLU) \
   && !defined(SELDON_WITH_MUMPS) && !defined(SELDON_WITH_PASTIX)

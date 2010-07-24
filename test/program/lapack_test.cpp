@@ -18,7 +18,7 @@
 // along with Seldon. If not, see http://www.gnu.org/licenses/.
 
 
-#define SELDON_WITH_CBLAS
+#define SELDON_WITH_BLAS
 #define SELDON_WITH_LAPACK
 #define SELDON_DEBUG_LEVEL_4
 

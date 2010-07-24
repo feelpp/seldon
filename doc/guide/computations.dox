@@ -87,11 +87,13 @@ written in C++) may be used.</p>
 
 
 <p>Remember that, before the inclusion of %Seldon (<code>#include
-"Seldon.hxx"</code>), you must define <code>SELDON_WITH_CBLAS</code>:</p>
+"Seldon.hxx"</code>), you must define <code>SELDON_WITH_BLAS</code>. For
+backward compatibility, <code>SELDON_WITH_CBLAS</code> is also accepted, but
+not recommended. Below is an example: </p>
 
 \precode
 
-#define SELDON_WITH_CBLAS
+#define SELDON_WITH_BLAS
 #include "Seldon.hxx"
 
 using namespace Seldon;

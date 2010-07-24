@@ -18,7 +18,7 @@
 
 
 #define SELDON_DEBUG_LEVEL_4
-#define SELDON_WITH_CBLAS
+#define SELDON_WITH_BLAS
 
 #include "Seldon.hxx"
 #include "SeldonSolver.hxx"

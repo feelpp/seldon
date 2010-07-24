@@ -152,7 +152,7 @@ namespace Seldon
   }
 
 
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
   //! Returns the number of rows of the matrix possibly transposed.
   /*!
     \param status assumed status about the transposition of the matrix.
@@ -169,7 +169,7 @@ namespace Seldon
 #endif
 
 
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
   //! Returns the number of columns of the matrix possibly transposed.
   /*!
     \param status assumed status about the transposition of the matrix.

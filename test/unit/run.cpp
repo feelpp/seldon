@@ -19,7 +19,7 @@
 #define SELDON_DEBUG_LEVEL_4
 #define SELDON_WITH_ABORT
 
-#define SELDON_WITH_CBLAS
+#define SELDON_WITH_BLAS
 #define SELDON_WITH_LAPACK
 
 #include "array3d.hpp"

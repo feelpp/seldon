@@ -5,9 +5,10 @@
 /*!
 \page functions_blas BLAS Functions
 
-<p>Those functions are available both for dense and sparse vectors.
- In the case of dense vectors, Blas subroutines are called if
- <code>SELDON_WITH_CBLAS</code> is defined.</p>
+<p>Those functions are available both for dense and sparse vectors.  In the
+ case of dense vectors, Blas subroutines are called if
+ <code>SELDON_WITH_BLAS</code> (or, for backward compatibility,
+ <code>SELDON_WITH_CBLAS</code>) is defined.</p>
  
 <table class="category-table">
 <tr class="category-table-tr-2">

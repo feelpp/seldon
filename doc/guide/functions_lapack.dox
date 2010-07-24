@@ -8,7 +8,7 @@
 <p>Those functions are available mainly for dense matrices. When it is
  available for sparse matrices, it will be specified and the use detailed.
  In the case of dense matrices, Lapack subroutines are called 
- and you will need to define <code>SELDON_WITH_CBLAS</code> and <code>
+ and you will need to define <code>SELDON_WITH_BLAS</code> and <code>
 SELDON_WITH_LAPACK</code>. </p>
  
 <table class="category-table">

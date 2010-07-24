@@ -17,7 +17,7 @@
 // along with Seldon. If not, see http://www.gnu.org/licenses/.
 
 
-#define SELDON_WITH_CBLAS
+#define SELDON_WITH_BLAS
 #include "Seldon.hxx"
 using namespace Seldon;
 

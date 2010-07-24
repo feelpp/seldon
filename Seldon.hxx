@@ -44,7 +44,7 @@ namespace Seldon
 
   class SeldonTranspose
   {
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
   protected:
     CBLAS_TRANSPOSE cblas_status_;
 #endif
@@ -55,7 +55,7 @@ namespace Seldon
     SeldonTranspose(int status)
     {
       status_ = status;
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
       if (status_ == 0)
 	cblas_status_ = CblasTrans;
       else if (status_ == 1)
@@ -64,7 +64,7 @@ namespace Seldon
 	cblas_status_ = CblasConjTrans;
 #endif
     }
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
     SeldonTranspose(const enum CBLAS_TRANSPOSE status):
       cblas_status_(status)
     {
@@ -76,7 +76,7 @@ namespace Seldon
 	status_ = 2;
     }
 #endif
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
     operator CBLAS_TRANSPOSE() const
     {
       return cblas_status_;
@@ -134,7 +134,7 @@ namespace Seldon
 
   class SeldonDiag
   {
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
   protected:
     CBLAS_DIAG cblas_status_;
 #endif
@@ -145,14 +145,14 @@ namespace Seldon
     SeldonDiag(int status)
     {
       status_ = status;
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
       if (status_ == 0)
 	cblas_status_ = CblasNonUnit;
       else
 	cblas_status_ = CblasUnit;
 #endif
     }
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
     operator CBLAS_DIAG() const
     {
       return cblas_status_;
@@ -183,7 +183,7 @@ namespace Seldon
 
   class SeldonUplo
   {
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
   protected:
     CBLAS_UPLO cblas_status_;
 #endif
@@ -194,14 +194,14 @@ namespace Seldon
     SeldonUplo(int status)
     {
       status_ = status;
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
       if (status_ == 0)
 	cblas_status_ = CblasUpper;
       else
 	cblas_status_ = CblasLower;
 #endif
     }
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
     operator CBLAS_UPLO() const
     {
       return cblas_status_;
@@ -288,7 +288,7 @@ namespace Seldon
 
   class SeldonSide
   {
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
   protected:
     CBLAS_SIDE cblas_status_;
 #endif
@@ -299,14 +299,14 @@ namespace Seldon
     SeldonSide(int status)
     {
       status_ = status;
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
       if (status_ == 0)
 	cblas_status_ = CblasLeft;
       else
 	cblas_status_ = CblasRight;
 #endif
     }
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
     SeldonSide(const enum CBLAS_SIDE status):
       cblas_status_(status)
     {
@@ -316,7 +316,7 @@ namespace Seldon
 	status_ = 1;
     }
 #endif
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
     operator CBLAS_SIDE() const
     {
       return cblas_status_;
@@ -382,7 +382,7 @@ namespace Seldon
 #include "matrix/SubMatrix.cxx"
 
 // Blas interface.
-#ifdef SELDON_WITH_CBLAS
+#ifdef SELDON_WITH_BLAS
 #include "computation/interfaces/Blas_1.cxx"
 #include "computation/interfaces/Blas_2.cxx"
 #include "computation/interfaces/Blas_3.cxx"

@@ -32,7 +32,7 @@ int blas_called = 0;
 #include "cblas_call.h"
 #define IS_CALL_FLAG_ACTIVATED CPPUNIT_ASSERT(blas_called == 1); blas_called = 0
 
-#define SELDON_WITH_CBLAS
+#define SELDON_WITH_BLAS
 #include "Seldon.hxx"
 #include "SeldonSolver.hxx"
 using namespace Seldon;
