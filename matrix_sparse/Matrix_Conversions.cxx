@@ -34,12 +34,12 @@ namespace Seldon
 
   //! Conversion from RowSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
-	   class Allocator3, class Allocator4>
+	   class Tint, class Allocator3, class Allocator4>
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, RowSparse,
 			       Allocator1>& A,
-			       Vector<int, VectFull, Allocator2>& IndRow,
-			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -64,12 +64,12 @@ namespace Seldon
 
   //! Conversion from ColSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
-	   class Allocator3, class Allocator4>
+	   class Tint, class Allocator3, class Allocator4>
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ColSparse,
 			       Allocator1>& A,
-			       Vector<int, VectFull, Allocator2>& IndRow,
-			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -94,12 +94,12 @@ namespace Seldon
 
   //! Conversion from RowSymSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
-	   class Allocator3, class Allocator4>
+	   class Tint, class Allocator3, class Allocator4>
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, RowSymSparse,
 			       Allocator1>& A,
-			       Vector<int, VectFull, Allocator2>& IndRow,
-			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -171,12 +171,12 @@ namespace Seldon
 
   //! Conversion from ColSymSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
-	   class Allocator3, class Allocator4>
+	   class Tint, class Allocator3, class Allocator4>
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ColSymSparse,
 			       Allocator1>& A,
-			       Vector<int, VectFull, Allocator2>& IndRow,
-			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -254,12 +254,12 @@ namespace Seldon
 
   //! Conversion from ArrayRowSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
-	   class Allocator3, class Allocator4>
+	   class Tint, class Allocator3, class Allocator4>
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayRowSparse,
 			       Allocator1>& A,
-			       Vector<int, VectFull, Allocator2>& IndRow,
-			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -284,12 +284,12 @@ namespace Seldon
 
   //! Conversion from ArrayColSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
-	   class Allocator3, class Allocator4>
+	   class Tint, class Allocator3, class Allocator4>
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayColSparse,
 			       Allocator1>& A,
-			       Vector<int, VectFull, Allocator2>& IndRow,
-			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -314,12 +314,12 @@ namespace Seldon
 
   //! Conversion from ArrayRowSymSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
-	   class Allocator3, class Allocator4>
+	   class Tint, class Allocator3, class Allocator4>
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayRowSymSparse,
 			       Allocator1>& A,
-			       Vector<int, VectFull, Allocator2>& IndRow,
-			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false)
   {
@@ -391,12 +391,12 @@ namespace Seldon
 
   //! Conversion from ArrayColSymSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
-	   class Allocator3, class Allocator4>
+	   class Tint, class Allocator3, class Allocator4>
   void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayColSymSparse,
 			       Allocator1>& A,
-			       Vector<int, VectFull, Allocator2>& IndRow,
-			       Vector<int, VectFull, Allocator3>& IndCol,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false)
   {
