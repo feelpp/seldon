@@ -249,7 +249,8 @@ namespace Seldon
   T1 DotProd(const Vector<T1, Storage1, Allocator1>& X,
 	     const Vector<T2, Storage2, Allocator2>& Y)
   {
-    T1 value(0);
+    T1 value;
+    SetComplexZero(value);
 
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(X, Y, "DotProd(X, Y)");
@@ -319,7 +320,8 @@ namespace Seldon
   complex<T1> DotProdConj(const Vector<complex<T1>, Storage1, Allocator1>& X,
 			  const Vector<T2, Storage2, Allocator2>& Y)
   {
-    complex<T1> value(0);
+    complex<T1> value;
+    SetComplexZero(value);
 
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(X, Y, "DotProdConj(X, Y)");
@@ -338,7 +340,8 @@ namespace Seldon
   T1 DotProd(const Vector<T1, VectSparse, Allocator1>& X,
 	     const Vector<T2, VectSparse, Allocator2>& Y)
   {
-    T1 value(0);
+    T1 value;
+    SetComplexZero(value);
 
     int size_x = X.GetSize();
     int size_y = Y.GetSize();
@@ -366,7 +369,7 @@ namespace Seldon
   DotProdConj(const Vector<complex<T1>, VectSparse, Allocator1>& X,
 	      const Vector<T2, VectSparse, Allocator2>& Y)
   {
-    complex<T1> value(0);
+    complex<T1> value(0, 0);
 
     int size_x = X.GetSize();
     int size_y = Y.GetSize();
