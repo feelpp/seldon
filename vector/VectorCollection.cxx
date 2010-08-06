@@ -56,7 +56,7 @@ namespace Seldon
   */
   template <class T, class Allocator>
   Vector<T, Collection, Allocator>::Vector(int i):
-    Vector_Base<T, Allocator>(i), length_(i), length_sum_(i), vector_(i),
+    Vector_Base<T, Allocator>(0), length_(i), length_sum_(i), vector_(i),
     label_map_(), label_vector_()
   {
     Nvector_ = i;
