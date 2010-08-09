@@ -344,6 +344,86 @@ namespace Seldon
   }
 
 
+  //! Permutation of a general matrix stored by rows.
+  /*!
+    B(i, j) = A(row_perm(i), col_perm(j)) and A = B.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, RowMajor, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index)
+  {
+    Matrix<T, Prop, RowMajor, Allocator> A_copy = A;
+
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetN(); j++)
+        A(i, j) = A_copy(row_perm(i) - starting_index,
+                         col_perm(j) - starting_index);
+  }
+
+
+  //! Permutation of a general matrix stored by columns.
+  /*!
+    B(i, j) = A(row_perm(i), col_perm(j)) and A = B.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, ColMajor, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index)
+  {
+    Matrix<T, Prop, ColMajor, Allocator> A_copy = A;
+
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i < A.GetM(); i++)
+        A(i, j) = A_copy(row_perm(i) - starting_index,
+                         col_perm(j) - starting_index);
+  }
+
+
+  //! Inverse permutation of a general matrix stored by rows.
+  /*!
+    B(row_perm(i), col_perm(j)) = A(i,j) and A = B.
+
+    Equivalent Matlab operation: A(row_perm, col_perm) = A.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, RowMajor, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index)
+  {
+    Matrix<T, Prop, RowMajor, Allocator> A_copy = A;
+
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetN(); j++)
+        A(row_perm(i) - starting_index, col_perm(j) - starting_index)
+          = A_copy(i, j);
+  }
+
+
+  //! Inverse permutation of a general matrix stored by columns.
+  /*!
+    B(row_perm(i), col_perm(j)) = A(i,j) and A = B.
+
+    Equivalent Matlab operation: A(row_perm, col_perm) = A.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, ColMajor, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index)
+  {
+    Matrix<T, Prop, ColMajor, Allocator> A_copy = A;
+
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i < A.GetM(); i++)
+        A(row_perm(i) - starting_index, col_perm(j) - starting_index)
+          = A_copy(i, j);
+  }
+
+
 } // namespace Seldon.
 
 #define SELDON_FILE_FUNCTIONS_CXX

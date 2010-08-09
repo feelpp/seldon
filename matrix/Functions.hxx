@@ -59,6 +59,30 @@ namespace Seldon
   void SetCol(const Vector<T1, VectSparse, Allocator1>& X,
 	      int j, Matrix<T0, General, RowSparse, Allocator0>& M);
 
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, RowMajor, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, ColMajor, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, RowMajor, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, ColMajor, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index = 0);
+
 } // namespace Seldon.
 
 #define SELDON_FILE_FUNCTIONS_HXX

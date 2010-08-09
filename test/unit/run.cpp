@@ -24,6 +24,7 @@
 
 #include "array3d.hpp"
 #include "matrix.hpp"
+#include "matrix_function.hpp"
 #include "submatrix.hpp"
 #include "lapack.hpp"
 #include "sparse_linear_algebra.hpp"
@@ -41,6 +42,7 @@ using namespace CppUnit;
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MatrixTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(MatrixFunctionTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(SubMatrixTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(Array3DTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(SparseLinearAlgebraTest);
