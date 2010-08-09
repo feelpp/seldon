@@ -441,8 +441,8 @@ public:
             col_permutation(j) = tmp;
           }
 
-        PermuteMatrix(A, row_permutation, col_permutation);
-        PermuteMatrix(A_col, row_permutation, col_permutation);
+        ApplyInversePermutation(A, row_permutation, col_permutation);
+        ApplyInversePermutation(A_col, row_permutation, col_permutation);
 
         for (i = 0; i < m_; i++)
           for (j = 0; j < n_; j++)

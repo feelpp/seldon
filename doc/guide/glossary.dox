@@ -373,7 +373,7 @@
  <td class="category-table-td"> <a href="class_sparse_matrix.php#csr_nullify"> Nullify </a> (CSR matrices) </td>
  <td class="category-table-td"> clears the matrix without releasing memory</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_matrix.php#permutematrix">PermuteMatrix </a></td> 
+ <td class="category-table-td"><a href="functions_matrix.php#permutematrix">ApplyInversePermutation </a></td> 
  <td class="category-table-td"> permutes row and column numbers of a matrix </td> </tr>
 <tr class="category-table-tr-1">
  <td class="category-table-td"> <a href="class_vector.php#print"> Print </a> (dense vectors) </td>

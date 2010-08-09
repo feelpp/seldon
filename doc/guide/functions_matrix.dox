@@ -42,7 +42,7 @@
  <td class="category-table-td"><a href="#norminf">NormInf </a></td> 
  <td class="category-table-td"> returns infinity-norm of A </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#permutematrix">PermuteMatrix </a></td> 
+ <td class="category-table-td"><a href="#permutematrix">ApplyInversePermutation </a></td> 
  <td class="category-table-td"> permutes row and column numbers of a matrix </td> </tr>
 <tr class="category-table-tr-1">
  <td class="category-table-td"><a href="#scalematrix">ScaleMatrix </a></td> 
@@ -325,19 +325,19 @@ double anorm_inf = NormInf(A);
 
 
 
-<h3>PermuteMatrix</h3>
+<h3>ApplyInversePermutation</h3>
 
 
 <h4>Syntax :</h4>
  <pre class="syntax-box">
-  void PermuteMatrix(Matrix&amp;, const Vector&lt;int&gt;&amp;, const Vector&lt;int&gt;&amp;);
+  void ApplyInversePermutation(Matrix&amp;, const Vector&lt;int&gt;&amp;, const Vector&lt;int&gt;&amp;);
 </pre>
 
 
 <p>This function permutes a given matrix with the provided new row
-numbers and column numbers. <code>PermuteMatrix(A, row, col)</code>
+numbers and column numbers. <code>ApplyInversePermutation(A, row, col)</code>
 does the same operation as <code>A(row, col) = A</code> in
-Matlab. This function is only available for ArrayRowSparse,
+Matlab. This function is only available for RowMajor, ColMajor, ArrayRowSparse,
 ArrayRowSymSparse, ArrayRowComplexSparse and
 ArrayRowSymComplexSparse. </p>
 
@@ -350,12 +350,12 @@ Matrix<double, Symmetric, ArrayRowSymSparse> A(5, 5);
 IVect row(5);
 // for symmetric matrix, row and column permutation must be the same
 // if you want to keep symmetry
-PermuteMatrix(A, row, row);
+ApplyInversePermutation(A, row, row);
 
 // for unsymmetric matrices, you can specify different permutations
 IVect col(5);
 Matrix<double, General, ArrayRowSparse> B(5, 5);
-PermuteMatrix(B, row, col);
+ApplyInversePermutation(B, row, col);
 \endprecode
 
 
@@ -399,7 +399,7 @@ ScaleMatrix(A, scale, scale);
 // for unsymmetric matrices, you can specify different scalings
 IVect scale_right(5);
 Matrix<double, General, ArrayRowSparse> B(5, 5);
-PermuteMatrix(B, scale, scale_right);
+ApplyInversePermutation(B, scale, scale_right);
 \endprecode
 
 

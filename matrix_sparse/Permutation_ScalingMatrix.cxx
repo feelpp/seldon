@@ -23,7 +23,7 @@
 /*
   Functions defined in this file:
 
-  PermuteMatrix(A, I, J)
+  ApplyInversePermutation(A, I, J)
 
   ScaleMatrix(A, Drow, Dcol)
 
@@ -40,8 +40,9 @@ namespace Seldon
     Equivalent Matlab operation: A(row_perm, col_perm) = A.
   */
   template<class T, class Prop, class Allocator>
-  void PermuteMatrix(Matrix<T, Prop, RowSparse, Allocator>& A,
-		     const Vector<int>& row_perm, const Vector<int>& col_perm)
+  void ApplyInversePermutation(Matrix<T, Prop, RowSparse, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm)
   {
     int i, j, k, l, nnz;
     int m = A.GetM();
@@ -126,8 +127,9 @@ namespace Seldon
     Equivalent Matlab operation: A(row_perm, col_perm) = A.
   */
   template<class T, class Prop, class Allocator>
-  void PermuteMatrix(Matrix<T, Prop, ColSparse, Allocator>& A,
-		     const Vector<int>& row_perm, const Vector<int>& col_perm)
+  void ApplyInversePermutation(Matrix<T, Prop, ColSparse, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm)
   {
     int i, j, k, l, nnz;
     int m = A.GetM();
@@ -212,8 +214,8 @@ namespace Seldon
     Equivalent Matlab operation: A(row_perm, col_perm) = A.
   */
   template<class T, class Prop, class Allocator>
-  void PermuteMatrix(Matrix<T, Prop, ArrayRowSparse, Allocator>& A,
-		     const IVect& row_perm, const IVect& col_perm)
+  void ApplyInversePermutation(Matrix<T, Prop, ArrayRowSparse, Allocator>& A,
+                               const IVect& row_perm, const IVect& col_perm)
   {
     int m = A.GetM(), n, i, i_, j, i2;
     IVect ind_tmp, iperm(m), rperm(m);
@@ -262,8 +264,9 @@ namespace Seldon
     Equivalent Matlab operation: A(row_perm, col_perm) = A.
   */
   template<class T, class Prop, class Allocator>
-  void PermuteMatrix(Matrix<T, Prop, ArrayColSymSparse, Allocator>& A,
-		     const IVect& row_perm, const IVect& col_perm)
+  void
+  ApplyInversePermutation(Matrix<T, Prop, ArrayColSymSparse, Allocator>& A,
+                          const IVect& row_perm, const IVect& col_perm)
   {
     // It is assumed that the permuted matrix is still symmetric! For example,
     // the user can provide row_perm = col_perm.
@@ -331,9 +334,9 @@ namespace Seldon
     Equivalent Matlab operation: A(row_perm, col_perm) = A.
   */
   template<class T, class Prop, class Allocator>
-  void PermuteMatrix(Matrix<T, Prop,
-		     ArrayRowSymComplexSparse, Allocator>& A,
-		     const IVect& row_perm,const IVect& col_perm)
+  void ApplyInversePermutation(Matrix<T, Prop,
+                               ArrayRowSymComplexSparse, Allocator>& A,
+                               const IVect& row_perm,const IVect& col_perm)
   {
     // It is assumed that the permuted matrix is still symmetric! For example,
     // the user can provide row_perm = col_perm.
@@ -460,8 +463,9 @@ namespace Seldon
     Equivalent Matlab operation: A(row_perm, col_perm) = A.
   */
   template<class T, class Prop, class Allocator>
-  void PermuteMatrix(Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A,
-		     const IVect& row_perm, const IVect& col_perm)
+  void
+  ApplyInversePermutation(Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A,
+                          const IVect& row_perm, const IVect& col_perm)
   {
     // It is assumed that the permuted matrix is still symmetric! For example,
     // the user can provide row_perm = col_perm.

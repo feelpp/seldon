@@ -169,8 +169,8 @@ namespace Seldon
         Sort(row_perm_orig, row_perm);
         Sort(col_perm_orig, col_perm);
 
-        PermuteMatrix(Lmat, row_perm, col_perm);
-        PermuteMatrix(Umat, row_perm, col_perm);
+        ApplyInversePermutation(Lmat, row_perm, col_perm);
+        ApplyInversePermutation(Umat, row_perm, col_perm);
       }
   }
 

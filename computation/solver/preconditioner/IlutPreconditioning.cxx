@@ -253,7 +253,7 @@ namespace Seldon
         }
 
     // Matrix is permuted.
-    PermuteMatrix(mat_sym, perm, perm);
+    ApplyInversePermutation(mat_sym, perm, perm);
 
     // Temporary vector used for solving.
     xtmp.Reallocate(n);
@@ -307,7 +307,7 @@ namespace Seldon
     IVect iperm = inv_permutation;
 
     // Rows of matrix are permuted.
-    PermuteMatrix(mat_unsym, perm, perm);
+    ApplyInversePermutation(mat_unsym, perm, perm);
 
     // Temporary vector used for solving.
     xtmp.Reallocate(n);
