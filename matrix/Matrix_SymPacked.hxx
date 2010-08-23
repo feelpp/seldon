@@ -100,10 +100,8 @@ namespace Seldon
     void WriteText(ostream& FileStream) const;
     void Read(string FileName);
     void Read(istream& FileStream);
-#ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
     void ReadText(string FileName);
     void ReadText(istream& FileStream);
-#endif
   };
 
 

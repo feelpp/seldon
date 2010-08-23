@@ -829,7 +829,6 @@ namespace Seldon
   }
 
 
-#ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
   //! Reads the matrix from a file.
   /*!
     Reads a matrix stored in text format in a file.
@@ -914,7 +913,6 @@ namespace Seldon
 	  this->Val(i, j) = other_row(k++);
       }
   }
-#endif // SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
 
 
   //////////////////////////

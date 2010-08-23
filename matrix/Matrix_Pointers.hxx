@@ -109,12 +109,8 @@ namespace Seldon
     void WriteText(ostream& FileStream) const;
     void Read(string FileName, bool with_size = true);
     void Read(istream& FileStream, bool with_size = true);
-#ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
-#ifndef SWIG
     void ReadText(string FileName);
     void ReadText(istream& FileStream);
-#endif
-#endif
   };
 
 

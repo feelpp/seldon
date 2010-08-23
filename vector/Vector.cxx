@@ -698,7 +698,6 @@ namespace Seldon
    *********/
 
 
-#ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
   //! Returns the infinite norm.
   /*!
     \return The infinite norm.
@@ -744,7 +743,6 @@ namespace Seldon
 
     return j;
   }
-#endif
 
 
   /**************************
@@ -945,7 +943,6 @@ namespace Seldon
   }
 
 
-#ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
   //! Sets the vector from a file.
   /*!
     Sets all elements of the vector according to a text format. The length is
@@ -1018,7 +1015,6 @@ namespace Seldon
     else
       this->Clear();
   }
-#endif // SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
 
 
   //! operator<< overloaded for vectors.

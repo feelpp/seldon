@@ -154,13 +154,9 @@ namespace Seldon
     void FillRand();
     void Print() const;
 
-#ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
-#ifndef SWIG
     // Norms.
     value_type GetNormInf() const;
     int GetNormInfIndex() const;
-#endif
-#endif
 
     // Input/output functions.
     void Write(string FileName, bool with_size = true) const;
@@ -169,13 +165,8 @@ namespace Seldon
     void WriteText(ostream& FileStream) const;
     void Read(string FileName, bool with_size = true);
     void Read(istream& FileStream, bool with_size = true);
-#ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
-#ifndef SWIG
     void ReadText(string FileName);
     void ReadText(istream& FileStream);
-#endif
-#endif
-
   };
 
 #ifndef SWIG
