@@ -1,4 +1,4 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2010 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -17,44 +17,30 @@
 // along with Seldon. If not, see http://www.gnu.org/licenses/.
 
 
-#ifndef SELDON_FILE_COMMON_HXX
+#include "SeldonHeader.hxx"
+
+
+#ifndef SELDON_WITH_COMPILED_LIBRARY
+#include "share/Storage.cxx"
+#include "matrix/Matrix_Base.cxx"
+#include "matrix/Matrix_Pointers.cxx"
+#endif
+
 
 #include <complex>
-#include <iostream>
+typedef std::complex<float> complexfloat;
+typedef std::complex<double> complexdouble;
 
-template <class T>
-void PrintArray(T* v, int lgth);
 
 namespace Seldon
 {
 
+  SELDON_EXTERN template class Matrix_Base<@scalar, MallocAlloc<@scalar> >;
+  SELDON_EXTERN template class Matrix_Pointers<@scalar, General, @storage_blasGE, MallocAlloc<@scalar> >;
+  SELDON_EXTERN template class Matrix<@scalar, General, @storage_blasGE, MallocAlloc<@scalar> >;
 
-  using namespace std;
-
-
-  template<typename T>
-  std::string to_str(const T& input);
-
-  template <class T>
-  void to_num(std::string s, T& num);
-
-  template <class T>
-  T to_num(std::string s);
-
-  template <class T>
-  void SetComplexZero(T& number);
-
-  template <class T>
-  void SetComplexZero(complex<T>& number);
-
-  template <class T>
-  void SetComplexOne(T& number);
-
-  template <class T>
-  void SetComplexOne(complex<T>& number);
-
-
-}  // namespace Seldon.
-
-#define SELDON_FILE_COMMON_HXX
+#ifndef SWIG
+  SELDON_EXTERN template ostream& operator << (ostream&, const Matrix<@scalar, General, @storage_blasGE, MallocAlloc<@scalar> >&);
 #endif
+
+}

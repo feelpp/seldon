@@ -33,6 +33,13 @@
 #include <exception>
 #include <stdexcept>
 
+// For the compiled library.
+#ifdef SELDON_WITH_COMPILED_LIBRARY
+#define SELDON_EXTERN extern
+#else
+#define SELDON_EXTERN
+#endif
+
 // For backward compatibility.
 #ifdef SELDON_WITH_CBLAS
 #define SELDON_WITH_BLAS
@@ -168,26 +175,13 @@ namespace Seldon
 // Storage type.
 #include "share/Storage.hxx"
 
+#include "share/MatrixFlag.hxx"
+
 // Properties.
 #include "share/Properties.hxx"
 
 namespace Seldon
 {
-
-
-  class SeldonTranspose;
-  class class_SeldonTrans;
-  class class_SeldonNoTrans;
-  class class_SeldonConjTrans;
-  class SeldonDiag;
-  class class_SeldonNonUnit;
-  class class_SeldonUnit;
-  class SeldonUplo;
-  class SeldonNorm;
-  class SeldonConjugate;
-  class SeldonSide;
-  class class_SeldonLeft;
-  class class_SeldonRight;
 
 
   // Base structure for all vectors.

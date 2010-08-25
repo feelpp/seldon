@@ -19,8 +19,16 @@
 
 #ifndef SELDON_FILE_ERRORS_HXX
 
+#include <string>
+#include <iostream>
+#include "Common.hxx"
+
+
 namespace Seldon
 {
+
+
+  using namespace std;
 
 
   ///////////
@@ -38,7 +46,7 @@ namespace Seldon
     string comment_;
 
   public:
-    Error(string function, string comment)  throw();
+    Error(string function = "", string comment = "")  throw();
     Error(string description, string function, string comment)  throw();
     virtual ~Error()  throw();
 
@@ -54,7 +62,7 @@ namespace Seldon
   class Undefined: public Error
   {
   public:
-    Undefined(string function, string comment)  throw();
+    Undefined(string function = "", string comment = "")  throw();
 
     virtual string What();
   };
@@ -67,7 +75,7 @@ namespace Seldon
   class WrongArgument: public Error
   {
   public:
-    WrongArgument(string function, string comment)  throw();
+    WrongArgument(string function = "", string comment = "")  throw();
 
     virtual string What();
   };
@@ -80,7 +88,7 @@ namespace Seldon
   class NoMemory: public Error
   {
   public:
-    NoMemory(string function, string comment)  throw();
+    NoMemory(string function = "", string comment = "")  throw();
   };
 
 
@@ -91,7 +99,7 @@ namespace Seldon
   class WrongDim: public Error
   {
   public:
-    WrongDim(string function, string comment)  throw();
+    WrongDim(string function = "", string comment = "")  throw();
   };
 
 
@@ -102,7 +110,7 @@ namespace Seldon
   class WrongIndex: public Error
   {
   public:
-    WrongIndex(string function, string comment)  throw();
+    WrongIndex(string function = "", string comment = "")  throw();
   };
 
 
@@ -113,7 +121,7 @@ namespace Seldon
   class WrongRow: public Error
   {
   public:
-    WrongRow(string function, string comment)  throw();
+    WrongRow(string function = "", string comment = "")  throw();
   };
 
 
@@ -124,7 +132,7 @@ namespace Seldon
   class WrongCol: public Error
   {
   public:
-    WrongCol(string function, string comment)  throw();
+    WrongCol(string function = "", string comment = "")  throw();
   };
 
 
@@ -135,7 +143,7 @@ namespace Seldon
   class IOError: public Error
   {
   public:
-    IOError(string function, string comment)  throw();
+    IOError(string function = "", string comment = "")  throw();
   };
 
 
@@ -153,6 +161,29 @@ namespace Seldon
 
     virtual string What();
   };
+
+
+  ////////////////
+  // LAPACKINFO //
+  ////////////////
+
+
+  class LapackInfo
+  {
+  private:
+    int info_;
+
+  public:
+    LapackInfo(int info);
+
+    operator int ();
+
+    int GetInfo();
+    int& GetInfoRef();
+  };
+
+
+  extern LapackInfo lapack_info;
 
 
 } // namespace Seldon.

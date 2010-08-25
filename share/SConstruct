@@ -107,6 +107,9 @@ flag_cpp = ARGUMENTS.get("flag_cpp", flag_cpp).strip()
 if flag_cpp != "":
     compilation_option += " " + flag_cpp
 
+# With or without the compiled library.
+add_argument("lib", ["no", "yes"])
+
 add_argument("line", ["no", "yes"])
 
 
@@ -143,6 +146,11 @@ if cpp_compiler is not None:
 if len(env["CXX"]) >= 3 and env["CXX"][:3] == "g++" \
        and ARGUMENTS["mode_cpp"] == "strict":
     compilation_option += " -Wall -ansi -pedantic"
+if len(env["CXX"]) >= 3 and env["CXX"][:3] == "g++" \
+        and ARGUMENTS["lib"] == "yes":
+    # In order to use the compiled library, the compiler must be aware of
+    # "extern template", which is a feature of C++0x.
+    compilation_option += " -std=c++0x"
 env.Replace(CCFLAGS = compilation_option)
 
 # Linker.
@@ -161,6 +169,8 @@ env.Replace(LINK = "$CXX")
 
 if ARGUMENTS["line"] == "no":
     env.Replace(CXXCOMSTR = "[C++] $SOURCE")
+    env.Replace(ARCOMSTR = "[Archiving] $TARGET")
+    env.Replace(RANLIBCOMSTR = "[Indexing] $TARGET")
     env.Replace(LINKCOMSTR = "[Linking] $TARGET")
 
 
@@ -171,4 +181,42 @@ if ARGUMENTS["line"] == "no":
 
 target_list = glob.glob("*.cpp")
 for filename in target_list:
-    env.Program(filename[:-4], filename)
+    if ARGUMENTS["lib"] == "yes":
+        env.Program(filename[:-4],
+                    [filename,
+                     os.path.join(seldon_path, "lib/libseldon.a")])
+    else:
+        env.Program(filename[:-4], filename)
+
+
+###############
+# THE LIBRARY #
+###############
+
+
+env_lib = env.Clone()
+
+if ARGUMENTS["lib"] == "yes":
+    env.Append(CCFLAGS = " -DSELDON_WITH_COMPILED_LIBRARY")
+
+if ARGUMENTS["lib"] == "yes":
+    # Generates the explicit instantiations.
+    template_file = \
+        ARGUMENTS.get("template",
+                      os.path.join(seldon_path, "lib/template-complete.def"))
+    template_file = os.path.abspath(template_file)
+    os.chdir(os.path.join(seldon_path, "lib"))
+    for filename in glob.glob("template-*.cpp"):
+        if not GetOption("clean"):
+            os.system("python " + "../share/expand.py "
+                      + template_file + " " + filename)
+    # Now it is assumed that all .cpp files, except those starting with
+    # "template-" are to be compiled in order to generate the compiled
+    # library.
+    library_file = ["lib/" + x for x in glob.glob("*.cpp")
+                    if len(x) <= 9 or x[:9] != "template-"]
+    library_file.append("share/Errors.cxx")
+    library_file = [os.path.join(seldon_path, x) for x in library_file]
+    env_lib.Library(os.path.join(seldon_path, "lib/libseldon.a"),
+                    library_file)
+    env_lib.Alias("libseldon.a", os.path.join(seldon_path, "lib/libseldon.a"))

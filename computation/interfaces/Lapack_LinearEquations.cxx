@@ -64,56 +64,6 @@ namespace Seldon
 {
 
 
-  ////////////////
-  // LapackInfo //
-
-
-  class LapackInfo
-  {
-  private:
-    int info_;
-  public:
-    LapackInfo(int info);
-
-    operator int ();
-
-    int GetInfo();
-    int& GetInfoRef();
-
-  };
-
-
-  inline LapackInfo::LapackInfo(int info): info_(info)
-  {
-  }
-
-
-  inline LapackInfo::operator int ()
-  {
-    return info_;
-  }
-
-
-  inline int LapackInfo::GetInfo()
-  {
-    return info_;
-  }
-
-
-  inline int& LapackInfo::GetInfoRef()
-  {
-    return info_;
-  }
-
-
-  LapackInfo lapack_info(0);
-
-
-  // LapackInfo //
-  ////////////////
-
-
-
   ///////////
   // GetLU //
 
