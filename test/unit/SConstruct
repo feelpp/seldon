@@ -19,6 +19,6 @@ for filename in glob.glob("template-*.hpp"):
         if os.path.isfile(filename[9:]):
             os.remove(filename[9:])
     else:
-        os.system("python expand.py " + template_file + " " + filename)
+        os.system("python ../../share/expand.py " + template_file + " " + filename)
 
 execfile(os.path.join(seldon_path, "share/SConstruct"))
