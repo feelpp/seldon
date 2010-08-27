@@ -315,7 +315,7 @@ namespace Seldon
 } // namespace Seldon.
 
 
-#include "array3d/Array3D.hxx"
+#include "array/Array3D.hxx"
 #include "matrix/Matrix_Base.hxx"
 #include "matrix/Matrix_Pointers.hxx"
 #include "matrix/Matrix_Triangular.hxx"
