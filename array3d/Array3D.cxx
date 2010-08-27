@@ -498,7 +498,7 @@ namespace Seldon
     \param FileName output file name.
   */
   template <class T, class Allocator> void Array3D<T, Allocator>
-  ::Write(string FileName) const
+  ::Write(string FileName, bool with_size = true) const
   {
     ofstream FileStream;
     FileStream.open(FileName.c_str());
@@ -510,7 +510,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    Write(FileStream);
+    Write(FileStream, with_size);
 
     FileStream.close();
   }
@@ -525,7 +525,7 @@ namespace Seldon
     \param FileStream output stream.
   */
   template <class T, class Allocator> void Array3D<T, Allocator>
-  ::Write(ofstream& FileStream) const
+  ::Write(ofstream& FileStream, bool with_size = true) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -535,12 +535,15 @@ namespace Seldon
 		    "Stream is not ready.");
 #endif
 
-    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length1_)),
-		     sizeof(int));
-    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length2_)),
-		     sizeof(int));
-    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length3_)),
-		     sizeof(int));
+    if (with_size)
+      {
+	FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length1_)),
+			 sizeof(int));
+	FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length2_)),
+			 sizeof(int));
+	FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length3_)),
+			 sizeof(int));
+      }
 
     FileStream.write(reinterpret_cast<char*>(data_),
 		     length23_ * length1_ * sizeof(value_type));
@@ -566,7 +569,7 @@ namespace Seldon
     \param FileName input file name.
   */
   template <class T, class Allocator>
-  void Array3D<T, Allocator>::Read(string FileName)
+  void Array3D<T, Allocator>::Read(string FileName, bool with_size = true)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -578,7 +581,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    Read(FileStream);
+    Read(FileStream, with_size);
 
     FileStream.close();
   }
@@ -594,7 +597,7 @@ namespace Seldon
   */
   template <class T, class Allocator>
   void Array3D<T, Allocator>
-  ::Read(ifstream& FileStream)
+  ::Read(ifstream& FileStream, bool with_size = true)
   {
 
 #ifdef SELDON_CHECK_IO
@@ -604,11 +607,14 @@ namespace Seldon
                     "Stream is not ready.");
 #endif
 
-    int new_l1, new_l2, new_l3;
-    FileStream.read(reinterpret_cast<char*>(&new_l1), sizeof(int));
-    FileStream.read(reinterpret_cast<char*>(&new_l2), sizeof(int));
-    FileStream.read(reinterpret_cast<char*>(&new_l3), sizeof(int));
-    Reallocate(new_l1, new_l2, new_l3);
+    if (with_size)
+      {
+	int new_l1, new_l2, new_l3;
+	FileStream.read(reinterpret_cast<char*>(&new_l1), sizeof(int));
+	FileStream.read(reinterpret_cast<char*>(&new_l2), sizeof(int));
+	FileStream.read(reinterpret_cast<char*>(&new_l3), sizeof(int));
+	Reallocate(new_l1, new_l2, new_l3);
+      }
 
     FileStream.read(reinterpret_cast<char*>(data_),
 		    length23_ * length1_ * sizeof(value_type));
