@@ -88,8 +88,10 @@ namespace Seldon
 
     // Element access and affectation.
     reference operator() (int i, int j, int k);
+#ifndef SWIG
     const_reference operator() (int i, int j, int k) const;
     Array3D<T, Allocator>& operator= (const Array3D<T, Allocator>& A);
+#endif
     void Copy(const Array3D<T, Allocator>& A);
 
     // Convenient functions.
@@ -108,6 +110,7 @@ namespace Seldon
   };
 
 
+#ifndef SWIG
   // 3D array allocator.
   template <class T, class Allocator>
   Allocator Array3D<T, Allocator>::array3D_allocator_;
@@ -116,6 +119,7 @@ namespace Seldon
   template <class T, class Allocator>
   ostream& operator << (ostream& out,
 			const Array3D<T, Allocator>& A);
+#endif
 
 
 } // namespace Seldon.
