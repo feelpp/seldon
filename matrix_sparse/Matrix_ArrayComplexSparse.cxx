@@ -783,6 +783,62 @@ namespace Seldon
   }
 
 
+  //! Writes the matrix in a file.
+  /*! Stores the matrix in a file in ascii format. The entries are written in
+    coordinate format (row column value). 1-index convention is used.
+    \param FileName output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
+  WriteText(string FileName) const
+  {
+    ofstream FileStream; FileStream.precision(14);
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_ArrayComplexSparse::WriteText(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->WriteText(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Writes the matrix to an output stream.
+  /*! Stores the matrix in a file in ascii format. The entries are written in
+    coordinate format (row column value). 1-index convention is used.
+    \param FileStream output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
+  WriteText(ostream& FileStream) const
+  {
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_ArrayComplexSparse::"
+                    "WriteText(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+
+    // Conversion to coordinate format (1-index convention).
+    IVect IndRow, IndCol; Vector<complex<T> > Value;
+    const Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this);
+
+    ConvertMatrix_to_Coordinates(leaf_class, IndRow, IndCol,
+				 Value, 1, true);
+
+    for (int i = 0; i < IndRow.GetM(); i++)
+      FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
+  }
+
+
   //! Assembles the matrix.
   /*!
     All the row numbers are sorted.
