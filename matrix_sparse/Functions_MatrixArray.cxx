@@ -787,7 +787,7 @@ namespace Seldon
 	    index(j) = A.IndexReal(i, j);
 	  }
 
-	for (int j = 0; j < n; j++)
+	for (int j = 0; j < ni; j++)
 	  {
 	    value(n+j) = complex<T2>(0, 1) * A.ValueImag(i, j);
 	    index(n+j) = A.IndexImag(i, j);
@@ -828,6 +828,7 @@ namespace Seldon
 	    ind_row(j+n1) = B.Index(i, j);
 	    val_row(j+n1) = alpha * complex<T3>(B.Value(i, j));
 	  }
+        
 	C.AddInteractionRow(i, size_row, ind_row, val_row);
       }
   }
