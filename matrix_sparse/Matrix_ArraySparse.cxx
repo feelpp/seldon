@@ -724,10 +724,8 @@ namespace Seldon
 
 
   //! Writes the matrix in a file.
-  /*!
-    Stores the matrix in a file in ascii format.
-    The entries are written in coordinate format (row column value)
-    1-index convention is used
+  /*! Stores the matrix in a file in ascii format. The entries are written in
+    coordinate format (row column value). 1-index convention is used.
     \param FileName output file name.
   */
   template <class T, class Prop, class Storage, class Allocator>
@@ -751,10 +749,8 @@ namespace Seldon
 
 
   //! Writes the matrix to an output stream.
-  /*!
-    Stores the matrix in a file in ascii format.
-    The entries are written in coordinate format (row column value)
-    1-index convention is used
+  /*! Stores the matrix in a file in ascii format. The entries are written in
+    coordinate format (row column value). 1-index convention is used.
     \param FileStream output file name.
   */
   template <class T, class Prop, class Storage, class Allocator>
@@ -827,7 +823,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Matrix_ArraySparse::Write(ofstream& FileStream)",
+      throw IOError("Matrix_ArraySparse::Read(ofstream& FileStream)",
 		    "Stream is not ready.");
 #endif
 
@@ -1714,11 +1710,13 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_ArraySparse::operator()", "Index should be in [0, "
+      throw WrongRow("Matrix_ArraySparse::operator()",
+                     "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
 		     + to_str(i) + ".");
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_ArraySparse::operator()", "Index should be in [0, "
+      throw WrongCol("Matrix_ArraySparse::operator()",
+                     "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
@@ -1852,7 +1850,8 @@ namespace Seldon
     you don't need to call that method.
   */
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::AssembleRow(int i)
+  inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>
+  ::AssembleRow(int i)
   {
     this->val_(i).Assemble();
   }
