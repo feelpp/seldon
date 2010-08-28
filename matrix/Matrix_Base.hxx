@@ -73,8 +73,8 @@ namespace Seldon
     // Basic methods.
     int GetM() const;
     int GetN() const;
-    int GetM(const SeldonTranspose& status) const;
-    int GetN(const SeldonTranspose& status) const;
+    int GetM(const Seldon::SeldonTranspose& status) const;
+    int GetN(const Seldon::SeldonTranspose& status) const;
 #ifdef SELDON_WITH_BLAS
     int GetM(const CBLAS_TRANSPOSE& status) const;
     int GetN(const CBLAS_TRANSPOSE& status) const;
