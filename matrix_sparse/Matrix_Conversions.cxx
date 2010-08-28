@@ -282,6 +282,45 @@ namespace Seldon
   }
 
 
+  //! Conversion from ArrayRowComplexSparse to coordinate format.
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Tint, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayRowComplexSparse,
+			       Allocator1>& A,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
+			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       int index = 0, bool sym = false)
+  {
+    int m = A.GetM();
+    int nnz = A.GetRealDataSize() + A.GetImagDataSize();
+    // Allocating arrays.
+    IndRow.Reallocate(nnz);
+    IndCol.Reallocate(nnz);
+    Val.Reallocate(nnz);
+    int nb = 0;
+    for (int i = 0; i < m; i++)
+      {
+        for (int j = 0; j < A.GetRealRowSize(i); j++)
+          {
+            IndRow(nb) = i + index;
+            IndCol(nb) = A.IndexReal(i, j) + index;
+            Val(nb) = complex<T>(A.ValueReal(i, j), 0);
+            nb++;
+          }
+
+        for (int j = 0; j < A.GetImagRowSize(i); j++)
+          {
+            IndRow(nb) = i + index;
+            IndCol(nb) = A.IndexImag(i, j) + index;
+            Val(nb) = complex<T>(0, A.ValueImag(i, j));
+            nb++;
+          }
+      }
+  }
+
+
   //! Conversion from ArrayColSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
@@ -1063,8 +1102,12 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, RowSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& Ind,
-                    Vector<T, VectFull, Alloc4>& Val)
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
+    if (sym_pat)
+      throw WrongArgument("ConvertToCSC(Matrix<RowSparse>, ...)",
+                          "Option 'sym_pat' is not supported.");
+
     int i, j;
 
     int m = A.GetM(), n = A.GetN(), nnz = A.GetDataSize();
@@ -1087,6 +1130,7 @@ namespace Seldon
 	Ptr(i) = increment;
 	increment += size;
       }
+
     // Last index.
     Ptr(n) = increment;
 
@@ -1192,7 +1236,7 @@ namespace Seldon
   ConvertSymmetricToCSC(const Matrix<T, Prop1, Storage, Alloc1>& A,
                         General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                         Vector<Tint, VectFull, Alloc3>& Ind,
-                        Vector<T, VectFull, Alloc4>& Val)
+                        Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
     int i, j;
 
@@ -1253,9 +1297,9 @@ namespace Seldon
   ConvertToCSC(const Matrix<T, Prop1, RowSymSparse, Alloc1>& A,
                General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                Vector<Tint, VectFull, Alloc3>& Ind,
-               Vector<T, VectFull, Alloc4>& Val)
+               Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
-    ConvertSymmetricToCSC(A, sym, Ptr, Ind, Val);
+    ConvertSymmetricToCSC(A, sym, Ptr, Ind, Val, sym_pat);
   }
 
 
@@ -1265,9 +1309,9 @@ namespace Seldon
   ConvertToCSC(const Matrix<T, Prop1, ColSymSparse, Alloc1>& A,
                General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                Vector<Tint, VectFull, Alloc3>& Ind,
-               Vector<T, VectFull, Alloc4>& Val)
+               Vector<T, VectFull, Alloc4>& Val, bool sym_pat = false)
   {
-    ConvertSymmetricToCSC(A, sym, Ptr, Ind, Val);
+    ConvertSymmetricToCSC(A, sym, Ptr, Ind, Val, sym_pat);
   }
 
 
@@ -1417,15 +1461,14 @@ namespace Seldon
     mat_csr.SetData(m, n, Val, IndRow, IndCol);
   }
 
+
   template<class T, class Prop, class Alloc1,
            class Tint, class Alloc2, class Alloc3, class Alloc4>
   void ConvertToCSC(const Matrix<T, Prop, ArrayRowSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<T, VectFull, Alloc4>& Val)
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
-    int i;
-
     // Matrix (m,n) with nnz entries.
     int nnz = A.GetDataSize();
     int n = A.GetN();
@@ -1442,13 +1485,94 @@ namespace Seldon
     Ptr.Fill(0);
 
     // Counting non-zero entries per column.
-    for (i = 0; i < nnz; i++)
+    for (int i = 0; i < nnz; i++)
       Ptr(IndCol(i) + 1)++;
+
+    int nb_new_val = 0;
+
+    if (sym_pat)
+      {
+        // Counting entries that are on the symmetrized pattern without being
+        // in the original pattern.
+        int k = 0;
+        for (int i = 0; i < n; i++)
+          {
+            while (k < IndCol.GetM() && IndCol(k) < i)
+              k++;
+
+            for (int j = 0; j < A.GetRowSize(i); j++)
+              {
+                int irow = A.Index(i, j);
+                while (k < IndCol.GetM() && IndCol(k) == i
+                       && IndRow(k) < irow)
+                  k++;
+
+                if (k < IndCol.GetM() && IndCol(k) == i && IndRow(k) == irow)
+                  // Already existing entry.
+                  k++;
+                else
+                  {
+                    // New entry.
+                    Ptr(i + 1)++;
+                    nb_new_val++;
+                  }
+              }
+          }
+      }
 
     // Accumulation to get pointer array.
     Ptr(0) = 0;
-    for (i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
       Ptr(i + 1) += Ptr(i);
+
+    if (sym_pat && (nb_new_val > 0))
+      {
+        // Changing 'IndRow' and 'Val', and assembling the pattern.
+        Vector<Tint, VectFull, Alloc3> OldInd(IndRow);
+        Vector<T, VectFull, Alloc4> OldVal(Val);
+        IndRow.Reallocate(nnz + nb_new_val);
+        Val.Reallocate(nnz + nb_new_val);
+        int k = 0, nb = 0;
+        for (int i = 0; i < n; i++)
+          {
+            while (k < IndCol.GetM() && IndCol(k) < i)
+              {
+                IndRow(nb) = OldInd(k);
+                Val(nb) = OldVal(k);
+                nb++;
+                k++;
+              }
+
+            for (int j = 0; j < A.GetRowSize(i); j++)
+              {
+                int irow = A.Index(i, j);
+                while (k < IndCol.GetM() && IndCol(k) == i
+                       && OldInd(k) < irow)
+                  {
+                    IndRow(nb) = OldInd(k);
+                    Val(nb) = OldVal(k);
+                    nb++;
+                    k++;
+                  }
+
+                if (k < IndCol.GetM() && IndCol(k) == i && OldInd(k) == irow)
+                  {
+                    // Already existing entry.
+                    IndRow(nb) = OldInd(k);
+                    Val(nb) = OldVal(k);
+                    nb++;
+                    k++;
+                  }
+                else
+                  {
+                    // New entry (null).
+                    IndRow(nb) = irow;
+                    Val(nb) = 0;
+                    nb++;
+                  }
+              }
+          }
+      }
   }
 
 
@@ -1524,7 +1648,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayRowSymSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& Ind,
-                    Vector<T, VectFull, Alloc4>& AllVal)
+                    Vector<T, VectFull, Alloc4>& AllVal, bool sym_pat)
   {
     int i, j;
 
@@ -1807,8 +1931,12 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayColSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& IndCol,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<T, VectFull, Alloc4>& Val)
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
+    if (sym_pat)
+      throw WrongArgument("ConvertToCSC(Matrix<ArrayColSparse>, ...)",
+                          "Option 'sym_pat' is not supported.");
+
     int i, k;
 
     // Matrix (m,n) with 'nnz' entries.

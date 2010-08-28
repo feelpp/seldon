@@ -65,8 +65,6 @@ namespace Seldon
     void CallPastix(const MPI_Comm&, pastix_int_t* colptr, pastix_int_t* row,
                     T* val, T* b, pastix_int_t nrhs);
 
-    void CheckMatrix(const MPI_Comm&, pastix_int_t**, pastix_int_t**, T**);
-
     void HideMessages();
     void ShowMessages();
 

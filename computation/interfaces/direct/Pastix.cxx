@@ -74,44 +74,6 @@ namespace Seldon
   }
 
 
-  //! Calling C-function checkMatrix to enforce graph symmetry.
-  template<>
-  void MatrixPastix<double>::
-  CheckMatrix(const MPI_Comm& comm, pastix_int_t** ptr_,
-              pastix_int_t** row_, double** val_)
-  {
-    if (distributed)
-      {
-        d_pastix_checkMatrix(comm, iparm[IPARM_VERBOSE],
-                             iparm[IPARM_SYM], API_YES, n,
-                             ptr_, row_, val_, NULL, 1);
-      }
-    else
-      {
-        d_pastix_checkMatrix(comm, iparm[IPARM_VERBOSE],
-                             iparm[IPARM_SYM], API_YES, n,
-                             ptr_, row_, val_, NULL, 1);
-      }
-  }
-
-
-  //! Calling C-function checkMatrix to enforce graph symmetry.
-  template<>
-  void MatrixPastix<complex<double> >::
-  CheckMatrix(const MPI_Comm& comm, pastix_int_t** ptr_,
-              pastix_int_t** row_, complex<double>** val_)
-  {
-    if (distributed)
-      z_pastix_checkMatrix(comm, iparm[IPARM_VERBOSE],
-                           iparm[IPARM_SYM], API_YES, n, ptr_, row_,
-                           reinterpret_cast<DCOMPLEX**>(val_), NULL, 1);
-    else
-      z_pastix_checkMatrix(comm, iparm[IPARM_VERBOSE],
-                           iparm[IPARM_SYM], API_YES, n, ptr_, row_,
-                           reinterpret_cast<DCOMPLEX**>(val_), NULL, 1);
-  }
-
-
   //! Calling main C-function pastix.
   template<>
   void MatrixPastix<complex<double> >::
@@ -252,8 +214,6 @@ namespace Seldon
     for (int i = 0; i < nnz; i++)
       ind_[i]++;
 
-    Ptr.Clear();
-    Ind.Clear();
     perm.Reallocate(n); invp.Reallocate(n);
     perm.Fill(); invp.Fill();
 
@@ -293,7 +253,7 @@ namespace Seldon
     iparm[IPARM_FACTORIZATION] = API_FACT_LU;
 
     General prop;
-    ConvertToCSC(mat, prop, Ptr, IndRow, Val);
+    ConvertToCSC(mat, prop, Ptr, IndRow, Val, true);
     if (!keep_matrix)
       mat.Clear();
 
@@ -309,16 +269,6 @@ namespace Seldon
 
     values_ = Val.GetData();
 
-    // destruction of pointers will be performed at the end
-    Ptr.Nullify(); IndRow.Nullify(); Val.Nullify();
-
-    // pattern is symmetrized if needed
-    int nb_thread = iparm[IPARM_THREAD_NBR];
-    iparm[IPARM_THREAD_NBR] = 1;
-    CheckMatrix(comm_facto, &ptr_, &ind_, &values_);
-
-    iparm[IPARM_THREAD_NBR] = nb_thread;
-
     perm.Reallocate(n); invp.Reallocate(n);
     perm.Fill(); invp.Fill();
 
@@ -330,10 +280,6 @@ namespace Seldon
 
     if (iparm[IPARM_VERBOSE] != API_VERBOSE_NOT)
       cout << "Factorization successful" << endl;
-
-    // deallocation of pointers
-    free(ptr_); free(ind_); free(values_);
-
   }
 
 

@@ -234,13 +234,35 @@ namespace Seldon
 	    Matrix<T, Prop, ColSparse, Alloc2>& B);
 
 
-  //! Conversion from row-sparse to column-sparse.
-  template<class T, class Prop1, class Prop2,
-	   class Storage, class Alloc1, class Alloc2>
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, RowSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& Ind,
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat = false);
+
+
+  template<class T, class Prop, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop, ColSymSparse, Alloc1>& A,
+	    Matrix<T, Prop, RowSymSparse, Alloc2>& B);
+
+
+  template<class T, class Prop1, class Storage, class Tint,
+	   class Alloc1, class Alloc2, class Alloc3, class Alloc4>
   void
-  ConvertMatrixSymSparse_to_ColSparse(const Matrix<T, Prop1,
-				      Storage, Alloc1>& A,
-				      Matrix<T, Prop2, ColSparse, Alloc2>& B);
+  ConvertSymmetricToCSC(const Matrix<T, Prop1, Storage, Alloc1>& A,
+                        General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                        Vector<Tint, VectFull, Alloc3>& Ind,
+                        Vector<T, VectFull, Alloc4>& Val, bool sym_pat);
+
+
+  template<class T, class Prop1, class Tint,
+	   class Alloc1, class Alloc2, class Alloc3, class Alloc4>
+  void
+  ConvertToCSC(const Matrix<T, Prop1, RowSymSparse, Alloc1>& A,
+               General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+               Vector<Tint, VectFull, Alloc3>& Ind,
+               Vector<T, VectFull, Alloc4>& Val, bool sym_pat = false);
 
 
   // Conversion from column-oriented sparse to row-oriented sparse.
@@ -267,11 +289,27 @@ namespace Seldon
   */
 
 
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayRowSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& IndRow,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<T, VectFull, Alloc4>& Val);
+
+
   //! Conversion from ArrayRowSparse to RowSparse.
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& mat_array,
 	    Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
+
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayRowSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat = false);
 
 
   //! Conversion from ArrayRowSparse to ColSparse.
@@ -281,11 +319,34 @@ namespace Seldon
 	    Matrix<T1, Prop1, ColSparse, Allocator1>& mat_csr);
 
 
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayRowSymSparse, Alloc1>& A,
+                    Symmetric& sym, Vector<Tint, VectFull, Alloc2>& IndRow,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<T, VectFull, Alloc4>& Val);
+
+
   //! Conversion from ArrayRowSymSparse to RowSymSparse.
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void Copy(const Matrix<T0, Prop0, ArrayRowSymSparse,Allocator0>& mat_array,
 	    Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr);
+
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayRowSymSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& Ind,
+                    Vector<T, VectFull, Alloc4>& AllVal,
+                    bool sym_pat = false);
+
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
+	    Matrix<T1, Prop1, ColSparse, Allocator1>& B);
 
 
   //! Conversion from ArrayRowComplexSparse to RowComplexSparse.
@@ -317,6 +378,14 @@ namespace Seldon
 	    Matrix<T1, Prop1, ArrayColSparse, Allocator1>& B);
 
 
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayColSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& IndCol,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat = false);
+
+
   //! Conversion from ArrayColSparse to ColSparse.
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
@@ -329,6 +398,18 @@ namespace Seldon
 	   class T1, class Prop1, class Allocator1>
   void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& A,
 	    Matrix<T1, Prop1, ArrayColSparse, Allocator1>& B);
+
+
+  template<class T, class Prop, class Storage, class Allocator,
+           class Tint, class Allocator2, class Allocator3>
+  void GetSymmetricPattern(const Matrix<T, Prop, Storage, Allocator>& A,
+                           Vector<Tint, VectFull, Allocator2>& Ptr,
+                           Vector<Tint, VectFull, Allocator3>& Ind);
+
+
+  template<class T, class Prop, class Storage, class Allocator, class AllocI>
+  void GetSymmetricPattern(const Matrix<T, Prop, Storage, Allocator>& A,
+                           Matrix<int, Symmetric, RowSymSparse, AllocI>& B);
 
 
 } // namespace Seldon.
