@@ -1470,6 +1470,9 @@ namespace Seldon
   AddInteractionRow(int i, int nb, const IVect& col,
 		    const Vector<complex<T>, VectFull, Alloc1>& val)
   {
+    if (nb <= 0)
+      return;
+
     int nb_real = 0;
     int nb_imag = 0;
     IVect col_real(nb), col_imag(nb);
