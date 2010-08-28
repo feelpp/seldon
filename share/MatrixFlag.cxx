@@ -20,6 +20,9 @@
 #ifndef SELDON_FILE_SHARE_MATRIXFLAG_CXX
 
 
+#include "MatrixFlag.hxx"
+
+
 namespace Seldon
 {
 

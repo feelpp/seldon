@@ -176,7 +176,9 @@ namespace Seldon
   public:
     LapackInfo(int info);
 
+#ifndef SWIG
     operator int ();
+#endif
 
     int GetInfo();
     int& GetInfoRef();
