@@ -141,6 +141,13 @@ namespace Seldon
 				    const Prop& sym, const IVect& glob_number,
 				    bool keep_matrix = false);
 
+    template<class Alloc1, class Alloc2, class Alloc3, class Tint>
+    void FactorizeDistributedMatrix(Vector<int, VectFull, Alloc1>&,
+                                    Vector<int, VectFull, Alloc2>&,
+                                    Vector<T, VectFull, Alloc3>&,
+                                    const Vector<Tint>& glob_number,
+				    bool sym, bool keep_matrix = false);
+
     template<class Allocator2, class Transpose_status>
     void SolveDistributed(const Transpose_status& TransA,
 			  Vector<T, VectFull, Allocator2>& x,

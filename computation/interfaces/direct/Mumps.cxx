@@ -498,6 +498,19 @@ namespace Seldon
   }
 
 
+  //! Undefined (empty) function.
+  template<class Alloc1, class Alloc2, class Alloc3, class Tint>
+  void FactorizeDistributedMatrix(Vector<int, VectFull, Alloc1>&,
+                                  Vector<int, VectFull, Alloc2>&,
+                                  Vector<T, VectFull, Alloc3>&,
+                                  const Vector<Tint>& glob_number,
+                                  bool sym, bool keep_matrix)
+  {
+    throw Undefined("FactorizeDistributedMatrix(Vector<int>&, Vector<int>&, "
+                    "Vector<T>&, Vector<Tint>, bool, bool)");
+  }
+
+
   //! solves linear system with parallel execution
   /*!
     \param[in] TransA we solve A x = b or A^T x = b
