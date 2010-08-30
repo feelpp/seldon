@@ -5,8 +5,7 @@
 /*!
 \page class_matrix Dense Matrices
 
-<p> In that page, methods and functions
- related to dense matrices are detailed. </p>
+<p> In that page, methods and functions related to dense matrices are detailed. </p>
 
 <h2>Basic declaration :</h2>
 
@@ -292,9 +291,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>The operator [] should not be used in normal use. The operator ()
- can't be used to modify values of matrix for specific storages, e.g.
- RowSym, RowHerm, RowUpTriang.</p>
+<p>The operator [] should not be used in normal use. The operator () can't be used to modify values of matrix for specific storages, e.g.  RowSym, RowHerm, RowUpTriang.</p>
 
 
 <h4>Example : </h4>
@@ -450,9 +447,7 @@ Matrix_Base.cxx</p>
 </pre>
 
 
-<p>This method returns the number of elements effectively stored in the matrix.
- This is different from <code>GetSize</code> for some storages, e.g. RowSymPacked,
- RowHermPacked, RowUpTriangPacked.</p>
+<p>This method returns the number of elements effectively stored in the matrix.  This is different from <code>GetSize</code> for some storages, e.g. RowSymPacked, RowHermPacked, RowUpTriangPacked.</p>
 
 
 <h4>Example : </h4>
@@ -496,11 +491,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>These methods are useful to retrieve the pointer to the values.
- In practice, you can use those methods in order to interface
- with C/fortran subroutines or to perform some low level operations.
- But in this last case, you have to be careful, because debugging
- operations will be more tedious.</p>
+<p>These methods are useful to retrieve the pointer to the values.  In practice, you can use those methods in order to interface with C/fortran subroutines or to perform some low level operations.  But in this last case, you have to be careful, because debugging operations will be more tedious.</p>
 
 
 <h4>Example : </h4>
@@ -593,8 +584,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method changes the size of the matrix, but removes
- previous elements.</p>
+<p>This method changes the size of the matrix, but removes previous elements.</p>
 
 
 <h4>Example : </h4>
@@ -642,8 +632,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method changes the size of the matrix, and keeps
- previous elements.</p>
+<p>This method changes the size of the matrix, and keeps previous elements.</p>
 
 
 <h4>Example : </h4>
@@ -692,9 +681,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method sets the pointer to the array containing elements.
- This method should be used carefully, and generally in conjunction with
- method Nullify. </p>
+<p>This method sets the pointer to the array containing elements.  This method should be used carefully, and generally in conjunction with method Nullify. </p>
 
 
 <h4>Example : </h4>
@@ -749,11 +736,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method clears the matrix without releasing memory.
- This method should be used carefully, and generally in conjunction with
- method Nullify. You can look at the example shown in the
- explanation of method SetData.
-</p>
+<p>This method clears the matrix without releasing memory.  This method should be used carefully, and generally in conjunction with method Nullify. You can look at the example shown in the explanation of method SetData.  </p>
 
 
 <h4>Related topics :</h4>
@@ -840,9 +823,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method is similar to operator (), except that
- it always works, especially for storages like RowSym, RowHerm,
- RowUpTriang.</p>
+<p>This method is similar to operator (), except that it always works, especially for storages like RowSym, RowHerm, RowUpTriang.</p>
 
 
 <h4>Example : </h4>
@@ -889,9 +870,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method fills memory of 0, is convenient for matrices
- made of doubles, integers, floats, but not for more complicated types.
-In that case, it is better to use the method <a href="#fill">Fill</a>.</p>
+<p>This method fills memory of 0, is convenient for matrices made of doubles, integers, floats, but not for more complicated types.  In that case, it is better to use the method <a href="#fill">Fill</a>.</p>
 
 
 <h4>Example : </h4>
@@ -942,8 +921,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method sets all elements to 0, except on the diagonal set to 1.
- This forms the so-called identity matrix.</p>
+<p>This method sets all elements to 0, except on the diagonal set to 1.  This forms the so-called identity matrix.</p>
 
 
 <h4>Example : </h4>
@@ -1138,8 +1116,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method writes the matrix on a file/stream in binary format.
- The file will contain the number of rows, columns, then the list of elements.</p>
+<p>This method writes the matrix on a file/stream in binary format.  The file will contain the number of rows, columns, then the list of elements.</p>
 
 
 <h4>Example : </h4>
@@ -1194,8 +1171,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method sets the matrix from a file/stream in binary format.
- The file contains the number of rows, columns, then the list of elements.</p>
+<p>This method sets the matrix from a file/stream in binary format.  The file contains the number of rows, columns, then the list of elements.</p>
 
 
 <h4>Example : </h4>
@@ -1250,8 +1226,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method writes the matrix on a file/stream in text format.
- The file will contain the list of elements.</p>
+<p>This method writes the matrix on a file/stream in text format.  The file will contain the list of elements.</p>
 
 <h4>Example : </h4>
 \precode
@@ -1306,8 +1281,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method sets the matrix from a file/stream in text format.
- The file contains the list of elements.</p>
+<p>This method sets the matrix from a file/stream in text format.  The file contains the list of elements.</p>
 
 
 <h4>Example : </h4>

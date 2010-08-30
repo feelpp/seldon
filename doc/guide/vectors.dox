@@ -7,29 +7,15 @@
 
 <h2>Definition</h2>
 
-<p> Vectors are instances of the class <code>Vector</code>. Class
-<code>Vector</code> is a template class: <code>Vector&lt;T, Storage,
-Allocator&gt;</code>. <code>T</code> is the type of the elements to be
-stored (e.g. <code>double</code>). <code>Storage</code> defines how
-the vector is stored.
-<code>Storage</code> is equal to <code>Vect_Full</code> by default
- for full vectors, you can set it to <code>Vect_Sparse</code> for sparse vectors.
- Finally, <code>Allocator</code> defines the way memory is managed. It is close
-to STL allocators. See the section "Allocators" for further details.
-</p>
+<p> Vectors are instances of the class <code>Vector</code>. Class <code>Vector</code> is a template class: <code>Vector&lt;T, Storage, Allocator&gt;</code>. <code>T</code> is the type of the elements to be stored (e.g. <code>double</code>). <code>Storage</code> defines how the vector is stored.  <code>Storage</code> is equal to <code>Vect_Full</code> by default for full vectors, you can set it to <code>Vect_Sparse</code> for sparse vectors.  Finally, <code>Allocator</code> defines the way memory is managed. It is close to STL allocators. See the section "Allocators" for further details.  </p>
 
 <h2>Declaration</h2>
 
-<p> There is a default <code>Allocator</code> (see the section
-"Allocators") and a default <code>Storage</code>
-(<code>Vect_Full</code>). It means that these two template parameters
-may be omitted. Then a vector of integers may be declared thanks to
-the line: </p>
+<p> There is a default <code>Allocator</code> (see the section "Allocators") and a default <code>Storage</code> (<code>Vect_Full</code>). It means that these two template parameters may be omitted. Then a vector of integers may be declared thanks to the line: </p>
 
 \precode Vector<int> V;\endprecode
 
-<p> This defines a vector of size 0, that is to say an empty
-vector. To define a vector of length 5, one may write: </p>
+<p> This defines a vector of size 0, that is to say an empty vector. To define a vector of length 5, one may write: </p>
 
 \precode Vector<int> V(5);\endprecode
 
@@ -42,8 +28,7 @@ Vector<int, Vect_Full, NewAlloc<int> > V(10);\endprecode
 
 <h2>Use of vectors</h2>
 
-<p> Access to elements is achieved through the
-<code>operator(int)</code>, and indices start at 0: </p>
+<p> Access to elements is achieved through the <code>operator(int)</code>, and indices start at 0: </p>
 
 \precode Vector<int, Vect_Full> V(10);
 V(5) = -3;
@@ -56,27 +41,21 @@ V.Print();
 std::cout << V << std::endl;
 \endprecode
 
-<p> There are lots of methods that are described in the
-<a href="class_vector.php"> documentation</a>. One may point out:</p>
+<p> There are lots of methods that are described in the <a href="class_vector.php"> documentation</a>. One may point out:</p>
 
 <ul>
 
-  <li> <code>Fill</code> fills with 0, 1, 2, 3, etc. or fills the vector
-  with a given value.</li>
+  <li> <code>Fill</code> fills with 0, 1, 2, 3, etc. or fills the vector with a given value.</li>
 
-  <li> <code>GetLength</code> or <code>GetSize</code> return the
-  length of the vector.</li>
+  <li> <code>GetLength</code> or <code>GetSize</code> return the length of the vector.</li>
 
-  <li> <code>Reallocate</code> resizes the vector (warning, data may
-  be lost, depending on the allocator).</li>
+  <li> <code>Reallocate</code> resizes the vector (warning, data may be lost, depending on the allocator).</li>
 
   <li> <code>Resize</code> resizes the vector while keeping previous entries. </li>
 
   <li> <code> PushBack </code> inserts an element at the end of the vector. </li>
 
-  <li> <code>Read</code>, <code>ReadText</code>, <code>Write</code>,
-  <code>WriteText</code> are useful methods for input/ouput
-  operations.</li>
+  <li> <code>Read</code>, <code>ReadText</code>, <code>Write</code>, <code>WriteText</code> are useful methods for input/ouput operations.</li>
 
 </ul>
 
@@ -88,16 +67,11 @@ A comprehensive test of dense vectors is achieved in file <code>test/program/vec
 
 <h2>Declaration</h2>
 
-<p> There is a default <code>Allocator</code> (see the section
-"Allocators"). It means that this template parameter
-may be omitted. Then a sparse vector of doubles may be declared thanks to
-the line: </p>
+<p> There is a default <code>Allocator</code> (see the section "Allocators"). It means that this template parameter may be omitted. Then a sparse vector of doubles may be declared thanks to the line: </p>
 
 \precode Vector<double, Vect_Sparse> V;\endprecode
 
-<p> This defines a null vector, that is to say that <code>
-V(i) </code> will return 0 for all i.
- To define a vector with 5 non-zero entries, one may write: </p>
+<p> This defines a null vector, that is to say that <code> V(i) </code> will return 0 for all i.  To define a vector with 5 non-zero entries, one may write: </p>
 
 \precode Vector<double, Vect_Sparse> V(5);\endprecode
 
@@ -110,11 +84,7 @@ Vector<int, Vect_Sparse, NewAlloc<int> > V(10);\endprecode
 
 <h2>Use of sparse vectors</h2>
 
-A good technique consists of modifying those vectors through
- methods <code>AddInteraction</code> and <code>AddInteractionRow</code>.
- These methods insert (or add) the elements at the correct position,
- so that the row numbers are always sorted in ascending order.
- You can use them as in the following example :
+A good technique consists of modifying those vectors through methods <code>AddInteraction</code> and <code>AddInteractionRow</code>.  These methods insert (or add) the elements at the correct position, so that the row numbers are always sorted in ascending order.  You can use them as in the following example :
 
 \precode
 Vector<double, Vect_Sparse> V;
@@ -144,24 +114,18 @@ AfterAddInteractionRow, V =
 3  2.3
 5  0.6
 \endprescreen
-<p>You noticed that the row indices are displayed with indices beginning
- at 1 instead of 0, this is more convenient for debugging, or exporting datas
- into Matlab for example. </p>
 
-<p>You can also use the
-<code>operator(int)</code> to modify directly values.</p>
+<p>You noticed that the row indices are displayed with indices beginning at 1 instead of 0, this is more convenient for debugging, or exporting datas into Matlab for example. </p>
+
+<p>You can also use the <code>operator(int)</code> to modify directly values.</p>
 
 \precode Vector<double, Vect_Sparse> V;
 V(5) = -3;
 V(0) = 2 * V(5);\endprecode
 
-<p>If the non-zero entry doesn't exist, it is created at the correction
- position as for <code>AddInteraction</code>.</p>
+<p>If the non-zero entry doesn't exist, it is created at the correction position as for <code>AddInteraction</code>.</p>
 
-<p>The methods <code>Reallocate</code>,
-<code>Index</code> and <code>Value</code> can also be used, but they
-need to be used carefully and often the method <code> Assemble </code>
- has to be called in order to sort non-zero entries.</p>
+<p>The methods <code>Reallocate</code>, <code>Index</code> and <code>Value</code> can also be used, but they need to be used carefully and often the method <code> Assemble </code> has to be called in order to sort non-zero entries.</p>
 
 \precode
 // 3 non-zero entries
@@ -180,8 +144,7 @@ V.Value(2) = 2.7;
 V.Assemble();
 \endprecode
 
-In the same way, the method <code>SetData</code> can be used in conjunction with
- <code>Assemble</code> :
+In the same way, the method <code>SetData</code> can be used in conjunction with <code>Assemble</code> :
 
 \precode
 Vector<double, Vect_Sparse> V;
@@ -199,27 +162,21 @@ V.SetData(value, row);
 // you need to call Assemble
 V.Assemble();
 \endprecode
-You will notice that the method SetData empties vectors
- row and value.
 
-<p> There are lots of methods that are described in the
-<a href="class_sparse_vector.php"> documentation</a>. One may point out:</p>
+<p>You may notice that the method SetData empties vectors row and value.</p>
+
+<p> There are lots of methods that are described in the <a href="class_sparse_vector.php"> documentation</a>. One may point out:</p>
 
 <ul>
 
-  <li> <code>Fill</code> give to non-zero entries the value 0, 1, 2, 3, etc. or
-  a given value.</li>
+  <li> <code>Fill</code> give to non-zero entries the value 0, 1, 2, 3, etc. or a given value.</li>
 
-  <li> <code>GetLength</code> or <code>GetSize</code> return the
-  number of non-zero entries.</li>
+  <li> <code>GetLength</code> or <code>GetSize</code> return the number of non-zero entries.</li>
 
- <li> <code>Read</code>, <code>ReadText</code>, <code>Write</code>,
-  <code>WriteText</code> are useful methods for input/ouput
-  operations.</li>
+ <li> <code>Read</code>, <code>ReadText</code>, <code>Write</code>, <code>WriteText</code> are useful methods for input/ouput operations.</li>
 
 </ul>
 
-A comprehensive test of dense vector is achieved in file
-<code>test/program/sparse_vector_test.cpp</code>.
+A comprehensive test of dense vector is achieved in file <code>test/program/sparse_vector_test.cpp</code>.
 
 */

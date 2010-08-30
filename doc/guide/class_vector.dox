@@ -5,8 +5,7 @@
 /*!
 \page class_vector Dense Vectors
 
-<p> Vectors contains contiguous elements. In that page, methods and functions
- related to dense vectors are detailed. </p>
+<p> Vectors contains contiguous elements. In that page, methods and functions related to dense vectors are detailed. </p>
 
 <h2>Basic declaration :</h2>
 \precode
@@ -268,10 +267,7 @@ Vector.cxx</p>
   int GetDataSize() const;
 </pre>
 
-<p>
-All those methods are identic and return the number of elements
- contained in the vector.
-</p>
+<p> All those methods are identic and return the number of elements contained in the vector.  </p>
 
 
 <h4>Example : </h4>
@@ -306,11 +302,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p>Those methods are useful to retrieve the pointer to the array.
- In practice, you can use those methods in order to interface
- with C/fortran subroutines or to perform some low level operations.
- But in this last case, you have to be careful, because debugging
- operations will be more tedious.</p>
+<p>Those methods are useful to retrieve the pointer to the array.  In practice, you can use those methods in order to interface with C/fortran subroutines or to perform some low level operations.  But in this last case, you have to be careful, because debugging operations will be more tedious.</p>
 
 
 <h4>Example : </h4>
@@ -398,8 +390,7 @@ Vector.cxx</p>
   void Reallocate(int);
 </pre>
 
-<p>This method changes the size of the vector, but removes
- previous elements.</p>
+<p>This method changes the size of the vector, but removes previous elements.</p>
 
 <h4>Example : </h4>
 \precode
@@ -433,10 +424,9 @@ Vector.cxx</p>
  <pre class="syntax-box">
   void Resize(int);
 </pre>
-<p>
-This method changes the size of the vector, and keeps
- previous elements.
-</p>
+
+<p> This method changes the size of the vector, and keeps previous elements.  </p>
+
 <h4>Example : </h4>
 \precode
 Vector<long double> V(5); V.Fill();
@@ -471,9 +461,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p>This method sets the pointer to the array containing elements.
- This method should be used carefully, and generally in conjunction with
- method Nullify.</p>
+<p>This method sets the pointer to the array containing elements.  This method should be used carefully, and generally in conjunction with method Nullify.</p>
 
 
 <h4>Example : </h4>
@@ -516,10 +504,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p>This method clears the vector without releasing memory.
- This method should be used carefully, and generally in conjunction with
- method SetData. You can look at the example shown in the
- explanation of method SetData.</p>
+<p>This method clears the vector without releasing memory.  This method should be used carefully, and generally in conjunction with method SetData. You can look at the example shown in the explanation of method SetData.</p>
 
 
 <h4>Related topics :</h4>
@@ -584,9 +569,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p>
-This method inserts a single element, or a vector 
-to the end of the vector.</p>
+<p> This method inserts a single element, or a vector to the end of the vector.</p>
 
 
 <h4>Example : </h4>
@@ -625,10 +608,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p>This method fills memory of 0, is convenient for vector
- made of doubles, integers, floats, but not for more complicated types.
-In that case, it is better to use the method <a href="#fill">Fill</a>.
-</p>
+<p>This method fills memory of 0, is convenient for vector made of doubles, integers, floats, but not for more complicated types.  In that case, it is better to use the method <a href="#fill">Fill</a>.  </p>
 
 
 <h4>Example : </h4>
@@ -741,9 +721,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p> <code>GetNormInf</code> returns the highest absolute value
- whereas <code>GetNormInfIndex</code> returns the index where
- this maximum is reached. This method does not work for complex numbers.</p>
+<p> <code>GetNormInf</code> returns the highest absolute value whereas <code>GetNormInfIndex</code> returns the index where this maximum is reached. This method does not work for complex numbers.</p>
 
 
 <h4>Example : </h4>
@@ -805,8 +783,7 @@ Vector.cxx</p>
   void Write(ofstream&amp;) const;
 </pre>
 
-<p>This method writes the vector on a file/stream in binary format.
- The file will contain the number of elements, then the list of elements.</p>
+<p>This method writes the vector on a file/stream in binary format.  The file will contain the number of elements, then the list of elements.</p>
 
 
 <h4>Example : </h4>
@@ -852,10 +829,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p>This method sets the vector from a file/stream in binary format.
- The file contains the number of elements, then the list of
- elements. The method ReadText can also be useful to initialize an
- array with a string. </p>
+<p>This method sets the vector from a file/stream in binary format.  The file contains the number of elements, then the list of elements. The method ReadText can also be useful to initialize an array with a string. </p>
 
 
 <h4>Example : </h4>
@@ -904,8 +878,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p>This method writes the vector on a file/stream in text format.
- The file will contain the list of elements.</p>
+<p>This method writes the vector on a file/stream in text format.  The file will contain the list of elements.</p>
 
 
 <h4>Example : </h4>
@@ -950,8 +923,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p>This method sets the vector from a file/stream in text format.
- The file contains the list of elements.</p>
+<p>This method sets the vector from a file/stream in text format.  The file contains the list of elements.</p>
 
 
 <h4>Example : </h4>

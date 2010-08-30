@@ -5,14 +5,7 @@
 /*!
 \page direct Direct Solvers
 
-<p>%Seldon is interfaced with libraries performing the direct resolution
-of very large sparse linear systems : <b><a href="http://mumps.enseeiht.fr/">MUMPS</a></b>,
- <b><a href="http://crd.lbl.gov/~xiaoye/SuperLU/">SuperLU</a></b> and
- <b><a href="http://www.cise.ufl.edu/research/sparse/umfpack/">UmfPack</a></b>. An
- example file is located in test/program/direct_test.cpp. If you want
- to test the interface with <b>MUMPS</b>, assuming that MUMPS has been
- compiled in directory <code>MumpsDir</code>, you can compile this file by
- typing :</p>
+<p>%Seldon is interfaced with libraries performing the direct resolution of very large sparse linear systems : <b><a href="http://mumps.enseeiht.fr/">MUMPS</a></b>, <b><a href="http://crd.lbl.gov/~xiaoye/SuperLU/">SuperLU</a></b> and <b><a href="http://www.cise.ufl.edu/research/sparse/umfpack/">UmfPack</a></b>. An example file is located in test/program/direct_test.cpp. If you want to test the interface with <b>MUMPS</b>, assuming that MUMPS has been compiled in directory <code>MumpsDir</code>, you can compile this file by typing :</p>
 
 
 <pre class="fragment">g++ -DSELDON_WITH_MUMPS direct_test.cpp -IMumpsDir/include -IMumpsDir/libseq \
@@ -23,12 +16,7 @@ of very large sparse linear systems : <b><a href="http://mumps.enseeiht.fr/">MUM
 </pre>
 
 
-<p>You can simplify the last command, if you didn't install <a
-href="http://glaros.dtc.umn.edu/gkhome/views/metis/">Metis</a> and 
-<a href="http://www.labri.fr/perso/pelegrin/scotch/">Scotch</a> and
-didn't compile MUMPS with those libraries. For <b>UmfPack</b>, if
-<code>UmfPackDir</code> denotes the directory where UmfPack has been
-installed, you have to type :</p>
+<p>You can simplify the last command, if you didn't install <a href="http://glaros.dtc.umn.edu/gkhome/views/metis/">Metis</a> and <a href="http://www.labri.fr/perso/pelegrin/scotch/">Scotch</a> and didn't compile MUMPS with those libraries. For <b>UmfPack</b>, if <code>UmfPackDir</code> denotes the directory where UmfPack has been installed, you have to type :</p>
 
 
 <pre class="fragment">g++ -DSELDON_WITH_UMFPACK direct_test.cpp
@@ -60,9 +48,7 @@ void SolveLU(MatrixMumps&amp;, Vector&amp;);
 </pre>
 
 
-<p>The interface has been done only for double precision (real or
-complex numbers), since single precision is not accurate enough when
-very large sparse linear systems are solved.</p>
+<p>The interface has been done only for double precision (real or complex numbers), since single precision is not accurate enough when very large sparse linear systems are solved.</p>
 
 
 <h2>Basic use</h2>
@@ -227,9 +213,7 @@ not display any message</td> </tr>
 </pre>
 
 
-<p>This method releases the memory used by the factorisation. It is
-available for every direct solver. A call to that method is necessary 
-before asking for a new factorization.</p>
+<p>This method releases the memory used by the factorisation. It is available for every direct solver. A call to that method is necessary before asking for a new factorization.</p>
 
 
 <h4> Example : </h4>
@@ -269,11 +253,7 @@ SuperLU.cxx</p>
 </pre>
 
 
-<p>These methods are used before <a
-href="#factorizematrix">FactorizeMatrix</a> so that Mumps knows that
-the input matrix is symmetric or not. UmfPack and SuperLU don't have that kind of method
-since they don't have specific algorithms for symmetric matrices. If
-you are using <a href="#getlu">GetLU</a> and <a href="#solvelu">SolveLU</a>, you don't need to call those methods.</p>
+<p>These methods are used before <a href="#factorizematrix">FactorizeMatrix</a> so that Mumps knows that the input matrix is symmetric or not. UmfPack and SuperLU don't have that kind of method since they don't have specific algorithms for symmetric matrices. If you are using <a href="#getlu">GetLU</a> and <a href="#solvelu">SolveLU</a>, you don't need to call those methods.</p>
 
 
 <h4>Location :</h4>
@@ -294,9 +274,7 @@ you are using <a href="#getlu">GetLU</a> and <a href="#solvelu">SolveLU</a>, you
 </pre>
 
 
-<p>You can force a specific ordering scheme to be used (Metis, Amd,
-Scotch, etc). In the documentation of Mumps, you can find a list of
-available orderings and the associated code.</p>
+<p>You can force a specific ordering scheme to be used (Metis, Amd, Scotch, etc). In the documentation of Mumps, you can find a list of available orderings and the associated code.</p>
 
 
 <h4>Example :</h4>
@@ -331,8 +309,7 @@ GetLU(A, mat_lu);
 </pre>
 
 
-<p>This method computes the new row numbers of the matrix by using
-available algorithms in Mumps. </p>
+<p>This method computes the new row numbers of the matrix by using available algorithms in Mumps. </p>
 
 
 <h4>Example :</h4>
@@ -369,8 +346,7 @@ mat_lu.FindOrdering(A, permutation, true);
 </pre>
 
 
-<p><code>ShowMessages</code> allows the direct solver to display informations about
-the factorization and resolution phases, while <code>HideMessages</code> forbids any message to be displayed.</p>
+<p><code>ShowMessages</code> allows the direct solver to display informations about the factorization and resolution phases, while <code>HideMessages</code> forbids any message to be displayed.</p>
 
 
 <h4>Example :</h4>
@@ -440,9 +416,7 @@ SuperLU.cxx</p>
 </pre>
 
 
-<p>This method factorizes the given matrix. It is better to use
-<code>GetLU</code>, since <code>FactorizeMatrix</code> needs that
-<code>InitSymmetricMatrix</code> is called before (for Mumps).</p>
+<p>This method factorizes the given matrix. It is better to use <code>GetLU</code>, since <code>FactorizeMatrix</code> needs that <code>InitSymmetricMatrix</code> is called before (for Mumps).</p>
 
 <h4>Location :</h4>
 <p>Mumps.cxx<br/>
@@ -465,11 +439,7 @@ SuperLU.cxx</p>
 </pre>
 
 
-<p>This method computes the schur complement when a matrix and row
-numbers of the Schur matrix are provided. It is better to use the
-function <a href="#getschurmatrix_func">GetSchurMatrix</a> since
-you don't need to call <code>InitSymmetricMatrix</code> before.
- </p>
+<p>This method computes the schur complement when a matrix and row numbers of the Schur matrix are provided. It is better to use the function <a href="#getschurmatrix_func">GetSchurMatrix</a> since you don't need to call <code>InitSymmetricMatrix</code> before.  </p>
 
 
 <h4>Location :</h4>
@@ -490,9 +460,7 @@ you don't need to call <code>InitSymmetricMatrix</code> before.
 </pre>
 
 
-<p>This method computes the solution of <code>A x = b</code>, assuming
-that <code>GetLU</code> has been called before to factorize matrix A.
- This is equivalent to use function <a href="#solvelu">SolveLU</a>.</p>
+<p>This method computes the solution of <code>A x = b</code>, assuming that <code>GetLU</code> has been called before to factorize matrix A.  This is equivalent to use function <a href="#solvelu">SolveLU</a>.</p>
 
 <h4>Location :</h4>
 <p>Mumps.cxx<br/>
@@ -518,9 +486,7 @@ SuperLU.cxx</p>
 </pre>
 
 
-<p>This method performs a LU factorization. The last argument is
-optional. When omitted, the initial matrix is erased, when equal to
-true, the initial matrix is not modified.</p>
+<p>This method performs a LU factorization. The last argument is optional. When omitted, the initial matrix is erased, when equal to true, the initial matrix is not modified.</p>
 
 
 <h4>Example :</h4>
@@ -561,9 +527,7 @@ SuperLU.cxx</p>
 </pre>
 
 
-<p>This method uses the LU factorization computed by
-<code>GetLU</code> in order to solve a linear system. The right hand
-side is overwritten by the result.</p>
+<p>This method uses the LU factorization computed by <code>GetLU</code> in order to solve a linear system. The right hand side is overwritten by the result.</p>
 
 
 <h4>Location :</h4>
@@ -586,8 +550,7 @@ SuperLU.cxx</p>
 </pre>
 
 
-<p>This method computes the so-called Schur matrix (or Schur
-complement) from a given matrix. </p>
+<p>This method computes the so-called Schur matrix (or Schur complement) from a given matrix. </p>
 
 
 <h4>Example :</h4>

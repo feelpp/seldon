@@ -5,13 +5,11 @@
 /*!
 \page submatrix Sub-Matrices
 
-A sub-matrix can be defined with any instance of a dense or sparse
-matrix. Arbitrary rows and columns may be selected.
+A sub-matrix can be defined with any instance of a dense or sparse matrix. Arbitrary rows and columns may be selected.
 
 \section declaration Declaration
 
-Given a base matrix <code>A</code>, a sub-matrix is declared with a list of
-rows <code>row_list</code> and a list of columns <code>column_list</code>:
+Given a base matrix <code>A</code>, a sub-matrix is declared with a list of rows <code>row_list</code> and a list of columns <code>column_list</code>:
 
 \precode
 Matrix<double> A(4, 6);
@@ -27,17 +25,11 @@ column_list(2) = 5;
 SubMatrix<Matrix<double> > SubA(A, row_list, column_list);
 \endprecode
 
-The template argument of <code>SubMatrix</code> must be the exact type of the
-base matrix <code>A</code>.
+The template argument of <code>SubMatrix</code> must be the exact type of the base matrix <code>A</code>.
 
 \section more Flexible Definition
 
-The row and column lists can be any index list, providing the indexes refer to
-an existing row or column in the base matrix. The same index may appear
-several times in a list, and the lists do not need to be sorted. As a
-consequence, the sub-matrices might be used for a more general purpose than
-simply extracting a sub-set of the rows and columns. For example, one may swap
-two columns and duplicate a line:
+The row and column lists can be any index list, providing the indexes refer to an existing row or column in the base matrix. The same index may appear several times in a list, and the lists do not need to be sorted. As a consequence, the sub-matrices might be used for a more general purpose than simply extracting a sub-set of the rows and columns. For example, one may swap two columns and duplicate a line:
 
 \precode
 Matrix<double> A(3, 3);
@@ -74,22 +66,15 @@ Sub-matrix:
 
 \section base Relation with the Base Matrix
 
-A sub-matrix is a light structure. It essentially stores the list of rows and
-columns, along with a pointer to the base matrix. When an element of the
-sub-matrix is accessed, the sub-matrix performs an indirection to the
-corresponding element in the base matrix. Hence, if the sub-matrix is
-modified, so will be the base matrix. This also means that the sub-matrix
-should not be manipulated once the base matrix is destroyed.
+A sub-matrix is a light structure. It essentially stores the list of rows and columns, along with a pointer to the base matrix. When an element of the sub-matrix is accessed, the sub-matrix performs an indirection to the corresponding element in the base matrix. Hence, if the sub-matrix is modified, so will be the base matrix. This also means that the sub-matrix should not be manipulated once the base matrix is destroyed.
 
 \section method Available Methods
 
-For a description of all available methods, see the documentation for class
-Seldon::SubMatrix.
+For a description of all available methods, see the documentation for class Seldon::SubMatrix.
 
 \section functions Available Functions
 
-A sub-matrix is viewed as a matrix by %Seldon. Therefore, all generic
-functions that are implemented in C++ can be called, which includes:
+A sub-matrix is viewed as a matrix by %Seldon. Therefore, all generic functions that are implemented in C++ can be called, which includes:
 - \link Seldon::Mlt(const Matrix<T0, Prop0, Storage0, Allocator0>& M, const Vector<T1, Storage1, Allocator1>& X, Vector<T2, Storage2, Allocator2>& Y) Mlt(M, X, Y) \endlink
 - \link Seldon::Mlt(const T0 alpha, const Matrix<T1, Prop1, Storage1, Allocator1>& M, const Vector<T2, Storage2, Allocator2>& X, Vector<T3, Storage3, Allocator3>& Y) Mlt(alpha, M, X, Y) \endlink
 - \link
@@ -126,9 +111,7 @@ Seldon::Norm1(const Matrix<T, Prop, Storage, Allocator>& A) Norm1(A)
 Seldon::NormInf(const Matrix<T, Prop, Storage, Allocator>& A) NormInf(A)
 \endlink
 
-<b>Warning:</b> In the case of sub-matrices, these functions will <i>not</i>
-call Blas, Lapack or another external library. As a consequence, they may be
-slow.
+<b>Warning:</b> In the case of sub-matrices, these functions will <i>not</i> call Blas, Lapack or another external library. As a consequence, they may be slow.
 
 \section example An Example
 

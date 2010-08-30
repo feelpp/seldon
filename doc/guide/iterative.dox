@@ -15,21 +15,13 @@ int Gmres(const Matrix&amp; A, Vector&amp; x, const Vector&amp; b,
 </pre>
 
 
-<p>The first argument <code>A</code> is the matrix to solve. The type of this argument is template, 
- therefore you can provide your own class defining the matrix. The second and third argument
- are vectors, <code>x</code> contains the initial guess on input, the solution on output,
- <code>b</code> contains the right-hand-side. Again, the type of x and b is template,
- so you can have your own class to define the vectors. The fourth template argument is the 
- preconditioner. For the moment, there is an implementation of the identity preconditioner
- (no preconditioning) and a SOR (Successive Over Relaxation)
- preconditioner. The last argument is a %Seldon structure defining the parameters of the iteration.</p>
+<p>The first argument <code>A</code> is the matrix to solve. The type of this argument is template, therefore you can provide your own class defining the matrix. The second and third argument are vectors, <code>x</code> contains the initial guess on input, the solution on output, <code>b</code> contains the right-hand-side. Again, the type of x and b is template, so you can have your own class to define the vectors. The fourth template argument is the preconditioner. For the moment, there is an implementation of the identity preconditioner (no preconditioning) and a SOR (Successive Over Relaxation) preconditioner. The last argument is a %Seldon structure defining the parameters of the iteration.</p>
 
 
 <h2>Basic use</h2>
 
 
-<p> We provide an example of iterative resolution using %Seldon structures for
-the matrices and the vectors.</p>
+<p> We provide an example of iterative resolution using %Seldon structures for the matrices and the vectors.</p>
 
 
 \precode
@@ -67,14 +59,7 @@ Gmres(A, x, b, precond, iter);
 <h2>Advanced use</h2>
 
 
-<p>Now, we will show an example where we construct a new class 
- for a matrix that we don't store. If you want to test iterative
-solvers with that kind of strategy, you can take a look at the file
-test/program/iterative_test.cpp. The main thing to do is to
- overload the functions <a href="functions_blas.php#mlt">Mlt</a>
- and <a href="functions_blas.php#mltadd">MltAdd</a> that
- are called by iterative solvers to perform the matrix-vector
- product.</p>
+<p>Now, we will show an example where we construct a new class for a matrix that we don't store. If you want to test iterative solvers with that kind of strategy, you can take a look at the file test/program/iterative_test.cpp. The main thing to do is to overload the functions <a href="functions_blas.php#mlt">Mlt</a> and <a href="functions_blas.php#mltadd">MltAdd</a> that are called by iterative solvers to perform the matrix-vector product.</p>
 
 
 \precode
@@ -235,11 +220,7 @@ int main()
 \endprecode
 
 
-<p>If you want to use your own class of vector, there are other functions
- to define : <a href="functions_blas.php#add">Add</a>, <a href="functions_blas.php#norm2">Norm2</a>,
- <a href="functions_blas.php#dotprod">DotProd</a>, <a href="functions_blas.php#dotprod">DotProdConj</a>
- , <a href="functions_blas.php#copy">Copy</a>, <a href="functions_blas.php#copy">Copy</a> 
- and the method <a href="class_vector.php#zero">Zero</a>. </p>
+<p>If you want to use your own class of vector, there are other functions to define : <a href="functions_blas.php#add">Add</a>, <a href="functions_blas.php#norm2">Norm2</a>, <a href="functions_blas.php#dotprod">DotProd</a>, <a href="functions_blas.php#dotprod">DotProdConj</a> , <a href="functions_blas.php#copy">Copy</a>, <a href="functions_blas.php#copy">Copy</a> and the method <a href="class_vector.php#zero">Zero</a>. </p>
 
 
 <h2>Methods of Preconditioner_Base:</h2>
@@ -416,9 +397,7 @@ int main()
 </pre>
 
 
-<p>These methods should be overloaded if you want to define your own
- preconditioner since they define the application of the preconditioner and
- its transpose to a vector.</p>
+<p>These methods should be overloaded if you want to define your own preconditioner since they define the application of the preconditioner and its transpose to a vector.</p>
 
 
 <h4> Example : </h4>
@@ -467,14 +446,7 @@ Iterative.cxx</p>
 </pre>
 
 
-<p>These methods define the application of the preconditioner and
- its transpose to a vector. The used preconditioner is SOR (Successive Over Relaxation).
- It can be used in its symmetric version (SSOR), or the unsymmetric version.
-  In this last case, the application of the preconditioner consists of a
-  forward sweep
-while the transpose consists of a backward sweep. If you are using %Seldon structures
- of sparse matrices, the function <a href="#sor">SOR</a> is available. If you are using
- other structures, it is necessary to overload the function SOR.</p>
+<p>These methods define the application of the preconditioner and its transpose to a vector. The used preconditioner is SOR (Successive Over Relaxation).  It can be used in its symmetric version (SSOR), or the unsymmetric version.  In this last case, the application of the preconditioner consists of a forward sweep while the transpose consists of a backward sweep. If you are using %Seldon structures of sparse matrices, the function <a href="#sor">SOR</a> is available. If you are using other structures, it is necessary to overload the function SOR.</p>
 
 
 <h4> Example : </h4>
@@ -534,10 +506,7 @@ Precond_Ssor.cxx</p>
 </pre>
 
 
-<p><code>InitSymmetricPreconditioning</code> sets SSOR as preconditioning. The symmetric
- SOR consists of a forward sweep followed by a backward sweep. <code>InitSymmetricPreconditioning</code>
- sets SOR, it consists of a forward sweep for the preconditioner, and a backward sweep 
-for the transpose of the preconditioner.</p>
+<p><code>InitSymmetricPreconditioning</code> sets SSOR as preconditioning. The symmetric SOR consists of a forward sweep followed by a backward sweep. <code>InitSymmetricPreconditioning</code> sets SOR, it consists of a forward sweep for the preconditioner, and a backward sweep for the transpose of the preconditioner.</p>
 
 
 <h4> Example : </h4>
@@ -618,8 +587,7 @@ Precond_Ssor.cxx</p>
 </pre>
 
 
-<p>The second constructor specifies the maximum number of iterations 
-and the stopping criterion</p>
+<p>The second constructor specifies the maximum number of iterations and the stopping criterion</p>
 
 
 <h4>Location :</h4>
@@ -642,9 +610,7 @@ Iterative.cxx</p>
 </pre>
 
 
-<p>These methods give access to the restart parameter,
- which is used by some iterative solvers, e.g. BiCgSTAB(l), Gmres and Gcr.
- The default value is equal to 10.</p>
+<p>These methods give access to the restart parameter, which is used by some iterative solvers, e.g. BiCgSTAB(l), Gmres and Gcr.  The default value is equal to 10.</p>
 
 
 <h4>Location :</h4>
@@ -740,9 +706,7 @@ Iterative.cxx</p>
 </pre>
 
 
-<p>If <code>ShowMessages</code> is called, it will display residual each 100 iterations 
-during the resolution. If <code>HideMessages</code> is called, there is no display at all,
- whereas <code>ShowFullHistory</code> displays residual each iteration.</p>
+<p>If <code>ShowMessages</code> is called, it will display residual each 100 iterations during the resolution. If <code>HideMessages</code> is called, there is no display at all, whereas <code>ShowFullHistory</code> displays residual each iteration.</p>
 
 
 <h4>Location :</h4>
@@ -765,9 +729,7 @@ Iterative.cxx</p>
 </pre>
 
 
-<p>This method is used by iterative solvers to initialize the computation
- of residuals. Since relative residual is computed, we need to know the norm
- of the first residual.</p>
+<p>This method is used by iterative solvers to initialize the computation of residuals. Since relative residual is computed, we need to know the norm of the first residual.</p>
 
 
 <h4>Location :</h4>
@@ -814,9 +776,7 @@ Iterative.cxx</p>
 </pre>
 
 
-<p><code>SetInitGuess</code> allows you to inform the iterative solver
- that your initial guess is null. This can spare one matrix-vector product, which is 
- good if the expected number of iterations is small.</p>
+<p><code>SetInitGuess</code> allows you to inform the iterative solver that your initial guess is null. This can spare one matrix-vector product, which is good if the expected number of iterations is small.</p>
 
 
 <h4>Example :</h4>
@@ -859,8 +819,7 @@ Iterative.cxx</p>
 </pre>
 
 
-<p>This method is used by iterative solvers to know if the stopping
- criterion is reached. This method also displays the residual if required. </p>
+<p>This method is used by iterative solvers to know if the stopping criterion is reached. This method also displays the residual if required. </p>
 
 
 <h4>Location :</h4>
@@ -883,8 +842,7 @@ Iterative.cxx</p>
 </pre>
 
 
-<p>This method is used by iterative solvers when a breakdown 
-occurs, often due to a division by 0. </p>
+<p>This method is used by iterative solvers when a breakdown occurs, often due to a division by 0. </p>
 
 
 <h4>Location :</h4>
@@ -907,8 +865,7 @@ Iterative.cxx</p>
 </pre>
 
 
-<p>This method returns the error code after the resolution.
- If the resolution has been successful, it should return 0. </p>
+<p>This method returns the error code after the resolution.  If the resolution has been successful, it should return 0. </p>
 
 
 <h4>Location :</h4>
@@ -932,8 +889,7 @@ Iterative.cxx</p>
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> with n iterations
-of SOR. </p>
+<p>This method tries to solve <code>A x = b</code> with n iterations of SOR. </p>
 
 
 <h4>Example :</h4>
@@ -982,9 +938,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using BICG algorithm.
- This algorithm can solve complex general linear systems and calls matrix-vector
- products with the transpose matrix. </p>
+<p>This method tries to solve <code>A x = b</code> by using BICG algorithm.  This algorithm can solve complex general linear systems and calls matrix-vector products with the transpose matrix. </p>
 
 
 <h4>Location :</h4>
@@ -1006,8 +960,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using BICGCR algorithm.
- This algorithm can solve symmetric complex linear systems. </p>
+<p>This method tries to solve <code>A x = b</code> by using BICGCR algorithm.  This algorithm can solve symmetric complex linear systems. </p>
 
 
 <h4>Location :</h4>
@@ -1029,9 +982,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using BICGSTAB algorithm.
- This algorithm can solve complex general linear systems and doesn't call matrix
- vector products with the transpose matrix. </p>
+<p>This method tries to solve <code>A x = b</code> by using BICGSTAB algorithm.  This algorithm can solve complex general linear systems and doesn't call matrix vector products with the transpose matrix. </p>
 
 
 <h4>Location :</h4>
@@ -1053,9 +1004,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using BICGSTAB(l) algorithm.
- This algorithm can solve complex general linear systems and doesn't call matrix
- vector products with the transpose matrix. </p>
+<p>This method tries to solve <code>A x = b</code> by using BICGSTAB(l) algorithm.  This algorithm can solve complex general linear systems and doesn't call matrix vector products with the transpose matrix. </p>
 
 
 <h4>Location :</h4>
@@ -1077,8 +1026,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using CG algorithm.
- This algorithm can solve real symmetric or hermitian linear systems. </p>
+<p>This method tries to solve <code>A x = b</code> by using CG algorithm.  This algorithm can solve real symmetric or hermitian linear systems. </p>
 
 
 <h4>Location :</h4>
@@ -1100,9 +1048,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using CGNE algorithm.
- This algorithm can solve complex general linear systems and calls matrix
- vector products with the transpose matrix. </p>
+<p>This method tries to solve <code>A x = b</code> by using CGNE algorithm.  This algorithm can solve complex general linear systems and calls matrix vector products with the transpose matrix. </p>
 
 
 <h4>Location :</h4>
@@ -1124,9 +1070,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using CGS algorithm.
- This algorithm can solve complex general linear systems and doesn't call matrix
- vector products with the transpose matrix. </p>
+<p>This method tries to solve <code>A x = b</code> by using CGS algorithm.  This algorithm can solve complex general linear systems and doesn't call matrix vector products with the transpose matrix. </p>
 
 
 <h4>Location :</h4>
@@ -1148,8 +1092,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using BICGSTAB algorithm.
- This algorithm can solve complex symmetric linear systems. </p>
+<p>This method tries to solve <code>A x = b</code> by using BICGSTAB algorithm.  This algorithm can solve complex symmetric linear systems. </p>
 
 
 <h4>Location :</h4>
@@ -1171,9 +1114,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using BICGSTAB algorithm.
- This algorithm can solve complex general linear systems and doesn't call matrix
- vector products with the transpose matrix. </p>
+<p>This method tries to solve <code>A x = b</code> by using BICGSTAB algorithm.  This algorithm can solve complex general linear systems and doesn't call matrix vector products with the transpose matrix. </p>
 
 
 <h4>Location :</h4>
@@ -1195,9 +1136,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using restarted GMRES algorithm.
- This algorithm can solve complex general linear systems and doesn't call matrix
- vector products with the transpose matrix. </p>
+<p>This method tries to solve <code>A x = b</code> by using restarted GMRES algorithm.  This algorithm can solve complex general linear systems and doesn't call matrix vector products with the transpose matrix. </p>
 
 
 <h4>Location :</h4>
@@ -1219,9 +1158,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using LSQR algorithm.
- This algorithm can solve complex general linear systems and calls matrix
- vector products with the transpose matrix. </p>
+<p>This method tries to solve <code>A x = b</code> by using LSQR algorithm.  This algorithm can solve complex general linear systems and calls matrix vector products with the transpose matrix. </p>
 
 
 <h4>Location :</h4>
@@ -1243,9 +1180,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using BICGSTAB algorithm.
- This algorithm can solve complex symmetric linear systems and doesn't call matrix
- vector products with the transpose matrix. </p>
+<p>This method tries to solve <code>A x = b</code> by using BICGSTAB algorithm.  This algorithm can solve complex symmetric linear systems and doesn't call matrix vector products with the transpose matrix. </p>
 
 
 <h4>Location :</h4>
@@ -1267,9 +1202,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using QCGS algorithm.
- This algorithm can solve complex general linear systems and doesn't call matrix
- vector products with the transpose matrix. </p>
+<p>This method tries to solve <code>A x = b</code> by using QCGS algorithm.  This algorithm can solve complex general linear systems and doesn't call matrix vector products with the transpose matrix. </p>
 
 
 <h4>Location :</h4>
@@ -1291,9 +1224,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using QMR algorithm.
- This algorithm can solve complex general linear systems and calls matrix
- vector products with the transpose matrix. </p>
+<p>This method tries to solve <code>A x = b</code> by using QMR algorithm.  This algorithm can solve complex general linear systems and calls matrix vector products with the transpose matrix. </p>
 
 
 <h4>Location :</h4>
@@ -1315,8 +1246,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using symmetric QMR algorithm.
- This algorithm can solve complex symmetric linear systems. </p>
+<p>This method tries to solve <code>A x = b</code> by using symmetric QMR algorithm.  This algorithm can solve complex symmetric linear systems. </p>
 
 
 <h4>Location :</h4>
@@ -1338,8 +1268,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using SYMMLQ algorithm.
- This algorithm can solve complex symmetric linear systems. </p>
+<p>This method tries to solve <code>A x = b</code> by using SYMMLQ algorithm.  This algorithm can solve complex symmetric linear systems. </p>
 
 
 <h4>Location :</h4>
@@ -1361,9 +1290,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 </pre>
 
 
-<p>This method tries to solve <code>A x = b</code> by using TFQMR algorithm.
- This algorithm can solve complex general linear systems and doesn't call matrix
- vector products with the transpose matrix. </p>
+<p>This method tries to solve <code>A x = b</code> by using TFQMR algorithm.  This algorithm can solve complex general linear systems and doesn't call matrix vector products with the transpose matrix. </p>
 
 
 <h4>Location :</h4>

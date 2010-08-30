@@ -68,9 +68,7 @@
 </pre>
 
 
-<p><code>Transpose</code> overwrites a matrix by its transpose, while 
-<code>TransposeConj</code> overwrites a matrix by its conjugate
-transpose. These functions are only available for dense matrices.</p>
+<p><code>Transpose</code> overwrites a matrix by its transpose, while <code>TransposeConj</code> overwrites a matrix by its conjugate transpose. These functions are only available for dense matrices.</p>
 
 
 <h4> Example : </h4>
@@ -104,8 +102,7 @@ TransposeConj(B);
 </pre>
 
 
-<p>This function modifies a row in the provided matrix. This function is
- available only for dense matrices.</p>
+<p>This function modifies a row in the provided matrix. This function is available only for dense matrices.</p>
 
 
 <h4> Example : </h4>
@@ -174,8 +171,7 @@ GetRow(A, 0, row);
 </pre>
 
 
-<p>This function modifies a column in the provided matrix. This function is
- available only for dense matrices.</p>
+<p>This function modifies a column in the provided matrix. This function is available only for dense matrices.</p>
 
 
 <h4> Example : </h4>
@@ -211,8 +207,7 @@ SetCol(col, icol, A);
 </pre>
 
 
-<p>This function extracts a column from the provided matrix. This function is
- available only for dense matrices.</p>
+<p>This function extracts a column from the provided matrix. This function is available only for dense matrices.</p>
 
 
 <h4> Example : </h4>
@@ -334,12 +329,7 @@ double anorm_inf = NormInf(A);
 </pre>
 
 
-<p>This function permutes a given matrix with the provided new row
-numbers and column numbers. <code>ApplyInversePermutation(A, row, col)</code>
-does the same operation as <code>A(row, col) = A</code> in
-Matlab. This function is only available for RowMajor, ColMajor, ArrayRowSparse,
-ArrayRowSymSparse, ArrayRowComplexSparse and
-ArrayRowSymComplexSparse. </p>
+<p>This function permutes a given matrix with the provided new row numbers and column numbers. <code>ApplyInversePermutation(A, row, col)</code> does the same operation as <code>A(row, col) = A</code> in Matlab. This function is only available for RowMajor, ColMajor, ArrayRowSparse, ArrayRowSymSparse, ArrayRowComplexSparse and ArrayRowSymComplexSparse. </p>
 
 
 <h4> Example : </h4>
@@ -377,13 +367,7 @@ ApplyInversePermutation(B, row, col);
 </pre>
 
 
-<p>This function multiplies each row and column with a coefficient,
-i.e. <code>A</code> is replaced by <code>L*A*R</code> where
-<code>L</code> and <code>R</code> are diagonal matrices and you
-provide the diagonal when you call <code>ScaleMatrix</code>.
- This function is only available for ArrayRowSparse,
-ArrayRowSymSparse, ArrayRowComplexSparse and
-ArrayRowSymComplexSparse. </p>
+<p>This function multiplies each row and column with a coefficient, i.e. <code>A</code> is replaced by <code>L*A*R</code> where <code>L</code> and <code>R</code> are diagonal matrices and you provide the diagonal when you call <code>ScaleMatrix</code>.  This function is only available for ArrayRowSparse, ArrayRowSymSparse, ArrayRowComplexSparse and ArrayRowSymComplexSparse. </p>
 
 
 <h4> Example : </h4>
@@ -421,12 +405,7 @@ ApplyInversePermutation(B, scale, scale_right);
 </pre>
 
 
-<p>This function multiplies each row with a coefficient,
-i.e. <code>A</code> is replaced by <code>L*A</code> where
-<code>L</code> is diagonal and you
-provide the diagonal when you call <code>ScaleLeftMatrix</code>.
- This function is only available for ArrayRowSparse,
- and ArrayRowComplexSparse. </p>
+<p>This function multiplies each row with a coefficient, i.e. <code>A</code> is replaced by <code>L*A</code> where <code>L</code> is diagonal and you provide the diagonal when you call <code>ScaleLeftMatrix</code>.  This function is only available for ArrayRowSparse, and ArrayRowComplexSparse. </p>
 
 
 <h4> Example : </h4>

@@ -5,11 +5,7 @@
 /*!
 \page class_sparse_vector Sparse Vectors
 
-<p> In that page, methods and functions
- related to sparse vectors are detailed. Sparse vectors
- consist of row numbers and values. In order to have efficient
- algorithms, row numbers are always sorted in ascending order.
-</p>
+<p> In that page, methods and functions related to sparse vectors are detailed. Sparse vectors consist of row numbers and values. In order to have efficient algorithms, row numbers are always sorted in ascending order.  </p>
 
 
 <h2>Basic declaration :</h2>
@@ -228,10 +224,7 @@ SparseVector.cxx</p>
 </pre>
 
 
-<p>
-The access operator () can be used to modify (or insert) 
-a non-zero entry in the sparse vector. 
-</p>
+<p> The access operator () can be used to modify (or insert) a non-zero entry in the sparse vector.  </p>
 
 
 <h4>Example : </h4>
@@ -281,8 +274,7 @@ SparseVector.cxx</p>
 </pre>
 
 
-<p>All those methods are identic and return the number of non-zero
- entries contained in the vector.</p>
+<p>All those methods are identic and return the number of non-zero entries contained in the vector.</p>
 
 
 <h4>Example : </h4>
@@ -315,8 +307,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p>This method is used to retrieve the pointer to the row numbers and 
-should be used in conjunction with method <a href="#getdata">GetData</a>.</p>
+<p>This method is used to retrieve the pointer to the row numbers and should be used in conjunction with method <a href="#getdata">GetData</a>.</p>
 
 
 
@@ -362,11 +353,7 @@ SparseVector.cxx</p>
 </pre>
 
 
-<p>Those methods are useful to retrieve the pointer to the values.
- In practice, you can use those methods in order to interface
- fortran subroutines or to realize some low level operations.
- But in this last case, you have to be careful, because debugging
- operations will be more tedious.</p>
+<p>Those methods are useful to retrieve the pointer to the values.  In practice, you can use those methods in order to interface fortran subroutines or to realize some low level operations.  But in this last case, you have to be careful, because debugging operations will be more tedious.</p>
 
 
 <h4>Example : </h4>
@@ -431,8 +418,7 @@ Vector.cxx</p>
   void Clear();
 </pre>
 
-<p>This method removes all the non-zero entries of the vector.
- After calling this method, the vector is equal to 0.</p>
+<p>This method removes all the non-zero entries of the vector.  After calling this method, the vector is equal to 0.</p>
 
 
 <h4>Example : </h4>
@@ -463,10 +449,7 @@ SparseVector.cxx</p>
 </pre>
 
 
-<p>This method changes the number of non-zero entries contained in the vector, but removes
- previous values. For sparse vectors, this may be a better solution 
-to use methods <a href="#addinteraction">AddInteraction</a>,
-<a href="#addinteractionrow">AddInteractionRow</a> or the access operator.</p>
+<p>This method changes the number of non-zero entries contained in the vector, but removes previous values. For sparse vectors, this may be a better solution to use methods <a href="#addinteraction">AddInteraction</a>, <a href="#addinteractionrow">AddInteractionRow</a> or the access operator.</p>
 
 
 <h4>Example : </h4>
@@ -509,10 +492,7 @@ SparseVector.cxx</p>
 </pre>
 
 
-<p>This method changes the size of the vector, and keeps
- previous elements. For sparse vectors, this may be a better solution 
-to use methods <a href="#addinteraction">AddInteraction</a>, 
-<a href="#addinteractionrow">AddInteractionRow</a> or the access operator.</p>
+<p>This method changes the size of the vector, and keeps previous elements. For sparse vectors, this may be a better solution to use methods <a href="#addinteraction">AddInteraction</a>, <a href="#addinteractionrow">AddInteractionRow</a> or the access operator.</p>
 
 
 <h4>Example : </h4>
@@ -557,9 +537,7 @@ SparseVector.cxx</p>
 </pre>
 
 
-<p>This method sets the row numbers and values.
- This method should be used carefully, and generally in conjunction with
- method Nullify.</p>
+<p>This method sets the row numbers and values.  This method should be used carefully, and generally in conjunction with method Nullify.</p>
 
 
 <h4>Example : </h4>
@@ -605,10 +583,7 @@ SparseVector.cxx</p>
 </pre>
 
 
-<p>This method clears the vector without releasing memory.
- This method should be used carefully, and generally in conjunction with
- method SetData. You can look at the example shown in the
- explanation of method SetData.</p>
+<p>This method clears the vector without releasing memory.  This method should be used carefully, and generally in conjunction with method SetData. You can look at the example shown in the explanation of method SetData.</p>
 
 
 <h4>Related topics :</h4>
@@ -773,10 +748,7 @@ SparseVector.cxx</p>
 
 
 
-<p>This method sorts row numbers, and adds values if there are
- two same row numbers. You don't need to call this method
- if you are using the access operator () or methods <a
- href="#addinteraction">AddInteraction</a>.</p>
+<p>This method sorts row numbers, and adds values if there are two same row numbers. You don't need to call this method if you are using the access operator () or methods <a href="#addinteraction">AddInteraction</a>.</p>
 
 
 
@@ -819,11 +791,7 @@ SparseVector.cxx</p>
 
 
 
-<p>This method fills memory of 0. All non-zero entries have their
- values set to 0. This is useful in order to keep the same 
-profile for the vector, and initialize it to 0, before 
-adding new interactions. Since the profile is conserved, there is
- no insertion of non-zero entries, therefore the strategy is more efficient</p>
+<p>This method fills memory of 0. All non-zero entries have their values set to 0. This is useful in order to keep the same profile for the vector, and initialize it to 0, before adding new interactions. Since the profile is conserved, there is no insertion of non-zero entries, therefore the strategy is more efficient</p>
 
 
 
@@ -870,8 +838,7 @@ Vector.cxx</p>
 
 
 
-<p>This method sets values of non-zero entries with 0, 1, 2, etc or with
-a given value. Row numbers are not affected.</p>
+<p>This method sets values of non-zero entries with 0, 1, 2, etc or with a given value. Row numbers are not affected.</p>
 
 
 
@@ -918,8 +885,7 @@ Vector.cxx</p>
 
 
 
-<p>This method sets values of non-zero entries randomly.
- Row numbers are not affected.</p>
+<p>This method sets values of non-zero entries randomly.  Row numbers are not affected.</p>
 
 
 
@@ -961,10 +927,7 @@ Vector.cxx</p>
   void AddInteraction(int, T);
 </pre>
 
-<p>This method adds/inserts a coefficient to the sparse vector.
- If the entry doesn't exist, it is inserted at the correct position,
- so that row numbers stay sorted in ascending order.
-</p>
+<p>This method adds/inserts a coefficient to the sparse vector.  If the entry doesn't exist, it is inserted at the correct position, so that row numbers stay sorted in ascending order.  </p>
 
 <h4>Example : </h4>
 \precode
@@ -1012,9 +975,7 @@ SparseVector.cxx</p>
 
 
 
-<p>This method adds/inserts coefficients to the sparse vector.
- If there is no entry, it is inserted at the correct position,
- so that row numbers stay sorted in ascending order.</p>
+<p>This method adds/inserts coefficients to the sparse vector.  If there is no entry, it is inserted at the correct position, so that row numbers stay sorted in ascending order.</p>
 
 
 
@@ -1062,10 +1023,7 @@ SparseVector.cxx</p>
 
 
 
-<p><code>GetNormInf</code> returns the highest absolute value
- whereas <code>GetNormInfIndex</code> returns the index where
- this maximum is reached. This returns the index and not 
-the row number. This method does not work for complex numbers.</p>
+<p><code>GetNormInf</code> returns the highest absolute value whereas <code>GetNormInfIndex</code> returns the index where this maximum is reached. This returns the index and not the row number. This method does not work for complex numbers.</p>
 
 
 
@@ -1102,8 +1060,7 @@ Vector.cxx</p>
 
 
 
-<p>This method displays the vector with 1-index convention
- for row numbers.</p>
+<p>This method displays the vector with 1-index convention for row numbers.</p>
 
 
 
@@ -1138,9 +1095,7 @@ SparseVector.cxx</p>
 
 
 
-<p>This method writes the vector on a file/stream in binary format.
- The file will contain the number of non-zero entries, the list of row
- numbers, and then the list of values.</p>
+<p>This method writes the vector on a file/stream in binary format.  The file will contain the number of non-zero entries, the list of row numbers, and then the list of values.</p>
 
 
 
@@ -1189,9 +1144,7 @@ SparseVector.cxx</p>
 
 
 
-<p>This method reads the vector from a file/stream in binary format.
- The file will contain the number of non-zero entries, the list of row
- numbers, and then the list of values.</p>
+<p>This method reads the vector from a file/stream in binary format.  The file will contain the number of non-zero entries, the list of row numbers, and then the list of values.</p>
 
 
 
@@ -1239,10 +1192,7 @@ SparseVector.cxx</p>
 
 
 
-<p>This method writes the vector on a file/stream in text format.
- The file will contain the list of non-zero entries, each line
- of the file will contain a row number and a value.
- The 1-index convention is used for row numbers.</p>
+<p>This method writes the vector on a file/stream in text format.  The file will contain the list of non-zero entries, each line of the file will contain a row number and a value.  The 1-index convention is used for row numbers.</p>
 
 
 
@@ -1292,9 +1242,7 @@ SparseVector.cxx</p>
 
 
 
-<p>This method reads the vector on a file/stream in text format.
-The used format is detailed above in the explanation of the method
-<a href="#writetext">WriteText</a>.</p>
+<p>This method reads the vector on a file/stream in text format.  The used format is detailed above in the explanation of the method <a href="#writetext">WriteText</a>.</p>
 
 
 

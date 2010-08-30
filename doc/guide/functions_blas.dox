@@ -91,10 +91,7 @@
 </pre>
 
 
-<p>This function multiplies all elements of vector/matrix by a
-constant. It can also perform a matrix-vector product.
-This function is implemented both for dense and sparse
-vectors/matrices.</p>
+<p>This function multiplies all elements of vector/matrix by a constant. It can also perform a matrix-vector product.  This function is implemented both for dense and sparse vectors/matrices.</p>
 
 
 <h4> Example : </h4>
@@ -156,11 +153,7 @@ Blas_2.cxx</p>
 </pre>
 
 
-<p>This function performs a matrix-vector product or a matrix-matrix
-product. You can specify a product with the transpose of the matrix,
- or the conjugate of the transpose. The size of matrices need
- to be compatible in order to complete the matrix-matrix product. 
-The matrix-matrix product is not available for sparse matrices.</p>
+<p>This function performs a matrix-vector product or a matrix-matrix product. You can specify a product with the transpose of the matrix, or the conjugate of the transpose. The size of matrices need to be compatible in order to complete the matrix-matrix product.  The matrix-matrix product is not available for sparse matrices.</p>
 
 
 <h4> Example : </h4>
@@ -231,9 +224,7 @@ Blas_3.cxx</p>
 </pre>
 
 
-<p>This function adds two vectors or two matrices. This function is
-available both for sparse or dense vectors/matrices. The size of
- the vectors or the matrices to add should be the same.</p>
+<p>This function adds two vectors or two matrices. This function is available both for sparse or dense vectors/matrices. The size of the vectors or the matrices to add should be the same.</p>
 
 
 <h4> Example : </h4>
@@ -282,11 +273,7 @@ Blas_1.cxx</p>
 </pre>
 
 
-<p>A vector is copied into another one. If BLAS is enabled, 
-the two dense vectors have to be of the same size. The operator = is
-more flexible.
-For sparse matrices, the function <code>Copy</code> is overloaded to
-enable the conversion between the different formats.</p>
+<p>A vector is copied into another one. If BLAS is enabled, the two dense vectors have to be of the same size. The operator = is more flexible.  For sparse matrices, the function <code>Copy</code> is overloaded to enable the conversion between the different formats.</p>
 
 
 <h4>Example : </h4>
@@ -332,8 +319,7 @@ Matrix_Conversions.cxx</p>
 </pre>
 
 
-<p>The two vectors are exchanged. If BLAS is enabled, 
-the two dense vectors have to be of the same size.</p>
+<p>The two vectors are exchanged. If BLAS is enabled, the two dense vectors have to be of the same size.</p>
 
 
 <h4>Example : </h4>
@@ -372,8 +358,7 @@ Blas_1.cxx</p>
 </pre>
 
 
-<p>This function constructs the Givens rotation G = [cos_, sin_; -sin_, cos_] that zeros the second
- entry of the two vector (a,b).</p>
+<p>This function constructs the Givens rotation G = [cos_, sin_; -sin_, cos_] that zeros the second entry of the two vector (a,b).</p>
 
 
 <h4>Example : </h4>
@@ -415,9 +400,7 @@ Blas_1.cxx</p>
 </pre>
 
 
-<p>This function returns the scalar product between two vectors. For
-<code>DotProdConj</code>, the first vector is conjugated.
-In the case of dense vectors, they have to be of the same size.</p>
+<p>This function returns the scalar product between two vectors. For <code>DotProdConj</code>, the first vector is conjugated.  In the case of dense vectors, they have to be of the same size.</p>
 
 
 <h4>Example : </h4>
@@ -457,8 +440,7 @@ Blas_1.cxx</p>
 </pre>
 
 
-<p>Each component of the vector is conjugated. In the case of real
-numbers, the vector is not modified.</p>
+<p>Each component of the vector is conjugated. In the case of real numbers, the vector is not modified.</p>
 
 
 <h4>Example : </h4>
@@ -491,8 +473,7 @@ Blas_1.cxx</p>
 </pre>
 
 
-<p>This function returns the index for which the vector reached its
-highest absolute value.</p>
+<p>This function returns the index for which the vector reached its highest absolute value.</p>
 
 
 <h4>Example : </h4>
@@ -648,8 +629,7 @@ Rank1Update(beta, Xr, Br);
 </pre>
 
 
-<p>This function adds a contribution of rank 2 to a symmetric or
-hermitian matrix.</p>
+<p>This function adds a contribution of rank 2 to a symmetric or Hermitian matrix.</p>
 
 
 <h4>Example : </h4>

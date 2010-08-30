@@ -43,8 +43,7 @@
 </pre>
 
 
-<p>This function sorts a vector with quick sort algorithm, and affects
-the permutation to other vectors.</p>
+<p>This function sorts a vector with quick sort algorithm, and affects the permutation to other vectors.</p>
 
 
 <h4> Example : </h4>
@@ -92,8 +91,7 @@ QuickSort(0, X.GetM()-1, X, Y, Z);
 
 
 
-<p>This function sorts a vector with merge sort algorithm, and affects
-the permutation to other vectors.</p>
+<p>This function sorts a vector with merge sort algorithm, and affects the permutation to other vectors.</p>
 
 
 <h4> Example : </h4>
@@ -147,8 +145,7 @@ MergeSort(0, X.GetM()-1, X, Y, Z);
 </pre>
 
 
-<p>This function sorts a vector and affects
-the permutation to other vectors.</p>
+<p>This function sorts a vector and affects the permutation to other vectors.</p>
 
 
 <h4> Example : </h4>
@@ -201,11 +198,7 @@ Sort(start_index, end_index, X);
 </pre>
 
 
-<p>This function sorts the first vector and removes duplicate
-elements. If a second vector is present in the arguments, the elements
-of the second vector are added when there are duplicate elements in
-the first vector. The vectors are not resized, and the first argument
- is an integer that will contain the new number of elements.</p>
+<p>This function sorts the first vector and removes duplicate elements. If a second vector is present in the arguments, the elements of the second vector are added when there are duplicate elements in the first vector. The vectors are not resized, and the first argument is an integer that will contain the new number of elements.</p>
 
 
 <h4> Example : </h4>

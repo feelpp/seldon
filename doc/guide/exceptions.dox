@@ -7,27 +7,21 @@
 
 <h2>Options</h2>
 
-<p>Exceptions are raised if an error is detected. %Seldon is able to
-check for several mistakes:</p>
+<p>Exceptions are raised if an error is detected. %Seldon is able to check for several mistakes:</p>
 
 <ul>
 
   <li>SELDON_CHECK_IO: checks input/output operations on disk.</li>
 
-  <li>SELDON_CHECK_MEMORY: checks memory allocations and
-  deallocations.</li>
+  <li>SELDON_CHECK_MEMORY: checks memory allocations and deallocations.</li>
 
-  <li>SELDON_CHECK_DIMENSIONS: checks that the dimensions of involved
-  structures are compatible. Notice that there are methods in which
-  the compatibility is not checked however.</li>
+  <li>SELDON_CHECK_DIMENSIONS: checks that the dimensions of involved structures are compatible. Notice that there are methods in which the compatibility is not checked however.</li>
 
-  <li>SELDON_CHECK_BOUNDS: checks that indices are not out of
-  range.</li>
+  <li>SELDON_CHECK_BOUNDS: checks that indices are not out of range.</li>
 
 </ul>
 
-<p>To enable <code>SELDON_CHECK_MEMORY</code>, for example, put
-(before <code>#include &lt;Seldon.hxx&gt;</code>):</p>
+<p>To enable <code>SELDON_CHECK_MEMORY</code>, for example, put (before <code>#include &lt;Seldon.hxx&gt;</code>):</p>
 
 \precode #define SELDON_CHECK_MEMORY\endprecode
 
@@ -37,24 +31,17 @@ check for several mistakes:</p>
 
   <li>SELDON_DEBUG_LEVEL_0: nothing is checked.</li>
 
-  <li>SELDON_DEBUG_LEVEL_1: equivalent to SELDON_CHECK_IO plus
-  SELDON_CHECK_MEMORY.</li>
+  <li>SELDON_DEBUG_LEVEL_1: equivalent to SELDON_CHECK_IO plus SELDON_CHECK_MEMORY.</li>
 
-  <li>SELDON_DEBUG_LEVEL_2: equivalent to SELDON_DEBUG_LEVEL_1 plus
-  SELDON_CHECK_DIMENSIONS.</li>
+  <li>SELDON_DEBUG_LEVEL_2: equivalent to SELDON_DEBUG_LEVEL_1 plus SELDON_CHECK_DIMENSIONS.</li>
 
-  <li>SELDON_DEBUG_LEVEL_3: equivalent to SELDON_DEBUG_LEVEL_2 plus
-  SELDON_CHECK_BOUNDS.</li>
+  <li>SELDON_DEBUG_LEVEL_3: equivalent to SELDON_DEBUG_LEVEL_2 plus SELDON_CHECK_BOUNDS.</li>
 
   <li>SELDON_DEBUG_LEVEL_4: equivalent to SELDON_DEBUG_LEVEL_3.</li>
 
 </ul>
 
-<p>In practice, it is advocated to choose SELDON_DEBUG_LEVEL_4 in the
-development stage and SELDON_DEBUG_LEVEL_2 for the stable
-version. Indeed SELDON_DEBUG_LEVEL_4 slows down the program but checks
-many things and SELDON_DEBUG_LEVEL_2 should not slow down the program
-and ensures that it is reasonably safe.</p>
+<p>In practice, it is advocated to choose SELDON_DEBUG_LEVEL_4 in the development stage and SELDON_DEBUG_LEVEL_2 for the stable version. Indeed SELDON_DEBUG_LEVEL_4 slows down the program but checks many things and SELDON_DEBUG_LEVEL_2 should not slow down the program and ensures that it is reasonably safe.</p>
 
 <p>Development stage:</p>
 \precode #define SELDON_DEBUG_LEVEL_4\endprecode
@@ -64,14 +51,7 @@ and ensures that it is reasonably safe.</p>
 
 <h2>Exceptions raised</h2>
 
-<p>The objects that may be launched by %Seldon are of type:
-<code>WrongArgument</code>, <code>NoMemory</code>, <code>WrongDim</code>,
-<code>WrongIndex</code>, <code>WrongRow</code>, <code>WrongCol</code>,
-<code>IOError</code> and <code>LapackError</code>. They all derive from
-<code>Error</code>. They provide the method <code>What</code> that returns a
-string explaining the error, and the method <code>CoutWhat</code> that
-displays on screen this explanation. Therefore, to catch an exception raised
-by %Seldon, put:</p>
+<p>The objects that may be launched by %Seldon are of type: <code>WrongArgument</code>, <code>NoMemory</code>, <code>WrongDim</code>, <code>WrongIndex</code>, <code>WrongRow</code>, <code>WrongCol</code>, <code>IOError</code> and <code>LapackError</code>. They all derive from <code>Error</code>. They provide the method <code>What</code> that returns a string explaining the error, and the method <code>CoutWhat</code> that displays on screen this explanation. Therefore, to catch an exception raised by %Seldon, put:</p>
 
 \precode catch(Seldon::Error& Err)
 {
@@ -116,8 +96,7 @@ Err.CoutWhat();
 #endif
 \endprecode
 
-<p>It is advocated that you enclose your code (in the <code>main</code>
-function) with <code>TRY;</code> and <code>END;</code>:</p>
+<p>It is advocated that you enclose your code (in the <code>main</code> function) with <code>TRY;</code> and <code>END;</code>:</p>
 
 \precode
 int main(int argc, char** argv)
@@ -134,21 +113,11 @@ int main(int argc, char** argv)
 
 <h2>Exceptions and debugging</h2>
 
-<p>Suppose your code contains an error and raises an exception. You probably
-want to identify the function that raised the exception. The error message
-should contain the name of the function. But you probably want to know the
-exact line where the error occurred and the sequence of calls. Then, you have
-two options, using a debugger.</p>
+<p>Suppose your code contains an error and raises an exception. You probably want to identify the function that raised the exception. The error message should contain the name of the function. But you probably want to know the exact line where the error occurred and the sequence of calls. Then, you have two options, using a debugger.</p>
 
-<p>One option is to place a breakpoint in <code>Error::Error(string function =
-"", string comment = "")</code> (see file share/Errors.cxx) because this
-constructor should be called before the exception is actually raised.</p>
+<p>One option is to place a breakpoint in <code>Error::Error(string function = "", string comment = "")</code> (see file share/Errors.cxx) because this constructor should be called before the exception is actually raised.</p>
 
-<p>Another option, more convenient because no breakpoint is to be placed, is
-to define <code>SELDON_WITH_ABORT</code>. With that flag activated, if a
-%Seldon exception is raised, the program will simply abort. The call stack is
-then at hand. See the example below, using gdb under Linux. The program <code>
-error.cpp</code> demonstrates the technique:</p>
+<p>Another option, more convenient because no breakpoint is to be placed, is to define <code>SELDON_WITH_ABORT</code>. With that flag activated, if a %Seldon exception is raised, the program will simply abort. The call stack is then at hand. See the example below, using gdb under Linux. The program <code> error.cpp</code> demonstrates the technique:</p>
 
 \precode
 #define SELDON_WITH_ABORT

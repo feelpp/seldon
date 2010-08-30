@@ -9,9 +9,7 @@
 
 <ul>
 
-  <li> <code>Vector2</code> is a structure that acts like a vector of
-  vectors. The inner vectors can be of any dimension, so that this structure
-  is more flexible than a matrix. </li>
+  <li> <code>Vector2</code> is a structure that acts like a vector of vectors. The inner vectors can be of any dimension, so that this structure is more flexible than a matrix. </li>
   
   <li> <code>Array3D</code> is a three-dimensional array.</li>
 
