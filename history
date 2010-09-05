@@ -1,3 +1,132 @@
+Version 5.1 (RC1 released on 2010-09-05)
+-----------
+
+* Improvements
+
+** New structures
+
+- Introduced 'Matrix<Collection>' which implements block matrices.
+- Introduced 'Matrix<FloatDouble, DenseSparseCollection>' which implements
+  heterogeneous (float/double dense/sparse) block matrices.
+- Introduced 'Vector<Collection>' which implements block vectors.
+- Introduced 'Vector<FloatDouble, DenseSparseCollection>' which implements
+  heterogeneous (float/double VectFull/VectSparse) block vectors.
+- Introduced the class 'Vector2' which handles vectors of vectors.
+- Introduced the class 'Vector3' which handles vectors of vectors of vectors.
+- Added support for sub-matrices.
+
+** Sparse matrices
+
+- Added facilities to read matrices from the Matrix Market.
+- Added 'Add(alpha, A, B)', 'Mlt(A, B, C)', 'MltNoTransTrans(A, B, C)' and
+  'MltAdd(alpha, A, B, beta, C)' for 'RowSparse' matrices.
+- Added 'ApplyInversePermutation' for 'RowSparse' and 'ColSparse' matrices.
+- Added 'Transpose' for 'RowSparse' matrices.
+- Added 'FillRand(Nelement)' and 'FillRand(Nelement, x)' to 'RowSparse' matrices.
+- Added 'Fill()', 'Fill(x)' and 'FillRand()' for Harwell-Boeing real matrices.
+- Added the methods 'SetIdentity', 'AddInteraction' and 'Zero' to
+  Harwell-Boeing real matrices.
+- Added 'GetRow', 'GetCol', 'SetRow' and 'SetCol' for 'RowSparse' matrices.
+- Added the generic function 'Copy(A, B)' for matrices. Added the function
+  'Copy' to convert from 'RowSparse' to 'ColSparse', from 'ColSymSparse' to
+  'RowSymSparse' and from 'ArrayRowSymSparse' to 'ColSparse'.
+- Added methods 'Val(int, int)' to sparse matrices.
+- Added 'GetSymmetricPattern(Matrix A, Matrix<int, Symmetric, RowSymSparse>& B)'.
+- Added 'WriteText(string)' and 'WriteText(ofstream&)' for
+  'ArrayComplexSparse' matrices.
+- Added two methods 'WriteText' for 'SymSparse' matrices.
+- Improved the conversion from coordinate format to 'RowSparse': duplicates
+  are now accepted.
+
+** Other structures and facilities
+
+- Added the allocator 'MallocObject' which allows to resize an array of
+  objects with a minimal number of recopies.
+- Added method 'Val(int)' to sparse vectors.
+- Added the methods 'SetData(const Vector<VectFull/VectSparse>&)' and the
+  typedef 'storage' in VectFull/VectSparse vectors.
+- Added 'Vector<T, VectFull>::Vector(int i, pointer data)'.
+- Added the optional argument 'with_size' to 'Vector<Vect_Full>::Read' and to
+  'Matrix_Pointers::Read' for the files or streams that do not contain the
+  vector length or the matrix dimensions.
+- Added the typedef declarations 'access_type' and 'const_access_type', and
+  added or extended the typedef declarations in many matrix structures.
+- Slightly modified 'Vector::GetNormInf' and 'Vector::GetNormInfIndex' so that
+  they may be compiled for vectors of Booleans.
+
+** Solvers
+
+- Initial import of the interface to Pastix (5.1.3).
+- Added 'PerformAnalysis' and 'PerformFactorization' to 'MatrixMumps' and
+  'MatrixUmfPack<double>'.
+- Added support for multiple right-hand sides with Mumps.
+- Added support for transposed matrices in the interface to SuperLU.
+- In the SuperLU interface, added 'GetLU(L, U, permuted)' so that the matrices
+  L and U may be accessed in 'ColSparse' format or 'RowSparse' format. Also
+  added 'GetRowPermutation' and 'GetColPermutation'.
+- Messages from Mumps, Pastix, UmfPack and SuperLU are now switched off by
+  default.
+- Added the function 'GetAndSolveLU(M, Y)' for sparse matrices.
+- Added 'SolveSylvester' for 'RowMajor' matrices in double precision.
+
+** Python and compiled library
+
+- Initial import of an experimental mechanism for the generation of a (rich)
+  compiled library.
+- Added 'ifstream' and 'ofstream' to the Python interface. This is useful for
+  the methods 'Read' and 'Write'.
+- Added 'VectorSparseDouble' and 'MatrixSparseDouble' to the Python interface.
+- The Python interface is now aware of the default arguments.
+
+** Other functions
+
+- Added support for Cholesky factorization, either with native C++ code or
+  with an interface to Cholmod.
+- Added incomplete factorization for symmetric matrices and unsymmetric
+  matrices.
+- Switched from 'QuickSort' to 'MergeSort' as default sorting algorithm.
+- Added the function 'Mlt(SeldonTrans&, const Matrix& M, const Vector& X,
+  Vector& Y)'.
+- Added 'ApplyPermutation' and 'ApplyInversePermutation' for row-major and
+  column-major dense matrices.
+
+* Bug Fixes
+
+- The constructor 'Matrix_ArrayComplexSparse(int i, int j)' swapped the number
+  of rows and the number of columns, in the case of a column-major matrix.
+- The copy constructors of several sparse matrices did not properly copy the
+  attributes 'ind_' and ptr_'.
+- In 'TransposeConj(Matrix& A)', the diagonal was not conjugated.
+- in 'Matrix<ArrayRowComplexSparse>::AddInteractionRow(int, int, IVect,
+  Vector<complex<T>, VectFull>&)': the imaginary part was not properly added.
+- Fixed bugs in 'GetSVD'. In the complex cases, the singular values were not
+  returned in a real-valued vector. The functions 'cgesvd_' and 'zgesvd_' were
+  not declared in "clapack.h". For 'RowMajor' matrices, the memory was not
+  allocated for the output matrices U and V^T.
+- 'MergeSort' did nothing!
+- In matrix conversions, there could be free/delete mismatches when the
+  allocators were badly mixed.
+- Bad calls to 'SetData' led to compilation errors in
+  'ConvertMatrix_from_Coordinates' for 'RowSparse', 'ColSparse',
+  'RowSymSparse' and 'ColSymSparse'.
+- 'CheckDim' was activated with 'SELDON_CHECK_BOUNDS instead of
+  'SELDON_CHECK_DIMENSIONS'.
+- A sparse matrix with 0 row can now be created.
+- Several constructors in the form 'Matrix(int, int)' were declared but not
+  defined.
+
+* Miscellaneous
+
+- Included "superlu/slu_zdefs.h" instead of "slu_zdefs.h" in the SuperLU
+  interface, so as to be consistent with the structure of common SuperLU
+  packages.
+- Renamed 'SELDON_WITH_CBLAS' to 'SELDON_WITH_BLAS'. For backward
+  compatibility, 'SELDON_WITH_CBLAS' is still valid.
+- Added a number of unit tests.
+- The user's guide is now written in Doxygen format, which gives a better
+  integration with the reference documentation.
+
+
 Version 5.0 (2009-05-23)
 -----------
 
