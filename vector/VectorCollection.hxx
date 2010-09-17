@@ -141,8 +141,8 @@ namespace Seldon
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
 
-    void Read(string FileName);
-    void Read(istream& FileStream);
+    void Read(string FileName, Vector<int, VectFull, MallocAlloc<int> >& length_);
+    void Read(istream& FileStream, Vector<int, VectFull, MallocAlloc<int> >& length_);
 
 
   };

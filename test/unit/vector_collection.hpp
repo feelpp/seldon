@@ -159,7 +159,7 @@ public:
   void test_write_read()
   {
     Nloop_ = 1;
-    Nvector_ = 20;
+    Nvector_ = 5;
     Nsub_vector_max_ = 10;
     m_ = 50;
     write_read();
@@ -702,6 +702,7 @@ public:
     srand(time(NULL));
 
     int length;
+    Vector<int, VectFull, MallocAlloc<int> > length_vector;
     typedef double real;
 
     for (int N = 0; N < Nloop_; N++)
@@ -710,10 +711,12 @@ public:
 
 	Vector<vector_real_dense, Collection> A, B;
 
+	length_vector.Clear();
 	vector_real_dense U;
 	for (int k = 0; k < Nvector_; k++)
 	  {
 	    length = rand() % Nsub_vector_max_ + 1;
+	    length_vector.PushBack(length);
 	    U.Reallocate(length);
 	    U.FillRand();
 	    A.AddVector(U);
@@ -722,7 +725,7 @@ public:
 
 	A.Write("test.bin");
 
-	B.Read("test.bin");
+	B.Read("test.bin", length_vector);
 
 	for (int j = 0; j < Nvector_; j++)
 	  for (int l = 0; l < A.GetVectorLength()(j); l++)

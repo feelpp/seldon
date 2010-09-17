@@ -609,11 +609,11 @@ namespace Seldon
 #endif
     if (with_size)
       FileStream
-        .write(reinterpret_cast<char*>(const_cast<int*>(&this->Nvector_)),
+        .write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
                sizeof(int));
 
     for (int i = 0; i < GetNvector(); i++)
-      vector_(i).Write(FileStream, with_size);
+      vector_(i).Write(FileStream, false);
 
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
@@ -690,7 +690,7 @@ namespace Seldon
   */
   template <class T, class Allocator >
   void Vector<T, Collection, Allocator>
-  ::Read(string FileName)
+  ::Read(string FileName, Vector<int, VectFull, MallocAlloc<int> >& length)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -702,7 +702,7 @@ namespace Seldon
                     string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->Read(FileStream);
+    this->Read(FileStream, length);
 
     FileStream.close();
   }
@@ -716,7 +716,8 @@ namespace Seldon
   */
   template <class T, class Allocator >
   void Vector<T, Collection, Allocator>
-  ::Read(istream& FileStream)
+  ::Read(istream& FileStream,
+         Vector<int, VectFull, MallocAlloc<int> >& length)
   {
 
 #ifdef SELDON_CHECK_IO
@@ -726,19 +727,33 @@ namespace Seldon
                     "The stream is not ready.");
 #endif
 
-    int* Nvector = new int;
-    FileStream.read(reinterpret_cast<char*>(Nvector), sizeof(int));
+    T working_vector;
+    working_vector.Read(FileStream);
+
+    Vector<int, VectFull, MallocAlloc<int> > length_sum;
+    int Nvector;
 
     Clear();
-    T U;
-    for (int i = 0; i < *Nvector; i++)
-      {
-	U.Read(FileStream);
-	AddVector(U);
-	U.Nullify();
-      }
+    Nvector = length.GetSize();
+    length_sum.Reallocate(Nvector);
+    length_sum(0) = length(0);
+    for (int i = 1; i < Nvector; i++)
+      length_sum(i) = length_sum(i - 1) + length(i);
 
-    delete Nvector;
+    T U, V;
+    U.SetData(length(0), &working_vector.GetData()[0]);
+    V.Copy(U);
+    AddVector(V);
+    U.Nullify();
+    V.Nullify();
+    for (int i = 1; i < Nvector; i++)
+      {
+	U.SetData(length(i), &working_vector.GetData()[length_sum(i - 1)]);
+	V.Copy(U);
+	AddVector(V);
+	U.Nullify();
+	V.Nullify();
+      }
 
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.
