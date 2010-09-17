@@ -198,6 +198,17 @@ namespace Seldon
   }
 
 
+  template <class T1, class Allocator1,
+	    class T2, class Allocator2>
+  void Copy(const Vector<T1, Collection, Allocator1>& X,
+	    Vector<T2, VectFull, Allocator2>& Y)
+  {
+    Y.Clear();
+    for (int i = 0; i < X.GetNvector(); i++)
+      Y.PushBack(X.GetVector(i));
+  }
+
+
   // COPY //
   //////////
 
