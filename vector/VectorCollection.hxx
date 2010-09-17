@@ -87,23 +87,22 @@ namespace Seldon
     void Clear();
     void Deallocate();
 
-    // Management of the vectors.
-    template <class Allocator0>
-    void AddVector(const Vector<typename T::value_type,
-                   typename T::storage, Allocator0>& vector);
-    //! Management of the vectors.
-    template <class Allocator0>
-    void AddVector(const Vector<typename T::value_type,
-                   typename T::storage, Allocator0>& vector, string name);
-    template <class Allocator0>
-    void SetVector(int i, const Vector<typename T::value_type,
-                   typename T::storage, Allocator0>& vector);
-    template <class Allocator0>
-    void SetVector(int i, const Vector<typename T::value_type,
-                   typename T::storage, Allocator0>& vector, string name);
-    template <class Allocator0>
-    void SetVector(string name, const Vector<typename T::value_type,
-                   typename T::storage, Allocator0>& vector);
+   // Management of the vectors.
+    template <class T0, class Storage0, class Allocator0>
+    void AddVector(const Vector<T0,
+                   Storage0, Allocator0>& vector);
+    template <class T0, class Storage0, class Allocator0>
+    void AddVector(const Vector<T0,
+                   Storage0, Allocator0>& vector, string name);
+    template <class T0, class Storage0, class Allocator0>
+    void SetVector(int i, const Vector<T0,
+                   Storage0, Allocator0>& vector);
+    template <class T0, class Storage0, class Allocator0>
+    void SetVector(int i, const Vector<T0,
+                   Storage0, Allocator0>& vector, string name);
+    template <class T0, class Storage0, class Allocator0>
+    void SetVector(string name, const Vector<T0,
+                   Storage0, Allocator0>& vector);
     void SetName(int i, string name);
 
     void SetData(const Vector<T, Collection, Allocator>& X);
