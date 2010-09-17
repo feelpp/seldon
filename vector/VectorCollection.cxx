@@ -145,10 +145,10 @@ namespace Seldon
     \param[in] vector vector to be appended.
   */
   template <class T, class Allocator >
-  template <class Allocator0>
+  template <class T0, class Storage0, class Allocator0>
   void Vector<T, Collection, Allocator>
-  ::AddVector(const Vector<typename T::value_type,
-              typename T::storage, Allocator0>& vector)
+  ::AddVector(const Vector<T0,
+              Storage0, Allocator0>& vector)
   {
     Nvector_++;
     length_.PushBack(0);
@@ -176,10 +176,10 @@ namespace Seldon
     \param[in] name name of the vector to be appended.
   */
   template <class T, class Allocator >
-  template <class Allocator0>
+  template <class T0, class Storage0, class Allocator0>
   void Vector<T, Collection, Allocator>
-  ::AddVector(const Vector<typename T::value_type,
-              typename T::storage, Allocator0>& vector,
+  ::AddVector(const Vector<T0,
+              Storage0, Allocator0>& vector,
 	      string name)
   {
     AddVector(vector);
@@ -193,10 +193,10 @@ namespace Seldon
     \param[in] vector new value of the vector.
   */
   template <class T, class Allocator >
-  template <class Allocator0>
+  template <class T0, class Storage0, class Allocator0>
   void Vector<T, Collection, Allocator>
-  ::SetVector(int i, const Vector<typename T::value_type,
-              typename T::storage, Allocator0>& vector)
+  ::SetVector(int i, const Vector<T0,
+              Storage0, Allocator0>& vector)
   {
     int size_difference;
     size_difference = vector.GetM() - vector_(i).GetM();
@@ -217,10 +217,9 @@ namespace Seldon
     \param[in] name new name of the  \a i th vector.
   */
   template <class T, class Allocator >
-  template <class Allocator0>
+  template <class T0, class Storage0, class Allocator0>
   void Vector<T, Collection, Allocator>
-  ::SetVector(int i, const Vector<typename T::value_type,
-              typename T::storage, Allocator0>& vector,
+  ::SetVector(int i, const Vector<T0, Storage0, Allocator0>& vector,
 	      string name)
   {
     SetVector(i, vector);
@@ -234,10 +233,10 @@ namespace Seldon
     \param[in] vector new value of the vector.
   */
   template <class T, class Allocator >
-  template <class Allocator0>
+  template <class T0, class Storage0, class Allocator0>
   void Vector<T, Collection, Allocator>
-  ::SetVector(string name, const Vector<typename T::value_type,
-              typename T::storage, Allocator0>& vector)
+  ::SetVector(string name, const Vector<T0,
+              Storage0, Allocator0>& vector)
   {
     map<string,int>::iterator label_iterator;
     label_iterator = label_map_.find(name);
@@ -274,6 +273,19 @@ namespace Seldon
 
     label_vector_[i] = name;
     label_map_[name] = i;
+  }
+
+
+  //! Changes the length of the collection and sets its data array.
+  template <class T, class Allocator >
+  void Vector<T, Collection, Allocator>
+  ::SetData(const Vector<T, Collection, Allocator>& X)
+  {
+    Clear();
+    for (int i = 0; i < X.GetNvector(); i++)
+      AddVector(X.GetVector(i));
+    label_map_.insert(X.label_map_.begin(), X.label_map_.end());
+    label_vector_.assign(X.label_vector_.begin(), X.label_vector_.end());
   }
 
 
@@ -544,6 +556,19 @@ namespace Seldon
   ///////////////////////
   // CONVENIENT METHOD //
   ///////////////////////
+
+
+  //! Fills the collection with a given value.
+  /*!
+    \param x value to fill the collection with.
+  */
+  template <class T, class Allocator>
+  template <class T0>
+  void Vector<T, Collection, Allocator>::Fill(const T0& x)
+  {
+    for (int i = 0; i < Nvector_; i++)
+      vector_(i).Fill(x);
+  }
 
 
   //! Displays the vector.
