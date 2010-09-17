@@ -172,6 +172,42 @@ namespace Seldon
   }
 
 
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3 beta, Vector<T4, Collection, Allocator4>& Y)
+  {
+    int ma = M.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
+#endif
+
+    Mlt(beta, Y);
+
+    typename T4::value_type zero(0);
+    typename T4::value_type temp;
+
+    int* ptr = M.GetPtr();
+    int* ind = M.GetInd();
+    typename Matrix<T1, Prop1, RowSparse, Allocator1>::pointer
+      data = M.GetData();
+
+    for (int i = 0; i < ma; i++)
+      {
+	temp = zero;
+	for (int j = ptr[i]; j < ptr[i+1]; j++)
+	  temp += data[j] * X(ind[j]);
+	Y(i) += alpha * temp;
+      }
+  }
+
+
   /*** Complex sparse matrices ***/
 
 
@@ -733,6 +769,54 @@ namespace Seldon
     T4 zero(0);
     T4 temp;
     T4 alpha_(alpha);
+
+    for (int i = 0; i < ma; i++)
+      {
+	temp = zero;
+	for (int j = 0; j < na; j++)
+	  temp += M(i, j) * X(j);
+	Y(i) += alpha_ * temp;
+      }
+  }
+
+
+  /*! \brief Performs the multiplication of a matrix with a vector, and adds
+    the result to another vector.
+   */
+  /*! It performs the operation \f$ Y = \alpha M X + \beta Y \f$ where \f$
+    \alpha \f$ and \f$ \beta \f$ are scalars, \f$ M \f$ is a \f$ m \times n
+    \f$ matrix, and \f$ X \f$ is a vector of length \f$ n \f$. The vector \f$
+    Y \f$ must be of length \f$ m \f$.
+    \param[in] alpha scalar.
+    \param[in] M m by n matrix.
+    \param[in] X vector of length n.
+    \param[in] beta scalar.
+    \param[in,out] Y vector of length m, result of the product of \a M by \a
+    X, times \a alpha, plus \a Y (on entry) times \a beta.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3 beta,
+	      Vector<T4, Collection, Allocator4>& Y)
+  {
+    int ma = M.GetM();
+    int na = M.GetN();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
+#endif
+
+    Mlt(beta, Y);
+
+    typename T4::value_type zero(0);
+    typename T4::value_type temp;
+    typename T4::value_type alpha_(alpha);
 
     for (int i = 0; i < ma; i++)
       {
