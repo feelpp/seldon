@@ -570,6 +570,8 @@ namespace Seldon
   }
 
 
+#ifndef SWIG
+
   //! Conversion from coordinate format to ColSparse.
   template<class T, class Prop, class Allocator1,
 	   class Allocator2, class Allocator3>
@@ -1082,6 +1084,8 @@ namespace Seldon
     A.Assemble();
   }
 
+
+#endif
 
   /*
     From CSR to other CSR formats.
