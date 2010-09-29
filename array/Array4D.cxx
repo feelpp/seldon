@@ -330,6 +330,23 @@ namespace Seldon
   }
 
 
+  //! Returns a pointer to an element of data array.
+  /*!
+    Returns a pointer to an element of data array.
+    \param i index along dimension #1.
+    \param j index along dimension #2.
+    \param k index along dimension #3.
+    \param l index along dimension #4.
+    \return A pointer to the data array.
+  */
+  template <class T, class Allocator>
+  typename Array4D<T, Allocator>::pointer Array4D<T, Allocator>
+  ::GetData(int i, int j, int k, int l) const
+  {
+    return data_ + i * length234_ + j * length34_ + k * length4_ + l;
+  }
+
+
   /**********************************
    * ELEMENT ACCESS AND AFFECTATION *
    **********************************/
