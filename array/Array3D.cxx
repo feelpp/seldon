@@ -300,6 +300,22 @@ namespace Seldon
   }
 
 
+  //! Returns a pointer to an element of data array.
+  /*!
+    Returns a pointer to an element of data array.
+    \param i index along dimension #1.
+    \param j index along dimension #2.
+    \param k index along dimension #3.
+    \return A pointer to the data array.
+  */
+  template <class T, class Allocator>
+  typename Array3D<T, Allocator>::pointer Array3D<T, Allocator>
+  ::GetData(int i, int j, int k) const
+  {
+    return data_ + i * length23_ + j * length3_ + k;
+  }
+
+
   /**********************************
    * ELEMENT ACCESS AND AFFECTATION *
    **********************************/
