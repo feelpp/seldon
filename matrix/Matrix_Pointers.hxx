@@ -132,6 +132,9 @@ namespace Seldon
     Matrix(int i, int j);
     Matrix(const Matrix<T, Prop, ColMajor, Allocator>& A);
 
+    void WriteColumn(string FileName, int col) const;
+    void WriteColumn(ostream& FileStream, int col) const;
+
 #ifndef SWIG
     template <class T0>
     Matrix<T, Prop, ColMajor, Allocator>& operator= (const T0& x);
