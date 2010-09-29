@@ -108,6 +108,18 @@ namespace Seldon
       return self->GetM();
     }
   }
+  %extend Vector<float, VectFull, MallocAlloc<float> >
+  {
+    float __getitem__(int index) {
+      return (*self)(index);
+    }
+    void __setitem__(int index, float value) {
+      (*self)(index) = value;
+    }
+    unsigned long __len__() {
+      return self->GetM();
+    }
+  }
   %extend Vector<double, VectFull, MallocAlloc<double> >
   {
     double __getitem__(int index) {
@@ -139,6 +151,36 @@ namespace Seldon
       return v;
     }
     void __setitem__(PyObject* args, int value)
+    {
+      int i, j;
+      int success = PyArg_ParseTuple(args, "ii", &i, &j);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      (*self)(i, j) = value;
+    }
+    unsigned long __len__()
+    {
+      return self->GetM();
+    }
+  }
+  %extend Matrix<float, General, RowMajor, MallocAlloc<float> >
+  {
+    float __getitem__(PyObject* args)
+    {
+      int i, j;
+      int success = PyArg_ParseTuple(args, "ii", &i, &j);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      return (*self)(i, j);
+    }
+    Seldon::Vector<float, Seldon::VectFull, Seldon::MallocAlloc<float> > __getitem__(int i)
+    {
+      Seldon::Vector<float, Seldon::VectFull, Seldon::MallocAlloc<float> > v(self->GetN());
+      for (int j = 0; j < self->GetN(); j++)
+	v(j) = (*self)(i, j);
+      return v;
+    }
+    void __setitem__(PyObject* args, float value)
     {
       int i, j;
       int success = PyArg_ParseTuple(args, "ii", &i, &j);
@@ -183,8 +225,12 @@ namespace Seldon
   }
 
   %template(IntMalloc) MallocAlloc<int>;
+  
   %template(BaseSeldonVectorInt) Vector_Base<int, MallocAlloc<int> >;
   %template(VectorInt) Vector<int, VectFull, MallocAlloc<int> >;
+  %template(FloatMalloc) MallocAlloc<float>;
+  %template(BaseSeldonVectorFloat) Vector_Base<float, MallocAlloc<float> >;
+  %template(VectorFloat) Vector<float, VectFull, MallocAlloc<float> >;
   %template(DoubleMalloc) MallocAlloc<double>;
   %template(BaseSeldonVectorDouble) Vector_Base<double, MallocAlloc<double> >;
   %template(VectorDouble) Vector<double, VectFull, MallocAlloc<double> >;
@@ -192,6 +238,9 @@ namespace Seldon
   %template(MatrixBaseInt) Matrix_Base<int, MallocAlloc<int> >;
   %template(MatrixPointersInt) Matrix_Pointers<int, General, RowMajor, MallocAlloc<int> >;
   %template(MatrixInt) Matrix<int, General, RowMajor, MallocAlloc<int> >;
+  %template(MatrixBaseFloat) Matrix_Base<float, MallocAlloc<float> >;
+  %template(MatrixPointersFloat) Matrix_Pointers<float, General, RowMajor, MallocAlloc<float> >;
+  %template(MatrixFloat) Matrix<float, General, RowMajor, MallocAlloc<float> >;
   %template(MatrixBaseDouble) Matrix_Base<double, MallocAlloc<double> >;
   %template(MatrixPointersDouble) Matrix_Pointers<double, General, RowMajor, MallocAlloc<double> >;
   %template(MatrixDouble) Matrix<double, General, RowMajor, MallocAlloc<double> >;
