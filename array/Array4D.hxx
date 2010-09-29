@@ -1,3 +1,4 @@
+// Copyright (C) 2010 Lin Wu
 // Copyright (C) 2001-2009 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,

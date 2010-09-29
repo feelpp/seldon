@@ -1,3 +1,4 @@
+// Copyright (C) 2010 Lin Wu
 // Copyright (C) 2001-2009 Vivien Mallet
 // Copyright (C) 2003-2009 Marc Duruflé
 //
