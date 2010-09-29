@@ -103,6 +103,7 @@ namespace Seldon
     void Print(int l) const;
 
     // Input/output functions.
+    void Append(string FileName) const;
     void Write(string FileName, bool with_size = true) const;
     void Write(ostream& FileStream, bool with_size = true) const;
     void WriteText(string FileName) const;

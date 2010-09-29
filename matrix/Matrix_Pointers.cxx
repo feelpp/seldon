@@ -797,6 +797,32 @@ namespace Seldon
    **************************/
 
 
+  //! Appends the matrix in a file.
+  /*!  
+    Appends the matrix in a file in binary format. The matrix elements are
+    appended in the same order as in memory (e.g. row-major storage).
+    \param FileName output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Pointers<T, Prop, Storage, Allocator>
+  ::Append(string FileName) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str(), ofstream::binary | ios::app);
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_Pointers::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Write(FileStream, false);
+
+    FileStream.close();
+  }
+
+
   //! Writes the matrix in a file.
   /*!
     Stores the matrix in a file in binary format.
