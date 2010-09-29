@@ -47,10 +47,13 @@ namespace Seldon
                                              Vector<double, VectFull>& Val,
                                              int index = 0, bool sym = false);
 
+#ifndef SWIG
   template void ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
                                                Vector<double, VectFull>& Val,
                                                Matrix<double, General, RowSparse, MallocAlloc<double> >& A,
                                                int index = 0);
+#endif
+
 }
 
 
