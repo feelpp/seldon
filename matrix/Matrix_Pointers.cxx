@@ -1311,6 +1311,72 @@ namespace Seldon
    *****************/
 
 
+  //! Writes one row of matrix in a file.
+  /*!
+    Stores one row of matrix in a file in binary format.
+    The row indexed by \a row is written.
+    \param FileName output file name.
+    \param row row index.
+  */
+  template <class T, class Prop, class Allocator>
+  void Matrix<T, Prop, RowMajor, Allocator>
+  ::WriteRow(string FileName, int row) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix::WriteRow(string FileName, int row)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->WriteRow(FileStream, row);
+
+    FileStream.close();
+  }
+
+
+  //! Writes one row of matrix in an output stream.
+  /*!
+    Stores one row of matrix in an output stream in binary format.
+    The row indexed by \a row is written.
+    \param FileStream output stream.
+    \param row row index.
+  */
+  template <class T, class Prop, class Allocator>
+  void Matrix<T, Prop, RowMajor, Allocator>
+  ::WriteRow(ostream& FileStream, int row) const
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    if (row < 0 || row >= this->m_)
+      throw WrongRow("Matrix::WriteRow(ostream& FileStream, int row)",
+		     string("Index should be in [0, ")
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(row) + ".");
+#endif
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix::WriteRow(ostream& FileStream, int rowm)",
+		    "The stream is not ready.");
+#endif
+
+    FileStream.write(reinterpret_cast<char*>(this->me_[row]),
+		     this->n_ * sizeof(value_type));
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was written.
+    if (!FileStream.good())
+      throw IOError("Matrix::WriteRow(ostream& FileStream, int row)",
+                    "Output operation failed.");
+#endif
+
+  }
+
+
   //! Fills the matrix with a given value.
   /*!
     \param x the value to fill the matrix with.
