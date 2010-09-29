@@ -44,6 +44,13 @@ namespace Seldon
   template class Matrix_Pointers<double, General, RowMajor, MallocAlloc<double> >;
   template class Matrix<double, General, RowMajor, MallocAlloc<double> >;
 
+  template class Array3D<int, MallocAlloc<int> >;
+  template class Array3D<float, MallocAlloc<float> >;
+  template class Array3D<double, MallocAlloc<double> >;
+  template class Array4D<int, MallocAlloc<int> >;
+  template class Array4D<float, MallocAlloc<float> >;
+  template class Array4D<double, MallocAlloc<double> >;
+
   template class Vector<double, VectSparse, MallocAlloc<double> >;
 
   template class Matrix_Sparse<double, General, RowSparse, MallocAlloc<double> >;

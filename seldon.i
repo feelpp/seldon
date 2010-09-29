@@ -87,6 +87,8 @@ namespace std
 %include "share/Common.hxx"
 %include "share/Storage.hxx"
 %include "share/Properties.hxx"
+%include "array/Array3D.hxx"
+%include "array/Array4D.hxx"
 %include "vector/Vector.hxx"
 %include "vector/SparseVector.hxx"
 %include "matrix/Matrix_Base.hxx"
@@ -224,6 +226,272 @@ namespace Seldon
     }
   }
 
+  %extend Array3D<int, MallocAlloc<int> >
+  {
+    int __getitem__(PyObject* args)
+    {
+      int i, j, k;
+      int success = PyArg_ParseTuple(args, "iii", &i, &j, &k);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      return (*self)(i, j, k);
+    }
+    Seldon::Vector<int, Seldon::VectFull, Seldon::MallocAlloc<int> > __getitem__(int i, int j)
+    {
+      Seldon::Vector<int, Seldon::VectFull, Seldon::MallocAlloc<int> > v(self->GetLength3());
+      for (int k = 0; k < self->GetLength3(); k++)
+	v(k) = (*self)(i, j, k);
+      return v;
+    }
+    Seldon::Matrix<int, Seldon::General, Seldon::RowMajor, Seldon::MallocAlloc<int> >
+      __getitem__(int i)
+    {
+      Seldon::Matrix<int, Seldon::General, Seldon::RowMajor, Seldon::MallocAlloc<int> >
+        m(self->GetLength2(), self->GetLength3());
+      for (int j = 0; j < self->GetLength2(); j++)
+        for (int k = 0; k < self->GetLength3(); k++)
+          m(j, k) = (*self)(i, j, k);
+      return m;
+    }
+    void __setitem__(PyObject* args, int value)
+    {
+      int i, j, k;
+      int success = PyArg_ParseTuple(args, "iii", &i, &j, &k);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      (*self)(i, j, k) = value;
+    }
+    unsigned long __len__() {
+      return self->GetLength1();
+    }
+  }
+  %extend Array3D<float, MallocAlloc<float> >
+  {
+    float __getitem__(PyObject* args)
+    {
+      int i, j, k;
+      int success = PyArg_ParseTuple(args, "iii", &i, &j, &k);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      return (*self)(i, j, k);
+    }
+    Seldon::Vector<float, Seldon::VectFull, Seldon::MallocAlloc<float> > __getitem__(int i, int j)
+    {
+      Seldon::Vector<float, Seldon::VectFull, Seldon::MallocAlloc<float> > v(self->GetLength3());
+      for (int k = 0; k < self->GetLength3(); k++)
+	v(k) = (*self)(i, j, k);
+      return v;
+    }
+    Seldon::Matrix<float, Seldon::General, Seldon::RowMajor, Seldon::MallocAlloc<float> >
+      __getitem__(int i)
+    {
+      Seldon::Matrix<float, Seldon::General, Seldon::RowMajor, Seldon::MallocAlloc<float> >
+        m(self->GetLength2(), self->GetLength3());
+      for (int j = 0; j < self->GetLength2(); j++)
+        for (int k = 0; k < self->GetLength3(); k++)
+          m(j, k) = (*self)(i, j, k);
+      return m;
+    }
+    void __setitem__(PyObject* args, float value)
+    {
+      int i, j, k;
+      int success = PyArg_ParseTuple(args, "iii", &i, &j, &k);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      (*self)(i, j, k) = value;
+    }
+    unsigned long __len__() {
+      return self->GetLength1();
+    }
+  }
+  %extend Array3D<double, MallocAlloc<double> >
+  {
+    double __getitem__(PyObject* args)
+    {
+      int i, j, k;
+      int success = PyArg_ParseTuple(args, "iii", &i, &j, &k);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      return (*self)(i, j, k);
+    }
+    Seldon::Vector<double, Seldon::VectFull, Seldon::MallocAlloc<double> > __getitem__(int i, int j)
+    {
+      Seldon::Vector<double, Seldon::VectFull, Seldon::MallocAlloc<double> > v(self->GetLength3());
+      for (int k = 0; k < self->GetLength3(); k++)
+	v(k) = (*self)(i, j, k);
+      return v;
+    }
+    Seldon::Matrix<double, Seldon::General, Seldon::RowMajor, Seldon::MallocAlloc<double> >
+      __getitem__(int i)
+    {
+      Seldon::Matrix<double, Seldon::General, Seldon::RowMajor, Seldon::MallocAlloc<double> >
+        m(self->GetLength2(), self->GetLength3());
+      for (int j = 0; j < self->GetLength2(); j++)
+        for (int k = 0; k < self->GetLength3(); k++)
+          m(j, k) = (*self)(i, j, k);
+      return m;
+    }
+    void __setitem__(PyObject* args, double value)
+    {
+      int i, j, k;
+      int success = PyArg_ParseTuple(args, "iii", &i, &j, &k);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      (*self)(i, j, k) = value;
+    }
+    unsigned long __len__() {
+      return self->GetLength1();
+    }
+  }
+
+  %extend Array4D<int, MallocAlloc<int> >
+  {
+    int __getitem__(PyObject* args)
+    {
+      int i, j, k, l;
+      int success = PyArg_ParseTuple(args, "iiii", &i, &j, &k, &l);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      return (*self)(i, j, k, l);
+    }
+    Seldon::Vector<int, Seldon::VectFull, Seldon::MallocAlloc<int> > __getitem__(int i, int j, int k)
+    {
+      Seldon::Vector<int, Seldon::VectFull, Seldon::MallocAlloc<int> > v(self->GetLength4());
+      for (int l = 0; l < self->GetLength4(); l++)
+	v(l) = (*self)(i, j, k, l);
+      return v;
+    }
+    Seldon::Matrix<int, Seldon::General, Seldon::RowMajor, Seldon::MallocAlloc<int> >
+      __getitem__(int i, int j)
+    {
+      Seldon::Matrix<int, Seldon::General, Seldon::RowMajor, Seldon::MallocAlloc<int> >
+        m(self->GetLength3(), self->GetLength4());
+      for (int k = 0; k < self->GetLength3(); k++)
+        for (int l = 0; l < self->GetLength4(); l++)
+          m(k, l) = (*self)(i, j, k, l);
+      return m;
+    }
+    Seldon::Array3D<int, Seldon::MallocAlloc<int> > __getitem__(int i)
+    {
+      Seldon::Array3D<int, Seldon::MallocAlloc<int> >
+        a(self->GetLength2(), self->GetLength3(), self->GetLength4());
+      for (int j = 0; j < self->GetLength2(); j++)
+        for (int k = 0; k < self->GetLength3(); k++)
+          for (int l = 0; l < self->GetLength4(); l++)
+            a(j, k, l) = (*self)(i, j, k, l);
+      return a;
+    }
+    void __setitem__(PyObject* args, int value)
+    {
+      int i, j, k, l;
+      int success = PyArg_ParseTuple(args, "iiii", &i, &j, &k, &l);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      (*self)(i, j, k, l) = value;
+    }
+    unsigned long __len__() {
+      return self->GetLength1();
+    }
+  }
+  %extend Array4D<float, MallocAlloc<float> >
+  {
+    float __getitem__(PyObject* args)
+    {
+      int i, j, k, l;
+      int success = PyArg_ParseTuple(args, "iiii", &i, &j, &k, &l);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      return (*self)(i, j, k, l);
+    }
+    Seldon::Vector<float, Seldon::VectFull, Seldon::MallocAlloc<float> > __getitem__(int i, int j, int k)
+    {
+      Seldon::Vector<float, Seldon::VectFull, Seldon::MallocAlloc<float> > v(self->GetLength4());
+      for (int l = 0; l < self->GetLength4(); l++)
+	v(l) = (*self)(i, j, k, l);
+      return v;
+    }
+    Seldon::Matrix<float, Seldon::General, Seldon::RowMajor, Seldon::MallocAlloc<float> >
+      __getitem__(int i, int j)
+    {
+      Seldon::Matrix<float, Seldon::General, Seldon::RowMajor, Seldon::MallocAlloc<float> >
+        m(self->GetLength3(), self->GetLength4());
+      for (int k = 0; k < self->GetLength3(); k++)
+        for (int l = 0; l < self->GetLength4(); l++)
+          m(k, l) = (*self)(i, j, k, l);
+      return m;
+    }
+    Seldon::Array3D<float, Seldon::MallocAlloc<float> > __getitem__(int i)
+    {
+      Seldon::Array3D<float, Seldon::MallocAlloc<float> >
+        a(self->GetLength2(), self->GetLength3(), self->GetLength4());
+      for (int j = 0; j < self->GetLength2(); j++)
+        for (int k = 0; k < self->GetLength3(); k++)
+          for (int l = 0; l < self->GetLength4(); l++)
+            a(j, k, l) = (*self)(i, j, k, l);
+      return a;
+    }
+    void __setitem__(PyObject* args, float value)
+    {
+      int i, j, k, l;
+      int success = PyArg_ParseTuple(args, "iiii", &i, &j, &k, &l);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      (*self)(i, j, k, l) = value;
+    }
+    unsigned long __len__() {
+      return self->GetLength1();
+    }
+  }
+  %extend Array4D<double, MallocAlloc<double> >
+  {
+    double __getitem__(PyObject* args)
+    {
+      int i, j, k, l;
+      int success = PyArg_ParseTuple(args, "iiii", &i, &j, &k, &l);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      return (*self)(i, j, k, l);
+    }
+    Seldon::Vector<double, Seldon::VectFull, Seldon::MallocAlloc<double> > __getitem__(int i, int j, int k)
+    {
+      Seldon::Vector<double, Seldon::VectFull, Seldon::MallocAlloc<double> > v(self->GetLength4());
+      for (int l = 0; l < self->GetLength4(); l++)
+	v(l) = (*self)(i, j, k, l);
+      return v;
+    }
+    Seldon::Matrix<double, Seldon::General, Seldon::RowMajor, Seldon::MallocAlloc<double> >
+      __getitem__(int i, int j)
+    {
+      Seldon::Matrix<double, Seldon::General, Seldon::RowMajor, Seldon::MallocAlloc<double> >
+        m(self->GetLength3(), self->GetLength4());
+      for (int k = 0; k < self->GetLength3(); k++)
+        for (int l = 0; l < self->GetLength4(); l++)
+          m(k, l) = (*self)(i, j, k, l);
+      return m;
+    }
+    Seldon::Array3D<double, Seldon::MallocAlloc<double> > __getitem__(int i)
+    {
+      Seldon::Array3D<double, Seldon::MallocAlloc<double> >
+        a(self->GetLength2(), self->GetLength3(), self->GetLength4());
+      for (int j = 0; j < self->GetLength2(); j++)
+        for (int k = 0; k < self->GetLength3(); k++)
+          for (int l = 0; l < self->GetLength4(); l++)
+            a(j, k, l) = (*self)(i, j, k, l);
+      return a;
+    }
+    void __setitem__(PyObject* args, double value)
+    {
+      int i, j, k, l;
+      int success = PyArg_ParseTuple(args, "iiii", &i, &j, &k, &l);
+      if (!success)
+	throw std::out_of_range("Failed!");
+      (*self)(i, j, k, l) = value;
+    }
+    unsigned long __len__() {
+      return self->GetLength1();
+    }
+  }
+
   %template(IntMalloc) MallocAlloc<int>;
   
   %template(BaseSeldonVectorInt) Vector_Base<int, MallocAlloc<int> >;
@@ -244,6 +512,13 @@ namespace Seldon
   %template(MatrixBaseDouble) Matrix_Base<double, MallocAlloc<double> >;
   %template(MatrixPointersDouble) Matrix_Pointers<double, General, RowMajor, MallocAlloc<double> >;
   %template(MatrixDouble) Matrix<double, General, RowMajor, MallocAlloc<double> >;
+
+  %template(Array3DInt) Array3D<int, MallocAlloc<int> >;
+  %template(Array3DFloat) Array3D<float, MallocAlloc<float> >;
+  %template(Array3DDouble) Array3D<double, MallocAlloc<double> >;
+  %template(Array4DInt) Array4D<int, MallocAlloc<int> >;
+  %template(Array4DFloat) Array4D<float, MallocAlloc<float> >;
+  %template(Array4DDouble) Array4D<double, MallocAlloc<double> >;
 
   %template(VectorSparseDouble) Vector<double, VectSparse, MallocAlloc<double> >;
 

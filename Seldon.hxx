@@ -59,6 +59,8 @@ namespace Seldon
 #endif
 
 #include "array/Array3D.cxx"
+#include "array/Array4D.cxx"
+#include "array/Array.cxx"
 #include "matrix/Matrix_Base.cxx"
 #include "matrix/Matrix_Pointers.cxx"
 #include "matrix/Matrix_Triangular.cxx"
