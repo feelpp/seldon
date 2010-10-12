@@ -72,6 +72,7 @@ namespace Seldon
     void Resize(int i, int j);
 
     // Element access and affectation.
+    pointer GetDataElement(int i, int j) const;
     reference operator() (int i, int j);
 #ifndef SWIG
     const_reference operator() (int i, int j) const;

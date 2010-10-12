@@ -444,6 +444,23 @@ namespace Seldon
    **********************************/
 
 
+  //! Returns a pointer to a data element.
+  /*!
+    \param i index along dimension #1.
+    \param j index along dimension #2.
+    \return A pointer to the data element.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  typename Matrix_Pointers<T, Prop, Storage, Allocator>::pointer
+  Matrix_Pointers<T, Prop, Storage, Allocator>::GetDataElement(int i, int j)
+    const
+  {
+    int lgth = Storage::GetSecond(this->m_, this->n_);
+    return this->data_ + Storage::GetFirst(i, j) * lgth
+      + Storage::GetSecond(i, j);
+  }
+
+
   //! Access operator.
   /*!
     Returns the value of element (i, j).
