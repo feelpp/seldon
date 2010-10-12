@@ -310,7 +310,7 @@ namespace Seldon
   */
   template <class T, class Allocator>
   typename Array3D<T, Allocator>::pointer Array3D<T, Allocator>
-  ::GetData(int i, int j, int k) const
+  ::GetDataPointer(int i, int j, int k) const
   {
     return data_ + i * length23_ + j * length3_ + k;
   }

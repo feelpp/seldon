@@ -452,7 +452,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   typename Matrix_Pointers<T, Prop, Storage, Allocator>::pointer
-  Matrix_Pointers<T, Prop, Storage, Allocator>::GetDataElement(int i, int j)
+  Matrix_Pointers<T, Prop, Storage, Allocator>::GetDataPointer(int i, int j)
     const
   {
     int lgth = Storage::GetSecond(this->m_, this->n_);

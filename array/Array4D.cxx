@@ -342,7 +342,7 @@ namespace Seldon
   */
   template <class T, class Allocator>
   typename Array4D<T, Allocator>::pointer Array4D<T, Allocator>
-  ::GetData(int i, int j, int k, int l) const
+  ::GetDataPointer(int i, int j, int k, int l) const
   {
     return data_ + i * length234_ + j * length34_ + k * length4_ + l;
   }

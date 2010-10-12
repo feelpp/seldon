@@ -87,7 +87,7 @@ namespace Seldon
     int GetSize() const;
     int GetDataSize() const;
     pointer GetData() const;
-    pointer GetData(int i, int j, int k, int l) const;
+    pointer GetDataPointer(int i, int j, int k, int l) const;
 
     // Memory management.
     void Reallocate(int i, int j, int k, int l);
