@@ -87,11 +87,10 @@ namespace Seldon
     times \a alpha. It must have the right length on entry: it will not be
     resized.
   */
-  template <class T0,
-	    class T1, class Prop1, class Storage1, class Allocator1,
+  template <class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3, class Storage3, class Allocator3>
-  void Mlt(const T0 alpha,
+  void Mlt(const T3& alpha,
 	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
 	   const Vector<T2, Storage2, Allocator2>& X,
 	   Vector<T3, Storage3, Allocator3>& Y)
@@ -115,7 +114,7 @@ namespace Seldon
   template <class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3, class Storage3, class Allocator3>
-  void Mlt(const class_SeldonTrans& Trans,
+  void Mlt(const SeldonTranspose& Trans,
 	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
 	   const Vector<T2, Storage2, Allocator2>& X,
 	   Vector<T3, Storage3, Allocator3>& Y)
@@ -123,8 +122,8 @@ namespace Seldon
     Y.Fill(T2(0));
     MltAdd(T2(1), Trans, M, X, T3(0), Y);
   }
-
-
+    
+  
   // MLT //
   /////////
 
