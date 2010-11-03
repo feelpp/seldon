@@ -117,6 +117,9 @@ namespace Seldon
     const Vector<int, VectFull, MallocAlloc<int> >& GetVectorLength() const;
     const Vector<int, VectFull, MallocAlloc<int> >& GetLengthSum() const;
 
+    int GetVectorIndex(string name) const;
+    int GetIndex(string name) const;
+
     collection_reference GetVector();
     const_collection_reference GetVector() const;
     vector_reference GetVector(int i);
@@ -131,6 +134,8 @@ namespace Seldon
     (const Vector<T, Collection, Allocator>& X);
 
     void Copy(const Vector<T, Collection, Allocator>& X);
+    template <class T0, class Allocator0>
+    void Copy(const Vector<T0, VectFull, Allocator0>& X);
 
     template <class T0>
     Vector<T, Collection, Allocator>& operator*= (const T0& X);

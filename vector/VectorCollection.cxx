@@ -367,6 +367,41 @@ namespace Seldon
   }
 
 
+  //! Returns the vector index of the aggregated vector named \a name.
+  /*!
+    \param[in] name name of the aggregated vector.
+    \return The vector index of the aggregated vector.
+  */
+  template <class T, class Allocator >
+  inline int Vector<T, Collection, Allocator>
+  ::GetVectorIndex(string name) const
+  {
+    map<string,int>::const_iterator label_iterator = label_map_.find(name);
+    if (label_iterator == label_map_.end())
+      throw WrongArgument("VectorCollection::GetVectorIndex(string name)",
+			  "Unknown vector name: \"" + name + "\".");
+    return label_iterator->second;
+  }
+
+
+  /*! \brief Returns the index of the first element of the aggregated vector
+    named \a name. */
+  /*!
+    \param[in] name name of the aggregated vector.
+    \return The index of the first element of the aggregated vector.
+  */
+  template <class T, class Allocator >
+  inline int Vector<T, Collection, Allocator>::GetIndex(string name) const
+  {
+    map<string,int>::const_iterator label_iterator = label_map_.find(name);
+    if (label_iterator == label_map_.end())
+      throw WrongArgument("VectorCollection::GetIndex(string name)",
+			  string("Unknown vector name: \"") + name + "\".");
+    return (label_iterator->second == 0) ?
+      0 : length_sum_(label_iterator->second - 1);
+  }
+
+
   //! Returns the list of vectors.
   /*!
     \return The list of the aggregated vectors.
@@ -539,6 +574,30 @@ namespace Seldon
       AddVector(X.GetVector(i));
     label_map_.insert(X.label_map_.begin(), X.label_map_.end());
     label_vector_.assign(X.label_vector_.begin(), X.label_vector_.end());
+  }
+
+
+  //! Copies the values of a full vector into the current vector.
+  /*!
+    \param[in] X full vector to be copied.
+    \note Memory is duplicated: 'X' is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Allocator >
+  template <class T0, class Allocator0>
+  inline void Vector<T, Collection, Allocator>
+  ::Copy(const Vector<T0, VectFull, Allocator0>& X)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    if (this->m_ != X.GetM())
+      throw WrongIndex("VectorCollection::Copy(X)",
+		       string("The size of X should be equal to ")
+                       + to_str(this->m_ - 1)
+		       + ", but is equal to " + to_str(X.GetM()) + ".");
+#endif
+
+    for (int i = 0; i < X.GetM(); i++)
+      (*this)(i) = X(i);
   }
 
 
