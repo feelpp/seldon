@@ -57,6 +57,8 @@ namespace Seldon
     typedef collection_type& collection_reference;
     typedef const collection_type& const_collection_reference;
 
+    typedef Collection storage;
+
     // Attributes.
   protected:
     // Number of vectors.
@@ -104,6 +106,7 @@ namespace Seldon
                    typename T::storage, Allocator0>& vector);
     void SetName(int i, string name);
 
+    void SetData(const Vector<T, Collection, Allocator>& X);
     void Nullify();
 
     // Basic methods.
@@ -133,6 +136,8 @@ namespace Seldon
     Vector<T, Collection, Allocator>& operator*= (const T0& X);
 
     // Convenient method.
+    template <class T0>
+    void Fill(const T0& x);
     void Print() const;
 
     // Input/output functions.

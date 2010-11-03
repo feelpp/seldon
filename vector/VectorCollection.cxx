@@ -277,6 +277,23 @@ namespace Seldon
   }
 
 
+  //! Changes the length of the collection and sets its data array.
+  /*!
+    \param[in] X collection with the vectors to which the current collection
+    will point on exit.
+  */
+  template <class T, class Allocator >
+  void Vector<T, Collection, Allocator>
+  ::SetData(const Vector<T, Collection, Allocator>& X)
+  {
+    Clear();
+    for (int i = 0; i < X.GetNvector(); i++)
+      AddVector(X.GetVector(i));
+    label_map_.insert(X.label_map_.begin(), X.label_map_.end());
+    label_vector_.assign(X.label_vector_.begin(), X.label_vector_.end());
+  }
+
+
   //! Nullifies vectors of the collection without memory deallocation.
   template <class T, class Allocator >
   void Vector<T, Collection, Allocator>::Nullify()
@@ -544,6 +561,19 @@ namespace Seldon
   ///////////////////////
   // CONVENIENT METHOD //
   ///////////////////////
+
+
+  //! Fills the collection with a given value.
+  /*!
+    \param x value to fill the collection with.
+  */
+  template <class T, class Allocator>
+  template <class T0>
+  void Vector<T, Collection, Allocator>::Fill(const T0& x)
+  {
+    for (int i = 0; i < Nvector_; i++)
+      vector_(i).Fill(x);
+  }
 
 
   //! Displays the vector.
