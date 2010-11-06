@@ -206,6 +206,39 @@ namespace Seldon
   }
 
 
+  //! Changes the size of the array and sets its data array
+  //! (low level method).
+  /*!
+    The 3D array is first cleared (memory is freed). The 3D array is then
+    resized to a i x j x k, and the data array of the 3D array is set to
+    'data'.  'data' elements are not duplicated: the new data array of the 3D
+    array is the 'data' array. It is useful to create a 3D array from
+    pre-existing data.
+    \param i length in dimension #1.
+    \param j length in dimension #2.
+    \param k length in dimension #3.
+    \param data new array storing elements.
+    \warning 'data' has to be used carefully outside the object.
+    Unless you use 'Nullify', 'data' will be freed by the destructor,
+    which means that 'data' must have been allocated carefully. The matrix
+    allocator should be compatible.
+    \note This method should only be used by advanced users.
+  */
+  template <class T, class Allocator>
+  inline void Array3D<T, Allocator>::SetData(int i, int j, int k, 
+					     typename Array3D<T, Allocator>
+					     ::pointer data)
+  {
+    Clear();
+    
+    length1_ = i;
+    length2_ = j;
+    length3_ = k;
+    length23_ = j * k;
+    data_ = data;
+  }
+
+
   //! Clears the array.
   /*!
     Destructs the array.
