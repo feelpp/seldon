@@ -86,6 +86,7 @@ namespace Seldon
     // Memory management.
     void Reallocate(int i, int j, int k);
     void SetData(int i, int j, int k, pointer data);
+    void Nullify();
     void Clear();
 
     // Element access and affectation.

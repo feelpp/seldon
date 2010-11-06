@@ -239,6 +239,22 @@ namespace Seldon
   }
 
 
+  //! Clears the 3D array without releasing memory.
+  /*!
+    On exit, the 3D array is empty and the memory has not been released.
+    It is useful for low level manipulations on a 3D arrat instance.
+  */
+  template <class T, class Allocator>
+  inline void Array3D<T, Allocator>::Nullify()
+  {
+    length1_ = 0;
+    length2_ = 0;
+    length3_ = 0;
+    length23_ = 0;
+    data_ = NULL;
+  }
+
+
   //! Clears the array.
   /*!
     Destructs the array.
