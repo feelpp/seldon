@@ -557,6 +557,28 @@ namespace Seldon
   }
 
 
+  //! Adds another vector to a vector.
+  /*!
+    \param rhs another vector.
+  */
+  template <class T, class Allocator>
+  inline Vector<T, VectFull, Allocator>& Vector<T, VectFull, Allocator>
+  ::operator+= (const Vector<T, VectFull, Allocator>& rhs)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (rhs.GetLength() != this->GetLength())
+      throw WrongDim("Vector<VectFull>::operator+=(Vector)",
+		     "Inconsistent vector sizes.");
+#endif
+
+    for (int i = 0; i < this->m_; i++)
+      this->data_[i] += rhs(i);
+
+    return *this;
+  }
+
+
   //! Appends an element to the vector.
   /*!
     \param x element to be appended.
