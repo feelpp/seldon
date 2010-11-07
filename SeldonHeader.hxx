@@ -381,6 +381,29 @@ extern "C"
 #endif
 #endif // SELDON_WITH_LAPACK.
 
+// Arpack interface.
+#ifdef SELDON_WITH_ARPACK
+// Arpack interface.
+#undef ARPACK_INTEGER
+#define ARPACK_INTEGER int
+#undef ARPACK_REAL
+#define ARPACK_REAL float
+#undef ARPACK_DOUBLEREAL
+#define ARPACK_DOUBLEREAL double
+#undef ARPACK_COMPLEX
+#define ARPACK_COMPLEX void
+#undef ARPACK_DOUBLECOMPLEX
+#define ARPACK_DOUBLECOMPLEX void
+#undef ARPACK_LOGICAL
+#define ARPACK_LOGICAL int
+extern "C"
+{
+#include "computation/interfaces/carpack.h"
+}
+#include "computation/interfaces/arpack.hxx"
+#include "computation/interfaces/ArpackSolver.hxx"
+#endif // SELDON_WITH_ARPACK.
+
 namespace Seldon
 {
 
