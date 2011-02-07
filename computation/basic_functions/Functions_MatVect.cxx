@@ -306,6 +306,89 @@ namespace Seldon
   }
 
 
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Allocator2,
+	    class T3,
+	    class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
+	      const Vector<T2, Collection, Allocator2>& X,
+	      const T3 beta, Vector<T4, Collection, Allocator4>& Y)
+  {
+    int ma = M.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
+#endif
+
+    Mlt(beta, Y);
+
+    int i, j;
+    typename T4::value_type zero(0);
+    typename T4::value_type temp;
+
+    int* ptr = M.GetPtr();
+    int* ind = M.GetInd();
+    typename Matrix<T1, Prop1, RowSymSparse, Allocator1>::pointer
+      data = M.GetData();
+
+    for (i = 0; i < ma; i++)
+      {
+	temp = zero;
+	for (j = ptr[i]; j < ptr[i + 1]; j++)
+	  temp += data[j] * X(ind[j]);
+	Y(i) += alpha * temp;
+      }
+    for (i = 0; i < ma-1; i++)
+      for (j = ptr[i]; j < ptr[i + 1]; j++)
+	if (ind[j] != i)
+	  Y(ind[j]) += alpha * data[j] * X(i);
+  }
+
+
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3 beta, Vector<T4, Collection, Allocator4>& Y)
+  {
+    int ma = M.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
+#endif
+
+    Mlt(beta, Y);
+
+    int i, j;
+    typename T4::value_type zero(0);
+    typename T4::value_type temp;
+
+    int* ptr = M.GetPtr();
+    int* ind = M.GetInd();
+    typename Matrix<T1, Prop1, RowSymSparse, Allocator1>::pointer
+      data = M.GetData();
+
+    for (i = 0; i < ma; i++)
+      {
+	temp = zero;
+	for (j = ptr[i]; j < ptr[i + 1]; j++)
+	  temp += data[j] * X(ind[j]);
+	Y(i) += alpha * temp;
+      }
+    for (i = 0; i < ma-1; i++)
+      for (j = ptr[i]; j < ptr[i + 1]; j++)
+	if (ind[j] != i)
+	  Y(ind[j]) += alpha * data[j] * X(i);
+  }
+
+
+
   /*** Symmetric complex sparse matrices ***/
 
 
