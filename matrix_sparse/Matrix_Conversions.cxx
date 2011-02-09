@@ -41,7 +41,7 @@ namespace Seldon
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
-			       int index = 0, bool sym = false)
+			       int index, bool sym)
   {
     int i, j;
     int m = A.GetM();
@@ -71,7 +71,7 @@ namespace Seldon
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
-			       int index = 0, bool sym = false)
+			       int index, bool sym)
   {
     int i, j;
     int n = A.GetN();
@@ -101,7 +101,7 @@ namespace Seldon
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
-			       int index = 0, bool sym = false)
+			       int index, bool sym)
   {
     int i, j;
     int m = A.GetM();
@@ -178,7 +178,7 @@ namespace Seldon
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
-			       int index = 0, bool sym = false)
+			       int index, bool sym)
   {
     int i, j;
     int m = A.GetM();
@@ -261,7 +261,7 @@ namespace Seldon
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
-			       int index = 0, bool sym = false)
+			       int index, bool sym)
   {
     int i, j;
     int m = A.GetM();
@@ -291,7 +291,7 @@ namespace Seldon
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<complex<T>, VectFull, Allocator4>& Val,
-			       int index = 0, bool sym = false)
+			       int index, bool sym)
   {
     int m = A.GetM();
     int nnz = A.GetRealDataSize() + A.GetImagDataSize();
@@ -330,7 +330,7 @@ namespace Seldon
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
-			       int index = 0, bool sym = false)
+			       int index, bool sym)
   {
     int i, j;
     int n = A.GetN();
@@ -360,7 +360,7 @@ namespace Seldon
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
-			       int index = 0, bool sym = false)
+			       int index, bool sym)
   {
     int i, j;
     int m = A.GetM();
@@ -437,7 +437,7 @@ namespace Seldon
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
-			       int index = 0, bool sym = false)
+			       int index, bool sym)
   {
     int i, j;
     int m = A.GetM();
@@ -526,7 +526,7 @@ namespace Seldon
 				 Vector<int, VectFull, Allocator2>& IndCol_,
 				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, RowSparse, Allocator3>& A,
-				 int index = 0)
+				 int index)
   {
     int i, j;
 
@@ -578,7 +578,7 @@ namespace Seldon
 				 Vector<int, VectFull, Allocator2>& IndCol_,
 				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ColSparse, Allocator3>& A,
-				 int index = 0)
+				 int index)
   {
     // Assuming that there is no duplicate value.
     if (IndRow_.GetM() <= 0)
@@ -631,7 +631,7 @@ namespace Seldon
 				 Vector<int, VectFull, Allocator2>& IndCol_,
 				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, RowSymSparse, Allocator3>& A,
-				 int index = 0)
+				 int index)
   {
     // Assuming there is no duplicate value.
     if (IndRow_.GetM() <= 0)
@@ -708,7 +708,7 @@ namespace Seldon
 				 Vector<int, VectFull, Allocator2>& IndCol_,
 				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ColSymSparse, Allocator3>& A,
-				 int index = 0)
+				 int index)
   {
     // Assuming there is no duplicate value.
     if (IndRow_.GetM() <= 0)
@@ -791,7 +791,7 @@ namespace Seldon
 				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayRowSparse,
 				 Allocator3>& A,
-				 int index = 0)
+				 int index)
   {
     if (IndRow_.GetM() <= 0)
       return;
@@ -853,7 +853,7 @@ namespace Seldon
 				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayColSparse,
 				 Allocator3>& A,
-				 int index = 0)
+				 int index)
   {
     // Assuming there is no duplicate value.
     if (IndRow_.GetM() <= 0)
@@ -916,7 +916,7 @@ namespace Seldon
 				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayRowSymSparse,
 				 Allocator3>& A,
-				 int index = 0)
+				 int index)
   {
     // Assuming that there is no duplicate value.
     if (IndRow_.GetM() <= 0)
@@ -1005,7 +1005,7 @@ namespace Seldon
 				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayColSymSparse,
 				 Allocator3>& A,
-				 int index = 0)
+				 int index)
   {
     // Assuming that there is no duplicate value.
     if (IndRow_.GetM() <= 0)

@@ -93,6 +93,17 @@ namespace Seldon
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
   void
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayRowComplexSparse,
+			       Allocator1>& A,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
+			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       int index = 0, bool sym = false);
+
+
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Tint, class Allocator3, class Allocator4>
+  void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayColSparse,
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
