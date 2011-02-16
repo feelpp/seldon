@@ -134,6 +134,7 @@ namespace Seldon
 #ifndef SWIG
     template <class T0>
     Matrix<T, Prop, ColMajor, Allocator>& operator= (const T0& x);
+	Matrix<T, Prop, ColMajor, Allocator>& operator=(const Matrix<T, Prop, ColMajor, Allocator>& A);
 #endif
     template<class T0>
     Matrix<T, Prop, ColMajor, Allocator>& operator*= (const T0& x);
@@ -158,8 +159,10 @@ namespace Seldon
     Matrix(const Matrix<T, Prop, RowMajor, Allocator>& A);
 
 #ifndef SWIG
+
     template <class T0>
     Matrix<T, Prop, RowMajor, Allocator>& operator= (const T0& x);
+	Matrix<T, Prop, RowMajor, Allocator>& operator=(const Matrix<T, Prop, RowMajor, Allocator>& A);
 #endif
     template<class T0>
     Matrix<T, Prop, RowMajor, Allocator>& operator*= (const T0& x);
