@@ -46,7 +46,6 @@ namespace Seldon
 
     iparm[IPARM_RHS_MAKING] = API_RHS_B;
     iparm[IPARM_VERBOSE] = API_VERBOSE_NOT;
-    // iparm[IPARM_VERBOSE] = API_VERBOSE_NO;
   }
 
 
@@ -86,10 +85,6 @@ namespace Seldon
                 col_num.GetData(), perm.GetData(), invp.GetData(),
                 reinterpret_cast<DCOMPLEX*>(b), nrhs, iparm, dparm);
     else
-      /* z_dpastix(&pastix_data, comm, n, colptr, row,
-         reinterpret_cast<DCOMPLEX*>(val),
-         col_num.GetData(), perm.GetData(), invp.GetData(),
-         reinterpret_cast<DCOMPLEX*>(b), nrhs, iparm, dparm); */
       z_pastix(&pastix_data, comm, n, colptr, row,
                reinterpret_cast<DCOMPLEX*>(val),
                perm.GetData(), invp.GetData(),
@@ -115,8 +110,6 @@ namespace Seldon
 	n = 0;
         pastix_data = NULL;
         distributed = false;
-
-        MPI_Comm_free(&comm_facto);
       }
   }
 
@@ -136,6 +129,36 @@ namespace Seldon
     iparm[IPARM_VERBOSE] = API_VERBOSE_NO;
   }
 
+
+  //! Displaying all messages.
+  template<class T>
+  void MatrixPastix<T>::ShowFullHistory()
+  {
+    iparm[IPARM_VERBOSE] = API_VERBOSE_YES;
+  }
+
+
+  template<class T>
+  void MatrixPastix<T>::SelectOrdering(int type)
+  {
+    iparm[IPARM_ORDERING] = type;
+  }
+
+
+  template<class T>
+  void MatrixPastix<T>::SetPermutation(const IVect& permut)
+  {
+    iparm[IPARM_ORDERING] = API_ORDER_PERSONAL;
+    perm.Reallocate(permut.GetM());
+    invp.Reallocate(permut.GetM());
+    for (int i = 0; i < perm.GetM(); i++)
+      {
+	perm(i) = permut(i) + 1;
+	invp(permut(i)) = i+1;
+      }
+  }
+
+
   //! You can require that solution is refined after LU resolution.
   template<class T>
   void MatrixPastix<T>::RefineSolution()
@@ -152,30 +175,6 @@ namespace Seldon
   }
 
 
-  template<class T>
-  void MatrixPastix<T>::CreateCommunicator()
-  {
-    MPI_Group single_group;
-    int rank, nb_cpu;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &nb_cpu);
-
-    if (distributed)
-      {
-        IVect rank_(nb_cpu); rank_.Fill();
-        MPI_Comm_group(MPI_COMM_WORLD, &single_group);
-	MPI_Group_incl(single_group, nb_cpu, rank_.GetData(), &single_group);
-	MPI_Comm_create(MPI_COMM_WORLD, single_group, &comm_facto);
-      }
-    else
-      {
-        MPI_Comm_group(MPI_COMM_WORLD, &single_group);
-	MPI_Group_incl(single_group, 1, &rank, &single_group);
-	MPI_Comm_create(MPI_COMM_WORLD, single_group, &comm_facto);
-      }
-  }
-
-
   //! Returning ordering found by Scotch.
   template<class T>
   template<class T0, class Prop, class Storage, class Allocator, class Tint>
@@ -187,7 +186,6 @@ namespace Seldon
     Clear();
 
     distributed = false;
-    CreateCommunicator();
 
     n = mat.GetN();
     if (n <= 0)
@@ -221,9 +219,11 @@ namespace Seldon
     iparm[IPARM_START_TASK] = API_TASK_ORDERING;
     iparm[IPARM_END_TASK] = API_TASK_ORDERING;
 
-    CallPastix(comm_facto, ptr_, ind_, NULL, NULL, nrhs);
+    CallPastix(MPI_COMM_SELF, ptr_, ind_, NULL, NULL, nrhs);
 
-    numbers = perm;
+    numbers.Reallocate(perm.GetM());
+    for (int i = 0; i < perm.GetM(); i ++)
+      numbers(i) = perm(i);
   }
 
 
@@ -237,7 +237,6 @@ namespace Seldon
     Clear();
 
     distributed = false;
-    CreateCommunicator();
     n = mat.GetN();
     if (n <= 0)
       return;
@@ -246,11 +245,8 @@ namespace Seldon
     pastix_int_t* ptr_ = NULL;
     pastix_int_t* ind_ = NULL;
     T* values_ = NULL;
-    Vector<pastix_int_t, VectFull, MallocAlloc<pastix_int_t> > Ptr, IndRow;
-    Vector<T, VectFull, MallocAlloc<T> > Val;
-
-    iparm[IPARM_SYM] = API_SYM_NO;
-    iparm[IPARM_FACTORIZATION] = API_FACT_LU;
+    Vector<pastix_int_t, VectFull, CallocAlloc<pastix_int_t> > Ptr, IndRow;
+    Vector<T, VectFull, CallocAlloc<T> > Val;
 
     General prop;
     ConvertToCSC(mat, prop, Ptr, IndRow, Val, true);
@@ -269,14 +265,29 @@ namespace Seldon
 
     values_ = Val.GetData();
 
-    perm.Reallocate(n); invp.Reallocate(n);
-    perm.Fill(); invp.Fill();
+    if (iparm[IPARM_ORDERING] != API_ORDER_PERSONAL)
+      {
+	perm.Reallocate(n); invp.Reallocate(n);
+	perm.Fill(); invp.Fill();
+      }
+
+    iparm[IPARM_SYM] = API_SYM_NO;
+    iparm[IPARM_FACTORIZATION] = API_FACT_LU;
+
+    iparm[IPARM_START_TASK] = API_TASK_ORDERING;
+    iparm[IPARM_END_TASK] = API_TASK_ANALYSE;
+
+    CallPastix(MPI_COMM_SELF, ptr_, ind_, values_, NULL, nrhs);
 
     // factorization only
-    iparm[IPARM_START_TASK] = API_TASK_ORDERING;
+    IVect proc_num(iparm[IPARM_THREAD_NBR]);
+    proc_num.Fill(MPI::COMM_WORLD.Get_rank());
+    pastix_setBind(pastix_data, iparm[IPARM_THREAD_NBR], proc_num.GetData());
+
+    iparm[IPARM_START_TASK] = API_TASK_NUMFACT;
     iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
 
-    CallPastix(comm_facto, ptr_, ind_, values_, NULL, nrhs);
+    CallPastix(MPI_COMM_SELF, ptr_, ind_, values_, NULL, nrhs);
 
     if (iparm[IPARM_VERBOSE] != API_VERBOSE_NOT)
       cout << "Factorization successful" << endl;
@@ -293,7 +304,6 @@ namespace Seldon
     Clear();
 
     distributed = false;
-    CreateCommunicator();
     n = mat.GetN();
     if (n <= 0)
       return;
@@ -329,12 +339,21 @@ namespace Seldon
     perm.Reallocate(n); invp.Reallocate(n);
     perm.Fill(); invp.Fill();
 
-    // factorization only
+    // ordering and analysis
     iparm[IPARM_START_TASK] = API_TASK_ORDERING;
-    iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
-    // iparm[IPARM_VERBOSE]          = 4;
+    iparm[IPARM_END_TASK] = API_TASK_ANALYSE;
 
-    CallPastix(comm_facto, ptr_, ind_, values_, NULL, nrhs);
+    CallPastix(MPI_COMM_SELF, ptr_, ind_, values_, NULL, nrhs);
+
+    IVect proc_num(iparm[IPARM_THREAD_NBR]);
+    proc_num.Fill(MPI::COMM_WORLD.Get_rank());
+    pastix_setBind(pastix_data, iparm[IPARM_THREAD_NBR], proc_num.GetData());
+
+    // factorization only
+    iparm[IPARM_START_TASK] = API_TASK_NUMFACT;
+    iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
+
+    CallPastix(MPI_COMM_SELF, ptr_, ind_, values_, NULL, nrhs);
   }
 
 
@@ -360,11 +379,9 @@ namespace Seldon
     else
       iparm[IPARM_END_TASK] = API_TASK_SOLVE;
 
-    CallPastix(comm_facto, NULL, NULL, NULL, rhs_, nrhs);
+    CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
   }
 
-
-#ifdef SELDON_WITH_MPI
 
   //! Modifies the number of threads per node.
   template<class T>
@@ -378,7 +395,8 @@ namespace Seldon
   template<class T>
   template<class Alloc1, class Alloc2, class Alloc3, class Tint>
   void MatrixPastix<T>::
-  FactorizeDistributedMatrix(Vector<pastix_int_t, VectFull, Alloc1>& Ptr,
+  FactorizeDistributedMatrix(MPI::Comm& comm_facto,
+                             Vector<pastix_int_t, VectFull, Alloc1>& Ptr,
                              Vector<pastix_int_t, VectFull, Alloc2>& IndRow,
                              Vector<T, VectFull, Alloc3>& Val,
                              const Vector<Tint>& glob_number,
@@ -393,11 +411,17 @@ namespace Seldon
 
     distributed = true;
 
-    CreateCommunicator();
+    if (sym)
+      {
+        iparm[IPARM_SYM] = API_SYM_YES;
+        iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
+      }
+    else
+      {
+        iparm[IPARM_SYM] = API_SYM_NO;
+        iparm[IPARM_FACTORIZATION] = API_FACT_LU;
+      }
 
-    iparm[IPARM_SYM] = API_SYM_YES;
-
-    iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
     iparm[IPARM_GRAPHDIST] = API_YES;
 
     int rank;
@@ -423,7 +447,6 @@ namespace Seldon
       col_num(i) = glob_number(i)+1;
 
     // factorization only
-    // iparm[IPARM_VERBOSE] = API_VERBOSE_YES;
     iparm[IPARM_START_TASK] = API_TASK_ORDERING;
     iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
 
@@ -432,16 +455,18 @@ namespace Seldon
 
 
   template<class T> template<class Allocator2, class Tint>
-  void MatrixPastix<T>::SolveDistributed(Vector<T, Vect_Full, Allocator2>& x,
+  void MatrixPastix<T>::SolveDistributed(MPI::Comm& comm_facto,
+                                         Vector<T, Vect_Full, Allocator2>& x,
                                          const Vector<Tint>& glob_num)
   {
-    SolveDistributed(SeldonNoTrans, x, glob_num);
+    SolveDistributed(comm_facto, SeldonNoTrans, x, glob_num);
   }
 
 
   template<class T>
   template<class Allocator2, class Transpose_status, class Tint>
-  void MatrixPastix<T>::SolveDistributed(const Transpose_status& TransA,
+  void MatrixPastix<T>::SolveDistributed(MPI::Comm& comm_facto,
+                                         const Transpose_status& TransA,
                                          Vector<T, Vect_Full, Allocator2>& x,
                                          const Vector<Tint>& glob_num)
   {
@@ -456,7 +481,6 @@ namespace Seldon
 
     CallPastix(comm_facto, NULL, NULL, NULL, rhs_, nrhs);
   }
-#endif
 
 
   template<class T, class Prop, class Storage, class Allocator>
