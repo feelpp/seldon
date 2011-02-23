@@ -46,6 +46,10 @@
 #include "computation/interfaces/direct/Pastix.cxx"
 #endif
 
+#ifdef SELDON_WITH_PRECONDITIONING
+#include "SeldonPreconditioner.hxx"
+#endif
+
 #include "computation/solver/SparseSolver.cxx"
 
 // iterative solvers and preconditioning
