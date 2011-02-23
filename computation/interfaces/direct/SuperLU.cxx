@@ -91,18 +91,15 @@ namespace Seldon
   template<class T>
   MatrixSuperLU_Base<T>::MatrixSuperLU_Base()
   {
-    //   permc_spec = 0: use the natural ordering
-    //   permc_spec = 1: use minimum degree ordering on structure of A'*A
-    //   permc_spec = 2: use minimum degree ordering on structure of A'+A
-    //   permc_spec = 3: use approximate mininum degree column ordering
     n = 0;
-    permc_spec = 2;
+    permc_spec = COLAMD;
     Lstore = NULL;
     Ustore = NULL;
     StatInit(&stat);
     set_default_options(&options);
     ShowMessages();
     display_info = false;
+    info_facto = 0;
   }
 
 
@@ -235,7 +232,23 @@ namespace Seldon
     return perm_c;
   }
 
-
+  
+  template<class T>
+  void MatrixSuperLU_Base<T>::SelectOrdering(colperm_t type)
+  {
+    permc_spec = type;
+  }
+  
+  
+  template<class T>
+  void MatrixSuperLU_Base<T>::SetPermutation(const IVect& permut)
+  {
+    permc_spec = MY_PERMC;
+    perm_c = permut;
+    perm_r = permut;
+  }
+  
+  
   //! same effect as a call to the destructor
   template<class T>
   void MatrixSuperLU_Base<T>::Clear()
@@ -269,6 +282,13 @@ namespace Seldon
   }
 
 
+  template<class T>
+  int MatrixSuperLU_Base<T>::GetInfoFactorization() const
+  {
+    return info_facto;
+  }
+  
+  
   //! factorization of matrix in double precision using SuperLU
   template<class Prop, class Storage, class Allocator>
   void MatrixSuperLU<double>::
@@ -286,21 +306,25 @@ namespace Seldon
       mat.Clear();
 
     // we get renumbering vectors perm_r and perm_c
+    options.ColPerm = permc_spec;
+    if (permc_spec != MY_PERMC)
+      {
+	perm_r.Reallocate(n);
+	perm_c.Reallocate(n);    
+      }
+    
     int nnz = Acsr.GetDataSize();
     dCreate_CompCol_Matrix(&A, n, n, nnz, Acsr.GetData(), Acsr.GetInd(),
 			   Acsr.GetPtr(), SLU_NC, SLU_D, SLU_GE);
-
-    perm_r.Reallocate(n);
-    perm_c.Reallocate(n);
-
+    
     // factorization -> no right hand side
-    int nb_rhs = 0, info;
+    int nb_rhs = 0;
     dCreate_Dense_Matrix(&B, n, nb_rhs, NULL, n, SLU_DN, SLU_D, SLU_GE);
 
     dgssv(&options, &A, perm_c.GetData(), perm_r.GetData(),
-          &L, &U, &B, &stat, &info);
+          &L, &U, &B, &stat, &info_facto);
 
-    if ((info==0)&&(display_info))
+    if ((info_facto==0)&&(display_info))
       {
 	mem_usage_t mem_usage;
 	Lstore = (SCformat *) L.Store;
@@ -325,7 +349,7 @@ namespace Seldon
     int nb_rhs = 1, info;
     dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
-
+    
     SuperLUStat_t stat;
     StatInit(&stat);
     dgstrs(trans, &L, &U, perm_r.GetData(),
@@ -334,8 +358,8 @@ namespace Seldon
 
 
   //! resolution of linear system A x = b
-  template<class Allocator2>
-  void MatrixSuperLU<double>::Solve(const SeldonTranspose& TransA,
+  template<class TransStatus, class Allocator2>
+  void MatrixSuperLU<double>::Solve(const TransStatus& TransA,
                                     Vector<double, VectFull, Allocator2>& x)
   {
     if (TransA.NoTrans())
@@ -382,13 +406,13 @@ namespace Seldon
     perm_r.Reallocate(n);
     perm_c.Reallocate(n);
 
-    int nb_rhs = 0, info;
+    int nb_rhs = 0;
     zCreate_Dense_Matrix(&B, n, nb_rhs, NULL, n, SLU_DN, SLU_Z, SLU_GE);
 
     zgssv(&options, &A, perm_c.GetData(), perm_r.GetData(),
-	  &L, &U, &B, &stat, &info);
+	  &L, &U, &B, &stat, &info_facto);
 
-    if ((info==0)&&(display_info))
+    if ((info_facto==0)&&(display_info))
       {
 	mem_usage_t mem_usage;
 	Lstore = (SCformat *) L.Store;
@@ -416,15 +440,15 @@ namespace Seldon
 			 reinterpret_cast<doublecomplex*>(x.GetData()),
 			 x.GetM(), SLU_DN, SLU_Z, SLU_GE);
 
-    zgstrs (trans, &L, &U, perm_r.GetData(),
-	    perm_c.GetData(), &B, &stat, &info);
+    zgstrs(trans, &L, &U, perm_r.GetData(),
+	   perm_c.GetData(), &B, &stat, &info);
   }
 
 
   //! resolution of linear system A x = b
-  template<class Allocator2>
+  template<class TransStatus, class Allocator2>
   void MatrixSuperLU<complex<double> >::
-  Solve(const SeldonTranspose& TransA,
+  Solve(const TransStatus& TransA,
         Vector<complex<double>, VectFull, Allocator2>& x)
   {
     if (TransA.NoTrans())
@@ -439,8 +463,8 @@ namespace Seldon
 			 reinterpret_cast<doublecomplex*>(x.GetData()),
 			 x.GetM(), SLU_DN, SLU_Z, SLU_GE);
 
-    zgstrs (trans, &L, &U, perm_r.GetData(),
-	    perm_c.GetData(), &B, &stat, &info);
+    zgstrs(trans, &L, &U, perm_r.GetData(),
+	   perm_c.GetData(), &B, &stat, &info);
   }
 
 
