@@ -36,8 +36,9 @@ namespace Seldon
     Control.Reallocate(UMFPACK_CONTROL);
     Info.Reallocate(UMFPACK_INFO);
 
-    display_info = false;
+    print_level = -1;
     transpose = false;
+    status_facto = 0;
   }
 
 
@@ -45,7 +46,7 @@ namespace Seldon
   template<class T>
   void MatrixUmfPack_Base<T>::HideMessages()
   {
-    display_info = false;
+    print_level = -1;
     Control(UMFPACK_PRL) = 0;
   }
 
@@ -54,11 +55,40 @@ namespace Seldon
   template<class T>
   void MatrixUmfPack_Base<T>::ShowMessages()
   {
-    display_info = true;
+    print_level = 1;
     Control(UMFPACK_PRL) = 2;
   }
 
-
+  
+  template<class T>
+  void MatrixUmfPack_Base<T>::ShowFullHistory()
+  {
+    print_level = 2;
+  }
+  
+  
+  template<class T>
+  int MatrixUmfPack_Base<T>::GetInfoFactorization() const
+  {
+    return status_facto;
+  }
+  
+  
+  template<class T>
+  void MatrixUmfPack_Base<T>::SelectOrdering(int type)
+  {
+    Control(UMFPACK_ORDERING) = type;
+  }
+  
+  
+  template<class T>
+  void MatrixUmfPack_Base<T>::SetPermutation(const IVect& permut)
+  {
+    cout << "Not supported by UmfPack" << endl;
+    abort();
+  }
+  
+  
   //! constructor
   MatrixUmfPack<double>::MatrixUmfPack() : MatrixUmfPack_Base<double>()
   {
@@ -181,16 +211,26 @@ namespace Seldon
                         this->Control.GetData(), this->Info.GetData());
 
     // we display informations about the performed operation
-    int status =
+    status_facto =
       umfpack_di_numeric(ptr_, ind_, data_,
                          this->Symbolic, &this->Numeric,
                          this->Control.GetData(), this->Info.GetData());
 
     // we display informations about the performed operation
-    if (this->display_info)
+    if (print_level > 1)
       {
-	umfpack_di_report_status(this->Control.GetData(), status);
+	umfpack_di_report_status(this->Control.GetData(), status_facto);
 	umfpack_di_report_info(this->Control.GetData(),this->Info.GetData());
+      }
+
+    if (print_level > 0)
+      {
+	int size_mem = (this->Info(UMFPACK_SYMBOLIC_SIZE)
+			+ this->Info(UMFPACK_NUMERIC_SIZE_ESTIMATE))
+	  *this->Info(UMFPACK_SIZE_OF_UNIT);
+	
+	cout << "Memory used to store LU factors : "
+	     << double(size_mem)/(1024*1024) << "Mo " << endl;
       }
   }
 
@@ -233,15 +273,15 @@ namespace Seldon
     for (int i = 0; i < mat.GetDataSize(); i++)
       data_[i] = data[i];
 
-    int status =
+    status_facto =
       umfpack_di_numeric(ptr_, ind_, data_,
 			 this->Symbolic, &this->Numeric,
 			 this->Control.GetData(), this->Info.GetData());
 
     // we display informations about the performed operation
-    if (this->display_info)
+    if (print_level > 1)
       {
-	umfpack_di_report_status(this->Control.GetData(), status);
+	umfpack_di_report_status(this->Control.GetData(), status_facto);
 	umfpack_di_report_info(this->Control.GetData(),this->Info.GetData());
       }
   }
@@ -264,7 +304,35 @@ namespace Seldon
 			 this->Info.GetData());
 
     // we display informations about the performed operation
-    if (this->display_info)
+    if (print_level > 1)
+      umfpack_di_report_status(this->Control.GetData(), status);
+  }
+
+
+  template<class StatusTrans, class Allocator2>
+  void MatrixUmfPack<double>::Solve(const StatusTrans& TransA,
+				    Vector<double, VectFull, Allocator2>& x)
+  {
+    if (TransA.NoTrans())
+      {
+	Solve(x);
+	return;
+      }
+    
+    // local copy of x
+    Vector<double, VectFull, Allocator2> b(x);
+
+    int sys = UMFPACK_Aat;
+    if (transpose)
+      sys = UMFPACK_A;
+
+    int status
+      = umfpack_di_solve(sys, ptr_, ind_, data_, x.GetData(),
+			 b.GetData(), this->Numeric, this->Control.GetData(),
+			 this->Info.GetData());
+
+    // we display informations about the performed operation
+    if (print_level > 1)
       umfpack_di_report_status(this->Control.GetData(), status);
   }
 
@@ -322,24 +390,44 @@ namespace Seldon
 			data_real_, data_imag_,
 			&this->Symbolic, this->Control.GetData(),
 			this->Info.GetData());
-
-    int status
+    
+    status_facto
       = umfpack_zi_numeric(ptr_, ind_, data_real_, data_imag_,
 			   this->Symbolic, &this->Numeric,
 			   this->Control.GetData(), this->Info.GetData());
 
-    if (this->display_info)
+    if (print_level > 1)
       {
-	umfpack_zi_report_status(this->Control.GetData(), status);
+	umfpack_zi_report_status(this->Control.GetData(), status_facto);
 	umfpack_zi_report_info(this->Control.GetData(), this->Info.GetData());
+      }
+    
+    if (print_level > 0)
+      {
+	int size_mem = (this->Info(UMFPACK_SYMBOLIC_SIZE)
+			+ this->Info(UMFPACK_NUMERIC_SIZE_ESTIMATE))
+	  *this->Info(UMFPACK_SIZE_OF_UNIT);
+	
+	cout << "Estimated memory used to store LU factors : "
+	     << double(size_mem)/(1024*1024) << "Mo " << endl;
       }
   }
 
-
+  
   //! solves linear system in complex double precision using UmfPack
   template<class Allocator2>
   void MatrixUmfPack<complex<double> >::
   Solve(Vector<complex<double>, VectFull, Allocator2>& x)
+  {
+    Solve(SeldonNoTrans, x);
+  }
+  
+  
+  //! solves linear system in complex double precision using UmfPack
+  template<class StatusTrans, class Allocator2>
+  void MatrixUmfPack<complex<double> >::
+  Solve(const StatusTrans& TransA,
+	Vector<complex<double>, VectFull, Allocator2>& x)
   {
     int m = x.GetM();
     // creation of vectors
@@ -349,12 +437,17 @@ namespace Seldon
 	b_real(i) = real(x(i));
 	b_imag(i) = imag(x(i));
       }
-
+    
     Vector<double> x_real(m), x_imag(m);
     x_real.Zero();
     x_imag.Zero();
+    
+    int sys = UMFPACK_A;
+    if (TransA.Trans())
+      sys = UMFPACK_Aat;
+    
     int status
-      = umfpack_zi_solve(UMFPACK_A, ptr_, ind_, data_real_, data_imag_,
+      = umfpack_zi_solve(sys, ptr_, ind_, data_real_, data_imag_,
 			 x_real.GetData(), x_imag.GetData(),
 			 b_real.GetData(), b_imag.GetData(),
 			 this->Numeric,
@@ -365,7 +458,7 @@ namespace Seldon
     for (int i = 0; i < m; i++)
       x(i) = complex<double>(x_real(i), x_imag(i));
 
-    if (this->display_info)
+    if (print_level > 1)
       umfpack_zi_report_status(this->Control.GetData(), status);
   }
 
@@ -391,11 +484,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA,
                MatrixUmfPack<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
-    if (!TransA.NoTrans())
-      throw
-        WrongArgument("SolveLU(SeldonTranspose&, MatrixUmfPack&, Vector&)",
-                      "Only non-transposed matrices are supported.");
-    mat_lu.Solve(x);
+    mat_lu.Solve(TransA, x);
   }
 
 }

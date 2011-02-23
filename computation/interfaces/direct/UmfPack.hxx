@@ -34,15 +34,21 @@ namespace Seldon
     Vector<double> Control, Info; //!< parameters for UmfPack
     void *Symbolic, *Numeric ; //!< pointers of UmfPack objects
     int n; //!< number of rows in the matrix
-    bool display_info; //!< true if display is allowed
+    int print_level;
     bool transpose; //! transpose system to solve ?
-
+    int status_facto;
+    
   public :
     MatrixUmfPack_Base();
 
     void HideMessages();
     void ShowMessages();
-
+    void ShowFullHistory();
+    
+    int GetInfoFactorization() const;
+    
+    void SelectOrdering(int type);
+    void SetPermutation(const IVect&);
   };
 
   //! empty class
@@ -83,6 +89,9 @@ namespace Seldon
     template<class Allocator2>
     void Solve(Vector<double, VectFull, Allocator2>& x);
 
+    template<class StatusTrans, class Allocator2>
+    void Solve(const StatusTrans&, Vector<double, VectFull, Allocator2>& x);
+
   };
 
 
@@ -112,6 +121,9 @@ namespace Seldon
 
     template<class Allocator2>
     void Solve(Vector<complex<double>, VectFull, Allocator2>& x);
+
+    template<class StatusTrans, class Allocator2>
+    void Solve(const StatusTrans&, Vector<complex<double>, VectFull, Allocator2>& x);
 
   };
 
