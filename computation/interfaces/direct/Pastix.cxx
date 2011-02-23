@@ -38,8 +38,8 @@ namespace Seldon
     // Factorization of a matrix on a single processor.
     distributed = false;
 
-    // No refinement by default.
-    refine_solution = false;
+    // Refinement by default.
+    refine_solution = true;
 
     // initializing parameters
     pastix_initParam(iparm, dparm);

@@ -66,7 +66,6 @@ namespace Seldon
   class MatrixMumps
   {
   protected :
-    int rank; //!< rank of processor
     int type_ordering; //!< ordering scheme (AMD, Metis, etc)
     //! object containing Mumps data structure
     typename TypeMumps<T>::data struct_mumps;
@@ -75,11 +74,12 @@ namespace Seldon
     int print_level;
     bool out_of_core;
 #ifdef SELDON_WITH_MPI
-    MPI_Group single_group;
-    MPI_Comm single_comm;
+    //MPI_Group single_group;
+    //MPI_Comm single_comm;
 #endif
     IVect num_row_glob, num_col_glob;
-    bool new_communicator;
+    IVect perm;
+    //bool new_communicator;
 
     // internal methods
     void CallMumps();
@@ -93,7 +93,8 @@ namespace Seldon
     void Clear();
 
     void SelectOrdering(int num_ordering);
-
+    void SetPermutation(const IVect& permut);
+    
     void HideMessages();
     void ShowMessages();
 
@@ -135,27 +136,25 @@ namespace Seldon
 	       Matrix<T, Prop, ColMajor, Allocator2>& x);
 
 #ifdef SELDON_WITH_MPI
-    template<class Prop, class Allocator>
-    void FactorizeDistributedMatrix(Matrix<T, General,
-				    ColSparse, Allocator> & mat,
-				    const Prop& sym, const IVect& glob_number,
-				    bool keep_matrix = false);
-
     template<class Alloc1, class Alloc2, class Alloc3, class Tint>
-    void FactorizeDistributedMatrix(Vector<int, VectFull, Alloc1>&,
-                                    Vector<int, VectFull, Alloc2>&,
+    void FactorizeDistributedMatrix(MPI::Comm& comm_facto,
+                                    Vector<Tint, VectFull, Alloc1>&,
+                                    Vector<Tint, VectFull, Alloc2>&,
                                     Vector<T, VectFull, Alloc3>&,
                                     const Vector<Tint>& glob_number,
 				    bool sym, bool keep_matrix = false);
 
+    template<class Allocator2, class Tint>
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          Vector<T, Vect_Full, Allocator2>& x,
+                          const Vector<Tint>& glob_num);
+    
     template<class Allocator2, class Transpose_status>
-    void SolveDistributed(const Transpose_status& TransA,
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          const Transpose_status& TransA,
 			  Vector<T, VectFull, Allocator2>& x,
 			  const IVect& glob_num);
-
-    template<class Allocator2>
-    void SolveDistributed(Vector<T, VectFull, Allocator2>& x, const IVect& );
-
+    
 #endif
 
   };
