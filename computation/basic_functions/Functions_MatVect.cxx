@@ -847,6 +847,17 @@ namespace Seldon
     CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
 
+#ifdef SELDON_WITH_ABORT
+    // aborting computation if the matrix is sparse
+    if (IsSparseMatrix(M))
+      {
+        cout << "This function should only be used "
+             << "with dense matrices" << endl;
+        
+        abort();
+      }
+#endif
+
     Mlt(beta, Y);
 
     T4 zero(0);
@@ -1041,7 +1052,18 @@ namespace Seldon
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(Trans, M, X, Y, "MltAdd(alpha, trans, M, X, beta, Y)");
 #endif
-
+    
+#ifdef SELDON_WITH_ABORT
+    // aborting computation if the matrix is sparse
+    if (IsSparseMatrix(M))
+      {
+        cout << "This function should only be used "
+             << "with dense matrices" << endl;
+        
+        abort();
+      }
+#endif
+    
     if (beta == T3(0))
       Y.Fill(T4(0));
     else

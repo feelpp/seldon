@@ -2071,8 +2071,158 @@ namespace Seldon
   {
     return true;
   }
+  
+  
+  //! returns true if the matrix is complex
+  template<class T, class Prop, class Storage, class Allocator>
+  bool IsComplexMatrix(const Matrix<T, Prop, Storage, Allocator>& A)
+  {
+    return false;
+  }
 
 
+  //! returns true if the matrix is complex
+  template<class T, class Prop, class Storage, class Allocator>
+  bool IsComplexMatrix(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
+  {
+    return true;
+  }
+  
+  
+  //! Default matrix => sparse matrix
+  template<class Matrix1>
+  bool IsSparseMatrix(const Matrix1& A)
+  {
+    return true;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, RowMajor, Allocator>& A)
+  {
+    return false;
+  }
+
+
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, ColMajor, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, RowSymPacked, Allocator>& A)
+  {
+    return false;
+  }
+  
+
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, ColSymPacked, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, RowSym, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, ColSym, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, ColHerm, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, RowHerm, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, ColHermPacked, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, RowHermPacked, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, ColUpTriang, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, ColLoTriang, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, RowUpTriang, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, RowLoTriang, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, ColUpTriangPacked, Allocator>& A)
+  {
+    return false;
+  }
+
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, ColLoTriangPacked, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, RowUpTriangPacked, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
+  template<class T, class Prop, class Allocator>
+  bool IsSparseMatrix(const Matrix<T, Prop, RowLoTriangPacked, Allocator>& A)
+  {
+    return false;
+  }
+  
+  
   // ISSYMMETRICMATRIX //
   ///////////////////////
 
