@@ -44,7 +44,6 @@ namespace Seldon
   template<class T>
   inline MatrixMumps<T>::MatrixMumps()
   {
-    // struct_mumps.comm_fortran = MPI_Comm_c2f(MPI_COMM_WORLD);
     struct_mumps.comm_fortran = -987654;
 
     // parameters for mumps
@@ -52,15 +51,11 @@ namespace Seldon
     struct_mumps.par = 1;
     struct_mumps.sym = 0; // 0 -> unsymmetric matrix
 
-    // mumps is called
-    CallMumps();
-
     // other parameters
     struct_mumps.n = 0;
     type_ordering = 7; // default : we let Mumps choose the ordering
     print_level = -1;
     out_of_core = false;
-    new_communicator = false;
   }
 
 
@@ -77,17 +72,12 @@ namespace Seldon
     if (distributed)
       {
 	// for distributed matrix, every processor is assumed to be involved
-	struct_mumps.comm_fortran = -987654;
+	struct_mumps.comm_fortran = MPI_Comm_c2f(MPI::COMM_WORLD);
       }
     else
       {
 	// centralized matrix => a linear system per processor
-	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-	MPI_Comm_group(MPI_COMM_WORLD, &single_group);
-	MPI_Group_incl(single_group, 1, &rank, &single_group);
-	MPI_Comm_create(MPI_COMM_WORLD, single_group, &single_comm);
-	struct_mumps.comm_fortran = MPI_Comm_c2f(single_comm);
-	new_communicator = true;
+        struct_mumps.comm_fortran = MPI_Comm_c2f(MPI::COMM_SELF);
       }
 #endif
 
@@ -103,6 +93,9 @@ namespace Seldon
 
     struct_mumps.icntl[13] = 20;
     struct_mumps.icntl[6] = type_ordering;
+    if (type_ordering == 1)
+      struct_mumps.perm_in = perm.GetData();
+
     // setting out of core parameters
     if (out_of_core)
       struct_mumps.icntl[21] = 1;
@@ -137,6 +130,16 @@ namespace Seldon
   }
 
 
+  template<class T>
+  inline void MatrixMumps<T>::SetPermutation(const IVect& permut)
+  {
+    type_ordering = 1;
+    perm.Reallocate(permut.GetM());
+    for (int i = 0; i < perm.GetM(); i++)
+      perm(i) = permut(i) + 1;
+  }
+
+
   //! clears factorization
   template<class T>
   MatrixMumps<T>::~MatrixMumps()
@@ -152,21 +155,13 @@ namespace Seldon
     if (struct_mumps.n > 0)
       {
 	struct_mumps.job = -2;
-	CallMumps(); /* Terminate instance */
+	// Mumps variables are deleted.
+        CallMumps();
 
-	num_row_glob.Clear(); num_col_glob.Clear();
+	num_row_glob.Clear();
+	num_col_glob.Clear();
 	struct_mumps.n = 0;
-
       }
-
-#ifdef SELDON_WITH_MPI
-    if (new_communicator)
-      {
-	MPI_Comm_free(&single_comm);
-	new_communicator = false;
-      }
-#endif
-
   }
 
 
@@ -198,6 +193,7 @@ namespace Seldon
   }
 
 
+  //! Enables writing on the disk (out of core).
   template<class T>
   inline void MatrixMumps<T>::EnableOutOfCore()
   {
@@ -205,6 +201,7 @@ namespace Seldon
   }
 
 
+  //! Disables writing on the disk (incore).
   template<class T>
   inline void MatrixMumps<T>::DisableOutOfCore()
   {
@@ -212,7 +209,7 @@ namespace Seldon
   }
 
 
-  //! computes row numbers
+  //! Computes an ordering for matrix renumbering.
   /*!
     \param[in,out] mat matrix whose we want to find the ordering
     \param[out] numbers new row numbers
@@ -228,6 +225,7 @@ namespace Seldon
     // conversion in coordinate format
     IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
     ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
+
     // no values needed to renumber
     values.Clear();
     if (!keep_matrix)
@@ -237,7 +235,7 @@ namespace Seldon
     struct_mumps.irn = num_row.GetData();
     struct_mumps.jcn = num_col.GetData();
 
-    /* Call the MUMPS package. */
+    // Call the MUMPS package.
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
 
@@ -270,7 +268,7 @@ namespace Seldon
     struct_mumps.jcn = num_col.GetData();
     struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
 
-    /* Call the MUMPS package. */
+    // Call the MUMPS package.
     struct_mumps.job = 4; // we analyse and factorize the system
     CallMumps();
   }
@@ -293,7 +291,7 @@ namespace Seldon
     struct_mumps.jcn = num_col_glob.GetData();
     struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
 
-    /* Call the MUMPS package. */
+    // Call the MUMPS package.
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
   }
@@ -314,7 +312,7 @@ namespace Seldon
     // to the row/column numbers given for the analysis
     struct_mumps.a = reinterpret_cast<pointer>(mat.GetData());
 
-    /* Call the MUMPS package. */
+    // Call the MUMPS package.
     struct_mumps.job = 2; // we factorize the system
     CallMumps();
   }
@@ -449,65 +447,79 @@ namespace Seldon
 #ifdef SELDON_WITH_MPI
   //! factorization of a given matrix in distributed form (parallel execution)
   /*!
-    \param[inout] mat columns of the matrix to factorize
-    \param[in] sym Symmetric or General
+    \param[in,out] comm_facto MPI communicator
+    \param[in,out] Ptr start indices for each column
+    \param[in,out] IndRow row indices
+    \param[in,out] Val data
+    \param[in] sym if true, the matrix is assumed to be symmetric (upper part
+    is provided)
     \param[in] glob_number row numbers (in the global matrix)
     \param[in] keep_matrix if false, the given matrix is cleared
   */
-  template<class T> template<class Prop, class Allocator>
+  template<class T>
+  template<class Alloc1, class Alloc2, class Alloc3, class Tint>
   void MatrixMumps<T>::
-  FactorizeDistributedMatrix(Matrix<T, General, ColSparse, Allocator> & mat,
-			     const Prop& sym, const IVect& glob_number,
-			     bool keep_matrix)
+  FactorizeDistributedMatrix(MPI::Comm& comm_facto,
+                             Vector<Tint, VectFull, Alloc1>& Ptr,
+                             Vector<Tint, VectFull, Alloc2>& IndRow,
+                             Vector<T, VectFull, Alloc3>& Val,
+                             const Vector<Tint>& glob_number,
+                             bool sym, bool keep_matrix)
   {
-    // initialization depending on symmetric of the matrix
-    Matrix<T, Prop, RowSparse, Allocator> Atest;
-    InitMatrix(Atest, true);
+    // Initialization depending on symmetry of the matrix.
+    if (sym)
+      {
+        Matrix<T, Symmetric, RowSymSparse, Alloc3> Atest;
+        InitMatrix(Atest, true);
+      }
+    else
+      {
+        Matrix<T, General, RowSparse, Alloc3> Atest;
+        InitMatrix(Atest, true);
+      }
+
+    // Fortran communicator
+    struct_mumps.comm_fortran = MPI_Comm_c2f(comm_facto);
 
     // distributed matrix
     struct_mumps.icntl[17] = 3;
 
-    // global number of rows : mat.GetM()
-    int N = mat.GetM();
-    int nnz = mat.GetNonZeros();
-    // conversion in coordinate format with C-convention (0-index)
-    IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
-    ConvertMatrix_to_Coordinates(mat, num_row,
-				 num_col, values, 0);
+    // finding the size of the overall system
+    Tint nmax = 0, N = 0;
+    for (int i = 0; i < glob_number.GetM(); i++)
+      nmax = max(glob_number(i)+1, nmax);
 
-    // we replace num_col with global numbers
-    for (int i = 0; i < num_row.GetM(); i++)
-      {
-	num_row(i)++;
-	num_col(i) = glob_number(num_col(i)) + 1;
-      }
+    comm_facto.Allreduce(&nmax, &N, 1, MPI::INTEGER, MPI::MAX);
+
+    // number of non-zero entries on this processor
+    int nnz = IndRow.GetM();
+
+    // conversion in coordinate format
+    Vector<Tint, VectFull, Alloc2> IndCol(nnz);
+    for (int i = 0; i < IndRow.GetM(); i++)
+      IndRow(i)++;
+
+    for (int i = 0; i < Ptr.GetM()-1; i++)
+      for (int j = Ptr(i); j < Ptr(i+1); j++)
+        IndCol(j) = glob_number(i) + 1;
 
     if (!keep_matrix)
-      mat.Clear();
+      Ptr.Clear();
 
-    /* Define the problem on the host */
-    struct_mumps.n = N; struct_mumps.nz_loc = nnz;
-    struct_mumps.irn_loc = num_row.GetData();
-    struct_mumps.jcn_loc = num_col.GetData();
-    struct_mumps.a_loc = reinterpret_cast<pointer>(values.GetData());
+    // Define the problem on the host
+    struct_mumps.n = N;
+    struct_mumps.nz_loc = nnz;
+    struct_mumps.irn_loc = IndRow.GetData();
+    struct_mumps.jcn_loc = IndCol.GetData();
+    struct_mumps.a_loc = reinterpret_cast<pointer>(Val.GetData());
 
-    /* Call the MUMPS package. */
+    // Call the MUMPS package.
     struct_mumps.job = 4; // we analyse and factorize the system
     CallMumps();
-    cout<<"Factorization completed"<<endl;
-  }
 
+    if ((comm_facto.Get_rank() == 0) && (print_level >= 0))
+      cout<<"Factorization completed"<<endl;
 
-  //! Undefined (empty) function.
-  template<class Alloc1, class Alloc2, class Alloc3, class Tint>
-  void FactorizeDistributedMatrix(Vector<int, VectFull, Alloc1>&,
-                                  Vector<int, VectFull, Alloc2>&,
-                                  Vector<T, VectFull, Alloc3>&,
-                                  const Vector<Tint>& glob_number,
-                                  bool sym, bool keep_matrix)
-  {
-    throw Undefined("FactorizeDistributedMatrix(Vector<int>&, Vector<int>&, "
-                    "Vector<T>&, Vector<Tint>, bool, bool)");
   }
 
 
@@ -518,7 +530,8 @@ namespace Seldon
     \param[inout] glob_num global row numbers
   */
   template<class T> template<class Allocator2, class Transpose_status>
-  void MatrixMumps<T>::SolveDistributed(const Transpose_status& TransA,
+  void MatrixMumps<T>::SolveDistributed(MPI::Comm& comm_facto,
+                                        const Transpose_status& TransA,
 					Vector<T, VectFull, Allocator2>& x,
 					const IVect& glob_num)
   {
@@ -527,11 +540,11 @@ namespace Seldon
     // allocating the global right hand side
     rhs.Reallocate(struct_mumps.n); rhs.Zero();
 
-    if (rank == 0)
+    if (comm_facto.Get_rank() == 0)
       {
 	// on the host, we retrieve datas of all the other processors
-	int nb_procs; MPI_Status status;
-	MPI_Comm_size(MPI_COMM_WORLD, &nb_procs);
+	int nb_procs = comm_facto.Get_size();
+        MPI::Status status;
 	if (nb_procs > 1)
 	  {
 	    // assembling the right hand side
@@ -542,15 +555,19 @@ namespace Seldon
 
 		if (i != 0)
 		  {
+                    // On the host processor receiving components of right
+                    // hand side.
 		    int nb_dof;
-		    MPI_Recv(&nb_dof, 1, MPI_INT, i, 34,
-                             MPI_COMM_WORLD, &status);
-		    xp.Reallocate(nb_dof);
+		    comm_facto.Recv(&nb_dof, 1, MPI::INTEGER, i, 34, status);
+
+                    xp.Reallocate(nb_dof);
 		    nump.Reallocate(nb_dof);
-		    MPI_Recv(xp.GetDataVoid(), cplx*nb_dof,
-                             MPI_DOUBLE, i, 35, MPI_COMM_WORLD, &status);
-		    MPI_Recv(nump.GetData(), nb_dof, MPI_INT, i, 36,
-                             MPI_COMM_WORLD, &status);
+
+                    comm_facto.Recv(xp.GetDataVoid(), cplx*nb_dof,
+                                    MPI::DOUBLE, i, 35, status);
+
+		    comm_facto.Recv(nump.GetData(), nb_dof, MPI::INTEGER,
+                                    i, 36, status);
 		  }
 		else
 		  {
@@ -568,11 +585,11 @@ namespace Seldon
       }
     else
       {
-	// on other processors, we send solution
+	// On other processors, we send right hand side.
 	int nb = x.GetM();
-	MPI_Send(&nb, 1, MPI_INT, 0, 34, MPI_COMM_WORLD);
-	MPI_Send(x.GetDataVoid(), cplx*nb, MPI_DOUBLE, 0, 35, MPI_COMM_WORLD);
-	MPI_Send(glob_num.GetData(), nb, MPI_INT, 0, 36, MPI_COMM_WORLD);
+	comm_facto.Send(&nb, 1, MPI::INTEGER, 0, 34);
+	comm_facto.Send(x.GetDataVoid(), cplx*nb, MPI::DOUBLE, 0, 35);
+	comm_facto.Send(glob_num.GetData(), nb, MPI::INTEGER, 0, 36);
       }
 
     // we solve system
@@ -585,8 +602,7 @@ namespace Seldon
     CallMumps();
 
     // we distribute solution on all the processors
-    MPI_Bcast(rhs.GetDataVoid(), cplx*rhs.GetM(),
-              MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    comm_facto.Bcast(rhs.GetDataVoid(), cplx*rhs.GetM(), MPI::DOUBLE, 0);
 
     // and we extract the solution on provided numbers
     for (int i = 0; i < x.GetM(); i++)
@@ -594,11 +610,12 @@ namespace Seldon
   }
 
 
-  template<class T> template<class Allocator2>
-  void MatrixMumps<T>::SolveDistributed(Vector<T, VectFull, Allocator2>& x,
-					const IVect& glob_num)
+  template<class T> template<class Allocator2, class Tint>
+  void MatrixMumps<T>::SolveDistributed(MPI::Comm& comm_facto,
+                                        Vector<T, VectFull, Allocator2>& x,
+					const Vector<Tint>& glob_num)
   {
-    SolveDistributed(SeldonNoTrans, x, glob_num);
+    SolveDistributed(comm_facto, SeldonNoTrans, x, glob_num);
   }
 #endif
 
