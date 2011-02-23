@@ -22,7 +22,7 @@
 
 #if !defined(SELDON_WITH_UMFPACK) && !defined(SELDON_WITH_SUPERLU) \
   && !defined(SELDON_WITH_MUMPS) && !defined(SELDON_WITH_PASTIX)
-#define SELDON_WITH_UMFPACK
+// #define SELDON_WITH_UMFPACK
 //#define SELDON_WITH_SUPERLU
 //#define SELDON_WITH_MUMPS
 #endif
@@ -34,10 +34,12 @@
 #include "Seldon.hxx"
 #include "SeldonSolver.hxx"
 
+#include "matrix_sparse/IOMatrixMarket.cxx"
+
 using namespace Seldon;
 
 typedef complex<double> cpx;
-double epsilon(1e-14);
+double epsilon(1e-12);
 
 
 template<class T, class Prop, class Storage,
@@ -46,34 +48,47 @@ void Solve(Matrix<T, Prop, Storage, Allocator1>& A,
 	   Vector<T, VectFull, Allocator2>& x,
 	   const Vector<T, VectFull, Allocator3>& b)
 {
-#ifdef SELDON_WITH_UMFPACK
-  MatrixUmfPack<T> mat_lu;
-#endif
-#ifdef SELDON_WITH_SUPERLU
-  MatrixSuperLU<T> mat_lu;
-#endif
-#ifdef SELDON_WITH_MUMPS
-  MatrixMumps<T> mat_lu;
-#endif
-#ifdef SELDON_WITH_PASTIX
-  MatrixPastix<T> mat_lu;
-#endif
-
-  // The initial matrix is erased during the factorization process if you want
-  // to keep it, you have to call 'GetLU(A, mat_lu, true)'.
-  GetLU(A, mat_lu);
+  SparseDirectSolver<T> mat_lu;
+  
+  // The initial matrix is erased during the factorization process
+  // if you want to keep it, type mat_lu.Factorize(A, true);
+  mat_lu.Factorize(A);
   x = b;
-  SolveLU(mat_lu, x);
+  mat_lu.Solve(x);
 }
 
-
-template<class Vector>
-bool CheckSolution(Vector& x)
+template<class T, class Prop, class Storage,
+	 class Allocator1, class Allocator2, class Allocator3>
+void Solve(Matrix<T, Prop, Storage, Allocator1>& A,
+	   Vector<T, VectFull, Allocator2>& x,
+	   const Vector<T, VectFull, Allocator3>& b,
+	   Vector<T, VectFull, Allocator3>& bt)
 {
-  Vector xt(x.GetM());
+  SparseDirectSolver<T> mat_lu;
+  
+  // The initial matrix is erased during the factorization process
+  mat_lu.Factorize(A);
+  x = b;
+  mat_lu.Solve(x);
+  mat_lu.Solve(SeldonTrans, bt);
+}
+
+template<class Vector1>
+bool CheckSolution(const Vector1& x)
+{
+  Vector1 xt(x.GetM());
   xt.Fill();
   Add(-1, x, xt);
   return Norm2(xt) <= epsilon;
+}
+
+template<class Vector1>
+bool CheckSolution(const Vector1& x, const Vector1& x_ref, double& err)
+{
+  Vector1 xt(x);
+  Add(-1, x_ref, xt);
+  err = Norm2(xt)/Norm2(x_ref);
+  return ( err <= epsilon );
 }
 
 
@@ -90,6 +105,9 @@ int main(int argc, char **argv)
   bool success_rowsym_real, success_rowsym_complex, success_colsym_real,
     success_colsym_complex, success_row_real, success_row_complex,
     success_col_real, success_col_complex;
+  
+  // for transpose
+  bool successT_row_real, successT_row_complex, successT_col_real, successT_col_complex;
 
   // We test RowSymSparse (real numbers).
   {
@@ -111,19 +129,16 @@ int main(int argc, char **argv)
       Row(i) = rowptr_[i];
 
     A.SetData(n, n, Values, Row, Col);
-    DISP(A);
     // Computation of right hand side.
-    DVect x_sol(n), b_vec(n); b_vec.Zero();
+    DVect x_sol(n), b_vec(n);
+    b_vec.Zero();
     x_sol.Fill();
-    Mlt(1.0, A, x_sol, b_vec);
-    DISP(b_vec);
+    Mlt(A, x_sol, b_vec);
     x_sol.Zero();
 
     // We solve the linear system.
     Solve(A, x_sol, b_vec);
-    cout << "Solution  "<< endl;
-    DISP(x_sol);
-
+    
     success_rowsym_real = CheckSolution(x_sol);
   }
 
@@ -148,18 +163,14 @@ int main(int argc, char **argv)
       Row(i) = rowptr_[i];
 
     A.SetData(n, n, Values, Row, Col);
-    DISP(A);
     // Computation of right hand side
     ZVect x_sol(n), b_vec(n);
     x_sol.Fill(); b_vec.Zero();
     Mlt(1.0, A, x_sol, b_vec);
-    DISP(b_vec);
     x_sol.Zero();
 
     // We solve the linear system.
     Solve(A, x_sol, b_vec);
-    cout << "Solution " << endl;
-    DISP(x_sol);
     success_rowsym_complex = CheckSolution(x_sol);
   }
 
@@ -183,18 +194,15 @@ int main(int argc, char **argv)
       Col(i) = colptr_[i];
 
     A.SetData(n, n, Values, Col, Row);
-    DISP(A);
+
     // Computation of right hand side.
     DVect x_sol(n), b_vec(n);
     x_sol.Fill(); b_vec.Zero();
     Mlt(1.0, A, x_sol, b_vec);
-    DISP(b_vec);
     x_sol.Zero();
 
     // we solve linear system
     Solve(A, x_sol, b_vec);
-    cout << "Solution " << endl;
-    DISP(x_sol);
     success_colsym_real = CheckSolution(x_sol);
   }
 
@@ -220,7 +228,7 @@ int main(int argc, char **argv)
       Col(i) = colptr_[i];
 
     A.SetData(n, n, Values, Col, Row);
-    DISP(A);
+    
     // Computation of right hand side.
     ZVect x_sol(n), b_vec(n); b_vec.Fill(0);
     x_sol.Fill(); b_vec.Zero();
@@ -229,11 +237,11 @@ int main(int argc, char **argv)
 
     // We solve the linear system.
     Solve(A, x_sol, b_vec);
-    cout << "Solution " << endl;
-    DISP(x_sol);
+    
     success_colsym_complex = CheckSolution(x_sol);
   }
 
+  
   // We test RowSparse (real numbers).
   {
     Matrix<double, General, RowSparse> A;
@@ -255,19 +263,21 @@ int main(int argc, char **argv)
       Row(i) = rowptr_[i];
 
     A.SetData(n, n, Values, Row, Col);
-    DISP(A);
+    
     // computation of right hand side
-    DVect x_sol(n), b_vec(n);
-    x_sol.Fill();  b_vec.Zero();
-    Mlt(1.0, A, x_sol, b_vec);
-    DISP(b_vec);
+    DVect x_sol(n), b_vec(n), b_trans(n);
+    b_vec.Zero(); b_trans.Zero();
+    x_sol.Fill();
+    Mlt(SeldonNoTrans, A, x_sol, b_vec);
+    Mlt(SeldonTrans, A, x_sol, b_trans);
     x_sol.Zero();
 
     // we solve linear system
-    Solve(A, x_sol, b_vec);
-    cout << "Solution " << endl;
-    DISP(x_sol);
+    Solve(A, x_sol, b_vec, b_trans);
+    
     success_row_real = CheckSolution(x_sol);
+    successT_row_real = CheckSolution(b_trans);
+    
   }
 
   // We test RowSparse (complex numbers).
@@ -294,19 +304,19 @@ int main(int argc, char **argv)
       Row(i) = rowptr_[i];
 
     A.SetData(n, n, Values, Row, Col);
-    DISP(A);
+    
     // Computation of right hand side.
-    ZVect x_sol(n), b_vec(n);
-    x_sol.Fill();  b_vec.Zero();
-    Mlt(1.0, A, x_sol, b_vec);
-    DISP(b_vec);
+    ZVect x_sol(n), b_vec(n), b_trans(n);
+    x_sol.Fill();  b_vec.Zero(); b_trans.Zero();
+    Mlt(SeldonNoTrans, A, x_sol, b_vec);
+    Mlt(SeldonTrans, A, x_sol, b_trans);
     x_sol.Zero();
 
     // We solve the linear system.
-    Solve(A, x_sol, b_vec);
-    cout << "Solution " << endl;
-    DISP(x_sol);
+    Solve(A, x_sol, b_vec, b_trans);
+    
     success_row_complex = CheckSolution(x_sol);
+    successT_row_complex = CheckSolution(b_trans);
   }
 
   // We test ColSparse (real numbers).
@@ -329,19 +339,19 @@ int main(int argc, char **argv)
       Col(i) = colptr_[i];
 
     A.SetData(n, n, Values, Col, Row);
-    DISP(A);
+    
     // Computation of right hand side.
-    DVect x_sol(n), b_vec(n);
-    x_sol.Fill();  b_vec.Zero();
-    Mlt(1.0, A, x_sol, b_vec);
-    DISP(b_vec);
+    DVect x_sol(n), b_vec(n), b_trans(n);
+    x_sol.Fill();  b_vec.Zero(); b_trans.Zero();
+    Mlt(SeldonNoTrans, A, x_sol, b_vec);
+    Mlt(SeldonTrans, A, x_sol, b_trans);
     x_sol.Zero();
-
+    
     // We solve the linear system.
-    Solve(A, x_sol, b_vec);
-    cout << "Solution " << endl;
-    DISP(x_sol);
+    Solve(A, x_sol, b_vec, b_trans);
+    
     success_col_real = CheckSolution(x_sol);
+    successT_col_real = CheckSolution(b_trans);
   }
 
   // We test ColSparse (complex numbers).
@@ -368,19 +378,202 @@ int main(int argc, char **argv)
       Col(i) = colptr_[i];
 
     A.SetData(n, n, Values, Col, Row);
-    DISP(A);
+    
     // Computation of right hand side.
-    ZVect x_sol(n), b_vec(n);
-    x_sol.Fill();  b_vec.Zero();
+    ZVect x_sol(n), b_vec(n), b_trans(n);
+    x_sol.Fill();  b_vec.Zero(); b_trans.Zero();
+    Mlt(SeldonNoTrans, A, x_sol, b_vec);
+    Mlt(SeldonTrans, A, x_sol, b_trans);
+    x_sol.Zero();
+
+    // We solve the linear system.
+    Solve(A, x_sol, b_vec, b_trans);
+
+    success_col_complex = CheckSolution(x_sol);
+    successT_col_complex = CheckSolution(b_trans);
+  }
+
+  
+  // Results for Array...
+  bool successA_rowsym_real, successA_rowsym_complex, successA_colsym_real,
+    successA_colsym_complex, successA_row_real, successA_row_complex,
+    successA_col_real, successA_col_complex;
+
+  // tranpose
+  bool successAT_row_real, successAT_row_complex,
+    successAT_col_real, successAT_col_complex;
+
+  // We test ArrayRowSymSparse (real numbers).
+  {
+    // construction of a matrix
+    Matrix<double, Symmetric, ArrayRowSymSparse> A(n, n);
+    A(0, 0) = 2.0; A(0, 1) = -1.5;
+    A(1, 1) = 3.0; A(1, 2) = 1.0;
+    A(2, 2) = 4.0; A(2, 3) = -2.0;
+    A(3, 3) = 1.5; A(3, 4) = -0.5; A(4, 4) = 2.5;
+    
+    // Computation of right hand side.
+    DVect x_sol(n), b_vec(n); b_vec.Zero();
+    x_sol.Fill();
     Mlt(1.0, A, x_sol, b_vec);
-    DISP(b_vec);
     x_sol.Zero();
 
     // We solve the linear system.
     Solve(A, x_sol, b_vec);
-    cout << "Solution " << endl;
-    DISP(x_sol);
-    success_col_complex = CheckSolution(x_sol);
+
+    successA_rowsym_real = CheckSolution(x_sol);
+  }
+
+  // We test ArrayRowSymSparse (complex numbers).
+  {
+    Matrix<complex<double>, Symmetric, ArrayRowSymSparse> A(n, n);
+    A(0, 0) = cpx(2.0,-4.0); A(0, 1) = cpx(-1.5,0.5);
+    A(1, 1) = cpx(3.0,-1.0); A(1, 2) = cpx(1.0,0.0);
+    A(2, 2) = cpx(4.0,2.0); A(2, 3) = cpx(-2.0,1.0);
+    A(3, 3) = cpx(1.5,-1.0); A(3, 4) = cpx(-0.5,0.0); A(4, 4) = cpx(2.5,5.0);
+    
+    // Computation of right hand side
+    ZVect x_sol(n), b_vec(n);
+    x_sol.Fill(); b_vec.Zero();
+    Mlt(1.0, A, x_sol, b_vec);
+    x_sol.Zero();
+    
+    // We solve the linear system.
+    Solve(A, x_sol, b_vec);
+    successA_rowsym_complex = CheckSolution(x_sol);
+  }
+
+  // We test ArrayColSymSparse (real numbers).
+  {
+    Matrix<double, Symmetric, ArrayColSymSparse> A(n, n);
+    A(0, 0) = 2.0; A(0, 1) = -1.5; A(1, 1) = 3.0;
+    A(1, 2) = 1.0; A(2, 2) = 4.0; 
+    A(2, 3) = -2.0; A(3, 3) = 1.5;
+    A(3, 4) = -0.5; A(4, 4) = 2.5;
+    
+    // Computation of right hand side.
+    DVect x_sol(n), b_vec(n);
+    x_sol.Fill(); b_vec.Zero();
+    Mlt(1.0, A, x_sol, b_vec);
+    x_sol.Zero();
+
+    // we solve linear system
+    Solve(A, x_sol, b_vec);
+    successA_colsym_real = CheckSolution(x_sol);
+  }
+
+  // We test ArrayColSymSparse (complex numbers).
+  {
+    Matrix<cpx, Symmetric, ArrayColSymSparse> A(n, n);
+    A(0, 0) = cpx(2.0,-4.0); A(0, 1) = cpx(-1.5,0.5); A(1, 1) = cpx(3.0,-1.0);
+    A(1, 2) = cpx(1.0,0.0); A(2, 2) = cpx(4.0,2.0); 
+    A(2, 3) = cpx(-2.0,1.0); A(3, 3) = cpx(1.5,-1.0);
+    A(3, 4) = cpx(-0.5,0.0); A(4, 4) = cpx(2.5,5.0);
+
+    // Computation of right hand side.
+    ZVect x_sol(n), b_vec(n); b_vec.Fill(0);
+    x_sol.Fill(); b_vec.Zero();
+    Mlt(1.0, A, x_sol, b_vec);
+    x_sol.Zero();
+
+    // We solve the linear system.
+    Solve(A, x_sol, b_vec);
+    
+    successA_colsym_complex = CheckSolution(x_sol);
+  }
+
+  
+  // We test ArrayRowSparse (real numbers).
+  {
+    Matrix<double, General, ArrayRowSparse> A(n, n);
+    A(0, 0) = 2.0; A(0, 1) = -1.5; A(0, 2) = 0.4;
+    A(1, 0) = -1.0; A(1, 1) = 3.0; A(1, 2) = 1.0;
+    A(2, 0) = -2.0; A(2, 1) = 1.3; A(2, 2) = 4.0; A(2, 3) = -2.0;
+    A(3, 2) = 0.5; A(3, 3) = 1.5; A(3, 4) = -0.5;
+    A(4, 3) = -0.8; A(4, 4) = 2.5;
+    
+    // computation of right hand side
+    DVect x_sol(n), b_vec(n), b_trans(n);
+    x_sol.Fill();  b_vec.Zero(); b_trans.Zero();
+    Mlt(SeldonNoTrans, A, x_sol, b_vec);
+    Mlt(SeldonTrans, A, x_sol, b_trans);
+    x_sol.Zero();
+
+    // we solve linear system
+    Solve(A, x_sol, b_vec, b_trans);
+    
+    successA_row_real = CheckSolution(x_sol);
+    successAT_row_real = CheckSolution(b_trans);
+  }
+
+  // We test ArrayRowSparse (complex numbers).
+  {
+    Matrix<cpx, General, ArrayRowSparse> A(n, n);
+    A(0, 0) = cpx(2.0,-4.0); A(0, 1) = cpx(-1.5,0.5); A(0, 2) = cpx(-0.4,0.2);
+    A(1, 0) = cpx(1.2,0.2); A(1, 1) = cpx(3.0,-1.0); A(1, 2) = cpx(1.0,0.0);
+    A(2, 0) = cpx(-1.8,0.5); A(2, 1) = cpx(0.6,0.8); A(2, 2) = cpx(4.0,2.0); A(2, 3) = cpx(-2.0,1.0);
+    A(3, 2) = cpx(1.5,0.4); A(3, 3) = cpx(1.5,-1.0); A(3, 4) = cpx(-0.5,0.0);
+    A(4, 3) = cpx(0.7,-0.5); A(4, 4) = cpx(2.5,5.0);
+    
+    // Computation of right hand side.
+    ZVect x_sol(n), b_vec(n), b_trans(n);
+    x_sol.Fill();  b_vec.Zero(); b_trans.Zero();
+    Mlt(SeldonNoTrans, A, x_sol, b_vec);
+    Mlt(SeldonTrans, A, x_sol, b_trans);
+    x_sol.Zero();
+
+    // We solve the linear system.
+    Solve(A, x_sol, b_vec, b_trans);
+    
+    successA_row_complex = CheckSolution(x_sol);
+    successAT_row_complex = CheckSolution(b_trans);
+  }
+
+  // We test ArrayColSparse (real numbers).
+  {
+    Matrix<double, General, ArrayColSparse> A(n, n);
+    A(0, 0) = 2.0; A(0, 1) = -1.5; A(0, 2) = 0.4;
+    A(1, 0) = -1.0; A(1, 1) = 3.0; A(1, 2) = 1.0;
+    A(2, 0) = -2.0; A(2, 1) = 1.3; A(2, 2) = 4.0; A(2, 3) = -2.0;
+    A(3, 2) = 0.5; A(3, 3) = 1.5; A(3, 4) = -0.5;
+    A(4, 3) = -0.8; A(4, 4) = 2.5;
+    
+    // Computation of right hand side.
+    DVect x_sol(n), b_vec(n), b_trans(n);
+    x_sol.Fill();  b_vec.Zero(); b_trans.Zero();
+    Mlt(SeldonNoTrans, A, x_sol, b_vec);
+    Mlt(SeldonTrans, A, x_sol, b_trans);
+    x_sol.Zero();
+
+    // We solve the linear system.
+    Solve(A, x_sol, b_vec, b_trans);
+
+    successA_col_real = CheckSolution(x_sol);
+    successAT_col_real = CheckSolution(b_trans);
+  }
+
+  // We test ArrayColSparse (complex numbers).
+  {
+    Matrix<cpx, General, ArrayColSparse> A(n, n);
+    A(0, 0) = cpx(2.0,-4.0); A(0, 1) = cpx(-1.5,0.5); A(0, 2) = cpx(-0.4,0.2);
+    A(1, 0) = cpx(1.2,0.2); A(1, 1) = cpx(3.0,-1.0); A(1, 2) = cpx(1.0,0.0);
+    A(2, 0) = cpx(-1.8,0.5); A(2, 1) = cpx(0.6,0.8); A(2, 2) = cpx(4.0,2.0); A(2, 3) = cpx(-2.0,1.0);
+    A(3, 2) = cpx(1.5,0.4); A(3, 3) = cpx(1.5,-1.0); A(3, 4) = cpx(-0.5,0.0);
+    A(4, 3) = cpx(0.7,-0.5); A(4, 4) = cpx(2.5,5.0);
+
+    // Computation of right hand side.
+    ZVect x_sol(n), b_vec(n), b_trans(n);
+    x_sol.Fill();  b_vec.Zero(); b_trans.Zero();
+    Mlt(SeldonNoTrans, A, x_sol, b_vec);
+    Mlt(SeldonTrans, A, x_sol, b_trans);
+    
+    x_sol.Zero();
+
+    // We solve the linear system.
+    Solve(A, x_sol, b_vec, b_trans);
+    
+    successA_col_complex = CheckSolution(x_sol);
+    successAT_col_complex = CheckSolution(b_trans);
   }
 
   bool overall_success = true;
@@ -414,9 +607,21 @@ int main(int argc, char **argv)
       overall_success = false;
     }
 
+  if (!successT_row_real)
+    {
+      cout << "Error during inversion of transpose RowSparse real matrix" << endl;
+      overall_success = false;
+    }
+
   if (!success_row_complex)
     {
       cout << "Error during inversion of RowSparse complex matrix" << endl;
+      overall_success = false;
+    }
+
+  if (!successT_row_complex)
+    {
+      cout << "Error during inversion of transpose RowSparse complex matrix" << endl;
       overall_success = false;
     }
 
@@ -426,14 +631,166 @@ int main(int argc, char **argv)
       overall_success = false;
     }
 
+  if (!successT_col_real)
+    {
+      cout << "Error during inversion of transpose ColSparse real matrix" << endl;
+      overall_success = false;
+    }
+
   if (!success_col_complex)
     {
       cout << "Error during inversion of ColSparse complex matrix" << endl;
       overall_success = false;
     }
 
+  if (!successT_col_complex)
+    {
+      cout << "Error during inversion of transpose ColSparse complex matrix" << endl;
+      overall_success = false;
+    }
+  
+  if (!successA_rowsym_real)
+    {
+      cout << "Error during inversion of ArrayRowSymSparse real matrix" << endl;
+      overall_success = false;
+    }
+
+  if (!successA_rowsym_complex)
+    {
+      cout << "Error during inversion of ArrayRowSymSparse complex matrix" << endl;
+      overall_success = false;
+    }
+
+  if (!successA_colsym_real)
+    {
+      cout << "Error during inversion of ArrayColSymSparse real matrix" << endl;
+      overall_success = false;
+    }
+
+  if (!successA_colsym_complex)
+    {
+      cout << "Error during inversion of ArrayColSymSparse complex matrix" << endl;
+      overall_success = false;
+    }
+
+  if (!successA_row_real)
+    {
+      cout << "Error during inversion of ArrayRowSparse real matrix" << endl;
+      overall_success = false;
+    }
+
+  if (!successAT_row_real)
+    {
+      cout << "Error during inversion of transpose ArrayRowSparse real matrix" << endl;
+      overall_success = false;
+    }
+
+  if (!successA_row_complex)
+    {
+      cout << "Error during inversion of ArrayRowSparse complex matrix" << endl;
+      overall_success = false;
+    }
+
+  if (!successAT_row_complex)
+    {
+      cout << "Error during inversion of transpose ArrayRowSparse complex matrix" << endl;
+      overall_success = false;
+    }
+  
+  if (!successA_col_real)
+    {
+      cout << "Error during inversion of ArrayColSparse real matrix" << endl;
+      overall_success = false;
+    }
+
+  if (!successAT_col_real)
+    {
+      cout << "Error during inversion of transpose ArrayColSparse real matrix" << endl;
+      overall_success = false;
+    }
+
+  if (!successA_col_complex)
+    {
+      cout << "Error during inversion of ArrayColSparse complex matrix" << endl;
+      overall_success = false;
+    }
+
+  if (!successAT_col_complex)
+    {
+      cout << "Error during inversion of transpose ArrayColSparse complex matrix" << endl;
+      overall_success = false;
+    }
+  
+  
+  /***************************************************
+   * Testing a larger matrix with SparseDirectSolver *
+   ***************************************************/
+  
+  
+  {
+    Matrix<complex<double>, Symmetric, ArrayRowSymSparse> A;
+    Vector<complex<double> > b_vec, x_sol, x_ref;
+    
+    A.ReadText("matrix/MatDisque.dat");
+    b_vec.Read("matrix/RhsDisque.dat");
+    x_ref.Read("matrix/SolDisque.dat");
+    
+    WriteHarwellBoeing(A, "test.rua");
+    
+    SparseDirectSolver<complex<double> > mat_lu;
+    //mat_lu.SelectDirectSolver(mat_lu.SELDON_SOLVER);
+    //mat_lu.SelectDirectSolver(mat_lu.MUMPS);
+    mat_lu.ShowMessages();
+    //mat_lu.SetTypeOrdering(SparseMatrixOrdering::IDENTITY);
+    //mat_lu.SetTypeOrdering(SparseMatrixOrdering::REVERSE_CUTHILL_MCKEE);
+    //mat_lu.SetTypeOrdering(SparseMatrixOrdering::PORD);
+    //mat_lu.SetTypeOrdering(SparseMatrixOrdering::SCOTCH);
+    //mat_lu.SetTypeOrdering(SparseMatrixOrdering::METIS);
+    //mat_lu.SetTypeOrdering(SparseMatrixOrdering::QAMD);
+    mat_lu.Factorize(A);
+    
+    x_sol = b_vec;
+    mat_lu.Solve(x_sol);
+    double err;
+    bool success = CheckSolution(x_sol, x_ref, err);
+    cout << "Error obtained = " << err << endl;
+    if (!success)
+      {
+    	cout << "Error during inversion of ArrayRowSymSparse with SparseDirectSolver" << endl;
+    	overall_success = false;
+      }
+    
+    // int test_input; cout << "we wait " << endl; cin >> test_input;
+  }
+  
+  {
+    Matrix<complex<double>, General, ArrayRowSparse> A;
+    Vector<complex<double> > b_vec, x_sol, x_ref;
+    
+    A.ReadText("matrix/MatDisque.dat");
+    b_vec.Read("matrix/RhsDisque.dat");
+    x_ref.Read("matrix/SolDisque.dat");
+    
+    SparseDirectSolver<complex<double> > mat_lu;
+    mat_lu.ShowMessages();
+    mat_lu.Factorize(A);
+    
+    x_sol = b_vec;
+    mat_lu.Solve(x_sol);
+    double err;
+    bool success = CheckSolution(x_sol, x_ref, err);
+    cout << "Error obtained = " << err << endl;
+    if (!success)
+      {
+	cout << "Error during inversion of ArrayRowSparse with SparseDirectSolver" << endl;
+	overall_success = false;
+      }
+  }
+  
   if (overall_success)
     cout << "All tests successfully completed" << endl;
+  else
+    return -1;
 
   return 0;
 }

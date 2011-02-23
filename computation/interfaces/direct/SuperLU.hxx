@@ -32,7 +32,7 @@ namespace Seldon
   {
   protected :
     //! objects of SuperLU
-    SuperMatrix A, L, U, B;
+    SuperMatrix L, U, B;
     SCformat *Lstore;  //!< object of SuperLU
     NCformat *Ustore;  //!< object of SuperLU
     SuperLUStat_t stat; //!< statistics

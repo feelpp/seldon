@@ -46,11 +46,18 @@
 #include "computation/interfaces/direct/Pastix.cxx"
 #endif
 
-#include "computation/interfaces/direct/SparseSolver.cxx"
+#include "computation/solver/SparseSolver.cxx"
 
 // iterative solvers and preconditioning
 #include "computation/solver/iterative/Iterative.cxx"
 #include "computation/solver/preconditioner/Precond_Ssor.cxx"
+
+// Cholesky Solver
+#ifdef SELDON_WITH_CHOLMOD
+#include "computation/interfaces/direct/Cholmod.cxx"
+#endif
+
+#include "computation/solver/SparseCholeskyFactorisation.cxx"
 
 #define SELDON_FILE_SELDON_SOLVER_HXX
 #endif

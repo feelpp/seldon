@@ -256,11 +256,11 @@ namespace Seldon
     if (n > 0)
       {
 	// SuperLU objects are cleared
-	Destroy_CompCol_Matrix(&A);
-	Destroy_SuperMatrix_Store(&B);
+        Destroy_SuperMatrix_Store(&B);
 	Destroy_SuperNode_Matrix(&L);
 	Destroy_CompCol_Matrix(&U);
-	perm_r.Clear(); perm_c.Clear();
+	perm_r.Clear();
+        perm_c.Clear();
 	n = 0;
       }
   }
@@ -304,26 +304,40 @@ namespace Seldon
     Copy(mat, Acsr);
     if (!keep_matrix)
       mat.Clear();
-
-    // we get renumbering vectors perm_r and perm_c
-    options.ColPerm = permc_spec;
-    if (permc_spec != MY_PERMC)
-      {
-	perm_r.Reallocate(n);
-	perm_c.Reallocate(n);    
-      }
     
+    SuperMatrix A, AA;
     int nnz = Acsr.GetDataSize();
-    dCreate_CompCol_Matrix(&A, n, n, nnz, Acsr.GetData(), Acsr.GetInd(),
+    dCreate_CompCol_Matrix(&AA, n, n, nnz, Acsr.GetData(), Acsr.GetInd(),
 			   Acsr.GetPtr(), SLU_NC, SLU_D, SLU_GE);
     
-    // factorization -> no right hand side
-    int nb_rhs = 0;
-    dCreate_Dense_Matrix(&B, n, nb_rhs, NULL, n, SLU_DN, SLU_D, SLU_GE);
-
-    dgssv(&options, &A, perm_c.GetData(), perm_r.GetData(),
-          &L, &U, &B, &stat, &info_facto);
-
+    // we get renumbering vectors perm_r and perm_c
+    options.ColPerm = permc_spec;    
+    if (permc_spec != MY_PERMC)
+      {
+        perm_r.Reallocate(n);
+        perm_c.Reallocate(n);
+        perm_r.Fill();
+        perm_c.Fill();
+        
+        get_perm_c(permc_spec, &AA, perm_c.GetData());        
+      }
+    
+    // original matrix AA is permuted to obtain matrix A
+    Vector<int> etree(n);
+    sp_preorder(&options, &AA, perm_c.GetData(), etree.GetData(), &A);
+    
+    int panel_size = sp_ienv(1);
+    int relax = sp_ienv(2);
+    int lwork = 0;
+    
+    // then calling factorisation on permuted matrix
+    dgstrf(&options, &A, relax, panel_size, etree.GetData(),
+           NULL, lwork, perm_c.GetData(), perm_r.GetData(), &L, &U, &stat, &info_facto);
+        
+    // clearing matrices
+    Destroy_CompCol_Permuted(&A);
+    Destroy_CompCol_Matrix(&AA);
+    
     if ((info_facto==0)&&(display_info))
       {
 	mem_usage_t mem_usage;
@@ -347,11 +361,13 @@ namespace Seldon
   {
     trans_t trans = NOTRANS;
     int nb_rhs = 1, info;
+    // putting right hand side on SuperLU structure
     dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
     
     SuperLUStat_t stat;
     StatInit(&stat);
+    // solving A x = b
     dgstrs(trans, &L, &U, perm_r.GetData(),
 	   perm_c.GetData(), &B, &stat, &info);
   }
@@ -370,11 +386,13 @@ namespace Seldon
 
     trans_t trans = TRANS;
     int nb_rhs = 1, info;
+    // putting right hand side on SuperLU structure
     dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
 
     SuperLUStat_t stat;
     StatInit(&stat);
+    // solving A^T x = b
     dgstrs(trans, &L, &U, perm_r.GetData(),
 	   perm_c.GetData(), &B, &stat, &info);
   }
@@ -396,22 +414,41 @@ namespace Seldon
     if (!keep_matrix)
       mat.Clear();
 
-    // we get renumbering vectors perm_r and perm_c
+    SuperMatrix AA, A;
     int nnz = Acsr.GetDataSize();
-    zCreate_CompCol_Matrix(&A, n, n, nnz,
+    zCreate_CompCol_Matrix(&AA, n, n, nnz,
 			   reinterpret_cast<doublecomplex*>(Acsr.GetData()),
 			   Acsr.GetInd(), Acsr.GetPtr(),
 			   SLU_NC, SLU_Z, SLU_GE);
-
-    perm_r.Reallocate(n);
-    perm_c.Reallocate(n);
-
-    int nb_rhs = 0;
-    zCreate_Dense_Matrix(&B, n, nb_rhs, NULL, n, SLU_DN, SLU_Z, SLU_GE);
-
-    zgssv(&options, &A, perm_c.GetData(), perm_r.GetData(),
-	  &L, &U, &B, &stat, &info_facto);
-
+    
+    // we get renumbering vectors perm_r and perm_c
+    options.ColPerm = permc_spec;
+    if (permc_spec != MY_PERMC)
+      {
+        perm_r.Reallocate(n);
+        perm_c.Reallocate(n);
+        perm_r.Fill();
+        perm_c.Fill();
+        
+        get_perm_c(permc_spec, &AA, perm_c.GetData());        
+      }
+    
+    // permuting matrix 
+    Vector<int> etree(n);
+    sp_preorder(&options, &AA, perm_c.GetData(), etree.GetData(), &A);
+        
+    int panel_size = sp_ienv(1);
+    int relax = sp_ienv(2);
+    int lwork = 0;
+    
+    // factorisation
+    zgstrf(&options, &A, relax, panel_size, etree.GetData(),
+           NULL, lwork, perm_c.GetData(), perm_r.GetData(), &L, &U, &stat, &info_facto);
+        
+    // clearing matrices
+    Destroy_CompCol_Permuted(&A);    
+    Destroy_CompCol_Matrix(&AA);
+    
     if ((info_facto==0)&&(display_info))
       {
 	mem_usage_t mem_usage;
@@ -424,7 +461,7 @@ namespace Seldon
 	cout<<"Memory used for factorisation in Mo "
 	    <<mem_usage.total_needed/1e6<<endl;
       }
-
+    
     Acsr.Nullify();
   }
 
@@ -439,9 +476,9 @@ namespace Seldon
     zCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 reinterpret_cast<doublecomplex*>(x.GetData()),
 			 x.GetM(), SLU_DN, SLU_Z, SLU_GE);
-
-    zgstrs(trans, &L, &U, perm_r.GetData(),
-	   perm_c.GetData(), &B, &stat, &info);
+    
+    zgstrs(trans, &L, &U, perm_c.GetData(),
+           perm_r.GetData(), &B, &stat, &info);
   }
 
 
@@ -463,8 +500,8 @@ namespace Seldon
 			 reinterpret_cast<doublecomplex*>(x.GetData()),
 			 x.GetM(), SLU_DN, SLU_Z, SLU_GE);
 
-    zgstrs(trans, &L, &U, perm_r.GetData(),
-	   perm_c.GetData(), &B, &stat, &info);
+    zgstrs(trans, &L, &U, perm_c.GetData(),
+	   perm_r.GetData(), &B, &stat, &info);
   }
 
 

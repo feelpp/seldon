@@ -596,45 +596,6 @@ namespace Seldon
   }
 
 
-  //! Resolution of L D L^t y = x (result is overwritten in x)
-  /*! The factor L^t is assumed to be stored in matrix A. The diagonal of A is
-    equal to the inverse of diagonal D.
-  */
-  template<class real, class cplx, class Allocator,
-           class Storage2, class Allocator2>
-  void SolveLU(const Matrix<real, Symmetric, ArrayRowSymSparse, Allocator>& A,
-               Vector<cplx, Storage2, Allocator2>& x)
-  {
-    int n = A.GetM(), j_row;
-    cplx tmp;
-
-    // We solve first L y = b.
-    for (int i_col = 0; i_col < n ; i_col++)
-      {
-	for (int k = 1; k < A.GetRowSize(i_col) ; k++)
-	  {
-	    j_row = A.Index(i_col, k);
-	    x(j_row) -= A.Value(i_col, k)*x(i_col);
-	  }
-      }
-
-    // Inverting by diagonal D.
-    for (int i_col = 0; i_col < n ; i_col++)
-      x(i_col) *= A.Value(i_col,0);
-
-    // Then we solve L^t x = y.
-    for (int i_col = n-1; i_col >=0 ; i_col--)
-      {
-	tmp = x(i_col);
-	for (int k = 1; k < A.GetRowSize(i_col) ; k++)
-	  {
-	    j_row = A.Index(i_col,k);
-	    tmp -= A.Value(i_col,k)*x(j_row);
-	  }
-	x(i_col) = tmp;
-      }
-  }
-
 } // end namespace
 
 #define SELDON_SYMMETRIC_ILUT_PRECONDITIONING_CXX

@@ -335,9 +335,9 @@ namespace Seldon
       {
         for (int i = 0; i < r.GetM(); i++)
           xtmp(permutation_row(i)) = r(i);
-
+	
         SolveLU(mat_sym, xtmp);
-
+	
         for (int i = 0; i < r.GetM(); i++)
           z(i) = xtmp(permutation_row(i));
       }
@@ -419,7 +419,19 @@ namespace Seldon
       }
   }
 
-
+  
+  template<class real, class cplx, class Allocator>
+  template<class TransStatus, class Vector1>
+  void IlutPreconditioning<real, cplx, Allocator>::
+  Solve(const TransStatus& transA, Vector1& z)
+  {
+    if (transA.Trans())
+      TransSolve(z);
+    else
+      Solve(z);
+  }
+  
+  
   template<class real, class cplx, class Storage, class Allocator>
   void qsplit_ilut(Vector<cplx, Storage, Allocator>& a, IVect& ind, int first,
                    int n, int ncut, const real& abs_ncut)
@@ -1229,90 +1241,7 @@ namespace Seldon
 	  Index(A.Index(i_row, i)) = -1;
       }
   }
-
-
-  //! Resolution of LU y = x (x is overwritten with y)
-  /*!  L and U are assumed to be stored in A. The diagonal of A contains the
-    inverse of the diagonal of U.
-  */
-  template<class real, class cplx, class Allocator,
-           class Storage2, class Allocator2>
-  void SolveLU(const Matrix<real, General, ArrayRowSparse, Allocator>& A,
-               Vector<cplx, Storage2, Allocator2>& x)
-  {
-    int i, k, n, k_;
-    real inv_diag;
-    n = A.GetM();
-
-    // Forward solve.
-    for (i = 0; i < n; i++)
-      {
-	k_ = 0; k = A.Index(i,k_);
-	while ( k < i)
-	  {
-	    x(i) -= A.Value(i,k_)*x(k);
-	    k_++;
-            k = A.Index(i,k_);
-	  }
-      }
-
-    // Backward solve.
-    for (i = n-1; i >= 0; i--)
-      {
-	k_ = 0; k = A.Index(i,k_);
-	while ( k < i)
-	  {
-	    k_++;
-	    k = A.Index(i,k_);
-	  }
-
-	inv_diag = A.Value(i,k_);
-	for ( k = (k_+1); k < A.GetRowSize(i) ; k++)
-          x(i) -= A.Value(i,k) * x(A.Index(i,k));
-
-	x(i) *= inv_diag;
-      }
-  }
-
-
-  template<class cplx, class Allocator, class Storage2, class Allocator2>
-  void SolveLU(const class_SeldonTrans& transA,
-               const Matrix<cplx, General, ArrayRowSparse, Allocator>& A,
-               Vector<cplx,Storage2,Allocator2>& x)
-  {
-    int i, k, n, k_;
-    n = A.GetM();
-
-    // Forward solve (with U^T).
-    for (i = 0 ; i < n ; i++)
-      {
-	k_ = 0; k = A.Index(i,k_);
-	while ( k < i)
-	  {
-	    k_++;
-	    k = A.Index(i,k_);
-	  }
-
-	x(i) *= A.Value(i,k_);
-	for ( k = (k_+1); k < A.GetRowSize(i) ; k++)
-	  {
-	    x(A.Index(i,k)) -= A.Value(i,k) * x(i);
-	  }
-      }
-
-    // Backward solve (with L^T).
-    for (i = n-1 ; i>=0  ; i--)
-      {
-	k_ = 0; k = A.Index(i,k_);
-	while ( k < i)
-	  {
-	    x(k) -= A.Value(i,k_)*x(i);
-	    k_++;
-	    k = A.Index(i,k_);
-	  }
-      }
-  }
-
+  
 }
 
 #define SELDON_FILE_ILUT_PRECONDITIONING_CXX

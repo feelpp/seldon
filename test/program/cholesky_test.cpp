@@ -19,7 +19,6 @@
 
 #include "Seldon.hxx"
 #include "SeldonSolver.hxx"
-#include "computation/solver/SparseCholeskyFactorisation.cxx"
 
 using namespace Seldon;
 
