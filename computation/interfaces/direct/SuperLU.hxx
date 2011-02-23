@@ -24,8 +24,10 @@ extern "C"
 #include "superlu_interface.h"
 }
 
+
 namespace Seldon
 {
+
   //! class interfacing SuperLU functions
   template<class T>
   class MatrixSuperLU_Base
@@ -40,9 +42,11 @@ namespace Seldon
     //! permutation array
     Vector<int> perm_r, perm_c;
 
-    int permc_spec; //!< ordering scheme
+    colperm_t permc_spec; //!< ordering scheme
     int n; //!< number of rows
     bool display_info; //!< display information about factorization ?
+    //! Error code returned by SuperLU.
+    int info_facto;
 
   public :
     MatrixSuperLU_Base();
@@ -52,24 +56,32 @@ namespace Seldon
     void GetLU(Matrix<double, Prop, ColSparse, Allocator>& Lmat,
                Matrix<double, Prop, ColSparse, Allocator>& Umat,
                bool permuted = true);
+
     template<class Prop, class Allocator>
     void GetLU(Matrix<double, Prop, RowSparse, Allocator>& Lmat,
                Matrix<double, Prop, RowSparse, Allocator>& Umat,
                bool permuted = true);
+
     const Vector<int>& GetRowPermutation() const;
     const Vector<int>& GetColPermutation() const;
+
+    void SelectOrdering(colperm_t type);
+    void SetPermutation(const IVect&);
 
     void Clear();
     void HideMessages();
     void ShowMessages();
 
+    int GetInfoFactorization() const;
   };
+
 
   //! empty matrix
   template<class T>
   class MatrixSuperLU : public MatrixSuperLU_Base<T>
   {
   };
+
 
   //! class interfacing SuperLU functions in double precision
   template<>
@@ -85,8 +97,8 @@ namespace Seldon
     template<class Allocator2>
     void Solve(Vector<double, VectFull, Allocator2>& x);
 
-    template<class Allocator2>
-    void Solve(const SeldonTranspose& TransA,
+    template<class TransStatus, class Allocator2>
+    void Solve(const TransStatus& TransA,
                Vector<double, VectFull, Allocator2>& x);
   };
 
@@ -107,11 +119,12 @@ namespace Seldon
     template<class Allocator2>
     void Solve(Vector<complex<double>, VectFull, Allocator2>& x);
 
-    template<class Allocator2>
-    void Solve(const SeldonTranspose& TransA,
+    template<class TransStatus, class Allocator2>
+    void Solve(const TransStatus& TransA,
                Vector<complex<double>, VectFull, Allocator2>& x);
 
   };
+
 }
 
 #define SELDON_FILE_SUPERLU_HXX
