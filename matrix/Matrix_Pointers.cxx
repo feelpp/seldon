@@ -216,6 +216,21 @@ namespace Seldon
   }
 
 
+  //! Returns the pointer 'me_'.
+  /*! Returns the pointer 'me_' that defines an array pointing to the first
+    row or column elements, so that 'me_[1]' points to the first element of
+    the second row or column.
+    \return The pointer 'me_'.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  typename
+  Matrix_Pointers<T, Prop, Storage, Allocator>::pointer*
+  Matrix_Pointers<T, Prop, Storage, Allocator>::GetMe() const
+  {
+    return me_;
+  }
+
+
   /*********************
    * MEMORY MANAGEMENT *
    *********************/
