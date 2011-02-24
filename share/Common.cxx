@@ -116,7 +116,23 @@ namespace Seldon
     number = complex<T>(T(1), T(0));
   }
 
+  
+  //! Returns true for a complex number
+  template <class T>
+  inline bool IsComplexNumber(T& number)
+  {
+    return false;
+  }
 
+
+  //! Returns true for a complex number
+  template <class T>
+  inline bool IsComplexNumber(complex<T>& number)
+  {
+    return true;
+  }
+
+  
 }  // namespace Seldon.
 
 #define SELDON_FILE_COMMON_CXX

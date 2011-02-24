@@ -41,6 +41,32 @@ namespace Seldon
   template <class T>
   T to_num(std::string s);
 
+  //! workaround class to retrieve double type from complex<double>
+  /*!
+    when T is a template parameter (double or complex<double>)
+    if you need to know the associated real type (double),
+    you can type :
+    typedef typename ClassComplexType<T>::Treal real;
+    In the same way, you can get complex<double> type :
+    typedef typename ClassComplexType<T>::Tcplx complexe;
+   */
+  template<class T>
+  class ClassComplexType
+  {
+    public : 
+    typedef T Treal;
+    typedef complex<T> Tcplx;
+  };
+
+  //! workaround class to retrieve double type from complex<double>
+  template<class T>
+  class ClassComplexType< complex<T> >
+  {
+  public : 
+    typedef T Treal;
+    typedef complex<T> Tcplx;
+  };
+  
   template <class T>
   void SetComplexZero(T& number);
 
