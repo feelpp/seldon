@@ -399,7 +399,9 @@ namespace Seldon
     else
       struct_mumps.icntl[8] = 1;
 
+    struct_mumps.nrhs = 1;
     struct_mumps.rhs = reinterpret_cast<pointer>(x.GetData());
+    struct_mumps.lrhs = x.GetM();
     struct_mumps.job = 3; // we solve system
     CallMumps();
   }
@@ -513,9 +515,14 @@ namespace Seldon
     struct_mumps.a_loc = reinterpret_cast<pointer>(Val.GetData());
 
     // Call the MUMPS package.
-    struct_mumps.job = 4; // we analyse and factorize the system
+    struct_mumps.job = 1; // we analyse the system
     CallMumps();
-
+    
+    // overestimating size in order to avoid error -9
+    struct_mumps.icntl[22] = 1.3*struct_mumps.infog[25];
+    struct_mumps.job = 2; // we factorize the system
+    CallMumps();
+    
     if ((comm_facto.Get_rank() == 0) && (print_level >= 0))
       cout<<"Factorization completed"<<endl;
     
@@ -596,7 +603,8 @@ namespace Seldon
       struct_mumps.icntl[8] = 0;
     else
       struct_mumps.icntl[8] = 1;
-    
+
+    struct_mumps.nrhs = 1;    
     struct_mumps.job = 3;
     CallMumps();
 

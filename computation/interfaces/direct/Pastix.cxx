@@ -39,7 +39,7 @@ namespace Seldon
     distributed = false;
 
     // Refinement by default.
-    refine_solution = true;
+    refine_solution = false;
 
     // initializing parameters
     pastix_initParam(iparm, dparm);
