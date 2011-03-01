@@ -113,6 +113,7 @@ or basename($_SERVER['REQUEST_URI'], ".php") == "array3d")
 or basename($_SERVER['REQUEST_URI'], ".php") == "functions_blas"
 or basename($_SERVER['REQUEST_URI'], ".php") == "functions_lapack"
 or basename($_SERVER['REQUEST_URI'], ".php") == "direct"
+or basename($_SERVER['REQUEST_URI'], ".php") == "eigenvalue"
 or basename($_SERVER['REQUEST_URI'], ".php") == "iterative")
 {
   echo '<ul class="navsubul"> <li class="jelly">';
@@ -126,6 +127,9 @@ or basename($_SERVER['REQUEST_URI'], ".php") == "iterative")
   echo '</li>';
   echo '<li class="jelly">';
   HL($file, "iterative", "Iterative Solvers");
+  echo '</li>';
+  echo '<li class="jelly">';
+  HL($file, "eigenvalue", "Eigenvalue Solvers");
   echo '</li> </ul>';
 } ?>
 

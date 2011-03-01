@@ -7,7 +7,10 @@
 
 <h2>The compiler</h2>
 
-<p> %Seldon is supposed to be fully compliant with the <b>C++ standard</b>. Therefore, it can be compiled by GNU GCC (>=3.0; tested with version 3.2, 3.3, 3.4, 4.0, 4.1, 4.2, 4.3 and 4.4) and by the Intel C++ compiler icc (tested with icc 7.1 and 8.0). No tests were conducted with proprietary compilers under Unix, but the compliance with the C++ standard should ensure portability. Decent versions of Microsoft Visual C++ (i.e., from Visual C++ 2003) compile %Seldon.  </p>
+<p> %Seldon is supposed to be fully compliant with the <b>C++
+standard</b>. Therefore, it can be compiled by GNU GCC (>=3.0; tested
+with version 3.2, 3.3, 3.4, 4.0, 4.1, 4.2, 4.3 and 4.4) and by the
+Intel C++ compiler icc (tested with icc 7.1, 8.0 and 12.0). No tests were conducted with proprietary compilers under Unix, but the compliance with the C++ standard should ensure portability. </p>
 
 <h2>Installation</h2>
 
@@ -53,5 +56,9 @@ V = 0   1       2
 <p>If Cblas is already installed in your system or if you installed it by using apt-get on linux or fink on mac, you may type the following compilation line:</p>
 
 \prescreen g++ -I../.. test_Blas.cpp -lcblas -lblas -lg2c && ./a.out\endprescreen
+
+<p>For recent versions of gcc, g77 has been superseded by gfortran and
+-lg2c should be replaced by -lgfortran. If you are using intel
+compiler icc, it should be -lifcore. </p>
 
 */
