@@ -1,4 +1,4 @@
-Version 5.1 (RC1 released on 2010-09-05)
+Version 5.1 (2011-03-03)
 -----------
 
 * Improvements
@@ -104,6 +104,8 @@ Version 5.1 (RC1 released on 2010-09-05)
   not declared in "clapack.h". For 'RowMajor' matrices, the memory was not
   allocated for the output matrices U and V^T.
 - 'MergeSort' did nothing!
+- 'Mlt(SeldonNoTrans, A, x, b)' was computing 'b = 111 * A * x' when Blas was
+  not called.
 - In matrix conversions, there could be free/delete mismatches when the
   allocators were badly mixed.
 - Bad calls to 'SetData' led to compilation errors in
@@ -114,6 +116,9 @@ Version 5.1 (RC1 released on 2010-09-05)
 - A sparse matrix with 0 row can now be created.
 - Several constructors in the form 'Matrix(int, int)' were declared but not
   defined.
+- 'MltAdd' for 'ArrayRowSymSparse' did not accept complex vectors with a real
+  matrix.
+- Some compilation errors with Microsoft Visual C++.
 
 * Miscellaneous
 
