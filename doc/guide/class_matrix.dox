@@ -37,9 +37,9 @@ Matrix<double, General, RowUpTriangPacked> > E;
 <h2>Methods :</h2>
 <table class="category-table">
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#constructor"> Matrix constructors </a> </td> </tr>
+<td class="category-table-td"> <a href="#constructor"> Matrix constructors </a> </td> <td></td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#operator"> Matrix operators </a> </td> </tr>
+ <td class="category-table-td"> <a href="#operator"> Matrix operators </a> </td> <td></td> </tr>
 <tr class="category-table-tr-2">
  <td class="category-table-td"> <a href="#getm"> GetM </a> </td>
  <td class="category-table-td"> returns the number of rows in the

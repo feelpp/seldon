@@ -16,6 +16,8 @@ int main(int argc, char** argv)
 
   A.Print();
 
+  WriteHarwellBoeing(A, "result.rua");
+
   END;
 
   return 0;

@@ -153,7 +153,7 @@ namespace Seldon
     
     int GetTypeOrdering() const;
     void SetOrdering(const IVect&);
-    void SetTypeOrdering(int);
+    void SelectOrdering(int);
     
     void SetNbThreadPerNode(int m);
     

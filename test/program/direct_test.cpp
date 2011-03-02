@@ -741,12 +741,12 @@ int main(int argc, char **argv)
     //mat_lu.SelectDirectSolver(mat_lu.SELDON_SOLVER);
     //mat_lu.SelectDirectSolver(mat_lu.MUMPS);
     mat_lu.ShowMessages();
-    //mat_lu.SetTypeOrdering(SparseMatrixOrdering::IDENTITY);
-    //mat_lu.SetTypeOrdering(SparseMatrixOrdering::REVERSE_CUTHILL_MCKEE);
-    //mat_lu.SetTypeOrdering(SparseMatrixOrdering::PORD);
-    //mat_lu.SetTypeOrdering(SparseMatrixOrdering::SCOTCH);
-    //mat_lu.SetTypeOrdering(SparseMatrixOrdering::METIS);
-    //mat_lu.SetTypeOrdering(SparseMatrixOrdering::QAMD);
+    //mat_lu.SelectOrdering(SparseMatrixOrdering::IDENTITY);
+    //mat_lu.SelectOrdering(SparseMatrixOrdering::REVERSE_CUTHILL_MCKEE);
+    //mat_lu.SelectOrdering(SparseMatrixOrdering::PORD);
+    //mat_lu.SelectOrdering(SparseMatrixOrdering::SCOTCH);
+    //mat_lu.SelectOrdering(SparseMatrixOrdering::METIS);
+    //mat_lu.SelectOrdering(SparseMatrixOrdering::QAMD);
     mat_lu.Factorize(A);
     
     x_sol = b_vec;

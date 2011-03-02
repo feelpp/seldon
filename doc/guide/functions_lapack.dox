@@ -19,17 +19,27 @@
  <td class="category-table-td"><a href="#refinesolutionlu">RefineSolutionLU</a></td> 
  <td class="category-table-td"> improves solution computed by SolveLU</td> </tr>
 <tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="#getcholesky">GetCholesky </a></td>
+ <td class="category-table-td"> performs a Cholesky (A =  LL<sup>T</sup>) factorization for symmetric positive definite matrices </td>
+ </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="#getcholesky">SolveCholesky </a></td>
+ <td class="category-table-td"> solves linear system by using Cholesky factorization</td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="#getcholesky">MltCholesky </a></td>
+ <td class="category-table-td"> performs matrix vector product by using Cholesky factorization</td> </tr>
+<tr class="category-table-tr-2">
  <td class="category-table-td"><a href="#reciprocalconditionnumber">ReciprocalConditionNumber </a></td> 
  <td class="category-table-td"> computes the inverse of matrix
  condition number</td> </tr>
-<tr class="category-table-tr-2">
+<tr class="category-table-tr-1">
  <td class="category-table-td"><a href="#getscalingfactors">GetScalingFactors </a></td> 
  <td class="category-table-td"> computes row and column scalings to
  equilibrate a matrix</td> </tr>
-<tr class="category-table-tr-1">
+<tr class="category-table-tr-2">
  <td class="category-table-td"><a href="#getinverse">GetInverse </a></td> 
  <td class="category-table-td"> computes the matrix inverse </td> </tr>
-<tr class="category-table-tr-2">
+<tr class="category-table-tr-1">
  <td class="category-table-td"><a href="#getqr">GetQR </a></td> 
  <td class="category-table-td"> QR factorization of matrix </td> </tr>
 <tr class="category-table-tr-2">
@@ -76,14 +86,19 @@
 
   void GetLU(Matrix&amp;, MatrixMumps&amp;);
   void SolveLU(MatrixMumps&amp;, Vector&amp;);
+
+  void GetLU(Matrix&amp;, MatrixPastix&amp;);
+  void SolveLU(MatrixPastix&amp;, Vector&amp;);
+
   void GetLU(Matrix&amp;, MatrixSuperLU&amp;);
   void SolveLU(MatrixSuperLU&amp;, Vector&amp;);
+
   void GetLU(Matrix&amp;, MatrixUmfPack&amp;);
   void SolveLU(MatrixUmfPack&amp;, Vector&amp;);
 </pre>
 
 
-<p><code>SolveLU</code> performs a LU factorization or LDL^t factorization (for symmetric matrices) of the provided matrix.  This function is implemented both for dense and sparse matrices.  In the case of sparse matrices, %Seldon is interfaced with external librairies, i.e. <a href="http://mumps.enseeiht.fr/">MUMPS</a>, <a href="http://www.cise.ufl.edu/research/sparse/umfpack/">UMFPACK</a> or <a href="http://crd.lbl.gov/~xiaoye/SuperLU/">SUPERLU</a>. You need to define SELDON_WITH_MUMPS, SELDON_WITH_SUPERLU and/or SELDON_WITH_UMFPACK if you want to factorize a sparse matrix.  After a call to GetLU, you can call SolveLU to solve a linear system by using the computed factorization.</p>
+<p><code>SolveLU</code> performs a LU factorization or LDL<sup>T</sup> factorization (for symmetric matrices) of the provided matrix.  This function is implemented both for dense and sparse matrices.  In the case of sparse matrices, %Seldon is interfaced with external librairies, i.e. <a href="http://mumps.enseeiht.fr/">MUMPS</a>, <a href="http://www.cise.ufl.edu/research/sparse/umfpack/">UMFPACK</a>, <a href="http://crd.lbl.gov/~xiaoye/SuperLU/">SUPERLU</a> and <a href="http://pastix.gforge.inria.fr/">Pastix</a>. You need to define SELDON_WITH_MUMPS, SELDON_WITH_SUPERLU, SELDON_WITH_PASTIX and/or SELDON_WITH_UMFPACK if you want to factorize a sparse matrix.  After a call to GetLU, you can call SolveLU to solve a linear system by using the computed factorization. A class enabling the choice between the different direct solvers has also been implemented. Its use is detailed in the section devoted to direct solvers.</p>
 
 
 <h4> Example : </h4>
@@ -95,9 +110,12 @@
 #define SELDON_WITH_MUMPS
 #define SELDON_WITH_SUPERLU
 #define SELDON_WITH_UMFPACK
+#define SELDON_WITH_PASTIX
 
 #include "Seldon.hxx"
-#include "Solver.hxx"
+#include "SeldonSolver.hxx"
+
+using namespace Seldon;
 
 int main()
 {
@@ -139,6 +157,82 @@ int main()
 Mumps.cxx<br/>
 SuperLU.cxx<br/>
 UmfPack.cxx</p>
+
+
+
+<div class="separator"><a name="getcholesky"></a></div>
+
+
+
+<h3>GetCholesky, SolveCholesky, MltCholesky</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void GetCholesky(Matrix&amp;);
+  void SolveCholesky(SeldonTrans, const Matrix&amp;, Vector&amp;);
+  void SolveCholesky(SeldonNoTrans, const Matrix&amp;, Vector&amp;);
+  void MltCholesky(SeldonTrans, const Matrix&amp;, Vector&amp;);
+  void MltCholesky(SeldonNoTrans, const Matrix&amp;, Vector&amp;);
+</pre>
+
+
+<p><code>SolveCholesky</code> performs a Cholesky factorization (A = LL<sup>T</sup>) of the provided matrix.
+This function is implemented only for dense symmetric matrices (storages RowSymPacked and ColSymPacked).
+ SolveCholesky performs a resolution by L or L<sup>T</sup>. MltCholesky performs a matrix vector product by L
+ or L<sup>T</sup>. For sparse matrices, you can use SparseCholeskySolver, which is detailed in the section devoted to direct solvers.</p>
+
+
+<h4> Example : </h4>
+
+\precode
+// lapack for dense matrices
+#define SELDON_WITH_LAPACK
+
+#include "Seldon.hxx"
+
+int main()
+{
+  // symmetric matrix
+  int n = 3;
+  Matrix<double, Symmetric, RowSymPacked> A(n, n);
+
+  // for example, you can set A = C*C^T
+  // if you don't provide a definite positive matrix, GetCholesky will fail
+  Matrix<double, General, RowMajor> C(n, n), A2(n, n);
+  C.FillRand(); Mlt(1e-9, C); A2.Fill(0);
+  MltAdd(1.0, SeldonTrans, C, SeldonNoTrans, C, 0.0, A2);
+  for (int i = 0; i < n; i++)
+    for (int j = i; j < n; j++)
+      A(i, j) = A2(i, j);
+
+  // Cholesky factorization
+  GetCholesky(A);
+
+  Vector<double> X(n), B(n);
+  X.Fill();
+
+  // you can perform a matrix vector product by A : b = A*x = L L^T x
+  // first step : b = L ^T x
+  B = X;
+  MltCholesky(SeldonTrans, A, B);
+  // second step : b = L b
+  MltCholesky(SeldonNoTrans, A, B);
+
+  // now you can solve the linear system A x = b, ie L L^T x = b
+  // first step x = L \ b
+  X = B;
+  SolveCholesky(SeldonNoTrans, A, X);
+  // second step x = L^T \ x
+  SolveCholesky(SeldonTrans, A, X);
+
+  return 0;
+}
+\endprecode
+
+
+<h4>Location :</h4>
+<p>Lapack_LinearEquations.cxx </p>
 
 
 
@@ -346,10 +440,10 @@ int m = A.GetM(), n = A.GetN();
 Vector<double> tau;
 GetQR(A, tau);
 
-// Solving Least squares problem QR X = B  (m &ge; n)
+// Solving Least squares problem QR X = B  (m >= n)
 Vector<double> X, B(m);
 B.Fill();
-SolveQR(A, X);
+SolveQR(A, tau, X);
 \endprecode
 
 
@@ -387,10 +481,10 @@ int m = A.GetM(), n = A.GetN();
 Vector<double> tau;
 GetLQ(A, tau);
 
-// Solving Least squares problem LQ X = B  (m &le; n)
+// Solving Least squares problem LQ X = B  (m <= n)
 Vector<double> X, B(m);
 B.Fill();
-SolveLQ(A, X);
+SolveLQ(A, tau, X);
 \endprecode
 
 
@@ -602,7 +696,7 @@ GetEigenvalues(Ar, Br, alpha_real, alpha_imag, beta);
 </pre>
 
 
-<p>This function computes the eigenvalues and eigenvectors of a matrix. The matrix is modified after the call to this function. Each eigenvector is stored in a column. When real unsymmetric matrices are selected, you need to compute real and imaginary part of eigenvalues, then if the j-th eigenvalue is real, the j-th column is the eigenvector associated. If j-th and j+1-th are complex conjugate eigenvalues, the j-th and j+1-the associated columns are vectors A et B such that A+iB and A-iB are the complex conjugate eigenvectors of the initial matrix. </p>
+<p>This function computes the eigenvalues and eigenvectors of a matrix. The matrix is modified after the call to this function. Each eigenvector is stored in a column. When real unsymmetric matrices are selected, you need to compute real and imaginary part of eigenvalues, then if the j-th eigenvalue is real, the j-th column is the eigenvector associated. If j-th and j+1-th are complex conjugate eigenvalues, the j-th and j+1-the associated columns are vectors A et B such that A+iB and A-iB are the complex conjugate eigenvectors of the initial matrix. This function has also been overloaded for sparse eigenvalue problems, by calling an external eigenvalue solver (as Arpack or Anasazi).</p>
 
 
 <h4> Example : </h4>

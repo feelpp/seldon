@@ -68,8 +68,8 @@ namespace Seldon
     void Clear();
 
     // Memory management.
-    void Reallocate(int i,int j);
-    void Resize(int i,int j);
+    void Reallocate(int i, int j);
+    void Resize(int i, int j);
 
     // Basic methods.
     int GetM() const;

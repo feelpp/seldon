@@ -836,6 +836,34 @@ namespace Seldon
 
     for (int i = 0; i < IndRow.GetM(); i++)
       FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
+
+    // if last element a_{m,n} does not exist, we add a 0 value
+    int m = Storage::GetFirst(this->m_, this->n_);
+    int n = Storage::GetSecond(this->m_, this->n_);
+    bool presence_last_elt = false;
+    if ( (m > 0) && (n > 0) )
+      {
+	if (this->val_real_(m-1).GetM() > 0)
+	  {
+	    int p = this->val_real_(m-1).GetM();
+	    if (this->val_real_(m-1).Index(p-1) == n-1)
+	      presence_last_elt = true;
+	  }
+	
+	if (this->val_imag_(m-1).GetM() > 0)
+	  {
+	    int p = this->val_imag_(m-1).GetM();
+	    if (this->val_imag_(m-1).Index(p-1) == n-1)
+	      presence_last_elt = true;
+	  }
+	
+	if (!presence_last_elt)
+	  {
+	    T zero;
+	    SetComplexZero(zero);
+	    FileStream << this->m_ << " " << this->n_ << " " << zero << '\n';
+	  }
+      }
   }
 
 

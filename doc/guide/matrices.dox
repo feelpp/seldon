@@ -9,23 +9,23 @@
 
 <p> Matrices are instances of the class <code>Matrix</code>. Class <code>Matrix</code> is a template class: <code>Matrix&lt;T, Prop, Storage, Allocator&gt;</code>. As for vectors, <code>T</code> is the type of the elements to be stored (e.g. <code>double</code>).  </p>
 
-<p> <code>Prop</code> indicates that the matrix has given properties (symmetric, hermitian, positive definite or whatever). This template parameter is never used by %Seldon; so the user may define its own properties. Thanks to this template parameter, the user may overload some functions based on the properties of the matrix. %Seldon defines two properties: <code>General</code> (default) and <code>Symmetric</code>.  </p>
+<p> <code>Prop</code> indicates that the matrix has given properties (symmetric, hermitian, positive definite or whatever). This template parameter is rarely used by %Seldon; so the user may define its own properties. Thanks to this template parameter, the user may overload some functions based on the properties of the matrix. %Seldon defines two properties: <code>General</code> (default) and <code>Symmetric</code>.  </p>
 
 <p> <code>Storage</code> defines how the matrix is stored. Matrices may be stored in several ways:</p>
 
 <ul>
 
-  <li> <code>ColMajor</code>: full matrix stored by columns (as in Fortran);</li>
+  <li> <code>ColMajor</code>: dense matrix stored by columns (as in Fortran);</li>
   
-  <li> <code>RowMajor</code>: full matrix stored by rows (recommended in C++);</li>
+  <li> <code>RowMajor</code>: dense matrix stored by rows (recommended in C++);</li>
   
-  <li> <code>ColUpTriang</code>: upper triangular matrix stored in a full matrix and by columns;</li>
+  <li> <code>ColUpTriang</code>: upper triangular matrix stored in a dense matrix and by columns;</li>
   
-  <li> <code>ColLoTriang</code>: lower triangular matrix stored in a full matrix and by columns;</li>
+  <li> <code>ColLoTriang</code>: lower triangular matrix stored in a dense matrix and by columns;</li>
   
-  <li> <code>RowUpTriang</code>: upper triangular matrix stored in a full matrix and by rows;</li>
+  <li> <code>RowUpTriang</code>: upper triangular matrix stored in a dense matrix and by rows;</li>
   
-  <li> <code>RowLoTriang</code>: lower triangular matrix stored in a full matrix and by rows;</li>
+  <li> <code>RowLoTriang</code>: lower triangular matrix stored in a dense matrix and by rows;</li>
   
   <li> <code>ColUpTriangPacked</code>: upper triangular matrix stored in packed form (Blas format) and by columns;</li>
   
@@ -35,17 +35,17 @@
   
   <li> <code>RowLoTriangPacked</code>: lower triangular matrix stored in packed form (Blas format) and by rows;</li>
   
-  <li> <code>ColSym</code>: symmetric matrix stored in a full matrix and by columns;</li>
+  <li> <code>ColSym</code>: symmetric matrix stored in a dense matrix and by columns;</li>
   
-  <li> <code>RowSym</code>: symmetric matrix stored in a full matrix and by rows;</li>
+  <li> <code>RowSym</code>: symmetric matrix stored in a dense matrix and by rows;</li>
   
   <li> <code>ColSymPacked</code>: symmetric matrix stored in packed form (Blas format) and by columns;</li>
   
   <li> <code>RowSymPacked</code>: symmetric matrix stored in packed form (Blas format) and by rows;</li>
   
-  <li> <code>ColHerm</code>: hermitian matrix stored in a full matrix and by columns;</li>
+  <li> <code>ColHerm</code>: hermitian matrix stored in a dense matrix and by columns;</li>
   
-  <li> <code>RowHerm</code>: hermitian matrix stored in a full matrix and by rows;</li>
+  <li> <code>RowHerm</code>: hermitian matrix stored in a dense matrix and by rows;</li>
   
   <li> <code>ColHermPacked</code>: hermitian matrix stored in packed form (Blas format) and by columns;</li>
   
@@ -152,7 +152,7 @@ cout << M << endl;
 
 <h2> Sparse matrices - array of sparse vectors </h2>
 
-<p> Since the Harwell-Boeing form is difficult to handle, a more flexible form can be used in %Seldon. Four types of storage are available : ArrayRowSparse, ArrayRowSymSparse, ArrayRowComplexSparse, ArrayRowSymComplexSparse. Their equivalents with a storage of columns : ArrayColSparse, ArrayColSymSparse, ArrayColComplexSparse, ArrayColSymComplexSparse are available as well, but often functions are implemented only for storage by rows. Therefore the user is strongly encourage to use only storages by rows.  In this form, each row is stored as a sparse vector, allowing fast insertions of entries. Moreover, the access operator has the same functionnality as for dense matrices, because it allows affections.</p>
+<p> Since the Harwell-Boeing form is difficult to handle, a more flexible form can be used in %Seldon. Four types of storage are available : ArrayRowSparse, ArrayRowSymSparse, ArrayRowComplexSparse, ArrayRowSymComplexSparse. Their equivalents with a storage of columns : ArrayColSparse, ArrayColSymSparse, ArrayColComplexSparse, ArrayColSymComplexSparse are available as well, but often functions are implemented only for storage by rows. Therefore the user is strongly encourage to use only storages by rows.  In this form, each row is stored as a sparse vector, allowing fast insertions of entries. Moreover, the access operator has the same functionnality as for dense matrices, because it allows affections. However the drawback of such functionally is that non-zero entries are added each time operator () is called even on a right hand side expression. In order to avoid this phenomenon, the matrix has to be declared const. </p>
  
  <p> The following methods should be useful:</p>
 
@@ -182,6 +182,8 @@ A.AddInteraction(3, 4, 3.0);
 // or directly use the operator ()
 // if the entry doesn't exist, it is added
 A(2, 3) = 2.0;
+// the following instruction also adds an entry :
+double y = A(3, 0); 
 // or add several entries at the same time
 int nb_elt = 3;
 IVect col_number(nb_elt);

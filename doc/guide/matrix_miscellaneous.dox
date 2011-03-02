@@ -14,11 +14,12 @@ A file from the Matrix Market is associated with a type encoded in three charact
 - 'U' (unsymmetric) or 'R' (rectangular) as second character; 'S' (symmetric), 'H' (Hermitian) and 'Z' (skew symmetric) are not supported;
 - 'A' (assembled) as third character; 'E' (elemental) is not supported.
 
-In short, %Seldon can read Harwell-Boeing files from the Matrix Market providing their extensions meet the regular expression <code>[rp][ur]a</code>. Once read, the matrix is stored in a matrix of type <code>Matrix<double, Prop, ColSparse, Allocator></code> or <code>Matrix<float, Prop, ColSparse, Allocator></code>.
+In short, %Seldon can read Harwell-Boeing files from the Matrix Market providing their extensions meet the regular expression <code>[rp][ur]a</code>. Once read, the matrix is stored in a matrix of type <code>Matrix<double, Prop, ColSparse, Allocator></code> or <code>Matrix<float, Prop, ColSparse, Allocator></code>. %Seldon can also write real and complex matrices in Harwell-Boeing files (.rua or .cua extension), symmetric matrices will be written as unsymmetric matrices.
 
 See the functions:
 - Seldon::ReadHarwellBoeing(string filename, Matrix<float, Prop, ColSparse, Allocator>& A),
 - Seldon::ReadHarwellBoeing(string filename, Matrix<double, Prop, ColSparse, Allocator>& A).
+- Seldon::WriteHarwellBoeing(const Matrix<T, Prop, Storage, Allocator>& A, const string& file_name).
 
 Note that these functions are only available after the file <code>matrix_sparse/IOMatrixMarket.cxx</code> has been included:
 
