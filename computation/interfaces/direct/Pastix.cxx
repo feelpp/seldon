@@ -424,9 +424,6 @@ namespace Seldon
     
     iparm[IPARM_GRAPHDIST] = API_YES;
 
-    int rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
     pastix_int_t* ptr_ = Ptr.GetData();
     pastix_int_t nrhs = 1;
     // changing to 1-index notation
