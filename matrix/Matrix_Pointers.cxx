@@ -419,6 +419,9 @@ namespace Seldon
   ::Resize(int i, int j)
   {
 
+    if (i == this->m_ && j == this->n_)
+      return;
+
     // Storing the old values of the matrix.
     int iold = Storage::GetFirst(this->m_, this->n_);
     int jold = Storage::GetSecond(this->m_, this->n_);
