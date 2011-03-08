@@ -64,6 +64,7 @@ namespace Seldon
 
     // Basic methods.
     int GetDataSize() const;
+    pointer* GetMe() const;
 
     // Memory management.
     void Reallocate(int i, int j);
