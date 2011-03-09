@@ -703,16 +703,13 @@ namespace Seldon
     \return The infinite norm.
   */
   template <class T, class Allocator>
-  typename Vector<T, VectFull, Allocator>::value_type
+  typename ClassComplexType<T>::Treal
   Vector<T, VectFull, Allocator>::GetNormInf() const
   {
-    value_type res = value_type(0);
+    typename ClassComplexType<T>::Treal res(0);
     for (int i = 0; i < this->GetLength(); i++)
-      {
-	res = max(res, this->data_[i]);
-	res = max(res, T(-this->data_[i]));
-      }
-
+      res = max(res, abs(this->data_[i]));
+    
     return res;
   }
 
@@ -731,13 +728,12 @@ namespace Seldon
 		     "Vector is null.");
 #endif
 
-    value_type res = value_type(0), temp;
+    typename ClassComplexType<T>::Treal res(0), temp;
     int j = 0;
     for (int i = 0; i < this->GetLength(); i++)
       {
 	temp = res;
-	res = max(res, this->data_[i]);
-	res = max(res, T(-this->data_[i]));
+	res = max(res, abs(this->data_[i]));
 	if (temp != res) j = i;
       }
 
