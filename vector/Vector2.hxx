@@ -92,6 +92,7 @@ namespace Seldon
     void Reallocate(int i, int N);
     void Reallocate(const Vector<int>& length);
     void Select(int beg, int end);
+    Vector<T, VectFull, Allocator0> Flatten() const;
     template <class Td, class Allocatord>
     void Flatten(Vector<Td, VectFull, Allocatord>& data) const;
     template <class Td, class Allocatord>

@@ -289,6 +289,24 @@ namespace Seldon
 
 
   //! Returns all values in a vector.
+  /*! The output vector contains all inner vectors concatenated in the same
+    order as they appear in the current Vector2 instance.
+    \return All values from the current Vector2 instance.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  Vector<T, VectFull, Allocator0>
+  Vector2<T, Allocator0, Allocator1>::Flatten() const
+  {
+    Vector<T, VectFull, Allocator0> data(GetNelement());
+    int i, j, n(0);
+    for (i = 0; i < GetLength(); i++)
+      for (j = 0; j < GetLength(i); j++)
+        data(n++) = data_(i)(j);
+    return data;
+  }
+
+
+  //! Returns all values in a vector.
   /*! The output vector \a data contains all inner vectors concatenated in the
     same order as they appear in the current Vector2 instance.
     \param[out] data all values from the current Vector2 instance.
