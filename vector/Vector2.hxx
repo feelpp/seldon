@@ -92,6 +92,7 @@ namespace Seldon
     void Reallocate(int i, int N);
     void Reallocate(const Vector<int>& length);
     void Select(int beg, int end);
+    Vector<T, VectFull, Allocator0> Flatten() const;
     template <class Td, class Allocatord>
     void Flatten(Vector<Td, VectFull, Allocatord>& data) const;
     template <class Td, class Allocatord>
@@ -111,19 +112,27 @@ namespace Seldon
 
     Vector<Vector<T, VectFull, Allocator0>, VectFull, Allocator1>&
     GetVector();
+#ifndef SWIG
     const Vector<Vector<T, VectFull, Allocator0>, VectFull,
                  Allocator1> GetVector() const;
+#endif
 
     Vector<T, VectFull, Allocator0>& GetVector(int i);
+#ifndef SWIG
     const Vector<T, VectFull, Allocator0>& GetVector(int i) const;
+#endif
 
     void Copy(const Vector2<T, Allocator0, Allocator1>& V);
 
     /*** Element access and assignment ***/
 
+#ifndef SWIG
     const Vector<T, VectFull, Allocator0>& operator() (int i) const;
+#endif
     Vector<T, VectFull, Allocator0>& operator() (int i);
+#ifndef SWIG
     const_reference operator() (int i, int j) const;
+#endif
     reference operator() (int i, int j);
 
     /*** Convenient methods ***/

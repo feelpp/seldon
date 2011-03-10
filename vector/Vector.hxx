@@ -155,7 +155,7 @@ namespace Seldon
     void Print() const;
 
     // Norms.
-    value_type GetNormInf() const;
+    typename ClassComplexType<T>::Treal GetNormInf() const;
     int GetNormInfIndex() const;
 
     // Input/output functions.
