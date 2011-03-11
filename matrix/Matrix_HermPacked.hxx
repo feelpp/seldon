@@ -72,14 +72,16 @@ namespace Seldon
     void Nullify();
 
     // Element access and affectation.
-    value_type operator() (int i, int j);
     value_type operator() (int i, int j) const;
     reference Val(int i, int j);
     const_reference Val(int i, int j) const;
+    reference Get(int i, int j);
+    const_reference Get(int i, int j) const;
     reference operator[] (int i);
     const_reference operator[] (int i) const;
     Matrix_HermPacked<T, Prop, Storage, Allocator>&
     operator= (const Matrix_HermPacked<T, Prop, Storage, Allocator>& A);
+    void Set(int i, int j, const T& val);
     void Copy(const Matrix_HermPacked<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.

@@ -73,14 +73,17 @@ namespace Seldon
     void Resize(int i, int j);
 
     // Element access and affectation.
-    value_type operator() (int i, int j);
-    value_type operator() (int i, int j) const;
+    reference operator() (int i, int j);
+    const_reference operator() (int i, int j) const;
     const_reference Val(int i, int j) const;
     reference Val(int i, int j);
+    reference Get(int i, int j);
+    const_reference Get(int i, int j) const;
     reference operator[] (int i);
     const_reference operator[] (int i) const;
     Matrix_Symmetric<T, Prop, Storage, Allocator>&
     operator= (const Matrix_Symmetric<T, Prop, Storage, Allocator>& A);
+    void Set(int i, int j, const T& x);
     void Copy(const Matrix_Symmetric<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.

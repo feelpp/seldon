@@ -476,7 +476,7 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>::value_type
+  inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>::reference
   Matrix_Symmetric<T, Prop, Storage, Allocator>::operator() (int i, int j)
   {
 
@@ -506,7 +506,8 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>::value_type
+  inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>
+  ::const_reference
   Matrix_Symmetric<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
   {
@@ -551,6 +552,12 @@ namespace Seldon
       throw WrongCol("Matrix_Symmetric::Val(int, int) const",
 		     string("Index should be in [0, ") + to_str(this->n_-1)
 		     + "], but is equal to " + to_str(j) + ".");
+    if (i > j)
+      throw WrongRow("Matrix_Symmetric::Val(int, int)",
+		     string("Attempted to access to element (")
+		     + to_str(i) + ", " + to_str(j)
+		     + ") but row index should not be strictly"
+		     + " more than column index.");
 #endif
 
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
@@ -577,13 +584,81 @@ namespace Seldon
     if (j < 0 || j >= this->n_)
       throw WrongCol("Matrix_Symmetric::Val(int, int)",
 		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");
+		     + "], but is equal to " + to_str(j) + ".");    
+    if (i > j)
+      throw WrongRow("Matrix_Symmetric::Val(int, int)",
+		     string("Attempted to access to element (")
+		     + to_str(i) + ", " + to_str(j)
+		     + ") but row index should not be strictly"
+		     + " more than column index.");
 #endif
 
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
   }
 
+  
+  //! Returns access to an element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>::reference
+  Matrix_Symmetric<T, Prop, Storage, Allocator>::Get(int i, int j)
+  {
 
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_Symmetric::operator()",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_Symmetric::operator()",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    if (i > j)
+      return me_[Storage::GetSecond(i, j)][Storage::GetFirst(i, j)];
+    else
+      return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
+  }
+
+
+  //! Returns access to an element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>
+  ::const_reference
+  Matrix_Symmetric<T, Prop, Storage, Allocator>
+  ::Get(int i, int j) const
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_Symmetric::operator() const",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_Symmetric::operator() const",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    if (i > j)
+      return me_[Storage::GetSecond(i, j)][Storage::GetFirst(i, j)];
+    else
+      return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
+  }
+
+  
   //! Access to elements of the data array.
   /*!
     Provides a direct access to the data array.
@@ -646,8 +721,22 @@ namespace Seldon
 
     return *this;
   }
-
-
+  
+  
+  //! Sets an element of the matrix
+  /*!
+    \param i row index
+    \param j column index
+    \param x sets a(i, j) = x
+   */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Symmetric<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const T& x)
+  {
+    this->Get(i, j) = x;
+  }
+  
+  
   //! Duplicates a matrix.
   /*!
     \param A matrix to be copied.

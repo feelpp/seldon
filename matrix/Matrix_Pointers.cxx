@@ -547,7 +547,22 @@ namespace Seldon
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
   }
 
-
+  
+  //! Access operator.
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Pointers<T, Prop, Storage, Allocator>::reference
+  Matrix_Pointers<T, Prop, Storage, Allocator>::Get(int i, int j)
+  {
+    return Val(i, j);
+  }
+  
+  
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -575,7 +590,23 @@ namespace Seldon
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
   }
 
-
+  
+  //! Access operator.
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Pointers<T, Prop, Storage, Allocator>
+  ::const_reference
+  Matrix_Pointers<T, Prop, Storage, Allocator>::Get(int i, int j) const
+  {
+    return Val(i, j);
+  }
+  
+  
   //! Access to elements of the data array.
   /*!
     Provides a direct access to the data array.
@@ -622,7 +653,21 @@ namespace Seldon
     return this->data_[i];
   }
 
-
+  
+  //! Sets an element of the matrix
+  /*!
+    \param i row index.
+    \param j column index.
+    \param val sets A(i, j) = val
+   */  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Pointers<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const T& val)
+  {
+    this->Val(i, j) = val;
+  }
+  
+  
   //! Duplicates a matrix (assignment operator).
   /*!
     \param A matrix to be copied.
