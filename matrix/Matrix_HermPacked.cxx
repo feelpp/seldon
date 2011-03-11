@@ -274,7 +274,7 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_HermPacked<T, Prop, Storage, Allocator>::reference
+  inline typename Matrix_HermPacked<T, Prop, Storage, Allocator>::value_type
   Matrix_HermPacked<T, Prop, Storage, Allocator>::operator() (int i, int j)
   {
 
@@ -286,18 +286,16 @@ namespace Seldon
     if (j < 0 || j >= this->n_)
       throw WrongCol("Matrix_HermPacked::operator()",
 		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");
-
-    if (i > j)
-      throw WrongRow("Matrix_HermPacked::operator()",
-		     string("Attempted to access to element (")
-		     + to_str(i) + ", " + to_str(j)
-		     + ") but row index should not be strictly"
-		     + " more than column index.");
+		     + "], but is equal to " + to_str(j) + ".");    
 #endif
-
-    return this->data_[Storage::GetFirst(i * this->n_ - (i*(i+1)) / 2 + j,
-					 (j*(j+1)) / 2 + i)];
+    
+    if (i > j)
+      return conj(this->data_[Storage::GetFirst(j * this->m_
+						- (j*(j+1)) / 2 + i,
+						(i*(i+1)) / 2 + j)]);
+    else
+      return this->data_[Storage::GetFirst(i * this->n_ - (i*(i+1)) / 2 + j,
+					   (j*(j+1)) / 2 + i)];
   }
 
 
@@ -510,9 +508,10 @@ namespace Seldon
   {
     this->Fill(T(0));
 
-    T one(1);
+    T one;
+    SetComplexOne(one);
     for (int i = 0; i < min(this->m_, this->n_); i++)
-      (*this)(i,i) = one;
+      this->Val(i,i) = one;
   }
 
 
@@ -532,6 +531,8 @@ namespace Seldon
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
+    \warning If the imaginary part of x is non-null, the upper 
+    part will contain x, whereas lower part will contain conj(x)
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
@@ -545,6 +546,8 @@ namespace Seldon
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
+    \warning If the imaginary part of x is non-null, the upper 
+    part will contain x, whereas lower part will contain conj(x)
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
@@ -990,6 +993,7 @@ namespace Seldon
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
+    \warning imaginary part of x should be null to keep an hermitian matrix
   */
   template <class T, class Prop, class Allocator>
   template <class T0>

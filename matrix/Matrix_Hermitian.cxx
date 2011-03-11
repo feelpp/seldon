@@ -693,9 +693,10 @@ namespace Seldon
   {
     this->Fill(T(0));
 
-    T one(1);
+    T one;
+    SetComplexOne(one);
     for (int i = 0; i < min(this->m_, this->n_); i++)
-      this->Val(i,i) = one;
+      this->Val(i, i) = one;
   }
 
 
@@ -715,6 +716,8 @@ namespace Seldon
   //! Fills a matrix with a given value.
   /*!
     \param x the value to fill the matrix with.
+    \warning If the imaginary part of x is non-null, the upper 
+    part will contain x, whereas lower part will contain conj(x)
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
@@ -728,6 +731,8 @@ namespace Seldon
   //! Fills a matrix with a given value.
   /*!
     \param x the value to fill the matrix with.
+    \warning If the imaginary part of x is non-null, the upper 
+    part will contain x, whereas lower part will contain conj(x)
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
@@ -1169,6 +1174,7 @@ namespace Seldon
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
+    \warning imaginary part of x should be null to keep an hermitian matrix
   */
   template <class T, class Prop, class Allocator>
   template <class T0>
