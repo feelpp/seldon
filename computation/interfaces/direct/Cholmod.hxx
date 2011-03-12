@@ -27,7 +27,7 @@ extern "C"
 
 namespace Seldon
 {
-	
+
   //! Object containing Cholesky factorization.
   class MatrixCholmod
   {
@@ -36,31 +36,31 @@ namespace Seldon
     cholmod_factor* L;
     cholmod_sparse* Lsparse;
     int n;
-    
+
   public :
     MatrixCholmod();
     ~MatrixCholmod();
-    
+
     void Clear();
-    
+
     void HideMessages();
     void ShowMessages();
     void ShowFullHistory();
-    
+
     template<class Prop, class Storage, class Allocator>
     void FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
                          bool keep_matrix = false);
-		
+
     template<class Transpose_status, class Allocator>
     void Solve(const Transpose_status& TransA,
                Vector<double, VectFull, Allocator>& x);
-    
+
     template<class Transpose_status, class Allocator>
     void Mlt(const Transpose_status& TransA,
              Vector<double, VectFull, Allocator>& x);
-        
+
   };
-	
+
 }
 
 #define SELDON_FILE_CHOLMOD_HXX
