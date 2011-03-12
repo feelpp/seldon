@@ -65,10 +65,10 @@ namespace Seldon
     void HideMessages();
     void ShowMessages();
     void ShowFullHistory();
-    
+
     void SelectOrdering(int type);
     void SetPermutation(const IVect& permut);
-    
+
     void RefineSolution();
     void DoNotRefineSolution();
 
@@ -111,7 +111,7 @@ namespace Seldon
                           const Transpose_status& TransA,
 			  Vector<T, Vect_Full, Allocator2>& x,
                           const Vector<Tint>& glob_num);
-    
+
   };
 
 }

@@ -59,36 +59,35 @@ namespace Seldon
     Control(UMFPACK_PRL) = 2;
   }
 
-  
+
   template<class T>
   void MatrixUmfPack_Base<T>::ShowFullHistory()
   {
     print_level = 2;
   }
-  
-  
+
+
   template<class T>
   int MatrixUmfPack_Base<T>::GetInfoFactorization() const
   {
     return status_facto;
   }
-  
-  
+
+
   template<class T>
   void MatrixUmfPack_Base<T>::SelectOrdering(int type)
   {
     Control(UMFPACK_ORDERING) = type;
   }
-  
-  
+
+
   template<class T>
   void MatrixUmfPack_Base<T>::SetPermutation(const IVect& permut)
   {
-    cout << "Not supported by UmfPack" << endl;
-    abort();
+    throw Undefined("MatrixUmfPack_Base::SetPermutation(const Vector&)");
   }
-  
-  
+
+
   //! constructor
   MatrixUmfPack<double>::MatrixUmfPack() : MatrixUmfPack_Base<double>()
   {
@@ -228,9 +227,9 @@ namespace Seldon
 	int size_mem = (this->Info(UMFPACK_SYMBOLIC_SIZE)
 			+ this->Info(UMFPACK_NUMERIC_SIZE_ESTIMATE))
 	  *this->Info(UMFPACK_SIZE_OF_UNIT);
-	
-	cout << "Memory used to store LU factors : "
-	     << double(size_mem)/(1024*1024) << "Mo " << endl;
+
+	cout << "Memory used to store LU factors: "
+	     << double(size_mem)/(1024*1024) << " MB" << endl;
       }
   }
 
@@ -318,7 +317,7 @@ namespace Seldon
 	Solve(x);
 	return;
       }
-    
+
     // local copy of x
     Vector<double, VectFull, Allocator2> b(x);
 
@@ -331,7 +330,7 @@ namespace Seldon
 			 b.GetData(), this->Numeric, this->Control.GetData(),
 			 this->Info.GetData());
 
-    // we display informations about the performed operation
+    // We display information about the performed operation.
     if (print_level > 1)
       umfpack_di_report_status(this->Control.GetData(), status);
   }
@@ -390,7 +389,7 @@ namespace Seldon
 			data_real_, data_imag_,
 			&this->Symbolic, this->Control.GetData(),
 			this->Info.GetData());
-    
+
     status_facto
       = umfpack_zi_numeric(ptr_, ind_, data_real_, data_imag_,
 			   this->Symbolic, &this->Numeric,
@@ -401,19 +400,19 @@ namespace Seldon
 	umfpack_zi_report_status(this->Control.GetData(), status_facto);
 	umfpack_zi_report_info(this->Control.GetData(), this->Info.GetData());
       }
-    
+
     if (print_level > 0)
       {
 	int size_mem = (this->Info(UMFPACK_SYMBOLIC_SIZE)
 			+ this->Info(UMFPACK_NUMERIC_SIZE_ESTIMATE))
 	  *this->Info(UMFPACK_SIZE_OF_UNIT);
-	
-	cout << "Estimated memory used to store LU factors : "
-	     << double(size_mem)/(1024*1024) << "Mo " << endl;
+
+	cout << "Estimated memory used to store LU factors: "
+	     << double(size_mem)/(1024*1024) << " MB" << endl;
       }
   }
 
-  
+
   //! solves linear system in complex double precision using UmfPack
   template<class Allocator2>
   void MatrixUmfPack<complex<double> >::
@@ -421,9 +420,9 @@ namespace Seldon
   {
     Solve(SeldonNoTrans, x);
   }
-  
-  
-  //! solves linear system in complex double precision using UmfPack
+
+
+  //! Solves linear system in complex double precision using UmfPack.
   template<class StatusTrans, class Allocator2>
   void MatrixUmfPack<complex<double> >::
   Solve(const StatusTrans& TransA,
@@ -437,15 +436,15 @@ namespace Seldon
 	b_real(i) = real(x(i));
 	b_imag(i) = imag(x(i));
       }
-    
+
     Vector<double> x_real(m), x_imag(m);
     x_real.Zero();
     x_imag.Zero();
-    
+
     int sys = UMFPACK_A;
     if (TransA.Trans())
       sys = UMFPACK_Aat;
-    
+
     int status
       = umfpack_zi_solve(sys, ptr_, ind_, data_real_, data_imag_,
 			 x_real.GetData(), x_imag.GetData(),

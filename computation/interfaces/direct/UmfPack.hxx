@@ -37,16 +37,16 @@ namespace Seldon
     int print_level;
     bool transpose; //! transpose system to solve ?
     int status_facto;
-    
+
   public :
     MatrixUmfPack_Base();
 
     void HideMessages();
     void ShowMessages();
     void ShowFullHistory();
-    
+
     int GetInfoFactorization() const;
-    
+
     void SelectOrdering(int type);
     void SetPermutation(const IVect&);
   };

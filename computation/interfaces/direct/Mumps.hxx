@@ -73,13 +73,8 @@ namespace Seldon
     typedef typename TypeMumps<T>::pointer pointer;
     int print_level;
     bool out_of_core;
-#ifdef SELDON_WITH_MPI
-    //MPI_Group single_group;
-    //MPI_Comm single_comm;
-#endif
     IVect num_row_glob, num_col_glob;
     IVect perm;
-    //bool new_communicator;
 
     // internal methods
     void CallMumps();
@@ -94,7 +89,7 @@ namespace Seldon
 
     void SelectOrdering(int num_ordering);
     void SetPermutation(const IVect& permut);
-    
+
     void HideMessages();
     void ShowMessages();
 
@@ -148,13 +143,13 @@ namespace Seldon
     void SolveDistributed(MPI::Comm& comm_facto,
                           Vector<T, Vect_Full, Allocator2>& x,
                           const Vector<Tint>& glob_num);
-    
+
     template<class Allocator2, class Transpose_status>
     void SolveDistributed(MPI::Comm& comm_facto,
                           const Transpose_status& TransA,
 			  Vector<T, VectFull, Allocator2>& x,
 			  const IVect& glob_num);
-    
+
 #endif
 
   };

@@ -24,8 +24,10 @@ extern "C"
 #include "superlu_interface.h"
 }
 
+
 namespace Seldon
 {
+
   //! class interfacing SuperLU functions
   template<class T>
   class MatrixSuperLU_Base
@@ -39,46 +41,47 @@ namespace Seldon
     superlu_options_t options; //!< options
     //! permutation array
     Vector<int> perm_r, perm_c;
-    
+
     colperm_t permc_spec; //!< ordering scheme
     int n; //!< number of rows
     bool display_info; //!< display information about factorization ?
-    //! error code returned by SuperLU
+    //! Error code returned by SuperLU.
     int info_facto;
 
   public :
     MatrixSuperLU_Base();
     ~MatrixSuperLU_Base();
-    
+
     template<class Prop, class Allocator>
     void GetLU(Matrix<double, Prop, ColSparse, Allocator>& Lmat,
                Matrix<double, Prop, ColSparse, Allocator>& Umat,
                bool permuted = true);
-    
+
     template<class Prop, class Allocator>
     void GetLU(Matrix<double, Prop, RowSparse, Allocator>& Lmat,
                Matrix<double, Prop, RowSparse, Allocator>& Umat,
                bool permuted = true);
-    
+
     const Vector<int>& GetRowPermutation() const;
     const Vector<int>& GetColPermutation() const;
-    
+
     void SelectOrdering(colperm_t type);
     void SetPermutation(const IVect&);
-    
+
     void Clear();
     void HideMessages();
     void ShowMessages();
-    
+
     int GetInfoFactorization() const;
-    
   };
+
 
   //! empty matrix
   template<class T>
   class MatrixSuperLU : public MatrixSuperLU_Base<T>
   {
   };
+
 
   //! class interfacing SuperLU functions in double precision
   template<>
@@ -121,7 +124,7 @@ namespace Seldon
                Vector<complex<double>, VectFull, Allocator2>& x);
 
   };
-  
+
 }
 
 #define SELDON_FILE_SUPERLU_HXX

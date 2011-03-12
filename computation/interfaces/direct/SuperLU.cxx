@@ -211,7 +211,7 @@ namespace Seldon
     permutation that was employed in the factorization. This method is
     obviously to be called after the factorization has been performed.
     \return The permutation of the rows.
-   */
+  */
   template<class T>
   const Vector<int>& MatrixSuperLU_Base<T>::GetRowPermutation() const
   {
@@ -225,21 +225,21 @@ namespace Seldon
     permutation that was employed in the factorization. This method is
     obviously to be called after the factorization has been performed.
     \return The permutation of the columns.
-   */
+  */
   template<class T>
   const Vector<int>& MatrixSuperLU_Base<T>::GetColPermutation() const
   {
     return perm_c;
   }
 
-  
+
   template<class T>
   void MatrixSuperLU_Base<T>::SelectOrdering(colperm_t type)
   {
     permc_spec = type;
   }
-  
-  
+
+
   template<class T>
   void MatrixSuperLU_Base<T>::SetPermutation(const IVect& permut)
   {
@@ -247,8 +247,8 @@ namespace Seldon
     perm_c = permut;
     perm_r = permut;
   }
-  
-  
+
+
   //! same effect as a call to the destructor
   template<class T>
   void MatrixSuperLU_Base<T>::Clear()
@@ -256,11 +256,10 @@ namespace Seldon
     if (n > 0)
       {
 	// SuperLU objects are cleared
-        Destroy_SuperMatrix_Store(&B);
+	Destroy_SuperMatrix_Store(&B);
 	Destroy_SuperNode_Matrix(&L);
 	Destroy_CompCol_Matrix(&U);
-	perm_r.Clear();
-        perm_c.Clear();
+	perm_r.Clear(); perm_c.Clear();
 	n = 0;
       }
   }
@@ -287,8 +286,8 @@ namespace Seldon
   {
     return info_facto;
   }
-  
-  
+
+
   //! factorization of matrix in double precision using SuperLU
   template<class Prop, class Storage, class Allocator>
   void MatrixSuperLU<double>::
@@ -304,12 +303,20 @@ namespace Seldon
     Copy(mat, Acsr);
     if (!keep_matrix)
       mat.Clear();
-    
+
+    // we get renumbering vectors perm_r and perm_c
+    options.ColPerm = permc_spec;
+    if (permc_spec != MY_PERMC)
+      {
+	perm_r.Reallocate(n);
+	perm_c.Reallocate(n);
+      }
+
     SuperMatrix A, AA;
     int nnz = Acsr.GetDataSize();
     dCreate_CompCol_Matrix(&AA, n, n, nnz, Acsr.GetData(), Acsr.GetInd(),
 			   Acsr.GetPtr(), SLU_NC, SLU_D, SLU_GE);
-    
+
     // we get renumbering vectors perm_r and perm_c
     options.ColPerm = permc_spec;    
     if (permc_spec != MY_PERMC)
@@ -337,8 +344,8 @@ namespace Seldon
     // clearing matrices
     Destroy_CompCol_Permuted(&A);
     Destroy_CompCol_Matrix(&AA);
-    
-    if ((info_facto==0)&&(display_info))
+
+    if (info_facto == 0 && display_info)
       {
 	mem_usage_t mem_usage;
 	Lstore = (SCformat *) L.Store;
@@ -361,15 +368,13 @@ namespace Seldon
   {
     trans_t trans = NOTRANS;
     int nb_rhs = 1, info;
-    // putting right hand side on SuperLU structure
     dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
-    
+
     SuperLUStat_t stat;
     StatInit(&stat);
-    // solving A x = b
-    dgstrs(trans, &L, &U, perm_r.GetData(),
-	   perm_c.GetData(), &B, &stat, &info);
+    dgstrs(trans, &L, &U, perm_c.GetData(),
+	   perm_r.GetData(), &B, &stat, &info);
   }
 
 
@@ -386,15 +391,13 @@ namespace Seldon
 
     trans_t trans = TRANS;
     int nb_rhs = 1, info;
-    // putting right hand side on SuperLU structure
     dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
 
     SuperLUStat_t stat;
     StatInit(&stat);
-    // solving A^T x = b
-    dgstrs(trans, &L, &U, perm_r.GetData(),
-	   perm_c.GetData(), &B, &stat, &info);
+    dgstrs(trans, &L, &U, perm_c.GetData(),
+	   perm_r.GetData(), &B, &stat, &info);
   }
 
 
@@ -414,6 +417,7 @@ namespace Seldon
     if (!keep_matrix)
       mat.Clear();
 
+    // we get renumbering vectors perm_r and perm_c
     SuperMatrix AA, A;
     int nnz = Acsr.GetDataSize();
     zCreate_CompCol_Matrix(&AA, n, n, nnz,
@@ -448,8 +452,8 @@ namespace Seldon
     // clearing matrices
     Destroy_CompCol_Permuted(&A);    
     Destroy_CompCol_Matrix(&AA);
-    
-    if ((info_facto==0)&&(display_info))
+
+    if (info_facto == 0 && display_info)
       {
 	mem_usage_t mem_usage;
 	Lstore = (SCformat *) L.Store;
@@ -461,7 +465,7 @@ namespace Seldon
 	cout<<"Memory used for factorisation in Mo "
 	    <<mem_usage.total_needed/1e6<<endl;
       }
-    
+
     Acsr.Nullify();
   }
 
@@ -476,9 +480,9 @@ namespace Seldon
     zCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 reinterpret_cast<doublecomplex*>(x.GetData()),
 			 x.GetM(), SLU_DN, SLU_Z, SLU_GE);
-    
+
     zgstrs(trans, &L, &U, perm_c.GetData(),
-           perm_r.GetData(), &B, &stat, &info);
+	   perm_r.GetData(), &B, &stat, &info);
   }
 
 

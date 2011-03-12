@@ -38,7 +38,7 @@ namespace Seldon
     // Factorization of a matrix on a single processor.
     distributed = false;
 
-    // Refinement by default.
+    // No refinement by default.
     refine_solution = false;
 
     // initializing parameters
@@ -129,22 +129,22 @@ namespace Seldon
     iparm[IPARM_VERBOSE] = API_VERBOSE_NO;
   }
 
-  
-  //! displaying all messages
+
+  //! Displaying all messages.
   template<class T>
   void MatrixPastix<T>::ShowFullHistory()
   {
     iparm[IPARM_VERBOSE] = API_VERBOSE_YES;
   }
 
-  
+
   template<class T>
   void MatrixPastix<T>::SelectOrdering(int type)
   {
     iparm[IPARM_ORDERING] = type;
   }
-  
-  
+
+
   template<class T>
   void MatrixPastix<T>::SetPermutation(const IVect& permut)
   {
@@ -157,8 +157,8 @@ namespace Seldon
 	invp(permut(i)) = i+1;
       }
   }
-  
-  
+
+
   //! You can require that solution is refined after LU resolution.
   template<class T>
   void MatrixPastix<T>::RefineSolution()
@@ -342,9 +342,9 @@ namespace Seldon
     // ordering and analysis
     iparm[IPARM_START_TASK] = API_TASK_ORDERING;
     iparm[IPARM_END_TASK] = API_TASK_ANALYSE;
-    
+
     CallPastix(MPI_COMM_SELF, ptr_, ind_, values_, NULL, nrhs);
-    
+
     IVect proc_num(iparm[IPARM_THREAD_NBR]);
     proc_num.Fill(MPI::COMM_WORLD.Get_rank());
     pastix_setBind(pastix_data, iparm[IPARM_THREAD_NBR], proc_num.GetData());
@@ -352,7 +352,7 @@ namespace Seldon
     // factorization only
     iparm[IPARM_START_TASK] = API_TASK_NUMFACT;
     iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
-    
+
     CallPastix(MPI_COMM_SELF, ptr_, ind_, values_, NULL, nrhs);
   }
 
@@ -421,7 +421,7 @@ namespace Seldon
         iparm[IPARM_SYM] = API_SYM_NO;
         iparm[IPARM_FACTORIZATION] = API_FACT_LU;
       }
-    
+
     iparm[IPARM_GRAPHDIST] = API_YES;
 
     pastix_int_t* ptr_ = Ptr.GetData();

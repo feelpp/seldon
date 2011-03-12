@@ -95,7 +95,7 @@ namespace Seldon
     struct_mumps.icntl[6] = type_ordering;
     if (type_ordering == 1)
       struct_mumps.perm_in = perm.GetData();
-    
+
     // setting out of core parameters
     if (out_of_core)
       struct_mumps.icntl[21] = 1;
@@ -129,17 +129,17 @@ namespace Seldon
     type_ordering = num_ordering;
   }
 
-  
+
   template<class T>
   inline void MatrixMumps<T>::SetPermutation(const IVect& permut)
   {
     type_ordering = 1;
     perm.Reallocate(permut.GetM());
     for (int i = 0; i < perm.GetM(); i++)
-      perm(i) = permut(i) + 1;    
+      perm(i) = permut(i) + 1;
   }
-  
-  
+
+
   //! clears factorization
   template<class T>
   MatrixMumps<T>::~MatrixMumps()
@@ -155,12 +155,12 @@ namespace Seldon
     if (struct_mumps.n > 0)
       {
 	struct_mumps.job = -2;
-	// mumps variables are deleted
+	// Mumps variables are deleted.
         CallMumps();
-		
+
 	num_row_glob.Clear();
 	num_col_glob.Clear();
-	struct_mumps.n = 0;	
+	struct_mumps.n = 0;
       }
   }
 
@@ -192,24 +192,24 @@ namespace Seldon
 
   }
 
-  
-  //! enables writing on the disk (out of core)
+
+  //! Enables writing on the disk (out of core).
   template<class T>
   inline void MatrixMumps<T>::EnableOutOfCore()
   {
     out_of_core = true;
   }
 
-  
-  // disables writing on the disk (incore)
+
+  //! Disables writing on the disk (incore).
   template<class T>
   inline void MatrixMumps<T>::DisableOutOfCore()
   {
     out_of_core = false;
   }
 
-  
-  //! computes an ordering for matrix renumbering
+
+  //! Computes an ordering for matrix renumbering.
   /*!
     \param[in,out] mat matrix whose we want to find the ordering
     \param[out] numbers new row numbers
@@ -225,7 +225,7 @@ namespace Seldon
     // conversion in coordinate format
     IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
     ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
-    
+
     // no values needed to renumber
     values.Clear();
     if (!keep_matrix)
@@ -235,7 +235,7 @@ namespace Seldon
     struct_mumps.irn = num_row.GetData();
     struct_mumps.jcn = num_col.GetData();
 
-    // Call the MUMPS package
+    // Call the MUMPS package.
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
 
@@ -268,7 +268,7 @@ namespace Seldon
     struct_mumps.jcn = num_col.GetData();
     struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
 
-    // Call the MUMPS package
+    // Call the MUMPS package.
     struct_mumps.job = 4; // we analyse and factorize the system
     CallMumps();
   }
@@ -291,7 +291,7 @@ namespace Seldon
     struct_mumps.jcn = num_col_glob.GetData();
     struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
 
-    // Call the MUMPS package
+    // Call the MUMPS package.
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
   }
@@ -312,7 +312,7 @@ namespace Seldon
     // to the row/column numbers given for the analysis
     struct_mumps.a = reinterpret_cast<pointer>(mat.GetData());
 
-    // Call the MUMPS package
+    // Call the MUMPS package.
     struct_mumps.job = 2; // we factorize the system
     CallMumps();
   }
@@ -398,10 +398,10 @@ namespace Seldon
       struct_mumps.icntl[8] = 0;
     else
       struct_mumps.icntl[8] = 1;
-
+    
     struct_mumps.nrhs = 1;
-    struct_mumps.rhs = reinterpret_cast<pointer>(x.GetData());
     struct_mumps.lrhs = x.GetM();
+    struct_mumps.rhs = reinterpret_cast<pointer>(x.GetData());
     struct_mumps.job = 3; // we solve system
     CallMumps();
   }
@@ -449,11 +449,12 @@ namespace Seldon
 #ifdef SELDON_WITH_MPI
   //! factorization of a given matrix in distributed form (parallel execution)
   /*!
-    \param[inout] comm_facto MPI communicator
-    \param[inout] Ptr start indices for each column
-    \param[inout] IndRow row indices 
-    \param[inout] Val data
-    \param[in] sym if true, the matrix is assumed to be symmetric (upper part is provided)
+    \param[in,out] comm_facto MPI communicator
+    \param[in,out] Ptr start indices for each column
+    \param[in,out] IndRow row indices
+    \param[in,out] Val data
+    \param[in] sym if true, the matrix is assumed to be symmetric (upper part
+    is provided)
     \param[in] glob_number row numbers (in the global matrix)
     \param[in] keep_matrix if false, the given matrix is cleared
   */
@@ -467,7 +468,7 @@ namespace Seldon
                              const Vector<Tint>& glob_number,
                              bool sym, bool keep_matrix)
   {
-    // initialization depending on symmetry of the matrix
+    // Initialization depending on symmetry of the matrix.
     if (sym)
       {
         Matrix<T, Symmetric, RowSymSparse, Alloc3> Atest;
@@ -478,10 +479,10 @@ namespace Seldon
         Matrix<T, General, RowSparse, Alloc3> Atest;
         InitMatrix(Atest, true);
       }
-    
+
     // Fortran communicator
     struct_mumps.comm_fortran = MPI_Comm_c2f(comm_facto);
-    
+
     // distributed matrix
     struct_mumps.icntl[17] = 3;
 
@@ -489,21 +490,21 @@ namespace Seldon
     Tint nmax = 0, N = 0;
     for (int i = 0; i < glob_number.GetM(); i++)
       nmax = max(glob_number(i)+1, nmax);
-    
+
     comm_facto.Allreduce(&nmax, &N, 1, MPI::INTEGER, MPI::MAX);
-    
+
     // number of non-zero entries on this processor
     int nnz = IndRow.GetM();
-    
+
     // conversion in coordinate format
     Vector<Tint, VectFull, Alloc2> IndCol(nnz);
     for (int i = 0; i < IndRow.GetM(); i++)
       IndRow(i)++;
-    
+
     for (int i = 0; i < Ptr.GetM()-1; i++)
       for (int j = Ptr(i); j < Ptr(i+1); j++)
         IndCol(j) = glob_number(i) + 1;
-    
+
     if (!keep_matrix)
       Ptr.Clear();
 
@@ -517,7 +518,7 @@ namespace Seldon
     // Call the MUMPS package.
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
-    
+
     // overestimating size in order to avoid error -9
     struct_mumps.icntl[22] = 1.3*struct_mumps.infog[25];
     struct_mumps.job = 2; // we factorize the system
@@ -525,7 +526,7 @@ namespace Seldon
     
     if ((comm_facto.Get_rank() == 0) && (print_level >= 0))
       cout<<"Factorization completed"<<endl;
-    
+
   }
 
 
@@ -561,17 +562,17 @@ namespace Seldon
 
 		if (i != 0)
 		  {
-                    // on the host processor
-                    // receiving components of right hand side
+                    // On the host processor receiving components of right
+                    // hand side.
 		    int nb_dof;
 		    comm_facto.Recv(&nb_dof, 1, MPI::INTEGER, i, 34, status);
-		    
+
                     xp.Reallocate(nb_dof);
 		    nump.Reallocate(nb_dof);
-		    
+
                     comm_facto.Recv(xp.GetDataVoid(), cplx*nb_dof,
                                     MPI::DOUBLE, i, 35, status);
-                    
+
 		    comm_facto.Recv(nump.GetData(), nb_dof, MPI::INTEGER,
                                     i, 36, status);
 		  }
@@ -591,7 +592,7 @@ namespace Seldon
       }
     else
       {
-	// on other processors, we send right hand side
+	// On other processors, we send right hand side.
 	int nb = x.GetM();
 	comm_facto.Send(&nb, 1, MPI::INTEGER, 0, 34);
 	comm_facto.Send(x.GetDataVoid(), cplx*nb, MPI::DOUBLE, 0, 35);
@@ -604,7 +605,7 @@ namespace Seldon
     else
       struct_mumps.icntl[8] = 1;
 
-    struct_mumps.nrhs = 1;    
+    struct_mumps.nrhs = 1;
     struct_mumps.job = 3;
     CallMumps();
 

@@ -12,7 +12,7 @@ dCreate_Dense_Matrix(SuperMatrix *, int, int, double *, int,
 		     Stype_t, Dtype_t, Mtype_t);
 
 extern void    dgstrf (superlu_options_t*, SuperMatrix*,
-                       int, int, int*, void *, int, int *, int *, 
+                       int, int, int*, void *, int, int *, int *,
                        SuperMatrix *, SuperMatrix *, SuperLUStat_t*, int *);
 
 extern void    dgstrs (trans_t, SuperMatrix *, SuperMatrix *, int *, int *,
