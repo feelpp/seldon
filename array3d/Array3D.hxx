@@ -116,7 +116,9 @@ namespace Seldon
   template <class T, class Allocator>
   ostream& operator << (ostream& out,
 			const Array3D<T, Allocator>& A);
-
+  
+  template <class T0, class T, class Allocator>
+  void Mlt(const T0& alpha, Array3D<T, Allocator>& A);
 
 } // namespace Seldon.
 

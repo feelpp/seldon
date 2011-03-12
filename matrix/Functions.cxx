@@ -27,7 +27,13 @@
 namespace Seldon
 {
 
-
+  //! Extracts a row from a sparse matrix
+  /*!
+    \param M sparse matrix
+    \param i row index
+    \param X row extracted
+    X = M(i, :)
+  */
   template <class T0, class Allocator0, class T1, class Allocator1>
   void GetRow(const Matrix<T0, General, RowSparse, Allocator0>& M,
 	      int i, Vector<T1, Vect_Sparse, Allocator1>& X)
@@ -55,6 +61,13 @@ namespace Seldon
   }
 
 
+  //! Extracts a row from a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X row extracted
+    X = M(i, :)
+  */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void GetRow(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
@@ -65,7 +78,14 @@ namespace Seldon
       X(j) = M(i, j);
   }
 
-
+  
+  //! Extracts a column from a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X column extracted
+    X = M(:, j)
+  */
   template <class T0, class Allocator0, class T1, class Allocator1>
   void GetCol(const Matrix<T0, General, RowSparse, Allocator0>& M,
 	      int j, Vector<T1, Vect_Sparse, Allocator1>& X)
@@ -96,7 +116,14 @@ namespace Seldon
     X.SetData(value, index);
   }
 
-
+  
+  //! Extracts a column from a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X column extracted
+    X = M(:, j)
+  */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void GetCol(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
@@ -108,16 +135,30 @@ namespace Seldon
   }
 
 
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void SetRow(const Vector<T1, Storage1, Allocator1>& X,
 	      int i, Matrix<T0, Prop0, Storage0, Allocator0>& M)
   {
     for (int j = 0; j < M.GetN(); j++)
-      M(i, j) = X(j);
+      M.Set(i, j, X(j));
   }
 
-
+  
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
   template <class T0, class Allocator0, class T1, class Allocator1>
   void SetRow(const Vector<T1, Vect_Sparse, Allocator1>& X,
 	      int i, Matrix<T0, General, RowSparse, Allocator0>& M)
@@ -174,17 +215,31 @@ namespace Seldon
     M.SetData(m, n, new_data_vector, new_ptr_vector, new_ind_vector);
   }
 
-
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void SetCol(const Vector<T1, Storage1, Allocator1>& X,
 	      int j, Matrix<T0, Prop0, Storage0, Allocator0>& M)
   {
     for (int i = 0; i < M.GetM(); i++)
-      M(i, j) = X(i);
+      M.Set(i, j, X(i));
   }
 
-
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
   template <class T0, class Allocator0, class T1, class Allocator1>
   void SetCol(const Vector<T1, VectSparse, Allocator1>& X,
 	      int j, Matrix<T0, General, RowSparse, Allocator0>& M)
