@@ -128,7 +128,8 @@ int main()
   // you can also use operator () to display the value
   // of A at a given row number or modify it
   cout << "A(3) = " << A(3) << endl;
-  A(3) = 0.5;
+  // use Get if you want to modify the value
+  A.Get(3) = 0.5;
   cout << "A(3) = " << A(3) << endl;
 
   // GetNormInfIndex returns the index

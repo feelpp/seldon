@@ -422,28 +422,6 @@ namespace Seldon
     \return The value of the vector at \a i.
   */
   template <class T, class Allocator>
-  inline typename Vector<T, VectSparse, Allocator>::reference
-  Vector<T, VectSparse, Allocator>::operator() (int i)
-  {
-    int k = 0;
-    // Searching for the entry.
-    while (k < this->m_ && index_[k] < i)
-      k++;
-
-    if (k >= this->m_ || index_[k] != i)
-      // The entry does not exist yet, so a zero entry is introduced.
-      AddInteraction(i, T(0));
-
-    return this->data_[k];
-  }
-
-
-  //! Access operator.
-  /*!
-    \param i index.
-    \return The value of the vector at \a i.
-  */
-  template <class T, class Allocator>
   inline typename Vector<T, VectSparse, Allocator>::value_type
   Vector<T, VectSparse, Allocator>::operator() (int i) const
   {
@@ -467,9 +445,18 @@ namespace Seldon
   */
   template <class T, class Allocator>
   inline typename Vector<T, VectSparse, Allocator>::reference
-  Vector<T, VectSparse, Allocator>::Val(int i)
+  Vector<T, VectSparse, Allocator>::Get(int i)
   {
-    return (*this)(i);
+    int k = 0;
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      // The entry does not exist yet, so a zero entry is introduced.
+      AddInteraction(i, T(0));
+    
+    return this->data_[k];
   }
 
 
@@ -482,7 +469,7 @@ namespace Seldon
   */
   template <class T, class Allocator>
   inline typename Vector<T, VectSparse, Allocator>::const_reference
-  Vector<T, VectSparse, Allocator>::Val(int i) const
+  Vector<T, VectSparse, Allocator>::Get(int i) const
   {
     int k = 0;
     // Searching for the entry.
@@ -494,7 +481,7 @@ namespace Seldon
       throw WrongArgument("Vector<VectSparse>::Val(int)",
                           "No reference to element " + to_str(i)
                           + " can be returned: it is a zero entry.");
-
+    
     return this->data_[k];
   }
 

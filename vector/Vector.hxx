@@ -125,8 +125,10 @@ namespace Seldon
 
     // Element access and affectation.
     reference operator() (int i);
+    reference Get(int i);
 #ifndef SWIG
     const_reference operator() (int i) const;
+    const_reference Get(int i) const;
     Vector<T, VectFull, Allocator>& operator= (const Vector<T, VectFull,
 					       Allocator>& X);
 #endif
