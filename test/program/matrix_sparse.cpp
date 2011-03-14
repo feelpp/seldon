@@ -77,7 +77,7 @@ int main(int argc, char** argv)
 
     // You can directly access A(i,j) and modify it.
     DISP(A(4,2));
-    A(4,2) = 2.5; DISP(A(4,2));
+    A.Get(4,2) = 2.5; DISP(A(4,2));
 
     // You can clear a row,
     A.ClearRow(3);
@@ -120,8 +120,8 @@ int main(int argc, char** argv)
     A.FillRand(); DISP(A);
     // fill with a given value
     A.Fill(0.01);
-    A(2, 3) = 0.5;
-    A(0, 1) = -0.6;
+    A.Get(2, 3) = 0.5;
+    A.Get(0, 1) = -0.6;
     // remove small values (below 0.1 here)
     A.RemoveSmallEntry(0.1); DISP(A);
     // you can set A = I
@@ -184,7 +184,7 @@ int main(int argc, char** argv)
 
     // You can directly access A(i,j) and modify it.
     DISP(A(4,2));
-    A(4,2) = 2.5; DISP(A(4,2));
+    A.Get(4,2) = 2.5; DISP(A(4,2));
 
     // You can clear a row for symmetric matrix, only upper part of matrix is
     // modified,
@@ -229,8 +229,8 @@ int main(int argc, char** argv)
     A.FillRand(); DISP(A);
     // fill with a given value
     A.Fill(0.01);
-    A(2, 3) = 0.5;
-    A(0, 1) = -0.6;
+    A.Get(2, 3) = 0.5;
+    A.Get(0, 1) = -0.6;
     // remove small values (below 0.1 here)
     A.RemoveSmallEntry(0.1); DISP(A);
     // you can set A = I

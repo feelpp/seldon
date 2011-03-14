@@ -438,6 +438,28 @@ namespace Seldon
   }
 
 
+  //! Access operator.
+  /*!
+    \param i index.
+    \return The value of the vector at \a i.
+  */
+  template <class T, class Allocator>
+  inline typename Vector<T, VectSparse, Allocator>::value_type
+  Vector<T, VectSparse, Allocator>::operator() (int i)
+  {
+    int k = 0;
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      // The entry does not exist, a zero is returned.
+      return T(0);
+
+    return this->data_[k];
+  }
+  
+  
   //! Access method.
   /*! Returns the value of element \a i.
     \param[in] i index.
@@ -486,6 +508,55 @@ namespace Seldon
   }
 
 
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument if i does not belong to the sparsity pattern
+  */
+  template <class T, class Allocator>
+  inline typename Vector<T, VectSparse, Allocator>::reference
+  Vector<T, VectSparse, Allocator>::Val(int i)
+  {
+    int k = 0;
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      throw WrongArgument("Vector<VectSparse>::Val(int)",
+                          "the entry " + to_str(i) +
+                          " does not belong to the sparsity pattern.");
+
+    
+    return this->data_[k];
+  }
+
+
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument if i does not belong to the sparsity pattern
+  */
+  template <class T, class Allocator>
+  inline typename Vector<T, VectSparse, Allocator>::const_reference
+  Vector<T, VectSparse, Allocator>::Val(int i) const
+  {
+    int k = 0;
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      throw WrongArgument("Vector<VectSparse>::Val(int)",
+                          "the entry " + to_str(i) +
+                          " does not belong to the sparsity pattern.");
+    
+    return this->data_[k];
+  }
+
+  
   //! Duplicates a vector (assignment operator).
   /*!
     \param X vector to be copied.

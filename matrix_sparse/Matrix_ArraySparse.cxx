@@ -295,7 +295,7 @@ namespace Seldon
   }
 
 
-  //! Access operator.
+  //! Access to element (i, j).
   /*!
     Returns the value of element (i, j).
     \param[in] i row index.
@@ -304,7 +304,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline T&
-  Matrix_ArraySparse<T, Prop, Storage, Allocator>::operator() (int i, int j)
+  Matrix_ArraySparse<T, Prop, Storage, Allocator>::Get(int i, int j)
   {
 
 #ifdef SELDON_CHECK_BOUNDS
@@ -319,10 +319,38 @@ namespace Seldon
 		     "], but is equal to " + to_str(j) + ".");
 #endif
 
-    return this->val_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j));
+    return this->val_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j));
   }
 
+  
+    //! Access to element (i, j).
+  /*!
+    Returns the value of element (i, j).
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const T&
+  Matrix_ArraySparse<T, Prop, Storage, Allocator>::Get(int i, int j) const
+  {
 
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_ArraySparse::operator()",
+		     "Index should be in [0, " + to_str(this->m_-1) +
+		     "],but is equal to " + to_str(i) + ".");
+
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_ArraySparse::operator()",
+		     "Index should be in [0, " + to_str(this->n_-1) +
+		     "], but is equal to " + to_str(j) + ".");
+#endif
+
+    return this->val_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j));
+  }
+  
+  
   //! Access method.
   /*! Returns the value of element (\a i, \a j).
     \param[in] i row index.
@@ -378,7 +406,21 @@ namespace Seldon
       this->val_(Storage::GetFirst(i, j)).Val(Storage::GetSecond(i, j));
   }
 
-
+  
+  //! Sets an element of matrix
+  /*! Sets the value of element (\a i, \a j).
+    \param[in] i row index.
+    \param[in] j column index.
+    \param[in] x a(i, j) = x
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const T& x)
+  {
+    this->Get(i, j) = x;
+  }
+  
+  
   //! Returns j-th non-zero value of row/column i.
   /*!
     \param[in] i row/column number.
@@ -391,10 +433,10 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
+    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
+		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
+                     + "], but is equal to " + to_str(i) + ".");
 
     if ((j < 0)||(j >= this->val_(i).GetM()))
       throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
@@ -418,10 +460,10 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
+    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
+		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
+                     + "], but is equal to " + to_str(i) + ".");
 
     if ((j < 0)||(j >= this->val_(i).GetM()))
       throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
@@ -445,10 +487,10 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
+    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
       throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
+		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
+                     + "], but is equal to " + to_str(i) + ".");
 
     if ((j < 0)||(j >= this->val_(i).GetM()))
       throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
@@ -471,10 +513,10 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
+    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
       throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
+		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
+                     + "], but is equal to " + to_str(i) + ".");
 
     if (j < 0 || j >= this->val_(i).GetM())
       throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
@@ -718,7 +760,7 @@ namespace Seldon
     FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
 		     sizeof(int));
 
-    for (int i = 0; i < this->m_; i++)
+    for (int i = 0; i < val_.GetM(); i++)
       val_(i).Write(FileStream);
   }
 
@@ -852,8 +894,8 @@ namespace Seldon
     FileStream.read(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
 		    sizeof(int));
 
-    val_.Reallocate(this->m_);
-    for (int i = 0; i < this->m_; i++)
+    val_.Reallocate(Storage::GetFirst(this->m_, this->n_));
+    for (int i = 0; i < val_.GetM(); i++)
       val_(i).Read(FileStream);
 
 #ifdef SELDON_CHECK_IO
@@ -1446,15 +1488,15 @@ namespace Seldon
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
-
-    if (i <= j)
+    
+    if (i < j)
       return this->val_(j)(i);
 
     return this->val_(i)(j);
   }
 
 
-  //! Access operator.
+  //! Access to element (i, j)
   /*!
     Returns the value of element (i, j).
     \param i row index.
@@ -1463,7 +1505,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline T&
-  Matrix<T, Prop, ArrayColSymSparse, Allocator>::operator() (int i, int j)
+  Matrix<T, Prop, ArrayColSymSparse, Allocator>::Get(int i, int j)
   {
 
 #ifdef SELDON_CHECK_BOUNDS
@@ -1478,12 +1520,119 @@ namespace Seldon
 #endif
 
     if (i < j)
-      return this->val_(j)(i);
-
-    return this->val_(i)(j);
+      return this->val_(j).Get(i);
+    
+    return this->val_(i).Get(j);
   }
 
+  
+  //! Access to element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline const T&
+  Matrix<T, Prop, ArrayColSymSparse, Allocator>::Get(int i, int j) const
+  {
 
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+
+    if (i < j)
+      return this->val_(j).Get(i);
+    
+    return this->val_(i).Get(j);
+  }
+
+  
+  //! Access to element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayColSymSparse, Allocator>::Val(int i, int j)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");    
+    if (i > j)
+      throw WrongArgument("Matrix::Val()", string("With this function, you ")
+                          + "can only access upper part of matrix.");
+#endif
+    
+    return this->val_(j).Val(i);
+  }
+
+  
+  //! Access to element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline const T&
+  Matrix<T, Prop, ArrayColSymSparse, Allocator>::Val(int i, int j) const
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+    if (i > j)
+      throw WrongArgument("Matrix::Val()", string("with this function, you ")
+                          + "can only access upper part of matrix.");
+#endif
+    
+    return this->val_(j).Val(i);
+  }
+  
+  
+  //! Sets element (i, j) of the matrix
+  /*!
+    \param i row index.
+    \param j column index.
+    \param x A(i, j) = x
+  */  
+  template <class T, class Prop, class Allocator>
+  inline void
+  Matrix<T, Prop, ArrayColSymSparse, Allocator>::Set(int i, int j, const T& x)
+  {
+    if (i < j)
+      this->val_(j).Get(i) = x;
+    else
+      this->val_(i).Get(j) = x;
+  }
+  
+  
   //! Clears a column.
   template <class T, class Prop, class Allocator> inline
   void Matrix<T, Prop, ArrayColSymSparse, Allocator>::ClearColumn(int i)
@@ -1651,7 +1800,9 @@ namespace Seldon
   AddInteractionRow(int i, int nb, const IVect& col,
 		    const Vector<T, VectFull, Alloc1>& val)
   {
-    AddInteractionColumn(i, nb, col, val);
+    for (int j = 0; j < nb; j++)
+      if (i <= col(j))
+	this->val_(col(j)).AddInteraction(i, val(j));
   }
 
 
@@ -1741,14 +1892,14 @@ namespace Seldon
 		     + to_str(j) + ".");
 #endif
 
-    if (i <= j)
+    if (i < j)
       return this->val_(i)(j);
 
     return this->val_(j)(i);
   }
 
 
-  //! Access operator.
+  //! Access to element (i, j)
   /*!
     Returns the value of element (i, j).
     \param i row index.
@@ -1757,7 +1908,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline T&
-  Matrix<T, Prop, ArrayRowSymSparse, Allocator>::operator() (int i, int j)
+  Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Get(int i, int j)
   {
 
 #ifdef SELDON_CHECK_BOUNDS
@@ -1771,14 +1922,120 @@ namespace Seldon
 		     + to_str(j) + ".");
 #endif
 
-    if (i <= j)
-      return this->val_(i)(j);
-
-    return this->val_(j)(i);
-
+    if (i < j)
+      return this->val_(i).Get(j);
+    
+    return this->val_(j).Get(i);
   }
 
+  
+  //! Access to element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline const T&
+  Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Get(int i, int j) const
+  {
 
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+
+    if (i < j)
+      return this->val_(i).Get(j);
+    
+    return this->val_(j).Get(i);
+  }
+
+  
+  //! Access to element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Val(int i, int j)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");    
+    if (i > j)
+      throw WrongArgument("Matrix::Val()", string("With this function, you ")
+                          + "can only access upper part of matrix.");
+#endif
+    
+    return this->val_(i).Val(j);
+  }
+
+  
+  //! Access to element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline const T&
+  Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Val(int i, int j) const
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+    if (i > j)
+      throw WrongArgument("Matrix::Val()", string("With this function, you ")
+                          + "can only access upper part of matrix.");
+#endif
+    
+    return this->val_(i).Val(j);
+  }
+  
+  
+  //! Sets element (i, j) of the matrix
+  /*!
+    \param i row index.
+    \param j column index.
+    \param x A(i, j) = x
+  */  
+  template <class T, class Prop, class Allocator>
+  inline void
+  Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Set(int i, int j, const T& x)
+  {
+    if (i < j)
+      this->val_(i).Get(j) = x;
+    else
+      this->val_(j).Get(i) = x;
+  }
+  
+  
   //! Clears a row.
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::ClearRow(int i)
@@ -1972,8 +2229,9 @@ namespace Seldon
   AddInteractionColumn(int i, int nb, const IVect& row,
 		       const Vector<T,VectFull,Alloc1>& val)
   {
-    // Symmetric matrix, row = column.
-    AddInteractionRow(i, nb, row, val);
+    for (int j = 0; j < nb; j++)
+      if (row(j) <= i)
+        this->val_(row(j)).AddInteraction(i, val(j));
   }
 
 

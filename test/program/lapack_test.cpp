@@ -1148,10 +1148,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, ColUpTriangPacked> A(n,n);
-    A(0,0) = 2.0;
-    A(0,1) = 3.0; A(1,1) = 5.0;
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = -4.0;
-    A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0;  A(3,3) = 6.0;
+    A.Get(0,0) = 2.0;
+    A.Get(0,1) = 3.0; A.Get(1,1) = 5.0;
+    A.Get(0,2) = 0.0; A.Get(1,2) = -3.0; A.Get(2,2) = -4.0;
+    A.Get(0,3) = 2.0; A.Get(1,3) = 4.0;  A.Get(2,3) = 0.0;  A.Get(3,3) = 6.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(A, br);
     Mlt(SeldonTrans, SeldonNonUnit, A, br_trans);
@@ -1188,10 +1188,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, ColUpTriangPacked> A(n,n);
-    A(0,0) = 2.0;
-    A(0,1) = 3.0; A(1,1) = 5.0;
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = -4.0;
-    A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0;  A(3,3) = Complex_wp(6.0,2.0);
+    A.Get(0,0) = 2.0;
+    A.Get(0,1) = 3.0; A.Get(1,1) = 5.0;
+    A.Get(0,2) = 0.0; A.Get(1,2) = -3.0; A.Get(2,2) = -4.0;
+    A.Get(0,3) = 2.0; A.Get(1,3) = 4.0;  A.Get(2,3) = 0.0;  A.Get(3,3) = Complex_wp(6.0,2.0);
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(A, bc);
     Mlt(SeldonTrans, SeldonNonUnit, A, bc_trans);
@@ -1249,10 +1249,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, ColUpTriangPacked> A(n,n);
-    A(0,0) = 1.0;
-    A(0,1) = 3.0; A(1,1) = 1.0;
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = 1.0;
-    A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0; A(3,3) = 1.0;
+    A.Get(0,0) = 1.0;
+    A.Get(0,1) = 3.0; A.Get(1,1) = 1.0;
+    A.Get(0,2) = 0.0; A.Get(1,2) = -3.0; A.Get(2,2) = 1.0;
+    A.Get(0,3) = 2.0; A.Get(1,3) = 4.0;  A.Get(2,3) = 0.0; A.Get(3,3) = 1.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(SeldonNoTrans, SeldonUnit, A, br);
     Mlt(SeldonTrans, SeldonUnit, A, br_trans);
@@ -1289,10 +1289,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, ColUpTriangPacked> A(n,n);
-    A(0,0) = 1.0;
-    A(0,1) = 3.0; A(1,1) = 1.0;
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = 1.0;
-    A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = Complex_wp(0.0,2.0); A(3,3) = 1.0;
+    A.Get(0,0) = 1.0;
+    A.Get(0,1) = 3.0; A.Get(1,1) = 1.0;
+    A.Get(0,2) = 0.0; A.Get(1,2) = -3.0; A.Get(2,2) = 1.0;
+    A.Get(0,3) = 2.0; A.Get(1,3) = 4.0;  A.Get(2,3) = Complex_wp(0.0,2.0); A.Get(3,3) = 1.0;
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(SeldonNoTrans, SeldonUnit, A, bc);
     Mlt(SeldonTrans, SeldonUnit, A, bc_trans);
@@ -1350,10 +1350,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, ColLoTriangPacked> A(n,n);
-    A(0,0) = 2.0;
-    A(1,0) = 3.0; A(1,1) = 5.0;
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0;
-    A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0;  A(3,3) = 6.0;
+    A.Get(0,0) = 2.0;
+    A.Get(1,0) = 3.0; A.Get(1,1) = 5.0;
+    A.Get(2,0) = 0.0; A.Get(2,1) = -3.0; A.Get(2,2) = -4.0;
+    A.Get(3,0) = 2.0; A.Get(3,1) = 4.0;  A.Get(3,2) = 0.0;  A.Get(3,3) = 6.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(A, br);
     Mlt(SeldonTrans, SeldonNonUnit, A, br_trans);
@@ -1390,10 +1390,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, ColLoTriangPacked> A(n,n);
-    A(0,0) = 2.0;
-    A(1,0) = 3.0; A(1,1) = 5.0;
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0;
-    A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0;  A(3,3) = Complex_wp(6.0,2.0);
+    A.Get(0,0) = 2.0;
+    A.Get(1,0) = 3.0; A.Get(1,1) = 5.0;
+    A.Get(2,0) = 0.0; A.Get(2,1) = -3.0; A.Get(2,2) = -4.0;
+    A.Get(3,0) = 2.0; A.Get(3,1) = 4.0;  A.Get(3,2) = 0.0;  A.Get(3,3) = Complex_wp(6.0,2.0);
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(A, bc);
     Mlt(SeldonTrans, SeldonNonUnit, A, bc_trans);
@@ -1451,10 +1451,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, ColLoTriangPacked> A(n,n);
-    A(0,0) = 1.0;
-    A(1,0) = 3.0; A(1,1) = 1.0;
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = 1.0;
-    A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0; A(3,3) = 1.0;
+    A.Get(0,0) = 1.0;
+    A.Get(1,0) = 3.0; A.Get(1,1) = 1.0;
+    A.Get(2,0) = 0.0; A.Get(2,1) = -3.0; A.Get(2,2) = 1.0;
+    A.Get(3,0) = 2.0; A.Get(3,1) = 4.0;  A.Get(3,2) = 0.0; A.Get(3,3) = 1.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(SeldonNoTrans, SeldonUnit, A, br);
     Mlt(SeldonTrans, SeldonUnit, A, br_trans);
@@ -1491,10 +1491,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, ColLoTriangPacked> A(n,n);
-    A(0,0) = 1.0;
-    A(1,0) = 3.0; A(1,1) = 1.0;
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = 1.0;
-    A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = Complex_wp(0.0,2.0); A(3,3) = 1.0;
+    A.Get(0,0) = 1.0;
+    A.Get(1,0) = 3.0; A.Get(1,1) = 1.0;
+    A.Get(2,0) = 0.0; A.Get(2,1) = -3.0; A.Get(2,2) = 1.0;
+    A.Get(3,0) = 2.0; A.Get(3,1) = 4.0;  A.Get(3,2) = Complex_wp(0.0,2.0); A.Get(3,3) = 1.0;
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(SeldonNoTrans, SeldonUnit, A, bc);
     Mlt(SeldonTrans, SeldonUnit, A, bc_trans);
@@ -1954,10 +1954,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, RowUpTriangPacked> A(n,n);
-    A(0,0) = 2.0;
-    A(0,1) = 3.0; A(1,1) = 5.0;
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = -4.0;
-    A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0;  A(3,3) = 6.0;
+    A.Val(0,0) = 2.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
+    A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = 0.0;  A.Val(3,3) = 6.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(A, br);
     Mlt(SeldonTrans, SeldonNonUnit, A, br_trans);
@@ -1994,10 +1994,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, RowUpTriangPacked> A(n,n);
-    A(0,0) = 2.0;
-    A(0,1) = 3.0; A(1,1) = 5.0;
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = -4.0;
-    A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0;  A(3,3) = Complex_wp(6.0,2.0);
+    A.Val(0,0) = 2.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
+    A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = 0.0;  A.Val(3,3) = Complex_wp(6.0,2.0);
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(A, bc);
     Mlt(SeldonTrans, SeldonNonUnit, A, bc_trans);
@@ -2055,10 +2055,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, RowUpTriangPacked> A(n,n);
-    A(0,0) = 1.0;
-    A(0,1) = 3.0; A(1,1) = 1.0;
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = 1.0;
-    A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = 0.0; A(3,3) = 1.0;
+    A.Val(0,0) = 1.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 1.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = 1.0;
+    A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = 0.0; A.Val(3,3) = 1.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(SeldonNoTrans, SeldonUnit, A, br);
     Mlt(SeldonTrans, SeldonUnit, A, br_trans);
@@ -2095,10 +2095,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, RowUpTriangPacked> A(n,n);
-    A(0,0) = 1.0;
-    A(0,1) = 3.0; A(1,1) = 1.0;
-    A(0,2) = 0.0; A(1,2) = -3.0; A(2,2) = 1.0;
-    A(0,3) = 2.0; A(1,3) = 4.0;  A(2,3) = Complex_wp(0.0,2.0); A(3,3) = 1.0;
+    A.Val(0,0) = 1.0;
+    A.Val(0,1) = 3.0; A.Val(1,1) = 1.0;
+    A.Val(0,2) = 0.0; A.Val(1,2) = -3.0; A.Val(2,2) = 1.0;
+    A.Val(0,3) = 2.0; A.Val(1,3) = 4.0;  A.Val(2,3) = Complex_wp(0.0,2.0); A.Val(3,3) = 1.0;
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(SeldonNoTrans, SeldonUnit, A, bc);
     Mlt(SeldonTrans, SeldonUnit, A, bc_trans);
@@ -2156,10 +2156,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, RowLoTriangPacked> A(n,n);
-    A(0,0) = 2.0;
-    A(1,0) = 3.0; A(1,1) = 5.0;
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0;
-    A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0;  A(3,3) = 6.0;
+    A.Val(0,0) = 2.0;
+    A.Val(1,0) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = -4.0;
+    A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = 0.0;  A.Val(3,3) = 6.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(A, br);
     Mlt(SeldonTrans, SeldonNonUnit, A, br_trans);
@@ -2196,10 +2196,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, RowLoTriangPacked> A(n,n);
-    A(0,0) = 2.0;
-    A(1,0) = 3.0; A(1,1) = 5.0;
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = -4.0;
-    A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0;  A(3,3) = Complex_wp(6.0,2.0);
+    A.Val(0,0) = 2.0;
+    A.Val(1,0) = 3.0; A.Val(1,1) = 5.0;
+    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = -4.0;
+    A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = 0.0;  A.Val(3,3) = Complex_wp(6.0,2.0);
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(A, bc);
     Mlt(SeldonTrans, SeldonNonUnit, A, bc_trans);
@@ -2257,10 +2257,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Real_wp, General, RowLoTriangPacked> A(n,n);
-    A(0,0) = 1.0;
-    A(1,0) = 3.0; A(1,1) = 1.0;
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = 1.0;
-    A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = 0.0; A(3,3) = 1.0;
+    A.Val(0,0) = 1.0;
+    A.Val(1,0) = 3.0; A.Val(1,1) = 1.0;
+    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = 1.0;
+    A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = 0.0; A.Val(3,3) = 1.0;
     xr.Fill(); br.Copy(xr); br_trans.Copy(xr);
     Mlt(SeldonNoTrans, SeldonUnit, A, br);
     Mlt(SeldonTrans, SeldonUnit, A, br_trans);
@@ -2297,10 +2297,10 @@ int main(int argc, char** argv)
   {
     // initialization of A
     Matrix<Complex_wp, General, RowLoTriangPacked> A(n,n);
-    A(0,0) = 1.0;
-    A(1,0) = 3.0; A(1,1) = 1.0;
-    A(2,0) = 0.0; A(2,1) = -3.0; A(2,2) = 1.0;
-    A(3,0) = 2.0; A(3,1) = 4.0;  A(3,2) = Complex_wp(0.0,2.0); A(3,3) = 1.0;
+    A.Val(0,0) = 1.0;
+    A.Val(1,0) = 3.0; A.Val(1,1) = 1.0;
+    A.Val(2,0) = 0.0; A.Val(2,1) = -3.0; A.Val(2,2) = 1.0;
+    A.Val(3,0) = 2.0; A.Val(3,1) = 4.0;  A.Val(3,2) = Complex_wp(0.0,2.0); A.Val(3,3) = 1.0;
     xc.Fill(); bc.Copy(xc); bc_trans.Copy(xc); bc_transConj.Copy(xc);
     Mlt(SeldonNoTrans, SeldonUnit, A, bc);
     Mlt(SeldonTrans, SeldonUnit, A, bc_trans);
