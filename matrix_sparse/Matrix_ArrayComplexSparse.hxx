@@ -95,6 +95,20 @@ namespace Seldon
     complex<T> operator() (int i, int j) const;
     complex<T>& Val(int i, int j);
     const complex<T>& Val(int i, int j) const;
+    complex<T>& Get(int i, int j);
+    const complex<T>& Get(int i, int j) const;
+    
+    T& ValReal(int i, int j);
+    const T& ValReal(int i, int j) const;
+    T& ValImag(int i, int j);
+    const T& ValImag(int i, int j) const;
+    T& GetReal(int i, int j);
+    const T& GetReal(int i, int j) const;
+    T& GetImag(int i, int j);
+    const T& GetImag(int i, int j) const;    
+    
+    void Set(int i, int j, const complex<T>& x);
+    
     const T& ValueReal(int num_row,int i) const;
     T& ValueReal(int num_row,int i);
     int IndexReal(int num_row,int i) const;
@@ -115,8 +129,15 @@ namespace Seldon
 
     // Convenient functions.
     void Print() const;
+    void Write(string FileName) const;
+    void Write(ostream& FileStream) const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
+    void Read(string FileName);
+    void Read(istream& FileStream);
+    void ReadText(string FileName);
+    void ReadText(istream& FileStream);
+    
     void Assemble();
     template<class T0>
     void RemoveSmallEntry(const T0& epsilon);
@@ -245,6 +266,17 @@ namespace Seldon
     Matrix(int i, int j);
 
     complex<T> operator() (int i, int j) const;
+    
+    T& ValReal(int i, int j);
+    const T& ValReal(int i, int j) const;
+    T& ValImag(int i, int j);
+    const T& ValImag(int i, int j) const;
+    T& GetReal(int i, int j);
+    const T& GetReal(int i, int j) const;
+    T& GetImag(int i, int j);
+    const T& GetImag(int i, int j) const;    
+    
+    void Set(int i, int j, const complex<T>& x);
 
     // Memory management.
     void ClearRealColumn(int i);
@@ -294,6 +326,17 @@ namespace Seldon
     Matrix(int i, int j);
 
     complex<T> operator() (int i, int j) const;
+    
+    T& ValReal(int i, int j);
+    const T& ValReal(int i, int j) const;
+    T& ValImag(int i, int j);
+    const T& ValImag(int i, int j) const;
+    T& GetReal(int i, int j);
+    const T& GetReal(int i, int j) const;
+    T& GetImag(int i, int j);
+    const T& GetImag(int i, int j) const;    
+    
+    void Set(int i, int j, const complex<T>& x);
 
     // Memory management.
     void ClearRealRow(int i);

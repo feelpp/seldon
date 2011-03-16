@@ -304,7 +304,7 @@ namespace Seldon
     void AddInteractionColumn(int i, int nb, const IVect& row,
 			      const Vector<T, VectFull, Alloc1>& val);
   };
-
+  
 } // namespace Seldon
 
 #define SELDON_FILE_MATRIX_ARRAY_SPARSE_HXX

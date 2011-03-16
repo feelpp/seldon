@@ -71,8 +71,7 @@ namespace Seldon
   inline Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ~Matrix_ArrayComplexSparse()
   {
-    this->m_ = 0;
-    this->n_ = 0;
+    Clear();
   }
 
 
@@ -83,7 +82,10 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::Clear()
   {
-    this->~Matrix_ArrayComplexSparse();
+    this->m_ = 0;
+    this->n_ = 0;
+    val_real_.Clear();
+    val_imag_.Clear();
   }
 
 
@@ -385,7 +387,7 @@ namespace Seldon
 
   //! Unavailable access method.
   /*! This method is declared for consistency with other classes, but it is
-    not defined because no reference can possiblity be returned.
+    not defined because no reference can possibly be returned.
     \param[in] i row index.
     \param[in] j column index.
     \return Raises an exception.
@@ -397,10 +399,11 @@ namespace Seldon
   {
     throw Undefined("Matrix_ArrayComplexSparse::Val(int i, int j)");
   }
-
+  
+  
   //! Unavailable access method.
   /*! This method is declared for consistency with other classes, but it is
-    not defined because no reference can possiblity be returned.
+    not defined because no reference can possibly be returned.
     \param[in] i row index.
     \param[in] j column index.
     \return Raises an exception.
@@ -413,7 +416,189 @@ namespace Seldon
     throw Undefined("Matrix_ArrayComplexSparse::Val(int i, int j)");
   }
 
+  
+  //! Unavailable access method.
+  /*! This method is declared for consistency with other classes, but it is
+    not defined because no reference can possibly be returned.
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Raises an exception.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline complex<T>&
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::Get(int i, int j)
+  {
+    throw Undefined("Matrix_ArrayComplexSparse::Get(int i, int j)");
+  }
+  
+  
+  //! Unavailable access method.
+  /*! This method is declared for consistency with other classes, but it is
+    not defined because no reference can possibly be returned.
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Raises an exception.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const complex<T>&
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::Get(int i, int j) const
+  {
+    throw Undefined("Matrix_ArrayComplexSparse::Get(int i, int j)");
+  }
 
+  
+    //! Returns acces to real part of A(i, j)
+  /*! 
+    \param[in] i row index.
+    \param[in] j column index.
+    \return real part of A(i, j)
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline T&
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::ValReal(int i, int j)
+  {
+    return val_real_(Storage::GetFirst(i, j)).Val(Storage::GetSecond(i, j));
+  }
+
+  
+  //! Returns acces to real part of A(i, j)
+  /*! 
+    \param[in] i row index.
+    \param[in] j column index.
+    \return real part of A(i, j)
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const T&
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::ValReal(int i, int j) const
+  {
+    return val_real_(Storage::GetFirst(i, j)).Val(Storage::GetSecond(i, j));
+  }
+  
+  
+  //! Returns acces to imaginary part of A(i, j)
+  /*! 
+    \param[in] i row index.
+    \param[in] j column index.
+    \return imaginary part of A(i, j)
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline T&
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::ValImag(int i, int j)
+  {
+    return val_imag_(Storage::GetFirst(i, j)).Val(Storage::GetSecond(i, j));
+  }
+
+  
+  //! Returns acces to imaginary part of A(i, j)
+  /*! 
+    \param[in] i row index.
+    \param[in] j column index.
+    \return imaginary part of A(i, j)
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const T&
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::ValImag(int i, int j) const
+  {
+    return val_imag_(Storage::GetFirst(i, j)).Val(Storage::GetSecond(i, j));
+  }
+  
+  
+  //! Returns acces to real part of A(i, j)
+  /*! 
+    \param[in] i row index.
+    \param[in] j column index.
+    \return real part of A(i, j)
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline T&
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::GetReal(int i, int j)
+  {
+    return val_real_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j));
+  }
+
+  
+  //! Returns acces to real part of A(i, j)
+  /*! 
+    \param[in] i row index.
+    \param[in] j column index.
+    \return real part of A(i, j)
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const T&
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::GetReal(int i, int j) const
+  {
+    return val_real_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j));
+  }
+  
+  
+  //! Returns acces to imaginary part of A(i, j)
+  /*! 
+    \param[in] i row index.
+    \param[in] j column index.
+    \return imaginary part of A(i, j)
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline T&
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::GetImag(int i, int j)
+  {
+    return val_imag_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j));
+  }
+
+  
+  //! Returns acces to imaginary part of A(i, j)
+  /*! 
+    \param[in] i row index.
+    \param[in] j column index.
+    \return imaginary part of A(i, j)
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const T&
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::GetImag(int i, int j) const
+  {
+    return val_imag_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j));
+  }
+  
+  
+  //! Sets element (i, j) of matrix
+  /*!
+    \param[in] i row index.
+    \param[in] j column index.
+    \param[in] x A(i, j) = x
+   */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const complex<T>& x)
+  {
+    if (real(x) != T(0))
+      val_real_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = real(x);
+    else
+      {
+        if (val_real_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j)) != T(0))
+          val_real_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = T(0);
+      }
+    
+    if (imag(x) != T(0))
+      val_imag_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = imag(x);
+    else
+      {
+        if (val_imag_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j)) != T(0))
+          val_imag_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = T(0);
+      }
+
+  }
+  
+  
   //! Returns j-th non-zero value of row i (real part).
   /*!
     \param[in] i row number.
@@ -426,11 +611,11 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
+    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-
+		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
+                     + "], but is equal to " + to_str(i) + ".");
+    
     if (j < 0 || j >= this->val_real_(i).GetM())
       throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
 		     to_str(this->val_real_(i).GetM()-1) + "], but is equal to "
@@ -454,10 +639,10 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
+    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
+		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
+                     + "], but is equal to " + to_str(i) + ".");
     if (j < 0 || j >= this->val_real_(i).GetM())
       throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
 		     to_str(this->val_real_(i).GetM()-1) + "], but is equal to "
@@ -480,10 +665,10 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
+    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
       throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
+		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
+                     + "], but is equal to " + to_str(i) + ".");
 
     if (j < 0 || j >= this->val_real_(i).GetM())
       throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
@@ -507,10 +692,10 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
+    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
       throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
+		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
+                     + "], but is equal to " + to_str(i) + ".");
 
     if (j < 0 || j >= this->val_real_(i).GetM())
       throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, "
@@ -534,10 +719,10 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
+    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
+		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
+                     + "], but is equal to " + to_str(i) + ".");
 
     if (j < 0 || j >= this->val_imag_(i).GetM())
       throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
@@ -561,10 +746,10 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
+    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
+		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
+                     + "], but is equal to " + to_str(i) + ".");
 
     if (j < 0 || j >= this->val_imag_(i).GetM())
       throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
@@ -588,10 +773,10 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
+    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
       throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
+		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
+                     + "], but is equal to " + to_str(i) + ".");
 
     if (j < 0 || j >= this->val_imag_(i).GetM())
       throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
@@ -615,9 +800,10 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
+    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
       throw WrongRow("Matrix_ArrayComplexSparse::index",
-		     "Index should be in [0, " + to_str(this->m_-1)
+		     "Index should be in [0, "
+                     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
 		     + "], but is equal to " + to_str(i) + ".");
 
     if (j < 0 || j >= this->val_imag_(i).GetM())
@@ -782,15 +968,77 @@ namespace Seldon
 	}
   }
 
+  
+  //! Writes the matrix in a file.
+  /*!
+    Stores the matrix in a file in binary format.
+    The number of rows (integer) and the number of columns (integer)
+    are written and matrix elements are then written in the same order
+    as in memory (e.g. row-major storage).
+    \param FileName output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::Write(string FileName) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str());
 
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_ArrayComplexSparse::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Write(FileStream);
+
+    FileStream.close();
+  }
+  
+
+  //! Writes the matrix to an output stream.
+  /*!
+    Stores the matrix in a file in binary format.
+    The number of rows (integer) and the number of columns (integer)
+    are written and matrix elements are then written in the same order
+    as in memory (e.g. row-major storage).
+    \param FileStream output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::Write(ostream& FileStream) const
+  {
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_ArrayComplexSparse::Write(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+		     sizeof(int));
+    
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
+		     sizeof(int));
+
+    for (int i = 0; i < val_real_.GetM(); i++)
+      {
+        val_real_(i).Write(FileStream);
+        val_imag_(i).Write(FileStream);
+      }
+  }
+
+  
   //! Writes the matrix in a file.
   /*! Stores the matrix in a file in ascii format. The entries are written in
     coordinate format (row column value). 1-index convention is used.
     \param FileName output file name.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
-  WriteText(string FileName) const
+  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::WriteText(string FileName) const
   {
     ofstream FileStream; FileStream.precision(14);
     FileStream.open(FileName.c_str());
@@ -814,8 +1062,8 @@ namespace Seldon
     \param FileStream output file name.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
-  WriteText(ostream& FileStream) const
+  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::WriteText(ostream& FileStream) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -859,14 +1107,124 @@ namespace Seldon
 	
 	if (!presence_last_elt)
 	  {
-	    T zero;
+	    complex<T> zero;
 	    SetComplexZero(zero);
 	    FileStream << this->m_ << " " << this->n_ << " " << zero << '\n';
 	  }
       }
   }
 
+  
+  //! Reads the matrix from a file.
+  /*!
+    Reads a matrix stored in binary format in a file.
+    \param FileName input file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::Read(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
 
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_ArrayComplexSparse::Read(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Read(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix in binary format from an input stream.
+    \param FileStream input stream
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::Read(istream& FileStream)
+  {
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_ArraySparse::Read(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+
+    FileStream.read(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+		    sizeof(int));
+    
+    FileStream.read(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
+		    sizeof(int));
+
+    val_real_.Reallocate(Storage::GetFirst(this->m_, this->n_));
+    val_imag_.Reallocate(Storage::GetFirst(this->m_, this->n_));
+    for (int i = 0; i < val_real_.GetM(); i++)
+      {
+        val_real_(i).Read(FileStream);
+        val_imag_(i).Read(FileStream);
+      }
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was read.
+    if (!FileStream.good())
+      throw IOError("Matrix_ArraySparse::Read(istream& FileStream)",
+                    string("Input operation failed.")
+		    + string(" The input file may have been removed")
+		    + " or may not contain enough data.");
+#endif
+
+  }
+
+
+  //! Reads the matrix from a file.
+  /*!
+    Reads the matrix from a file in text format.
+    \param FileName input file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::ReadText(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_ArraySparse::ReadText(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->ReadText(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix from a stream in text format.
+    \param FileStream input stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::ReadText(istream& FileStream)
+  {
+    Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
+    
+    complex<T> zero; int index = 1;
+    ReadCoordinateMatrix(leaf_class, FileStream, zero, index);
+  }
+  
+  
   //! Assembles the matrix.
   /*!
     All the row numbers are sorted.
@@ -877,7 +1235,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::Assemble()
   {
-    for (int i = 0; i < m_ ; i++)
+    for (int i = 0; i < Storage::GetFirst(this->m_, this->n_); i++)
       {
 	val_real_(i).Assemble();
 	val_imag_(i).Assemble();
@@ -904,7 +1262,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::Zero()
   {
-    for (int i = 0; i < this->m_; i++)
+    for (int i = 0; i < Storage::GetFirst(this->m_, this->n_); i++)
       {
 	val_real_(i).Zero();
 	val_imag_(i).Zero();
@@ -917,7 +1275,7 @@ namespace Seldon
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::Fill()
   {
     int value = 0;
-    for (int i = 0; i < this->m_; i++)
+    for (int i = 0; i < Storage::GetFirst(this->m_, this->n_); i++)
       {
 	for (int j = 0; j < val_real_(i).GetM(); j++)
 	  val_real_(i).Value(j) = value++;
@@ -929,11 +1287,15 @@ namespace Seldon
 
 
   //! Non-zero entries are set to a given value x.
+  /*!
+    real non-zero entries are set to real(x)
+    whereas imaginary non-zero entries are set to imag(x)
+   */
   template <class T, class Prop, class Storage, class Allo> template<class T0>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allo>::
   Fill(const complex<T0>& x)
   {
-    for (int i = 0; i < this->m_; i++)
+    for (int i = 0; i < Storage::GetFirst(this->m_, this->n_); i++)
       {
 	val_real_(i).Fill(real(x));
 	val_imag_(i).Fill(imag(x));
@@ -957,7 +1319,7 @@ namespace Seldon
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   FillRand()
   {
-    for (int i = 0; i < this->m_; i++)
+    for (int i = 0; i < Storage::GetFirst(this->m_, this->n_); i++)
       {
 	val_real_(i).FillRand();
 	val_imag_(i).FillRand();
@@ -988,7 +1350,8 @@ namespace Seldon
     \note Matrix values are not initialized.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayColComplexSparse, Allocator>::Matrix(int i, int j):
+  inline Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::Matrix(int i, int j) :
     Matrix_ArrayComplexSparse<T, Prop, ArrayColComplexSparse, Allocator>(i, j)
   {
   }
@@ -996,7 +1359,8 @@ namespace Seldon
 
   //! Clears column i.
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::ClearRealColumn(int i)
+  inline void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::ClearRealColumn(int i)
   {
     this->val_real_(i).Clear();
   }
@@ -1004,7 +1368,8 @@ namespace Seldon
 
   //! Clears column i.
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::ClearImagColumn(int i)
+  inline void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::ClearImagColumn(int i)
   {
     this->val_imag_(i).Clear();
   }
@@ -1016,7 +1381,8 @@ namespace Seldon
     \param[in] j new number of non-zero entries in the column.
   */
   template <class T, class Prop, class Alloc> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Alloc>::ReallocateRealColumn(int i,int j)
+  void Matrix<T, Prop, ArrayColComplexSparse, Alloc>
+  ::ReallocateRealColumn(int i, int j)
   {
     this->val_real_(i).Reallocate(j);
   }
@@ -1028,7 +1394,8 @@ namespace Seldon
     \param[in] j new number of non-zero entries in the column.
   */
   template <class T, class Prop, class Alloc> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Alloc>::ReallocateImagColumn(int i,int j)
+  void Matrix<T, Prop, ArrayColComplexSparse, Alloc>
+  ::ReallocateImagColumn(int i, int j)
   {
     this->val_imag_(i).Reallocate(j);
   }
@@ -1040,7 +1407,8 @@ namespace Seldon
     \param[in] j new number of non-zero entries in the column.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::ResizeRealColumn(int i,int j)
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::ResizeRealColumn(int i, int j)
   {
     this->val_real_(i).Resize(j);
   }
@@ -1052,7 +1420,8 @@ namespace Seldon
     \param[in] j new number of non-zero entries in the column.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::ResizeImagColumn(int i,int j)
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::ResizeImagColumn(int i, int j)
   {
     this->val_imag_(i).Resize(j);
   }
@@ -1064,7 +1433,8 @@ namespace Seldon
     \param[in] j second column number.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::SwapRealColumn(int i,int j)
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::SwapRealColumn(int i, int j)
   {
     Swap(this->val_real_(i), this->val_real_(j));
   }
@@ -1076,7 +1446,8 @@ namespace Seldon
     \param[in] j second column number.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::SwapImagColumn(int i,int j)
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::SwapImagColumn(int i, int j)
   {
     Swap(this->val_imag_(i), this->val_imag_(j));
   }
@@ -1138,7 +1509,8 @@ namespace Seldon
 
   //! Displays non-zero values of a column.
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::PrintRealColumn(int i) const
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::PrintRealColumn(int i) const
   {
     this->val_real_(i).Print();
   }
@@ -1146,7 +1518,8 @@ namespace Seldon
 
   //! Displays non-zero values of a column.
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::PrintImagColumn(int i) const
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::PrintImagColumn(int i) const
   {
     this->val_imag_(i).Print();
   }
@@ -1159,7 +1532,8 @@ namespace Seldon
     you don't need to call that method.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::AssembleRealColumn(int i)
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::AssembleRealColumn(int i)
   {
     this->val_real_(i).Assemble();
   }
@@ -1172,7 +1546,8 @@ namespace Seldon
     you don't need to call that method.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::AssembleImagColumn(int i)
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::AssembleImagColumn(int i)
   {
     this->val_imag_(i).Assemble();
   }
@@ -1274,7 +1649,8 @@ namespace Seldon
     \note Matrix values are not initialized.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::Matrix(int i, int j):
+  inline Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::Matrix(int i, int j):
     Matrix_ArrayComplexSparse<T, Prop, ArrayRowComplexSparse, Allocator>(i, j)
   {
   }
@@ -1282,7 +1658,8 @@ namespace Seldon
 
   //! Clears a row
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::ClearRealRow(int i)
+  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::ClearRealRow(int i)
   {
     this->val_real_(i).Clear();
   }
@@ -1290,7 +1667,8 @@ namespace Seldon
 
   //! Clears a row
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::ClearImagRow(int i)
+  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::ClearImagRow(int i)
   {
     this->val_imag_(i).Clear();
   }
@@ -1331,7 +1709,8 @@ namespace Seldon
     \note Data is kept.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::ResizeRealRow(int i, int j)
+  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::ResizeRealRow(int i, int j)
   {
     this->val_real_(i).Resize(j);
   }
@@ -1344,7 +1723,8 @@ namespace Seldon
     \note Data is kept.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::ResizeImagRow(int i, int j)
+  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::ResizeImagRow(int i, int j)
   {
     this->val_imag_(i).Resize(j);
   }
@@ -1356,7 +1736,8 @@ namespace Seldon
     \param[in] j second row number.
   */
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::SwapRealRow(int i,int j)
+  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::SwapRealRow(int i,int j)
   {
     Swap(this->val_real_(i), this->val_real_(j));
   }
@@ -1368,7 +1749,8 @@ namespace Seldon
     \param[in] j second row number.
   */
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::SwapImagRow(int i,int j)
+  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::SwapImagRow(int i, int j)
   {
     Swap(this->val_imag_(i), this->val_imag_(j));
   }
@@ -1408,7 +1790,8 @@ namespace Seldon
     \return The number of non-zero entries of the row i.
   */
   template <class T, class Prop, class Allocator> inline
-  int Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::GetRealRowSize(int i) const
+  int Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::GetRealRowSize(int i) const
   {
     return this->val_real_(i).GetSize();
   }
@@ -1420,7 +1803,8 @@ namespace Seldon
     \return The number of non-zero entries of the row i.
   */
   template <class T, class Prop, class Allocator> inline
-  int Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::GetImagRowSize(int i) const
+  int Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::GetImagRowSize(int i) const
   {
     return this->val_imag_(i).GetSize();
   }
@@ -1428,7 +1812,8 @@ namespace Seldon
 
   //! Displays non-zero values of a row.
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::PrintRealRow(int i) const
+  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::PrintRealRow(int i) const
   {
     this->val_real_(i).Print();
   }
@@ -1436,7 +1821,8 @@ namespace Seldon
 
   //! Displays non-zero values of a row.
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::PrintImagRow(int i) const
+  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::PrintImagRow(int i) const
   {
     this->val_imag_(i).Print();
   }
@@ -1449,7 +1835,8 @@ namespace Seldon
     you don't need to call that method.
   */
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::AssembleRealRow(int i)
+  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::AssembleRealRow(int i)
   {
     this->val_real_(i).Assemble();
   }
@@ -1462,7 +1849,8 @@ namespace Seldon
     you don't need to call that method.
   */
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::AssembleImagRow(int i)
+  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::AssembleImagRow(int i)
   {
     this->val_imag_(i).Assemble();
   }
@@ -1590,7 +1978,6 @@ namespace Seldon
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::operator() (int i, int j)
     const
   {
-
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix::operator()", "Index should be in [0, "
@@ -1608,7 +1995,288 @@ namespace Seldon
     return complex<T>(this->val_real_(i)(j), this->val_imag_(i)(j));
   }
 
+  
+  //! Returns access to real part of element (i, j)
+  /*!
+    \param i row index.
+    \param j column index.
+    \return real part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::ValReal(int i, int j)
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::ValReal", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::ValReal", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+    if (i > j)
+      throw WrongCol("Matrix::ValReal", "Row index should be lower"
+                     + string("or equal to column index."));
+#endif
+    
+    return this->val_real_(j).Val(i);
+  }
+  
+  
+  //! Returns access to real part element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return real part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline const T&
+  Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>
+  ::ValReal(int i, int j) const
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::ValReal", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::ValReal", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+    if (i > j)
+      throw WrongCol("Matrix::ValReal", "Row index should be lower"
+                     + string("or equal to column index."));
+#endif
+    
+    return this->val_real_(j).Val(i);
+  }
 
+  
+  //! Returns access to real part element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return real part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::GetReal(int i, int j)
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::GetReal", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::GetReal", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    if (i <= j)
+      return this->val_real_(j).Get(i);
+    
+    return this->val_real_(i).Get(j);
+  }
+  
+  
+  //! Returns access to real part of element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return real part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline const T&
+  Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>
+  ::GetReal(int i, int j) const
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::GetReal", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::GetReal", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    if (i <= j)
+      return this->val_real_(j).Get(i);
+    
+    return this->val_real_(i).Get(j);
+  }
+  
+  
+  //! Returns access to imaginary part of element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return imaginary part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::ValImag(int i, int j)
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::ValImag", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::ValImag", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+    if (i > j)
+      throw WrongCol("Matrix::ValImag", "Row index should be lower"
+                     + string("or equal to column index."));
+#endif
+    
+    return this->val_imag_(j).Val(i);
+  }
+  
+  
+  //! Returns access to imaginary part of element (i, j)
+  /*!
+    \param i row index.
+    \param j column index.
+    \return imaginary part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline const T&
+  Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>
+  ::ValImag(int i, int j) const
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::ValImag", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::ValImag", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+    if (i > j)
+      throw WrongCol("Matrix::ValImag", "Row index should be lower"
+                     + string("or equal to column index."));
+#endif
+    
+    return this->val_imag_(j).Val(i);
+  }
+
+  
+  //! Returns access to imaginary part of element (i, j)
+  /*!
+    \param i row index.
+    \param j column index.
+    \return imaginary part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::GetImag(int i, int j)
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::GetImag", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::GetImag", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    if (i <= j)
+      return this->val_imag_(j).Get(i);
+    
+    return this->val_imag_(i).Get(j);
+  }
+  
+  
+  //! Returns access to imaginary part element (i, j)
+  /*!
+    \param i row index.
+    \param j column index.
+    \return imaginary part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline const T&
+  Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>
+  ::GetImag(int i, int j) const
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::GetImag", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::GetImag", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    if (i <= j)
+      return this->val_imag_(j).Val(i);
+    
+    return this->val_imag_(i).Val(j);
+  }
+  
+  
+  //! Sets element (i, j) of the matrix
+  /*!
+    \param i row index
+    \param j column index
+    \param x A(i, j) = x
+   */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>
+  ::Set(int i, int j, const complex<T>& x)
+  {
+    if (i <= j)
+      {
+        if (real(x) != T(0))
+          this->val_real_(j).Get(i) = real(x);
+        else
+          {
+            if (this->val_real_(j)(i) != T(0))
+              this->val_real_(j).Get(i) = T(0);
+          }
+        
+        if (imag(x) != T(0))
+          this->val_imag_(j).Get(i) = imag(x);
+        else
+          {
+            if (this->val_imag_(j)(i) != T(0))
+              this->val_imag_(j).Get(i) = T(0);
+          }
+      }
+    else
+      {
+        if (real(x) != T(0))
+          this->val_real_(i).Get(j) = real(x);
+        else
+          {
+            if (this->val_real_(i)(j) != T(0))
+              this->val_real_(i).Get(j) = T(0);
+          }
+        
+        if (imag(x) != T(0))
+          this->val_imag_(i).Get(j) = imag(x);
+        else
+          {
+            if (this->val_imag_(i)(j) != T(0))
+              this->val_imag_(i).Get(j) = T(0);
+          }
+      }
+  }
+
+      
   //! Clears a column.
   template <class T, class Prop, class Allocator> inline
   void Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::ClearRealColumn(int i)
@@ -1838,10 +2506,11 @@ namespace Seldon
   AddInteractionRow(int i, int nb, const IVect& col,
 		    const Vector<complex<T>, VectFull, Alloc1>& val)
   {
-    AddInteractionColumn(i, nb, col, val);
+    for (int j = 0; j < nb; j++)
+      AddInteraction(i, col(j), val(j));
   }
 
-
+  
   //! Adds coefficients in a column.
   /*!
     \param[in] i column number.
@@ -1891,7 +2560,8 @@ namespace Seldon
     Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::Matrix()  throw():
+  inline Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::Matrix()
+  throw() :
     Matrix_ArrayComplexSparse<T, Prop, ArrayRowSymComplexSparse, Allocator>()
   {
   }
@@ -1904,7 +2574,8 @@ namespace Seldon
     \note Matrix values are not initialized.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::Matrix(int i, int j):
+  inline Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
+  ::Matrix(int i, int j):
     Matrix_ArrayComplexSparse<T, Prop, ArrayRowSymComplexSparse, Allocator>(i, j)
   {
   }
@@ -1945,7 +2616,288 @@ namespace Seldon
     return complex<T>(this->val_real_(j)(i), this->val_imag_(j)(i));
   }
 
+  
+  //! Returns access to real part of element (i, j)
+  /*!
+    \param i row index.
+    \param j column index.
+    \return real part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::ValReal(int i, int j)
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::ValReal", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::ValReal", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+    if (i > j)
+      throw WrongCol("Matrix::ValReal", "Row index should be lower"
+                     + string("or equal to column index."));
+#endif
+    
+    return this->val_real_(i).Val(j);
+  }
+  
+  
+  //! Returns access to real part element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return real part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline const T&
+  Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
+  ::ValReal(int i, int j) const
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::ValReal", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::ValReal", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+    if (i > j)
+      throw WrongCol("Matrix::ValReal", "Row index should be lower"
+                     + string("or equal to column index."));
+#endif
+    
+    return this->val_real_(i).Val(j);
+  }
 
+  
+  //! Returns access to real part element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return real part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::GetReal(int i, int j)
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::GetReal", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::GetReal", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    if (i <= j)
+      return this->val_real_(i).Get(j);
+    
+    return this->val_real_(j).Get(i);
+  }
+  
+  
+  //! Returns access to real part of element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return real part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline const T&
+  Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
+  ::GetReal(int i, int j) const
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::GetReal", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::GetReal", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    if (i <= j)
+      return this->val_real_(i).Get(j);
+    
+    return this->val_real_(j).Get(i);
+  }
+  
+  
+  //! Returns access to imaginary part of element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return imaginary part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::ValImag(int i, int j)
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::ValImag", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::ValImag", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+    if (i > j)
+      throw WrongCol("Matrix::ValImag", "Row index should be lower"
+                     + string("or equal to column index."));
+#endif
+    
+    return this->val_imag_(i).Val(j);
+  }
+  
+  
+  //! Returns access to imaginary part of element (i, j)
+  /*!
+    \param i row index.
+    \param j column index.
+    \return imaginary part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline const T&
+  Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
+  ::ValImag(int i, int j) const
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::ValImag", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::ValImag", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+    if (i > j)
+      throw WrongCol("Matrix::ValImag", "Row index should be lower"
+                     + string("or equal to column index."));
+#endif
+    
+    return this->val_imag_(i).Val(j);
+  }
+
+  
+  //! Returns access to imaginary part of element (i, j)
+  /*!
+    \param i row index.
+    \param j column index.
+    \return imaginary part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::GetImag(int i, int j)
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::GetImag", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::GetImag", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    if (i <= j)
+      return this->val_imag_(i).Get(j);
+    
+    return this->val_imag_(j).Get(i);
+  }
+  
+  
+  //! Returns access to imaginary part element (i, j)
+  /*!
+    \param i row index.
+    \param j column index.
+    \return imaginary part of element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Allocator>
+  inline const T&
+  Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
+  ::GetImag(int i, int j) const
+  {    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix::GetImag", "Index should be in [0, "
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix::GetImag", "Index should be in [0, "
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(j) + ".");
+#endif
+    
+    if (i <= j)
+      return this->val_imag_(i).Val(j);
+    
+    return this->val_imag_(j).Val(i);
+  }
+  
+  
+  //! Sets element (i, j) of the matrix
+  /*!
+    \param i row index
+    \param j column index
+    \param x A(i, j) = x
+   */
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
+  ::Set(int i, int j, const complex<T>& x)
+  {
+    if (i <= j)
+      {
+        if (real(x) != T(0))
+          this->val_real_(i).Get(j) = real(x);
+        else
+          {
+            if (this->val_real_(i)(j) != T(0))
+              this->val_real_(i).Get(j) = T(0);
+          }
+        
+        if (imag(x) != T(0))
+          this->val_imag_(i).Get(j) = imag(x);
+        else
+          {
+            if (this->val_imag_(i)(j) != T(0))
+              this->val_imag_(i).Get(j) = T(0);
+          }
+      }
+    else
+      {
+        if (real(x) != T(0))
+          this->val_real_(j).Get(i) = real(x);
+        else
+          {
+            if (this->val_real_(j)(i) != T(0))
+              this->val_real_(j).Get(i) = T(0);
+          }
+        
+        if (imag(x) != T(0))
+          this->val_imag_(j).Get(i) = imag(x);
+        else
+          {
+            if (this->val_imag_(j)(i) != T(0))
+              this->val_imag_(j).Get(i) = T(0);
+          }
+      }
+  }
+  
+  
   //! Clears a row.
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::ClearRealRow(int i)
@@ -2076,7 +3028,8 @@ namespace Seldon
     \return The number of non-zero entries of the row i.
   */
   template <class T, class Prop, class Allocator>
-  inline int Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::GetRealRowSize(int i)
+  inline int Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
+  ::GetRealRowSize(int i)
     const
   {
     return this->val_real_(i).GetSize();
@@ -2089,8 +3042,8 @@ namespace Seldon
     \return The number of non-zero entries of the row i.
   */
   template <class T, class Prop, class Allocator>
-  inline int Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::GetImagRowSize(int i)
-    const
+  inline int Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
+  ::GetImagRowSize(int i) const
   {
     return this->val_imag_(i).GetSize();
   }
@@ -2098,8 +3051,8 @@ namespace Seldon
 
   //! Displays non-zero values of a column.
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::PrintRealRow(int i)
-    const
+  inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
+  ::PrintRealRow(int i) const
   {
     this->val_real_(i).Print();
   }
@@ -2107,8 +3060,8 @@ namespace Seldon
 
   //! Displays non-zero values of a column.
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::PrintImagRow(int i)
-    const
+  inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
+  ::PrintImagRow(int i) const
   {
     this->val_imag_(i).Print();
   }
@@ -2121,7 +3074,8 @@ namespace Seldon
     you don't need to call that method.
   */
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::AssembleRealRow(int i)
+  inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
+  ::AssembleRealRow(int i)
   {
     this->val_real_(i).Assemble();
   }
@@ -2134,7 +3088,8 @@ namespace Seldon
     you don't need to call that method.
   */
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::AssembleImagRow(int i)
+  inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
+  ::AssembleImagRow(int i)
   {
     this->val_imag_(i).Assemble();
   }
@@ -2210,10 +3165,10 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<complex<T>,VectFull,Alloc1>& val)
+		       const Vector<complex<T>, VectFull, Alloc1>& val)
   {
-    // Symmetric matrix, row = column.
-    AddInteractionRow(i, nb, row, val);
+    for (int j = 0; j < nb; j++)
+      AddInteraction(row(j), i, val(j));
   }
 
 } // namespace Seldon

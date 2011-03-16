@@ -913,7 +913,7 @@ namespace Seldon
   //! Reads the matrix from a file.
   /*!
     Reads the matrix from a file in text format.
-    \param FileName output file name.
+    \param FileName input file name.
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
@@ -944,69 +944,11 @@ namespace Seldon
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   ReadText(istream& FileStream)
   {
-    // previous elements are removed
-    Clear();
-
-#ifdef SELDON_CHECK_IO
-    // Checks if the stream is ready.
-    if (!FileStream.good())
-      throw IOError("Matrix_ArraySparse::ReadText(ofstream& FileStream)",
-                    "Stream is not ready.");
-#endif
-
-    Vector<T, VectFull, Allocator> values;
-    Vector<int> row_numbers, col_numbers;
-    T entry; int row = 0, col;
-    int nb_elt = 0;
-    while (!FileStream.eof())
-      {
-	// new entry is read (1-index)
-	FileStream >> row >> col >> entry;
-
-	if (FileStream.fail())
-	  break;
-	else
-	  {
-#ifdef SELDON_CHECK_IO
-	    if (row < 1)
-	      throw IOError(string("Matrix_ArraySparse::ReadText")+
-			    "(istream& FileStream)",
-			    string("Error : Row number should be greater ")
-			    + "than 0 but is equal to " + to_str(row));
-
-	    if (col < 1)
-	      throw IOError(string("Matrix_ArraySparse::ReadText")+
-			    "(istream& FileStream)",
-			    string("Error : Column number should be greater")
-			    + " than 0 but is equal to " + to_str(col));
-#endif
-
-	    nb_elt++;
-
-	    // inserting new element
-	    if (nb_elt > values.GetM())
-	      {
-		values.Resize(2*nb_elt);
-		row_numbers.Resize(2*nb_elt);
-		col_numbers.Resize(2*nb_elt);
-	      }
-
-	    values(nb_elt-1) = entry;
-	    row_numbers(nb_elt-1) = row;
-	    col_numbers(nb_elt-1) = col;
-	  }
-      }
-
-    if (nb_elt > 0)
-      {
-	Matrix<T, Prop, Storage, Allocator>& leaf_class =
-	  static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
-	row_numbers.Resize(nb_elt);
-	col_numbers.Resize(nb_elt);
-	values.Resize(nb_elt);
-	ConvertMatrix_from_Coordinates(row_numbers, col_numbers, values,
-                                       leaf_class, 1);
-      }
+    Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
+    
+    T zero; int index = 1;
+    ReadCoordinateMatrix(leaf_class, FileStream, zero, index);
   }
 
 
