@@ -133,7 +133,29 @@ namespace Seldon
 			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
-
+  
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Tint, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayRowSymComplexSparse,
+			       Allocator1>& A,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
+			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       int index = 0, bool sym = false);
+      
+  
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Tint, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayColSymComplexSparse,
+			       Allocator1>& A,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
+			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       int index = 0, bool sym = false);
+      
+  
   /*
     From "Matlab" coordinate format to CSR formats.
   */
@@ -177,8 +199,8 @@ namespace Seldon
 				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ColSymSparse, Allocator3>& A,
 				 int index = 0);
-
-
+  
+  
   /*
     From Sparse Array formats to "Matlab" coordinate format.
   */
@@ -226,7 +248,51 @@ namespace Seldon
 				 Matrix<T, Prop, ArrayColSymSparse,
 				 Allocator3>& A,
 				 int index = 0);
+  
+  
+    template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
+				 Vector<int, VectFull, Allocator2>& IndCol,
+				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ArrayRowComplexSparse,
+				 Allocator4>& A,
+				 int index = 0);
+  
+  
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
+				 Vector<int, VectFull, Allocator2>& IndCol,
+				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ArrayColComplexSparse,
+				 Allocator4>& A,
+				 int index = 0);
 
+  
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
+				 Vector<int, VectFull, Allocator2>& IndCol,
+				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ArrayRowSymComplexSparse,
+				 Allocator4>& A,
+				 int index = 0);
+
+  
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
+				 Vector<int, VectFull, Allocator2>& IndCol,
+				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ArrayColSymComplexSparse,
+				 Allocator4>& A,
+				 int index = 0);  
+  
   
   /*
     From Sparse formats to CSC format

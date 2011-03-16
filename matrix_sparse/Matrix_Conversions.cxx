@@ -227,7 +227,7 @@ namespace Seldon
 	int offset = 0;
 	for (i = 0; i < m; i++)
 	  {
-	    Sort(offset, offset + Ptr(i) - 1, IndCol, Val);
+ 	    Sort(offset, offset + Ptr(i) - 1, IndCol, Val);
 	    offset += Ptr(i);
 	  }
 
@@ -330,28 +330,108 @@ namespace Seldon
     IndRow.Reallocate(nnz);
     IndCol.Reallocate(nnz);
     Val.Reallocate(nnz);
-    int nb = 0;
+    nnz = 0;
+    IVect col; Vector<complex<T> > value;
     for (int i = 0; i < m; i++)
       {
+        int size_row = A.GetRealRowSize(i) + A.GetImagRowSize(i);
+        if (size_row > col.GetM())
+          {
+            col.Reallocate(size_row);
+            value.Reallocate(size_row);
+          }
+        
+        int nb = 0;
         for (int j = 0; j < A.GetRealRowSize(i); j++)
           {
-            IndRow(nb) = i + index;
-            IndCol(nb) = A.IndexReal(i, j) + index;
-            Val(nb) = complex<T>(A.ValueReal(i, j), 0);
+            col(nb) = A.IndexReal(i, j) + index;
+            value(nb) = complex<T>(A.ValueReal(i, j), 0);
             nb++;
           }
 
         for (int j = 0; j < A.GetImagRowSize(i); j++)
           {
-            IndRow(nb) = i + index;
-            IndCol(nb) = A.IndexImag(i, j) + index;
-            Val(nb) = complex<T>(0, A.ValueImag(i, j));
+            col(nb) = A.IndexImag(i, j) + index;
+            value(nb) = complex<T>(0, A.ValueImag(i, j));
             nb++;
           }
+        
+        Assemble(nb, col, value);
+        for (int j = 0; j < nb; j++)
+          {
+            IndRow(nnz + j) = index + i;
+            IndCol(nnz + j) = col(j);
+            Val(nnz + j) = value(j);
+          }
+        
+        nnz += nb;
       }
+    
+    IndRow.Resize(nnz);
+    IndCol.Resize(nnz);
+    Val.Resize(nnz);
   }
 
+  
+  //! Conversion from ArrayRowComplexSparse to coordinate format.
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Tint, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayColComplexSparse,
+			       Allocator1>& A,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
+			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       int index, bool sym)
+  {
+    int nnz = A.GetRealDataSize() + A.GetImagDataSize();
+    // Allocating arrays.
+    IndRow.Reallocate(nnz);
+    IndCol.Reallocate(nnz);
+    Val.Reallocate(nnz);
+    nnz = 0;
+    IVect row; Vector<complex<T> > value;
+    for (int i = 0; i < A.GetN(); i++)
+      {
+        int size_col = A.GetRealColumnSize(i) + A.GetImagColumnSize(i);
+        if (size_col > row.GetM())
+          {
+            row.Reallocate(size_col);
+            value.Reallocate(size_col);
+          }
+        
+        int nb = 0;
+        for (int j = 0; j < A.GetRealColumnSize(i); j++)
+          {
+            row(nb) = A.IndexReal(i, j) + index;
+            value(nb) = complex<T>(A.ValueReal(i, j), 0);
+            nb++;
+          }
 
+        for (int j = 0; j < A.GetImagColumnSize(i); j++)
+          {
+            row(nb) = A.IndexImag(i, j) + index;
+            value(nb) = complex<T>(0, A.ValueImag(i, j));
+            nb++;
+          }
+        
+        Assemble(nb, row, value);
+        for (int j = 0; j < nb; j++)
+          {
+            IndRow(nnz + j) = row(j);
+            IndCol(nnz + j) = index + i;
+            Val(nnz + j) = value(j);
+          }
+        
+        nnz += nb;
+      }
+    
+    IndRow.Resize(nnz);
+    IndCol.Resize(nnz);
+    Val.Resize(nnz);
+  }
+
+  
   //! Conversion from ArrayRowSymSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
@@ -504,7 +584,271 @@ namespace Seldon
       }
   }
 
+  
+  //! Conversion from ArrayRowSymComplexSparse to coordinate format.
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Tint, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayRowSymComplexSparse,
+			       Allocator1>& A,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
+			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       int index, bool sym)
+  {
+    int m = A.GetM();
+    int nnz = A.GetDataSize();
+    if (sym)
+      {
+	nnz *= 2;
+	IndRow.Reallocate(nnz);
+	IndCol.Reallocate(nnz);
+	Val.Reallocate(nnz);
+	Vector<int> Ptr(m);
+	Ptr.Zero();
+        nnz = 0;
+        IVect col; Vector<complex<T> > value;
+	for (int i = 0; i < m; i++)
+	  {
+            int size_row = A.GetRealRowSize(i) + A.GetImagRowSize(i);
+            if (size_row > col.GetM())
+              {
+                col.Reallocate(size_row);
+                value.Reallocate(size_row);
+              }
+            
+            int nb = 0;
+            for (int j = 0; j < A.GetRealRowSize(i); j++)
+              {
+                col(nb) = A.IndexReal(i, j);
+                value(nb) = complex<T>(A.ValueReal(i, j), 0);
+                nb++;
+              }
+            
+            for (int j = 0; j < A.GetImagRowSize(i); j++)
+              {
+                col(nb) = A.IndexImag(i, j);
+                value(nb) = complex<T>(0, A.ValueImag(i, j));
+                nb++;
+              }
+            
+            Assemble(nb, col, value);
+            for (int j = 0; j < nb; j++)
+              {
+                IndRow(nnz) = i + index;
+                IndCol(nnz) = col(j) + index;
+                Val(nnz) = value(j);
+                Ptr(i)++;
+                nnz++;
+                
+                if (col(j) != i)
+                  {
+                    IndRow(nnz) = col(j) + index;
+                    IndCol(nnz) = i + index;
+                    Val(nnz) = value(j);
+                    Ptr(col(j))++;
+                    nnz++;
+                  }
+              }
+          }
+        
+        IndRow.Resize(nnz);
+        IndCol.Resize(nnz);
+        Val.Resize(nnz);
+        
+        // Sorting the row numbers...
+	Sort(IndRow, IndCol, Val);
 
+	// ...and the column numbers.
+	int offset = 0;
+	for (int i = 0; i < m; i++)
+	  {
+	    Sort(offset, offset + Ptr(i) - 1, IndCol, Val);
+	    offset += Ptr(i);
+	  }
+      }
+    else
+      {
+	// Allocating arrays.
+	IndRow.Reallocate(nnz);
+	IndCol.Reallocate(nnz);
+	Val.Reallocate(nnz);
+        nnz = 0;
+        IVect col; Vector<complex<T> > value;
+	for (int i = 0; i < m; i++)
+	  {
+            int size_row = A.GetRealRowSize(i) + A.GetImagRowSize(i);
+            if (size_row > col.GetM())
+              {
+                col.Reallocate(size_row);
+                value.Reallocate(size_row);
+              }
+            
+            int nb = 0;
+            for (int j = 0; j < A.GetRealRowSize(i); j++)
+              {
+                col(nb) = A.IndexReal(i, j) + index;
+                value(nb) = complex<T>(A.ValueReal(i, j), 0);
+                nb++;
+              }
+            
+            for (int j = 0; j < A.GetImagRowSize(i); j++)
+              {
+                col(nb) = A.IndexImag(i, j) + index;
+                value(nb) = complex<T>(0, A.ValueImag(i, j));
+                nb++;
+              }
+            
+            Assemble(nb, col, value);
+            for (int j = 0; j < nb; j++)
+              {
+                IndRow(nnz + j) = index + i;
+                IndCol(nnz + j) = col(j);
+                Val(nnz + j) = value(j);
+              }
+            
+            nnz += nb;
+          }
+        
+        IndRow.Resize(nnz);
+        IndCol.Resize(nnz);
+        Val.Resize(nnz);
+      }
+  }
+  
+  
+  //! Conversion from ArrayRowSymComplexSparse to coordinate format.
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Tint, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayColSymComplexSparse,
+			       Allocator1>& A,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
+			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       int index, bool sym)
+  {
+    int m = A.GetM();
+    int nnz = A.GetDataSize();
+    if (sym)
+      {
+	nnz *= 2;
+	IndRow.Reallocate(nnz);
+	IndCol.Reallocate(nnz);
+	Val.Reallocate(nnz);
+	Vector<int> Ptr(m);
+	Ptr.Zero();
+        nnz = 0;
+        IVect row; Vector<complex<T> > value;
+	for (int i = 0; i < m; i++)
+	  {
+            int size_col = A.GetRealColumnSize(i) + A.GetImagColumnSize(i);
+            if (size_col > row.GetM())
+              {
+                row.Reallocate(size_col);
+                value.Reallocate(size_col);
+              }
+            
+            int nb = 0;
+            for (int j = 0; j < A.GetRealColumnSize(i); j++)
+              {
+                row(nb) = A.IndexReal(i, j);
+                value(nb) = complex<T>(A.ValueReal(i, j), 0);
+                nb++;
+              }
+            
+            for (int j = 0; j < A.GetImagColumnSize(i); j++)
+              {
+                row(nb) = A.IndexImag(i, j);
+                value(nb) = complex<T>(0, A.ValueImag(i, j));
+                nb++;
+              }
+            
+            Assemble(nb, row, value);
+            for (int j = 0; j < nb; j++)
+              {
+                IndRow(nnz) = i + index;
+                IndCol(nnz) = row(j) + index;
+                Val(nnz) = value(j);
+                Ptr(i)++;
+                nnz++;
+                
+                if (row(j) != i)
+                  {
+                    IndRow(nnz) = row(j) + index;
+                    IndCol(nnz) = i + index;
+                    Val(nnz) = value(j);
+                    Ptr(row(j))++;
+                    nnz++;
+                  }
+              }
+          }
+        
+        IndRow.Resize(nnz);
+        IndCol.Resize(nnz);
+        Val.Resize(nnz);
+        
+        // Sorting the column numbers...
+	Sort(IndCol, IndRow, Val);
+
+	// ...and the row numbers.
+	int offset = 0;
+	for (int i = 0; i < m; i++)
+	  {
+	    Sort(offset, offset + Ptr(i) - 1, IndRow, Val);
+	    offset += Ptr(i);
+	  }
+      }
+    else
+      {
+	// Allocating arrays.
+	IndRow.Reallocate(nnz);
+	IndCol.Reallocate(nnz);
+	Val.Reallocate(nnz);
+        nnz = 0;
+        IVect row; Vector<complex<T> > value;
+	for (int i = 0; i < m; i++)
+	  {
+            int size_col = A.GetRealColumnSize(i) + A.GetImagColumnSize(i);
+            if (size_col > row.GetM())
+              {
+                row.Reallocate(size_col);
+                value.Reallocate(size_col);
+              }
+            
+            int nb = 0;
+            for (int j = 0; j < A.GetRealColumnSize(i); j++)
+              {
+                row(nb) = A.IndexReal(i, j) + index;
+                value(nb) = complex<T>(A.ValueReal(i, j), 0);
+                nb++;
+              }
+            
+            for (int j = 0; j < A.GetImagColumnSize(i); j++)
+              {
+                row(nb) = A.IndexImag(i, j) + index;
+                value(nb) = complex<T>(0, A.ValueImag(i, j));
+                nb++;
+              }
+            
+            Assemble(nb, row, value);
+            for (int j = 0; j < nb; j++)
+              {
+                IndCol(nnz + j) = index + i;
+                IndRow(nnz + j) = row(j);
+                Val(nnz + j) = value(j);
+              }
+            
+            nnz += nb;
+          }
+        
+        IndRow.Resize(nnz);
+        IndCol.Resize(nnz);
+        Val.Resize(nnz);
+      }
+  }
+
+  
   /*
     From "Matlab" coordinate format to CSR formats.
   */
@@ -1084,7 +1428,343 @@ namespace Seldon
     A.Assemble();
   }
 
+  
+  //! Conversion from coordinate format to ArrayRowComplexSparse.
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
+				 Vector<int, VectFull, Allocator2>& IndCol,
+				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ArrayRowComplexSparse,
+				 Allocator4>& A,
+				 int index)
+  {
+    if (IndRow.GetM() <= 0)
+      {
+        A.Clear();
+        return;
+      }
+    
+    T zero(0);
+    int row_max = IndRow.GetNormInf();
+    int col_max = IndCol.GetNormInf();
+    int m = row_max - index + 1;
+    int n = col_max - index + 1;
 
+    // Sorts the array 'IndRow'.
+    Sort(IndRow, IndCol, Val);
+    
+    // Number of elements per row.
+    Vector<int> PtrReal(m), PtrImag(m), Ptr(m);
+    PtrReal.Zero(); PtrImag.Zero(); Ptr.Zero();
+    for (int i = 0; i < IndRow.GetM(); i++)
+      {
+	IndRow(i) -= index;
+	IndCol(i) -= index;
+        Ptr(IndRow(i))++;
+	if (real(Val(i)) != zero)
+          PtrReal(IndRow(i))++;
+        
+	if (imag(Val(i)) != zero)
+          PtrImag(IndRow(i))++;
+      }
+
+    // Fills matrix 'A'.
+    A.Reallocate(m, n);
+    int offset = 0;
+    for (int i = 0; i < m; i++)
+      {
+        if (PtrReal(i) > 0)
+          {
+            A.ReallocateRealRow(i, PtrReal(i));
+            int nb = 0;
+            for (int j = 0; j < Ptr(i); j++)
+              if (real(Val(offset + j)) != zero)
+                {
+                  A.IndexReal(i, nb) = IndCol(offset + j);
+                  A.ValueReal(i, nb) = real(Val(offset + j));
+                  nb++;
+                }
+          }
+        
+        if (PtrImag(i) > 0)
+          {
+            A.ReallocateImagRow(i, PtrImag(i));
+            int nb = 0;
+            for (int j = 0; j < Ptr(i); j++)
+              if (imag(Val(offset + j)) != zero)
+                {
+                  A.IndexImag(i, nb) = IndCol(offset + j);
+                  A.ValueImag(i, nb) = imag(Val(offset + j));
+                  nb++;
+                }
+          }
+        
+        offset += Ptr(i);
+      }
+
+    // Assembles 'A' to sort column numbers.
+    A.Assemble();
+  }
+
+  
+  //! Conversion from coordinate format to ArrayColComplexSparse.
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
+				 Vector<int, VectFull, Allocator2>& IndCol,
+				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ArrayColComplexSparse,
+				 Allocator4>& A,
+				 int index)
+  {
+    if (IndRow.GetM() <= 0)
+      {
+        A.Clear();
+        return;
+      }
+    
+    T zero(0);
+    int row_max = IndRow.GetNormInf();
+    int col_max = IndCol.GetNormInf();
+    int m = row_max - index + 1;
+    int n = col_max - index + 1;
+
+    // Sorts the array 'IndRow'.
+    Sort(IndCol, IndRow, Val);
+    
+    // Number of elements per row.
+    Vector<int> PtrReal(n), PtrImag(n), Ptr(n);
+    PtrReal.Zero(); PtrImag.Zero(); Ptr.Zero();
+    for (int i = 0; i < IndRow.GetM(); i++)
+      {
+	IndRow(i) -= index;
+	IndCol(i) -= index;
+        Ptr(IndCol(i))++;
+	if (real(Val(i)) != zero)
+          PtrReal(IndCol(i))++;
+        
+	if (imag(Val(i)) != zero)
+          PtrImag(IndCol(i))++;
+      }
+
+    // Fills matrix 'A'.
+    A.Reallocate(m, n);
+    int offset = 0;
+    for (int i = 0; i < n; i++)
+      {
+        if (PtrReal(i) > 0)
+          {
+            A.ReallocateRealColumn(i, PtrReal(i));
+            int nb = 0;
+            for (int j = 0; j < Ptr(i); j++)
+              if (real(Val(offset + j)) != zero)
+                {
+                  A.IndexReal(i, nb) = IndRow(offset + j);
+                  A.ValueReal(i, nb) = real(Val(offset + j));
+                  nb++;
+                }
+          }
+        
+        if (PtrImag(i) > 0)
+          {
+            A.ReallocateImagColumn(i, PtrImag(i));
+            int nb = 0;
+            for (int j = 0; j < Ptr(i); j++)
+              if (imag(Val(offset + j)) != zero)
+                {
+                  A.IndexImag(i, nb) = IndRow(offset + j);
+                  A.ValueImag(i, nb) = imag(Val(offset + j));
+                  nb++;
+                }
+          }
+        
+        offset += Ptr(i);
+      }
+
+    // Assembles 'A' to sort row numbers.
+    A.Assemble();
+  }
+
+  
+  //! Conversion from coordinate format to ArrayRowSymComplexSparse.
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
+				 Vector<int, VectFull, Allocator2>& IndCol,
+				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ArrayRowSymComplexSparse,
+				 Allocator4>& A, int index)
+  {
+    if (IndRow.GetM() <= 0)
+      {
+        A.Clear();
+        return;
+      }
+    
+    T zero(0);
+    int row_max = IndRow.GetNormInf();
+    int col_max = IndCol.GetNormInf();
+    int m = row_max - index + 1;
+    int n = col_max - index + 1;
+    
+    // Sorts the array 'IndRow'.
+    Sort(IndRow, IndCol, Val);
+    
+    // Number of elements per row.
+    Vector<int> PtrReal(m), PtrImag(m), Ptr(m);
+    PtrReal.Zero(); PtrImag.Zero(); Ptr.Zero();
+    for (int i = 0; i < IndRow.GetM(); i++)
+      {
+	IndRow(i) -= index;
+	IndCol(i) -= index;
+        Ptr(IndRow(i))++;
+        if (IndRow(i) <= IndCol(i))
+          {
+            if (real(Val(i)) != zero)
+              PtrReal(IndRow(i))++;
+            
+            if (imag(Val(i)) != zero)
+              PtrImag(IndRow(i))++;
+          }
+      }
+
+    // Fills matrix 'A'.
+    A.Reallocate(m, n);
+    int offset = 0;
+    for (int i = 0; i < m; i++)
+      {
+        if (PtrReal(i) > 0)
+          {
+            A.ReallocateRealRow(i, PtrReal(i));
+            int nb = 0;
+            for (int j = 0; j < Ptr(i); j++)
+              if (real(Val(offset + j)) != zero)
+                {
+                  if (i <= IndCol(offset+j))
+                    {
+                      A.IndexReal(i, nb) = IndCol(offset + j);
+                      A.ValueReal(i, nb) = real(Val(offset + j));
+                      nb++;
+                    }
+                }
+          }
+        
+        if (PtrImag(i) > 0)
+          {
+            A.ReallocateImagRow(i, PtrImag(i));
+            int nb = 0;
+            for (int j = 0; j < Ptr(i); j++)
+              if (imag(Val(offset + j)) != zero)
+                {
+                  if (i <= IndCol(offset+j))
+                    {
+                      A.IndexImag(i, nb) = IndCol(offset + j);
+                      A.ValueImag(i, nb) = imag(Val(offset + j));
+                      nb++;
+                    }
+                }
+          }
+        
+        offset += Ptr(i);
+      }
+
+    // Assembles 'A' to sort column numbers.
+    A.Assemble();
+  }
+
+  
+  //! Conversion from coordinate format to ArrayRowSymComplexSparse.
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
+				 Vector<int, VectFull, Allocator2>& IndCol,
+				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ArrayColSymComplexSparse,
+				 Allocator4>& A, int index)
+  {
+    if (IndRow.GetM() <= 0)
+      {
+        A.Clear();
+        return;
+      }
+    
+    T zero(0);
+    int row_max = IndRow.GetNormInf();
+    int col_max = IndCol.GetNormInf();
+    int m = row_max - index + 1;
+    int n = col_max - index + 1;
+    
+    // Sorts the array 'IndRow'.
+    Sort(IndCol, IndRow, Val);
+    
+    // Number of elements per row.
+    Vector<int> PtrReal(m), PtrImag(m), Ptr(m);
+    PtrReal.Zero(); PtrImag.Zero(); Ptr.Zero();
+    for (int i = 0; i < IndRow.GetM(); i++)
+      {
+	IndRow(i) -= index;
+	IndCol(i) -= index;
+        Ptr(IndCol(i))++;
+        if (IndRow(i) <= IndCol(i))
+          {
+            if (real(Val(i)) != zero)
+              PtrReal(IndCol(i))++;
+            
+            if (imag(Val(i)) != zero)
+              PtrImag(IndCol(i))++;
+          }
+      }
+
+    // Fills matrix 'A'.
+    A.Reallocate(m, n);
+    int offset = 0;
+    for (int i = 0; i < m; i++)
+      {
+        if (PtrReal(i) > 0)
+          {
+            A.ReallocateRealColumn(i, PtrReal(i));
+            int nb = 0;
+            for (int j = 0; j < Ptr(i); j++)
+              if (real(Val(offset + j)) != zero)
+                {
+                  if (IndRow(offset+j) <= i)
+                    {
+                      A.IndexReal(i, nb) = IndRow(offset + j);
+                      A.ValueReal(i, nb) = real(Val(offset + j));
+                      nb++;
+                    }
+                }
+          }
+        
+        if (PtrImag(i) > 0)
+          {
+            A.ReallocateImagColumn(i, PtrImag(i));
+            int nb = 0;
+            for (int j = 0; j < Ptr(i); j++)
+              if (imag(Val(offset + j)) != zero)
+                {
+                  if (IndRow(offset+j) <= i)
+                    {
+                      A.IndexImag(i, nb) = IndRow(offset + j);
+                      A.ValueImag(i, nb) = imag(Val(offset + j));
+                      nb++;
+                    }
+                }
+          }
+        
+        offset += Ptr(i);
+      }
+
+    // Assembles 'A' to sort row numbers.
+    A.Assemble();
+  }
+
+  
   /*
     From Sparse formats to CSC format
   */
