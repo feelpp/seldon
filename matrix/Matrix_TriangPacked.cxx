@@ -1133,6 +1133,22 @@ namespace Seldon
   }
 
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ColUpTriangPacked, Allocator>&
+  Matrix<T, Prop, ColUpTriangPacked, Allocator>::operator=
+  (const Matrix<T, Prop, ColUpTriangPacked, Allocator>& A)
+  {
+    this->Copy(A);
+    return *this;
+  }
+
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1237,6 +1253,22 @@ namespace Seldon
   {
     this->Fill(x);
 
+    return *this;
+  }
+
+
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ColLoTriangPacked, Allocator>&
+  Matrix<T, Prop, ColLoTriangPacked, Allocator>::operator=
+  (const Matrix<T, Prop, ColLoTriangPacked, Allocator>& A)
+  {
+    this->Copy(A);
     return *this;
   }
 
@@ -1349,6 +1381,22 @@ namespace Seldon
   }
 
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, RowUpTriangPacked, Allocator>&
+  Matrix<T, Prop, RowUpTriangPacked, Allocator>::operator=
+  (const Matrix<T, Prop, RowUpTriangPacked, Allocator>& A)
+  {
+    this->Copy(A);
+    return *this;
+  }
+
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1445,6 +1493,22 @@ namespace Seldon
   {
     this->Fill(x);
 
+    return *this;
+  }
+
+
+ //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, RowLoTriangPacked, Allocator>&
+  Matrix<T, Prop, RowLoTriangPacked, Allocator>::operator=
+  (const Matrix<T, Prop, RowLoTriangPacked, Allocator>& A)
+  {
+    this->Copy(A);
     return *this;
   }
 
