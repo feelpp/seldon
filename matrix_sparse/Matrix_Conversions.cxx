@@ -872,8 +872,6 @@ namespace Seldon
 				 Matrix<T, Prop, RowSparse, Allocator3>& A,
 				 int index)
   {
-    int i, j;
-
     int Nelement = IndRow_.GetLength();
 
     Vector<int, VectFull, CallocAlloc<int> > IndRow(Nelement),
@@ -884,34 +882,34 @@ namespace Seldon
 	IndRow(i) = IndRow_(i) - index;
 	IndCol(i) = IndCol_(i) - index;
       }
+    
     IndRow_.Clear();
     IndCol_.Clear();
-
+    
+    int row_max = IndRow.GetNormInf();
+    int col_max = IndCol.GetNormInf();
+    
+    int m = row_max + 1;
+    int n = col_max + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
+    
     Sort(IndRow, IndCol, Val);
+    
+    // Construction of array 'Ptr'.
+    Vector<int, VectFull, CallocAlloc<int> > Ptr(m + 1);
+    Ptr.Zero();
+    for (int i = 0; i < Nelement; i++)
+      Ptr(IndRow(i)+1)++;
+    
+    for (int i = 0; i < m; i++)
+      Ptr(i + 1) += Ptr(i);
 
-    Vector<int, VectFull, CallocAlloc<int> > ptr(A.GetM() + 1);
-    for (i = 0; i <= IndRow(0); i++)
-      ptr(i) = 0;
-
-    int row = IndRow(0);
-    int previous_i = 0;
-
-    for (i = 1; i < Nelement; i++)
-      if (IndRow(i) != row)
-        {
-          for (j = row + 1; j <= IndRow(i); j++)
-            ptr(j) = i;
-
-          Sort(previous_i, i-1, IndCol, Val);
-          row = IndRow(i);
-          previous_i = i;
-        }
-
-    Sort(previous_i, Nelement - 1, IndCol, Val);
-    for (i = IndRow(Nelement - 1); i < A.GetM(); i++)
-      ptr(i + 1) = Nelement;
-
-    A.SetData(A.GetM(), A.GetN(), Val, ptr, IndCol);
+    // Sorts 'IndCol'
+    for (int i = 0; i < m; i++)
+      Sort(Ptr(i), Ptr(i + 1) - 1, IndCol, Val);
+    
+    A.SetData(m, n, Val, Ptr, IndCol);
   }
 
 
@@ -943,6 +941,8 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
 
     // Sorts the array 'IndCol'.
     Sort(IndCol, IndRow, Val);
