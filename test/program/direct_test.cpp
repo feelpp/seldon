@@ -407,10 +407,10 @@ int main(int argc, char **argv)
   {
     // construction of a matrix
     Matrix<double, Symmetric, ArrayRowSymSparse> A(n, n);
-    A(0, 0) = 2.0; A(0, 1) = -1.5;
-    A(1, 1) = 3.0; A(1, 2) = 1.0;
-    A(2, 2) = 4.0; A(2, 3) = -2.0;
-    A(3, 3) = 1.5; A(3, 4) = -0.5; A(4, 4) = 2.5;
+    A.Get(0, 0) = 2.0; A.Get(0, 1) = -1.5;
+    A.Get(1, 1) = 3.0; A.Get(1, 2) = 1.0;
+    A.Get(2, 2) = 4.0; A.Get(2, 3) = -2.0;
+    A.Get(3, 3) = 1.5; A.Get(3, 4) = -0.5; A.Get(4, 4) = 2.5;
     
     // Computation of right hand side.
     DVect x_sol(n), b_vec(n); b_vec.Zero();
@@ -427,10 +427,10 @@ int main(int argc, char **argv)
   // We test ArrayRowSymSparse (complex numbers).
   {
     Matrix<complex<double>, Symmetric, ArrayRowSymSparse> A(n, n);
-    A(0, 0) = cpx(2.0,-4.0); A(0, 1) = cpx(-1.5,0.5);
-    A(1, 1) = cpx(3.0,-1.0); A(1, 2) = cpx(1.0,0.0);
-    A(2, 2) = cpx(4.0,2.0); A(2, 3) = cpx(-2.0,1.0);
-    A(3, 3) = cpx(1.5,-1.0); A(3, 4) = cpx(-0.5,0.0); A(4, 4) = cpx(2.5,5.0);
+    A.Get(0, 0) = cpx(2.0,-4.0); A.Get(0, 1) = cpx(-1.5,0.5);
+    A.Get(1, 1) = cpx(3.0,-1.0); A.Get(1, 2) = cpx(1.0,0.0);
+    A.Get(2, 2) = cpx(4.0,2.0); A.Get(2, 3) = cpx(-2.0,1.0);
+    A.Get(3, 3) = cpx(1.5,-1.0); A.Get(3, 4) = cpx(-0.5,0.0); A.Get(4, 4) = cpx(2.5,5.0);
     
     // Computation of right hand side
     ZVect x_sol(n), b_vec(n);
@@ -446,10 +446,10 @@ int main(int argc, char **argv)
   // We test ArrayColSymSparse (real numbers).
   {
     Matrix<double, Symmetric, ArrayColSymSparse> A(n, n);
-    A(0, 0) = 2.0; A(0, 1) = -1.5; A(1, 1) = 3.0;
-    A(1, 2) = 1.0; A(2, 2) = 4.0; 
-    A(2, 3) = -2.0; A(3, 3) = 1.5;
-    A(3, 4) = -0.5; A(4, 4) = 2.5;
+    A.Get(0, 0) = 2.0; A.Get(0, 1) = -1.5; A.Get(1, 1) = 3.0;
+    A.Get(1, 2) = 1.0; A.Get(2, 2) = 4.0; 
+    A.Get(2, 3) = -2.0; A.Get(3, 3) = 1.5;
+    A.Get(3, 4) = -0.5; A.Get(4, 4) = 2.5;
     
     // Computation of right hand side.
     DVect x_sol(n), b_vec(n);
@@ -465,10 +465,10 @@ int main(int argc, char **argv)
   // We test ArrayColSymSparse (complex numbers).
   {
     Matrix<cpx, Symmetric, ArrayColSymSparse> A(n, n);
-    A(0, 0) = cpx(2.0,-4.0); A(0, 1) = cpx(-1.5,0.5); A(1, 1) = cpx(3.0,-1.0);
-    A(1, 2) = cpx(1.0,0.0); A(2, 2) = cpx(4.0,2.0); 
-    A(2, 3) = cpx(-2.0,1.0); A(3, 3) = cpx(1.5,-1.0);
-    A(3, 4) = cpx(-0.5,0.0); A(4, 4) = cpx(2.5,5.0);
+    A.Get(0, 0) = cpx(2.0,-4.0); A.Get(0, 1) = cpx(-1.5,0.5); A.Get(1, 1) = cpx(3.0,-1.0);
+    A.Get(1, 2) = cpx(1.0,0.0); A.Get(2, 2) = cpx(4.0,2.0); 
+    A.Get(2, 3) = cpx(-2.0,1.0); A.Get(3, 3) = cpx(1.5,-1.0);
+    A.Get(3, 4) = cpx(-0.5,0.0); A.Get(4, 4) = cpx(2.5,5.0);
 
     // Computation of right hand side.
     ZVect x_sol(n), b_vec(n); b_vec.Fill(0);
@@ -486,11 +486,11 @@ int main(int argc, char **argv)
   // We test ArrayRowSparse (real numbers).
   {
     Matrix<double, General, ArrayRowSparse> A(n, n);
-    A(0, 0) = 2.0; A(0, 1) = -1.5; A(0, 2) = 0.4;
-    A(1, 0) = -1.0; A(1, 1) = 3.0; A(1, 2) = 1.0;
-    A(2, 0) = -2.0; A(2, 1) = 1.3; A(2, 2) = 4.0; A(2, 3) = -2.0;
-    A(3, 2) = 0.5; A(3, 3) = 1.5; A(3, 4) = -0.5;
-    A(4, 3) = -0.8; A(4, 4) = 2.5;
+    A.Get(0, 0) = 2.0; A.Get(0, 1) = -1.5; A.Get(0, 2) = 0.4;
+    A.Get(1, 0) = -1.0; A.Get(1, 1) = 3.0; A.Get(1, 2) = 1.0;
+    A.Get(2, 0) = -2.0; A.Get(2, 1) = 1.3; A.Get(2, 2) = 4.0; A.Get(2, 3) = -2.0;
+    A.Get(3, 2) = 0.5; A.Get(3, 3) = 1.5; A.Get(3, 4) = -0.5;
+    A.Get(4, 3) = -0.8; A.Get(4, 4) = 2.5;
     
     // computation of right hand side
     DVect x_sol(n), b_vec(n), b_trans(n);
@@ -509,11 +509,11 @@ int main(int argc, char **argv)
   // We test ArrayRowSparse (complex numbers).
   {
     Matrix<cpx, General, ArrayRowSparse> A(n, n);
-    A(0, 0) = cpx(2.0,-4.0); A(0, 1) = cpx(-1.5,0.5); A(0, 2) = cpx(-0.4,0.2);
-    A(1, 0) = cpx(1.2,0.2); A(1, 1) = cpx(3.0,-1.0); A(1, 2) = cpx(1.0,0.0);
-    A(2, 0) = cpx(-1.8,0.5); A(2, 1) = cpx(0.6,0.8); A(2, 2) = cpx(4.0,2.0); A(2, 3) = cpx(-2.0,1.0);
-    A(3, 2) = cpx(1.5,0.4); A(3, 3) = cpx(1.5,-1.0); A(3, 4) = cpx(-0.5,0.0);
-    A(4, 3) = cpx(0.7,-0.5); A(4, 4) = cpx(2.5,5.0);
+    A.Get(0, 0) = cpx(2.0,-4.0); A.Get(0, 1) = cpx(-1.5,0.5); A.Get(0, 2) = cpx(-0.4,0.2);
+    A.Get(1, 0) = cpx(1.2,0.2); A.Get(1, 1) = cpx(3.0,-1.0); A.Get(1, 2) = cpx(1.0,0.0);
+    A.Get(2, 0) = cpx(-1.8,0.5); A.Get(2, 1) = cpx(0.6,0.8); A.Get(2, 2) = cpx(4.0,2.0); A.Get(2, 3) = cpx(-2.0,1.0);
+    A.Get(3, 2) = cpx(1.5,0.4); A.Get(3, 3) = cpx(1.5,-1.0); A.Get(3, 4) = cpx(-0.5,0.0);
+    A.Get(4, 3) = cpx(0.7,-0.5); A.Get(4, 4) = cpx(2.5,5.0);
     
     // Computation of right hand side.
     ZVect x_sol(n), b_vec(n), b_trans(n);
@@ -532,11 +532,11 @@ int main(int argc, char **argv)
   // We test ArrayColSparse (real numbers).
   {
     Matrix<double, General, ArrayColSparse> A(n, n);
-    A(0, 0) = 2.0; A(0, 1) = -1.5; A(0, 2) = 0.4;
-    A(1, 0) = -1.0; A(1, 1) = 3.0; A(1, 2) = 1.0;
-    A(2, 0) = -2.0; A(2, 1) = 1.3; A(2, 2) = 4.0; A(2, 3) = -2.0;
-    A(3, 2) = 0.5; A(3, 3) = 1.5; A(3, 4) = -0.5;
-    A(4, 3) = -0.8; A(4, 4) = 2.5;
+    A.Get(0, 0) = 2.0; A.Get(0, 1) = -1.5; A.Get(0, 2) = 0.4;
+    A.Get(1, 0) = -1.0; A.Get(1, 1) = 3.0; A.Get(1, 2) = 1.0;
+    A.Get(2, 0) = -2.0; A.Get(2, 1) = 1.3; A.Get(2, 2) = 4.0; A.Get(2, 3) = -2.0;
+    A.Get(3, 2) = 0.5; A.Get(3, 3) = 1.5; A.Get(3, 4) = -0.5;
+    A.Get(4, 3) = -0.8; A.Get(4, 4) = 2.5;
     
     // Computation of right hand side.
     DVect x_sol(n), b_vec(n), b_trans(n);
@@ -555,11 +555,11 @@ int main(int argc, char **argv)
   // We test ArrayColSparse (complex numbers).
   {
     Matrix<cpx, General, ArrayColSparse> A(n, n);
-    A(0, 0) = cpx(2.0,-4.0); A(0, 1) = cpx(-1.5,0.5); A(0, 2) = cpx(-0.4,0.2);
-    A(1, 0) = cpx(1.2,0.2); A(1, 1) = cpx(3.0,-1.0); A(1, 2) = cpx(1.0,0.0);
-    A(2, 0) = cpx(-1.8,0.5); A(2, 1) = cpx(0.6,0.8); A(2, 2) = cpx(4.0,2.0); A(2, 3) = cpx(-2.0,1.0);
-    A(3, 2) = cpx(1.5,0.4); A(3, 3) = cpx(1.5,-1.0); A(3, 4) = cpx(-0.5,0.0);
-    A(4, 3) = cpx(0.7,-0.5); A(4, 4) = cpx(2.5,5.0);
+    A.Get(0, 0) = cpx(2.0,-4.0); A.Get(0, 1) = cpx(-1.5,0.5); A.Get(0, 2) = cpx(-0.4,0.2);
+    A.Get(1, 0) = cpx(1.2,0.2); A.Get(1, 1) = cpx(3.0,-1.0); A.Get(1, 2) = cpx(1.0,0.0);
+    A.Get(2, 0) = cpx(-1.8,0.5); A.Get(2, 1) = cpx(0.6,0.8); A.Get(2, 2) = cpx(4.0,2.0); A.Get(2, 3) = cpx(-2.0,1.0);
+    A.Get(3, 2) = cpx(1.5,0.4); A.Get(3, 3) = cpx(1.5,-1.0); A.Get(3, 4) = cpx(-0.5,0.0);
+    A.Get(4, 3) = cpx(0.7,-0.5); A.Get(4, 4) = cpx(2.5,5.0);
 
     // Computation of right hand side.
     ZVect x_sol(n), b_vec(n), b_trans(n);
