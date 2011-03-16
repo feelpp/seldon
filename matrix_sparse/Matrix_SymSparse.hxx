@@ -92,6 +92,10 @@ namespace Seldon
 		 Vector<int, Storage2, Allocator2>& ind);
     void SetData(int i, int j, int nz, pointer values, int* ptr, int* ind);
     void Nullify();
+    void Reallocate(int i, int j);
+    void Reallocate(int i, int j, int nz);
+    void Resize(int i, int j);
+    void Resize(int i, int j, int nz);
     void Copy(const Matrix_SymSparse<T, Prop, Storage, Allocator>& A);
 
     // Basic methods.
@@ -105,14 +109,31 @@ namespace Seldon
     // Element acess and affectation.
     value_type operator() (int i, int j) const;
     value_type& Val(int i, int j);
+    value_type& Get(int i, int j);
     const value_type& Val(int i, int j) const;
+    const value_type& Get(int i, int j) const;
+    void Set(int i, int j, const T& x);
+    void AddInteraction(int i, int j, const T& x);
     Matrix_SymSparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_SymSparse<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.
+    void Zero();
+    void SetIdentity();
+    void Fill();
+    template <class T0>
+    void Fill(const T0& x);
+    void FillRand();
+    
     void Print() const;
+    void Write(string FileName) const;
+    void Write(ostream& FileStream) const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
+    void Read(string FileName);
+    void Read(istream& FileStream);
+    void ReadText(string FileName);
+    void ReadText(istream& FileStream);
   };
 
 

@@ -54,11 +54,13 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_SymSparse<T, Prop, Storage, Allocator>
-  ::Matrix_SymSparse(int i, int j): Matrix_Base<T, Allocator>(i, i)
+  ::Matrix_SymSparse(int i, int j): Matrix_Base<T, Allocator>()
   {
     nz_ = 0;
     ptr_ = NULL;
     ind_ = NULL;
+    
+    Reallocate(i, j);
   }
 
 
@@ -75,133 +77,13 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_SymSparse<T, Prop, Storage, Allocator>::
   Matrix_SymSparse(int i, int j, int nz):
-    Matrix_Base<T, Allocator>(i, i)
+    Matrix_Base<T, Allocator>()
   {
-    this->nz_ = nz;
-
-#ifdef SELDON_CHECK_DIMENSIONS
-    if (static_cast<long int>(2 * nz_ - 2) / static_cast<long int>(i + 1)
-	>= static_cast<long int>(i))
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-	throw WrongDim("Matrix_SymSparse::Matrix_SymSparse(int, int, int)",
-		       string("There are more values (") + to_str(nz)
-		       + string(" values) than elements in the upper")
-		       + " part of the matrix ("
-		       + to_str(i) + " by " + to_str(i) + ").");
-      }
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	ptr_ = reinterpret_cast<int*>( calloc(i + 1, sizeof(int)) );
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-      }
-    if (ptr_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ind_ = NULL;
-	this->data_ = NULL;
-      }
-    if (ptr_ == NULL && i != 0)
-      throw NoMemory("Matrix_SymSparse::Matrix_SymSparse(int, int, int)",
-		     string("Unable to allocate ")
-		     + to_str(sizeof(int) * (i+1) ) + " bytes to store "
-		     + to_str(i+1) + " row or column start indices, for a "
-		     + to_str(i) + " by " + to_str(i) + " matrix.");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	free(ptr_);
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-      }
-    if (ind_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	free(ptr_);
-	ptr_ = NULL;
-	this->data_ = NULL;
-      }
-    if (ind_ == NULL && i != 0)
-      throw NoMemory("Matrix_SymSparse::Matrix_SymSparse(int, int, int)",
-		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
-		     + " bytes to store " + to_str(nz)
-		     + " row or column indices, for a "
-		     + to_str(i) + " by " + to_str(i) + " matrix.");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	this->data_ = this->allocator_.allocate(nz_, this);
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	free(ptr_);
-	ptr_ = NULL;
-	free(ind_);
-	ind_ = NULL;
-	this->data_ = NULL;
-      }
-    if (this->data_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	free(ptr_);
-	ptr_ = NULL;
-	free(ind_);
-	ind_ = NULL;
-      }
-    if (this->data_ == NULL && i != 0)
-      throw NoMemory("Matrix_SymSparse::Matrix_SymSparse(int, int, int)",
-		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
-		     + " bytes to store " + to_str(nz) + " values, for a "
-		     + to_str(i) + " by " + to_str(i) + " matrix.");
-#endif
-
+    this->nz_ = 0;
+    ind_ = NULL;
+    ptr_ = NULL;
+    
+    Reallocate(i, j, nz);
   }
 
 
@@ -541,6 +423,346 @@ namespace Seldon
   }
 
 
+  //! Initialization of an empty sparse matrix with i rows and j columns
+  /*!
+    \param i number of rows
+    \param j number of columns    
+   */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::Reallocate(int i, int j)
+  {
+    // clearing previous entries
+    Clear();
+
+    this->m_ = i;
+    this->n_ = i;
+    
+    // we try to allocate ptr_
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	ptr_ = reinterpret_cast<int*>( calloc(i+1, sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL && i != 0 && j != 0)
+      throw NoMemory("Matrix_SymSparse::Reallocate(int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * (i+1) )
+		     + " bytes to store " + to_str(i+1)
+		     + " row or column start indices, for a "
+		     + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+    
+    // then filing ptr_ with 0
+    for (int k = 0; k <= i; k++)
+      ptr_[k] = 0;    
+  }
+  
+
+  //! Initialization of a sparse matrix with i rows and j columns
+  /*!
+    \param i number of rows
+    \param j number of columns
+    \param nz number of non-zero entries
+   */  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::Reallocate(int i, int j, int nz)
+  {
+    // clearing previous entries
+    Clear();
+    
+    this->nz_ = nz;
+    this->m_ = i;
+    this->n_ = i;
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (static_cast<long int>(2 * nz_ - 2) / static_cast<long int>(i + 1)
+	>= static_cast<long int>(i))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim("Matrix_SymSparse::Matrix_SymSparse(int, int, int)",
+		       string("There are more values (") + to_str(nz)
+		       + string(" values) than elements in the upper")
+		       + " part of the matrix ("
+		       + to_str(i) + " by " + to_str(i) + ").");
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	ptr_ = reinterpret_cast<int*>( calloc(i + 1, sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL && i != 0)
+      throw NoMemory("Matrix_SymSparse::Matrix_SymSparse(int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * (i+1) ) + " bytes to store "
+		     + to_str(i+1) + " row or column start indices, for a "
+		     + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ind_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ind_ == NULL && i != 0)
+      throw NoMemory("Matrix_SymSparse::Matrix_SymSparse(int, int, int)",
+		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
+		     + " bytes to store " + to_str(nz)
+		     + " row or column indices, for a "
+		     + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	this->data_ = this->allocator_.allocate(nz_, this);
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	free(ind_);
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (this->data_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	free(ind_);
+	ind_ = NULL;
+      }
+    if (this->data_ == NULL && i != 0)
+      throw NoMemory("Matrix_SymSparse::Matrix_SymSparse(int, int, int)",
+		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
+		     + " bytes to store " + to_str(nz) + " values, for a "
+		     + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+  }
+
+  
+  //! Changing the number of rows and columns
+  /*!
+    \param i number of rows
+    \param j number of columns    
+   */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::Resize(int i, int j)
+  {
+    if (i < this->m_)
+      Resize(i, i, ptr_[i]);
+    else
+      Resize(i, i, nz_);
+  }
+   
+  
+  //! Changing the number of rows, columns and non-zero entries
+  /*!
+    \param i number of rows
+    \param j number of columns
+    Previous entries are kept during the operation
+   */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::Resize(int i, int j, int nz)
+  {  
+    
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (static_cast<long int>(2 * nz - 2) / static_cast<long int>(i + 1)
+	>= static_cast<long int>(i))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim("Matrix_SymSparse::Matrix_SymSparse(int, int, int)",
+		       string("There are more values (") + to_str(nz)
+		       + string(" values) than elements in the upper")
+		       + " part of the matrix ("
+		       + to_str(i) + " by " + to_str(i) + ").");
+      }
+#endif
+    
+    if (nz != nz_)
+      {
+        // trying to resize ind_ and data_
+#ifdef SELDON_CHECK_MEMORY
+        try
+          {
+#endif
+            
+            ind_ = reinterpret_cast<int*>( realloc(reinterpret_cast<void*>(ind_),
+                                                   nz*sizeof(int)) );
+            
+#ifdef SELDON_CHECK_MEMORY
+          }
+        catch (...)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            nz_ = 0;
+            free(ptr_);
+            ptr_ = NULL;
+            ind_ = NULL;
+            this->data_ = NULL;
+          }
+        if (ind_ == NULL)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            nz_ = 0;
+            free(ptr_);
+            ptr_ = NULL;
+            this->data_ = NULL;
+          }
+        if (ind_ == NULL && i != 0 && j != 0)
+          throw NoMemory("Matrix_SymSparse::Resize(int, int, int)",
+                         string("Unable to allocate ") + to_str(sizeof(int) * nz)
+                         + " bytes to store " + to_str(nz)
+                         + " row or column indices, for a "
+                         + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+        
+        Vector<T, VectFull, Allocator> val;
+        val.SetData(nz_, this->data_);
+        val.Resize(nz);
+        
+        this->data_ = val.GetData();
+        nz_ = nz;
+        val.Nullify();
+      }
+    
+
+    if (this->m_ != i)
+      {
+#ifdef SELDON_CHECK_MEMORY
+        try
+          {
+#endif
+            // trying to resize ptr_
+            ptr_ = reinterpret_cast<int*>( realloc(ptr_, (i+1)*
+                                                   sizeof(int)) );
+            
+#ifdef SELDON_CHECK_MEMORY
+          }
+        catch (...)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            nz_ = 0;
+            ptr_ = NULL;
+            ind_ = NULL;
+            this->data_ = NULL;
+          }
+        if (ptr_ == NULL)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            nz_ = 0;
+            ind_ = NULL;
+            this->data_ = NULL;
+          }
+        if (ptr_ == NULL && i != 0 && j != 0)
+          throw NoMemory("Matrix_SymSparse::Resize(int, int)",
+                         string("Unable to allocate ")
+                         + to_str(sizeof(int) * (i+1) )
+                         + " bytes to store " + to_str(i+1)
+                         + " row or column start indices, for a "
+                         + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+        
+        // then filing last values of ptr_ with nz_
+        for (int k = this->m_; k <= i; k++)
+          ptr_[k] = this->nz_;
+      }
+    
+    this->m_ = i;
+    this->n_ = i;
+  }
+  
+  
   //! Copies a matrix
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_SymSparse<T, Prop, Storage, Allocator>::
@@ -688,7 +910,7 @@ namespace Seldon
 #endif
 
   }
-
+  
 
   /*******************
    * BASIC FUNCTIONS *
@@ -807,7 +1029,7 @@ namespace Seldon
     int a, b;
 
     // Only the upper part is stored.
-    if (i>j)
+    if (i > j)
       {
 	l = i;
 	i = j;
@@ -860,7 +1082,7 @@ namespace Seldon
     int a, b;
 
     // Only the upper part is stored.
-    if (i>j)
+    if (i > j)
       {
 	l = i;
 	i = j;
@@ -920,7 +1142,7 @@ namespace Seldon
     int a, b;
 
     // Only the upper part is stored.
-    if (i>j)
+    if (i > j)
       {
 	l = i;
 	i = j;
@@ -949,7 +1171,121 @@ namespace Seldon
                           + ") can be returned: it is a zero entry.");
   }
 
+  
+  //! Access method.
+  /*! Returns reference to element (\a i, \a j) 
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+    If the element does not belong to sparsity pattern of the matrix,
+    the matrix is resized.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_SymSparse<T, Prop, Storage, Allocator>::value_type&
+  Matrix_SymSparse<T, Prop, Storage, Allocator>::Get(int i, int j)
+  {
 
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_SymSparse::Get(int, int)",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_SymSparse::Get(int, int)",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int k, l;
+    int a, b;
+    // Only the upper part is stored.
+    if (i > j)
+      {
+	l = i;
+	i = j;
+	j = l;
+      }
+
+    a = ptr_[Storage::GetFirst(i, j)];
+    b = ptr_[Storage::GetFirst(i, j) + 1];
+
+    if (a < b)
+      {
+        l = Storage::GetSecond(i, j);
+        
+        for (k = a; (k < b) && (ind_[k] < l); k++);
+
+        if ( (k < b) && (ind_[k] == l))
+          return this->data_[k];
+      }
+    else
+      k = a;
+    
+    // adding a non-zero entry
+    Resize(this->m_, this->n_, nz_+1);
+    
+    for (int m = Storage::GetFirst(i, j)+1; m <= this->m_; m++)
+      ptr_[m]++;
+    
+    for (int m = nz_-1; m >= k+1; m--)
+      {
+        ind_[m] = ind_[m-1];
+        this->data_[m] = this->data_[m-1];
+      }
+    
+    ind_[k] = Storage::GetSecond(i, j);
+    
+    // value of new non-zero entry is set to 0
+    SetComplexZero(this->data_[k]);
+    
+    return this->data_[k];
+  }
+  
+  
+  //! Access method.
+  /*! Returns reference to element (\a i, \a j) 
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const typename Matrix_SymSparse<T, Prop, Storage, Allocator>::value_type&
+  Matrix_SymSparse<T, Prop, Storage, Allocator>::Get(int i, int j) const
+  {
+    return Val(i, j);
+  }
+  
+  
+  //! Add a value to a non-zero entry.
+  /*! This function adds \a val to the element (\a i, \a j), provided that
+    this element is already a non-zero entry. Otherwise 
+    a non-zero entry is inserted equal to \a val.
+    \param[in] i row index.
+    \param[in] j column index.
+    \param[in] val value to be added to the element (\a i, \a j).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::AddInteraction(int i, int j, const T& val)
+  {
+    Get(i, j) += val;
+  }
+
+  
+  //! Sets an element (i, j) to a value
+  /*! This function sets \a val to the element (\a i, \a j)
+    \param[in] i row index.
+    \param[in] j column index.
+    \param[in] val A(i, j) = val
+  */  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const T& val)
+  {
+    Get(i, j) = val;
+  }
+
+  
   //! Duplicates a matrix (assignment operator).
   /*!
     \param A matrix to be copied.
@@ -971,7 +1307,81 @@ namespace Seldon
    * CONVENIENT FUNCTIONS *
    ************************/
 
+  
+  //! Resets all non-zero entries to 0-value.
+  /*! The sparsity pattern remains unchanged. */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::Zero()
+  {
+    this->allocator_.memoryset(this->data_, char(0),
+			       this->nz_ * sizeof(value_type));
+  }
 
+  
+  //! Sets the matrix to identity.
+  /*! This method fills the diagonal of the matrix with ones.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::SetIdentity()
+  {
+    int m = this->m_;
+    int nz = this->m_;
+
+    if (nz == 0)
+      return;
+    
+    Clear();
+
+    Vector<T, VectFull, Allocator> values(nz);
+    Vector<int, VectFull, CallocAlloc<int> > ptr(m + 1);
+    Vector<int, VectFull, CallocAlloc<int> > ind(nz);
+    
+    values.Fill(T(1));
+    ind.Fill();
+    ptr.Fill();
+    
+    SetData(m, m, values, ptr, ind);
+  }
+
+
+  //! Fills the non-zero entries with 0, 1, 2, ...
+  /*! On exit, the non-zero entries are 0, 1, 2, 3, ... The order of the
+    numbers depends on the storage.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::Fill()
+  {
+    for (int i = 0; i < this->GetDataSize(); i++)
+      this->data_[i] = i;
+  }
+
+
+  //! Fills the non-zero entries with a given value.
+  /*!
+    \param x the value to set the non-zero entries to.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  template <class T0>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::Fill(const T0& x)
+  {
+    for (int i = 0; i < this->GetDataSize(); i++)
+      this->data_[i] = x;
+  }
+
+
+  //! Fills the non-zero entries randomly.
+  /*!
+    \note The random generator is very basic.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::FillRand()
+  {
+    srand(time(NULL));
+    for (int i = 0; i < this->GetDataSize(); i++)
+      this->data_[i] = rand();
+  }
+
+  
   //! Displays the matrix on the standard output.
   /*!
     Displays elements on the standard output, in text format.
@@ -989,7 +1399,64 @@ namespace Seldon
       }
   }
 
+  
+  //! Writes the matrix in a file.
+  /*!
+    Stores the matrix in a file in binary format.
+    \param FileName output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::Write(string FileName) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str());
 
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_SymSparse::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Write(FileStream);
+
+    FileStream.close();
+  }
+  
+
+  //! Writes the matrix to an output stream.
+  /*!
+    Stores the matrix in an output stream in binary format.
+    \param FileStream output stream.
+  */  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::Write(ostream& FileStream) const
+  {
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_SymSparse::Write(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+    
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->nz_)),
+		     sizeof(int));
+    
+    FileStream.write(reinterpret_cast<char*>(this->ptr_),
+		     sizeof(int)*(this->m_+1));
+    FileStream.write(reinterpret_cast<char*>(this->ind_),
+		     sizeof(int)*this->nz_);
+    FileStream.write(reinterpret_cast<char*>(this->data_),
+		     sizeof(T)*this->nz_);
+  }
+  
+  
   //! Writes the matrix in a file.
   /*! Stores the matrix in a file in ascii format. The entries are written in
     coordinate format (row index, column index, value).  Row and column
@@ -1047,7 +1514,115 @@ namespace Seldon
       FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
   }
 
+  
+    //! Reads the matrix from a file.
+  /*!
+    Reads a matrix stored in binary format in a file.
+    \param FileName input file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::Read(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
 
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_SymSparse::Read(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Read(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix in binary format from an input stream.
+    \param FileStream input stream
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::
+  Read(istream& FileStream)
+  {
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_SymSparse::Read(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+    
+    int m, n, nz;
+    FileStream.read(reinterpret_cast<char*>(&m), sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(&n), sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(&nz), sizeof(int));
+    
+    Reallocate(m, m, nz);
+
+    FileStream.read(reinterpret_cast<char*>(ptr_),
+                    sizeof(int)*(m+1));
+    FileStream.read(reinterpret_cast<char*>(ind_), sizeof(int)*nz);
+    FileStream.read(reinterpret_cast<char*>(this->data_), sizeof(T)*nz);
+    
+#ifdef SELDON_CHECK_IO
+    // Checks if data was read.
+    if (!FileStream.good())
+      throw IOError("Matrix_SymSparse::Read(istream& FileStream)",
+                    string("Input operation failed.")
+		    + string(" The input file may have been removed")
+		    + " or may not contain enough data.");
+#endif
+
+  }
+
+  
+  //! Reads the matrix from a file.
+  /*!
+    Reads the matrix from a file in text format.
+    \param FileName input file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::
+  ReadText(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_SymSparse::ReadText(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->ReadText(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix from a stream in text format.
+    \param FileStream input stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::
+  ReadText(istream& FileStream)
+  {
+    Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
+    
+    T zero; int index = 1;
+    ReadCoordinateMatrix(leaf_class, FileStream, zero, index);
+  }
+  
+  
   //////////////////////////
   // MATRIX<COLSYMSPARSE> //
   //////////////////////////

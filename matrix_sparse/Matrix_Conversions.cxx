@@ -1066,6 +1066,7 @@ namespace Seldon
 	IndRow(i) = IndRow_(i);
 	IndCol(i) = IndCol_(i);
       }
+    
     IndRow_.Clear();
     IndCol_.Clear();
 
@@ -1098,8 +1099,8 @@ namespace Seldon
 	nnz = nb;
       }
 
-    // Sorts the array 'IndRow'.
-    Sort(IndRow, IndCol, Val);
+    // Sorts the array 'IndCol'.
+    Sort(IndCol, IndRow, Val);
 
     // Construction of array 'Ptr'.
     Vector<int, VectFull, CallocAlloc<int> > Ptr(m + 1);
@@ -1108,17 +1109,17 @@ namespace Seldon
       {
 	IndRow(i) -= index;
 	IndCol(i) -= index;
-	Ptr(IndRow(i) + 1)++;
+	Ptr(IndCol(i) + 1)++;
       }
 
     for (int i = 0; i < m; i++)
       Ptr(i + 1) += Ptr(i);
 
-    // Sorts 'IndCol'.
+    // Sorts 'IndRow'.
     for (int i = 0; i < m; i++)
-      Sort(Ptr(i), Ptr(i + 1) - 1, IndCol, Val);
+      Sort(Ptr(i), Ptr(i + 1) - 1, IndRow, Val);
 
-    A.SetData(m, n, Val, Ptr, IndCol);
+    A.SetData(m, n, Val, Ptr, IndRow);
   }
 
 
