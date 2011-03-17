@@ -72,8 +72,30 @@ namespace Seldon
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
 			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
+  
+  
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Tint, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, RowComplexSparse,
+			       Allocator1>& A,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
+			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       int index = 0, bool sym = false);
 
 
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Tint, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ColComplexSparse,
+			       Allocator1>& A,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
+			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       int index = 0, bool sym = false);
+  
+  
   /*
     From Sparse Array formats to "Matlab" coordinate format.
   */
@@ -201,6 +223,28 @@ namespace Seldon
 				 int index = 0);
   
   
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
+				 Vector<int, VectFull, Allocator2>& IndCol,
+				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, RowComplexSparse,
+				 Allocator4>& A,
+				 int index = 0);
+  
+  
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
+				 Vector<int, VectFull, Allocator2>& IndCol,
+				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ColComplexSparse,
+				 Allocator4>& A,
+				 int index = 0);
+
+  
   /*
     From Sparse Array formats to "Matlab" coordinate format.
   */
@@ -250,7 +294,7 @@ namespace Seldon
 				 int index = 0);
   
   
-    template<class T, class Prop, class Allocator1,
+  template<class T, class Prop, class Allocator1,
 	   class Allocator2, class Allocator3, class Allocator4>
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,

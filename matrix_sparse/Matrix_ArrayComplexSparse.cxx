@@ -2015,10 +2015,10 @@ namespace Seldon
       throw WrongCol("Matrix::ValReal", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
-    if (i > j)
-      throw WrongCol("Matrix::ValReal", "Row index should be lower"
-                     + string("or equal to column index."));
 #endif
+    
+    if (i > j)
+      return this->val_real_(i).Val(j);
     
     return this->val_real_(j).Val(i);
   }
@@ -2045,10 +2045,10 @@ namespace Seldon
       throw WrongCol("Matrix::ValReal", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
-    if (i > j)
-      throw WrongCol("Matrix::ValReal", "Row index should be lower"
-                     + string("or equal to column index."));
 #endif
+    
+    if (i > j)
+      return this->val_real_(j).Val(i);
     
     return this->val_real_(j).Val(i);
   }
@@ -2133,10 +2133,10 @@ namespace Seldon
       throw WrongCol("Matrix::ValImag", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
-    if (i > j)
-      throw WrongCol("Matrix::ValImag", "Row index should be lower"
-                     + string("or equal to column index."));
 #endif
+    
+    if (i > j)
+      return this->val_imag_(i).Val(j);
     
     return this->val_imag_(j).Val(i);
   }
@@ -2162,10 +2162,9 @@ namespace Seldon
       throw WrongCol("Matrix::ValImag", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
-    if (i > j)
-      throw WrongCol("Matrix::ValImag", "Row index should be lower"
-                     + string("or equal to column index."));
 #endif
+    if (i > j)
+      return this->val_imag_(i).Val(j);
     
     return this->val_imag_(j).Val(i);
   }
@@ -2636,10 +2635,10 @@ namespace Seldon
       throw WrongCol("Matrix::ValReal", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
-    if (i > j)
-      throw WrongCol("Matrix::ValReal", "Row index should be lower"
-                     + string("or equal to column index."));
 #endif
+    
+    if (i > j)
+      return this->val_real_(j).Val(i);
     
     return this->val_real_(i).Val(j);
   }
@@ -2666,10 +2665,9 @@ namespace Seldon
       throw WrongCol("Matrix::ValReal", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
-    if (i > j)
-      throw WrongCol("Matrix::ValReal", "Row index should be lower"
-                     + string("or equal to column index."));
 #endif
+    if (i > j)
+      return this->val_real_(j).Val(i);
     
     return this->val_real_(i).Val(j);
   }
@@ -2754,10 +2752,9 @@ namespace Seldon
       throw WrongCol("Matrix::ValImag", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
-    if (i > j)
-      throw WrongCol("Matrix::ValImag", "Row index should be lower"
-                     + string("or equal to column index."));
 #endif
+    if (i > j)
+      return this->val_imag_(j).Val(i);
     
     return this->val_imag_(i).Val(j);
   }
@@ -2783,10 +2780,10 @@ namespace Seldon
       throw WrongCol("Matrix::ValImag", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
-    if (i > j)
-      throw WrongCol("Matrix::ValImag", "Row index should be lower"
-                     + string("or equal to column index."));
 #endif
+
+    if (i > j)
+      return this->val_imag_(j).Val(i);
     
     return this->val_imag_(i).Val(j);
   }

@@ -749,7 +749,7 @@ namespace Seldon
       }
     
 
-    if (this->m_ != i)
+    if (Storage::GetFirst(this->m_, this->n_) != Storage::GetFirst(i, j))
       {
 #ifdef SELDON_CHECK_MEMORY
         try
@@ -1344,7 +1344,8 @@ namespace Seldon
     Vector<int, VectFull, CallocAlloc<int> > ptr(Storage::GetFirst(m, n) + 1);
     Vector<int, VectFull, CallocAlloc<int> > ind(nz);
 
-    values.Fill(T(1));
+    T one; SetComplexOne(one);
+    values.Fill(one);
     ind.Fill();
     int i;
     for (i = 0; i < nz + 1; i++)
@@ -1579,7 +1580,7 @@ namespace Seldon
     Stores the matrix in a file in ascii format.
     The entries are written in coordinate format (row column value)
     1-index convention is used
-    \param FileStream output file name.
+    \param FileStream output stream.
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::
@@ -1589,7 +1590,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Matrix_ArraySparse::Write(ofstream& FileStream)",
+      throw IOError("Matrix_Sparse::Write(ofstream& FileStream)",
 		    "Stream is not ready.");
 #endif
 
@@ -1645,7 +1646,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Matrix_Sparse::Read(ofstream& FileStream)",
+      throw IOError("Matrix_Sparse::Read(istream& FileStream)",
 		    "Stream is not ready.");
 #endif
     

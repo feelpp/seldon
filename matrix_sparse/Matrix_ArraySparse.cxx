@@ -1519,10 +1519,10 @@ namespace Seldon
       throw WrongCol("Matrix::operator()", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");    
-    if (i > j)
-      throw WrongArgument("Matrix::Val()", string("With this function, you ")
-                          + "can only access upper part of matrix.");
 #endif
+    
+    if (i > j)
+      return this->val_(i).Val(j);
     
     return this->val_(j).Val(i);
   }
@@ -1549,10 +1549,10 @@ namespace Seldon
       throw WrongCol("Matrix::operator()", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
-    if (i > j)
-      throw WrongArgument("Matrix::Val()", string("with this function, you ")
-                          + "can only access upper part of matrix.");
 #endif
+    
+    if (i > j)
+      return this->val_(i).Val(j);
     
     return this->val_(j).Val(i);
   }
@@ -1922,10 +1922,9 @@ namespace Seldon
       throw WrongCol("Matrix::operator()", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");    
-    if (i > j)
-      throw WrongArgument("Matrix::Val()", string("With this function, you ")
-                          + "can only access upper part of matrix.");
 #endif
+    if (i > j)
+      return this->val_(j).Val(i);
     
     return this->val_(i).Val(j);
   }
@@ -1952,10 +1951,10 @@ namespace Seldon
       throw WrongCol("Matrix::operator()", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
-    if (i > j)
-      throw WrongArgument("Matrix::Val()", string("With this function, you ")
-                          + "can only access upper part of matrix.");
 #endif
+    
+    if (i > j)
+      return this->val_(j).Val(i);
     
     return this->val_(i).Val(j);
   }
