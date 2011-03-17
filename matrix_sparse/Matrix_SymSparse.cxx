@@ -1268,7 +1268,8 @@ namespace Seldon
   inline void Matrix_SymSparse<T, Prop, Storage, Allocator>
   ::AddInteraction(int i, int j, const T& val)
   {
-    Get(i, j) += val;
+    if (i <= j)
+      Get(i, j) += val;
   }
 
   

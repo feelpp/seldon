@@ -96,6 +96,28 @@ namespace Seldon
 			       int index = 0, bool sym = false);
   
   
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Tint, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, RowSymComplexSparse,
+			       Allocator1>& A,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
+			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       int index = 0, bool sym = false);
+
+
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Tint, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ColSymComplexSparse,
+			       Allocator1>& A,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
+			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       int index = 0, bool sym = false);
+  
+  
   /*
     From Sparse Array formats to "Matlab" coordinate format.
   */
@@ -244,6 +266,28 @@ namespace Seldon
 				 Allocator4>& A,
 				 int index = 0);
 
+
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
+				 Vector<int, VectFull, Allocator2>& IndCol,
+				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, RowSymComplexSparse,
+				 Allocator4>& A,
+				 int index = 0);
+  
+  
+  template<class T, class Prop, class Allocator1,
+	   class Allocator2, class Allocator3, class Allocator4>
+  void
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
+				 Vector<int, VectFull, Allocator2>& IndCol,
+				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Matrix<T, Prop, ColSymComplexSparse,
+				 Allocator4>& A,
+				 int index = 0);
+  
   
   /*
     From Sparse Array formats to "Matlab" coordinate format.
