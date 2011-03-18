@@ -107,7 +107,7 @@ namespace Seldon
     int GetIndSize() const;
 
     // Element acess and affectation.
-    value_type operator() (int i, int j) const;
+    const value_type operator() (int i, int j) const;
     value_type& Val(int i, int j);
     value_type& Get(int i, int j);
     const value_type& Val(int i, int j) const;

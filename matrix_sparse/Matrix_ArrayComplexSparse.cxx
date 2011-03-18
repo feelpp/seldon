@@ -361,7 +361,7 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline complex<T>
+  inline const complex<T>
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::operator()
     (int i, int j) const
   {

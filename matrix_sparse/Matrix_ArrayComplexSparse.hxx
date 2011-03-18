@@ -92,7 +92,7 @@ namespace Seldon
     Vector<T, VectSparse, Allocator>* GetImagData() const;
 
     // Element acess and affectation.
-    complex<T> operator() (int i, int j) const;
+    const complex<T> operator() (int i, int j) const;
     complex<T>& Val(int i, int j);
     const complex<T>& Val(int i, int j) const;
     complex<T>& Get(int i, int j);

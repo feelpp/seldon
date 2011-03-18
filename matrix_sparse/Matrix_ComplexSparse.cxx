@@ -2009,8 +2009,9 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline complex<typename Matrix_ComplexSparse<T, Prop, Storage, Allocator>
-		 ::value_type>
+  inline const 
+  complex<typename Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+          ::value_type>
   Matrix_ComplexSparse<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
   {

@@ -84,7 +84,10 @@ namespace Seldon
     Vector<T, VectSparse, Allocator>* GetData() const;
 
     // Element acess and affectation.
-    T operator() (int i, int j) const;    
+#ifdef SELDON_WITH_MODIFIABLE_PARENTHESIS_OPERATOR
+    T& operator() (int i, int j);
+#endif
+    const T operator() (int i, int j) const;    
     T& Get(int i, int j);
     const T& Get(int i, int j) const;
     T& Val(int i, int j);

@@ -137,7 +137,7 @@ namespace Seldon
     T* GetImagData() const;
 
     // Element acess and affectation.
-    complex<value_type> operator() (int i, int j) const;
+    const complex<value_type> operator() (int i, int j) const;
     value_type& ValReal(int i, int j);
     const value_type& ValReal(int i, int j) const;
     value_type& ValImag(int i, int j);

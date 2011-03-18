@@ -264,8 +264,18 @@ namespace Seldon
   /**********************************
    * ELEMENT ACCESS AND AFFECTATION *
    **********************************/
-
-
+  
+  
+#ifdef SELDON_WITH_MODIFIABLE_PARENTHESIS_OPERATOR
+  template <class T, class Prop, class Storage, class Allocator>
+  inline T&
+  Matrix_ArraySparse<T, Prop, Storage, Allocator>::operator() (int i, int j)  
+  {
+    return Get(i, j);
+  }
+#endif
+  
+  
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -274,7 +284,7 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline T
+  inline const T
   Matrix_ArraySparse<T, Prop, Storage, Allocator>::operator() (int i, int j)
     const
   {
