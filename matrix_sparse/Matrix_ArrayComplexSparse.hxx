@@ -265,7 +265,7 @@ namespace Seldon
     Matrix()  throw();
     Matrix(int i, int j);
 
-    complex<T> operator() (int i, int j) const;
+    const complex<T> operator() (int i, int j) const;
     
     T& ValReal(int i, int j);
     const T& ValReal(int i, int j) const;
@@ -325,7 +325,7 @@ namespace Seldon
     Matrix()  throw();
     Matrix(int i, int j);
 
-    complex<T> operator() (int i, int j) const;
+    const complex<T> operator() (int i, int j) const;
     
     T& ValReal(int i, int j);
     const T& ValReal(int i, int j) const;

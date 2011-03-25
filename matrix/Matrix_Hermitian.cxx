@@ -476,7 +476,8 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_Hermitian<T, Prop, Storage, Allocator>::value_type
+  inline const typename
+  Matrix_Hermitian<T, Prop, Storage, Allocator>::value_type
   Matrix_Hermitian<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
   {

@@ -319,12 +319,12 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_ArraySparse::operator()",
+      throw WrongRow("Matrix_ArraySparse::Get(int, int)",
 		     "Index should be in [0, " + to_str(this->m_-1) +
 		     "],but is equal to " + to_str(i) + ".");
 
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_ArraySparse::operator()",
+      throw WrongCol("Matrix_ArraySparse::Get(int, int)",
 		     "Index should be in [0, " + to_str(this->n_-1) +
 		     "], but is equal to " + to_str(j) + ".");
 #endif
@@ -347,12 +347,12 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_ArraySparse::operator()",
+      throw WrongRow("Matrix_ArraySparse::Get(int, int)",
 		     "Index should be in [0, " + to_str(this->m_-1) +
 		     "],but is equal to " + to_str(i) + ".");
 
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_ArraySparse::operator()",
+      throw WrongCol("Matrix_ArraySparse::Get(int, int)",
 		     "Index should be in [0, " + to_str(this->n_-1) +
 		     "], but is equal to " + to_str(j) + ".");
 #endif
@@ -374,12 +374,12 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_ArraySparse::operator()",
+      throw WrongRow("Matrix_ArraySparse::Val(int, int)",
 		     "Index should be in [0, " + to_str(this->m_-1) +
 		     "], but is equal to " + to_str(i) + ".");
 
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_ArraySparse::operator()",
+      throw WrongCol("Matrix_ArraySparse::Val(int, int)",
 		     "Index should be in [0, " + to_str(this->n_-1) +
 		     "], but is equal to " + to_str(j) + ".");
 #endif
@@ -402,12 +402,12 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_ArraySparse::operator()",
+      throw WrongRow("Matrix_ArraySparse::Val(int, int)",
 		     "Index should be in [0, " + to_str(this->m_-1) +
 		     "], but is equal to " + to_str(i) + ".");
 
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_ArraySparse::operator()",
+      throw WrongCol("Matrix_ArraySparse::Val(int, int)",
 		     "Index should be in [0, " + to_str(this->n_-1) +
 		     "], but is equal to " + to_str(j) + ".");
 #endif
@@ -1417,6 +1417,16 @@ namespace Seldon
    **********************************/
 
 
+#ifdef SELDON_WITH_MODIFIABLE_PARENTHESIS_OPERATOR
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayColSymSparse, Allocator>::operator() (int i, int j)  
+  {
+    return Get(i, j);
+  }
+#endif
+  
+  
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -1425,7 +1435,7 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline T
+  inline const T
   Matrix<T, Prop, ArrayColSymSparse, Allocator>::operator() (int i, int j)
     const
   {
@@ -1462,11 +1472,11 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+      throw WrongRow("Matrix::Get(int, int)", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
 		     + to_str(i) + ".");
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+      throw WrongCol("Matrix::Get(int, int)", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
@@ -1492,11 +1502,11 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+      throw WrongRow("Matrix::Get(int, int)", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
 		     + to_str(i) + ".");
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+      throw WrongCol("Matrix::Get(int, int)", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
@@ -1522,11 +1532,11 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+      throw WrongRow("Matrix::Val(int, int)", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
 		     + to_str(i) + ".");
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+      throw WrongCol("Matrix::Val(int, int)", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");    
 #endif
@@ -1552,11 +1562,11 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+      throw WrongRow("Matrix::Val(int, int)", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
 		     + to_str(i) + ".");
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+      throw WrongCol("Matrix::Val(int, int)", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
@@ -1818,6 +1828,16 @@ namespace Seldon
    **********************************/
 
 
+#ifdef SELDON_WITH_MODIFIABLE_PARENTHESIS_OPERATOR
+  template <class T, class Prop, class Allocator>
+  inline T&
+  Matrix<T, Prop, ArrayRowSymSparse, Allocator>::operator() (int i, int j)  
+  {
+    return Get(i, j);
+  }
+#endif
+
+  
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -1826,7 +1846,7 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline T
+  inline const T
   Matrix<T, Prop, ArrayRowSymSparse, Allocator>::operator() (int i, int j)
     const
   {
@@ -1865,11 +1885,11 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+      throw WrongRow("Matrix::Get(int, int)", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
 		     + to_str(i) + ".");
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+      throw WrongCol("Matrix::Get(int, int)", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
@@ -1895,11 +1915,11 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+      throw WrongRow("Matrix::Get(int, int)", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
 		     + to_str(i) + ".");
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+      throw WrongCol("Matrix::Get(int, int)", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
@@ -1925,11 +1945,11 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+      throw WrongRow("Matrix::Val(int, int)", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
 		     + to_str(i) + ".");
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+      throw WrongCol("Matrix::Val(int, int)", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");    
 #endif
@@ -1954,11 +1974,11 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::operator()", "Index should be in [0, "
+      throw WrongRow("Matrix::Val(int, int)", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
 		     + to_str(i) + ".");
     if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::operator()", "Index should be in [0, "
+      throw WrongCol("Matrix::Val(int, int)", "Index should be in [0, "
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif

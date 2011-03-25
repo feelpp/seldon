@@ -1974,7 +1974,7 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline complex<T>
+  inline const complex<T>
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::operator() (int i, int j)
     const
   {
@@ -2593,7 +2593,7 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline complex<T>
+  inline const complex<T>
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::operator() (int i, int j)
     const
   {

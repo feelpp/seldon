@@ -73,7 +73,7 @@ namespace Seldon
     void Resize(int i, int j);
 
     // Element access and affectation.
-    value_type operator() (int i, int j) const;
+    const value_type operator() (int i, int j) const;
     const_reference Val(int i, int j) const;
     reference Val(int i, int j);
     const_reference Get(int i, int j) const;

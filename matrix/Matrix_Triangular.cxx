@@ -477,7 +477,8 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_Triangular<T, Prop, Storage, Allocator>::value_type
+  inline const typename
+  Matrix_Triangular<T, Prop, Storage, Allocator>::value_type
   Matrix_Triangular<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
   {

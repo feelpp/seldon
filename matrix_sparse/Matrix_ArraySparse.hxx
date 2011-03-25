@@ -228,8 +228,13 @@ namespace Seldon
   public:
     Matrix()  throw();
     Matrix(int i, int j);
-
-    T operator() (int i, int j) const;
+    
+    // access operator
+#ifdef SELDON_WITH_MODIFIABLE_PARENTHESIS_OPERATOR
+    T& operator() (int i, int j);
+#endif
+    const T operator() (int i, int j) const;
+    
     T& Get(int i, int j);
     const T& Get(int i, int j) const;
     T& Val(int i, int j);
@@ -277,7 +282,11 @@ namespace Seldon
     Matrix()  throw();
     Matrix(int i, int j);
 
-    T operator() (int i, int j) const;
+    // access operator
+#ifdef SELDON_WITH_MODIFIABLE_PARENTHESIS_OPERATOR
+    T& operator() (int i, int j);
+#endif
+    const T operator() (int i, int j) const;
     T& Get(int i, int j);
     const T& Get(int i, int j) const;
     T& Val(int i, int j);
