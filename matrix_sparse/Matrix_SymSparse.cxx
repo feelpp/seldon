@@ -1464,10 +1464,13 @@ namespace Seldon
     coordinate format (row index, column index, value).  Row and column
     indexes start at 1.
     \param FileName output file name.
+    \param cplx if true the real part and imaginary part are written
+          in two separate columns, otherwise the complex values
+          are written (a,b)
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymSparse<T, Prop, Storage, Allocator>
-  ::WriteText(string FileName) const
+  ::WriteText(string FileName, bool cplx) const
   {
     ofstream FileStream; FileStream.precision(14);
     FileStream.open(FileName.c_str());
@@ -1479,7 +1482,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->WriteText(FileStream);
+    this->WriteText(FileStream, cplx);
 
     FileStream.close();
   }
@@ -1490,10 +1493,13 @@ namespace Seldon
     coordinate format (row index, column index, value).  Row and column
     indexes start at 1.
     \param FileStream output file name.
+    \param cplx if true the real part and imaginary part are given
+    in two separate columns, otherwise the complex values
+    are written (a,b)
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymSparse<T, Prop, Storage, Allocator>
-  ::WriteText(ostream& FileStream) const
+  ::WriteText(ostream& FileStream, bool cplx) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -1504,20 +1510,15 @@ namespace Seldon
 #endif
 
     // Conversion to coordinate format (1-index convention).
-    IVect IndRow, IndCol;
-    Vector<T> Value;
     const Matrix<T, Prop, Storage, Allocator>& leaf_class =
       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this);
-
-    ConvertMatrix_to_Coordinates(leaf_class, IndRow, IndCol,
-				 Value, 1, true);
-
-    for (int i = 0; i < IndRow.GetM(); i++)
-      FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
+    
+    T zero; int index = 1;
+    WriteCoordinateMatrix(leaf_class, FileStream, zero, index, cplx);
   }
 
   
-    //! Reads the matrix from a file.
+  //! Reads the matrix from a file.
   /*!
     Reads a matrix stored in binary format in a file.
     \param FileName input file name.
@@ -1587,10 +1588,13 @@ namespace Seldon
   /*!
     Reads the matrix from a file in text format.
     \param FileName input file name.
+    \param cplx if true the real part and imaginary part are given
+          in two separate columns, otherwise the complex values
+          are written (a,b)
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymSparse<T, Prop, Storage, Allocator>::
-  ReadText(string FileName)
+  ReadText(string FileName, bool cplx)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -1602,7 +1606,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->ReadText(FileStream);
+    this->ReadText(FileStream, cplx);
 
     FileStream.close();
   }
@@ -1612,16 +1616,19 @@ namespace Seldon
   /*!
     Reads a matrix from a stream in text format.
     \param FileStream input stream.
+    \param cplx if true the real part and imaginary part are given
+          in two separate columns, otherwise the complex values
+          are written (a,b)
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymSparse<T, Prop, Storage, Allocator>::
-  ReadText(istream& FileStream)
+  ReadText(istream& FileStream, bool cplx)
   {
     Matrix<T, Prop, Storage, Allocator>& leaf_class =
       static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
     
     T zero; int index = 1;
-    ReadCoordinateMatrix(leaf_class, FileStream, zero, index);
+    ReadCoordinateMatrix(leaf_class, FileStream, zero, index, -1, cplx);
   }
   
   

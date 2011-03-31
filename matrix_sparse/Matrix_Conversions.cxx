@@ -238,10 +238,10 @@ namespace Seldon
 	IndCol.Reallocate(nnz);
 	Val.Reallocate(nnz);
 	for (i = 0; i < m; i++)
-	  for (j = ptr[i]; j< ptr[i + 1]; j++)
+	  for (j = ptr[i]; j < ptr[i + 1]; j++)
 	    {
-	      IndRow(j) = i + index;
-	      IndCol(j) = ind[j] + index;
+	      IndCol(j) = i + index;
+	      IndRow(j) = ind[j] + index;
 	      Val(j) = val[j];
 	    }
       }
@@ -1418,6 +1418,8 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
 
     // First, removing the lower part of the matrix (if present).
     int nb_low = 0;
@@ -1496,6 +1498,8 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
 
     // First, removing the lower part of the matrix (if present).
     int nb_low = 0;
@@ -1567,6 +1571,8 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
     
     // Sorts the array 'IndRow'.
     Sort(IndRow, IndCol, Val);
@@ -1651,6 +1657,8 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
     
     // Sorts the array 'IndCol'.
     Sort(IndCol, IndRow, Val);
@@ -1735,6 +1743,8 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
     
     // Sorts the array 'IndRow'.
     Sort(IndRow, IndCol, Val);
@@ -1825,6 +1835,8 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
     
     // Sorts the array 'IndCol'.
     Sort(IndCol, IndRow, Val);
@@ -1926,6 +1938,8 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
 
     // Sorts the array 'IndRow'.
     Sort(IndRow, IndCol, Val);
@@ -1989,6 +2003,8 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
 
     // Sorts array 'IndCol'.
     Sort(IndCol, IndRow, Val);
@@ -2052,6 +2068,8 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
 
     // First, removing the lower part of the matrix (if present).
     int nb_low = 0;
@@ -2142,6 +2160,8 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
 
     // First, removing the lower part of the matrix (if present).
     int nb_low = 0;
@@ -2222,6 +2242,8 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
 
     // Sorts the array 'IndRow'.
     Sort(IndRow, IndCol, Val);
@@ -2302,6 +2324,8 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
 
     // Sorts the array 'IndRow'.
     Sort(IndCol, IndRow, Val);
@@ -2381,7 +2405,9 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
-    
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
+
     // Sorts the array 'IndRow'.
     Sort(IndRow, IndCol, Val);
     
@@ -2469,7 +2495,9 @@ namespace Seldon
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
-    
+    m = max(m, A.GetM());
+    n = max(n, A.GetN());
+
     // Sorts the array 'IndRow'.
     Sort(IndCol, IndRow, Val);
     
@@ -3372,6 +3400,23 @@ namespace Seldon
   }
   
   
+  //! Conversion from RowSymSparse to ColSymSparse
+  template<class T, class Prop, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop, RowSymSparse, Alloc1>& A,
+	    Matrix<T, Prop, ColSymSparse, Alloc2>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr;
+    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<T, VectFull, Alloc2> Val;
+
+    int m = A.GetM(), n = A.GetN();
+    Symmetric sym;
+    ConvertToCSC(A, sym, Ptr, Ind, Val);
+
+    B.SetData(m, n, Val, Ptr, Ind);
+  }
+
+  
   //! Conversion from RowSymSparse to ColSparse
   template<class T, class Prop1, class Prop2, class Alloc1, class Alloc2>
   void Copy(const Matrix<T, Prop1, RowSymSparse, Alloc1>& A,
@@ -3442,6 +3487,42 @@ namespace Seldon
   /*
     From Sparse formats to CSR format
   */
+  
+  
+  //! Conversion from RowSparse to CSR
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, RowSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<T, VectFull, Alloc4>& Value)
+  {
+    int m = A.GetM();
+    int  nnz = A.GetDataSize();
+    if (m <= 0)
+      {
+	Ptr.Clear();
+	IndCol.Clear();
+	Value.Clear();
+	return;
+      }
+    
+    int* ptr_ = A.GetPtr();
+    int* ind_ = A.GetInd();
+    T* data_ = A.GetData();
+    
+    Ptr.Reallocate(m+1);
+    IndCol.Reallocate(nnz);
+    Value.Reallocate(nnz);
+    for (int i = 0; i <= m; i++)
+      Ptr(i) = ptr_[i];
+    
+    for (int i = 0; i < nnz; i++)
+      {
+        IndCol(i) = ind_[i];
+        Value(i) = data_[i];
+      }
+  }
   
   
   //! Conversion from ColSparse to CSR
@@ -3944,6 +4025,38 @@ namespace Seldon
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+	    Matrix<T1, Prop1, ArrayColSymSparse, Allocator1>& B)
+  {
+    int n = A.GetM();
+    if (n <= 0)
+      {
+	B.Clear();
+	return;
+      }
+    
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<T0, VectFull, Allocator0> Value;
+    
+    Symmetric sym;
+    ConvertToCSC(A, sym, Ptr, Ind, Value);
+    
+    B.Reallocate(n, n);
+    for (int i = 0; i < n; i++)
+      {
+	int size_col = Ptr(i+1) - Ptr(i);
+	B.ReallocateColumn(i, size_col);
+	for (int j = 0; j < size_col; j++)
+	  {
+	    B.Index(i, j) = Ind(Ptr(i) + j);
+	    B.Value(i, j) = Value(Ptr(i) + j);
+	  }
+      }    
+  }
+
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
   void Copy(const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
 	    Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& B)
   {
@@ -3971,6 +4084,37 @@ namespace Seldon
 	  }
       }
     
+  }
+
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+	    Matrix<T1, Prop1, ArrayColSparse, Allocator1>& B)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    if (n <= 0)
+      {
+	B.Clear();
+	return;
+      }
+    
+    int* ptr_ = A.GetPtr();
+    int* ind_ = A.GetInd();
+    T0* data_ = A.GetData();
+    
+    B.Reallocate(m, n);
+    for (int i = 0; i < n; i++)
+      {
+	int size_col = ptr_[i+1] - ptr_[i];
+	B.ReallocateColumn(i, size_col);
+	for (int j = 0; j < size_col; j++)
+	  {
+	    B.Index(i, j) = ind_[ptr_[i] + j];
+	    B.Value(i, j) = data_[ptr_[i] + j];
+	  }
+      }    
   }
 
   
@@ -4450,13 +4594,12 @@ namespace Seldon
     // then symmetrization of pattern and conversion to csr.
     Ptr.Reallocate(n+1);
     Ind.Reallocate(max_nnz);
-    Tint j_begin = 0, j_end = 0;
+    Tint j_end = 0;
     int size_row = 0;
-    Tint j2_begin = 0, j2_end = 0;
+    Tint j2_end = 0;
     Ptr(0) = 0;
     for (int i = 0; i < A.GetM(); i++)
       {
-        j_begin = j_end;
         size_row = 0;
         // We retrieve column numbers.
         while ( (j_end < IndRow.GetM()) && (IndRow(j_end) == i))
@@ -4470,7 +4613,6 @@ namespace Seldon
             j_end++;
           }
 
-        j2_begin = j2_end;
         while ( (j2_end < IndCol2.GetM()) && (IndCol2(j2_end) == i))
           {
             if (IndCol2(j2_end) <= IndRow2(j2_end))

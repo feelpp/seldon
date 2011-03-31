@@ -782,7 +782,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-  WriteText(string FileName) const
+  WriteText(string FileName, bool cplx) const
   {
     ofstream FileStream; FileStream.precision(14);
     FileStream.open(FileName.c_str());
@@ -794,7 +794,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->WriteText(FileStream);
+    this->WriteText(FileStream, cplx);
 
     FileStream.close();
   }
@@ -807,7 +807,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-  WriteText(ostream& FileStream) const
+  WriteText(ostream& FileStream, bool cplx) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -818,36 +818,11 @@ namespace Seldon
 #endif
 
     // conversion in coordinate format (1-index convention)
-    IVect IndRow, IndCol; Vector<T> Value;
     const Matrix<T, Prop, Storage, Allocator>& leaf_class =
       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this);
 
-    ConvertMatrix_to_Coordinates(leaf_class, IndRow, IndCol,
-				 Value, 1, true);
-
-    for (int i = 0; i < IndRow.GetM(); i++)
-      FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
-    
-    // if last element a_{m,n} does not exist, we add a 0 value
-    int m = Storage::GetFirst(this->m_, this->n_);
-    int n = Storage::GetSecond(this->m_, this->n_);
-    if ( (m > 0) && (n > 0) )
-      {
-	bool presence_last_elt = false;
-	if (this->val_(m-1).GetM() > 0)
-	  {
-	    int p = this->val_(m-1).GetM();
-	    if (this->val_(m-1).Index(p-1) == n-1)
-	      presence_last_elt = true;
-	  }
-	
-	if (!presence_last_elt)
-	  {
-	    T zero;
-	    SetComplexZero(zero);
-	    FileStream << this->m_ << " " << this->n_ << " " << zero << '\n';
-	  }
-      }
+    T zero; int index = 1;
+    WriteCoordinateMatrix(leaf_class, FileStream, zero, index, cplx);
   }
 
 
@@ -927,7 +902,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-  ReadText(string FileName)
+  ReadText(string FileName, bool cplx)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -939,7 +914,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->ReadText(FileStream);
+    this->ReadText(FileStream, cplx);
 
     FileStream.close();
   }
@@ -952,13 +927,13 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-  ReadText(istream& FileStream)
+  ReadText(istream& FileStream, bool cplx)
   {
     Matrix<T, Prop, Storage, Allocator>& leaf_class =
       static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
     
     T zero; int index = 1;
-    ReadCoordinateMatrix(leaf_class, FileStream, zero, index);
+    ReadCoordinateMatrix(leaf_class, FileStream, zero, index, -1, cplx);
   }
 
 

@@ -133,12 +133,12 @@ namespace Seldon
     void Print() const;
     void Write(string FileName) const;
     void Write(ostream& FileStream) const;
-    void WriteText(string FileName) const;
-    void WriteText(ostream& FileStream) const;
+    void WriteText(string FileName, bool cplx = false) const;
+    void WriteText(ostream& FileStream, bool cplx = false) const;
     void Read(string FileName);
     void Read(istream& FileStream);
-    void ReadText(string FileName);
-    void ReadText(istream& FileStream);
+    void ReadText(string FileName, bool cplx = false);
+    void ReadText(istream& FileStream, bool cplx = false);
   };
 
 
@@ -198,13 +198,24 @@ namespace Seldon
   void ReadCoordinateMatrix(istream& FileStream,
                             Vector<Tint, VectFull, AllocInt>& row_numbers,
                             Vector<Tint, VectFull, AllocInt>& col_numbers,
-                            Vector<T, VectFull, Allocator>& values);
+                            Vector<T, VectFull, Allocator>& values,
+                            bool cplx = false);
   
   template<class Matrix1, class T>
   void ReadCoordinateMatrix(Matrix1& A, istream& FileStream, T& zero,
-                            int index = 1, int nnz = -1);
+                            int index = 1, int nnz = -1, bool cplx = false);
 
+  template<class Tint, class AllocInt, class T, class Allocator>
+  void WriteCoordinateMatrix(ostream& FileStream,
+                            const Vector<Tint, VectFull, AllocInt>& row_numbers,
+                            const Vector<Tint, VectFull, AllocInt>& col_numbers,
+                            const Vector<T, VectFull, Allocator>& values,
+                            bool cplx = false);
   
+  template<class Matrix1, class T>
+  void WriteCoordinateMatrix(const Matrix1& A, ostream& FileStream, T& zero,
+                             int index = 1, bool cplx = false);
+
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_SPARSE_HXX

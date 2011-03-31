@@ -32,41 +32,184 @@ namespace Seldon
     distributed on the Matrix Market, http://math.nist.gov/MatrixMarket/. A
     file from Matrix Market is associated with a type encoded in three
     characters (which is usually its extension). The supported types have:
-    - 'R' (real) or 'P' (pattern) as first character; complex-valued matrices
-    ('C') are not supported;
-    - 'U' (unsymmetric) or 'R' (rectangular) as second character; 'S'
-    (symmetric), 'H' (Hermitian) and 'Z' (skew symmetric) are not supported;
+    - 'R' (real), 'P' (pattern), or 'C' (complex) as first character
+    - 'U' (unsymmetric), 'S' (symmetric) or 'R' (rectangular) as second character;
+    'H' (Hermitian) and 'Z' (skew symmetric) are not supported;
     - 'A' (assembled) as third character; 'E' (elemental) is not supported.
     \param[in] filename path to the file that contains the matrix.
     \param[out] A the matrix to be structured and filled with the values of \a
     filename.
   */
-  template <class Prop, class Allocator>
+  template <class T, class Prop, class Allocator>
   void ReadHarwellBoeing(string filename,
-                         Matrix<float, Prop, ColSparse, Allocator>& A)
+                         Matrix<T, Prop, ColSparse, Allocator>& A)
   {
     ReadHarwellBoeing(filename, "real", "general", A);
   }
 
 
-  //! \copydoc ReadHarwellBoeing(string filename, Matrix<float, Prop, ColSparse, Allocator>& A)
-  template <class Prop, class Allocator>
+  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  template <class T, class Prop, class Allocator>
   void ReadHarwellBoeing(string filename,
-                         Matrix<double, Prop, ColSparse, Allocator>& A)
+                         Matrix<complex<T>, Prop, ColSparse, Allocator>& A)
   {
-    ReadHarwellBoeing(filename, "real", "general", A);
+    ReadHarwellBoeing(filename, "complex", "general", A);
   }
 
+  
+  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  template <class T, class Prop, class Allocator>
+  void ReadHarwellBoeing(string filename,
+                         Matrix<T, Prop, RowSymSparse, Allocator>& A)
+  {
+    ReadHarwellBoeing(filename, "real", "symmetric", A);
+  }
 
+  
+  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  template <class T, class Prop, class Allocator>
+  void ReadHarwellBoeing(string filename,
+                         Matrix<complex<T>, Prop, RowSymSparse, Allocator>& A)
+  {
+    ReadHarwellBoeing(filename, "complex", "symmetric", A);
+  }
+
+  
+  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  template <class T, class T2, class Storage, class Allocator>
+  void ReadHarwellBoeing(string filename, const T2& val, 
+                         Matrix<T, Symmetric, Storage, Allocator>& A)
+  {  
+    Matrix<T2, Symmetric, RowSymSparse, Allocator> B;
+    ReadHarwellBoeing(filename, "real", "symmetric", B);       
+    Copy(B, A);
+  }
+  
+  
+  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  template <class T, class T2, class Storage, class Allocator>
+  void ReadHarwellBoeing(string filename, const T2& val, 
+                         Matrix<T, General, Storage, Allocator>& A)
+  {
+    Matrix<T2, General, ColSparse, Allocator> B;
+    ReadHarwellBoeing(filename, "real", "general", B);
+    Copy(B, A);
+  }
+  
+  
+  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  template <class T, class T2, class Storage, class Allocator>
+  void ReadHarwellBoeing(string filename, const complex<T2>& val, 
+                         Matrix<T, Symmetric, Storage, Allocator>& A)
+  {  
+    Matrix<complex<T2>, Symmetric, RowSymSparse, Allocator> B;
+    ReadHarwellBoeing(filename, "complex", "symmetric", B);       
+    Copy(B, A);
+  }
+  
+  
+  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  template <class T, class T2, class Storage, class Allocator>
+  void ReadHarwellBoeing(string filename, const complex<T2>& val, 
+                         Matrix<T, General, Storage, Allocator>& A)
+  {
+    Matrix<complex<T2>, General, ColSparse, Allocator> B;
+    ReadHarwellBoeing(filename, "complex", "general", B);
+    Copy(B, A);
+  }
+  
+  
+  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  template <class T, class Prop, class Storage, class Allocator>
+  void ReadHarwellBoeing(string filename,
+                         Matrix<T, Prop, Storage, Allocator>& A)
+  {
+    typename Matrix<T, Prop, Storage, Allocator>::entry_type val;
+    ReadHarwellBoeing(filename, val, A);
+  }
+  
+  
+  template<class T>
+  void ReadComplexValuesHarwell(int Nnonzero, int Nline_val, int line_width_val,
+                                int element_width_val,
+                                istream& input_stream, T* A_data)
+  {
+    string line, value;
+    string::size_type pos;
+    int index = 0;
+    for (int i = 0; i < Nline_val; i++)
+      {
+        getline(input_stream, line);
+        int k = 0;
+        for (int j = 0; j < line_width_val; j++)
+          {
+            value = line.substr(k, element_width_val);
+            pos = value.find('D');
+            if (pos != string::npos)
+              value[pos] = 'E';
+            
+            istringstream(value) >> A_data[index];
+            index++;
+            if (index == Nnonzero)
+              // So as not to read more elements than actually available
+              // on the line.
+              break;
+            k += element_width_val;
+          }
+        if (index == Nnonzero)
+          break;
+      }
+  }
+  
+  
+  template<class T>
+  void ReadComplexValuesHarwell(int Nnonzero, int Nline_val, int line_width_val,
+                                int element_width_val,
+                                istream& input_stream, complex<T>* A_data)
+  {
+    string line, value;
+    string::size_type pos;
+    int index = 0, nb = 0; T a, b(0);
+    for (int i = 0; i < Nline_val; i++)
+      {
+        getline(input_stream, line);
+        int k = 0;
+        for (int j = 0; j < line_width_val; j++)
+          {
+            a = b;
+            value = line.substr(k, element_width_val);
+            pos = value.find('D');
+            if (pos != string::npos)
+              value[pos] = 'E';
+            
+            istringstream(value) >> b;
+            if (index%2 == 1)
+              {
+                A_data[nb] = complex<T>(a, b);
+                nb++;
+              }
+            
+            index++;
+            if (index == 2*Nnonzero)
+              // So as not to read more elements than actually available
+              // on the line.
+              break;
+            k += element_width_val;
+          }
+        if (index == 2*Nnonzero)
+          break;
+      }
+  }
+  
+  
   //! Reads a sparse matrix in a file in Harwell-Boeing format.
   /*! This functions was written to read the files in Harwell-Boeing format as
     distributed on the Matrix Market, http://math.nist.gov/MatrixMarket/. A
     file from Matrix Market is associated with a type encoded in three
     characters (which is usually its extension). The supported types have:
-    - 'R' (real) or 'P' (pattern) as first character; complex-valued matrices
-    ('C') are not supported;
-    - 'U' (unsymmetric) or 'R' (rectangular) as second character; 'S'
-    (symmetric), 'H' (Hermitian) and 'Z' (skew symmetric) are not supported;
+    - 'R' (real), 'P' (pattern) or 'C' (complex) as first character;
+    - 'U' (unsymmetric), 'S' (symmetric) or 'R' (rectangular) as second character;
+     'H' (Hermitian) and 'Z' (skew symmetric) are not supported;
     - 'A' (assembled) as third character; 'E' (elemental) is not supported.
     \param[in] filename path to the file that contains the matrix.
     \param[in] value_type the type of involved data: only "real" is supported.
@@ -110,11 +253,20 @@ namespace Seldon
     // Second line.
     int Nline_ptr, Nline_ind, Nline_val, Nline_rhs;
     input_stream >> i >> Nline_ptr >> Nline_ind >> Nline_val >> Nline_rhs;
-
+    
     // Third line.
     string type;
     int Nelemental;
     input_stream >> type >> Nrow >> Ncol >> Nnonzero >> Nelemental;
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is still in good shape.
+    if (!input_stream.good())
+      throw IOError("ReadHarwellBoeing(string filename, "
+                    "Matrix& A, string value_type, string matrix_type)",
+                    "Unable to read integers in file \""
+                    + filename + "\".");
+#endif
 
     if (type.size() != 3)
       throw WrongArgument("ReadHarwellBoeing(string filename, "
@@ -132,12 +284,6 @@ namespace Seldon
                           "The first character of that type must be 'R', 'C' "
                           "(not supported anyway) or 'P'.");
 
-    if (type.substr(0, 1) == "C")
-      throw WrongArgument("ReadHarwellBoeing(string filename, "
-                          "Matrix& A, string value_type, string matrix_type)",
-                          "File \"" + filename + "\" contains a "
-                          "complex-valued matrix, which is not supported.");
-
     if (type.substr(0, 1) == "R" && value_type != "real")
       throw WrongArgument("ReadHarwellBoeing(string filename, "
                           "Matrix& A, string value_type, string matrix_type)",
@@ -145,6 +291,13 @@ namespace Seldon
                           "matrix, while the input matrix 'A' is not "
                           "declared as such.");
 
+    if (type.substr(0, 1) == "C" && value_type != "complex")
+      throw WrongArgument("ReadHarwellBoeing(string filename, "
+                          "Matrix& A, string value_type, string matrix_type)",
+                          "File \"" + filename + "\" contains a complex-valued "
+                          "matrix, while the input matrix 'A' is not "
+                          "declared as such.");
+    
     if (type.substr(1, 1) == "H")
       throw WrongArgument("ReadHarwellBoeing(string filename, "
                           "Matrix& A, string value_type, string matrix_type)",
@@ -156,14 +309,8 @@ namespace Seldon
                           "Matrix& A, string value_type, string matrix_type)",
                           "File \"" + filename + "\" contains a skew "
                           "symmetric matrix, which is not supported.");
-
-    if (type.substr(1, 1) == "S")
-      throw WrongArgument("ReadHarwellBoeing(string filename, "
-                          "Matrix& A, string value_type, string matrix_type)",
-                          "File \"" + filename + "\" contains a "
-                          "symmetric matrix, which is not supported.");
-
-    if (Nelemental != 0 || type.substr(2, 1) == "E")
+    
+    if (type.substr(2, 1) == "E")
       throw WrongArgument("ReadHarwellBoeing(string filename, "
                           "Matrix& A, string value_type, string matrix_type)",
                           "File \"" + filename + "\" contains an elemental "
@@ -173,21 +320,38 @@ namespace Seldon
 
     // Fourth line.
     getline(input_stream, line);
-    int line_width_ptr, element_width_ptr, line_width_ind, element_width_ind;
-    element = line.substr(0, 16);
-    sscanf(element.c_str(), "(%dI%d)", &line_width_ptr, &element_width_ptr);
-    element = line.substr(16, 16);
-    sscanf(element.c_str(), "(%dI%d)", &line_width_ind, &element_width_ind);
+    int line_width_ptr(0), element_width_ptr(0);
+    int line_width_ind(0), element_width_ind(0);
+    string::size_type pos1 = line.find('(', 0);
+    string::size_type pos2 = line.find('I', 0);
+    if ((pos2 < 16) && (pos1 < pos2))
+      line_width_ptr = to_num<int>(line.substr(pos1+1, pos2-pos1-1));
+    
+    pos1 = pos2;
+    pos2 = line.find(')', 0);
+    if ((pos2 < 16) && (pos1 < pos2))
+      element_width_ptr = to_num<int>(line.substr(pos1+1, pos2-pos1-1));
+
+    pos1 = line.find('(', 16);
+    pos2 = line.find('I', 16);
+    if ((pos2 < 32) && (pos1 < pos2))
+      line_width_ind = to_num<int>(line.substr(pos1+1, pos2-pos1-1));
+
+    pos1 = pos2;
+    pos2 = line.find(')', 16);
+    if ((pos2 < 32) && (pos1 < pos2))
+      element_width_ind = to_num<int>(line.substr(pos1+1, pos2-pos1-1));
+    
     int line_width_val = 0;
     int element_width_val = 0;
     if (type.substr(0, 1) != "P")
       {
-        element = line.substr(32, 16);
+        element = line.substr(32, 20);
 
         // Splits the format to retrieve the useful widths. This part is
         // tricky because no parsing (in C++) of Fortran format was found.
-        vector<int> vect;
-        string delimiter = " (ABEFGILOPZ*.)";
+        Vector<int> vect;
+        string delimiter = " (ABDEFGILOPZ*.)";
         string tmp_str;
         int tmp_int;
         string::size_type index_beg = element.find_first_not_of(delimiter);
@@ -199,21 +363,28 @@ namespace Seldon
                                      index_end == string::npos ?
                                      string::npos : (index_end-index_beg));
             istringstream(tmp_str) >> tmp_int;
-            vect.push_back(tmp_int);
+            vect.PushBack(tmp_int);
             index_beg = element.find_first_not_of(delimiter, index_end);
           }
-
-        if (vect.size() < 3)
+        
+        if (vect.GetM() < 3)
           throw WrongArgument("ReadHarwellBoeing(string filename, Matrix& A, "
                               "string value_type, string matrix_type)",
                               "File \"" + filename + "\" contains values "
                               "written in format \"" + element + "\", which "
                               "could not be parsed.");
 
-        line_width_val = vect[vect.size() - 3];
-        element_width_val = vect[vect.size() - 2];
+        line_width_val = vect(vect.GetM() - 3);
+        element_width_val = vect(vect.GetM() - 2);
       }
 
+    if ((line_width_ptr == 0) || (element_width_ptr == 0) ||
+        (line_width_ind == 0) || (element_width_ind == 0) ||
+        (line_width_val == 0) || (element_width_val == 0) )
+      throw WrongArgument("ReadHarwellBoeing(string filename, Matrix& A, "
+                          "string value_type, string matrix_type)",
+                          "Failed to read formats in file"+filename);
+    
     // Fifth header line, if any: ignored. RHS are not read.
     if (Nline_rhs != 0)
       getline(input_stream, line);
@@ -284,6 +455,7 @@ namespace Seldon
         for (j = 0; j < line_width_ptr; j++)
           {
             istringstream(line.substr(k, element_width_ptr)) >> A_ptr[index];
+            
             // The indexes are 1-based, so this corrects it:
             A_ptr[index]--;
             index++;
@@ -317,7 +489,7 @@ namespace Seldon
         if (index == Nnonzero)
           break;
       }
-
+    
     /*** Reads the values ***/
 
     if (type.substr(0, 1) == "P")
@@ -326,24 +498,8 @@ namespace Seldon
     else
       {
         index = 0;
-        for (i = 0; i < Nline_val; i++)
-          {
-            getline(input_stream, line);
-            k = 0;
-            for (j = 0; j < line_width_val; j++)
-              {
-                istringstream(line.substr(k, element_width_val))
-                  >> A_data[index];
-                index++;
-                if (index == Nnonzero)
-                  // So as not to read more elements than actually available
-                  // on the line.
-                  break;
-                k += element_width_val;
-              }
-            if (index == Nnonzero)
-              break;
-          }
+        ReadComplexValuesHarwell(Nnonzero, Nline_val, line_width_val,
+                                 element_width_val, input_stream, A_data);
       }
 
 #ifdef SELDON_CHECK_IO
@@ -394,15 +550,23 @@ namespace Seldon
   }
   
   
+  //! A is written in Harwell-Boeing file
   template<class T, class Prop, class Storage, class Allocator>
   void WriteHarwellBoeing(const Matrix<T, Prop, Storage, Allocator>& A,
-                          const string& file_name, bool complex)
+                          const string& file_name)
   {
-    // converting to CSR
-    IVect Ptr, Ind;
-    Vector<T> Val;
-    General sym;
-    ConvertToCSC(A, sym, Ptr, Ind, Val);
+    typedef typename Matrix<T, Prop, Storage, Allocator>::entry_type Tcplx;
+    typedef typename ClassComplexType<T>::Treal Treal;
+    bool complex = ( sizeof(Tcplx)/sizeof(Treal) == 2);
+    
+    // converting to CSC
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<Tcplx> Val;
+    Prop sym;
+    if (IsSymmetricMatrix(A))
+      ConvertToCSR(A, sym, Ptr, Ind, Val);
+    else
+      ConvertToCSC(A, sym, Ptr, Ind, Val);
     
     // number of columns and non-zero entries
     int nnz = Val.GetM();
@@ -411,6 +575,13 @@ namespace Seldon
     
     // First line
     ofstream file_out(file_name.data());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!file_out.good())
+      throw IOError("WriteHarwellBoeing(const Matrix& A, string filename)",
+                    "Unable to open file \"" + file_name + "\".");
+#endif
     
     string title("Seldon");
     string key("S0000008");
@@ -459,7 +630,12 @@ namespace Seldon
       mxtype[0] = 'R';
     
     if (m == n)
-      mxtype[1] = 'U';
+      {
+        if (IsSymmetricMatrix(A))
+          mxtype[1] = 'S';
+        else
+          mxtype[1] = 'U';
+      }
     else
       mxtype[1] = 'R';
     
@@ -508,22 +684,145 @@ namespace Seldon
   }
 
   
-  //! A is written in Harwell-Boeing file (.rua extension)
-  template<class T, class Prop, class Storage, class Allocator>
-  void WriteHarwellBoeing(const Matrix<T, Prop, Storage, Allocator>& A,
-                          const string& file_name)
+  //! Reads a matrix from a Matrix-Market file
+  template <class T, class Prop, class Storage, class Allocator>
+  void ReadMatrixMarket(string filename,
+                        Matrix<T, Prop, Storage, Allocator>& A)
   {
-    WriteHarwellBoeing(A, file_name, false);
+    typedef typename Matrix<T, Prop, Storage, Allocator>::entry_type Tcplx;
+    typedef typename ClassComplexType<T>::Treal Treal;
+    bool complex = ( sizeof(Tcplx)/sizeof(Treal) == 2);
+    bool symmetric = IsSymmetricMatrix(A);
+    
+    ifstream input_stream(filename.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!input_stream.good())
+      throw IOError("ReadMatrixMarket(string filename, Matrix& A)",
+                    "Unable to read file \"" + filename + "\".");
+#endif
+    
+    // first line
+    string line, word1, word2, storage_type, value_type, matrix_type;
+    getline(input_stream, line);
+    
+    istringstream header(line);
+    header >> word1 >> word2 >> storage_type >> value_type >> matrix_type;
+    
+    if (storage_type != "coordinate")
+      throw WrongArgument("ReadMatrixMarket(string filename, Matrix& A)",
+                          "The storage should be coordinate in the file");
+    
+    if ( complex && (value_type != "complex") )
+      throw WrongArgument("ReadMatrixMarket(string filename, Matrix& A)",
+                          "The matrix should contain complex values");
+
+    if ( !complex && (value_type != "real") )
+      throw WrongArgument("ReadMatrixMarket(string filename, Matrix& A)",
+                          "The matrix should contain real values");
+    
+    if ( symmetric && (matrix_type != "symmetric") )
+      throw WrongArgument("ReadMatrixMarket(string filename, Matrix& A)",
+                          "Problem of symmetry");
+
+    if ( !symmetric && (matrix_type != "general") )
+      throw WrongArgument("ReadMatrixMarket(string filename, Matrix& A)",
+                          "Problem of symmetry");
+    
+    // skipping commentaries
+    bool comment_line = true;
+    while (comment_line)
+      {
+        getline(input_stream, line);
+        if ( (line.size() > 0) && (line[0] != '%'))
+          comment_line = false;
+        
+        if (input_stream.eof())
+          comment_line = false;
+      }
+    
+    // then reading m, n, nnz
+    int m = 0, n = 0, nnz = 0;
+    istringstream size_stream(line);
+    size_stream >> m >> n >> nnz;
+    
+    // then reading i, j, val
+    Vector<int, VectFull, CallocAlloc<int> > row(nnz), col(nnz);
+    Vector<Tcplx> val(nnz);
+    ReadCoordinateMatrix(input_stream, row, col, val, complex);
+    
+    // closing stream
+    input_stream.close();
+    
+    // for symmetric matrices, row and col are swapped
+    // because Matrix Market is storing lower part whereas Seldon
+    // stores upper part of the matrix
+    A.Reallocate(m, n);
+    if (symmetric)
+      ConvertMatrix_from_Coordinates(col, row, val, A, 1);
+    else
+      ConvertMatrix_from_Coordinates(row, col, val, A, 1);
   }
-
-
-  //! A is written in Harwell-Boeing file (.cua extension)
+  
+  
+  //! writing a matrix in Matrix-Market format
   template<class T, class Prop, class Storage, class Allocator>
-  void WriteHarwellBoeing(const Matrix<complex<T>,
-                          Prop, Storage, Allocator>& A,
-                          const string& file_name)
+  void WriteMatrixMarket(const Matrix<T, Prop, Storage, Allocator>& A,
+                         const string& file_name)
   {
-    WriteHarwellBoeing(A, file_name, true);
+    typedef typename Matrix<T, Prop, Storage, Allocator>::entry_type Tcplx;
+    typedef typename ClassComplexType<T>::Treal Treal;
+    bool complex = ( sizeof(Tcplx)/sizeof(Treal) == 2);
+    bool symmetric = IsSymmetricMatrix(A);
+    
+    ofstream file_out(file_name.data());
+    file_out.precision(15);
+    file_out.setf(ios::scientific);
+        
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!file_out.good())
+      throw IOError("WriteHarwellBoeing(const Matrix& A, string filename)",
+                    "Unable to open file \"" + file_name + "\".");
+#endif
+    
+    file_out << "%%MatrixMarket matrix coordinate ";
+    if (complex)
+      file_out << "complex ";
+    else
+      file_out << "real ";
+    
+    if (symmetric)
+      file_out << "symmetric\n";
+    else
+      file_out << "general\n";
+    
+    // conversion to coordinate format (with 1-index)
+    Vector<int, VectFull, CallocAlloc<int> > row, col;
+    Vector<Tcplx> val;
+    ConvertMatrix_to_Coordinates(A, row, col, val, 1, false);
+    
+    file_out << A.GetM() << "  " << A.GetN() << "  " << val.GetM() << '\n';
+    
+    if (symmetric)
+      {
+        // storing lower part for symmetric matrices
+        int itmp;
+        for (int i = 0; i < row.GetM(); i++)
+          {
+            if (row(i) < col(i))
+              {
+                itmp = row(i);
+                row(i) = col(i);
+                col(i) = itmp;
+              }
+          }
+      }
+    
+    WriteCoordinateMatrix(file_out, row, col, val, complex);
+    
+    file_out.close();
   }
   
 }

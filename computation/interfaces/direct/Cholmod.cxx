@@ -160,10 +160,6 @@ namespace Seldon
   void MatrixCholmod::Mlt(const Transpose_status& TransA,
                           Vector<double, VectFull, Allocator>& X)
   {
-    int trans = 1;
-    if(TransA.Trans())
-      trans = 0;
-
     Vector<double, VectFull, Allocator> Y = X;
 
     cholmod_dense Xchol,Ychol;

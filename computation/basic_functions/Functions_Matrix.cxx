@@ -1079,7 +1079,7 @@ namespace Seldon
     int i, j;
     for (i = 0; i < A.GetM(); i++)
       for (j = 0; j < A.GetN(); j++)
-	B(i, j) += alpha * A(i, j);
+	B.Get(i, j) += alpha * A(i, j);
   }
 
 

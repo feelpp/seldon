@@ -1554,10 +1554,13 @@ namespace Seldon
     The entries are written in coordinate format (row column value)
     1-index convention is used
     \param FileName output file name.
+    \param cplx if true the real part and imaginary part are written
+          in two separate columns, otherwise the complex values
+          are written (a,b)
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::
-  WriteText(string FileName) const
+  WriteText(string FileName, bool cplx) const
   {
     ofstream FileStream; FileStream.precision(14);
     FileStream.open(FileName.c_str());
@@ -1569,7 +1572,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->WriteText(FileStream);
+    this->WriteText(FileStream, cplx);
 
     FileStream.close();
   }
@@ -1581,10 +1584,13 @@ namespace Seldon
     The entries are written in coordinate format (row column value)
     1-index convention is used
     \param FileStream output stream.
+    \param cplx if true the real part and imaginary part are given
+          in two separate columns, otherwise the complex values
+          are written (a,b)
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::
-  WriteText(ostream& FileStream) const
+  WriteText(ostream& FileStream, bool cplx) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -1594,17 +1600,12 @@ namespace Seldon
 		    "Stream is not ready.");
 #endif
 
-    // conversion in coordinate format (1-index convention)
-    IVect IndRow, IndCol; Vector<T> Value;
+    // conversion in coordinate format (1-index convention)    
     const Matrix<T, Prop, Storage, Allocator>& leaf_class =
       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this);
-
-    ConvertMatrix_to_Coordinates(leaf_class, IndRow, IndCol,
-				 Value, 1, true);
-
-    for (int i = 0; i < IndRow.GetM(); i++)
-      FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
-
+    
+    T zero; int index = 1;
+    WriteCoordinateMatrix(leaf_class, FileStream, zero, index, cplx);
   }
   
   
@@ -1678,10 +1679,13 @@ namespace Seldon
   /*!
     Reads the matrix from a file in text format.
     \param FileName input file name.
+    \param cplx if true the real part and imaginary part are given
+          in two separate columns, otherwise the complex values
+          are written (a,b)
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::
-  ReadText(string FileName)
+  ReadText(string FileName, bool cplx)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -1693,7 +1697,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->ReadText(FileStream);
+    this->ReadText(FileStream, cplx);
 
     FileStream.close();
   }
@@ -1706,13 +1710,13 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::
-  ReadText(istream& FileStream)
+  ReadText(istream& FileStream, bool cplx)
   {
     Matrix<T, Prop, Storage, Allocator>& leaf_class =
       static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
     
     T zero; int index = 1;
-    ReadCoordinateMatrix(leaf_class, FileStream, zero, index);
+    ReadCoordinateMatrix(leaf_class, FileStream, zero, index, -1, cplx);
   }
 
   
@@ -1866,18 +1870,55 @@ namespace Seldon
   //////////////////////////
   
   
+  //! reads a real or complex value in a file
+  template<class T>
+  void ReadComplexValue(istream& FileStream, T& entry)
+  {
+    FileStream >> entry;
+  }
+  
+  
+  //! reads a real or complex value in a file
+  template<class T>
+  void ReadComplexValue(istream& FileStream, complex<T>& entry)
+  {
+    T a, b;
+    FileStream >> a >> b;
+    entry = complex<T>(a, b);
+  }
+  
+
+  //! reads a real or complex value in a file
+  template<class T>
+  void WriteComplexValue(ostream& FileStream, const T& entry)
+  {
+    FileStream << entry;
+  }
+  
+  
+  //! reads a real or complex value in a file
+  template<class T>
+  void WriteComplexValue(ostream& FileStream, const complex<T>& entry)
+  {
+    FileStream << real(entry) << " " << imag(entry);
+  }
+  
+  
   //! Reading of matrix in coordinate format
   /*!
     \param FileStream stream where the matrix is read
     \param row_numbers row indices
     \param col_numbers column indices
     \param values
+    \param cplx if true, imaginary and real part are in
+                two separate columns
    */  
   template<class Tint, class AllocInt, class T, class Allocator>
   void ReadCoordinateMatrix(istream& FileStream,
                             Vector<Tint, VectFull, AllocInt>& row_numbers,
                             Vector<Tint, VectFull, AllocInt>& col_numbers,
-                            Vector<T, VectFull, Allocator>& values)
+                            Vector<T, VectFull, Allocator>& values,
+                            bool cplx)
   {
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
@@ -1892,8 +1933,12 @@ namespace Seldon
     while (!FileStream.eof())
       {
 	// new entry is read (1-index)
-	FileStream >> row >> col >> entry;
-
+	FileStream >> row >> col;
+        if (cplx)
+          ReadComplexValue(FileStream, entry);
+        else
+          FileStream >> entry;
+        
 	if (FileStream.fail())
 	  break;
 	else
@@ -1942,12 +1987,14 @@ namespace Seldon
     \param zero type of value to read (double or complex<double>)
     \param index starting index (usually 0 or 1)
     \param nnz number of non-zero entries
+    \param cplx if true, imaginary and real part are in
+                two separate columns
     If nnz is equal to -1, we consider that the number of non-zero entries
     is unknown and is deduced from the number of lines present in the stream
    */
   template<class Matrix1, class T>
   void ReadCoordinateMatrix(Matrix1& A, istream& FileStream, T& zero,
-                            int index, int nnz)
+                            int index, int nnz, bool cplx)
   {
     // previous elements are removed
     A.Clear();
@@ -1961,12 +2008,88 @@ namespace Seldon
         col_numbers.Reallocate(nnz);
       }
     
-    ReadCoordinateMatrix(FileStream, row_numbers, col_numbers, values);
+    ReadCoordinateMatrix(FileStream, row_numbers, col_numbers, values, cplx);
     
     if (row_numbers.GetM() > 0)
       ConvertMatrix_from_Coordinates(row_numbers, col_numbers, values,
                                      A, index);
     
+  }
+
+
+  //! Writes a matrix in coordinate format
+  /*!
+    \param FileStream stream where the matrix is read
+    \param row_numbers row indices
+    \param col_numbers column indices
+    \param values
+    \param cplx if true, imaginary and real part are written in
+                two separate columns
+   */    
+  template<class Tint, class AllocInt, class T, class Allocator>
+  void WriteCoordinateMatrix(ostream& FileStream,
+                             const Vector<Tint, VectFull, AllocInt>& row_numbers,
+                             const Vector<Tint, VectFull, AllocInt>& col_numbers,
+                             const Vector<T, VectFull, Allocator>& values,
+                             bool cplx)
+  {
+    if (cplx)
+      {
+        for (int i = 0; i < row_numbers.GetM(); i++)
+          {
+            FileStream << row_numbers(i) << " " << col_numbers(i) << " ";
+            WriteComplexValue(FileStream, values(i));
+            FileStream << '\n';    
+          }
+      }
+    else
+      {
+        for (int i = 0; i < row_numbers.GetM(); i++)
+          FileStream << row_numbers(i) << " " << col_numbers(i)
+                     << " " << values(i) << '\n';
+      }
+  }
+  
+  
+  //! Writes matrix in coordinate format
+  /*!
+    \param A output matrix
+    \param FileStream stream where the matrix is read
+    \param zero type of value to read (double or complex<double>)
+    \param index starting index (usually 0 or 1)
+    \param cplx if true, imaginary and real part are in
+                two separate columns
+  */
+  template<class Matrix1, class T>
+  void WriteCoordinateMatrix(const Matrix1& A, ostream& FileStream, T& zero,
+                             int index, bool cplx)
+  {
+    // conversion to coordinate format (if symmetric part, lower and upper part
+    // are recovered)
+    Vector<int, VectFull, CallocAlloc<int> > IndRow, IndCol;
+    Vector<T> Value;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol,
+                                 Value, index, true);
+    
+    WriteCoordinateMatrix(FileStream, IndRow, IndCol, Value, cplx);
+    
+    // if last element is not present, 0 is printed
+    int N = IndRow.GetM()-1;
+    int m = A.GetM()-1, n = A.GetN()-1;
+    SetComplexZero(zero);
+    if ( (IndRow(N) != m+index) || (IndCol(N) != n+index))
+      {
+        if (A(m, n) == zero)
+          {
+            FileStream << m+index << " " << n+index << " ";
+            if (cplx)
+              WriteComplexValue(FileStream, zero);
+            else
+              FileStream << zero;
+            
+            FileStream << '\n';
+          }          
+      }
   }
   
 } // namespace Seldon.
