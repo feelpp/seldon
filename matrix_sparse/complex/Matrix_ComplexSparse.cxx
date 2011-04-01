@@ -2728,7 +2728,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ComplexSparse<T, Prop, Storage, Allocator>::
-  WriteText(string FileName) const
+  WriteText(string FileName, bool cplx) const
   {
     ofstream FileStream; FileStream.precision(14);
     FileStream.open(FileName.c_str());
@@ -2740,7 +2740,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->WriteText(FileStream);
+    this->WriteText(FileStream, cplx);
 
     FileStream.close();
   }
@@ -2755,7 +2755,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ComplexSparse<T, Prop, Storage, Allocator>::
-  WriteText(ostream& FileStream) const
+  WriteText(ostream& FileStream, bool cplx) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -2766,16 +2766,11 @@ namespace Seldon
 #endif
 
     // conversion in coordinate format (1-index convention)
-    IVect IndRow, IndCol; Vector<complex<T> > Value;
     const Matrix<T, Prop, Storage, Allocator>& leaf_class =
       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this);
 
-    ConvertMatrix_to_Coordinates(leaf_class, IndRow, IndCol,
-				 Value, 1);
-
-    for (int i = 0; i < IndRow.GetM(); i++)
-      FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
-    
+    complex<T> zero; int index = 1;
+    WriteCoordinateMatrix(leaf_class, FileStream, zero, index, cplx);
   }
   
   
@@ -2858,7 +2853,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
-  ::ReadText(string FileName)
+  ::ReadText(string FileName, bool cplx)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -2870,7 +2865,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->ReadText(FileStream);
+    this->ReadText(FileStream, cplx);
 
     FileStream.close();
   }
@@ -2883,13 +2878,13 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
-  ::ReadText(istream& FileStream)
+  ::ReadText(istream& FileStream, bool cplx)
   {
     Matrix<T, Prop, Storage, Allocator>& leaf_class =
       static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
     
     complex<T> zero; int index = 1;
-    ReadCoordinateMatrix(leaf_class, FileStream, zero, index);
+    ReadCoordinateMatrix(leaf_class, FileStream, zero, index, -1, cplx);
   }
 
   

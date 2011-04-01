@@ -80,7 +80,7 @@ namespace Seldon
   void ReadHarwellBoeing(string filename, const T2& val, 
                          Matrix<T, Symmetric, Storage, Allocator>& A)
   {  
-    Matrix<T2, Symmetric, RowSymSparse, Allocator> B;
+    Matrix<T2, Symmetric, RowSymSparse> B;
     ReadHarwellBoeing(filename, "real", "symmetric", B);       
     Copy(B, A);
   }
@@ -91,7 +91,7 @@ namespace Seldon
   void ReadHarwellBoeing(string filename, const T2& val, 
                          Matrix<T, General, Storage, Allocator>& A)
   {
-    Matrix<T2, General, ColSparse, Allocator> B;
+    Matrix<T2, General, ColSparse> B;
     ReadHarwellBoeing(filename, "real", "general", B);
     Copy(B, A);
   }
@@ -102,7 +102,7 @@ namespace Seldon
   void ReadHarwellBoeing(string filename, const complex<T2>& val, 
                          Matrix<T, Symmetric, Storage, Allocator>& A)
   {  
-    Matrix<complex<T2>, Symmetric, RowSymSparse, Allocator> B;
+    Matrix<complex<T2>, Symmetric, RowSymSparse> B;
     ReadHarwellBoeing(filename, "complex", "symmetric", B);       
     Copy(B, A);
   }
@@ -113,7 +113,7 @@ namespace Seldon
   void ReadHarwellBoeing(string filename, const complex<T2>& val, 
                          Matrix<T, General, Storage, Allocator>& A)
   {
-    Matrix<complex<T2>, General, ColSparse, Allocator> B;
+    Matrix<complex<T2>, General, ColSparse> B;
     ReadHarwellBoeing(filename, "complex", "general", B);
     Copy(B, A);
   }

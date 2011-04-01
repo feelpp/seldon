@@ -79,6 +79,17 @@ namespace Seldon
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
   void
+  ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayColComplexSparse,
+			       Allocator1>& A,
+			       Vector<Tint, VectFull, Allocator2>& IndRow,
+			       Vector<Tint, VectFull, Allocator3>& IndCol,
+			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       int index = 0, bool sym = false);
+
+  
+  template<class T, class Prop, class Allocator1, class Allocator2,
+	   class Tint, class Allocator3, class Allocator4>
+  void
   ConvertMatrix_to_Coordinates(const Matrix<T, Prop, ArrayRowSymComplexSparse,
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
@@ -185,6 +196,142 @@ namespace Seldon
 				 Allocator4>& A,
 				 int index = 0);  
   
+  
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, RowComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<complex<T>, VectFull, Alloc4>& Value);
+  
+  
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ColComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val);
+
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
+                    Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val);
+
+  
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
+                    Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val);
+
+  
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayRowComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<complex<T>, VectFull, Alloc4>& Value);
+  
+  
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayColComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val);
+
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
+                    Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val);
+
+  
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
+                    Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val);
+
+  
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, RowComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val,
+                    bool sym_pat = false);
+
+  
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ColComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    bool sym_pat = false);
+
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
+                    Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val,
+                    bool sym_pat = false);
+
+  
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
+                    Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    bool sym_pat = false);
+  
+  
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayRowComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val,
+                    bool sym_pat = false);
+
+  
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayColComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    bool sym_pat = false);
+
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
+                    Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val,
+                    bool sym_pat = false);
+
+  
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
+                    Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    bool sym_pat = false);
+
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>

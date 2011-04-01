@@ -57,7 +57,7 @@ namespace Seldon
   }
   
   
-    template<class T0, class T1, class T2, class Allocator1, class Allocator2>
+  template<class T0, class T1, class T2, class Allocator1, class Allocator2>
   void Add(const T0& alpha, const Matrix<T1, Symmetric,
 	   ArrayRowSymComplexSparse, Allocator1>& A,
 	   Matrix<T2, Symmetric, ArrayRowSymSparse, Allocator2>& B)
@@ -142,7 +142,7 @@ namespace Seldon
   }
   
   
-    // C = C + complex(A,B)
+  // C = C + complex(A,B)
   template<class T0, class T1, class T2, class T3,
 	   class Allocator1, class Allocator2, class Allocator3>
   void Add(const T0& alpha,

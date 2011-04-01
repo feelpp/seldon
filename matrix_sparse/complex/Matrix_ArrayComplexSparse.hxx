@@ -148,12 +148,12 @@ namespace Seldon
     void Print() const;
     void Write(string FileName) const;
     void Write(ostream& FileStream) const;
-    void WriteText(string FileName) const;
-    void WriteText(ostream& FileStream) const;
+    void WriteText(string FileName, bool cplx = false) const;
+    void WriteText(ostream& FileStream, bool cplx = false) const;
     void Read(string FileName);
     void Read(istream& FileStream);
-    void ReadText(string FileName);
-    void ReadText(istream& FileStream);
+    void ReadText(string FileName, bool cplx = false);
+    void ReadText(istream& FileStream, bool cplx = false);
     
     void Assemble();
     template<class T0>
