@@ -83,22 +83,6 @@ namespace Seldon
 
 
 #ifndef SWIG
-  class ColComplexSparse
-  {
-  public:
-    static int GetFirst(int i, int j);
-    static int GetSecond(int i, int j);
-  };
-
-
-  class RowComplexSparse
-  {
-  public:
-    static int GetFirst(int i, int j);
-    static int GetSecond(int i, int j);
-  };
-
-
   class ColSymSparse
   {
   public:
@@ -108,22 +92,6 @@ namespace Seldon
 
 
   class RowSymSparse
-  {
-  public:
-    static int GetFirst(int i, int j);
-    static int GetSecond(int i, int j);
-  };
-
-
-  class ColSymComplexSparse
-  {
-  public:
-    static int GetFirst(int i, int j);
-    static int GetSecond(int i, int j);
-  };
-
-
-  class RowSymComplexSparse
   {
   public:
     static int GetFirst(int i, int j);
@@ -146,23 +114,7 @@ namespace Seldon
   {
   };
 
-  class ArrayRowComplexSparse : public RowComplexSparse
-  {
-  };
-
-  class ArrayRowSymComplexSparse : public RowSymComplexSparse
-  {
-  };
-
-  class ArrayColComplexSparse : public ColComplexSparse
-  {
-  };
-
-  class ArrayColSymComplexSparse : public ColSymComplexSparse
-  {
-  };
-
-
+  
   ///////////////
   // SYMMETRIC //
   ///////////////

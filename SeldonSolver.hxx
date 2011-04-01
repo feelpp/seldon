@@ -23,7 +23,6 @@
 // additional classes and functions for sparse matrices
 #include "matrix_sparse/Matrix_Conversions.cxx"
 #include "matrix_sparse/Matrix_ArraySparse.cxx"
-#include "matrix_sparse/Matrix_ArrayComplexSparse.cxx"
 #include "matrix_sparse/Permutation_ScalingMatrix.cxx"
 #include "matrix_sparse/Relaxation_MatVect.cxx"
 #include "matrix_sparse/Functions_MatrixArray.cxx"

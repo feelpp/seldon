@@ -101,26 +101,6 @@ namespace Seldon
   }
 
 
-  inline int ColComplexSparse::GetFirst(int i, int j)
-  {
-    return j;
-  }
-  inline int ColComplexSparse::GetSecond(int i, int j)
-  {
-    return i;
-  }
-
-
-  inline int RowComplexSparse::GetFirst(int i, int j)
-  {
-    return i;
-  }
-  inline int RowComplexSparse::GetSecond(int i, int j)
-  {
-    return j;
-  }
-
-
   inline int ColSymSparse::GetFirst(int i, int j)
   {
     return j;
@@ -140,28 +120,7 @@ namespace Seldon
     return j;
   }
 
-
-  inline int ColSymComplexSparse::GetFirst(int i, int j)
-  {
-    return j;
-  }
-  inline int ColSymComplexSparse::GetSecond(int i, int j)
-  {
-    return i;
-  }
-
-
-  inline int RowSymComplexSparse::GetFirst(int i, int j)
-  {
-    return i;
-  }
-  inline int RowSymComplexSparse::GetSecond(int i, int j)
-  {
-    return j;
-  }
-
-
-
+  
   ///////////////
   // SYMMETRIC //
   ///////////////

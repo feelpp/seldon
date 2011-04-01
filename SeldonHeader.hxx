@@ -259,22 +259,6 @@ namespace Seldon
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, RowSymSparse, Allocator>;
 
-  // column-major complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ColComplexSparse, Allocator>;
-
-  // row-major complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, RowComplexSparse, Allocator>;
-
-  // column-major symmetric complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ColSymComplexSparse, Allocator>;
-
-  // row-major symmetric complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, RowSymComplexSparse, Allocator>;
-
   // column-major sparse matrix.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayColSparse, Allocator>;
@@ -291,22 +275,6 @@ namespace Seldon
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayRowSymSparse, Allocator>;
 
-  // column-major complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ColComplexSparse, Allocator>;
-
-  // row-major complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ArrayRowComplexSparse, Allocator>;
-
-  // column-major symmetric complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>;
-
-  // row-major symmetric complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>;
-
   // 3D array.
   template <class T, class Allocator>
   class Array3D;
@@ -322,9 +290,7 @@ namespace Seldon
 #include "matrix/Matrix_Symmetric.hxx"
 #include "matrix/Matrix_Hermitian.hxx"
 #include "matrix_sparse/Matrix_Sparse.hxx"
-#include "matrix_sparse/Matrix_ComplexSparse.hxx"
 #include "matrix_sparse/Matrix_SymSparse.hxx"
-#include "matrix_sparse/Matrix_SymComplexSparse.hxx"
 #include "matrix/Matrix_SymPacked.hxx"
 #include "matrix/Matrix_HermPacked.hxx"
 #include "matrix/Matrix_TriangPacked.hxx"

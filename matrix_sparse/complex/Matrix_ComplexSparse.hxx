@@ -19,34 +19,42 @@
 
 // To be included by Seldon.hxx
 
-#ifndef SELDON_FILE_MATRIX_SYMCOMPLEXSPARSE_HXX
-
-#include "../share/Common.hxx"
-#include "../share/Properties.hxx"
-#include "../share/Storage.hxx"
-#include "../share/Errors.hxx"
-#include "../share/Allocator.hxx"
+#ifndef SELDON_FILE_MATRIX_COMPLEXSPARSE_HXX
 
 namespace Seldon
 {
 
+  class ColComplexSparse
+  {
+  public:
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+  };
 
-  //! Symmetric complex sparse-matrix class.
+
+  class RowComplexSparse
+  {
+  public:
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+  };
+
+
+  //! Complex sparse-matrix class.
   /*!
-    Symmetric sparse matrices are defined by: (1) the number of rows
-    and columns; (2) the number of non-zero entries; (3) an array 'ptr_' of
-    start indices (i.e. indices of the first element of each row or column,
-    depending on the storage); (4) an array 'ind_' of column or row indices
-    of each non-zero entry; (5) values of non-zero entries.\par
+    Sparse matrices are defined by: (1) the number of rows and columns;
+    (2) the number of non-zero entries; (3) an array 'ptr_' of start indices
+    (i.e. indices of the first element of each row or column, depending
+    on the storage); (4) an array 'ind_' of column or row indices of each
+    non-zero entry; (5) values of non-zero entries.\par
     Complex sparse matrices are defined in the same way except that real
     and imaginary parts are splitted. It is as if two matrices were stored.
     There are therefore 6 arrays: 'real_ptr_', 'real_ind_', 'real_data_',
-    'imag_ptr_', 'imag_ind_' and 'imag_data_'.\par
-    Finally, since the matrix is symmetric, only its upper part is stored.
+    'imag_ptr_', 'imag_ind_' and 'imag_data_'.
   */
   template <class T, class Prop, class Storage,
 	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
-  class Matrix_SymComplexSparse: public Matrix_Base<T, Allocator>
+  class Matrix_ComplexSparse: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
   public:
@@ -61,7 +69,7 @@ namespace Seldon
 
     // Attributes.
   protected:
-    // Number of non-zero (stored) elements.
+    // Number of non-zero elements.
     int real_nz_;
     int imag_nz_;
     // Index (in data_) of first element stored for each row or column.
@@ -78,24 +86,24 @@ namespace Seldon
     // Methods.
   public:
     // Constructors.
-    Matrix_SymComplexSparse();
-    Matrix_SymComplexSparse(int i, int j);
-    Matrix_SymComplexSparse(int i, int j, int real_nz, int imag_nz);
+    Matrix_ComplexSparse();
+    Matrix_ComplexSparse(int i, int j);
+    Matrix_ComplexSparse(int i, int j, int real_nz, int imag_nz);
     template <class Storage0, class Allocator0,
 	      class Storage1, class Allocator1,
 	      class Storage2, class Allocator2>
-    Matrix_SymComplexSparse(int i, int j,
-			    Vector<T, Storage0, Allocator0>& real_values,
-			    Vector<int, Storage1, Allocator1>& real_ptr,
-			    Vector<int, Storage2, Allocator2>& real_ind,
-			    Vector<T, Storage0, Allocator0>& imag_values,
-			    Vector<int, Storage1, Allocator1>& imag_ptr,
-			    Vector<int, Storage2, Allocator2>& imag_ind);
-    Matrix_SymComplexSparse(const Matrix_SymComplexSparse<T, Prop, Storage,
-			    Allocator>& A);
+    Matrix_ComplexSparse(int i, int j,
+			 Vector<T, Storage0, Allocator0>& real_values,
+			 Vector<int, Storage1, Allocator1>& real_ptr,
+			 Vector<int, Storage2, Allocator2>& real_ind,
+			 Vector<T, Storage0, Allocator0>& imag_values,
+			 Vector<int, Storage1, Allocator1>& imag_ptr,
+			 Vector<int, Storage2, Allocator2>& imag_ind);
+    Matrix_ComplexSparse(const Matrix_ComplexSparse<T, Prop,
+			 Storage, Allocator>& A);
 
     // Destructor.
-    ~Matrix_SymComplexSparse();
+    ~Matrix_ComplexSparse();
     void Clear();
 
     // Memory management.
@@ -119,9 +127,10 @@ namespace Seldon
     void Reallocate(int i, int j, int real_nz, int imag_nz);
     void Resize(int i, int j);
     void Resize(int i, int j, int real_nz, int imag_nz);
-    void Copy(const Matrix_SymComplexSparse<T, Prop, Storage, Allocator>& A);
+    void Copy(const Matrix_ComplexSparse<T, Prop, Storage, Allocator>& A);
 
     // Basic methods.
+    int GetNonZeros() const;
     int GetDataSize() const;
     int* GetRealPtr() const;
     int* GetImagPtr() const;
@@ -148,8 +157,8 @@ namespace Seldon
     const value_type& GetImag(int i, int j) const;
     void Set(int i, int j, const complex<T>& x);
     void AddInteraction(int i, int j, const complex<T>& x);
-    Matrix_SymComplexSparse<T, Prop, Storage, Allocator>&
-    operator= (const Matrix_SymComplexSparse<T, Prop, Storage, Allocator>& A);
+    Matrix_ComplexSparse<T, Prop, Storage, Allocator>&
+    operator= (const Matrix_ComplexSparse<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.
     void Zero();
@@ -170,16 +179,16 @@ namespace Seldon
   };
 
 
-  //! Column-major complex sparse-matrix class.
+  //! Column-major sparse-matrix class.
   template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ColSymComplexSparse, Allocator>:
-    public Matrix_SymComplexSparse<T, Prop, ColSymComplexSparse, Allocator>
+  class Matrix<T, Prop, ColComplexSparse, Allocator>:
+    public Matrix_ComplexSparse<T, Prop, ColComplexSparse, Allocator>
   {
     // typedef declaration.
   public:
     typedef typename Allocator::value_type value_type;
     typedef Prop property;
-    typedef ColSymComplexSparse storage;
+    typedef ColComplexSparse storage;
     typedef Allocator allocator;
 
   public:
@@ -199,16 +208,16 @@ namespace Seldon
   };
 
 
-  //! Row-major complex sparse-matrix class.
+  //! Row-major sparse-matrix class.
   template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, RowSymComplexSparse, Allocator>:
-    public Matrix_SymComplexSparse<T, Prop, RowSymComplexSparse, Allocator>
+  class Matrix<T, Prop, RowComplexSparse, Allocator>:
+    public Matrix_ComplexSparse<T, Prop, RowComplexSparse, Allocator>
   {
     // typedef declaration.
   public:
     typedef typename Allocator::value_type value_type;
     typedef Prop property;
-    typedef RowSymComplexSparse storage;
+    typedef RowComplexSparse storage;
     typedef Allocator allocator;
 
   public:
@@ -230,5 +239,5 @@ namespace Seldon
 
 } // namespace Seldon.
 
-#define SELDON_FILE_MATRIX_SYMCOMPLEXSPARSE_HXX
+#define SELDON_FILE_MATRIX_COMPLEXSPARSE_HXX
 #endif

@@ -23,7 +23,24 @@
 
 namespace Seldon
 {
+  
+  class ArrayRowComplexSparse : public RowComplexSparse
+  {
+  };
 
+  class ArrayRowSymComplexSparse : public RowSymComplexSparse
+  {
+  };
+
+  class ArrayColComplexSparse : public ColComplexSparse
+  {
+  };
+
+  class ArrayColSymComplexSparse : public ColSymComplexSparse
+  {
+  };
+
+  
   //! Sparse Array-matrix class.
   /*!
     Sparse matrices are defined by: (1) the number of rows and columns;

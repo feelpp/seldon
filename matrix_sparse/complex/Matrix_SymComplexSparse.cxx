@@ -25,7 +25,27 @@
 namespace Seldon
 {
 
+  
+  inline int ColSymComplexSparse::GetFirst(int i, int j)
+  {
+    return j;
+  }
+  inline int ColSymComplexSparse::GetSecond(int i, int j)
+  {
+    return i;
+  }
 
+
+  inline int RowSymComplexSparse::GetFirst(int i, int j)
+  {
+    return i;
+  }
+  inline int RowSymComplexSparse::GetSecond(int i, int j)
+  {
+    return j;
+  }
+
+  
   /****************
    * CONSTRUCTORS *
    ****************/
