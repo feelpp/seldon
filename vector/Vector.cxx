@@ -721,7 +721,9 @@ namespace Seldon
   template <class T, class Allocator>
   void Vector<T, VectFull, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     for (int i = 0; i < this->m_; i++)
       this->data_[i] = rand();
   }

@@ -1287,6 +1287,9 @@ namespace Seldon
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
+    srand(time(NULL));
+#endif
     for (int i = 0; i < Storage::GetFirst(this->m_, this->n_); i++)
       {
 	val_real_(i).FillRand();

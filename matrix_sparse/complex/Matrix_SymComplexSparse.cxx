@@ -2631,7 +2631,9 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     for (int i = 0; i < this->real_nz_; i++)
       this->real_data_[i] = rand();
 

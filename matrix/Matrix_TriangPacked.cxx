@@ -656,7 +656,9 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_TriangPacked<T, Prop, Storage, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     for (int i = 0; i < this->GetDataSize(); i++)
       this->data_[i] = rand();
   }

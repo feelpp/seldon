@@ -1929,6 +1929,7 @@ namespace Seldon
   }
 
   
+  //! Conversion from ArrayRowSymSparse to ColSparse
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void Copy(const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
@@ -2675,22 +2676,6 @@ namespace Seldon
   }
   
   
-  template<class T, class Prop, class Allocator>
-  void Copy(const Matrix<T, Prop, ArrayRowSparse, Allocator>& A,
-	    Matrix<T, Prop, ArrayRowSparse, Allocator>& B)
-  {
-    B = A;
-  }
-    
-
-  template<class T, class Prop, class Allocator>
-  void Copy(const Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A,
-	    Matrix<T, Prop, ArrayRowSymSparse, Allocator>& B)
-  {
-    B = A;
-  }
-  
-  
   //! From ArrayRowSparse to ArrayRowSparse (T0 and T1 different)
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
@@ -2719,7 +2704,7 @@ namespace Seldon
   void Copy(const Matrix<T0, Prop0, ArrayRowSparse, Allocator0>& A,
 	    Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& B)
   {
-    abort();
+    throw Undefined("Copy", "not implemented for these storages");
   }
 
   

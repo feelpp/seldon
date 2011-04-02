@@ -1389,7 +1389,9 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     for (int i = 0; i < this->GetDataSize(); i++)
       this->data_[i] = rand();
   }
@@ -1417,7 +1419,9 @@ namespace Seldon
     set<pair<int, int> > skeleton;
     set<pair<int, int> >::iterator it;
 
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     
     // generation of triplet (i, j, value)
     while (static_cast<int>(skeleton.size()) != Nelement)
@@ -1462,7 +1466,10 @@ namespace Seldon
     Vector<T> value(Nelement);
     value.Fill(x);
 
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
+    
     for (int l = 0; l < Nelement; l++)
       {
         i(l) = rand() % this->m_;

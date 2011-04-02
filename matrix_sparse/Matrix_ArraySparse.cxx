@@ -712,6 +712,9 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
+    srand(time(NULL));
+#endif
     for (int i = 0; i < val_.GetM(); i++)
       val_(i).FillRand();
   }
