@@ -1098,7 +1098,6 @@ namespace Seldon
       Ptr(IndCol(i) + 1)++;
 
     int nb_new_val = 0;
-
     if (sym_pat)
       {
         // Counting entries that are on the symmetrized pattern without being
@@ -1139,47 +1138,48 @@ namespace Seldon
         // Changing 'IndRow' and 'Val', and assembling the pattern.
         Vector<Tint, VectFull, Alloc3> OldInd(IndRow);
         Vector<T, VectFull, Alloc4> OldVal(Val);
-        IndRow.Reallocate(nnz + nb_new_val);
+	IndRow.Reallocate(nnz + nb_new_val);
         Val.Reallocate(nnz + nb_new_val);
         int k = 0, nb = 0;
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i <= n; i++)
           {
-            while (k < IndCol.GetM() && IndCol(k) < i)
+	    while (k < IndCol.GetM() && IndCol(k) < i)
               {
                 IndRow(nb) = OldInd(k);
                 Val(nb) = OldVal(k);
-                nb++;
+		nb++;
                 k++;
               }
-
-            for (int j = ptr_[i]; j < ptr_[i+1]; j++)
-              {
-                int irow = ind_[j];
-                while (k < IndCol.GetM() && IndCol(k) == i
-                       && OldInd(k) < irow)
-                  {
-                    IndRow(nb) = OldInd(k);
-                    Val(nb) = OldVal(k);
-                    nb++;
-                    k++;
-                  }
-
-                if (k < IndCol.GetM() && IndCol(k) == i && OldInd(k) == irow)
-                  {
-                    // Already existing entry.
-                    IndRow(nb) = OldInd(k);
-                    Val(nb) = OldVal(k);
-                    nb++;
-                    k++;
-                  }
-                else
-                  {
-                    // New entry (null).
-                    IndRow(nb) = irow;
-                    Val(nb) = 0;
-                    nb++;
-                  }
-              }
+	    
+	    if (i < n)
+	      for (int j = ptr_[i]; j < ptr_[i+1]; j++)
+		{
+		  int irow = ind_[j];
+		  while (k < IndCol.GetM() && IndCol(k) == i
+			 && OldInd(k) < irow)
+		    {
+		      IndRow(nb) = OldInd(k);
+		      Val(nb) = OldVal(k);
+		      nb++;
+		      k++;
+		    }
+		  
+		  if (k < IndCol.GetM() && IndCol(k) == i && OldInd(k) == irow)
+		    {
+		      // Already existing entry.
+		      IndRow(nb) = OldInd(k);
+		      Val(nb) = OldVal(k);
+		      nb++;
+		      k++;
+		    }
+		  else
+		    {
+		      // New entry (null).
+		      IndRow(nb) = irow;
+		      Val(nb) = 0;
+		      nb++;
+		    }
+		}
           }
       }
   }
@@ -1213,7 +1213,6 @@ namespace Seldon
       Ptr(IndCol(i) + 1)++;
 
     int nb_new_val = 0;
-
     if (sym_pat)
       {
         // Counting entries that are on the symmetrized pattern without being
@@ -1224,7 +1223,7 @@ namespace Seldon
             while (k < IndCol.GetM() && IndCol(k) < i)
               k++;
 
-            for (int j = 0; j < A.GetRowSize(i); j++)
+	    for (int j = 0; j < A.GetRowSize(i); j++)
               {
                 int irow = A.Index(i, j);
                 while (k < IndCol.GetM() && IndCol(k) == i
@@ -1241,14 +1240,14 @@ namespace Seldon
                     nb_new_val++;
                   }
               }
-          }
+	  }
       }
-
+    
     // Accumulation to get pointer array.
     Ptr(0) = 0;
     for (int i = 0; i < n; i++)
       Ptr(i + 1) += Ptr(i);
-
+    
     if (sym_pat && (nb_new_val > 0))
       {
         // Changing 'IndRow' and 'Val', and assembling the pattern.
@@ -1257,7 +1256,7 @@ namespace Seldon
         IndRow.Reallocate(nnz + nb_new_val);
         Val.Reallocate(nnz + nb_new_val);
         int k = 0, nb = 0;
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i <= n; i++)
           {
             while (k < IndCol.GetM() && IndCol(k) < i)
               {
@@ -1266,35 +1265,36 @@ namespace Seldon
                 nb++;
                 k++;
               }
-
-            for (int j = 0; j < A.GetRowSize(i); j++)
-              {
-                int irow = A.Index(i, j);
-                while (k < IndCol.GetM() && IndCol(k) == i
-                       && OldInd(k) < irow)
-                  {
-                    IndRow(nb) = OldInd(k);
-                    Val(nb) = OldVal(k);
-                    nb++;
-                    k++;
-                  }
-
-                if (k < IndCol.GetM() && IndCol(k) == i && OldInd(k) == irow)
-                  {
-                    // Already existing entry.
-                    IndRow(nb) = OldInd(k);
-                    Val(nb) = OldVal(k);
-                    nb++;
-                    k++;
-                  }
-                else
-                  {
-                    // New entry (null).
-                    IndRow(nb) = irow;
-                    Val(nb) = 0;
-                    nb++;
-                  }
-              }
+	    
+	    if (i < n)
+	      for (int j = 0; j < A.GetRowSize(i); j++)
+		{
+		  int irow = A.Index(i, j);
+		  while (k < IndCol.GetM() && IndCol(k) == i
+			 && OldInd(k) < irow)
+		    {
+		      IndRow(nb) = OldInd(k);
+		      Val(nb) = OldVal(k);
+		      nb++;
+		      k++;
+		    }
+		  
+		  if (k < IndCol.GetM() && IndCol(k) == i && OldInd(k) == irow)
+		    {
+		      // Already existing entry.
+		      IndRow(nb) = OldInd(k);
+		      Val(nb) = OldVal(k);
+		      nb++;
+		      k++;
+		    }
+		  else
+		    {
+		      // New entry (null).
+		      IndRow(nb) = irow;
+		      Val(nb) = 0;
+		      nb++;
+		    }
+		}
           }
       }
   }
@@ -1315,25 +1315,39 @@ namespace Seldon
     int* ind_ = A.GetInd();
     T* data_ = A.GetData();
     
-    // Conversion in coordinate format.
-    Vector<Tint, VectFull, CallocAlloc<Tint> > IndCol;
-    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
-
-    // Sorting with respect to row numbers.
-    Sort(IndRow, IndCol, Val);
-
-    // Constructing pointer array 'Ptr'.
-    Ptr.Reallocate(n + 1);
-    Ptr.Fill(0);
-    
-    // Counting non-zero entries per column.
-    for (int i = 0; i < nnz; i++)
-      Ptr(IndCol(i) + 1)++;
-
-    int nb_new_val = 0;
-    
-    if (sym_pat)
+    if (!sym_pat)
       {
+	// direct conversion
+	Ptr.Reallocate(n+1);
+	IndRow.Reallocate(nnz);
+	Val.Reallocate(nnz);
+	for (int i = 0; i <= n; i++)
+	  Ptr(i) = ptr_[i];
+	
+	for (int i = 0; i < nnz; i++)
+	  {
+	    IndRow(i) = ind_[i];
+	    Val(i) = data_[i];
+	  }
+      }
+    else
+      {
+	// Conversion in coordinate format.
+	Vector<Tint, VectFull, CallocAlloc<Tint> > IndCol;
+	ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
+	
+	// Sorting with respect to row numbers.
+	Sort(IndRow, IndCol, Val);
+	
+	// Constructing pointer array 'Ptr'.
+	Ptr.Reallocate(n + 1);
+	Ptr.Fill(0);
+	
+	// Counting non-zero entries per column.
+	for (int i = 0; i < nnz; i++)
+	  Ptr(IndRow(i) + 1)++;
+	
+	int nb_new_val = 0;
         // Counting entries that are on the symmetrized pattern without being
         // in the original pattern.
         int k = 0;
@@ -1360,69 +1374,70 @@ namespace Seldon
                   }
               }
           }
-      }
-
-    // Accumulation to get pointer array.
-    Ptr(0) = 0;
-    for (int i = 0; i < n; i++)
-      Ptr(i + 1) += Ptr(i);
-    
-    if (sym_pat && (nb_new_val > 0))
-      {
-        // Changing 'IndRow' and 'Val', and assembling the pattern.
-        Vector<Tint, VectFull, Alloc3> OldInd(IndRow);
-        Vector<T, VectFull, Alloc4> OldVal(Val);
-        IndRow.Reallocate(nnz + nb_new_val);
-        Val.Reallocate(nnz + nb_new_val);
-        int k = 0, nb = 0;
-        for (int i = 0; i < n; i++)
-          {
-            while (k < OldInd.GetM() && OldInd(k) < i)
-              {
-		// null entries (due to symmetrisation)
-                IndRow(nb) = IndCol(k);
-                Val(nb) = 0;
-                nb++;
-                k++;
-              }
+	
+	// Accumulation to get pointer array.
+	Ptr(0) = 0;
+	for (int i = 0; i < n; i++)
+	  Ptr(i + 1) += Ptr(i);
+	
+	if (nb_new_val > 0)
+	  {
+	    // Changing 'IndRow' and 'Val', and assembling the pattern.
+	    Vector<Tint, VectFull, CallocAlloc<Tint> > OldInd(IndCol);
+	    Vector<T, VectFull, Alloc4> OldVal(Val);
+	    IndCol.Reallocate(nnz + nb_new_val);
+	    Val.Reallocate(nnz + nb_new_val);
+	    int k = 0, nb = 0;
+	    for (int i = 0; i <= n; i++)
+	      {
+		while (k < IndRow.GetM() && IndRow(k) < i)
+		  {
+		    IndCol(nb) = OldInd(k);
+		    Val(nb) = OldVal(k);
+		    nb++;
+		    k++;
+		  }
+		
+		if (i < n)
+		  for (int j = ptr_[i]; j < ptr_[i+1]; j++)
+		    {
+		      int icol = ind_[j];
+		      while (k < IndRow.GetM() && IndRow(k) == i
+			     && OldInd(k) < icol)
+			{
+			  IndCol(nb) = OldInd(k);
+			  Val(nb) = OldVal(k);
+			  nb++;
+			  k++;
+			}
+		      
+		      if (k < IndRow.GetM() && IndRow(k) == i && OldInd(k) == icol)
+			{
+			  // Already existing entry.
+			  IndCol(nb) = OldInd(k);
+			  Val(nb) = OldVal(k);
+			  nb++;
+			  k++;
+			}
+		      else
+			{
+			  // New entry
+			  IndCol(nb) = icol;
+			  Val(nb) = 0;
+			  nb++;
+			}
+		    }
+	      }
 	    
-            for (int j = ptr_[i]; j < ptr_[i+1]; j++)
-              {
-                int irow = ind_[j];
-                while (k < OldInd.GetM() && OldInd(k) == i
-                       && IndCol(k) < irow)
-                  {
-		    // null entries (due to symmetrisation)
-                    IndRow(nb) = IndCol(k);
-                    Val(nb) = 0;
-                    nb++;
-                    k++;
-                  }
-
-                if (k < OldInd.GetM() && OldInd(k) == i && IndCol(k) == irow)
-                  {
-                    // Already existing entry.
-                    IndRow(nb) = IndCol(k);
-                    Val(nb) = data_[j];
-                    nb++;
-                    k++;
-                  }
-                else
-                  {
-                    // New entry
-                    IndRow(nb) = irow;
-                    Val(nb) = data_[j];
-                    nb++;
-                  }
-              }
-          }
-      }
-    else
-      {
+	    IndRow.Reallocate(nnz + nb_new_val);
+	    for (int i = 0; i < n; i++)
+	      for (int j = Ptr(i); j < Ptr(i+1); j++)
+		IndRow(j) = i;
+	  }
+	
 	// sorting by columns
 	Sort(IndCol, IndRow, Val);
-      }
-    
+      }    
   }
   
   
@@ -1435,28 +1450,48 @@ namespace Seldon
                     Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
     // Matrix (m,n) with 'nnz' entries.
-    int nnz = A.GetDataSize();
     int n = A.GetN();
-    
-    // Conversion in coordinate format.
-    Vector<Tint, VectFull, CallocAlloc<Tint> > IndCol;
-    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
-
-    // Sorting with respect to row numbers.
-    Sort(IndRow, IndCol, Val);
-
-    // Constructing pointer array 'Ptr'.
-    Ptr.Reallocate(n + 1);
-    Ptr.Fill(0);
-    
-    // Counting non-zero entries per column.
-    for (int i = 0; i < nnz; i++)
-      Ptr(IndCol(i) + 1)++;
-
-    int nb_new_val = 0;
-    
-    if (sym_pat)
+        
+    if (!sym_pat)
       {
+	// direct conversion
+	Ptr.Reallocate(n+1);
+	int nnz = 0;
+	Ptr(0) = 0;
+	for (int i = 0; i < n; i++)
+	  {
+	    nnz += A.GetColumnSize(i);
+	    Ptr(i+1) = nnz;
+	  }
+	
+	IndRow.Reallocate(nnz);
+	Val.Reallocate(nnz);
+	for (int i = 0; i < n; i++)
+	  for (int j = 0; j < A.GetColumnSize(i); j++)
+	    {
+	      IndRow(Ptr(i) + j) = A.Index(i, j);
+	      Val(Ptr(i) + j) = A.Value(i, j);
+	    }
+      }
+    else
+      {
+	// Conversion in coordinate format.
+	Vector<Tint, VectFull, CallocAlloc<Tint> > IndCol;
+	ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
+	
+	int nnz = IndRow.GetM();
+	// Sorting with respect to row numbers.
+	Sort(IndRow, IndCol, Val);
+	
+	// Constructing pointer array 'Ptr'.
+	Ptr.Reallocate(n + 1);
+	Ptr.Fill(0);
+	
+	// Counting non-zero entries per column.
+	for (int i = 0; i < nnz; i++)
+	  Ptr(IndRow(i) + 1)++;
+	
+	int nb_new_val = 0;
         // Counting entries that are on the symmetrized pattern without being
         // in the original pattern.
         int k = 0;
@@ -1471,7 +1506,7 @@ namespace Seldon
                 while (k < IndRow.GetM() && IndRow(k) == i
                        && IndCol(k) < icol)
                   k++;
-
+		
                 if (k < IndRow.GetM() && IndRow(k) == i && IndCol(k) == icol)
                   // Already existing entry.
                   k++;
@@ -1483,69 +1518,70 @@ namespace Seldon
                   }
               }
           }
-      }
-
-    // Accumulation to get pointer array.
-    Ptr(0) = 0;
-    for (int i = 0; i < n; i++)
-      Ptr(i + 1) += Ptr(i);
-    
-    if (sym_pat && (nb_new_val > 0))
-      {
-        // Changing 'IndRow' and 'Val', and assembling the pattern.
-        Vector<Tint, VectFull, Alloc3> OldInd(IndRow);
-        Vector<T, VectFull, Alloc4> OldVal(Val);
-        IndRow.Reallocate(nnz + nb_new_val);
-        Val.Reallocate(nnz + nb_new_val);
-        int k = 0, nb = 0;
-        for (int i = 0; i < n; i++)
-          {
-            while (k < OldInd.GetM() && OldInd(k) < i)
-              {
-		// null entries (due to symmetrisation)
-                IndRow(nb) = IndCol(k);
-                Val(nb) = 0;
-                nb++;
-                k++;
-              }
+	
+	// Accumulation to get pointer array.
+	Ptr(0) = 0;
+	for (int i = 0; i < n; i++)
+	  Ptr(i + 1) += Ptr(i);
+	
+	if (nb_new_val > 0)
+	  {
+	    // Changing 'IndRow' and 'Val', and assembling the pattern.
+	    Vector<Tint, VectFull, CallocAlloc<Tint> > OldInd(IndCol);
+	    Vector<T, VectFull, Alloc4> OldVal(Val);
+	    IndCol.Reallocate(nnz + nb_new_val);
+	    Val.Reallocate(nnz + nb_new_val);
+	    int k = 0, nb = 0;
+	    for (int i = 0; i <= n; i++)
+	      {
+		while (k < IndRow.GetM() && IndRow(k) < i)
+		  {
+		    IndCol(nb) = OldInd(k);
+		    Val(nb) = OldVal(k);
+		    nb++;
+		    k++;
+		  }
+		
+		if (i < n)
+		  for (int j = 0; j < A.GetColumnSize(i); j++)
+		    {
+		      int icol = A.Index(i, j);
+		      while (k < IndRow.GetM() && IndRow(k) == i
+			     && OldInd(k) < icol)
+			{
+			  IndCol(nb) = OldInd(k);
+			  Val(nb) = OldVal(k);
+			  nb++;
+			  k++;
+			}
+		      
+		      if (k < IndRow.GetM() && IndRow(k) == i && OldInd(k) == icol)
+			{
+			  // Already existing entry.
+			  IndCol(nb) = OldInd(k);
+			  Val(nb) = OldVal(k);
+			  nb++;
+			  k++;
+			}
+		      else
+			{
+			  // New entry
+			  IndCol(nb) = icol;
+			  Val(nb) = 0;
+			  nb++;
+			}
+		    }
+	      }
 	    
-            for (int j = 0; j < A.GetColumnSize(i); j++)
-              {
-                int irow = A.Index(i, j);
-                while (k < OldInd.GetM() && OldInd(k) == i
-                       && IndCol(k) < irow)
-                  {
-		    // null entries (due to symmetrisation)
-                    IndRow(nb) = IndCol(k);
-                    Val(nb) = 0;
-                    nb++;
-                    k++;
-                  }
-
-                if (k < OldInd.GetM() && OldInd(k) == i && IndCol(k) == irow)
-                  {
-                    // Already existing entry.
-                    IndRow(nb) = IndCol(k);
-                    Val(nb) = A.Value(i, j);
-                    nb++;
-                    k++;
-                  }
-                else
-                  {
-                    // New entry
-                    IndRow(nb) = irow;
-                    Val(nb) = A.Value(i, j);
-                    nb++;
-                  }
-              }
-          }
-      }
-    else
-      {
+	    IndRow.Reallocate(nnz + nb_new_val);
+	    for (int i = 0; i < n; i++)
+	      for (int j = Ptr(i); j < Ptr(i+1); j++)
+		IndRow(j) = i;
+	  }
+	
 	// sorting by columns
 	Sort(IndCol, IndRow, Val);
-      }
-	
+      }    
   }
   
   
@@ -1629,7 +1665,7 @@ namespace Seldon
     
     Ptr(0) = 0;
     for (int i = 1; i <= n; i++)
-      Ptr(i) = Ptr(i-1) + A.GetColumnSize(i);
+      Ptr(i) = Ptr(i-1) + A.GetColumnSize(i-1);
     
     int nb = 0;
     for (int i = 0; i < n; i++)
@@ -1876,6 +1912,33 @@ namespace Seldon
     B.SetData(m, n, Val, Ptr, Ind);
   }
 
+
+  //! Conversion from RowSparse to ArrayColSparse
+  template<class T, class Prop, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop, RowSparse, Alloc1>& A,
+	    Matrix<T, Prop, ArrayColSparse, Alloc2>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr;
+    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<T, VectFull, Alloc2> Val;
+
+    int m = A.GetM(), n = A.GetN();
+    General sym;
+    ConvertToCSC(A, sym, Ptr, Ind, Val);
+
+    B.Reallocate(m, n);
+    for (int i = 0; i < n; i++)
+      {
+	int size_col = Ptr(i+1) - Ptr(i);
+	B.ReallocateColumn(i, size_col);
+	for (int j = Ptr(i); j < Ptr(i+1); j++)
+	  {
+	    B.Index(i, j-Ptr(i)) = Ind(j);
+	    B.Value(i, j-Ptr(i)) = Val(j);
+	  }
+      }
+  }
+
   
   //! Conversion from ArrayRowSparse to ColSparse.
   template<class T0, class Prop0, class Allocator0,
@@ -1898,6 +1961,40 @@ namespace Seldon
   //! Conversion from RowSymSparse to ColSymSparse
   template<class T, class Prop, class Alloc1, class Alloc2>
   void Copy(const Matrix<T, Prop, RowSymSparse, Alloc1>& A,
+	    Matrix<T, Prop, ColSymSparse, Alloc2>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr;
+    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<T, VectFull, Alloc2> Val;
+
+    int m = A.GetM(), n = A.GetN();
+    Symmetric sym;
+    ConvertToCSC(A, sym, Ptr, Ind, Val);
+
+    B.SetData(m, n, Val, Ptr, Ind);
+  }
+
+  
+  //! Conversion from ArrayRowSymSparse to ColSymSparse
+  template<class T, class Prop, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop, ArrayRowSymSparse, Alloc1>& A,
+	    Matrix<T, Prop, ColSymSparse, Alloc2>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr;
+    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<T, VectFull, Alloc2> Val;
+
+    int m = A.GetM(), n = A.GetN();
+    Symmetric sym;
+    ConvertToCSC(A, sym, Ptr, Ind, Val);
+
+    B.SetData(m, n, Val, Ptr, Ind);
+  }
+
+  
+  //! Conversion from ArrayColSymSparse to ColSymSparse
+  template<class T, class Prop, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop, ArrayColSymSparse, Alloc1>& A,
 	    Matrix<T, Prop, ColSymSparse, Alloc2>& B)
   {
     Vector<int, VectFull, CallocAlloc<int> > Ptr;
@@ -2064,7 +2161,7 @@ namespace Seldon
     Ptr(m) = increment;
     
     // 'Offset' will be used to get current positions of new entries.
-    Vector<int, VectFull, CallocAlloc<int> > Offset(Ptr);
+    Vector<Tint, VectFull, Alloc2> Offset(Ptr);
     IndCol.Reallocate(nnz);
     Value.Reallocate(nnz);
 
@@ -2120,7 +2217,7 @@ namespace Seldon
     Ptr(m) = increment;
     
     // 'Offset' will be used to get current positions of new entries.
-    Vector<int, VectFull, CallocAlloc<int> > Offset(Ptr);
+    Vector<Tint, VectFull, Alloc2> Offset(Ptr);
     IndCol.Reallocate(nnz);
     Value.Reallocate(nnz);
 
@@ -2135,6 +2232,42 @@ namespace Seldon
 	}
   }
   
+  
+  //! Conversion from ArrayRowSparse to CSR
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayRowSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<T, VectFull, Alloc4>& Value)
+  {
+    int m = A.GetM();
+    int  nnz = A.GetDataSize();
+    if (m <= 0)
+      {
+	Ptr.Clear();
+	IndCol.Clear();
+	Value.Clear();
+	return;
+      }
+    
+    Ptr.Reallocate(m+1);
+    IndCol.Reallocate(nnz);
+    Value.Reallocate(nnz);
+    nnz = 0; Ptr(0) = 0;
+    for (int i = 0; i < m; i++)
+      {
+	for (int j = 0; j < A.GetRowSize(i); j++)
+	  {
+	    IndCol(nnz + j) = A.Index(i, j);
+	    Value(nnz + j) = A.Value(i, j);
+	  }
+	
+	nnz += A.GetRowSize(i);
+	Ptr(i+1) = nnz;
+      }
+  }
+
   
   //! Conversion from ColSymSparse to symmetric CSR
   template<class T, class Prop, class Alloc1,
@@ -2249,39 +2382,6 @@ namespace Seldon
   }
   
   
-  //! Conversion from ArrayRowSparse to CSR
-  template<class T, class Prop, class Alloc1,
-           class Tint, class Alloc2, class Alloc3, class Alloc4>
-  void ConvertToCSR(const Matrix<T, Prop, ArrayRowSparse, Alloc1>& A,
-                    General& sym, Vector<Tint, VectFull, Alloc2>& IndRow,
-                    Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<T, VectFull, Alloc4>& Val)
-  {
-    // Matrix (m,n) with 'nnz' entries.
-    int nnz = A.GetDataSize();
-    int m = A.GetM();
-
-    // Allocating arrays needed for CSR format.
-    Val.Reallocate(nnz);
-    IndRow.Reallocate(m + 1);
-    IndCol.Reallocate(nnz);
-
-    // Filling the arrays.
-    int ind = 0;
-    IndRow(0) = 0;
-    for (int i = 0; i < m; i++)
-      {
-	for (int k = 0; k < A.GetRowSize(i); k++)
-	  {
-	    IndCol(ind) = A.Index(i, k);
-	    Val(ind) = A.Value(i, k);
-	    ind++;
-	  }
-	IndRow(i + 1) = ind;
-      }
-  }
-
-  
   //! Conversion from RowSymSparse to CSR
   template<class T, class Prop, class Alloc1,
            class Tint, class Alloc2, class Alloc3, class Alloc4>
@@ -2318,6 +2418,35 @@ namespace Seldon
   }
 
   
+  //! Conversion from RowSymSparse to CSR
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, RowSymSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<T, VectFull, Alloc4>& Value)
+  {
+    Vector<Tint, VectFull, Alloc3> IndRow;
+    
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Value, 0, true);
+    
+    // sorting by rows
+    Sort(IndRow, IndCol, Value);
+    
+    int m = A.GetM();
+    Ptr.Reallocate(m+1);
+    Ptr.Zero();
+
+    for (int i = 0; i < IndCol.GetM(); i++)
+      Ptr(IndRow(i) + 1)++;
+    
+    // incrementing Ptr
+    for (int i = 2; i <= m; i++)
+      Ptr(i) += Ptr(i-1);
+    
+  }
+  
+  
   //! Conversion from ArrayRowSymSparse to CSR
   template<class T, class Prop, class Alloc1,
            class Tint, class Alloc2, class Alloc3, class Alloc4>
@@ -2349,25 +2478,36 @@ namespace Seldon
       }
   }
 
-
-  //! Conversion from ColSymSparse to RowSymSparse
-  template<class T, class Prop, class Alloc1, class Alloc2>
-  void Copy(const Matrix<T, Prop, ColSymSparse, Alloc1>& A,
-	    Matrix<T, Prop, RowSymSparse, Alloc2>& B)
+  
+    //! Conversion from ArrayRowSymSparse to CSR
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayRowSymSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<T, VectFull, Alloc4>& Value)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
-    Vector<T, VectFull, Alloc2> Value;
+    Vector<Tint, VectFull, Alloc3> IndRow;
     
-    Symmetric sym;
-    ConvertToCSR(A, sym, Ptr, Ind, Value);
-
-    // creating the matrix
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Value, 0, true);
+    
+    // sorting by rows
+    Sort(IndRow, IndCol, Value);
+    
     int m = A.GetM();
-    int n = A.GetN();
-    B.SetData(m, n, Value, Ptr, Ind);
+    Ptr.Reallocate(m+1);
+    Ptr.Zero();
+
+    for (int i = 0; i < IndCol.GetM(); i++)
+      Ptr(IndRow(i) + 1)++;
+    
+    // incrementing Ptr
+    for (int i = 2; i <= m; i++)
+      Ptr(i) += Ptr(i-1);
+    
   }
 
-
+  
   //! Conversion from column-oriented sparse to row-oriented sparse.
   /*!
     \param[in] A matrix to be converted.
@@ -2433,6 +2573,24 @@ namespace Seldon
   }
 
   
+  //! Conversion from ColSymSparse to RowSymSparse
+  template<class T, class Prop, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop, ColSymSparse, Alloc1>& A,
+	    Matrix<T, Prop, RowSymSparse, Alloc2>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<T, VectFull, Alloc2> Value;
+    
+    Symmetric sym;
+    ConvertToCSR(A, sym, Ptr, Ind, Value);
+
+    // creating the matrix
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, Ind);
+  }
+
+
   //! Conversion from ArrayRowSymSparse to RowSymSparse.
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
@@ -2451,6 +2609,24 @@ namespace Seldon
   }
   
   
+  //! Conversion from ArrayColSymSparse to RowSymSparse
+  template<class T, class Prop, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop, ArrayColSymSparse, Alloc1>& A,
+	    Matrix<T, Prop, RowSymSparse, Alloc2>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<T, VectFull, Alloc2> Value;
+    
+    Symmetric sym;
+    ConvertToCSR(A, sym, Ptr, Ind, Value);
+
+    // creating the matrix
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, Ind);
+  }
+
+
   /******************************
    * From Sparse to ArraySparse *
    ******************************/
@@ -2698,13 +2874,30 @@ namespace Seldon
   }
   
   
-  //! do not use
+  //! upper part of A is used to obtain a symmetric matrix
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void Copy(const Matrix<T0, Prop0, ArrayRowSparse, Allocator0>& A,
 	    Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& B)
   {
-    throw Undefined("Copy", "not implemented for these storages");
+    B.Reallocate(A.GetM(), A.GetN());
+    for (int i = 0; i < A.GetM(); i++)
+      {
+	int k = 0;
+	while ( (k < A.GetRowSize(i)) && (A.Index(i, k) < i))
+	  k++;
+	
+	if (k < A.GetRowSize(i))
+	  {
+	    int size_row = A.GetRowSize(i) - k;
+	    B.ReallocateRow(i, size_row);
+	    for (int j = k; j < A.GetRowSize(i); j++)
+	      {
+		B.Index(i, j-k) = A.Index(i, j);
+		B.Value(i, j-k) = A.Value(i, j);
+	      }
+	  }
+      }
   }
 
   
@@ -2913,6 +3106,7 @@ namespace Seldon
       Ptr(i + 1) += Ptr(i);
 
     // we fill matrix B
+    B.Reallocate(A.GetM(), n);
     for (int i = 0; i < n; i++)
       {
 	int size_col = Ptr(i+1) - Ptr(i);

@@ -332,7 +332,63 @@ namespace Seldon
                     Vector<complex<T>, VectFull, Alloc4>& Value,
                     bool sym_pat = false);
 
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+       Matrix<T1, Prop1, RowComplexSparse, Allocator1>& B);
   
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColComplexSparse, Allocator1>& B);
+  
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>& B);
+  
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+       Matrix<T1, Prop1, RowSymComplexSparse, Allocator1>& B);
+  
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ArrayRowComplexSparse, Allocator1>& B);
+  
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ArrayColComplexSparse, Allocator1>& B);
+
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ArrayColSymComplexSparse, Allocator1>& B);
+
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ArrayRowSymComplexSparse, Allocator1>& B);
+  
+
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
