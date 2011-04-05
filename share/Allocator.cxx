@@ -113,17 +113,32 @@ namespace Seldon
   inline typename MallocObject<T>::pointer
   MallocObject<T>::allocate(int num, void* h)
   {
-    void* memory_block = malloc(sizeof(int) + num * sizeof(T));
+    /*the shifting of the memory adress will be at worst of size
+      sizeof(T)/(sizeof(int) + sizeof(char*)) */
+
+    int additional_T = (sizeof(T)/(sizeof(int) + sizeof(char*)))?
+      sizeof(T)/(sizeof(int) + sizeof(char*)):1;
+
+    void* memory_block = malloc(sizeof(int) + sizeof(char*) +
+                                (num + additional_T)* sizeof(T));
     memcpy(memory_block, &num, sizeof(int));
-    char* data = static_cast<char*>(memory_block) + sizeof(int);
-    return static_cast<pointer>(new(data) T[num]);
+    char* data = static_cast<char*>(memory_block)
+                 + sizeof(int) + sizeof(char*);
+
+    pointer P = reinterpret_cast<pointer>(new(data) T[num]);
+    memcpy(reinterpret_cast<char *>(P) - sizeof(char*),
+           &memory_block, sizeof(char*));
+
+    return P;
   }
 
 
   template <class T>
   inline void MallocObject<T>::deallocate(pointer data, int num, void* h)
   {
-    char* memory_block = reinterpret_cast<char*>(data) - sizeof(int);
+    void * memory_block;
+    memcpy(&memory_block, reinterpret_cast<char *>(data)
+           - sizeof(char*), sizeof(char*));
     for (int i = 0; i < num; i++)
       data[i].~T();
     free(memory_block);
@@ -136,29 +151,41 @@ namespace Seldon
     if (data == NULL)
       return allocate(num, h);
 
-    void* memory_block = static_cast<void*>(reinterpret_cast<char*>(data)
-					    - sizeof(int));
+    void * memory_block;
+    memcpy(&memory_block, reinterpret_cast<char *>(data)
+           - sizeof(char*), sizeof(char*));
     int initial_num = *reinterpret_cast<int*>(memory_block);
+
+    /*the shifting of the memory adress will be at worst of size
+      sizeof(T)/(sizeof(int) + sizeof(char*)) */
+    int additional_T = (sizeof(T)/(sizeof(int) + sizeof(char*)))?
+      sizeof(T)/(sizeof(int) + sizeof(char*)):1;
+
     if (initial_num < num)
       {
 	memory_block = realloc(memory_block,
-			       sizeof(int) + num * sizeof(T));
-	new(static_cast<char*>(memory_block) + sizeof(int) +
-	    initial_num * sizeof(T)) T[num - initial_num];
+			       sizeof(int) + sizeof(char*) +
+                               (num+additional_T) * sizeof(T));
+	new(reinterpret_cast<char *>(data)
+            + initial_num * sizeof(T)) T[num - initial_num];
       }
     else if (initial_num > num)
       {
 	for (int i = num; i < initial_num; i++)
 	  data[i].~T();
 	memory_block = realloc(memory_block,
-			       sizeof(int) + num * sizeof(T));
+			       sizeof(int) + sizeof(char*)
+                               + (num+additional_T) * sizeof(T));
       }
     else
       return data;
 
     memcpy(memory_block, &num, sizeof(int));
-    return reinterpret_cast<pointer>(static_cast<char*>(memory_block) +
-				     sizeof(int));
+    pointer P = reinterpret_cast<pointer>(data);
+    memcpy(reinterpret_cast<char *>(P) - sizeof(char*),
+           &memory_block, sizeof(char*));
+
+    return P;
   }
 
 
