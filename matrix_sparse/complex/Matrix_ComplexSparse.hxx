@@ -39,7 +39,7 @@ namespace Seldon
     static int GetSecond(int i, int j);
   };
 
-
+  
   //! Complex sparse-matrix class.
   /*!
     Sparse matrices are defined by: (1) the number of rows and columns;

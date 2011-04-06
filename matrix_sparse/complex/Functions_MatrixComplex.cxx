@@ -457,6 +457,62 @@ namespace Seldon
 
   }
   
+  
+  template<class T, class Prop, class Allocator>
+  bool IsComplexMatrix(const Matrix<T, Prop, RowComplexSparse, Allocator>& A)
+  {
+    return true;
+  }
+
+
+  template<class T, class Prop, class Allocator>
+  bool IsComplexMatrix(const Matrix<T, Prop, ColComplexSparse, Allocator>& A)
+  {
+    return true;
+  }
+
+  
+  template<class T, class Prop, class Allocator>
+  bool IsComplexMatrix(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
+  {
+    return true;
+  }
+
+  
+  template<class T, class Prop, class Allocator>
+  bool IsComplexMatrix(const Matrix<T, Prop, ColSymComplexSparse, Allocator>& A)
+  {
+    return true;
+  }
+
+  
+  template<class T, class Prop, class Allocator>
+  bool IsComplexMatrix(const Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A)
+  {
+    return true;
+  }
+
+  
+  template<class T, class Prop, class Allocator>
+  bool IsComplexMatrix(const Matrix<T, Prop, ArrayColComplexSparse, Allocator>& A)
+  {
+    return true;
+  }
+
+  
+  template<class T, class Prop, class Allocator>
+  bool IsComplexMatrix(const Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A)
+  {
+    return true;
+  }
+
+  
+  template<class T, class Prop, class Allocator>
+  bool IsComplexMatrix(const Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>& A)
+  {
+    return true;
+  }
+
 }
 
 #define SELDON_FILE_FUNCTIONS_MATRIX_COMPLEX_CXX
