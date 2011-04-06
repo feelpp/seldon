@@ -1015,6 +1015,22 @@ namespace Seldon
     return *this;
   }
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ColSymPacked, Allocator>&
+  Matrix<T, Prop, ColSymPacked, Allocator>::operator= (const Matrix<T, Prop,
+                                                       ColSymPacked,
+                                                       Allocator>& A)
+  {
+    this->Copy(A);
+    return *this;
+  }
+
 
   //! Multiplies the matrix by a given value.
   /*!
@@ -1109,7 +1125,22 @@ namespace Seldon
   Matrix<T, Prop, RowSymPacked, Allocator>::operator= (const T0& x)
   {
     this->Fill(x);
+    return *this;
+  }
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, RowSymPacked, Allocator>&
+  Matrix<T, Prop, RowSymPacked, Allocator>::operator= (const Matrix<T, Prop,
+                                                       RowSymPacked,
+                                                       Allocator>& A)
+  {
+    this->Copy(A);
     return *this;
   }
 

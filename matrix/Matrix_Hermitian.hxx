@@ -132,6 +132,9 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, ColHerm, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, ColHerm, Allocator>& operator= (const Matrix<T, Prop,
+                                                         ColHerm,
+                                                         Allocator>& A);
     template<class T0>
     Matrix<T, Prop, ColHerm, Allocator>& operator*= (const T0& x);
 
@@ -156,6 +159,9 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, RowHerm, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, RowHerm, Allocator>& operator= (const Matrix<T, Prop,
+                                                         RowHerm,
+                                                         Allocator>& A);
     template<class T0>
     Matrix<T, Prop, RowHerm, Allocator>& operator*= (const T0& x);
 

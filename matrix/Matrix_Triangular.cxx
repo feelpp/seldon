@@ -1222,6 +1222,22 @@ namespace Seldon
   }
 
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ColUpTriang, Allocator>&
+  Matrix<T, Prop, ColUpTriang, Allocator>::operator=
+  (const Matrix<T, Prop, ColUpTriang, Allocator>& A)
+  {
+    this->Copy(A);
+    return *this;
+  }
+
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1289,6 +1305,22 @@ namespace Seldon
   {
     this->Fill(x);
 
+    return *this;
+  }
+
+
+//! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ColLoTriang, Allocator>&
+  Matrix<T, Prop, ColLoTriang, Allocator>::operator=
+  (const Matrix<T, Prop, ColLoTriang, Allocator>& A)
+  {
+    this->Copy(A);
     return *this;
   }
 
@@ -1364,6 +1396,22 @@ namespace Seldon
   }
 
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, RowUpTriang, Allocator>&
+  Matrix<T, Prop, RowUpTriang, Allocator>::operator=
+  (const Matrix<T, Prop, RowUpTriang, Allocator>& A)
+  {
+    this->Copy(A);
+    return *this;
+  }
+
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1431,6 +1479,22 @@ namespace Seldon
   {
     this->Fill(x);
 
+    return *this;
+  }
+
+
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, RowLoTriang, Allocator>&
+  Matrix<T, Prop, RowLoTriang, Allocator>::operator=
+  (const Matrix<T, Prop, RowLoTriang, Allocator>& A)
+  {
+    this->Copy(A);
     return *this;
   }
 
