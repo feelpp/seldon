@@ -318,11 +318,6 @@ namespace Seldon
                     Vector<T, VectFull, Alloc4>& AllVal, bool sym_pat = false);
   
   
-  template<class T, class Prop, class Storage, class Allocator>
-  void Copy(const Matrix<T, Prop, Storage, Allocator>& A,
-	    Matrix<T, Prop, Storage, Allocator>& B);
-  
-  
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void Copy(const Matrix<T0, Prop0, ArrayColSparse, Allocator0>& mat_array,
