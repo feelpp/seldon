@@ -29,6 +29,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = true;
   };
 
 
@@ -37,6 +38,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = true;
   };
 
   

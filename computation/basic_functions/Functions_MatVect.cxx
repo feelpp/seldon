@@ -540,7 +540,7 @@ namespace Seldon
 
 #ifdef SELDON_WITH_ABORT
     // aborting computation if the matrix is sparse
-    if (IsSparseMatrix(M))
+    if (Storage1::Sparse)
       {
         cout << "This function should only be used "
              << "with dense matrices" << endl;
@@ -746,7 +746,7 @@ namespace Seldon
     
 #ifdef SELDON_WITH_ABORT
     // aborting computation if the matrix is sparse
-    if (IsSparseMatrix(M))
+    if (Storage1::Sparse)
       {
         cout << "This function should only be used "
              << "with dense matrices" << endl;

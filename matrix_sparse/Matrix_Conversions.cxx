@@ -1869,6 +1869,42 @@ namespace Seldon
 
   //! B = A.
   template<class T, class Prop, class Allocator>
+  void Copy(const Matrix<T, Prop, RowMajor, Allocator>& A,
+	    Matrix<T, Prop, RowMajor, Allocator>& B)
+  {
+    B = A;
+  }
+
+
+  //! B = A.
+  template<class T, class Prop, class Allocator>
+  void Copy(const Matrix<T, Prop, RowSymPacked, Allocator>& A,
+	    Matrix<T, Prop, RowSymPacked, Allocator>& B)
+  {
+    B = A;
+  }
+
+
+  //! B = A.
+  template<class T, class Prop, class Allocator>
+  void Copy(const Matrix<T, Prop, ColMajor, Allocator>& A,
+	    Matrix<T, Prop, ColMajor, Allocator>& B)
+  {
+    B = A;
+  }
+
+
+  //! B = A.
+  template<class T, class Prop, class Allocator>
+  void Copy(const Matrix<T, Prop, ColSymPacked, Allocator>& A,
+	    Matrix<T, Prop, ColSymPacked, Allocator>& B)
+  {
+    B = A;
+  }
+
+
+  //! B = A.
+  template<class T, class Prop, class Allocator>
   void Copy(const Matrix<T, Prop, RowSparse, Allocator>& A,
 	    Matrix<T, Prop, RowSparse, Allocator>& B)
   {

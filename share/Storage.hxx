@@ -35,6 +35,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = false;
   };
 #endif
 
@@ -44,6 +45,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = false;
   };
 
 
@@ -70,6 +72,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = true;
   };
 #endif
 
@@ -79,6 +82,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = true;
   };
 
 
@@ -88,6 +92,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = true;
   };
 
 
@@ -96,6 +101,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = true;
   };
 
   class ArrayRowSparse : public RowSparse
@@ -125,6 +131,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = false;
   };
 
 
@@ -133,6 +140,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = false;
   };
 
 
@@ -141,6 +149,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = false;
   };
 
 
@@ -149,6 +158,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = false;
   };
 
 
@@ -163,6 +173,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = false;
   };
 
 
@@ -171,6 +182,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = false;
   };
 
 
@@ -179,6 +191,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = false;
   };
 
 
@@ -187,6 +200,7 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static const bool Sparse = false;
   };
 
 
@@ -202,6 +216,7 @@ namespace Seldon
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -211,6 +226,7 @@ namespace Seldon
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -220,6 +236,7 @@ namespace Seldon
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -229,6 +246,7 @@ namespace Seldon
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -238,6 +256,7 @@ namespace Seldon
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -247,6 +266,7 @@ namespace Seldon
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -256,6 +276,7 @@ namespace Seldon
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -265,6 +286,7 @@ namespace Seldon
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 #endif
 
