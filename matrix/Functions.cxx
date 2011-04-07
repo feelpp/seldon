@@ -36,7 +36,7 @@ namespace Seldon
   */
   template <class T0, class Allocator0, class T1, class Allocator1>
   void GetRow(const Matrix<T0, General, RowSparse, Allocator0>& M,
-	      int i, Vector<T1, Vect_Sparse, Allocator1>& X)
+	      int i, Vector<T1, VectSparse, Allocator1>& X)
   {
 #ifdef SELDON_CHECK_BOUNDS
     int m = M.GetM();
@@ -88,7 +88,7 @@ namespace Seldon
   */
   template <class T0, class Allocator0, class T1, class Allocator1>
   void GetCol(const Matrix<T0, General, RowSparse, Allocator0>& M,
-	      int j, Vector<T1, Vect_Sparse, Allocator1>& X)
+	      int j, Vector<T1, VectSparse, Allocator1>& X)
   {
 #ifdef SELDON_CHECK_BOUNDS
     int n = M.GetN();
@@ -160,7 +160,7 @@ namespace Seldon
     M(i, :) = X
   */
   template <class T0, class Allocator0, class T1, class Allocator1>
-  void SetRow(const Vector<T1, Vect_Sparse, Allocator1>& X,
+  void SetRow(const Vector<T1, VectSparse, Allocator1>& X,
 	      int i, Matrix<T0, General, RowSparse, Allocator0>& M)
   {
     int m = M.GetM();
@@ -263,7 +263,7 @@ namespace Seldon
     int column_size_difference = Nx - Ncolumn_j;
 
     // Built a vector indexed with the rows of column_j and X.
-    Vector<int, Vect_Sparse> column_j_mask;
+    Vector<int, VectSparse> column_j_mask;
     Vector<int> index_j(Ncolumn_j);
     Vector<int> value_j(Ncolumn_j);
     for (int p = 0; p < Ncolumn_j; p++)
@@ -272,7 +272,7 @@ namespace Seldon
     column_j_mask.SetData(value_j, index_j);
     value_j.Nullify();
     index_j.Nullify();
-    Vector<int, Vect_Sparse> X_mask;
+    Vector<int, VectSparse> X_mask;
     Vector<int> index_x(Nx);
     Vector<int> value_x(Nx);
     for (int p = 0; p < Nx; p++)
@@ -303,7 +303,7 @@ namespace Seldon
     Vector<T0, VectFull, Allocator0>
       new_data_vector(nnz + column_size_difference);
 
-    Vector<T0, Vect_Sparse, Allocator0> working_vector;
+    Vector<T0, VectSparse, Allocator0> working_vector;
     int Nworking_vector;
 
     int line = 0;
@@ -436,7 +436,159 @@ namespace Seldon
                          col_perm(j) - starting_index);
   }
 
+  
+  //! Permutation of a symmetric matrix stored by rows.
+  /*!
+    B(i, j) = A(row_perm(i), row_perm(j)) and A = B.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, RowSymPacked, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index)
+  {
+    Matrix<T, Prop, RowSymPacked, Allocator> A_copy = A;
 
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A(i, j) = A_copy(row_perm(i) - starting_index,
+                         row_perm(j) - starting_index);
+  }
+
+
+  //! Permutation of a symmetric matrix stored by columns.
+  /*!
+    B(i, j) = A(row_perm(i), row_perm(j)) and A = B.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, ColSymPacked, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index)
+  {
+    Matrix<T, Prop, ColSymPacked, Allocator> A_copy = A;
+
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i <= j; i++)
+        A(i, j) = A_copy(row_perm(i) - starting_index,
+                         row_perm(j) - starting_index);
+  }
+
+  
+  //! Permutation of a symmetric matrix stored by rows.
+  /*!
+    B(i, j) = A(row_perm(i), row_perm(j)) and A = B.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, RowSym, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index)
+  {
+    Matrix<T, Prop, RowSym, Allocator> A_copy = A;
+
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) = A_copy(row_perm(i) - starting_index,
+                             row_perm(j) - starting_index);
+  }
+
+
+  //! Permutation of a symmetric matrix stored by columns.
+  /*!
+    B(i, j) = A(row_perm(i), row_perm(j)) and A = B.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, ColSym, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index)
+  {
+    Matrix<T, Prop, ColSym, Allocator> A_copy = A;
+
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i <= j; i++)
+        A.Val(i, j) = A_copy(row_perm(i) - starting_index,
+                             row_perm(j) - starting_index);
+  }
+
+  
+  //! Permutation of an hermitian matrix stored by rows.
+  /*!
+    B(i, j) = A(row_perm(i), row_perm(j)) and A = B.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, RowHermPacked, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index)
+  {
+    Matrix<T, Prop, RowHermPacked, Allocator> A_copy = A;
+
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) = A_copy(row_perm(i) - starting_index,
+                             row_perm(j) - starting_index);
+  }
+
+
+  //! Permutation of an hermitian matrix stored by columns.
+  /*!
+    B(i, j) = A(row_perm(i), row_perm(j)) and A = B.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, ColHermPacked, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index)
+  {
+    Matrix<T, Prop, ColHermPacked, Allocator> A_copy = A;
+
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i <= j; i++)
+        A.Val(i, j) = A_copy(row_perm(i) - starting_index,
+                             row_perm(j) - starting_index);
+  }
+
+  
+  //! Permutation of an hermitian matrix stored by rows.
+  /*!
+    B(i, j) = A(row_perm(i), row_perm(j)) and A = B.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, RowHerm, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index)
+  {
+    Matrix<T, Prop, RowHerm, Allocator> A_copy = A;
+
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) = A_copy(row_perm(i) - starting_index,
+                             row_perm(j) - starting_index);
+  }
+
+
+  //! Permutation of an hermitian matrix stored by columns.
+  /*!
+    B(i, j) = A(row_perm(i), row_perm(j)) and A = B.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, ColHerm, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index)
+  {
+    Matrix<T, Prop, ColHerm, Allocator> A_copy = A;
+
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i <= j; i++)
+        A.Val(i, j) = A_copy(row_perm(i) - starting_index,
+                             row_perm(j) - starting_index);
+  }
+  
+  
   //! Inverse permutation of a general matrix stored by rows.
   /*!
     B(row_perm(i), col_perm(j)) = A(i,j) and A = B.
@@ -478,6 +630,417 @@ namespace Seldon
           = A_copy(i, j);
   }
 
+  
+  //! Inverse permutation of a symmetric matrix stored by rows.
+  /*!
+    B(row_perm(i), row_perm(j)) = A(i,j) and A = B.
+
+    Equivalent Matlab operation: A(row_perm, row_perm) = A.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, RowSymPacked, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index)
+  {
+    Matrix<T, Prop, RowSymPacked, Allocator> A_copy = A;
+
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Set(row_perm(i) - starting_index, row_perm(j) - starting_index,
+              A_copy(i, j));
+  }
+
+
+  //! Inverse permutation of a symmetric matrix stored by columns.
+  /*!
+    B(row_perm(i), row_perm(j)) = A(i,j) and A = B.
+
+    Equivalent Matlab operation: A(row_perm, row_perm) = A.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, ColSymPacked, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index)
+  {
+    Matrix<T, Prop, ColSymPacked, Allocator> A_copy = A;
+
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i <= j; i++)
+        A.Set(row_perm(i) - starting_index, row_perm(j) - starting_index,
+              A_copy(i, j));
+  }
+  
+  
+  //! Inverse permutation of a symmetric matrix stored by rows.
+  /*!
+    B(row_perm(i), row_perm(j)) = A(i,j) and A = B.
+
+    Equivalent Matlab operation: A(row_perm, row_perm) = A.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, RowSym, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index)
+  {
+    Matrix<T, Prop, RowSym, Allocator> A_copy = A;
+
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Set(row_perm(i) - starting_index, row_perm(j) - starting_index,
+              A_copy(i, j));
+  }
+
+
+  //! Inverse permutation of a symmetric matrix stored by columns.
+  /*!
+    B(row_perm(i), row_perm(j)) = A(i,j) and A = B.
+
+    Equivalent Matlab operation: A(row_perm, row_perm) = A.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, ColSym, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index)
+  {
+    Matrix<T, Prop, ColSym, Allocator> A_copy = A;
+
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i <= j; i++)
+        A.Set(row_perm(i) - starting_index, row_perm(j) - starting_index,
+              A_copy(i, j));
+  }
+  
+  
+  //! Inverse permutation of an hermitian matrix stored by rows.
+  /*!
+    B(row_perm(i), row_perm(j)) = A(i,j) and A = B.
+
+    Equivalent Matlab operation: A(row_perm, row_perm) = A.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, RowHermPacked, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index)
+  {
+    Matrix<T, Prop, RowHermPacked, Allocator> A_copy = A;
+
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Set(row_perm(i) - starting_index, row_perm(j) - starting_index,
+              A_copy(i, j));
+  }
+
+
+  //! Inverse permutation of an hermitian matrix stored by columns.
+  /*!
+    B(row_perm(i), row_perm(j)) = A(i,j) and A = B.
+
+    Equivalent Matlab operation: A(row_perm, row_perm) = A.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, ColHermPacked, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index)
+  {
+    Matrix<T, Prop, ColHermPacked, Allocator> A_copy = A;
+
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i <= j; i++)
+        A.Set(row_perm(i) - starting_index, row_perm(j) - starting_index,
+              A_copy(i, j));
+  }
+  
+  
+    //! Inverse permutation of an hermitian matrix stored by rows.
+  /*!
+    B(row_perm(i), row_perm(j)) = A(i,j) and A = B.
+
+    Equivalent Matlab operation: A(row_perm, row_perm) = A.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, RowHerm, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index)
+  {
+    Matrix<T, Prop, RowHerm, Allocator> A_copy = A;
+
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Set(row_perm(i) - starting_index, row_perm(j) - starting_index,
+              A_copy(i, j));
+  }
+
+
+  //! Inverse permutation of an hermitian matrix stored by columns.
+  /*!
+    B(row_perm(i), row_perm(j)) = A(i,j) and A = B.
+
+    Equivalent Matlab operation: A(row_perm, row_perm) = A.
+  */
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, ColHerm, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index)
+  {
+    Matrix<T, Prop, ColHerm, Allocator> A_copy = A;
+
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i <= j; i++)
+        A.Set(row_perm(i) - starting_index, row_perm(j) - starting_index,
+              A_copy(i, j));
+  }
+  
+  
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Dcol
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, RowMajor, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetN(); j++)
+        A(i, j) *= Drow(i)*Dcol(j);
+  }
+
+
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Dcol
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, ColMajor, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i < A.GetM(); i++)
+        A(i, j) *= Drow(i)*Dcol(j);
+  }
+  
+  
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Drow
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, RowSymPacked, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A(i, j) *= Drow(i)*Drow(j);
+  }
+
+
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Drow
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, ColSymPacked, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i <= j; i++)
+        A(i, j) *= Drow(i)*Drow(j);
+  }
+  
+  
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Drow
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, RowSym, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) *= Drow(i)*Drow(j);
+  }
+
+
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Drow
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, ColSym, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i <= j; i++)
+        A.Val(i, j) *= Drow(i)*Drow(j);
+  }
+  
+  
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Drow
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, RowHermPacked, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) *= Drow(i)*Drow(j);
+  }
+
+
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Drow
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, ColHermPacked, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i <= j; i++)
+        A.Val(i, j) *= Drow(i)*Drow(j);
+  }
+
+  
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Drow
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, RowHerm, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) *= Drow(i)*Drow(j);
+  }
+
+
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Drow
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, ColHerm, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int j = 0; j < A.GetN(); j++)
+      for (int i = 0; i <= j; i++)
+        A.Val(i, j) *= Drow(i)*Drow(j);
+  }
+
+  
+  //! Left-scaling of a matrix
+  /*!
+    A is replaced by Drow A
+    where Drow is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1>
+  void ScaleLeftMatrix(Matrix<T, Prop, RowMajor, Allocator>& A,
+                       const Vector<T1, VectFull, Allocator1>& Drow)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetN(); j++)
+        A(i, j) *= Drow(i);
+  }
+    
+
+  //! Left-scaling of a matrix
+  /*!
+    A is replaced by Drow A
+    where Drow is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1>
+  void ScaleLeftMatrix(Matrix<T, Prop, ColMajor, Allocator>& A,
+                       const Vector<T1, VectFull, Allocator1>& Drow)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetN(); j++)
+        A(i, j) *= Drow(i);
+  }
+
+
+  //! Right-scaling of a matrix
+  /*!
+    A is replaced by A Dcol
+    where Dcol is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T2, class Allocator2>
+  void ScaleRightMatrix(Matrix<T, Prop, RowMajor, Allocator>& A,
+                        const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetN(); j++)
+        A(i, j) *= Dcol(j);
+  }
+
+  
+  //! Right-scaling of a matrix
+  /*!
+    A is replaced by A Dcol
+    where Dcol is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T2, class Allocator2>
+  void ScaleRightMatrix(Matrix<T, Prop, ColMajor, Allocator>& A,
+                        const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetN(); j++)
+        A(i, j) *= Dcol(j);
+  }
 
 } // namespace Seldon.
 

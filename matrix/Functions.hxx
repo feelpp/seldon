@@ -24,7 +24,7 @@ namespace Seldon
 
   template <class T0, class Allocator0, class T1, class Allocator1>
   void GetRow(const Matrix<T0, General, RowSparse, Allocator0>& M,
-	      int i, Vector<T1, Vect_Sparse, Allocator1>& X);
+	      int i, Vector<T1, VectSparse, Allocator1>& X);
 
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
@@ -33,7 +33,7 @@ namespace Seldon
 
   template <class T0, class Allocator0, class T1, class Allocator1>
   void GetCol(const Matrix<T0, General, RowSparse, Allocator0>& M,
-	      int j, Vector<T1, Vect_Sparse, Allocator1>& X);
+	      int j, Vector<T1, VectSparse, Allocator1>& X);
 
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
@@ -47,7 +47,7 @@ namespace Seldon
 	      int i, Matrix<T0, Prop0, Storage0, Allocator0>& M);
 
   template <class T0, class Allocator0, class T1, class Allocator1>
-  void SetRow(const Vector<T1, Vect_Sparse, Allocator1>& X,
+  void SetRow(const Vector<T1, VectSparse, Allocator1>& X,
 	      int i, Matrix<T0, General, RowSparse, Allocator0>& M);
 
   template <class T0, class Prop0, class Storage0, class Allocator0,
@@ -72,6 +72,54 @@ namespace Seldon
                         int starting_index = 0);
 
   template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, RowSymPacked, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, ColSymPacked, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, RowSym, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, ColSym, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, RowHermPacked, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, ColHermPacked, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, RowHerm, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyPermutation(Matrix<T, Prop, ColHerm, Allocator>& A,
+                        const Vector<int>& row_perm,
+                        const Vector<int>& col_perm,
+                        int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
   void ApplyInversePermutation(Matrix<T, Prop, RowMajor, Allocator>& A,
                                const Vector<int>& row_perm,
                                const Vector<int>& col_perm,
@@ -82,7 +130,55 @@ namespace Seldon
                                const Vector<int>& row_perm,
                                const Vector<int>& col_perm,
                                int starting_index = 0);
+  
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, RowSymPacked, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index = 0);
 
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, ColSymPacked, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, RowSym, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, ColSym, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, RowHermPacked, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, ColHermPacked, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index = 0);
+
+    template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, RowHerm, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index = 0);
+
+  template<class T, class Prop, class Allocator>
+  void ApplyInversePermutation(Matrix<T, Prop, ColHerm, Allocator>& A,
+                               const Vector<int>& row_perm,
+                               const Vector<int>& col_perm,
+                               int starting_index = 0);
+  
 } // namespace Seldon.
 
 #define SELDON_FILE_FUNCTIONS_HXX
