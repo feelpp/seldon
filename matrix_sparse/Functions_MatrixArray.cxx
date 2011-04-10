@@ -38,7 +38,715 @@
 namespace Seldon
 {
 
+  
+  ////////////////////
+  // GetRow, SetRow //
+  
+  
+  //! Extracts a row from a sparse matrix
+  /*!
+    \param A sparse matrix
+    \param i row index
+    \param X row extracted
+    X = A(i, :)
+  */
+  template<class T0, class Allocator0,
+	   class T1, class Allocator1>
+  void GetRow(const Matrix<T0, General, ArrayRowSparse, Allocator0>& A,
+	      int i, Vector<T1, VectSparse, Allocator1>& X)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    int m = A.GetM();
+    if (i < 0 || i >= m)
+      throw WrongIndex("GetRow()",
+                       string("Index should be in [0, ") + to_str(m - 1)
+                       + "], but is equal to " + to_str(i) + ".");
+#endif
+    
+    int size_row = A.GetRowSize(i);
+    X.Reallocate(size_row);
+    for (int j = 0; j < size_row; j++)
+      {
+	X.Index(j) = A.Index(i, j);
+	X.Value(j) = A.Value(i, j);
+      }
+  }
+  
 
+  //! Extracts a row from a sparse matrix
+  /*!
+    \param M sparse matrix
+    \param i row index
+    \param X row extracted
+    X = M(i, :)
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetRow(const Matrix<T0, General, ArrayColSparse, Allocator0>& M,
+	      int i, Vector<T1, VectSparse, Allocator1>& X)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    int m = M.GetM();
+    if (i < 0 || i >= m)
+      throw WrongIndex("GetRow()",
+                       string("Index should be in [0, ") + to_str(m - 1)
+                       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    list<pair<int, T0> > vec;
+    for (int j = 0; j < M.GetN(); j++)
+      for (int k = 0; k < M.GetColumnSize(j); k++)
+	if (M.Index(j, k) == i)
+	  vec.push_back(make_pair(j, M.Value(j, k)));
+    
+    typename list<pair<int, T0> >::iterator it;
+    X.Reallocate(vec.size());
+    int j = 0;
+    for (it = vec.begin(); it != vec.end(); it++)
+      {
+	X.Index(j) = it->first;
+	X.Value(j) = it->second;
+	j++;
+      }
+  }
+
+  
+  //! Extracts a row from a sparse matrix
+  /*!
+    \param M sparse matrix
+    \param i row index
+    \param X row extracted
+    X = M(i, :)
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetRow(const Matrix<T0, Symmetric, ArrayRowSymSparse, Allocator0>& M,
+	      int i, Vector<T1, VectSparse, Allocator1>& X)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    int m = M.GetM();
+    if (i < 0 || i >= m)
+      throw WrongIndex("GetRow()",
+                       string("Index should be in [0, ") + to_str(m - 1)
+                       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    list<pair<int, T0> > vec;
+    // beginning of row i
+    for (int j = 0; j < i; j++)
+      for (int k = 0; k < M.GetRowSize(j); k++)
+	if (M.Index(j, k) == i)
+	  vec.push_back(make_pair(j, M.Value(j, k)));
+    
+    // end of row i
+    for (int k = 0; k < M.GetRowSize(i); k++)
+      vec.push_back(make_pair(M.Index(i, k), M.Value(i, k)));
+    
+    typename list<pair<int, T0> >::iterator it;
+    X.Reallocate(vec.size());
+    int j = 0;
+    for (it = vec.begin(); it != vec.end(); it++)
+      {
+	X.Index(j) = it->first;
+	X.Value(j) = it->second;
+	j++;
+      }
+  }
+  
+  
+  //! Extracts a row from a sparse matrix
+  /*!
+    \param M sparse matrix
+    \param i row index
+    \param X row extracted
+    X = M(i, :)
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetRow(const Matrix<T0, Symmetric, ArrayColSymSparse, Allocator0>& M,
+	      int i, Vector<T1, VectSparse, Allocator1>& X)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    int m = M.GetM();
+    if (i < 0 || i >= m)
+      throw WrongIndex("GetRow()",
+                       string("Index should be in [0, ") + to_str(m - 1)
+                       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    list<pair<int, T0> > vec;
+    // beginning of row i
+    for (int k = 0; k < M.GetColumnSize(i); k++)
+      vec.push_back(make_pair(M.Index(i, k), M.Value(i, k)));
+    
+    // end of row i
+    for (int j = i+1; j < M.GetN(); j++)
+      for (int k = 0; k < M.GetColumnSize(j); k++)
+	if (M.Index(j, k) == i)
+	  vec.push_back(make_pair(j, M.Value(j, k)));
+    
+    typename list<pair<int, T0> >::iterator it;
+    X.Reallocate(vec.size());
+    int j = 0;
+    for (it = vec.begin(); it != vec.end(); it++)
+      {
+	X.Index(j) = it->first;
+	X.Value(j) = it->second;
+	j++;
+      }
+  }
+  
+  
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Allocator0,
+	    class T1, class Allocator1>
+  void SetRow(const Vector<T1, VectSparse, Allocator1>& X,
+	      int i, Matrix<T0, General, ArrayRowSparse, Allocator0>& M)
+  {
+    M.ClearRow(i);
+    M.ReallocateRow(i, X.GetM());    
+    for (int k = 0; k < X.GetM(); k++)
+      {
+	M.Index(i, k) = X.Index(k);
+	M.Value(i, k) = X.Value(k);
+      }
+  }
+  
+  
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Allocator0,
+	    class T1, class Allocator1>
+  void SetRow(const Vector<T1, VectSparse, Allocator1>& X,
+	      int i, Matrix<T0, General, ArrayColSparse, Allocator0>& M)
+  {
+    T0 val;
+    int p = 0;
+    for (int j = 0; j < M.GetN(); j++)
+      {
+	while ( (p < X.GetM()) && (X.Index(p) < j))
+	  p++;
+	
+	bool present_X = false;
+	if ( (p < X.GetM()) && (X.Index(p) == j))	  
+	  {
+	    present_X = true;
+	    val = X.Value(p);
+	  }
+	
+	int size_col = M.GetColumnSize(j);
+	bool present_val = false;
+	int k = 0;
+	while ( (k < size_col) && (M.Index(j, k) < i))
+	  k++;
+	
+	if ( (k < size_col) && (M.Index(j, k) == i))
+	  {
+	    if (!present_X)
+	      {
+		// reducing size of column
+		if (size_col > 1)
+		  {
+		    if (k == size_col-1)
+		      M.ResizeColumn(j, size_col-1);
+		    else
+		      {
+			int last_col = M.Index(j, size_col-1);
+			val = M.Value(j, size_col-1);
+			M.ResizeColumn(j, size_col-1);
+			for (int q = k; q < size_col-2; q++)
+			  {
+			    M.Index(j, q) = M.Index(j, q+1);
+			    M.Value(j, q) = M.Value(j, q+1);
+			  }
+			
+			M.Index(j, size_col-2) = last_col;
+			M.Value(j, size_col-2) = val;
+		      }
+		  }
+		else
+		  M.ClearColumn(j);
+	      }
+	    else
+	      M.Value(j, k) = val;
+	    
+	    present_val = true;
+	  }
+	
+	if (!present_val && present_X)
+	  {
+	    // increasing size of column
+	    M.ResizeColumn(j, size_col+1);
+	    for (int q = size_col; q > k; q--)
+	      {
+		M.Index(j, q) = M.Index(j, q-1);
+		M.Value(j, q) = M.Value(j, q-1);
+	      }
+	    
+	    M.Index(j, k) = i;
+	    M.Value(j, k) = val;
+	  }
+      }
+  }
+
+  
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Allocator0,
+	    class T1, class Allocator1>
+  void SetRow(const Vector<T1, VectSparse, Allocator1>& X,
+	      int i, Matrix<T0, Symmetric, ArrayRowSymSparse, Allocator0>& M)
+  {
+    T0 val;
+    int p = 0;
+    for (int j = 0; j < i; j++)
+      {
+	while ( (p < X.GetM()) && (X.Index(p) < j))
+	  p++;
+	
+	bool present_X = false;
+	if ( (p < X.GetM()) && (X.Index(p) == j))	  
+	  {
+	    present_X = true;
+	    val = X.Value(p);
+	    p++;
+	  }
+	
+	int size_row = M.GetRowSize(j);
+	bool present_val = false;
+	int k = 0;
+	while ( (k < size_row) && (M.Index(j, k) < i))
+	  k++;
+	
+	if ( (k < size_row) && (M.Index(j, k) == i))
+	  {
+	    if (!present_X)
+	      {
+		// reducing size of row
+		if (size_row > 1)
+		  {
+		    if (k == size_row-1)
+		      M.ResizeRow(j, size_row-1);
+		    else
+		      {
+			int last_col = M.Index(j, size_row-1);
+			val = M.Value(j, size_row-1);
+			M.ResizeRow(j, size_row-1);
+			for (int q = k; q < size_row-2; q++)
+			  {
+			    M.Index(j, q) = M.Index(j, q+1);
+			    M.Value(j, q) = M.Value(j, q+1);
+			  }
+			
+			M.Index(j, size_row-2) = last_col;
+			M.Value(j, size_row-2) = val;
+		      }
+		  }
+		else
+		  M.ClearRow(j);
+	      }
+	    else
+	      M.Value(j, k) = val;
+	    
+	    present_val = true;
+	  }
+	
+	if (!present_val && present_X)
+	  {
+	    // increasing size of row
+	    M.ResizeRow(j, size_row+1);
+	    for (int q = size_row; q > k; q--)
+	      {
+		M.Index(j, q) = M.Index(j, q-1);
+		M.Value(j, q) = M.Value(j, q-1);
+	      }
+	    
+	    M.Index(j, k) = i;
+	    M.Value(j, k) = val;
+	  }
+      }
+    
+    // and changing row i
+    M.ClearRow(i);
+    if (p < X.GetM())
+      {
+	M.ReallocateRow(i, X.GetM() - p);
+	int k = 0;
+	while (p < X.GetM())
+	  {
+	    M.Index(i, k) = X.Index(p);
+	    M.Value(i, k) = X.Value(p);
+	    k++;
+	    p++;
+	  }
+      }
+  }
+  
+  
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Allocator0,
+	    class T1, class Allocator1>
+  void SetRow(const Vector<T1, VectSparse, Allocator1>& X,
+	      int i, Matrix<T0, Symmetric, ArrayColSymSparse, Allocator0>& M)
+  {
+    T1 val;
+    int p = 0;
+    // setting column i
+    M.ClearColumn(i);
+    while ( (p < X.GetM()) && (X.Index(p) <= i))
+      p++;
+    
+    if (p > 0)
+      {
+	M.ReallocateColumn(i, p);
+	for (int k = 0; k < p; k++)
+	  {
+	    M.Index(i, k) = X.Index(k);
+	    M.Value(i, k) = X.Value(k);
+	  }	
+      }
+    
+    // then modifying last columns
+    for (int j = i+1; j < M.GetN(); j++)
+      {
+	while ( (p < X.GetM()) && (X.Index(p) < j))
+	  p++;
+	
+	bool present_X = false;
+	if ( (p < X.GetM()) && (X.Index(p) == j))	  
+	  {
+	    present_X = true;
+	    val = X.Value(p);
+	  }
+	
+	int size_col = M.GetColumnSize(j);
+	bool present_val = false;
+	int k = 0;
+	while ( (k < size_col) && (M.Index(j, k) < i))
+	  k++;
+	
+	if ( (k < size_col) && (M.Index(j, k) == i))
+	  {
+	    if (!present_X)
+	      {
+		// reducing size of column
+		if (size_col > 1)
+		  {
+		    if (k == size_col-1)
+		      M.ResizeColumn(j, size_col-1);
+		    else
+		      {
+			int last_col = M.Index(j, size_col-1);
+			val = M.Value(j, size_col-1);
+			M.ResizeColumn(j, size_col-1);
+			for (int q = k; q < size_col-2; q++)
+			  {
+			    M.Index(j, q) = M.Index(j, q+1);
+			    M.Value(j, q) = M.Value(j, q+1);
+			  }
+			
+			M.Index(j, size_col-2) = last_col;
+			M.Value(j, size_col-2) = val;
+		      }
+		  }
+		else
+		  M.ClearColumn(j);
+	      }
+	    else
+	      M.Value(j, k) = val;
+	    
+	    present_val = true;
+	  }
+	
+	if (!present_val && present_X)
+	  {
+	    // increasing size of column
+	    M.ResizeColumn(j, size_col+1);
+	    for (int q = size_col; q > k; q--)
+	      {
+		M.Index(j, q) = M.Index(j, q-1);
+		M.Value(j, q) = M.Value(j, q-1);
+	      }
+	    
+	    M.Index(j, k) = i;
+	    M.Value(j, k) = val;
+	  }
+
+      }
+  }
+  
+  
+  // GetRow, SetRow //
+  ////////////////////
+
+
+  ////////////////////
+  // GetCol, SetCol //
+
+  
+  //! Extracts a column from a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X column extracted
+    X = M(:, j)
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetCol(const Matrix<T0, General, ArrayRowSparse, Allocator0>& M,
+	      int j, Vector<T1, VectSparse, Allocator1>& X)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    int n = M.GetN();
+    if (j < 0 || j >= n)
+      throw WrongIndex("GetCol()",
+                       string("Index should be in [0, ") + to_str(n - 1)
+                       + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int m = M.GetM();
+
+    list<pair<int, T0> > vec;
+    for (int i = 0; i < m; i++)
+      for (int k = 0; k < M.GetRowSize(i); k++)
+	if (M.Index(i, k) == j)
+	  vec.push_back(make_pair(i, M.Value(i, k)));
+    
+    typename list<pair<int, T0> >::iterator it;
+    X.Reallocate(vec.size());
+    int i = 0;
+    for (it = vec.begin(); it != vec.end(); it++)
+      {
+	X.Index(i) = it->first;
+	X.Value(i) = it->second;
+	i++;
+      }
+  }
+  
+  
+  //! Extracts a column from a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X column extracted
+    X = M(:, j)
+  */
+  template<class T0, class Allocator0,
+	   class T1, class Allocator1>
+  void GetCol(const Matrix<T0, General, ArrayColSparse, Allocator0>& A,
+	      int j, Vector<T1, VectSparse, Allocator1>& X)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    int n = A.GetN();
+    if (j < 0 || j >= n)
+      throw WrongIndex("GetCol()",
+                       string("Index should be in [0, ") + to_str(n - 1)
+                       + "], but is equal to " + to_str(j) + ".");
+#endif
+    
+    int size_col = A.GetColumnSize(j);
+    X.Reallocate(size_col);
+    for (int k = 0; k < size_col; k++)
+      {
+	X.Index(k) = A.Index(j, k);
+	X.Value(k) = A.Value(j, k);
+      }
+  }
+
+  
+  //! Extracts a column from a sparse matrix
+  /*!
+    \param M sparse matrix
+    \param j column index
+    \param X column extracted
+    X = M(:, j)
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetCol(const Matrix<T0, Symmetric, ArrayRowSymSparse, Allocator0>& M,
+	      int j, Vector<T1, VectSparse, Allocator1>& X)
+  {
+    // symmetric matrix row = col
+    GetRow(M, j, X);
+  }
+
+  
+  //! Extracts a column from a sparse matrix
+  /*!
+    \param M sparse matrix
+    \param j column index
+    \param X column extracted
+    X = M(:, j)
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetCol(const Matrix<T0, Symmetric, ArrayColSymSparse, Allocator0>& M,
+	      int j, Vector<T1, VectSparse, Allocator1>& X)
+  {
+    // symmetric matrix row = col
+    GetRow(M, j, X);
+  }
+
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Allocator0,
+	    class T1, class Allocator1>
+  void SetCol(const Vector<T1, VectSparse, Allocator1>& X,
+	      int j, Matrix<T0, General, ArrayRowSparse, Allocator0>& M)
+  {
+    T0 val;
+    int p = 0;
+    for (int i = 0; i < M.GetM(); i++)
+      {
+	while ( (p < X.GetM()) && (X.Index(p) < i))
+	  p++;
+	
+	bool present_X = false;
+	if ( (p < X.GetM()) && (X.Index(p) == i))	  
+	  {
+	    present_X = true;
+	    val = X.Value(p);
+	  }
+	
+	int size_row = M.GetRowSize(i);
+	bool present_val = false;
+	int k = 0;
+	while ( (k < size_row) && (M.Index(i, k) < j))
+	  k++;
+	
+
+	if ( (k < size_row) && (M.Index(i, k) == j))
+	  {
+	    if (!present_X)
+	      {
+		// reducing size of row
+		if (size_row > 1)
+		  {
+		    if (k == size_row-1)
+		      M.ResizeRow(j, size_row-1);
+		    else
+		      {
+			int last_row = M.Index(i, size_row-1);
+			val = M.Value(i, size_row-1);
+			M.ResizeRow(i, size_row-1);
+			for (int q = k; q < size_row-2; q++)
+			  {
+			    M.Index(i, q) = M.Index(i, q+1);
+			    M.Value(i, q) = M.Value(i, q+1);
+			  }
+			
+			M.Index(i, size_row-2) = last_row;
+			M.Value(i, size_row-2) = val;
+		      }
+		  }
+		else
+		  M.ClearRow(i);
+	      }
+	    else
+	      M.Value(i, k) = val;
+	    
+	    present_val = true;
+	  }
+	
+	if (!present_val && present_X)
+	  {
+	    // increasing size of row
+	    M.ResizeRow(i, size_row+1);
+	    for (int q = size_row; q > k; q--)
+	      {
+		M.Index(i, q) = M.Index(i, q-1);
+		M.Value(i, q) = M.Value(i, q-1);
+	      }
+	    
+	    M.Index(i, k) = j;
+	    M.Value(i, k) = val;
+	  }	
+      }
+  }
+  
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Allocator0,
+	    class T1, class Allocator1>
+  void SetCol(const Vector<T1, VectSparse, Allocator1>& X,
+	      int j, Matrix<T0, General, ArrayColSparse, Allocator0>& M)
+  {
+    M.ClearColumn(j);
+    M.ReallocateColumn(j, X.GetM());    
+    for (int k = 0; k < X.GetM(); k++)
+      {
+	M.Index(j, k) = X.Index(k);
+	M.Value(j, k) = X.Value(k);
+      }
+  }
+  
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Allocator0,
+	    class T1, class Allocator1>
+  void SetCol(const Vector<T1, VectSparse, Allocator1>& X,
+	      int j, Matrix<T0, Symmetric, ArrayRowSymSparse, Allocator0>& M)
+  {
+    // symmetric matrix, row = column
+    SetRow(X, j, M);
+  }
+   
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Allocator0,
+	    class T1, class Allocator1>
+  void SetCol(const Vector<T1, VectSparse, Allocator1>& X,
+	      int j, Matrix<T0, Symmetric, ArrayColSymSparse, Allocator0>& M)
+  {
+    // symmetric matrix, row = column
+    SetRow(X, j, M);
+  }
+  
+  
+  // GetCol, SetCol //
+  ////////////////////
+  
+  
   ////////////
   // MltAdd //
 

@@ -1,5 +1,5 @@
 // Copyright (C) 2001-2010 INRIA, Vivien Mallet
-// Author(s): Marc Fragu, Vivien Mallet
+// Author(s): Marc Duruflé, Marc Fragu, Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -23,6 +23,47 @@
 #include "Functions.hxx"
 
 #include "../computation/basic_functions/Functions_Vector.cxx"
+
+/*
+  Functions defined in this file:
+  (storage RowSparse, ColSparse, RowSymSparse, ColSymSparse, and dense)
+
+  X = A(i, :)
+  GetRow(A, i, X)
+
+  X = A(:, j)
+  GetCol(A, j, X)
+
+  A(i, :) = X
+  SetRow(X, i, A)
+
+  A(:, j) = X
+  SetCol(X, j, A)
+  
+
+  (dense storages only)
+  
+  A = A(row_perm, col_perm)
+  ApplyPermutation(A, row_perm, col_perm)
+  ApplyPermutation(A, row_perm, col_perm, starting_index)
+
+  A(row_perm, col_perm) = A
+  ApplyInversePermutation(A, row_perm, col_perm)
+  ApplyInversePermutation(A, row_perm, col_perm, starting_index)
+  
+  A = Drow * A * Dcol
+  ScaleMatrix(A, Drow, Dcol)
+  
+  A = Drow * A
+  ScaleLeftMatrix(A, Drow)
+
+  A = A * Dcol
+  ScaleRightMatrix(A, Dcol)
+  
+  Implementations of ApplyPermutation, ApplyInversePermutation,
+  ScaleMatrix, ScaleLeftMatrix and ScaleRightMatrix for sparse storages
+  are present in file matrix_sparse/Permutation_ScalingMatrix.cxx
+*/
 
 namespace Seldon
 {
@@ -48,7 +89,7 @@ namespace Seldon
 
     int* ptr = M.GetPtr();
     int* ind = M.GetInd();
-    double* data = M.GetData();
+    T0* data = M.GetData();
     int size_row = ptr[i+1] - ptr[i];
 
     X.Reallocate(size_row);
@@ -61,6 +102,132 @@ namespace Seldon
   }
 
 
+  //! Extracts a row from a sparse matrix
+  /*!
+    \param M sparse matrix
+    \param i row index
+    \param X row extracted
+    X = M(i, :)
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetRow(const Matrix<T0, General, ColSparse, Allocator0>& M,
+	      int i, Vector<T1, VectSparse, Allocator1>& X)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    int m = M.GetM();
+    if (i < 0 || i >= m)
+      throw WrongIndex("GetRow()",
+                       string("Index should be in [0, ") + to_str(m - 1)
+                       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    int* ptr = M.GetPtr();
+    int* ind = M.GetInd();
+    T0* data = M.GetData();
+    list<pair<int, T0> > vec;
+    for (int j = 0; j < M.GetN(); j++)
+      for (int k = ptr[j]; k < ptr[j+1]; k++)
+	if (ind[k] == i)
+	  vec.push_back(make_pair(j, data[k]));
+    
+    typename list<pair<int, T0> >::iterator it;
+    X.Reallocate(vec.size());
+    int j = 0;
+    for (it = vec.begin(); it != vec.end(); it++)
+      {
+	X.Index(j) = it->first;
+	X.Value(j) = it->second;
+	j++;
+      }
+  }
+
+  
+  //! Extracts a row from a sparse matrix
+  /*!
+    \param M sparse matrix
+    \param i row index
+    \param X row extracted
+    X = M(i, :)
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetRow(const Matrix<T0, Symmetric, RowSymSparse, Allocator0>& M,
+	      int i, Vector<T1, VectSparse, Allocator1>& X)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    int m = M.GetM();
+    if (i < 0 || i >= m)
+      throw WrongIndex("GetRow()",
+                       string("Index should be in [0, ") + to_str(m - 1)
+                       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    int* ptr = M.GetPtr();
+    int* ind = M.GetInd();
+    T0* data = M.GetData();
+    list<pair<int, T0> > vec;
+    for (int j = 0; j < i; j++)
+      for (int k = ptr[j]; k < ptr[j+1]; k++)
+	if (ind[k] == i)
+	  vec.push_back(make_pair(j, data[k]));
+    
+    for (int k = ptr[i]; k < ptr[i+1]; k++)
+      vec.push_back(make_pair(ind[k], data[k]));
+    
+    typename list<pair<int, T0> >::iterator it;
+    X.Reallocate(vec.size());
+    int j = 0;
+    for (it = vec.begin(); it != vec.end(); it++)
+      {
+	X.Index(j) = it->first;
+	X.Value(j) = it->second;
+	j++;
+      }
+  }
+
+  
+  //! Extracts a row from a sparse matrix
+  /*!
+    \param M sparse matrix
+    \param i row index
+    \param X row extracted
+    X = M(i, :)
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetRow(const Matrix<T0, Symmetric, ColSymSparse, Allocator0>& M,
+	      int i, Vector<T1, VectSparse, Allocator1>& X)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    int m = M.GetM();
+    if (i < 0 || i >= m)
+      throw WrongIndex("GetRow()",
+                       string("Index should be in [0, ") + to_str(m - 1)
+                       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    int* ptr = M.GetPtr();
+    int* ind = M.GetInd();
+    T0* data = M.GetData();
+    list<pair<int, T0> > vec;
+    for (int k = ptr[i]; k < ptr[i+1]; k++)
+      vec.push_back(make_pair(ind[k], data[k]));
+    
+    for (int j = i+1; j < M.GetM(); j++)
+      for (int k = ptr[j]; k < ptr[j+1]; k++)
+	if (ind[k] == i)
+	  vec.push_back(make_pair(j, data[k]));
+    
+    typename list<pair<int, T0> >::iterator it;
+    X.Reallocate(vec.size());
+    int j = 0;
+    for (it = vec.begin(); it != vec.end(); it++)
+      {
+	X.Index(j) = it->first;
+	X.Value(j) = it->second;
+	j++;
+      }
+  }
+  
+  
   //! Extracts a row from a matrix
   /*!
     \param M matrix
@@ -73,9 +240,46 @@ namespace Seldon
   void GetRow(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 	      int i, Vector<T1, Storage1, Allocator1>& X)
   {
+    if (Storage0::Sparse)
+      throw WrongArgument("GetRow", "Function intended to dense matrices");
+    
     X.Reallocate(M.GetN());
     for (int j = 0; j < M.GetN(); j++)
       X(j) = M(i, j);
+  }
+
+  
+  //! Extracts a column from a sparse matrix
+  /*!
+    \param M sparse matrix
+    \param j column index
+    \param X column extracted
+    X = M(:, j)
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetCol(const Matrix<T0, General, ColSparse, Allocator0>& M,
+	      int j, Vector<T1, VectSparse, Allocator1>& X)
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    int n = M.GetN();
+    if (j < 0 || j >= n)
+      throw WrongIndex("GetCol()",
+                       string("Index should be in [0, ") + to_str(n - 1)
+                       + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int* ptr = M.GetPtr();
+    int* ind = M.GetInd();
+    T0* data = M.GetData();
+    int size_col = ptr[j+1] - ptr[j];
+
+    X.Reallocate(size_col);
+    int shift = ptr[j];
+    for (int i = 0; i < size_col; i++)
+      {
+	X.Index(i) = ind[shift + i];
+	X.Value(i) = data[shift + i];
+      }
   }
 
   
@@ -100,22 +304,58 @@ namespace Seldon
 
     int* ptr = M.GetPtr();
     int* ind = M.GetInd();
-    double* data = M.GetData();
+    T0* data = M.GetData();
     int m = M.GetM();
-    Vector<int> index;
-    Vector<double> value;
 
+    list<pair<int, T0> > vec;
     for (int i = 0; i < m; i++)
       for (int k = ptr[i]; k < ptr[i+1]; k++)
 	if (ind[k] == j)
-	  {
-	    index.PushBack(i);
-	    value.PushBack(data[k]);
-	  }
-
-    X.SetData(value, index);
+	  vec.push_back(make_pair(i, data[k]));
+    
+    typename list<pair<int, T0> >::iterator it;
+    X.Reallocate(vec.size());
+    int i = 0;
+    for (it = vec.begin(); it != vec.end(); it++)
+      {
+	X.Index(i) = it->first;
+	X.Value(i) = it->second;
+	i++;
+      }
   }
 
+  
+  //! Extracts a column from a sparse matrix
+  /*!
+    \param M sparse matrix
+    \param j column index
+    \param X column extracted
+    X = M(:, j)
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetCol(const Matrix<T0, Symmetric, ColSymSparse, Allocator0>& M,
+	      int j, Vector<T1, VectSparse, Allocator1>& X)
+  {
+    // symmetric matrix row = col
+    GetRow(M, j, X);
+  }
+  
+  
+  //! Extracts a column from a sparse matrix
+  /*!
+    \param M sparse matrix
+    \param j column index
+    \param X column extracted
+    X = M(:, j)
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void GetCol(const Matrix<T0, Symmetric, RowSymSparse, Allocator0>& M,
+	      int j, Vector<T1, VectSparse, Allocator1>& X)
+  {
+    // symmetric matrix row = col
+    GetRow(M, j, X);
+  }
+  
   
   //! Extracts a column from a matrix
   /*!
@@ -129,6 +369,9 @@ namespace Seldon
   void GetCol(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 	      int j, Vector<T1, Storage1, Allocator1>& X)
   {
+    if (Storage0::Sparse)
+      throw WrongArgument("GetCol", "Function intended to dense matrices");
+    
     X.Reallocate(M.GetM());
     for (int i = 0; i < M.GetM(); i++)
       X(i) = M(i, j);
@@ -147,6 +390,9 @@ namespace Seldon
   void SetRow(const Vector<T1, Storage1, Allocator1>& X,
 	      int i, Matrix<T0, Prop0, Storage0, Allocator0>& M)
   {
+    if (Storage0::Sparse)
+      throw WrongArgument("SetRow", "Function intended to dense matrices");
+    
     for (int j = 0; j < M.GetN(); j++)
       M.Set(i, j, X(j));
   }
@@ -215,6 +461,431 @@ namespace Seldon
     M.SetData(m, n, new_data_vector, new_ptr_vector, new_ind_vector);
   }
 
+
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void SetRow(const Vector<T1, VectSparse, Allocator1>& X,
+	      int i, Matrix<T0, General, ColSparse, Allocator0>& M)
+  {
+    int m = M.GetM();
+    int n = M.GetN();
+    int nnz = M.GetDataSize();
+    
+    int* ptr = M.GetPtr();
+    int* ind = M.GetInd();
+    T0* data = M.GetData();
+    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= m)
+      throw WrongIndex("SetRow(Vector, int, Matrix<ColSparse>)",
+                       string("Index should be in [0, ") + to_str(m - 1)
+                       + "], but is equal to " + to_str(i) + ".");
+#endif
+    
+    // we retrieve the current row of matrix M
+    Vector<T0, VectSparse, Allocator0> row;
+    GetRow(M, i, row);
+    
+    // counting the new number of new elements
+    int new_nnz = nnz + X.GetM() - row.GetM();
+    
+    // if we have the same pattern for old and new row
+    // we change only the values
+    bool same_pattern = true;
+    if (X.GetM() == row.GetM())
+      {
+	for (int k = 0; k < X.GetM(); k++)
+	  if (X.Index(k) != row.Index(k))
+	    same_pattern = false;
+      }
+    else
+      same_pattern = false;
+    
+    if (same_pattern)
+      {
+	for (int k = 0; k < X.GetM(); k++)
+	  {
+	    int j = X.Index(k);
+	    for (int k2 = ptr[j]; k2 < ptr[j+1]; k2++)
+	      if (ind[k2] == i)
+		data[k2] = X.Value(k);
+	  }
+      }
+    else
+      {
+	// the pattern has to be modified, reallocating a new matrix
+	Vector<int, VectFull, CallocAlloc<int> > Ptr(n+1), Ind(new_nnz);
+	Vector<T0, VectFull, Allocator0> Val(new_nnz);
+	
+	// loop on first rows
+	int kx = 0, kr = 0;
+	int nb = 0;
+	Ptr(0) = 0;
+	for (int j = 0; j < n; j++)
+	  {
+	    // trying to find the corresponding index for X and row
+	    bool valX = false, val_row = false;
+	    while ( (kx < X.GetM()) && (X.Index(kx) < j))
+	      kx++;
+	    
+	    if ( (kx < X.GetM()) && (X.Index(kx) == j))
+	      valX = true;
+	    
+	    while ( (kr < row.GetM()) && (row.Index(kr) < j))
+	      kr++;
+
+	    if ( (kr < row.GetM()) && (row.Index(kr) == j))
+	      val_row = true;
+	    
+	    // filling matrix until index i
+	    int k = ptr[j];
+	    while ((k < ptr[j+1]) && (ind[k] < i))
+	      {
+		Ind(nb) = ind[k];
+		Val(nb) = data[k];
+		nb++;
+		k++;
+	      }
+	    
+	    // if there is a value on X for this index, adding it
+	    if (valX)
+	      {
+		Ind(nb) = i;
+		Val(nb) = X.Value(kx);
+		nb++;
+		kx++;
+	      }
+	    
+	    // if there is a value on row for this index
+	    // we skip this value
+	    if (val_row)
+	      k++;
+	    
+	    // last values of column
+	    while (k < ptr[j+1])
+	      {
+		Ind(nb) = ind[k];
+		Val(nb) = data[k];
+		nb++;
+		k++;
+	      }
+	    
+	    Ptr(j+1) = nb;
+	  }
+	
+	M.SetData(m, n, Val, Ptr, Ind);
+      }
+  }
+  
+  
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void SetRow(const Vector<T1, VectSparse, Allocator1>& X,
+	      int i, Matrix<T0, Symmetric, RowSymSparse, Allocator0>& M)
+  {
+    int n = M.GetN();
+    int nnz = M.GetDataSize();
+    
+    int* ptr = M.GetPtr();
+    int* ind = M.GetInd();
+    T0* data = M.GetData();
+    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= n)
+      throw WrongIndex("SetRow(Vector, int, Matrix<RowSymSparse>)",
+                       string("Index should be in [0, ") + to_str(n - 1)
+                       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    // we retrieve the current row of matrix M
+    Vector<T0, VectSparse, Allocator0> row;
+    GetRow(M, i, row);
+    
+    // counting the new number of new elements
+    int new_nnz = nnz + X.GetM() - row.GetM();
+    
+    // if we have the same pattern for old and new row
+    // we change only the values
+    bool same_pattern = true;
+    if (X.GetM() == row.GetM())
+      {
+	for (int k = 0; k < X.GetM(); k++)
+	  if (X.Index(k) != row.Index(k))
+	    same_pattern = false;
+      }
+    else
+      same_pattern = false;
+    
+    if (same_pattern)
+      {
+	int kdiag = 0;
+	for (int k = 0; k < X.GetM(); k++)
+	  {
+	    int j = X.Index(k);
+	    if (j < i)
+	      {
+		for (int k2 = ptr[j]; k2 < ptr[j+1]; k2++)
+		  if (ind[k2] == i)
+		    data[k2] = X.Value(k);
+		
+		kdiag = k+1;
+	      }
+	    else
+	      {
+		int k2 = ptr[i] + k - kdiag;
+		data[k2] = X.Value(k);
+	      }
+	  }
+      }
+    else
+      {
+	// the pattern has to be modified, reallocating a new matrix
+	Vector<int, VectFull, CallocAlloc<int> > Ptr(n+1), Ind(new_nnz);
+	Vector<T0, VectFull, Allocator0> Val(new_nnz);
+	
+	// loop on first rows
+	int kx = 0, kr = 0;
+	int nb = 0;
+	Ptr(0) = 0;
+	for (int j = 0; j < i; j++)
+	  {
+	    // trying to find the corresponding index for X and row
+	    bool valX = false, val_row = false;
+	    while ( (kx < X.GetM()) && (X.Index(kx) < j))
+	      kx++;
+	    
+	    if ( (kx < X.GetM()) && (X.Index(kx) == j))
+	      valX = true;
+	    
+	    while ( (kr < row.GetM()) && (row.Index(kr) < j))
+	      kr++;
+
+	    if ( (kr < row.GetM()) && (row.Index(kr) == j))
+	      val_row = true;
+	    
+	    // filling matrix until index i
+	    int k = ptr[j];
+	    while ((k < ptr[j+1]) && (ind[k] < i))
+	      {
+		Ind(nb) = ind[k];
+		Val(nb) = data[k];
+		nb++;
+		k++;
+	      }
+	    
+	    // if there is a value on X for this index, adding it
+	    if (valX)
+	      {
+		Ind(nb) = i;
+		Val(nb) = X.Value(kx);
+		nb++;
+		kx++;
+	      }
+	    
+	    // if there is a value on row for this index
+	    // we go to the next value
+	    if (val_row)
+	      k++;
+	    
+	    // last values of row
+	    while (k < ptr[j+1])
+	      {
+		Ind(nb) = ind[k];
+		Val(nb) = data[k];
+		nb++;
+		k++;
+	      }
+	    
+	    Ptr(j+1) = nb;
+	  }
+	
+	// then changing row i
+	while (kx < X.GetM())
+	  {
+	    Ind(nb) = X.Index(kx);
+	    Val(nb) = X.Value(kx);
+	    nb++;
+	    kx++;
+	  }
+	
+	Ptr(i+1) = nb;
+	
+	// then last rows of M
+	for (int j = i+1; j < n; j++)
+	  {
+	    for (int k = ptr[j]; k < ptr[j+1]; k++)
+	      {
+		Ind(nb) = ind[k];
+		Val(nb) = data[k];
+		nb++;
+	      }
+	    
+	    Ptr(j+1) = nb;
+	  }
+	
+	M.SetData(n, n, Val, Ptr, Ind);
+      }
+  }
+  
+  
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void SetRow(const Vector<T1, VectSparse, Allocator1>& X,
+	      int i, Matrix<T0, Symmetric, ColSymSparse, Allocator0>& M)
+  {
+    int n = M.GetN();
+    int nnz = M.GetDataSize();
+    
+    int* ptr = M.GetPtr();
+    int* ind = M.GetInd();
+    T0* data = M.GetData();
+    
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= n)
+      throw WrongIndex("SetRow(Vector, int, Matrix<RowSymSparse>)",
+                       string("Index should be in [0, ") + to_str(n - 1)
+                       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    // we retrieve the current row of matrix M
+    Vector<T0, VectSparse, Allocator0> row;
+    GetRow(M, i, row);
+    
+    // counting the new number of new elements
+    int new_nnz = nnz + X.GetM() - row.GetM();
+    
+    // if we have the same pattern for old and new row
+    // we change only the values
+    bool same_pattern = true;
+    if (X.GetM() == row.GetM())
+      {
+	for (int k = 0; k < X.GetM(); k++)
+	  if (X.Index(k) != row.Index(k))
+	    same_pattern = false;
+      }
+    else
+      same_pattern = false;
+    
+    if (same_pattern)
+      {
+	for (int k = 0; k < X.GetM(); k++)
+	  {
+	    int j = X.Index(k);
+	    if (j <= i)
+	      {
+		int k2 = ptr[i] + k;
+		data[k2] = X.Value(k);
+	      }
+	    else
+	      {
+		for (int k2 = ptr[j]; k2 < ptr[j+1]; k2++)
+		  if (ind[k2] == i)
+		    data[k2] = X.Value(k);
+	      }
+	  }
+      }
+    else
+      {
+	// the pattern has to be modified, reallocating a new matrix
+	Vector<int, VectFull, CallocAlloc<int> > Ptr(n+1), Ind(new_nnz);
+	Vector<T0, VectFull, Allocator0> Val(new_nnz);
+	
+	// first columns of M
+	Ptr(0) = 0;
+	int nb = 0;
+	for (int j = 0; j < i; j++)
+	  {
+	    for (int k = ptr[j]; k < ptr[j+1]; k++)
+	      {
+		Ind(nb) = ind[k];
+		Val(nb) = data[k];
+		nb++;
+	      }
+	    
+	    Ptr(j+1) = nb;
+	  }
+	
+	// then changing column i
+	int kx = 0;
+	while ( (kx < X.GetM()) && (X.Index(kx) <= i) )
+	  {
+	    Ind(nb) = X.Index(kx);
+	    Val(nb) = X.Value(kx);
+	    nb++;
+	    kx++;
+	  }
+	
+	Ptr(i+1) = nb;
+	
+	// loop on last columns
+	for (int j = i+1; j < n; j++)
+	  {
+	    // trying to find the corresponding index for X
+	    bool valX = false;
+	    while ( (kx < X.GetM()) && (X.Index(kx) < j))
+	      kx++;
+	    
+	    if ( (kx < X.GetM()) && (X.Index(kx) == j))
+	      valX = true;
+	    
+	    // filling matrix until index i
+	    int k = ptr[j];
+	    while ((k < ptr[j+1]) && (ind[k] < i))
+	      {
+		Ind(nb) = ind[k];
+		Val(nb) = data[k];
+		nb++;
+		k++;
+	      }
+	    
+	    // if there is a value on X for this index, adding it
+	    if (valX)
+	      {
+		Ind(nb) = i;
+		Val(nb) = X.Value(kx);
+		nb++;
+		kx++;
+	      }
+	    
+	    // if there is a value on column j for this index
+	    // we go to the next value
+	    if ( (k < ptr[j+1]) && (ind[k] == i))
+	      k++;
+	    
+	    // last values of column
+	    while (k < ptr[j+1])
+	      {
+		Ind(nb) = ind[k];
+		Val(nb) = data[k];
+		nb++;
+		k++;
+	      }
+	    
+	    Ptr(j+1) = nb;
+	  }	
+	
+	M.SetData(n, n, Val, Ptr, Ind);
+      }
+  }
+  
   
   //! Sets a column of a matrix
   /*!
@@ -228,6 +899,9 @@ namespace Seldon
   void SetCol(const Vector<T1, Storage1, Allocator1>& X,
 	      int j, Matrix<T0, Prop0, Storage0, Allocator0>& M)
   {
+    if (Storage0::Sparse)
+      throw WrongArgument("SetCol", "Function intended to dense matrices");
+    
     for (int i = 0; i < M.GetM(); i++)
       M.Set(i, j, X(i));
   }
@@ -326,7 +1000,7 @@ namespace Seldon
 	  {
 	    // Collision.
 	  case 0:
-	    working_vector(j) = X(ind_x);
+	    working_vector.Get(j) = X(ind_x);
 	    for (int k = 0; k < Nworking_vector; k++)
 	      new_ind_vector.GetData()[k + new_ptr_vector(ind_x)] =
 		working_vector.GetIndex()[k];
@@ -398,7 +1072,118 @@ namespace Seldon
     new_ptr_vector.Nullify();
   }
 
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void SetCol(const Vector<T1, VectSparse, Allocator1>& X,
+	      int j, Matrix<T0, General, ColSparse, Allocator0>& M)
+  {
+    int m = M.GetM();
+    int n = M.GetN();
+    int nnz = M.GetDataSize();
+    
+    int* ptr = M.GetPtr();
+    int* ind = M.GetInd();
+    T0* data = M.GetData();
 
+#ifdef SELDON_CHECK_BOUNDS
+    if (j < 0 || j >= n)
+      throw WrongIndex("SetCol(Vector, int, Matrix<ColSparse>)",
+                       string("Index should be in [0, ") + to_str(n - 1)
+                       + "], but is equal to " + to_str(j) + ".");
+#endif
+    
+    int size_col = ptr[j+1] - ptr[j];
+    if (size_col == X.GetM())
+      {
+	// no need of reallocating matrix M
+	// changing indexes and values
+	for (int k = 0; k < X.GetM(); k++)
+	  {
+	    ind[ptr[j] + k] = X.Index(k);
+	    data[ptr[j] + k] = X.Value(k);
+	  }
+      }
+    else
+      {
+	int new_nnz = nnz + X.GetM() - size_col;
+	// new matrix
+	Vector<int, VectFull, CallocAlloc<int> > Ptr(n+1), Ind(new_nnz);
+	Vector<T0, VectFull, Allocator0> Val(new_nnz);
+	Ptr(0) = 0;
+	for (int i = 0; i < j; i++)
+	  {
+	    for (int k = ptr[i]; k < ptr[i+1]; k++)
+	      {
+		Ind(k) = ind[k];
+		Val(k) = data[k];
+	      }
+	    Ptr(i+1) = ptr[i+1];
+	  }
+	
+	new_nnz = Ptr(j);
+	for (int k = 0; k < X.GetM(); k++)
+	  {
+	    Ind(new_nnz) = X.Index(k);
+	    Val(new_nnz) = X.Value(k);
+	    new_nnz++;
+	  }
+	
+	Ptr(j+1) = new_nnz;
+	for (int i = j+1; i < n; i++)
+	  {
+	    for (int k = ptr[i]; k < ptr[i+1]; k++)
+	      {
+		Ind(new_nnz) = ind[k];
+		Val(new_nnz) = data[k];
+		new_nnz++;
+	      }
+	    Ptr(i+1) = new_nnz;
+	  }
+	
+	M.SetData(m, n, Val, Ptr, Ind);
+      }
+  }
+  
+
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void SetCol(const Vector<T1, VectSparse, Allocator1>& X,
+	      int j, Matrix<T0, Symmetric, RowSymSparse, Allocator0>& M)
+  {
+    // symmetric matrix, row = col
+    SetRow(X, j, M);
+  }
+  
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Allocator0, class T1, class Allocator1>
+  void SetCol(const Vector<T1, VectSparse, Allocator1>& X,
+	      int j, Matrix<T0, Symmetric, ColSymSparse, Allocator0>& M)
+  {
+    // symmetric matrix, row = col
+    SetRow(X, j, M);
+  }
+  
+  
   //! Permutation of a general matrix stored by rows.
   /*!
     B(i, j) = A(row_perm(i), col_perm(j)) and A = B.
