@@ -22,6 +22,10 @@
 
 #include "Matrix_ComplexConversions.hxx"
 
+/*
+  Same functions as in Matrix_Conversions.cxx 
+  for complex matrices (RowComplexSparse, etc)
+ */
 
 namespace Seldon
 {

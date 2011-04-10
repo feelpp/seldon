@@ -1,4 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2001-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -22,6 +23,30 @@
 
 #include "IOMatrixMarket.hxx"
 #include <iomanip>
+
+/*
+  Functions defined in this file:
+  (storage RowSparse, ColSparse, RowSymSparse, ColSymSparse,
+  ArrayRowSparse, ArrayColSparse, ArrayRowSymSparse, ArrayColSymSparse
+  and equivalent complex storages if SeldonComplexMatrix.hxx is included)
+  
+  A is read in Harwell-Boeing format (.rua, .rsa, .rra, .cua, .cra or .csa)
+  ReadHarwellBoeing(file_name, A)
+  
+  A is written in Harwell-Boeing format
+  WriteHarwellBoeing(A, file_name)
+  
+  A is read in Matrix-Market format (.mtx)
+  ReadMatrixMarket(file_name, A)
+
+  A is written in Matrix-Market format (.mtx)
+  WriteMatrixMarket(A, file_name)
+
+  Internal functions (do not use directly) :
+  ReadComplexValuesHarwell
+  PrintComplexValuesHarwell
+  
+*/
 
 namespace Seldon
 {

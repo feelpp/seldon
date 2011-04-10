@@ -1,5 +1,5 @@
-// Copyright (C) 2003-2009 Marc Duruflé
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -23,12 +23,49 @@
 
 #include "Matrix_Conversions.hxx"
 
+/*
+  Functions defined in this file:
+  
+  conversion of a sparse matrix into coordinate format
+  (i, j, val) = A  
+  ConvertMatrix_to_Coordinates(A, index_row, index_col, val, index, sym)
+  
+  conversion from coordinate from to other sparse format
+  A = (i, j, val)
+  ConvertMatrix_from_Coordinates(index_row, index_col, val, A, index)
+  
+  conversion from sparse matrices to Compressed Sparse Column
+  (Ptr, Ind, Val) = A
+  ConvertToCSC(A, Ptr, Ind, Val, sym_pat)
+  
+  conversion from sparse matrices to Compressed Sparse Row
+  (Ptr, Ind, Val) = A
+  ConvertToCSR(A, Ptr, Ind, Val, sym_pat)
+  
+  conversion between sparse matrices
+  B = A
+  Copy(A, B)
+  
+  pattern of A + A' in CSR format
+  (Ptr, Ind) = A
+  GetSymmetricPattern
+  
+  conversion from a sparse matrix to a dense matrix
+  B = A
+  Copy(A, B)
+  
+  conversion from a dense matrix to a sparse matrix
+  B = sparse(A.*(abs(A) > threshold))
+  ConvertToSparse(A, B, threshold)
+  
+*/
 
 namespace Seldon
 {
 
   /*
     From CSR formats to "Matlab" coordinate format.
+    index => starting index (usually 0 or 1)
     sym = true => the upper part and lower part are both generated
   */
   
@@ -3227,6 +3264,11 @@ namespace Seldon
    ***********************/
 
 
+  //! Returns pattern of A + A' in CSR format
+  /*!
+    From a sparse matrix, we compute the pattern of A + A'
+    so that this pattern is symmetric even if A is non-symmetric    
+   */
   template<class T, class Prop, class Storage, class Allocator,
            class Tint, class Allocator2, class Allocator3>
   void GetSymmetricPattern(const Matrix<T, Prop, Storage, Allocator>& A,

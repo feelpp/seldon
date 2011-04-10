@@ -1,4 +1,4 @@
-// Copyright (C) 2001-2010 INRIA, Vivien Mallet
+// Copyright (C) 2001-2011 INRIA, Vivien Mallet
 // Author(s): Marc Duruflé, Marc Fragu, Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,

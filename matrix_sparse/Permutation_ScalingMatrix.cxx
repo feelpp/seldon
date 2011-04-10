@@ -1,5 +1,5 @@
-// Copyright (C) 2003-2009 Marc Duruflé
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -23,14 +23,19 @@
 /*
   Functions defined in this file:
 
+  A(I, J) = A
   ApplyInversePermutation(A, I, J)
-
+  
+  A = A(I, J)
   ApplyPermutation(A, I, J)
   
+  A = Drow * A * Dcol
   ScaleMatrix(A, Drow, Dcol)
 
+  A = Drow * A
   ScaleLeftMatrix(A, Drow)
 
+  A = A * Dcol
   ScaleRightMatrix(A, Dcol)
 */
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
-// Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -26,6 +26,17 @@
 
 #include <set>
 
+/*
+  Functions defined in this file:
+
+  reads coordinate form (i, j, val) from an input stream
+  ReadCoordinateMatrix(FileStream, row_index, col_index, values, cplx)
+  
+  writes coordinate form (i, j, val) in an input stream
+  WriteCoordinateMatrix(FileStream, row_index, col_index, values, cplx)
+
+  These functions are used by ReadText/WriteText
+*/
 
 namespace Seldon
 {

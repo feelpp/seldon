@@ -1,4 +1,4 @@
-// Copyright (C) 2001-2009 Vivien Mallet, Marc Fragu
+// Copyright (C) 2001-2011 Vivien Mallet, Marc Fragu, Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
