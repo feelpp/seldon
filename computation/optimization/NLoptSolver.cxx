@@ -66,10 +66,13 @@ namespace Seldon
     by the value of the cost function, the optimization is stopped. If you
     do not want to use a particular tolerance termination, you can just set
     that tolerance to zero and it will be ignored.
+    \param[in] Niteration_max maximum number of cost function evaluations.
+    It is ignored if it is non-positive.
   */
   void NLoptSolver::Initialize(int Nparameter, string algorithm,
                                double parameter_tolerance,
-                               double cost_function_tolerance)
+                               double cost_function_tolerance,
+                               int Niteration_max)
   {
     map<string, nlopt::algorithm> algorithm_map;
     map<string, nlopt::algorithm>::iterator it;
@@ -147,6 +150,8 @@ namespace Seldon
     parameter_tolerance_ = parameter_tolerance;
 
     cost_function_tolerance_ = cost_function_tolerance;
+
+    Niteration_max_ = Niteration_max;
   }
 
 
@@ -202,6 +207,17 @@ namespace Seldon
   }
 
 
+  //! Sets the maximum number of cost function evaluations.
+  /*!
+    \param[in] Niteration_max maximum number of cost function evaluations.
+    It is ignored if it is non-positive.
+  */
+  void NLoptSolver::SetNiterationMax(int Niteration_max)
+  {
+    Niteration_max_ = Niteration_max;
+  }
+
+
   //! Gets the relative tolerance on the parameters.
   /*!
     \param[out] tolerance relative tolerance on the parameters . When the
@@ -225,6 +241,16 @@ namespace Seldon
   void NLoptSolver::GetCostFunctionTolerance(double& tolerance) const
   {
     tolerance = cost_function_tolerance_;
+  }
+
+
+  //! Gets the maximum number of cost function evaluations.
+  /*!
+    \param[out] Niteration_max maximum number of cost function evaluations.
+  */
+  void NLoptSolver::GetNiterationMax(int& Niteration_max) const
+  {
+    Niteration_max = Niteration_max_;
   }
 
 
@@ -275,6 +301,7 @@ namespace Seldon
     opt_.set_min_objective(cost, argument);
     opt_.set_xtol_rel(parameter_tolerance_);
     opt_.set_ftol_rel(cost_function_tolerance_);
+    opt_.set_maxeval(Niteration_max_);
     nlopt::result result = opt_.optimize(parameter_, cost_);
 
     if (result < 0)
