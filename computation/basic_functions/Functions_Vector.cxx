@@ -59,7 +59,8 @@ namespace Seldon
   /////////
   // MLT //
 
-
+  
+  //! Multiplication of a vector by a scalar
   template <class T0,
 	    class T1, class Storage1, class Allocator1>
   void Mlt(const T0 alpha,
@@ -77,7 +78,8 @@ namespace Seldon
   /////////
   // ADD //
 
-
+  
+  //! Adds two vectors Y = Y + alpha X
   template <class T0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
@@ -101,6 +103,7 @@ namespace Seldon
   }
 
 
+  //! Adds two vectors Y = Y + alpha X
   template <class T0,
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
@@ -118,6 +121,7 @@ namespace Seldon
   }
 
 
+  //! Adds two vectors Y = Y + alpha X
   template <class T0,
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
@@ -155,6 +159,7 @@ namespace Seldon
   }
 
 
+  //! Adds two vectors Y = Y + alpha X
   template <class T0,
 	    class T1, template <class U1> class Allocator1,
 	    class T2, class Storage2, class Allocator2>
@@ -188,7 +193,8 @@ namespace Seldon
   //////////
   // COPY //
 
-
+  
+  //! Y = X
   template <class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
   void Copy(const Vector<T1, Storage1, Allocator1>& X,
@@ -198,6 +204,7 @@ namespace Seldon
   }
 
 
+  //! Y = X
   template <class T1, class Allocator1,
 	    class T2, class Allocator2>
   void Copy(const Vector<T1, Collection, Allocator1>& X,
@@ -218,6 +225,7 @@ namespace Seldon
   // SWAP //
 
 
+  //! Swaps X and Y without copying all elements
   template <class T, class Storage, class Allocator>
   void Swap(Vector<T, Storage, Allocator>& X,
 	    Vector<T, Storage, Allocator>& Y)
@@ -231,6 +239,7 @@ namespace Seldon
   }
 
 
+  //! Swaps X and Y without copying all elements
   template <class T, class Allocator>
   void Swap(Vector<T, VectSparse, Allocator>& X,
 	    Vector<T, VectSparse, Allocator>& Y)
@@ -325,7 +334,7 @@ namespace Seldon
   }
 
 
-  //! Scalar product between two vectors.
+  //! Scalar product between two vectors conj(X).Y .
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
   complex<T1> DotProdConj(const Vector<complex<T1>, Storage1, Allocator1>& X,
@@ -373,7 +382,7 @@ namespace Seldon
   }
 
 
-  //! Scalar product between two sparse vectors.
+  //! Scalar product between two sparse vectors conj(X).Y.
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
   complex<T1>
@@ -409,7 +418,8 @@ namespace Seldon
   ///////////
   // NORM1 //
 
-
+  
+  //! returns 1-norm of X
   template<class T1, class Storage1, class Allocator1>
   T1 Norm1(const Vector<T1, Storage1, Allocator1>& X)
   {
@@ -422,18 +432,24 @@ namespace Seldon
   }
 
 
+  //! returns 1-norm of X
+  /*!
+    For complex numbers, we use |z| = |Re(z)| + |Im(z)|
+    so that the function is the same as Blas equivalent dzasum
+  */
   template<class T1, class Storage1, class Allocator1>
   T1 Norm1(const Vector<complex<T1>, Storage1, Allocator1>& X)
   {
     T1 value(0);
-
+    
     for (int i = 0; i < X.GetM(); i++)
-      value += abs(X(i));
-
+      value += abs(real(X(i))) + abs(imag(X(i)));
+    
     return value;
   }
 
 
+  //! returns 1-norm of X
   template<class T1, class Allocator1>
   T1 Norm1(const Vector<T1, VectSparse, Allocator1>& X)
   {
@@ -446,13 +462,18 @@ namespace Seldon
   }
 
 
+  //! returns 1-norm of X
+  /*!
+    For complex numbers, we use |z| = |Re(z)| + |Im(z)|
+    so that the function is the same as Blas equivalent dzasum
+  */
   template<class T1, class Allocator1>
   T1 Norm1(const Vector<complex<T1>, VectSparse, Allocator1>& X)
   {
     T1 value(0);
 
     for (int i = 0; i < X.GetSize(); i++)
-      value += abs(X.Value(i));
+      value += abs(real(X.Value(i))) + abs(imag(X.Value(i)));
 
     return value;
   }
@@ -467,6 +488,7 @@ namespace Seldon
   // NORM2 //
 
 
+  //! returns 2-norm of X
   template<class T1, class Storage1, class Allocator1>
   T1 Norm2(const Vector<T1, Storage1, Allocator1>& X)
   {
@@ -479,6 +501,7 @@ namespace Seldon
   }
 
 
+  //! returns 2-norm of X
   template<class T1, class Storage1, class Allocator1>
   T1 Norm2(const Vector<complex<T1>, Storage1, Allocator1>& X)
   {
@@ -491,6 +514,7 @@ namespace Seldon
   }
 
 
+  //! returns 2-norm of X
   template<class T1, class Allocator1>
   T1 Norm2(const Vector<T1, VectSparse, Allocator1>& X)
   {
@@ -503,6 +527,7 @@ namespace Seldon
   }
 
 
+  //! returns 2-norm of X
   template<class T1, class Allocator1>
   T1 Norm2(const Vector<complex<T1>, VectSparse, Allocator1>& X)
   {
@@ -524,6 +549,7 @@ namespace Seldon
   // GETMAXABSINDEX //
 
 
+  //! returns index for which X(i) is maximal
   template<class T, class Storage, class Allocator>
   int GetMaxAbsIndex(const Vector<T, Storage, Allocator>& X)
   {

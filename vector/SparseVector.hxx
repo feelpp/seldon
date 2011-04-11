@@ -46,7 +46,7 @@ namespace Seldon
   private:
     //! Indices of the non-zero entries.
     int* index_;
-
+    
     // Methods.
   public:
     // Constructor.
@@ -109,7 +109,10 @@ namespace Seldon
     void AddInteractionRow(int nb, Vector<int> col,
 			   Vector<T, VectFull, Allocator0> val,
                            bool already_sorted = false);
-
+    
+    typename ClassComplexType<T>::Treal GetNormInf() const;
+    int GetNormInfIndex() const;
+    
     // Input/output functions.
     void Write(string FileName) const;
     void Write(ostream& FileStream) const;

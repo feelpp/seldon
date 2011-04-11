@@ -836,7 +836,50 @@ namespace Seldon
       }
   }
 
+  
+  //! Returns the infinite norm.
+  /*!
+    \return The infinite norm.
+  */
+  template <class T, class Allocator>
+  typename ClassComplexType<T>::Treal
+  Vector<T, VectSparse, Allocator>::GetNormInf() const
+  {
+    typename ClassComplexType<T>::Treal res(0);
+    for (int i = 0; i < this->m_; i++)
+      res = max(res, abs(this->data_[i]));
+    
+    return res;
+  }
 
+
+  //! Returns the index of the highest absolute value.
+  /*!
+    \return The index of the element that has the highest absolute value.
+  */
+  template <class T, class Allocator>
+  int Vector<T, VectSparse, Allocator>::GetNormInfIndex() const
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (this->GetLength() == 0)
+      throw WrongDim("Vector<VectSparse>::GetNormInfIndex()",
+		     "Vector is null.");
+#endif
+
+    typename ClassComplexType<T>::Treal res(0), temp;
+    int j = 0;
+    for (int i = 0; i < this->GetLength(); i++)
+      {
+	temp = res;
+	res = max(res, abs(this->data_[i]));
+	if (temp != res) j = i;
+      }
+
+    return this->index_[j];
+  }
+
+  
   /**************************
    * OUTPUT/INPUT FUNCTIONS *
    **************************/
