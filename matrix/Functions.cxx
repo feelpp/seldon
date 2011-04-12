@@ -108,6 +108,26 @@ namespace Seldon
   }
 
 
+  //! Extracts columns of a matrix.
+  /*! Columns [\a begin, \a end[ of \a M_in are returned in \a M_out.
+    \param[in] M_in input matrix.
+    \param[in] begin first column of \a M_in to extract.
+    \param[in] end the last column to be extracted from \a M_in is \a end - 1.
+    \param[out] M_out on exit, matrix composed of the columns \a begin to
+    \a end - 1 of \a M_in. \a M_out is reallocated if necessary.
+  */
+  template <class T0, class Prop0, class Storage0, class Allocator0,
+	    class T1, class Prop1, class Storage1, class Allocator1>
+  void GetCol(const Matrix<T0, Prop0, Storage0, Allocator0>& M_in,
+	      int begin, int end, Matrix<T1, Prop1, Storage1, Allocator1>& M_out)
+  {
+    M_out.Reallocate(M_in.GetM(), end - begin);
+    for (int i = 0; i < M_in.GetM(); i++)
+      for (int j = begin, k = 0; j < end; j++, k++)
+        M_out(i, k) = M_in(i, j);
+  }
+
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void SetRow(const Vector<T1, Storage1, Allocator1>& X,
