@@ -888,6 +888,142 @@ namespace Seldon
   }
   
   
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetRow(const Vector<T1, Storage1, Allocator1>& X,
+	      int i, Matrix<T0, Prop0, RowLoTriang, Allocator0>& M)
+  {
+    for (int j = 0; j <= i; j++)
+      M.Set(i, j, X(j));
+  }
+
+
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetRow(const Vector<T1, Storage1, Allocator1>& X,
+	      int i, Matrix<T0, Prop0, RowLoTriangPacked, Allocator0>& M)
+  {
+    for (int j = 0; j <= i; j++)
+      M.Set(i, j, X(j));
+  }
+
+
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetRow(const Vector<T1, Storage1, Allocator1>& X,
+	      int i, Matrix<T0, Prop0, ColLoTriang, Allocator0>& M)
+  {
+    for (int j = 0; j <= i; j++)
+      M.Set(i, j, X(j));
+  }
+
+
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetRow(const Vector<T1, Storage1, Allocator1>& X,
+	      int i, Matrix<T0, Prop0, ColLoTriangPacked, Allocator0>& M)
+  {
+    for (int j = 0; j <= i; j++)
+      M.Set(i, j, X(j));
+  }
+
+  
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetRow(const Vector<T1, Storage1, Allocator1>& X,
+	      int i, Matrix<T0, Prop0, RowUpTriang, Allocator0>& M)
+  {
+    for (int j = i; j < M.GetN(); j++)
+      M.Set(i, j, X(j));
+  }
+
+  
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetRow(const Vector<T1, Storage1, Allocator1>& X,
+	      int i, Matrix<T0, Prop0, RowUpTriangPacked, Allocator0>& M)
+  {
+    for (int j = i; j < M.GetN(); j++)
+      M.Set(i, j, X(j));
+  }
+
+  
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetRow(const Vector<T1, Storage1, Allocator1>& X,
+	      int i, Matrix<T0, Prop0, ColUpTriang, Allocator0>& M)
+  {
+    for (int j = i; j < M.GetN(); j++)
+      M.Set(i, j, X(j));
+  }
+
+  
+  //! Sets a row of a matrix
+  /*!
+    \param M matrix
+    \param i row index
+    \param X new row of M
+    M(i, :) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetRow(const Vector<T1, Storage1, Allocator1>& X,
+	      int i, Matrix<T0, Prop0, ColUpTriangPacked, Allocator0>& M)
+  {
+    for (int j = i; j < M.GetN(); j++)
+      M.Set(i, j, X(j));
+  }
+
+  
   //! Sets a column of a matrix
   /*!
     \param M matrix
@@ -1184,6 +1320,142 @@ namespace Seldon
     SetRow(X, j, M);
   }
   
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetCol(const Vector<T1, Storage1, Allocator1>& X,
+	      int j, Matrix<T0, Prop0, RowLoTriang, Allocator0>& M)
+  {
+    for (int i = j; i < M.GetM(); i++)
+      M.Set(i, j, X(i));
+  }
+
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetCol(const Vector<T1, Storage1, Allocator1>& X,
+	      int j, Matrix<T0, Prop0, RowLoTriangPacked, Allocator0>& M)
+  {
+    for (int i = j; i < M.GetM(); i++)
+      M.Set(i, j, X(i));
+  }
+
+  
+    //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetCol(const Vector<T1, Storage1, Allocator1>& X,
+	      int j, Matrix<T0, Prop0, ColLoTriang, Allocator0>& M)
+  {
+    for (int i = j; i < M.GetM(); i++)
+      M.Set(i, j, X(i));
+  }
+
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetCol(const Vector<T1, Storage1, Allocator1>& X,
+	      int j, Matrix<T0, Prop0, ColLoTriangPacked, Allocator0>& M)
+  {
+    for (int i = j; i < M.GetM(); i++)
+      M.Set(i, j, X(i));
+  }
+
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetCol(const Vector<T1, Storage1, Allocator1>& X,
+	      int j, Matrix<T0, Prop0, RowUpTriang, Allocator0>& M)
+  {
+    for (int i = 0; i <= j; i++)
+      M.Set(i, j, X(i));
+  }
+
+  
+    //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetCol(const Vector<T1, Storage1, Allocator1>& X,
+	      int j, Matrix<T0, Prop0, RowUpTriangPacked, Allocator0>& M)
+  {
+    for (int i = 0; i <= j; i++)
+      M.Set(i, j, X(i));
+  }
+
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetCol(const Vector<T1, Storage1, Allocator1>& X,
+	      int j, Matrix<T0, Prop0, ColUpTriang, Allocator0>& M)
+  {
+    for (int i = 0; i <= j; i++)
+      M.Set(i, j, X(i));
+  }
+
+  
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1>
+  void SetCol(const Vector<T1, Storage1, Allocator1>& X,
+	      int j, Matrix<T0, Prop0, ColUpTriangPacked, Allocator0>& M)
+  {
+    for (int i = 0; i <= j; i++)
+      M.Set(i, j, X(i));
+  }
+
   
   //! Permutation of a general matrix stored by rows.
   /*!
@@ -1765,6 +2037,150 @@ namespace Seldon
   }
 
   
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Dcol
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, RowLoTriangPacked, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j <= i; j++)
+        A.Val(i, j) *= Drow(i)*Dcol(j);
+  }
+
+  
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Dcol
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, RowLoTriang, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j <= i; j++)
+        A.Val(i, j) *= Drow(i)*Dcol(j);
+  }
+
+  
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Dcol
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, ColLoTriangPacked, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j <= i; j++)
+        A.Val(i, j) *= Drow(i)*Dcol(j);
+  }
+
+  
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Dcol
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, ColLoTriang, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j <= i; j++)
+        A.Val(i, j) *= Drow(i)*Dcol(j);
+  }
+
+  
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Dcol
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, RowUpTriangPacked, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetM(); j++)
+        A.Val(i, j) *= Drow(i)*Dcol(j);
+  }
+
+  
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Dcol
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, RowUpTriang, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) *= Drow(i)*Dcol(j);
+  }
+
+  
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Dcol
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, ColUpTriangPacked, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetM(); j++)
+        A.Val(i, j) *= Drow(i)*Dcol(j);
+  }
+
+  
+  //! Scaling of a matrix
+  /*!
+    A is replaced by Drow A Dcol
+    where Drow and Dcol are diagonal matrices
+    and stored as dense vectors
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(Matrix<T, Prop, ColUpTriang, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) *= Drow(i)*Dcol(j);
+  }
+
+  
   //! Left-scaling of a matrix
   /*!
     A is replaced by Drow A
@@ -1796,7 +2212,135 @@ namespace Seldon
         A(i, j) *= Drow(i);
   }
 
+  
+  //! Left-scaling of a matrix
+  /*!
+    A is replaced by Drow A
+    where Drow is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1>
+  void ScaleLeftMatrix(Matrix<T, Prop, RowLoTriangPacked, Allocator>& A,
+                       const Vector<T1, VectFull, Allocator1>& Drow)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j <= i; j++)
+        A.Val(i, j) *= Drow(i);
+  }
 
+  
+  //! Left-scaling of a matrix
+  /*!
+    A is replaced by Drow A
+    where Drow is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1>
+  void ScaleLeftMatrix(Matrix<T, Prop, RowLoTriang, Allocator>& A,
+                       const Vector<T1, VectFull, Allocator1>& Drow)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j <= i; j++)
+        A.Val(i, j) *= Drow(i);
+  }
+
+  
+  //! Left-scaling of a matrix
+  /*!
+    A is replaced by Drow A
+    where Drow is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1>
+  void ScaleLeftMatrix(Matrix<T, Prop, ColLoTriangPacked, Allocator>& A,
+                       const Vector<T1, VectFull, Allocator1>& Drow)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j <= i; j++)
+        A.Val(i, j) *= Drow(i);
+  }
+
+  
+  //! Left-scaling of a matrix
+  /*!
+    A is replaced by Drow A
+    where Drow is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1>
+  void ScaleLeftMatrix(Matrix<T, Prop, ColLoTriang, Allocator>& A,
+                       const Vector<T1, VectFull, Allocator1>& Drow)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j <= i; j++)
+        A.Val(i, j) *= Drow(i);
+  }
+  
+  
+  //! Left-scaling of a matrix
+  /*!
+    A is replaced by Drow A
+    where Drow is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1>
+  void ScaleLeftMatrix(Matrix<T, Prop, RowUpTriangPacked, Allocator>& A,
+                       const Vector<T1, VectFull, Allocator1>& Drow)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) *= Drow(i);
+  }
+
+  
+  //! Left-scaling of a matrix
+  /*!
+    A is replaced by Drow A
+    where Drow is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1>
+  void ScaleLeftMatrix(Matrix<T, Prop, RowUpTriang, Allocator>& A,
+                       const Vector<T1, VectFull, Allocator1>& Drow)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) *= Drow(i);
+  }
+  
+  
+  //! Left-scaling of a matrix
+  /*!
+    A is replaced by Drow A
+    where Drow is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1>
+  void ScaleLeftMatrix(Matrix<T, Prop, ColUpTriangPacked, Allocator>& A,
+                       const Vector<T1, VectFull, Allocator1>& Drow)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) *= Drow(i);
+  }
+
+  
+  //! Left-scaling of a matrix
+  /*!
+    A is replaced by Drow A
+    where Drow is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T1, class Allocator1>
+  void ScaleLeftMatrix(Matrix<T, Prop, ColUpTriang, Allocator>& A,
+                       const Vector<T1, VectFull, Allocator1>& Drow)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) *= Drow(i);
+  }
+  
+  
   //! Right-scaling of a matrix
   /*!
     A is replaced by A Dcol
@@ -1826,6 +2370,134 @@ namespace Seldon
     for (int i = 0; i < A.GetM(); i++)
       for (int j = 0; j < A.GetN(); j++)
         A(i, j) *= Dcol(j);
+  }
+  
+  
+  //! Right-scaling of a matrix
+  /*!
+    A is replaced by A Dcol
+    where Dcol is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T2, class Allocator2>
+  void ScaleRightMatrix(Matrix<T, Prop, RowLoTriangPacked, Allocator>& A,
+                        const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j <= i; j++)
+        A.Val(i, j) *= Dcol(j);
+  }
+
+
+  //! Right-scaling of a matrix
+  /*!
+    A is replaced by A Dcol
+    where Dcol is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T2, class Allocator2>
+  void ScaleRightMatrix(Matrix<T, Prop, RowLoTriang, Allocator>& A,
+                        const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j <= i; j++)
+        A.Val(i, j) *= Dcol(j);
+  }
+
+
+  //! Right-scaling of a matrix
+  /*!
+    A is replaced by A Dcol
+    where Dcol is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T2, class Allocator2>
+  void ScaleRightMatrix(Matrix<T, Prop, ColLoTriangPacked, Allocator>& A,
+                        const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j <= i; j++)
+        A.Val(i, j) *= Dcol(j);
+  }
+
+
+  //! Right-scaling of a matrix
+  /*!
+    A is replaced by A Dcol
+    where Dcol is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T2, class Allocator2>
+  void ScaleRightMatrix(Matrix<T, Prop, ColLoTriang, Allocator>& A,
+                        const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j <= i; j++)
+        A.Val(i, j) *= Dcol(j);
+  }
+
+
+  //! Right-scaling of a matrix
+  /*!
+    A is replaced by A Dcol
+    where Dcol is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T2, class Allocator2>
+  void ScaleRightMatrix(Matrix<T, Prop, RowUpTriangPacked, Allocator>& A,
+                        const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) *= Dcol(j);
+  }
+
+
+  //! Right-scaling of a matrix
+  /*!
+    A is replaced by A Dcol
+    where Dcol is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T2, class Allocator2>
+  void ScaleRightMatrix(Matrix<T, Prop, RowUpTriang, Allocator>& A,
+                        const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) *= Dcol(j);
+  }
+
+
+  //! Right-scaling of a matrix
+  /*!
+    A is replaced by A Dcol
+    where Dcol is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T2, class Allocator2>
+  void ScaleRightMatrix(Matrix<T, Prop, ColUpTriangPacked, Allocator>& A,
+                        const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) *= Dcol(j);
+  }
+
+
+  //! Right-scaling of a matrix
+  /*!
+    A is replaced by A Dcol
+    where Dcol is diagonal and stored as a dense vector
+  */
+  template<class T, class Prop, class Allocator,
+           class T2, class Allocator2>
+  void ScaleRightMatrix(Matrix<T, Prop, ColUpTriang, Allocator>& A,
+                        const Vector<T2, VectFull, Allocator2>& Dcol)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = i; j < A.GetN(); j++)
+        A.Val(i, j) *= Dcol(j);
   }
 
 } // namespace Seldon.
