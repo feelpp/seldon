@@ -248,6 +248,39 @@ namespace Seldon
   }
 
 
+  //! Returns the shape of a vector of vectors.
+  /*!
+    \param[in] i index of the vector of vectors.
+    \return A vector with the lengths of the inner vectors of the \a i th
+    vector of vectors.
+  */
+  template <class T, class Allocator0, class Allocator1, class Allocator2>
+  Vector<int> Vector3<T, Allocator0, Allocator1, Allocator2>
+  ::GetShape(int i) const
+  {
+    Vector<int> shape(GetLength(i));
+    for (int j = 0; j < GetLength(i); j++)
+      shape(j) = GetLength(i, j);
+    return shape;
+  }
+
+
+  //! Returns the shape of a vector of vectors.
+  /*!
+    \param[in] i index of the vector of vectors.
+    \param[out] shape the lengths of the inner vectors of the \a i th vector
+    of vectors.
+  */
+  template <class T, class Allocator0, class Allocator1, class Allocator2>
+  void Vector3<T, Allocator0, Allocator1, Allocator2>
+  ::GetShape(int i, Vector<int>& shape) const
+  {
+    shape.Reallocate(GetLength(i));
+    for (int j = 0; j < GetLength(i); j++)
+      shape(j) = GetLength(i, j);
+  }
+
+
   //! Reallocates the vector of vectors of vectors.
   /*!
     \param[in] N the new size of the vector of vectors of vectors.

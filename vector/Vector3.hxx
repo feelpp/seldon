@@ -103,6 +103,8 @@ namespace Seldon
     int GetSize(int i, int j) const;
     int GetNelement() const;
     int GetNelement(int beg, int end) const;
+    Vector<int> GetShape(int i) const;
+    void GetShape(int i, Vector<int>& shape) const;
     void Reallocate(int N);
     void Reallocate(int i, int N);
     void Reallocate(int i, int j, int N);
