@@ -24,6 +24,18 @@
   Functions defined in this file:
   (storage ArrayRowSparse, ArrayColSparse, etc)
 
+  X = A(i, :)
+  GetRow(A, i, X)
+
+  X = A(:, j)
+  GetCol(A, j, X)
+
+  A(i, :) = X
+  SetRow(X, i, A)
+
+  A(:, j) = X
+  SetCol(X, j, A)
+
   alpha.M*X + beta.Y -> Y
   MltAdd(alpha, M, X, beta, Y)
 
@@ -765,8 +777,8 @@ namespace Seldon
     if (B.GetM() <= 0)
       return;
 
-    T3 zero(B(0));
-    zero *= 0;
+    T4 zero;
+    SetComplexZero(zero);
 
     if (beta == zero)
       C.Fill(zero);
@@ -844,7 +856,233 @@ namespace Seldon
     MltAdd(alpha, A, B, beta, C);
   }
 
+  
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+              const class_SeldonConjTrans& Trans, const Matrix<T1, Symmetric,
+	      ArrayRowSymSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    if (B.GetM() <= 0)
+      return;
 
+    T4 zero;
+    SetComplexZero(zero);
+
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+
+    int m = A.GetM(), n, p;
+    T3 val;
+    if (alpha == T0(1))
+      {
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetRowSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.Index(i, k);
+		val = conj(A.Value(i, k));
+
+		if (p == i)
+		  C(i) += val * B(i);
+		else
+		  {
+		    C(i) += val * B(p);
+		    C(p) += val * B(i);
+		  }
+	      }
+	  }
+      }
+    else
+      {
+	// alpha different from 1
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetRowSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.Index(i, k);
+		val = alpha * conj(A.Value(i, k));
+
+		if (p==i)
+		  C(i) += val * B(i);
+		else
+		  {
+		    C(i) += val * B(p);
+		    C(p) += val * B(i);
+		  }
+	      }
+	  }
+      }
+  }
+
+  
+  /*** ArrayColSymSparse ***/
+
+
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha, const Matrix<T1, Symmetric,
+	      ArrayColSymSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    if (B.GetM() <= 0)
+      return;
+
+    T4 zero;
+    SetComplexZero(zero);
+
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+
+    int m = A.GetM(), n, p;
+    T3 val;
+    if (alpha == T0(1))
+      {
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.Index(i, k);
+		val = A.Value(i, k);
+
+		if (p == i)
+		  C(i) += val * B(i);
+		else
+		  {
+		    C(i) += val * B(p);
+		    C(p) += val * B(i);
+		  }
+	      }
+	  }
+      }
+    else
+      {
+	// alpha different from 1
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.Index(i, k);
+		val = alpha * A.Value(i, k);
+
+		if (p==i)
+		  C(i) += val * B(i);
+		else
+		  {
+		    C(i) += val * B(p);
+		    C(p) += val * B(i);
+		  }
+	      }
+	  }
+      }
+  }
+
+
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+	      const class_SeldonNoTrans& Trans, const Matrix<T1, Symmetric,
+	      ArrayColSymSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    MltAdd(alpha, A, B, beta, C);
+  }
+
+
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+	      const class_SeldonTrans& Trans, const Matrix<T1, Symmetric,
+	      ArrayColSymSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    MltAdd(alpha, A, B, beta, C);
+  }
+
+  
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+              const class_SeldonConjTrans& Trans, const Matrix<T1, Symmetric,
+	      ArrayColSymSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    if (B.GetM() <= 0)
+      return;
+
+    T4 zero;
+    SetComplexZero(zero);
+
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+
+    int m = A.GetM(), n, p;
+    T3 val;
+    if (alpha == T0(1))
+      {
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.Index(i, k);
+		val = conj(A.Value(i, k));
+
+		if (p == i)
+		  C(i) += val * B(i);
+		else
+		  {
+		    C(i) += val * B(p);
+		    C(p) += val * B(i);
+		  }
+	      }
+	  }
+      }
+    else
+      {
+	// alpha different from 1
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.Index(i, k);
+		val = alpha * conj(A.Value(i, k));
+
+		if (p==i)
+		  C(i) += val * B(i);
+		else
+		  {
+		    C(i) += val * B(p);
+		    C(p) += val * B(i);
+		  }
+	      }
+	  }
+      }
+  }
+  
+  
   /*** ArrayRowSparse ***/
 
 
@@ -948,7 +1186,160 @@ namespace Seldon
       }
   }
 
+  
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+	      const class_SeldonConjTrans& Trans,
+	      const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    if (beta == T4(0))
+      C.Fill(T3(0));
+    else
+      Mlt(beta, C);
+    
+    int m = A.GetM(), n, p;
+    T1 val;
+    if (alpha == T0(1))
+      {
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetRowSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.Index(i, k);
+		val = conj(A.Value(i, k));
+		C(p) += val * B(i);
+	      }
+	  }
+      }
+    else // alpha != 1.
+      {
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetRowSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.Index(i, k);
+		val = conj(A.Value(i, k));
+		C(p) += alpha * val * B(i);
+	      }
+	  }
+      }
+  }
+  
+  
+  /*** ArrayColSparse ***/
 
+
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+	      const Matrix<T1, General, ArrayColSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    T4 zero;
+    SetComplexZero(zero);
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+
+    if (alpha == T0(1))
+      {
+	for (int i = 0 ; i < A.GetN(); i++)
+          for (int k = 0; k < A.GetColumnSize(i); k++)
+            C(A.Index(i, k)) += A.Value(i, k) * B(i);
+      }
+    else // alpha != 1.
+      {
+	for (int i = 0 ; i < A.GetN(); i++)
+          for (int k = 0; k < A.GetColumnSize(i); k++)
+            C(A.Index(i, k)) += alpha * A.Value(i, k) * B(i);
+      }
+  }
+
+
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+	      const class_SeldonNoTrans& Trans,
+	      const Matrix<T1, General, ArrayColSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T4, VectFull, Allocator3>& C)
+  {
+    MltAdd(alpha, A, B, beta, C);
+  }
+
+
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+	      const class_SeldonTrans& Trans,
+	      const Matrix<T1, General, ArrayColSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    T4 zero;
+    SetComplexZero(zero);
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+
+    if (alpha == T0(1))
+      {
+	for (int i = 0 ; i < A.GetN(); i++)
+          for (int k = 0; k < A.GetColumnSize(i); k++)
+            C(i) += A.Value(i, k) * B(A.Index(i, k));
+      }
+    else // alpha != 1.
+      {
+	for (int i = 0 ; i < A.GetN(); i++)
+          for (int k = 0; k < A.GetColumnSize(i); k++)
+            C(i) += alpha * A.Value(i, k) * B(A.Index(i, k));
+      }
+  }
+
+  
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+	      const class_SeldonConjTrans& Trans,
+	      const Matrix<T1, General, ArrayColSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    T4 zero;
+    SetComplexZero(zero);
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+
+    if (alpha == T0(1))
+      {
+	for (int i = 0 ; i < A.GetN(); i++)
+          for (int k = 0; k < A.GetColumnSize(i); k++)
+            C(i) += conj(A.Value(i, k)) * B(A.Index(i, k));
+      }
+    else // alpha != 1.
+      {
+	for (int i = 0 ; i < A.GetN(); i++)
+          for (int k = 0; k < A.GetColumnSize(i); k++)
+            C(i) += alpha * conj(A.Value(i, k)) * B(A.Index(i, k));
+      }
+  }
+
+  
   // MltAdd //
   ////////////
 

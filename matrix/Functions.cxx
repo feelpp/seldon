@@ -23,6 +23,7 @@
 #include "Functions.hxx"
 
 #include "../computation/basic_functions/Functions_Vector.cxx"
+#include <list>
 
 /*
   Functions defined in this file:

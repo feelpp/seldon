@@ -52,7 +52,17 @@
   infinity norm of matrix A.
   NormInf(A)
 
+  transpose of matrix A
   Transpose(A)
+  
+  conjugate of transpose of matrix A
+  TransposeConj(A)
+  
+  returns true for symmetric matrices
+  IsSymmetricMatrix
+
+  returns true for complex matrices
+  IsComplexMatrix
 */
 
 namespace Seldon
@@ -551,6 +561,10 @@ namespace Seldon
     CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
 #endif
 
+    if ( (Storage1::Sparse) || (Storage2::Sparse) || (Storage4::Sparse))
+      throw WrongArgument("MltAdd", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+    
     T4 temp;
     T4 alpha_(alpha);
     T4 beta_(beta);
@@ -1076,6 +1090,10 @@ namespace Seldon
 	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
 	   Matrix<T2, Prop2, Storage2, Allocator2>& B)
   {
+    if ( (Storage1::Sparse) || (Storage2::Sparse) )
+      throw WrongArgument("Add", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
     int i, j;
     for (i = 0; i < A.GetM(); i++)
       for (j = 0; j < A.GetN(); j++)
@@ -1280,6 +1298,10 @@ namespace Seldon
 	   const Matrix<T1, Symmetric, Storage1, Allocator1>& A,
 	   Matrix<T2, Symmetric, Storage2, Allocator2>& B)
   {
+    if ( (Storage1::Sparse) || (Storage2::Sparse) )
+      throw WrongArgument("Add", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
     int i, j;
     for (i = 0; i < A.GetM(); i++)
       for (j = i; j < A.GetN(); j++)
@@ -1540,6 +1562,10 @@ namespace Seldon
     if (na != ma)
       throw WrongDim("GetLU(A)", "The matrix must be squared.");
 #endif
+
+    if (Storage0::Sparse)
+      throw WrongArgument("GetLU", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
 
     for (i = 0; i < ma; i++)
       {
@@ -1808,6 +1834,10 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   T MaxAbs(const Matrix<T, Prop, Storage, Allocator>& A)
   {
+    if (Storage::Sparse)
+      throw WrongArgument("MaxAbs", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
     T res(0);
     for (int i = 0; i < A.GetM(); i++)
       for (int j = 0; j < A.GetN(); j++)
@@ -1825,6 +1855,10 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   T Norm1(const Matrix<T, Prop, Storage, Allocator>& A)
   {
+    if (Storage::Sparse)
+      throw WrongArgument("Norm1", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
     T res(0), sum;
     for (int j = 0; j < A.GetN(); j++)
       {
@@ -1847,6 +1881,10 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   T NormInf(const Matrix<T, Prop, Storage, Allocator>& A)
   {
+    if (Storage::Sparse)
+      throw WrongArgument("NormInf", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
     T res(0), sum;
     for (int i = 0; i < A.GetM(); i++)
       {
@@ -1869,6 +1907,10 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   T MaxAbs(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
   {
+    if (Storage::Sparse)
+      throw WrongArgument("MaxAbs", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
     T res(0);
     for (int i = 0; i < A.GetM(); i++)
       for (int j = 0; j < A.GetN(); j++)
@@ -1888,6 +1930,10 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   T Norm1(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
   {
+    if (Storage::Sparse)
+      throw WrongArgument("Norm1", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
     T res(0), sum;
     for (int j = 0; j < A.GetN(); j++)
       {
@@ -1910,6 +1956,10 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   T NormInf(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
   {
+    if (Storage::Sparse)
+      throw WrongArgument("NormInf", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
     T res(0), sum;
     for (int i = 0; i < A.GetM(); i++)
       {
@@ -1937,6 +1987,10 @@ namespace Seldon
   template<class T, class Prop, class Storage, class Allocator>
   void Transpose(Matrix<T, Prop, Storage, Allocator>& A)
   {
+    if (Storage::Sparse)
+      throw WrongArgument("Transpose", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
     int m = A.GetM();
     int n = A.GetN();
 
@@ -2015,6 +2069,10 @@ namespace Seldon
   template<class T, class Prop, class Storage, class Allocator>
   void TransposeConj(Matrix<T, Prop, Storage, Allocator>& A)
   {
+    if (Storage::Sparse)
+      throw WrongArgument("TransposeConj", "This function is intended to "
+                          "dense matrices only and not to sparse matrices");
+
     int i, j;
 
     int m = A.GetM();
