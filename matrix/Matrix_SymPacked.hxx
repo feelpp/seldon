@@ -123,6 +123,9 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, ColSymPacked, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, ColSymPacked, Allocator>& operator= (const Matrix<T, Prop,
+                                                         ColSymPacked,
+                                                         Allocator>& A);
     template<class T0>
     Matrix<T, Prop, ColSymPacked, Allocator>& operator*= (const T0& x);
     void Resize(int i, int j);
@@ -147,6 +150,9 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, RowSymPacked, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, RowSymPacked, Allocator>& operator= (const Matrix<T, Prop,
+                                                         RowSymPacked,
+                                                         Allocator>& A);
     template<class T0>
     Matrix<T, Prop, RowSymPacked, Allocator>& operator*= (const T0& x);
     void Resize(int i, int j);
