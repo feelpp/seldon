@@ -726,12 +726,13 @@ namespace Seldon
 	temp = zero;
 	for (j = ptr[i]; j < ptr[i + 1]; j++)
 	  temp += conj(data[j]) * X(ind[j]);
-	Y(i) += temp;
+	
+        Y(i) += alpha * temp;
       }
     for (i = 0; i < ma - 1; i++)
       for (j = ptr[i]; j < ptr[i + 1]; j++)
 	if (ind[j] != i)
-	  Y(ind[j]) += conj(data[j]) * X(i);
+	  Y(ind[j]) += alpha * conj(data[j]) * X(i);
   }
   
   
@@ -801,11 +802,12 @@ namespace Seldon
 	temp = zero;
 	for (j = ptr[i]; j < ptr[i + 1]; j++)
 	  temp += conj(data[j]) * X(ind[j]);
-	Y(i) += temp;
+	
+        Y(i) += alpha * temp;
         
         for (j = ptr[i]; j < ptr[i + 1]; j++)
           if (ind[j] != i)
-            Y(ind[j]) += conj(data[j]) * X(i);
+            Y(ind[j]) += alpha * conj(data[j]) * X(i);
       }
   }
 
