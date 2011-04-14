@@ -20,6 +20,17 @@
 
 #ifndef SELDON_FILE_FUNCTIONS_MATVECT_COMPLEX_CXX
 
+/*
+  Functions defined in this file:
+  (storage RowComplexSparse, ArrayRowComplexSparse, etc)
+  
+  alpha.M*X + beta.Y -> Y
+  MltAdd(alpha, M, X, beta, Y)
+  
+  SOR(A, X, B, omega, nb_iter, type_ssor)
+  
+*/
+
 namespace Seldon
 {
 
@@ -47,7 +58,7 @@ namespace Seldon
 
     Mlt(beta, Y);
 
-    complex<T1> zero(0);
+    complex<T1> zero(0, 0);
     complex<T1> temp;
 
     int* real_ptr = M.GetRealPtr();
@@ -77,6 +88,44 @@ namespace Seldon
   }
   
   
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Storage4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<T1, Prop1, ColComplexSparse, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+  {
+    int i, j;
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
+#endif
+
+    Mlt(beta, Y);
+
+    int* real_ptr = M.GetRealPtr();
+    int* imag_ptr = M.GetImagPtr();
+    int* real_ind = M.GetRealInd();
+    int* imag_ind = M.GetImagInd();
+    typename Matrix<T1, Prop1, ColComplexSparse, Allocator1>::pointer
+      real_data = M.GetRealData();
+    typename Matrix<T1, Prop1, ColComplexSparse, Allocator1>::pointer
+      imag_data = M.GetImagData();
+
+    for (i = 0; i < M.GetN(); i++)
+      {
+        for (j = real_ptr[i]; j < real_ptr[i + 1]; j++)
+          Y(real_ind[j]) += alpha * real_data[j] * X(i);
+
+	for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
+	  Y(imag_ind[j]) += alpha * complex<T1>(T1(0), imag_data[j]) * X(i);
+      }
+  }
+
+  
   /*** Symmetric complex sparse matrices ***/
   
   
@@ -99,7 +148,7 @@ namespace Seldon
     Mlt(beta, Y);
 
     int i, j;
-    complex<T1> zero(0);
+    complex<T1> zero(0, 0);
     complex<T1> temp;
 
     int* real_ptr = M.GetRealPtr();
@@ -111,29 +160,78 @@ namespace Seldon
     typename Matrix<T1, Prop1, RowSymComplexSparse, Allocator1>::pointer
       imag_data = M.GetImagData();
 
+    for (i = 0; i < ma; i++)
+      {
+	temp = zero;
+	for (j = real_ptr[i]; j < real_ptr[i + 1]; j++)
+	  {
+            temp += real_data[j] * X(real_ind[j]);
+            if (real_ind[j] != i)
+              Y(real_ind[j]) += alpha * real_data[j] * X(i);
+          }
+        
+        for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
+	  {
+            temp += complex<T1>(T1(0), imag_data[j]) * X(imag_ind[j]);
+            if (imag_ind[j] != i)
+              Y(imag_ind[j]) += alpha * complex<T1>(T1(0), imag_data[j]) * X(i);
+          }
+        
+        Y(i) += alpha * temp;
+      }
+  }
+
+  
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Storage4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+  {
+    int ma = M.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
+#endif
+
+    Mlt(beta, Y);
+
+    int i, j;
+    complex<T1> zero(0, 0);
+    complex<T1> temp;
+
+    int* real_ptr = M.GetRealPtr();
+    int* imag_ptr = M.GetImagPtr();
+    int* real_ind = M.GetRealInd();
+    int* imag_ind = M.GetImagInd();
+    typename Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>::pointer
+      real_data = M.GetRealData();
+    typename Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>::pointer
+      imag_data = M.GetImagData();
+
     for (i = 0; i<ma; i++)
       {
 	temp = zero;
 	for (j = real_ptr[i]; j < real_ptr[i + 1]; j++)
-	  temp += real_data[j] * X(real_ind[j]);
-	Y(i) += alpha * temp;
-      }
-    for (i = 0; i<ma-1; i++)
-      for (j = real_ptr[i]; j < real_ptr[i + 1]; j++)
-	if (real_ind[j] != i)
-	  Y(real_ind[j]) += alpha * real_data[j] * X(i);
+	  {
+            temp += real_data[j] * X(real_ind[j]);
+            if (real_ind[j] != i)
+              Y(real_ind[j]) += alpha * real_data[j] * X(i);
+          }
 
-    for (i = 0; i < ma; i++)
-      {
-	temp = zero;
-	for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
-	  temp += complex<T1>(T1(0), imag_data[j]) * X(imag_ind[j]);
-	Y(i) += alpha * temp;
+        for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
+	  {
+            temp += complex<T1>(T1(0), imag_data[j]) * X(imag_ind[j]);
+            if (imag_ind[j] != i)
+              Y(imag_ind[j]) += alpha * complex<T1>(T1(0), imag_data[j]) * X(i);
+          }
+        
+        Y(i) += alpha * temp;
       }
-    for (i = 0; i<ma-1; i++)
-      for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
-	if (imag_ind[j] != i)
-	  Y(imag_ind[j]) += alpha * complex<T1>(T1(0), imag_data[j]) * X(i);
   }
 
   
@@ -238,6 +336,112 @@ namespace Seldon
   }
   
   
+  // NoTrans.
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Storage4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const class_SeldonNoTrans& Trans,
+	      const Matrix<T1, Prop1, ColComplexSparse, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+  {
+    MltAdd(alpha, M, X, beta, Y);
+  }
+
+
+  // Trans.
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Storage4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const class_SeldonTrans& Trans,
+	      const Matrix<T1, Prop1, ColComplexSparse, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+  {
+    int i, j;
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(Trans, M, X, Y, "MltAdd(alpha, SeldonTrans, M, X, beta, Y)");
+#endif
+
+    Mlt(beta, Y);
+    
+    T4 temp;
+
+    int* real_ptr = M.GetRealPtr();
+    int* imag_ptr = M.GetImagPtr();
+    int* real_ind = M.GetRealInd();
+    int* imag_ind = M.GetImagInd();
+    typename Matrix<T1, Prop1, ColComplexSparse, Allocator1>::pointer
+      real_data = M.GetRealData();
+    typename Matrix<T1, Prop1, ColComplexSparse, Allocator1>::pointer
+      imag_data = M.GetImagData();
+
+    for (i = 0; i < M.GetN(); i++)
+      {
+        SetComplexZero(temp);
+        for (j = real_ptr[i]; j < real_ptr[i + 1]; j++)
+          temp += real_data[j] * X(real_ind[j]);
+        
+        for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
+	 temp += complex<T1>(T1(0), imag_data[j]) * X(imag_ind[j]);
+        
+        Y(i) += alpha * temp;
+      }
+  }
+
+
+  // ConjTrans.
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Storage4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const class_SeldonConjTrans& Trans,
+	      const Matrix<T1, Prop1, ColComplexSparse, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+  {
+    int i, j;
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(Trans, M, X, Y, "MltAdd(alpha, SeldonConjTrans, M, X, beta, Y)");
+#endif
+
+    Mlt(beta, Y);
+    
+    T4 temp;
+    
+    int* real_ptr = M.GetRealPtr();
+    int* imag_ptr = M.GetImagPtr();
+    int* real_ind = M.GetRealInd();
+    int* imag_ind = M.GetImagInd();
+    typename Matrix<T1, Prop1, ColComplexSparse, Allocator1>::pointer
+      real_data = M.GetRealData();
+    typename Matrix<T1, Prop1, ColComplexSparse, Allocator1>::pointer
+      imag_data = M.GetImagData();
+
+    for (i = 0; i < M.GetN(); i++)
+      {
+        SetComplexZero(temp);
+        for (j = real_ptr[i]; j < real_ptr[i + 1]; j++)
+          temp += real_data[j] * X(real_ind[j]);
+        
+        for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
+	 temp += complex<T1>(T1(0), -imag_data[j]) * X(imag_ind[j]);
+        
+        Y(i) += alpha * temp;
+      }
+  }
+  
+  
   /*** Symmetric complex sparse matrices, *Trans ***/
 
 
@@ -294,7 +498,7 @@ namespace Seldon
     Mlt(beta, Y);
 
     int i, j;
-    complex<T1> zero(0);
+    complex<T1> zero(0, 0);
     complex<T1> temp;
 
     int* real_ptr = M.GetRealPtr();
@@ -310,29 +514,112 @@ namespace Seldon
       {
 	temp = zero;
 	for (j = real_ptr[i]; j < real_ptr[i + 1]; j++)
-	  temp += real_data[j] * X(real_ind[j]);
-	Y(i) += temp;
+	  {
+            temp += real_data[j] * X(real_ind[j]);
+            if (real_ind[j] != i)
+              Y(real_ind[j]) += alpha * real_data[j] * X(i);
+          }
+	
+        for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
+	  {
+            temp += complex<T1>(T1(0), - imag_data[j]) * X(imag_ind[j]);
+            if (imag_ind[j] != i)
+              Y(imag_ind[j]) += alpha * complex<T1>(T1(0), - imag_data[j]) * X(i);
+          }
+        
+	Y(i) += alpha * temp;
       }
-    for (i = 0; i < ma - 1; i++)
-      for (j = real_ptr[i]; j < real_ptr[i + 1]; j++)
-	if (real_ind[j] != i)
-	  Y(real_ind[j]) += real_data[j] * X(i);
+  }
+  
+  
+  // NoTrans.
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Storage4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const class_SeldonNoTrans& Trans,
+	      const Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+  {
+    MltAdd(alpha, M, X, beta, Y);
+  }
+
+
+  // Trans.
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Storage4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const class_SeldonTrans& Trans,
+	      const Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+  {
+    MltAdd(alpha, M, X, beta, Y);
+  }
+
+
+  // ConjTrans.
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Storage4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const class_SeldonConjTrans& Trans,
+	      const Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+  {
+    int ma = M.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(Trans, M, X, Y, "MltAdd(alpha, SeldonConjTrans, M, X, beta, Y)");
+#endif
+
+    Mlt(beta, Y);
+
+    int i, j;
+    complex<T1> zero(0, 0);
+    complex<T1> temp;
+
+    int* real_ptr = M.GetRealPtr();
+    int* imag_ptr = M.GetImagPtr();
+    int* real_ind = M.GetRealInd();
+    int* imag_ind = M.GetImagInd();
+    typename Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>::pointer
+      real_data = M.GetRealData();
+    typename Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>::pointer
+      imag_data = M.GetImagData();
 
     for (i = 0; i < ma; i++)
       {
 	temp = zero;
-	for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
-	  temp += complex<T1>(T1(0), - imag_data[j]) * X(imag_ind[j]);
-	Y(i) += temp;
+	for (j = real_ptr[i]; j < real_ptr[i + 1]; j++)
+	  {
+            temp += real_data[j] * X(real_ind[j]);
+            if (real_ind[j] != i)
+              Y(real_ind[j]) += alpha * real_data[j] * X(i);
+          }
+	
+        for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
+	  {
+            temp += complex<T1>(T1(0), - imag_data[j]) * X(imag_ind[j]);
+            if (imag_ind[j] != i)
+              Y(imag_ind[j]) += alpha * complex<T1>(T1(0), - imag_data[j]) * X(i);
+          }
+        
+	Y(i) += alpha * temp;
       }
-    for (i = 0; i < ma - 1; i++)
-      for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
-	if (imag_ind[j] != i)
-	  Y(imag_ind[j]) += complex<T1>(T1(0), - imag_data[j]) * X(i);
   }
-
   
-    /*** ArrayRowSymComplexSparse ***/
+  
+  /*** ArrayRowSymComplexSparse ***/
 
 
   template<class T0, class T1, class T2, class T3, class T4,
@@ -343,15 +630,19 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    if (beta == T4(0))
-      C.Fill(T3(0));
+    T3 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+
+    if (beta == zero)
+      C.Fill(zero);
     else
       Mlt(beta, C);
 
     int m = A.GetM(), n, p;
     T1 val;
     T3 val_cplx;
-    if (alpha == T0(1))
+    if (alpha == one)
       {
 	for (int i = 0 ; i < m ; i++)
 	  {
@@ -453,14 +744,19 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    if (beta == T4(0))
-      C.Fill(T3(0));
+    T3 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+
+    if (beta == zero)
+      C.Fill(zero);
     else
       Mlt(beta, C);
+    
     int m = A.GetM(),n,p;
     T1 val;
     T3 val_cplx;
-    if (alpha == T0(1))
+    if (alpha == one)
       {
 	for (int i = 0 ; i < m ; i++)
 	  {
@@ -528,6 +824,208 @@ namespace Seldon
   }
 
 
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha, const Matrix<T1, Symmetric,
+	      ArrayColSymComplexSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    T3 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+
+    int m = A.GetM(), n, p;
+    T1 val;
+    T3 val_cplx;
+    if (alpha == one)
+      {
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetRealColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexReal(i, k);
+		val = A.ValueReal(i, k);
+		if (p == i)
+		  C(i) += val * B(i);
+		else
+		  {
+		    C(i) += val * B(p);
+		    C(p) += val * B(i);
+		  }
+	      }
+	    n = A.GetImagColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexImag(i, k);
+		val = A.ValueImag(i, k);
+		if (p == i)
+		  C(i) += complex<T1>(0, val) * B(i);
+		else
+		  {
+		    C(i) += complex<T1>(0, val) * B(p);
+		    C(p) += complex<T1>(0, val) * B(i);
+		  }
+	      }
+	  }
+      }
+    else // alpha != 1.
+      {
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetRealColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexReal(i, k);
+		val_cplx = alpha * A.ValueReal(i, k);
+		if (p == i)
+		  C(i) += val_cplx * B(i);
+		else
+		  {
+		    C(i) += val_cplx * B(p);
+		    C(p) += val_cplx * B(i);
+		  }
+	      }
+	    n = A.GetImagColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexImag(i, k);
+		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		if (p == i)
+		  C(i) += val_cplx * B(i);
+		else
+		  {
+		    C(i) += val_cplx * B(p);
+		    C(p) += val_cplx * B(i);
+		  }
+	      }
+	  }
+      }
+  }
+
+
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+	      const class_SeldonNoTrans& Trans, const Matrix<T1, Symmetric,
+	      ArrayColSymComplexSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    MltAdd(alpha, A, B, beta, C);
+  }
+
+
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+	      const class_SeldonTrans& Trans, const Matrix<T1, Symmetric,
+	      ArrayColSymComplexSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    MltAdd(alpha, A, B, beta, C);
+  }
+
+
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+	      const class_SeldonConjTrans& Trans, const Matrix<T1, Symmetric,
+	      ArrayColSymComplexSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    T3 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+    
+    int m = A.GetM(),n,p;
+    T1 val;
+    T3 val_cplx;
+    if (alpha == one)
+      {
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetRealColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexReal(i, k);
+		val = A.ValueReal(i, k);
+		if (p == i)
+		  C(i) += val * B(i);
+		else
+		  {
+		    C(i) += val * B(p);
+		    C(p) += val * B(i);
+		  }
+	      }
+	    n = A.GetImagColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexImag(i, k);
+		val = A.ValueImag(i, k);
+		if (p == i)
+		  C(i) -= complex<T1>(0, val) * B(i);
+		else
+		  {
+		    C(i) -= complex<T1>(0, val) * B(p);
+		    C(p) -= complex<T1>(0, val) * B(i);
+		  }
+	      }
+	  }
+      }
+    else
+      {
+	// alpha different from 1
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetRealColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexReal(i, k);
+		val_cplx = alpha * A.ValueReal(i, k);
+		if (p == i)
+		  C(i) += val_cplx * B(i);
+		else
+		  {
+		    C(i) += val_cplx * B(p);
+		    C(p) += val_cplx * B(i);
+		  }
+	      }
+	    n = A.GetImagColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexImag(i, k);
+		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		if (p == i)
+		  C(i) -= val_cplx * B(i);
+		else
+		  {
+		    C(i) -= val_cplx * B(p);
+		    C(p) -= val_cplx * B(i);
+		  }
+	      }
+	  }
+      }
+  }
+
+
   /*** ArrayRowComplexSparse ***/
 
 
@@ -539,14 +1037,19 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    if (beta == T4(0))
-      C.Fill(T3(0));
+    T3 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    
+    if (beta == zero)
+      C.Fill(zero);
     else
       Mlt(beta, C);
+    
     int m = A.GetM(), n, p;
     T1 val;
     T3 val_cplx;
-    if (alpha == T0(1, 0))
+    if (alpha == one)
       {
 	for (int i = 0 ; i < m ; i++)
 	  {
@@ -612,14 +1115,19 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    if (beta == T4(0))
-      C.Fill(T3(0));
+    T3 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+
+    if (beta == zero)
+      C.Fill(zero);
     else
       Mlt(beta, C);
+    
     int m = A.GetM(),n,p;
     T1 val;
     T3 val_cplx;
-    if (alpha == T0(1))
+    if (alpha == one)
       {
 	for (int i = 0 ; i < m ; i++)
 	  {
@@ -672,14 +1180,19 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    if (beta == T4(0))
-      C.Fill(T3(0));
+    T3 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+
+    if (beta == zero)
+      C.Fill(zero);
     else
       Mlt(beta, C);
+    
     int m = A.GetM(),n,p;
     T1 val;
     T3 val_cplx;
-    if (alpha == T0(1))
+    if (alpha == one)
       {
 	for (int i = 0 ; i < m ; i++)
 	  {
@@ -715,13 +1228,220 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexImag(i, k);
-		val_cplx -= alpha * complex<T1>(0, A.ValueImag(i, k));
+		val_cplx = alpha * complex<T1>(0, -A.ValueImag(i, k));
 		C(p) += val_cplx * B(i);
 	      }
 	  }
       }
   }
   
+  
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha, const Matrix<T1, General,
+	      ArrayColComplexSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    T3 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+    
+    int n, p;
+    T1 val;
+    T3 val_cplx;
+    if (alpha == one)
+      {
+	for (int i = 0 ; i < A.GetN(); i++)
+	  {
+	    n = A.GetRealColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexReal(i, k);
+		val = A.ValueReal(i, k);
+		C(p) += val * B(i);
+	      }
+	    n = A.GetImagColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexImag(i, k);
+		val = A.ValueImag(i, k);
+		C(p) += complex<T1>(0, val) * B(i);
+	      }
+	  }
+      }
+    else
+      {
+	// alpha different from 1
+	for (int i = 0; i < A.GetN(); i++)
+	  {
+	    n = A.GetRealColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexReal(i, k);
+		val_cplx = alpha * A.ValueReal(i, k);
+		C(p) += val_cplx * B(i);
+	      }
+	    n = A.GetImagColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexImag(i, k);
+		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		C(p) += val_cplx * B(i);
+	      }
+	  }
+      }
+  }
+
+
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+	      const class_SeldonNoTrans& Trans, const Matrix<T1, General,
+	      ArrayColComplexSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    MltAdd(alpha, A, B, beta, C);
+  }
+
+
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+	      const class_SeldonTrans& Trans, const Matrix<T1, General,
+	      ArrayColComplexSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    T3 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+    
+    int n, p;
+    T1 val;
+    T3 val_cplx;
+    if (alpha == one)
+      {
+	for (int i = 0; i < A.GetN(); i++)
+	  {
+	    n = A.GetRealColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexReal(i, k);
+		val = A.ValueReal(i, k);
+		C(i) += val * B(p);
+	      }
+	    n = A.GetImagColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexImag(i, k);
+		val = A.ValueImag(i, k);
+		C(i) += complex<T1>(0, val) * B(p);
+	      }
+	  }
+      }
+    else
+      {
+	// alpha different from 1
+	for (int i = 0; i < A.GetN(); i++)
+	  {
+	    n = A.GetRealColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexReal(i, k);
+		val_cplx = alpha * A.ValueReal(i, k);
+		C(i) += val_cplx * B(p);
+	      }
+	    n = A.GetImagColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexImag(i, k);
+		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		C(i) += val_cplx * B(p);
+	      }
+	  }
+      }
+  }
+
+
+  template<class T0, class T1, class T2, class T3, class T4,
+	   class Allocator1, class Allocator2, class Allocator3>
+  void MltAdd(const T0& alpha,
+	      const class_SeldonConjTrans& Trans, const Matrix<T1, General,
+	      ArrayColComplexSparse, Allocator1>& A,
+	      const Vector<T2, VectFull, Allocator2>& B,
+	      const T4& beta,
+	      Vector<T3, VectFull, Allocator3>& C)
+  {
+    T3 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+    
+    int n, p;
+    T1 val;
+    T3 val_cplx;
+    if (alpha == one)
+      {
+	for (int i = 0; i < A.GetN(); i++)
+	  {
+	    n = A.GetRealColumnSize(i);
+	    for (int k = 0; k < n; k++)
+	      {
+		p = A.IndexReal(i, k);
+		val = A.ValueReal(i, k);
+		C(i) += val * B(p);
+	      }
+	    n = A.GetImagColumnSize(i);
+	    for (int k = 0; k < n; k++)
+	      {
+		p = A.IndexImag(i, k);
+		val = A.ValueImag(i, k);
+		C(i) -= complex<T1>(0, val) * B(p);
+	      }
+	  }
+      }
+    else
+      {
+	// alpha different from 1
+	for (int i = 0 ; i < A.GetN(); i++)
+	  {
+	    n = A.GetRealColumnSize(i);
+	    for (int k = 0; k < n ; k++)
+	      {
+		p = A.IndexReal(i, k);
+		val_cplx = alpha * A.ValueReal(i, k);
+		C(i) += val_cplx * B(p);
+	      }
+	    n = A.GetImagColumnSize(i);
+	    for (int k = 0; k < n; k++)
+	      {
+		p = A.IndexImag(i, k);
+		val_cplx = alpha * complex<T1>(0, -A.ValueImag(i, k));
+		C(i) += val_cplx * B(p);
+	      }
+	  }
+      }
+  }
+
   
   /////////
   // SOR //

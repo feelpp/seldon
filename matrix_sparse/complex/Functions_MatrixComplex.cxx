@@ -20,6 +20,34 @@
 
 #ifndef SELDON_FILE_FUNCTIONS_MATRIX_COMPLEX_CXX
 
+/*
+  Functions defined in this file:
+  (storage RowComplexSparse, ArrayRowComplexSparse, etc)
+  
+  alpha.A + B -> B
+  Add(alpha, A, B)
+
+  alpha.M -> M
+  Mlt(alpha, M)
+
+  A = A(row_perm, col_perm)
+  ApplyPermutation(A, row_perm, col_perm)
+
+  A(row_perm, col_perm) = A
+  ApplyInversePermutation(A, row_perm, col_perm)
+  
+  A = Drow * A * Dcol
+  ScaleMatrix(A, Drow, Dcol)
+  
+  A = Drow * A
+  ScaleLeftMatrix(A, Drow)
+
+  A = A * Dcol
+  ScaleRightMatrix(A, Dcol)
+  
+  IsComplexMatrix(A)
+*/
+
 namespace Seldon
 {
   
