@@ -64,7 +64,7 @@ int main(int argc, char** argv)
   }
 
   {
-    Matrix<Complex_wp, Symmetric, ColHerm> A(n,n);
+    Matrix<Complex_wp, Hermitian, ColHerm> A(n,n);
     A.Val(0,0) = 2.0;
     A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
     A.Val(0,2) = Complex_wp(-1.0,1.0); A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
@@ -75,7 +75,7 @@ int main(int argc, char** argv)
   }
 
   {
-    Matrix<Complex_wp, Symmetric, RowHerm> A(n,n);
+    Matrix<Complex_wp, Hermitian, RowHerm> A(n,n);
     A.Val(0,0) = 2.0;
     A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
     A.Val(0,2) = Complex_wp(-1.0,1.0); A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
@@ -2356,7 +2356,7 @@ int main(int argc, char** argv)
   cout<<endl<<endl<<endl;
 
   {
-    Matrix<Complex_wp, Symmetric, ColHerm> A(n,n), Alu;
+    Matrix<Complex_wp, Hermitian, ColHerm> A(n,n), Alu;
     A.Val(0,0) = 2.0;
     A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
     A.Val(0,2) = Complex_wp(-1.0,1.0); A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
@@ -2411,7 +2411,7 @@ int main(int argc, char** argv)
   cout<<endl<<endl<<endl;
 
   {
-    Matrix<Complex_wp, Symmetric, ColHermPacked> A(n,n), Alu;
+    Matrix<Complex_wp, Hermitian, ColHermPacked> A(n,n), Alu;
     A.Val(0,0) = 2.0;
     A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
     A.Val(0,2) = Complex_wp(-1.0,1.0); A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
@@ -2466,7 +2466,7 @@ int main(int argc, char** argv)
   cout<<endl<<endl<<endl;
 
   {
-    Matrix<Complex_wp, Symmetric, RowHerm> A(n,n), Alu;
+    Matrix<Complex_wp, Hermitian, RowHerm> A(n,n), Alu;
     A.Val(0,0) = 2.0;
     A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
     A.Val(0,2) = Complex_wp(-1.0,1.0); A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;
@@ -2521,7 +2521,7 @@ int main(int argc, char** argv)
   cout<<endl<<endl<<endl;
 
   {
-    Matrix<Complex_wp, Symmetric, RowHermPacked> A(n,n), Alu;
+    Matrix<Complex_wp, Hermitian, RowHermPacked> A(n,n), Alu;
     A.Val(0,0) = 2.0;
     A.Val(0,1) = 3.0; A.Val(1,1) = 5.0;
     A.Val(0,2) = Complex_wp(-1.0,1.0); A.Val(1,2) = -3.0; A.Val(2,2) = -4.0;

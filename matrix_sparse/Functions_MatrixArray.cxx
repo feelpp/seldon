@@ -1481,7 +1481,7 @@ namespace Seldon
   void Mlt(const T0& alpha, Matrix<T, General, ArrayColSparse, Allocator>& A)
   {
     for (int i = 0; i < A.GetN(); i++)
-      for (int j = 0; j < A.GetColSize(i); j++)
+      for (int j = 0; j < A.GetColumnSize(i); j++)
 	A.Value(i,j) *= alpha;
   }
 
@@ -1501,7 +1501,7 @@ namespace Seldon
 	   Matrix<T, Symmetric, ArrayColSymSparse, Allocator>& A)
   {
     for (int i = 0; i < A.GetN(); i++)
-      for (int j = 0; j < A.GetColSize(i); j++)
+      for (int j = 0; j < A.GetColumnSize(i); j++)
 	A.Value(i,j) *= alpha;
   }
 

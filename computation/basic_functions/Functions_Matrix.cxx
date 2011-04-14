@@ -1292,10 +1292,10 @@ namespace Seldon
   }
 
 
-  template<class T0, class T1, class Storage1, class Allocator1,
+  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
   void Add(const T0& alpha,
-	   const Matrix<T1, Symmetric, Storage1, Allocator1>& A,
+	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
 	   Matrix<T2, Symmetric, Storage2, Allocator2>& B)
   {
     if ( (Storage1::Sparse) || (Storage2::Sparse) )
@@ -1305,10 +1305,27 @@ namespace Seldon
     int i, j;
     for (i = 0; i < A.GetM(); i++)
       for (j = i; j < A.GetN(); j++)
-	B(i, j) += alpha * A(i, j);
+	B.Get(i, j) += alpha * A(i, j);
   }
 
+  
+  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
+	   Matrix<T2, Hermitian, Storage2, Allocator2>& B)
+  {
+    if ( (Storage1::Sparse) || (Storage2::Sparse) )
+      throw WrongArgument("Add", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
 
+    int i, j;
+    for (i = 0; i < A.GetM(); i++)
+      for (j = i; j < A.GetN(); j++)
+	B.Get(i, j) += alpha * A(i, j);
+  }
+
+  
   //! Adds two matrices.
   /*! It performs the operation \f$ B = \alpha A + B \f$ where \f$ \alpha \f$
     is a scalar, and \f$ A \f$ and \f$ B \f$ are matrices.
@@ -1369,114 +1386,54 @@ namespace Seldon
 
     // Number of non zero entries currently found.
     int Nnonzero = A.GetPtr()[i];
+    
+    // counting the number of non-zero entries
+    int kb, jb(0), ka, ja(0);
+    for (int i2 = i; i2 < A.GetM(); i2++)
+      {
+        kb = B.GetPtr()[i2];
+        
+        for (ka = A.GetPtr()[i2]; ka < A.GetPtr()[i2 + 1]; ka++)
+          {
+            ja = A.GetInd()[ka];
+            while (kb < B.GetPtr()[i2 + 1] && B.GetInd()[kb] < ja)
+              {
+                kb++;
+                Nnonzero++;
+              }
+            
+            if (kb < B.GetPtr()[i2 + 1] && ja == B.GetInd()[kb])
+              kb++;
+            
+            Nnonzero++;
+          }
 
+        while (kb < B.GetPtr()[i2 + 1])
+          {
+            kb++;
+            Nnonzero++;
+          }
+      }
+    
     // A and B do not have the same structure. An intermediate matrix will be
     // needed. The first i rows have already been added. These computations
-    // should be preserved.
-    int* c_ptr = NULL;
-    int* c_ind = NULL;
-    T2* c_data = NULL;
-
-#ifdef SELDON_CHECK_MEMORY
-    try
+    // are preserved in arrays Ptr, Ind Val.
+    Vector<int, VectFull, CallocAlloc<int> > Ptr(A.GetM()+1), Ind(Nnonzero);
+    Vector<T2, VectFull, Allocator2> Val(Nnonzero);
+    
+    for (int i2 = 0; i2 <= i; i2++)
+      Ptr(i2) = B.GetPtr()[i2];
+    
+    for (j = 0; j < B.GetPtr()[i]; j++)
       {
-#endif
-
-	c_ptr = reinterpret_cast<int*>(calloc(A.GetM() + 1, sizeof(int)));
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-        c_ptr = NULL;
+        Ind(j) = B.GetInd()[j];
+        Val(j) = B.GetData()[j];
       }
 
-    if (c_ptr == NULL)
-      throw NoMemory("Add(alpha, const Matrix<RowSparse>& A, "
-                     "Matrix<RowSparse>& B)",
-		     "Unable to allocate memory for an array of "
-		     + to_str(A.GetM() + 1) + " integers.");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-        // Reallocates 'c_ind' and 'c_data' for the first i rows.
-        c_ind = reinterpret_cast<int*>
-          (realloc(reinterpret_cast<void*>(c_ind), Nnonzero * sizeof(int)));
-        c_data = reinterpret_cast<T2*>
-          (B.GetAllocator().reallocate(c_data, Nnonzero));
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-        c_ind = NULL;
-        c_data = NULL;
-      }
-
-    if ((c_ind == NULL || c_data == NULL)
-        && Nnonzero != 0)
-      throw NoMemory("Add(alpha, const Matrix<RowSparse>& A, "
-                     "Matrix<RowSparse>& B)",
-                     "Unable to allocate memory for an array of "
-                     + to_str(Nnonzero) + " integers and for an array of "
-                     + to_str(sizeof(T2) * Nnonzero) + " bytes.");
-#endif
-
-    // The pointers of the first i rows are correct.
-    for (k = 0; k < i + 1; k++)
-      c_ptr[k] = B.GetPtr()[k];
-
-    // Copies the elements from the first i rows, as they were already added.
-    for (k = 0; k < Nnonzero; k++)
-      {
-        c_ind[k] = B.GetInd()[k];
-        c_data[k] = B.GetData()[k];
-      }
-
-    int Nnonzero_row_max;
-    int Nnonzero_max;
-    int ja, jb(0), ka, kb;
     // Now deals with the remaining lines.
+    Nnonzero = A.GetPtr()[i];
     for (; i < A.GetM(); i++)
       {
-        Nnonzero_row_max = A.GetPtr()[i + 1] - A.GetPtr()[i]
-          + B.GetPtr()[i + 1] - B.GetPtr()[i];
-        // Maximum number of non zero entries up to row i.
-        Nnonzero_max = Nnonzero + Nnonzero_row_max;
-
-#ifdef SELDON_CHECK_MEMORY
-        try
-          {
-#endif
-
-            c_ind = reinterpret_cast<int*>
-              (realloc(reinterpret_cast<void*>(c_ind),
-                       Nnonzero_max * sizeof(int)));
-            c_data = reinterpret_cast<T2*>
-              (B.GetAllocator().reallocate(c_data, Nnonzero_max));
-
-#ifdef SELDON_CHECK_MEMORY
-          }
-        catch (...)
-          {
-            c_ind = NULL;
-            c_data = NULL;
-          }
-
-        if ((c_ind == NULL || c_data == NULL)
-            && Nnonzero_max != 0)
-          throw NoMemory("Add(alpha, const Matrix<RowSparse>& A, "
-                         "Matrix<RowSparse>& B)",
-                         "Unable to allocate memory for an array of "
-                         + to_str(Nnonzero_max) + " integers and for an "
-                         "array of "
-                         + to_str(sizeof(T2) * Nnonzero_max) + " bytes.");
-#endif
-
         kb = B.GetPtr()[i];
         if (kb < B.GetPtr()[i + 1])
           jb = B.GetInd()[kb];
@@ -1486,8 +1443,8 @@ namespace Seldon
             while (kb < B.GetPtr()[i + 1] && jb < ja)
               // For all elements in B that are before the ka-th element of A.
               {
-                c_ind[Nnonzero] = jb;
-                c_data[Nnonzero] = B.GetData()[kb];
+                Ind(Nnonzero) = jb;
+                Val(Nnonzero) = B.GetData()[kb];
                 kb++;
                 if (kb < B.GetPtr()[i + 1])
                   jb = B.GetInd()[kb];
@@ -1497,16 +1454,16 @@ namespace Seldon
             if (kb < B.GetPtr()[i + 1] && ja == jb)
               // The element in A is also in B.
               {
-                c_ind[Nnonzero] = jb;
-                c_data[Nnonzero] = B.GetData()[kb] + alpha * A.GetData()[ka];
+                Ind(Nnonzero) = jb;
+                Val(Nnonzero) = B.GetData()[kb] + alpha * A.GetData()[ka];
                 kb++;
                 if (kb < B.GetPtr()[i + 1])
                   jb = B.GetInd()[kb];
               }
             else
               {
-                c_ind[Nnonzero] = ja;
-                c_data[Nnonzero] = alpha * A.GetData()[ka];
+                Ind(Nnonzero) = ja;
+                Val(Nnonzero) = alpha * A.GetData()[ka];
               }
             Nnonzero++;
           }
@@ -1514,18 +1471,18 @@ namespace Seldon
         // The remaining elements from B.
         while (kb < B.GetPtr()[i + 1])
           {
-            c_ind[Nnonzero] = jb;
-            c_data[Nnonzero] = B.GetData()[kb];
+            Ind(Nnonzero) = jb;
+            Val(Nnonzero) = B.GetData()[kb];
             kb++;
             if (kb < B.GetPtr()[i + 1])
               jb = B.GetInd()[kb];
             Nnonzero++;
           }
 
-        c_ptr[i + 1] = Nnonzero;
+        Ptr(i + 1) = Nnonzero;
       }
-
-    B.SetData(B.GetM(), B.GetN(), Nnonzero, c_data, c_ptr, c_ind);
+    
+    B.SetData(B.GetM(), B.GetN(), Val, Ptr, Ind);
   }
 
 

@@ -408,16 +408,16 @@ int main()
   Matrix<complex<double>, Symmetric, ColSymPacked> A6;
   TestSymmetricMatrix(A6);
 
-  //Matrix<complex<double>, General, RowHerm> A7
+  //Matrix<complex<double>, Hermitian, RowHerm> A7
   //TestHermitianMatrix(A7);
 
-  //Matrix<complex<double>, General, ColHerm> A8;
+  //Matrix<complex<double>, Hermitian, ColHerm> A8;
   //TestHermitianMatrix(A8);
 
-  Matrix<complex<double>, General, RowHermPacked> A9;
+  Matrix<complex<double>, Hermitian, RowHermPacked> A9;
   TestHermitianMatrix(A9);
 
-  Matrix<complex<double>, General, ColHermPacked> A10;
+  Matrix<complex<double>, Hermitian, ColHermPacked> A10;
   TestHermitianMatrix(A10);
 
   //Matrix<double, General, RowLoTriang> A11;
