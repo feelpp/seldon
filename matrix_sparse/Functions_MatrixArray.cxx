@@ -44,6 +44,27 @@
 
   alpha.M -> M
   Mlt(alpha, M)
+  
+  Highest absolute value of A.
+  MaxAbs(A)
+
+  1-norm of matrix A.
+  Norm1(A)
+
+  infinity norm of matrix A.
+  NormInf(A)
+
+  transpose of matrix A
+  Transpose(A)
+
+  B = transpose(A)
+  Transpose(A, B)
+  
+  conjugate of transpose of matrix A
+  TransposeConj(A)
+
+  conjugate of matrix A
+  Conjugate(A)
 
 */
 
@@ -1361,14 +1382,34 @@ namespace Seldon
 	n = A.GetRowSize(i);
 	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
-	  value(j) = T2(A.Value(i, j));
+	  value(j) = A.Value(i, j);
 
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetIndex(i), value.GetData());
       }
   }
 
+  
+  template<class T0, class T1, class T2, class Allocator1, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, General, ArrayColSparse, Allocator1>& A,
+	   Matrix<T2, General, ArrayColSparse, Allocator2>& B)
+  {
+    int m = B.GetN(), n;
+    Vector<T2, VectFull, Allocator2> value;
+    for (int i = 0 ; i < m ; i++)
+      {
+	n = A.GetColumnSize(i);
+	value.Reallocate(n);
+	for (int j = 0; j < n; j++)
+	  value(j) = A.Value(i, j);
+        
+	Mlt(alpha, value);
+	B.AddInteractionColumn(i, n, A.GetIndex(i), value.GetData());
+      }
+  }
 
+  
   template<class T0, class T1, class T2, class Allocator1, class Allocator2>
   void Add(const T0& alpha,
 	   const Matrix<T1, Symmetric, ArrayRowSymSparse, Allocator1>& A,
@@ -1388,6 +1429,26 @@ namespace Seldon
       }
   }
   
+  
+  template<class T0, class T1, class T2, class Allocator1, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, Symmetric, ArrayColSymSparse, Allocator1>& A,
+	   Matrix<T2, Symmetric, ArrayColSymSparse, Allocator2>& B)
+  {
+    int m = B.GetN(), n;
+    Vector<T2, VectFull, Allocator2> value;
+    for (int i = 0 ; i < m ; i++)
+      {
+	n = A.GetColumnSize(i);
+	value.Reallocate(n);
+	for (int j = 0; j < n; j++)
+	  value(j) = A.Value(i, j);
+        
+	Mlt(alpha, value);
+	B.AddInteractionColumn(i, n, A.GetIndex(i), value.GetData());
+      }
+  }
+
 
   // C = C + complex(A,B)
   template<class T0, class T1, class T2, class T3, class Allocator1,
@@ -1534,8 +1595,390 @@ namespace Seldon
 
   // Mlt //
   /////////
+  
+  
+  ///////////
+  // Norms //
+  
+  
+  //! Returns the maximum (in absolute value) of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return The maximum (in absolute value) of all elements of \a A.
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  MaxAbs(const Matrix<T, Prop, ArrayRowSparse, Allocator>& A)
+  {
+    typename ClassComplexType<T>::Treal res(0);
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+        res = max(res, abs(A.Value(i, j)));
+    
+    return res;
+  }
 
 
+  //! Returns the 1-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_j \sum_i |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  Norm1(const Matrix<T, Prop, ArrayRowSparse, Allocator>& A)
+  {
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Vector<Treal> sum(A.GetN());
+    sum.Fill(Treal(0));
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+        sum(A.Index(i, j)) += abs( A.Value(i, j));
+    
+    return sum.GetNormInf();
+  }
+
+
+  //! Returns the infinity-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_i \sum_j |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  NormInf(const Matrix<T, Prop, ArrayRowSparse, Allocator>& A)
+  {
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal res(0), sum;
+    for (int i = 0; i < A.GetM(); i++)
+      {
+        sum = Treal(0);
+        for (int j = 0; j < A.GetRowSize(i); j++)
+          sum += abs(A.Value(i, j));
+        
+        res = max(res, sum);
+      }
+    
+    return res;
+  }
+
+  
+  //! Returns the maximum (in absolute value) of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return The maximum (in absolute value) of all elements of \a A.
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  MaxAbs(const Matrix<T, Prop, ArrayColSparse, Allocator>& A)
+  {
+    typename ClassComplexType<T>::Treal res(0);
+    for (int i = 0; i < A.GetN(); i++)
+      for (int j = 0; j < A.GetColumnSize(i); j++)
+        res = max(res, abs(A.Value(i, j)));
+    
+    return res;
+  }
+  
+  
+  //! Returns the 1-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_j \sum_i |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  Norm1(const Matrix<T, Prop, ArrayColSparse, Allocator>& A)
+  {
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal res(0), sum;
+    for (int i = 0; i < A.GetN(); i++)
+      {
+        sum = Treal(0);
+        for (int j = 0; j < A.GetColumnSize(i); j++)
+          sum += abs(A.Value(i, j));
+        
+        res = max(res, sum);
+      }
+    
+    return res;
+  }
+
+
+  //! Returns the infinity-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_i \sum_j |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  NormInf(const Matrix<T, Prop, ArrayColSparse, Allocator>& A)
+  {
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Vector<Treal> sum(A.GetM());
+    sum.Fill(Treal(0));
+    for (int i = 0; i < A.GetN(); i++)
+      for (int j = 0; j < A.GetColumnSize(i); j++)
+        sum(A.Index(i, j)) += abs(A.Value(i, j));
+    
+    return sum.GetNormInf();
+  }
+  
+  
+  //! Returns the maximum (in absolute value) of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return The maximum (in absolute value) of all elements of \a A.
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  MaxAbs(const Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A)
+  {
+    typename ClassComplexType<T>::Treal res(0);
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+        res = max(res, abs(A.Value(i, j)));
+    
+    return res;
+  }
+
+
+  //! Returns the 1-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_j \sum_i |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  Norm1(const Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A)
+  {
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Vector<Treal> sum(A.GetN());
+    sum.Fill(Treal(0));
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+        {
+          sum(A.Index(i, j)) += abs( A.Value(i, j));
+          if (A.Index(i, j) != i)
+            sum(i) += abs(A.Value(i, j));
+        }
+    
+    return sum.GetNormInf();
+  }
+
+
+  //! Returns the infinity-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_i \sum_j |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  NormInf(const Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A)
+  {
+    return Norm1(A);
+  }
+  
+  
+  //! Returns the maximum (in absolute value) of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return The maximum (in absolute value) of all elements of \a A.
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  MaxAbs(const Matrix<T, Prop, ArrayColSymSparse, Allocator>& A)
+  {
+    typename ClassComplexType<T>::Treal res(0);
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetColumnSize(i); j++)
+        res = max(res, abs(A.Value(i, j)));
+    
+    return res;
+  }
+
+
+  //! Returns the 1-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_j \sum_i |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  Norm1(const Matrix<T, Prop, ArrayColSymSparse, Allocator>& A)
+  {
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Vector<Treal> sum(A.GetN());
+    sum.Fill(Treal(0));
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetColumnSize(i); j++)
+        {
+          sum(A.Index(i, j)) += abs( A.Value(i, j));
+          if (A.Index(i, j) != i)
+            sum(i) += abs(A.Value(i, j));
+        }
+    
+    return sum.GetNormInf();
+  }
+
+
+  //! Returns the infinity-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_i \sum_j |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  NormInf(const Matrix<T, Prop, ArrayColSymSparse, Allocator>& A)
+  {
+    return Norm1(A);
+  }
+  
+  
+  // Norms //
+  ///////////
+  
+  
+  ///////////////
+  // Transpose //
+  
+  
+  //! Matrix transposition.
+  template<class T, class Allocator>
+  void Transpose(const Matrix<T, General, ArrayRowSparse, Allocator>& A,
+                 Matrix<T, General, ArrayRowSparse, Allocator>& B)
+  {
+    B.Clear();
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    Vector<int, VectFull, CallocAlloc<int> > ptr_T(n);
+    
+    B.Reallocate(n, m);
+
+    // For each column j, computes number of its non-zeroes and stores it in
+    // ptr_T[j].
+    ptr_T.Zero();
+    for (int i = 0; i < m; i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+        ptr_T(A.Index(i, j))++;
+    
+    for (int i = 0; i < n; i++)
+      B.ReallocateRow(i, ptr_T(i));
+    
+    // filling matrix B
+    ptr_T.Zero();
+    for (int i = 0; i < m; i++)
+      for (int jp = 0; jp < A.GetRowSize(i); jp++)
+    	{
+	  int j = A.Index(i, jp);
+	  int k = ptr_T(j);
+	  ++ptr_T(j);
+          B.Value(j, k) = A.Value(i, jp);
+          B.Index(j, k) = i;
+    	}
+  }
+
+
+  //! Matrix transposition.
+  template<class T, class Allocator>
+  void Transpose(Matrix<T, General, ArrayRowSparse, Allocator>& A)
+  {
+    Matrix<T, General, ArrayRowSparse, Allocator> Acopy(A);
+    Transpose(Acopy, A);
+  }
+  
+
+  //! Matrix transposition.
+  template<class T, class Allocator>
+  void Transpose(const Matrix<T, General, ArrayColSparse, Allocator>& A,
+                 Matrix<T, General, ArrayColSparse, Allocator>& B)
+  {
+    B.Clear();
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    Vector<int, VectFull, CallocAlloc<int> > ptr_T(m);
+    
+    B.Reallocate(n, m);
+
+    // For each row j, computes number of its non-zeroes and stores it in
+    // ptr_T[j].
+    ptr_T.Zero();
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < A.GetColumnSize(i); j++)
+        ptr_T(A.Index(i, j))++;
+    
+    for (int i = 0; i < m; i++)
+      B.ReallocateColumn(i, ptr_T(i));
+    
+    // filling matrix B
+    ptr_T.Zero();
+    for (int i = 0; i < n; i++)
+      for (int jp = 0; jp < A.GetColumnSize(i); jp++)
+    	{
+	  int j = A.Index(i, jp);
+	  int k = ptr_T(j);
+	  ++ptr_T(j);
+          B.Value(j, k) = A.Value(i, jp);
+          B.Index(j, k) = i;
+    	}
+  }
+
+
+  //! Matrix transposition.
+  template<class T, class Allocator>
+  void Transpose(Matrix<T, General, ArrayColSparse, Allocator>& A)
+  {
+    Matrix<T, General, ArrayColSparse, Allocator> Acopy(A);
+    Transpose(Acopy, A);
+  }
+
+
+  //! Replaces A by its conjugate
+  template<class T, class Allocator>
+  void Conjugate(Matrix<T, General, ArrayRowSparse, Allocator>& A)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+        A.Value(i, j) = conj(A.Value(i, j));
+  }
+
+
+  //! Replaces A by its conjugate
+  template<class T, class Allocator>
+  void Conjugate(Matrix<T, General, ArrayColSparse, Allocator>& A)
+  {
+    for (int i = 0; i < A.GetN(); i++)
+      for (int j = 0; j < A.GetColumnSize(i); j++)
+        A.Value(i, j) = conj(A.Value(i, j));
+  }
+
+
+  //! Replaces A by its conjugate
+  template<class T, class Allocator>
+  void Conjugate(Matrix<T, Symmetric, ArrayRowSymSparse, Allocator>& A)
+  {
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+        A.Value(i, j) = conj(A.Value(i, j));
+  }
+
+
+  //! Replaces A by its conjugate
+  template<class T, class Allocator>
+  void Conjugate(Matrix<T, Symmetric, ArrayColSymSparse, Allocator>& A)
+  {
+    for (int i = 0; i < A.GetN(); i++)
+      for (int j = 0; j < A.GetColumnSize(i); j++)
+        A.Value(i, j) = conj(A.Value(i, j));
+  }
+
+  
+  // Transpose //
+  ///////////////
+  
+  
 } // namespace Seldon
 
 #define SELDON_FILE_FUNCTIONS_MATRIX_ARRAY_CXX
