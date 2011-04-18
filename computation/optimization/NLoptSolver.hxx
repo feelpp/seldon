@@ -51,6 +51,9 @@ namespace Seldon
     double parameter_tolerance_;
     //! Relative tolerance on the cost function.
     double cost_function_tolerance_;
+    /*! \brief Maximum number of function evaluations. It is ignored if it is
+      non-positive. */
+    int Niteration_max_;
     /*! \brief The vector that stores parameters values. Before optimization,
       stores the initial parameter vector; after optimization, it returns the
       optimized parameters. */
@@ -69,13 +72,16 @@ namespace Seldon
 
     void Initialize(int Nparameter, string algorithm,
                     double parameter_tolerance = 1.e-6,
-                    double cost_function_tolerance = 1.e-6);
+                    double cost_function_tolerance = 1.e-6,
+                    int Niteration_max = -1);
     void SetLowerBound(const Vector<double>&);
     void SetUpperBound(const Vector<double>&);
     void SetParameterTolerance(double);
     void SetCostFunctionTolerance(double);
+    void SetNiterationMax(int);
     void GetParameterTolerance(double&) const;
     void GetCostFunctionTolerance(double&) const;
+    void GetNiterationMax(int&) const;
     void SetParameter(const Vector<double>& parameter);
     void GetParameter(Vector<double>& parameter) const;
     void Optimize(cost_ptr cost, void* argument);

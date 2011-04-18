@@ -1375,7 +1375,7 @@ namespace Seldon
 	   const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
 	   Matrix<T2, General, ArrayRowSparse, Allocator2>& B)
   {
-    int m = B.GetM(),n;
+    int m = B.GetM(), n;
     Vector<T2, VectFull, Allocator2> value;
     for (int i = 0 ; i < m ; i++)
       {
@@ -1450,7 +1450,7 @@ namespace Seldon
   }
 
 
-  // C = C + complex(A,B)
+  // C = C + alpha complex(A,B)
   template<class T0, class T1, class T2, class T3, class Allocator1,
 	   class Allocator2, class Allocator3>
   void Add(const T0& alpha,
@@ -1477,7 +1477,7 @@ namespace Seldon
 	for (int j = 0 ; j < n2 ; j++)
 	  {
 	    ind_row(j+n1) = B.Index(i, j);
-	    val_row(j+n1) = alpha * complex<T3>(B.Value(i, j));
+	    val_row(j+n1) = alpha * complex<T3>(0, B.Value(i, j));
 	  }
         
 	C.AddInteractionRow(i, size_row, ind_row, val_row);
@@ -1485,7 +1485,7 @@ namespace Seldon
   }
 
 
-  // C = C + complex(A,B)
+  // C = C + alpha complex(A,B)
   template<class T0, class T1, class T2, class T3,
 	   class Allocator1, class Allocator2, class Allocator3>
   void Add(const T0& alpha,
@@ -1512,13 +1512,36 @@ namespace Seldon
 	for (int j = 0 ; j < n2 ; j++)
 	  {
 	    ind_row(j+n1) = B.Index(i, j);
-	    val_row(j+n1) = alpha * complex<T3>(B.Value(i, j));
+	    val_row(j+n1) = alpha * complex<T3>(0, B.Value(i, j));
 	  }
 
 	C.AddInteractionRow(i, size_row, ind_row, val_row);
       }
   }
 
+
+  template<class T0, class T1, class T2, class Allocator1, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, Symmetric, ArrayRowSymSparse, Allocator1>& A,
+	   Matrix<T2, General, ArrayRowSparse, Allocator2>& B)
+  {
+    Vector<T2, VectFull, Allocator2> value;
+    for (int i = 0; i < B.GetM(); i++)
+      {
+	int n = A.GetRowSize(i);
+	value.Reallocate(n);
+	for (int j = 0; j < n; j++)
+	  {
+            value(j) = A.Value(i, j);
+            if (A.Index(i, j) != i)
+              B.AddInteraction(A.Index(i, j), i, alpha*value(j));
+          }
+        
+	Mlt(alpha, value);
+	B.AddInteractionRow(i, n, A.GetIndex(i), value.GetData());
+      }
+  }
+  
   
   // Add //
   /////////

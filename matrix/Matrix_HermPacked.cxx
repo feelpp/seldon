@@ -1140,6 +1140,7 @@ namespace Seldon
     return *this;
   }
 
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient

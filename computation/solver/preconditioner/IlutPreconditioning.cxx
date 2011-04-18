@@ -892,7 +892,7 @@ namespace Seldon
     // Local variables
     cplx fact, s, t;
     int length_lower,length_upper, jpos, jrow, i_row, j_col;
-    int i, j, k, index_lu, length;
+    int i, j, k, index_lu;
     bool element_dropped;
 
     int n2 = 2*n, jlev, k_, size_upper;
@@ -938,8 +938,6 @@ namespace Seldon
 	  }
 
 	j_col = 0;
-        length = 0;
-
 
         // Eliminates previous rows.
 	while (j_col <length_lower)

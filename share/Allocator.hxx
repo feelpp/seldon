@@ -37,6 +37,10 @@ namespace Seldon
     typedef const T* const_pointer;
     typedef T& reference;
     typedef const T& const_reference;
+    
+    //! true if the allocator keeps previous elements when
+    //! calling reallocate
+    static const bool KeepDataReallocate = true;
 
   public:
 
@@ -63,6 +67,10 @@ namespace Seldon
     typedef T& reference;
     typedef const T& const_reference;
 
+    //! true if the allocator keeps previous elements when
+    //! calling reallocate
+    static const bool KeepDataReallocate = true;
+
   public:
 
     pointer allocate(int num, void* h = 0);
@@ -88,6 +96,10 @@ namespace Seldon
     typedef T& reference;
     typedef const T& const_reference;
 
+    //! true if the allocator keeps previous elements when
+    //! calling reallocate
+    static const bool KeepDataReallocate = false;
+
   public:
 
     pointer allocate(int num, void* h = 0);
@@ -112,6 +124,10 @@ namespace Seldon
     typedef const T* const_pointer;
     typedef T& reference;
     typedef const T& const_reference;
+
+    //! true if the allocator keeps previous elements when
+    //! calling reallocate
+    static const bool KeepDataReallocate = false;
     
   public:
 
@@ -137,6 +153,10 @@ namespace Seldon
     typedef const T* const_pointer;
     typedef T& reference;
     typedef const T& const_reference;
+
+    //! true if the allocator keeps previous elements when
+    //! calling reallocate
+    static const bool KeepDataReallocate = true;
 
   public:
 

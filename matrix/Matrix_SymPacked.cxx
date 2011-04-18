@@ -1127,7 +1127,8 @@ namespace Seldon
     this->Fill(x);
     return *this;
   }
-
+  
+  
   //! Duplicates a matrix (assignment operator).
   /*!
     \param A matrix to be copied.

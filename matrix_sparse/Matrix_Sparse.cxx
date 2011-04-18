@@ -2093,20 +2093,23 @@ namespace Seldon
     
     // if last element is not present, 0 is printed
     int N = IndRow.GetM()-1;
-    int m = A.GetM()-1, n = A.GetN()-1;
-    SetComplexZero(zero);
-    if ( (IndRow(N) != m+index) || (IndCol(N) != n+index))
+    if (N >= 0)
       {
-        if (A(m, n) == zero)
+        int m = A.GetM()-1, n = A.GetN()-1;
+        SetComplexZero(zero);
+        if ( (IndRow(N) != m+index) || (IndCol(N) != n+index))
           {
-            FileStream << m+index << " " << n+index << " ";
-            if (cplx)
-              WriteComplexValue(FileStream, zero);
-            else
-              FileStream << zero;
-            
-            FileStream << '\n';
-          }          
+            if (A(m, n) == zero)
+              {
+                FileStream << m+index << " " << n+index << " ";
+                if (cplx)
+                  WriteComplexValue(FileStream, zero);
+                else
+                  FileStream << zero;
+                
+                FileStream << '\n';
+              }          
+          }
       }
   }
   
