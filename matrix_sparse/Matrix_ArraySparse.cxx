@@ -1105,13 +1105,14 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
-  AddInteractionColumn(int i, int nb, int* row_, T* value_)
+  AddInteractionColumn(int i, int nb, int* row_, T* value_,
+                       bool already_sorted)
   {
     IVect row;
     row.SetData(nb, row_);
     Vector<T> val;
     val.SetData(nb, value_);
-    AddInteractionColumn(i, nb, row, val);
+    AddInteractionColumn(i, nb, row, val, already_sorted);
     row.Nullify();
     val.Nullify();
   }
@@ -1144,9 +1145,10 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<T, VectFull, Alloc1>& val)
+		       const Vector<T, VectFull, Alloc1>& val,
+                       bool already_sorted)
   {
-    this->val_(i).AddInteractionRow(nb, row, val);
+    this->val_(i).AddInteractionRow(nb, row, val, already_sorted);
   }
 
 
@@ -1295,13 +1297,14 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
-  AddInteractionRow(int i, int nb, int* col_, T* value_)
+  AddInteractionRow(int i, int nb, int* col_, T* value_,
+                    bool already_sorted)
   {
     IVect col;
     col.SetData(nb, col_);
     Vector<T> val;
     val.SetData(nb, value_);
-    AddInteractionRow(i, nb, col, val);
+    AddInteractionRow(i, nb, col, val, already_sorted);
     col.Nullify();
     val.Nullify();
   }
@@ -1338,9 +1341,10 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<T, VectFull, Alloc1>& val)
+		    const Vector<T, VectFull, Alloc1>& val,
+                    bool already_sorted)
   {
-    this->val_(i).AddInteractionRow(nb, col, val);
+    this->val_(i).AddInteractionRow(nb, col, val, already_sorted);
   }
 
 
@@ -1701,13 +1705,14 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
-  AddInteractionColumn(int i, int nb, int* row_, T* value_)
+  AddInteractionColumn(int i, int nb, int* row_, T* value_,
+                       bool already_sorted)
   {
     IVect row;
     row.SetData(nb, row_);
     Vector<T> val;
     val.SetData(nb, value_);
-    AddInteractionColumn(i, nb, row, val);
+    AddInteractionColumn(i, nb, row, val, already_sorted);
     row.Nullify();
     val.Nullify();
   }
@@ -1756,7 +1761,8 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<T, VectFull, Alloc1>& val)
+		       const Vector<T, VectFull, Alloc1>& val,
+                       bool already_sorted)
   {
     IVect new_row(nb);
     Vector<T, VectFull, Alloc1> new_val(nb);
@@ -1768,7 +1774,7 @@ namespace Seldon
 	  new_val(nb) = val(j); nb++;
 	}
 
-    this->val_(i).AddInteractionRow(nb, new_row, new_val);
+    this->val_(i).AddInteractionRow(nb, new_row, new_val, already_sorted);
   }
 
 
@@ -2107,13 +2113,14 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
-  AddInteractionRow(int i, int nb, int* col_, T* value_)
+  AddInteractionRow(int i, int nb, int* col_, T* value_,
+                    bool already_sorted)
   {
     IVect col;
     col.SetData(nb, col_);
     Vector<T> val;
     val.SetData(nb, value_);
-    AddInteractionRow(i, nb, col, val);
+    AddInteractionRow(i, nb, col, val, already_sorted);
     col.Nullify();
     val.Nullify();
   }
@@ -2150,7 +2157,8 @@ namespace Seldon
   template <class T, class Prop, class Allocator> template <class Alloc1>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<T, VectFull, Alloc1>& val)
+		    const Vector<T, VectFull, Alloc1>& val,
+                    bool already_sorted)
   {
     IVect new_col(nb);
     Vector<T, VectFull, Alloc1> new_val(nb);
@@ -2162,7 +2170,7 @@ namespace Seldon
 	  new_val(nb) = val(j); nb++;
 	}
 
-    this->val_(i).AddInteractionRow(nb, new_col, new_val);
+    this->val_(i).AddInteractionRow(nb, new_col, new_val, already_sorted);
   }
 
 

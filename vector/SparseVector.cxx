@@ -770,14 +770,31 @@ namespace Seldon
   template <class T, class Allocator>
   template<class Allocator0>
   void Vector<T, VectSparse, Allocator>::
-  AddInteractionRow(int n, Vector<int> index,
-		    Vector<T, VectFull, Allocator0> value,
+  AddInteractionRow(int n, const Vector<int>& index2,
+		    const Vector<T, VectFull, Allocator0>& value2,
 		    bool already_sorted)
   {
+    Vector<int> index;
+    Vector<T, VectFull, Allocator0> value;
     if (!already_sorted)
-      // Sorts the values to be added according to their indices.
-      Seldon::Assemble(n, index, value);
-
+      {
+        index.Reallocate(n);
+        value.Reallocate(n);
+        for (int i = 0; i < n; i++)
+          {
+            index(i) = index2(i);
+            value(i) = value2(i);
+          }
+        
+        // Sorts the values to be added according to their indices.
+        Seldon::Assemble(n, index, value);
+      }
+    else
+      {
+        index.SetData(n, index2.GetData());
+        value.SetData(n, value2.GetData());
+      }
+    
     /***  Values that already have an entry ***/
 
     // Number of values to be added without entry.
@@ -833,6 +850,12 @@ namespace Seldon
 	  }
 
 	SetData(new_val, new_ind);
+      }
+
+    if (already_sorted)
+      {
+        index.Nullify();
+        value.Nullify();
       }
   }
 

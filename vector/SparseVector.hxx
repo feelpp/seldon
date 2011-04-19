@@ -106,8 +106,8 @@ namespace Seldon
     void AddInteraction(int i, const T& val);
     void AddInteractionRow(int, int*, T*, bool already_sorted = false);
     template<class Allocator0>
-    void AddInteractionRow(int nb, Vector<int> col,
-			   Vector<T, VectFull, Allocator0> val,
+    void AddInteractionRow(int nb, const Vector<int>& col,
+			   const Vector<T, VectFull, Allocator0>& val,
                            bool already_sorted = false);
     
     typename ClassComplexType<T>::Treal GetNormInf() const;
