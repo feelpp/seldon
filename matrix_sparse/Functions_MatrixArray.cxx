@@ -1593,14 +1593,22 @@ namespace Seldon
   }
 
 
-  // Matrix-matrix product (sparse matrix against full matrix)
-  template<class T1, class Prop1, class Allocator1, class T2, class Prop2,
-	   class Storage2, class Allocator2, class T3, class Prop3,
-	   class Storage3, class Allocator3>
+  // Matrix-matrix product (sparse matrix against dense matrix)
+  template<class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Storage2, class Allocator2,
+           class T3, class Prop3, class Storage3, class Allocator3>
   void Mlt(const Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& A,
 	   const Matrix<T2, Prop2, Storage2, Allocator2>& B,
 	   Matrix<T3, Prop3, Storage3, Allocator3>& C)
   {
+    if (Storage2::Sparse || Storage3::Sparse)
+      throw WrongArgument("Mlt", "Function intended for product "
+                          " between a sparse matrix and a dense matrix");
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, B, "Mlt(A, B, C)");
+#endif
+    
     int m = A.GetM();
     int n = B.GetN();
     C.Reallocate(m,n);
