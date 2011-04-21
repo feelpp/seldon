@@ -1,4 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2001-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -33,9 +34,13 @@
   xGERU   (Rank1Update)
   xGERC   (Rank1Update)
   xSPR    (Rank1Update)
+  xSYR    (Rank1Update)
   xHPR    (Rank1Update)
+  xHER    (Rank1Update)
   xSPR2   (Rank2Update)
+  xSYR2   (Rank2Update)
   xHPR2   (Rank2Update)
+  xHER2   (Rank2Update)
   xTRSV   (Solve)
   xTPSV   (Solve)
 */
@@ -2595,7 +2600,39 @@ namespace Seldon
 	       X.GetData(), 1, A.GetData());
   }
 
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const float alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   Matrix<float, Prop1, ColSym, Allocator1>& A)
+  {
 
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_dsyr(CblasColMajor, CblasUpper, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const double alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   Matrix<double, Prop1, ColSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_dsyr(CblasColMajor, CblasUpper, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
@@ -2629,6 +2666,42 @@ namespace Seldon
     cblas_zhpr(CblasColMajor, CblasUpper, A.GetM(), alpha,
 	       reinterpret_cast<const void*>(X.GetData()), 1,
 	       reinterpret_cast<void*>(A.GetData()));
+  }
+  
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const float alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      Matrix<complex<float>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_cher(CblasColMajor, CblasUpper, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+  
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const double alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_zher(CblasColMajor, CblasUpper, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
   }
 
 
@@ -2668,7 +2741,41 @@ namespace Seldon
 	       X.GetData(), 1, A.GetData());
   }
 
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const float alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const SeldonUplo& Uplo,
+		   Matrix<float, Prop1, ColSym, Allocator1>& A)
+  {
 
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_ssyr(CblasColMajor, Uplo, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const double alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const SeldonUplo& Uplo,
+		   Matrix<double, Prop1, ColSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_dsyr(CblasColMajor, Uplo, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
@@ -2707,6 +2814,44 @@ namespace Seldon
   }
 
 
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const float alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<float>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_cher(CblasColMajor, Uplo, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const double alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_zher(CblasColMajor, Uplo, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
   /*** RowSymPacked and Upper ***/
 
 
@@ -2741,7 +2886,39 @@ namespace Seldon
 	       X.GetData(), 1, A.GetData());
   }
 
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const float alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   Matrix<float, Prop1, RowSym, Allocator1>& A)
+  {
 
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_ssyr(CblasRowMajor, CblasUpper, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const double alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   Matrix<double, Prop1, RowSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_dsyr(CblasRowMajor, CblasUpper, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
@@ -2777,7 +2954,43 @@ namespace Seldon
 	       reinterpret_cast<void*>(A.GetData()));
   }
 
+  
+    template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const float alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      Matrix<complex<float>, Prop1, RowHerm, Allocator1>& A)
+  {
 
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_cher(CblasRowMajor, CblasUpper, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const double alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_zher(CblasRowMajor, CblasUpper, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+  
   /*** RowSymPacked and Uplo ***/
 
 
@@ -2814,7 +3027,41 @@ namespace Seldon
 	       X.GetData(), 1, A.GetData());
   }
 
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const float alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const SeldonUplo& Uplo,
+		   Matrix<float, Prop1, RowSym, Allocator1>& A)
+  {
 
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_ssyr(CblasRowMajor, Uplo, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const double alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const SeldonUplo& Uplo,
+		   Matrix<double, Prop1, RowSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_dsyr(CblasRowMajor, Uplo, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
@@ -2850,6 +3097,44 @@ namespace Seldon
     cblas_zhpr(CblasRowMajor, Uplo, A.GetM(), alpha,
 	       reinterpret_cast<const void*>(X.GetData()), 1,
 	       reinterpret_cast<void*>(A.GetData()));
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const float alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<float>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_cher(CblasRowMajor, Uplo, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const double alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_zher(CblasRowMajor, Uplo, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
   }
 
 
@@ -2902,7 +3187,45 @@ namespace Seldon
 		X.GetData(), 1, Y.GetData(), 1, A.GetData());
   }
 
+  
+    template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void Rank2Update(const float alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
+		   Matrix<float, Prop1, ColSym, Allocator1>& A)
+  {
 
+#ifdef SELDON_CHECK_BOUNDS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_ssyr2(CblasColMajor, CblasUpper, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void Rank2Update(const double alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
+		   Matrix<double, Prop1, ColSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_dsyr2(CblasColMajor, CblasUpper, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
@@ -2948,7 +3271,53 @@ namespace Seldon
 		reinterpret_cast<void*>(A.GetData()));
   }
 
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<float> alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator2>& Y,
+	      Matrix<complex<float>, Prop1, ColHerm, Allocator1>& A)
+  {
 
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_cher2(CblasColMajor, CblasUpper, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<double> alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator2>& Y,
+	      Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_zher2(CblasColMajor, CblasUpper, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+  
   /*** ColSymPacked and Uplo ***/
 
 
@@ -2992,6 +3361,46 @@ namespace Seldon
   }
 
 
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void Rank2Update(const float alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
+		   const SeldonUplo& Uplo,
+		   Matrix<float, Prop1, ColSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_ssyr2(CblasColMajor, Uplo, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void Rank2Update(const double alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
+		   const SeldonUplo& Uplo,
+		   Matrix<double, Prop1, ColSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_dsyr2(CblasColMajor, Uplo, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+  
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
@@ -3040,6 +3449,54 @@ namespace Seldon
   }
 
 
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<float> alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator2>& Y,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<float>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_cher2(CblasColMajor, Uplo, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<double> alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator2>& Y,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_zher2(CblasColMajor, Uplo, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+  
   /*** RowSymPacked and Upper ***/
 
 
@@ -3084,6 +3541,44 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
+  void Rank2Update(const float alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
+		   Matrix<float, Prop1, RowSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_ssyr2(CblasRowMajor, CblasUpper, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void Rank2Update(const double alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
+		   Matrix<double, Prop1, RowSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_dsyr2(CblasRowMajor, CblasUpper, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
   void
   Rank2Update(const complex<float> alpha,
 	      const Vector<complex<float>, VectFull, Allocator0>& X,
@@ -3124,6 +3619,52 @@ namespace Seldon
 		reinterpret_cast<const void*>(X.GetData()), 1,
 		reinterpret_cast<const void*>(Y.GetData()), 1,
 		reinterpret_cast<void*>(A.GetData()));
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<float> alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator2>& Y,
+	      Matrix<complex<float>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_cher2(CblasRowMajor, CblasUpper, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<double> alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator2>& Y,
+	      Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_zher2(CblasRowMajor, CblasUpper, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
   }
 
 
@@ -3173,6 +3714,46 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
+  void Rank2Update(const float alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
+		   const SeldonUplo& Uplo,
+		   Matrix<float, Prop1, RowSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_ssyr2(CblasRowMajor, Uplo, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void Rank2Update(const double alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
+		   const SeldonUplo& Uplo,
+		   Matrix<double, Prop1, RowSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_dsyr2(CblasRowMajor, Uplo, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
   void
   Rank2Update(const complex<float> alpha,
 	      const Vector<complex<float>, VectFull, Allocator0>& X,
@@ -3215,6 +3796,54 @@ namespace Seldon
 		reinterpret_cast<const void*>(X.GetData()), 1,
 		reinterpret_cast<const void*>(Y.GetData()), 1,
 		reinterpret_cast<void*>(A.GetData()));
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<float> alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator2>& Y,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<float>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_cher2(CblasRowMajor, Uplo, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<double> alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator2>& Y,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_zher2(CblasRowMajor, Uplo, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
   }
 
 
