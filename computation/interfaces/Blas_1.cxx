@@ -598,16 +598,29 @@ namespace Seldon
   template <class Allocator>
   float Norm1(const Vector<complex<float>, VectFull, Allocator>& X)
   {
+#ifdef SELDON_WITH_LAPACK
+    // we use Lapack routine in order to have genuine absolue value
+    return scsum1_(X.GetLength(), 
+		   reinterpret_cast<const void*>(X.GetData()), 1);
+#else
     return cblas_scasum(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
+#endif
   }
 
 
   template <class Allocator>
   double Norm1(const Vector<complex<double>, VectFull, Allocator>& X)
   {
+#ifdef SELDON_WITH_LAPACK
+    // we use Lapack routine in order to have genuine absolue value
+    int n = X.GetLength(), incx = 1;
+    return dzsum1_(&n, 
+		   reinterpret_cast<const void*>(X.GetData()), &incx);
+#else
     return cblas_dzasum(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
+#endif
   }
 
 
@@ -680,8 +693,16 @@ namespace Seldon
   template <class Allocator>
   size_t GetMaxAbsIndex(const Vector<complex<float>, VectFull, Allocator>& X)
   {
+#ifdef SELDON_WITH_LAPACK
+    int n = X.GetLength(), incx = 1;
+    size_t p = icmax1_(&n,
+		       reinterpret_cast<const void*>(X.GetData()), &incx);
+    
+    return p-1;
+#else
     return cblas_icamax(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
+#endif
   }
 
 
@@ -689,8 +710,15 @@ namespace Seldon
   size_t
   GetMaxAbsIndex(const Vector<complex<double>, VectFull, Allocator>& X)
   {
+#ifdef SELDON_WITH_LAPACK
+    int n = X.GetLength(), incx = 1;
+    size_t p = izmax1_(&n,
+		       reinterpret_cast<void*>(X.GetData()), &incx);
+    return p-1;
+#else
     return cblas_izamax(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
+#endif
   }
 
 

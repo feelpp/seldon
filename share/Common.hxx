@@ -78,7 +78,12 @@ namespace Seldon
 
   template <class T>
   void SetComplexOne(complex<T>& number);
+  
+  template<class T>
+  T ComplexAbs(const T& val);
 
+  template<class T>
+  T ComplexAbs(const complex<T>& val);
 
 }  // namespace Seldon.
 

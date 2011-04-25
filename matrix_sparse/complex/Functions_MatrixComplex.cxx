@@ -704,8 +704,8 @@ namespace Seldon
             
             if ( ji < size_imag && (A.IndexImag(i, ji) == k))              
               {
-                res = max(res, abs(complex<T>(A.ValueReal(i, j), 
-                                              A.ValueImag(i, ji))));
+                res = max(res, ComplexAbs(complex<T>(A.ValueReal(i, j), 
+						     A.ValueImag(i, ji))));
                 ji++;
               }
             else
@@ -748,8 +748,8 @@ namespace Seldon
             
             if ( ji < size_imag && (A.IndexImag(i, ji) == k))              
               {
-                sum(k) += abs(complex<T>(A.ValueReal(i, j), 
-                                         A.ValueImag(i, ji)));
+                sum(k) += ComplexAbs(complex<T>(A.ValueReal(i, j), 
+						A.ValueImag(i, ji)));
                 ji++;
               }
             else
@@ -792,8 +792,8 @@ namespace Seldon
             
             if ( ji < size_imag && (A.IndexImag(i, ji) == k))              
               {
-                sum += abs(complex<T>(A.ValueReal(i, j), 
-                                      A.ValueImag(i, ji)));
+                sum += ComplexAbs(complex<T>(A.ValueReal(i, j), 
+					     A.ValueImag(i, ji)));
                 ji++;
               }
             else
@@ -837,8 +837,8 @@ namespace Seldon
             
             if ( ji < size_imag && (A.IndexImag(i, ji) == k))              
               {
-                res = max(res, abs(complex<T>(A.ValueReal(i, j), 
-                                              A.ValueImag(i, ji))));
+                res = max(res, ComplexAbs(complex<T>(A.ValueReal(i, j), 
+						     A.ValueImag(i, ji))));
                 ji++;
               }
             else
@@ -885,8 +885,8 @@ namespace Seldon
             
             if ( ji < size_imag && (A.IndexImag(i, ji) == k))              
               {
-                T val = abs(complex<T>(A.ValueReal(i, j), 
-                                         A.ValueImag(i, ji)));
+                T val = ComplexAbs(complex<T>(A.ValueReal(i, j), 
+					      A.ValueImag(i, ji)));
                 sum(k) += val;
                 if (k != i)
                   sum(i) += val;

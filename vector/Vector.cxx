@@ -754,7 +754,7 @@ namespace Seldon
   {
     typename ClassComplexType<T>::Treal res(0);
     for (int i = 0; i < this->GetLength(); i++)
-      res = max(res, abs(this->data_[i]));
+      res = max(res, ComplexAbs(this->data_[i]));
     
     return res;
   }
@@ -779,7 +779,7 @@ namespace Seldon
     for (int i = 0; i < this->GetLength(); i++)
       {
 	temp = res;
-	res = max(res, abs(this->data_[i]));
+	res = max(res, ComplexAbs(this->data_[i]));
 	if (temp != res) j = i;
       }
 

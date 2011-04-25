@@ -426,7 +426,7 @@ namespace Seldon
     T1 value(0);
 
     for (int i = 0; i < X.GetM(); i++)
-      value += abs(X(i));
+      value += ComplexAbs(X(i));
 
     return value;
   }
@@ -443,7 +443,7 @@ namespace Seldon
     T1 value(0);
     
     for (int i = 0; i < X.GetM(); i++)
-      value += abs(real(X(i))) + abs(imag(X(i)));
+      value += ComplexAbs(X(i));
     
     return value;
   }
@@ -456,7 +456,7 @@ namespace Seldon
     T1 value(0);
 
     for (int i = 0; i < X.GetSize(); i++)
-      value += abs(X.Value(i));
+      value += ComplexAbs(X.Value(i));
 
     return value;
   }
@@ -473,7 +473,7 @@ namespace Seldon
     T1 value(0);
 
     for (int i = 0; i < X.GetSize(); i++)
-      value += abs(real(X.Value(i))) + abs(imag(X.Value(i)));
+      value += ComplexAbs(X.Value(i));
 
     return value;
   }

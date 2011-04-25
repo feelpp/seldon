@@ -1981,7 +1981,7 @@ namespace Seldon
     typename ClassComplexType<T>::Treal res(0);
     for (int i = 0; i < A.GetM(); i++)
       for (int j = 0; j < A.GetN(); j++)
-	res = max(res, abs(A(i, j)) );
+	res = max(res, ComplexAbs(A(i, j)) );
 
     return res;
   }
@@ -2005,7 +2005,7 @@ namespace Seldon
       {
 	sum = 0.0;
 	for (int i = 0; i < A.GetM(); i++)
-	  sum += abs( A(i, j) );
+	  sum += ComplexAbs( A(i, j) );
 
 	res = max(res, sum);
       }
@@ -2032,7 +2032,7 @@ namespace Seldon
       {
 	sum = 0.0;
 	for (int j = 0; j < A.GetN(); j++)
-	  sum += abs( A(i, j) );
+	  sum += ComplexAbs( A(i, j) );
 
 	res = max(res, sum);
       }
@@ -2052,7 +2052,7 @@ namespace Seldon
   {
     typename ClassComplexType<T>::Treal res(0);
     for (int i = 0; i < A.GetDataSize(); i++)
-      res = max(res, abs(A.GetData()[i]));
+      res = max(res, ComplexAbs(A.GetData()[i]));
     
     return res;
   }
@@ -2072,7 +2072,7 @@ namespace Seldon
     sum.Fill(Treal(0));
     for (int i = 0; i < A.GetM(); i++)
       for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
-        sum(A.GetInd()[j]) += abs( A.GetData()[j]);
+        sum(A.GetInd()[j]) += ComplexAbs( A.GetData()[j]);
     
     return sum.GetNormInf();
   }
@@ -2093,7 +2093,7 @@ namespace Seldon
       {
         sum = Treal(0);
         for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
-          sum += abs( A.GetData()[j]);
+          sum += ComplexAbs( A.GetData()[j]);
         
         res = max(res, sum);
       }
@@ -2113,7 +2113,7 @@ namespace Seldon
   {
     typename ClassComplexType<T>::Treal res(0);
     for (int i = 0; i < A.GetDataSize(); i++)
-      res = max(res, abs(A.GetData()[i]));
+      res = max(res, ComplexAbs(A.GetData()[i]));
     
     return res;
   }
@@ -2134,7 +2134,7 @@ namespace Seldon
       {
         sum = Treal(0);
         for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
-          sum += abs( A.GetData()[j]);
+          sum += ComplexAbs( A.GetData()[j]);
         
         res = max(res, sum);
       }
@@ -2157,7 +2157,7 @@ namespace Seldon
     sum.Fill(Treal(0));
     for (int i = 0; i < A.GetN(); i++)
       for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
-        sum(A.GetInd()[j]) += abs( A.GetData()[j]);
+        sum(A.GetInd()[j]) += ComplexAbs( A.GetData()[j]);
     
     return sum.GetNormInf();
   }
@@ -2174,7 +2174,7 @@ namespace Seldon
   {
     typename ClassComplexType<T>::Treal res(0);
     for (int i = 0; i < A.GetDataSize(); i++)
-      res = max(res, abs(A.GetData()[i]));
+      res = max(res, ComplexAbs(A.GetData()[i]));
     
     return res;
   }
@@ -2195,9 +2195,9 @@ namespace Seldon
     for (int i = 0; i < A.GetM(); i++)
       for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
         {
-          sum(A.GetInd()[j]) += abs( A.GetData()[j]);
+          sum(A.GetInd()[j]) += ComplexAbs( A.GetData()[j]);
           if (A.GetInd()[j] != i)
-            sum(i) += abs(A.GetData()[j]);
+            sum(i) += ComplexAbs(A.GetData()[j]);
         }
     
     return sum.GetNormInf();
@@ -2228,7 +2228,7 @@ namespace Seldon
   {
     typename ClassComplexType<T>::Treal res(0);
     for (int i = 0; i < A.GetDataSize(); i++)
-      res = max(res, abs(A.GetData()[i]));
+      res = max(res, ComplexAbs(A.GetData()[i]));
     
     return res;
   }
@@ -2249,9 +2249,9 @@ namespace Seldon
     for (int i = 0; i < A.GetM(); i++)
       for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
         {
-          sum(A.GetInd()[j]) += abs( A.GetData()[j]);
+          sum(A.GetInd()[j]) += ComplexAbs( A.GetData()[j]);
           if (A.GetInd()[j] != i)
-            sum(i) += abs(A.GetData()[j]);
+            sum(i) += ComplexAbs(A.GetData()[j]);
         }
     
     return sum.GetNormInf();
