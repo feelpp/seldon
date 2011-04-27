@@ -522,9 +522,9 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromQR(Matrix<double, Prop0, ColMajor, Allocator0>& A,
-		   const IsTranspose& trans,
-		   Vector<double, VectFull, Allocator1>& tau,
+  void MltQ_FromQR(const IsTranspose& trans,
+		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,		   
+		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
 		   LapackInfo& info = lapack_info)
   {
@@ -553,9 +553,9 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromQR(Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-		   const IsTranspose& trans,
-		   Vector<complex<double>, VectFull, Allocator1>& tau,
+  void MltQ_FromQR(const IsTranspose& trans,
+		   const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Vector<complex<double>, VectFull, Allocator2>& b,
 		   LapackInfo& info = lapack_info)
   {
@@ -585,32 +585,74 @@ namespace Seldon
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class Side, class Trans>
   void MltQ_FromQR(const Side& side, const Trans& trans,
-		   Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-		   Vector<complex<double>, VectFull, Allocator1>& tau,
-		   Matrix<complex<double>, Prop0, ColMajor, Allocator2>& C,
+		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<double, VectFull, Allocator1>& tau,
+		   Matrix<double, Prop0, ColMajor, Allocator2>& C,
 		   LapackInfo& info = lapack_info)
   {
-    int m = A.GetM();
-    int n = A.GetN();
-    int lwork = max(m, n);
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetM())
+	 || (side.Right() && C.GetN() < A.GetM()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
     Vector<double, VectFull, Allocator1> work(lwork);
     char side_ = side.Char();
     char trans_ = trans.Char();
-    int k = m;
-    if (side_ == 'R')
-      k = n;
-
-    zunmqr_(&side, &trans, &m, &n, &k, A.GetDataVoid(), &m, tau.GetDataVoid(),
-	    C.GetDataVoid(), &m, work.GetData(), &lwork,
+    int lda = A.GetM();
+    int k = min(A.GetM(), A.GetN());
+    
+    dormqr_(&side_, &trans_, &m, &n, &k, A.GetData(), &lda,
+	    tau.GetData(), C.GetData(), &m, work.GetData(), &lwork,
 	    &info.GetInfoRef());
+  }
+
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromQR(const Side& side, const Trans& trans,
+		   const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<complex<double>, VectFull, Allocator1>& tau,
+		   Matrix<complex<double>, Prop0, ColMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetM())
+	 || (side.Right() && C.GetN() < A.GetM()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<complex<double>, VectFull, Allocator1> work(lwork);
+    char side_ = side.Char();
+    char trans_ = trans.Char();
+    int lda = A.GetM();
+    int k = min(A.GetM(), A.GetN());
+    
+    zunmqr_(&side_, &trans_, &m, &n, &k, A.GetDataVoid(), &lda,
+	    tau.GetDataVoid(), C.GetDataVoid(), &m,
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
   }
 
 
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromLQ(Matrix<double, Prop0, ColMajor, Allocator0>& A,
-		   const IsTranspose& trans,
-		   Vector<double, VectFull, Allocator1>& tau,
+  void MltQ_FromLQ(const IsTranspose& trans,
+		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,		   
+		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
 		   LapackInfo& info = lapack_info)
   {
@@ -639,9 +681,9 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromLQ(Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-		   const IsTranspose& trans,
-		   Vector<complex<double>, VectFull, Allocator1>& tau,
+  void MltQ_FromLQ(const IsTranspose& trans,
+		   const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Vector<complex<double>, VectFull, Allocator2>& b,
 		   LapackInfo& info = lapack_info)
   {
@@ -668,15 +710,80 @@ namespace Seldon
   }
 
   
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromLQ(const Side& side, const Trans& trans,
+		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<double, VectFull, Allocator1>& tau,
+		   Matrix<double, Prop0, ColMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetN())
+	 || (side.Right() && C.GetN() < A.GetN()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<double, VectFull, Allocator1> work(lwork);
+    char side_ = side.Char();
+    char trans_ = trans.Char();
+    int lda = A.GetM();
+    int k = min(A.GetM(), A.GetN());
+    
+    dormlq_(&side_, &trans_, &m, &n, &k, A.GetData(), &lda,
+	    tau.GetData(), C.GetData(), &m, work.GetData(), &lwork,
+	    &info.GetInfoRef());
+  }
+
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromLQ(const Side& side, const Trans& trans,
+		   const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<complex<double>, VectFull, Allocator1>& tau,
+		   Matrix<complex<double>, Prop0, ColMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetN())
+	 || (side.Right() && C.GetN() < A.GetN()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<complex<double>, VectFull, Allocator1> work(lwork);
+    char side_ = side.Char();
+    char trans_ = trans.Char();
+    int lda = A.GetM();
+    int k = min(A.GetM(), A.GetN());
+    
+    zunmlq_(&side_, &trans_, &m, &n, &k, A.GetDataVoid(), &lda,
+	    tau.GetDataVoid(), C.GetDataVoid(), &m,
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+  }
+  
   
   /*** RowMajor ***/
 
 
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromQR(Matrix<double, Prop0, RowMajor, Allocator0>& A,
-		   const IsTranspose& trans,
-		   Vector<double, VectFull, Allocator1>& tau,
+  void MltQ_FromQR(const IsTranspose& trans,
+		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,		   
+		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
 		   LapackInfo& info = lapack_info)
   {
@@ -705,9 +812,9 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromQR(Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
-		   const IsTranspose& trans,
-		   Vector<complex<double>, VectFull, Allocator1>& tau,
+  void MltQ_FromQR(const IsTranspose& trans,
+		   const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Vector<complex<double>, VectFull, Allocator2>& b,
 		   LapackInfo& info = lapack_info)
   {
@@ -741,10 +848,76 @@ namespace Seldon
 
   
   template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromQR(const Side& side, const Trans& trans,
+		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<double, VectFull, Allocator1>& tau,
+		   Matrix<double, Prop0, RowMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info)
+  {
+    
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetM())
+	 || (side.Right() && C.GetN() < A.GetM()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<double, VectFull, Allocator1> work(lwork);
+    char side_ = side.RevChar();
+    char trans_ = trans.Char();
+    int lda = A.GetN();
+    int k = min(A.GetM(), A.GetN());
+    
+    dormlq_(&side_, &trans_, &n, &m, &k, A.GetData(), &lda,
+	    tau.GetData(), C.GetData(), &n, work.GetData(), &lwork,
+	    &info.GetInfoRef());
+  }
+  
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromQR(const Side& side, const Trans& trans,
+		   const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<complex<double>, VectFull, Allocator1>& tau,
+		   Matrix<complex<double>, Prop0, RowMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info)
+  {
+        
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetM())
+	 || (side.Right() && C.GetN() < A.GetM()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<complex<double>, VectFull, Allocator1> work(lwork);
+    char side_ = side.RevChar();
+    char trans_ = trans.Char();
+    int lda = A.GetN();
+    int k = min(A.GetM(), A.GetN());
+    
+    zunmlq_(&side_, &trans_, &n, &m, &k, A.GetDataVoid(), &lda,
+	    tau.GetDataVoid(), C.GetDataVoid(), &n,
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+  }
+
+  
+  template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromLQ(Matrix<double, Prop0, RowMajor, Allocator0>& A,
-		   const IsTranspose& trans,
-		   Vector<double, VectFull, Allocator1>& tau,
+  void MltQ_FromLQ(const IsTranspose& trans,
+		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,		   
+		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
 		   LapackInfo& info = lapack_info)
   {
@@ -773,9 +946,9 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromLQ(Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
-		   const IsTranspose& trans,
-		   Vector<complex<double>, VectFull, Allocator1>& tau,
+  void MltQ_FromLQ(const IsTranspose& trans,
+		   const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Vector<complex<double>, VectFull, Allocator2>& b,
 		   LapackInfo& info = lapack_info)
   {
@@ -805,6 +978,71 @@ namespace Seldon
 	    &info.GetInfoRef());
     
     Conjugate(b);
+  }
+  
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromLQ(const Side& side, const Trans& trans,
+		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<double, VectFull, Allocator1>& tau,
+		   Matrix<double, Prop0, RowMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info)
+  {
+    
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetN())
+	 || (side.Right() && C.GetN() < A.GetN()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<double, VectFull, Allocator1> work(lwork);
+    char side_ = side.RevChar();
+    char trans_ = trans.Char();
+    int lda = A.GetN();
+    int k = min(A.GetM(), A.GetN());
+    
+    dormqr_(&side_, &trans_, &n, &m, &k, A.GetData(), &lda,
+	    tau.GetData(), C.GetData(), &n, work.GetData(), &lwork,
+	    &info.GetInfoRef());
+  }
+  
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromLQ(const Side& side, const Trans& trans,
+		   const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<complex<double>, VectFull, Allocator1>& tau,
+		   Matrix<complex<double>, Prop0, RowMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetN())
+	 || (side.Right() && C.GetN() < A.GetN()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<complex<double>, VectFull, Allocator1> work(lwork);
+    char side_ = side.RevChar();
+    char trans_ = trans.Char();
+    int lda = A.GetN();
+    int k = min(A.GetM(), A.GetN());
+    
+    zunmqr_(&side_, &trans_, &n, &m, &k, A.GetDataVoid(), &lda,
+	    tau.GetDataVoid(), C.GetDataVoid(), &n,
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
   }
   
   
