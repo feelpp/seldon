@@ -3426,6 +3426,60 @@ namespace Seldon
 	B(i, A.Index(i, j)) = A.Value(i, j);
     
   }
+
+
+  //! conversion from ArrayRowSymSparse to ColSymPacked
+  template<class T, class Prop, class Allocator1, class Allocator2>
+  void Copy(Matrix<T, Prop, ArrayRowSymSparse, Allocator1>& A,
+            Matrix<T, Prop, ColSymPacked, Allocator2>& B)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    B.Reallocate(m, n);
+    T zero;
+    SetComplexZero(zero);
+    B.Fill(zero);
+    for (int i = 0; i < m; i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+	B(i, A.Index(i, j)) = A.Value(i, j);
+    
+  }
+
+
+  //! conversion from ArrayRowSymSparse to RowSym
+  template<class T, class Prop, class Allocator1, class Allocator2>
+  void Copy(Matrix<T, Prop, ArrayRowSymSparse, Allocator1>& A,
+            Matrix<T, Prop, RowSym, Allocator2>& B)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    B.Reallocate(m, n);
+    T zero;
+    SetComplexZero(zero);
+    B.Fill(zero);
+    for (int i = 0; i < m; i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+	B.Val(i, A.Index(i, j)) = A.Value(i, j);
+    
+  }
+
+
+  //! conversion from ArrayRowSymSparse to ColSym
+  template<class T, class Prop, class Allocator1, class Allocator2>
+  void Copy(Matrix<T, Prop, ArrayRowSymSparse, Allocator1>& A,
+            Matrix<T, Prop, ColSym, Allocator2>& B)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    B.Reallocate(m, n);
+    T zero;
+    SetComplexZero(zero);
+    B.Fill(zero);
+    for (int i = 0; i < m; i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+	B.Val(i, A.Index(i, j)) = A.Value(i, j);
+    
+  }
   
   
   /*****************************************************

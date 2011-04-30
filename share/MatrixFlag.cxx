@@ -345,6 +345,24 @@ namespace Seldon
 #endif
 
 
+  char SeldonSide::Char() const
+  {
+    if (status_ == 0)
+      return 'L';
+    else
+      return 'R';
+  }
+  
+
+  char SeldonSide::RevChar() const
+  {
+    if (status_ == 0)
+      return 'R';
+    else
+      return 'L';
+  }
+
+  
   bool SeldonSide::Left() const
   {
     return (status_ == 0);

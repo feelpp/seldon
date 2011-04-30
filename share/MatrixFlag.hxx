@@ -224,6 +224,8 @@ namespace Seldon
     SeldonSide(const enum CBLAS_SIDE status);
     operator CBLAS_SIDE() const;
 #endif
+    char Char() const;
+    char RevChar() const;
     bool Left() const;
     bool Right() const;
   };

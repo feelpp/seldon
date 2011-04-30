@@ -2570,7 +2570,9 @@ LAPACK_INTEGER ilaenv_(const LAPACK_INTEGER *ispec, char *name__, const char *op
 		       opts_len);
  
 LAPACK_INTEGER izmax1_(LAPACK_INTEGER *n, LAPACK_DOUBLECOMPLEX *cx, LAPACK_INTEGER *incx);
- 
+
+LAPACK_DOUBLEREAL dzsum1_(const LAPACK_INTEGER* n, const LAPACK_DOUBLECOMPLEX *cx, const LAPACK_INTEGER *incx);
+
 /* Subroutine */ int sbdsdc_(char *uplo, char *compq, LAPACK_INTEGER *n, LAPACK_REAL *d__, 
 			     LAPACK_REAL *e, LAPACK_REAL *u, LAPACK_INTEGER *ldu, LAPACK_REAL *vt, LAPACK_INTEGER *ldvt, LAPACK_REAL *q, 
 			     LAPACK_INTEGER *iq, LAPACK_REAL *work, LAPACK_INTEGER *iwork, LAPACK_INTEGER *info);
