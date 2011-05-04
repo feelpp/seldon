@@ -1059,6 +1059,17 @@ namespace Seldon
 	return;
       }
     
+    if (type == SparseMatrixOrdering::AUTO)
+      {
+#if defined(SELDON_WITH_MUMPS) || defined(SELDON_WITH_PASTIX)
+	type = SparseMatrixOrdering::SCOTCH;
+#elif defined(SELDON_WITH_MUMPS) || defined(SELDON_WITH_PASTIX)
+	type = SparseMatrixOrdering::COLAMD;
+#else
+	type = SparseMatrixOrdering::IDENTITY;
+#endif
+      }
+    
     switch (type)
       {
       case SparseMatrixOrdering::IDENTITY :
@@ -1093,8 +1104,12 @@ namespace Seldon
 #ifdef SELDON_WITH_PASTIX
 	  MatrixPastix<T> mat_lu;
 	  mat_lu.FindOrdering(A, num, true);
+#elif defined(SELDON_WITH_MUMPS)
+	  MatrixMumps<T> mat_lu;
+	  mat_lu.SelectOrdering(3);
+	  mat_lu.FindOrdering(A, num, true);
 #else
-	  cout << "Recompile Seldon with Pastix" << endl;
+	  cout << "Recompile Seldon with Pastix/Mumps" << endl;
 	  abort();
 #endif
 	}
@@ -1154,9 +1169,21 @@ namespace Seldon
 	  ConvertToCSC(A, sym, Ptr, Ind, Value, true);
 	  Value.Clear();
 	  
+	  int nnz = Ind.GetM();
+	  Ind.Resize(2*nnz + 12*n);
+	  
 	  // then calling colamd
 	  int Stats[COLAMD_STATS];
-	  colamd(n, n, Ind.GetM(), Ind.GetData(), Ptr.GetData(), NULL, Stats);
+	  int ok = colamd(n, n, Ind.GetM(), Ind.GetData(), Ptr.GetData(), NULL, Stats);
+	  if (ok != 1)
+	    {
+	      colamd_report(Stats);
+	      abort();
+	    }
+	  
+	  for (int i = 0; i < n; i++)
+	    num(i) = Ptr(i);
+	  
 #else
 	  cout << "Recompile Seldon with UmfPack" << endl;
 	  abort();

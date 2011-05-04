@@ -25,8 +25,9 @@
 // SuperLU package. Its copyright is held by University of California
 // Berkeley, Xerox Palo Alto Research Center and Lawrence Berkeley National
 // Lab. It is released under a license compatible with the GNU LGPL.
-void LUextract(SuperMatrix *L, SuperMatrix *U, double *Lval, int *Lrow,
-               int *Lcol, double *Uval, int *Urow, int *Ucol, int *snnzL,
+template<class T>
+void LUextract(SuperMatrix *L, SuperMatrix *U, T *Lval, int *Lrow,
+               int *Lcol, T *Uval, int *Urow, int *Ucol, int *snnzL,
                int *snnzU)
 {
   int         i, j, k;
@@ -35,8 +36,10 @@ void LUextract(SuperMatrix *L, SuperMatrix *U, double *Lval, int *Lrow,
   int         lastl = 0, lastu = 0;
   SCformat    *Lstore;
   NCformat    *Ustore;
-  double      *SNptr;
+  T      *SNptr;
+  T one;
 
+  SetComplexOne(one);
   Lstore = static_cast<SCformat*>(L->Store);
   Ustore = static_cast<NCformat*>(U->Store);
   Lcol[0] = 0;
@@ -52,11 +55,11 @@ void LUextract(SuperMatrix *L, SuperMatrix *U, double *Lval, int *Lrow,
 
     /* for each column in the supernode */
     for (j = fsupc; j < L_FST_SUPC(k+1); ++j) {
-      SNptr = &(static_cast<double*>(Lstore->nzval))[L_NZ_START(j)];
+      SNptr = &(static_cast<T*>(Lstore->nzval))[L_NZ_START(j)];
 
       /* Extract U */
       for (i = U_NZ_START(j); i < U_NZ_START(j+1); ++i) {
-        Uval[lastu] = (static_cast<double*>(Ustore->nzval))[i];
+        Uval[lastu] = (static_cast<T*>(Ustore->nzval))[i];
         Urow[lastu++] = U_SUB(i);
       }
       for (i = 0; i < upper; ++i) { /* upper triangle in the supernode */
@@ -66,7 +69,7 @@ void LUextract(SuperMatrix *L, SuperMatrix *U, double *Lval, int *Lrow,
       Ucol[j+1] = lastu;
 
       /* Extract L */
-      Lval[lastl] = 1.0; /* unit diagonal */
+      Lval[lastl] = one; /* unit diagonal */
       Lrow[lastl++] = L_SUB(istart + upper - 1);
       for (i = upper; i < nsupr; ++i) {
         Lval[lastl] = SNptr[i];
@@ -111,6 +114,93 @@ namespace Seldon
   }
 
 
+  //! Returns the permutation of rows.
+  /*! In order to retain the sparsity as much as possible, SuperLU permutes
+    rows and columns before the factorization. This method returns the row
+    permutation that was employed in the factorization. This method is
+    obviously to be called after the factorization has been performed.
+    \return The permutation of the rows.
+  */
+  template<class T>
+  const Vector<int>& MatrixSuperLU_Base<T>::GetRowPermutation() const
+  {
+    return perm_r;
+  }
+
+
+  //! Returns the permutation of columns.
+  /*! In order to retain the sparsity as much as possible, SuperLU permutes
+    rows and columns before the factorization. This method returns the column
+    permutation that was employed in the factorization. This method is
+    obviously to be called after the factorization has been performed.
+    \return The permutation of the columns.
+  */
+  template<class T>
+  const Vector<int>& MatrixSuperLU_Base<T>::GetColPermutation() const
+  {
+    return perm_c;
+  }
+
+
+  template<class T>
+  void MatrixSuperLU_Base<T>::SelectOrdering(colperm_t type)
+  {
+    permc_spec = type;
+  }
+
+
+  template<class T>
+  void MatrixSuperLU_Base<T>::SetPermutation(const IVect& permut)
+  {
+    permc_spec = MY_PERMC;
+    perm_c = permut;
+    perm_r = permut;
+  }
+
+
+  //! same effect as a call to the destructor
+  template<class T>
+  void MatrixSuperLU_Base<T>::Clear()
+  {
+    if (n > 0)
+      {
+	// SuperLU objects are cleared
+	Destroy_SuperMatrix_Store(&B);
+	Destroy_SuperNode_Matrix(&L);
+	Destroy_CompCol_Matrix(&U);
+	if (permc_spec != MY_PERMC)
+	  {
+	    perm_r.Clear();
+	    perm_c.Clear();
+	  }
+	n = 0;
+      }
+  }
+
+
+  //! no message from SuperLU
+  template<class T>
+  void MatrixSuperLU_Base<T>::HideMessages()
+  {
+    display_info = false;
+  }
+
+
+  //! allows messages from SuperLU
+  template<class T>
+  void MatrixSuperLU_Base<T>::ShowMessages()
+  {
+    display_info = true;
+  }
+
+
+  template<class T>
+  int MatrixSuperLU_Base<T>::GetInfoFactorization() const
+  {
+    return info_facto;
+  }
+
+  
   //! Returns the LU factorization.
   /*!
     \param[out] Lmat matrix L in the LU factorization.
@@ -121,9 +211,8 @@ namespace Seldon
     permuted rows and columns. If \a permuted is set to false, the matrices L
     and U are "unpermuted" so that L times U is equal to the initial matrix.
   */
-  template<class T>
   template<class Prop, class Allocator>
-  void MatrixSuperLU_Base<T>
+  void MatrixSuperLU<double>
   ::GetLU(Matrix<double, Prop, ColSparse, Allocator>& Lmat,
           Matrix<double, Prop, ColSparse, Allocator>& Umat,
           bool permuted)
@@ -184,9 +273,8 @@ namespace Seldon
     \note This method will first retrieve the L and U matrices in 'ColSparse'
     format and then convert them into 'RowSparse'.
   */
-  template<class T>
   template<class Prop, class Allocator>
-  void MatrixSuperLU_Base<T>
+  void MatrixSuperLU<double>
   ::GetLU(Matrix<double, Prop, RowSparse, Allocator>& Lmat,
           Matrix<double, Prop, RowSparse, Allocator>& Umat,
           bool permuted)
@@ -205,89 +293,6 @@ namespace Seldon
   }
 
 
-  //! Returns the permutation of rows.
-  /*! In order to retain the sparsity as much as possible, SuperLU permutes
-    rows and columns before the factorization. This method returns the row
-    permutation that was employed in the factorization. This method is
-    obviously to be called after the factorization has been performed.
-    \return The permutation of the rows.
-  */
-  template<class T>
-  const Vector<int>& MatrixSuperLU_Base<T>::GetRowPermutation() const
-  {
-    return perm_r;
-  }
-
-
-  //! Returns the permutation of columns.
-  /*! In order to retain the sparsity as much as possible, SuperLU permutes
-    rows and columns before the factorization. This method returns the column
-    permutation that was employed in the factorization. This method is
-    obviously to be called after the factorization has been performed.
-    \return The permutation of the columns.
-  */
-  template<class T>
-  const Vector<int>& MatrixSuperLU_Base<T>::GetColPermutation() const
-  {
-    return perm_c;
-  }
-
-
-  template<class T>
-  void MatrixSuperLU_Base<T>::SelectOrdering(colperm_t type)
-  {
-    permc_spec = type;
-  }
-
-
-  template<class T>
-  void MatrixSuperLU_Base<T>::SetPermutation(const IVect& permut)
-  {
-    permc_spec = MY_PERMC;
-    perm_c = permut;
-    perm_r = permut;
-  }
-
-
-  //! same effect as a call to the destructor
-  template<class T>
-  void MatrixSuperLU_Base<T>::Clear()
-  {
-    if (n > 0)
-      {
-	// SuperLU objects are cleared
-	Destroy_SuperMatrix_Store(&B);
-	Destroy_SuperNode_Matrix(&L);
-	Destroy_CompCol_Matrix(&U);
-	perm_r.Clear(); perm_c.Clear();
-	n = 0;
-      }
-  }
-
-
-  //! no message from SuperLU
-  template<class T>
-  void MatrixSuperLU_Base<T>::HideMessages()
-  {
-    display_info = false;
-  }
-
-
-  //! allows messages from SuperLU
-  template<class T>
-  void MatrixSuperLU_Base<T>::ShowMessages()
-  {
-    display_info = true;
-  }
-
-
-  template<class T>
-  int MatrixSuperLU_Base<T>::GetInfoFactorization() const
-  {
-    return info_facto;
-  }
-
-
   //! factorization of matrix in double precision using SuperLU
   template<class Prop, class Storage, class Allocator>
   void MatrixSuperLU<double>::
@@ -299,7 +304,7 @@ namespace Seldon
 
     // conversion in CSC format
     n = mat.GetN();
-    Matrix<double, General, ColSparse> Acsr;
+    Matrix<double, General, ColSparse, CallocAlloc<double> > Acsr;
     Copy(mat, Acsr);
     if (!keep_matrix)
       mat.Clear();
@@ -357,7 +362,7 @@ namespace Seldon
 	cout<<"Memory used for factorisation in Mo "
 	    <<mem_usage.total_needed/(1024*1024)<<endl;
       }
-
+    
     Acsr.Nullify();
   }
 
@@ -401,6 +406,101 @@ namespace Seldon
   }
 
 
+  //! Returns the LU factorization.
+  /*!
+    \param[out] Lmat matrix L in the LU factorization.
+    \param[out] Umat matrix U in the LU factorization.
+    \param[in] permuted should the permuted matrices be provided? SuperLU
+    permutes the rows and columns of the factorized matrix. If \a permuted is
+    set to true, L and U are returned as SuperLU computed them, hence with
+    permuted rows and columns. If \a permuted is set to false, the matrices L
+    and U are "unpermuted" so that L times U is equal to the initial matrix.
+  */
+  template<class Prop, class Allocator>
+  void MatrixSuperLU<complex<double> >
+  ::GetLU(Matrix<complex<double>, Prop, ColSparse, Allocator>& Lmat,
+	  Matrix<complex<double>, Prop, ColSparse, Allocator>& Umat,
+	  bool permuted)
+  {
+    Lstore = static_cast<SCformat*>(L.Store);
+    Ustore = static_cast<NCformat*>(U.Store);
+
+    int Lnnz = Lstore->nnz;
+    int Unnz = Ustore->nnz;
+
+    int m = U.nrow;
+    int n = U.ncol;
+
+    Vector<complex<double>, VectFull, Allocator> Lval(Lnnz);
+    Vector<int, VectFull, CallocAlloc<int> > Lrow(Lnnz);
+    Vector<int, VectFull, CallocAlloc<int> > Lcol(n + 1);
+
+    Vector<complex<double>, VectFull, Allocator> Uval(Unnz);
+    Vector<int, VectFull, CallocAlloc<int> > Urow(Unnz);
+    Vector<int, VectFull, CallocAlloc<int> > Ucol(n + 1);
+
+    int Lsnnz;
+    int Usnnz;
+    LUextract(&L, &U, reinterpret_cast<doublecomplex*>(Lval.GetData()),
+	      Lrow.GetData(), Lcol.GetData(),
+              reinterpret_cast<doublecomplex*>(Uval.GetData()),
+	      Urow.GetData(), Ucol.GetData(), &Lsnnz, &Usnnz);
+
+    Lmat.SetData(m, n, Lval, Lcol, Lrow);
+    Umat.SetData(m, n, Uval, Ucol, Urow);
+
+    if (!permuted)
+      {
+        Vector<int> row_perm_orig = perm_r;
+        Vector<int> col_perm_orig = perm_c;
+
+        Vector<int> row_perm(n);
+        Vector<int> col_perm(n);
+        row_perm.Fill();
+        col_perm.Fill();
+
+        Sort(row_perm_orig, row_perm);
+        Sort(col_perm_orig, col_perm);
+
+        ApplyInversePermutation(Lmat, row_perm, col_perm);
+        ApplyInversePermutation(Umat, row_perm, col_perm);
+      }
+
+  }
+  
+  
+  //! Returns the LU factorization.
+  /*!
+    \param[out] Lmat matrix L in the LU factorization.
+    \param[out] Umat matrix U in the LU factorization.
+    \param[in] permuted should the permuted matrices be provided? SuperLU
+    permutes the rows and columns of the factorized matrix. If \a permuted is
+    set to true, L and U are returned as SuperLU computed them, hence with
+    permuted rows and columns. If \a permuted is set to false, the matrices L
+    and U are "unpermuted" so that L times U is equal to the initial matrix.
+    \note This method will first retrieve the L and U matrices in 'ColSparse'
+    format and then convert them into 'RowSparse'.
+  */
+  template<class Prop, class Allocator>
+  void MatrixSuperLU<complex<double> >
+  ::GetLU(Matrix<complex<double>, Prop, RowSparse, Allocator>& Lmat,
+	  Matrix<complex<double>, Prop, RowSparse, Allocator>& Umat,
+	  bool permuted)
+  {
+    Lmat.Clear();
+    Umat.Clear();
+
+    Matrix<complex<double>, Prop, ColSparse, Allocator> Lmat_col;
+    Matrix<complex<double>, Prop, ColSparse, Allocator> Umat_col;
+    GetLU(Lmat_col, Umat_col, permuted);
+
+    Copy(Lmat_col, Lmat);
+    Lmat_col.Clear();
+    Copy(Umat_col, Umat);
+    Umat_col.Clear();
+  }
+
+  
   //! factorization of matrix in complex double precision using SuperLU
   template<class Prop, class Storage, class Allocator>
   void MatrixSuperLU<complex<double> >::
@@ -412,7 +512,8 @@ namespace Seldon
 
     // conversion in CSR format
     n = mat.GetN();
-    Matrix<complex<double>, General, ColSparse> Acsr;
+    Matrix<complex<double>, General, ColSparse,
+      CallocAlloc<complex<double> > > Acsr;
     Copy(mat, Acsr);
     if (!keep_matrix)
       mat.Clear();
@@ -465,7 +566,7 @@ namespace Seldon
 	cout<<"Memory used for factorisation in Mo "
 	    <<mem_usage.total_needed/1e6<<endl;
       }
-
+    
     Acsr.Nullify();
   }
 

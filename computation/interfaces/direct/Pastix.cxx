@@ -46,6 +46,11 @@ namespace Seldon
 
     iparm[IPARM_RHS_MAKING] = API_RHS_B;
     iparm[IPARM_VERBOSE] = API_VERBOSE_NOT;
+    iparm[IPARM_FREE_CSCUSER] = API_CSC_FREE;
+    if (refine_solution)
+      iparm[IPARM_FREE_CSCPASTIX] = API_CSC_PRESERVE;
+    else
+      iparm[IPARM_FREE_CSCPASTIX] = API_CSC_FREE;
   }
 
 
@@ -164,6 +169,7 @@ namespace Seldon
   void MatrixPastix<T>::RefineSolution()
   {
     refine_solution = true;
+    iparm[IPARM_FREE_CSCPASTIX] = API_CSC_PRESERVE;
   }
 
 
@@ -172,6 +178,7 @@ namespace Seldon
   void MatrixPastix<T>::DoNotRefineSolution()
   {
     refine_solution = false;
+    iparm[IPARM_FREE_CSCPASTIX] = API_CSC_FREE;
   }
 
 
@@ -194,7 +201,7 @@ namespace Seldon
     pastix_int_t nrhs = 1, nnz = 0;
     pastix_int_t* ptr_ = NULL;
     pastix_int_t* ind_ = NULL;
-    Vector<pastix_int_t> Ptr, Ind;
+    Vector<pastix_int_t, VectFull, CallocAlloc<pastix_int_t> > Ptr, Ind;
 
     iparm[IPARM_SYM] = API_SYM_YES;
     iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
@@ -224,6 +231,9 @@ namespace Seldon
     numbers.Reallocate(perm.GetM());
     for (int i = 0; i < perm.GetM(); i ++)
       numbers(i) = perm(i);
+    
+    Ptr.Nullify();
+    Ind.Nullify();
   }
 
 
@@ -291,6 +301,10 @@ namespace Seldon
 
     if (iparm[IPARM_VERBOSE] != API_VERBOSE_NOT)
       cout << "Factorization successful" << endl;
+    
+    Ptr.Nullify();
+    IndRow.Nullify();
+    Val.Nullify();
   }
 
 
@@ -342,7 +356,7 @@ namespace Seldon
     // ordering and analysis
     iparm[IPARM_START_TASK] = API_TASK_ORDERING;
     iparm[IPARM_END_TASK] = API_TASK_ANALYSE;
-
+    
     CallPastix(MPI_COMM_SELF, ptr_, ind_, values_, NULL, nrhs);
 
     IVect proc_num(iparm[IPARM_THREAD_NBR]);
@@ -354,6 +368,10 @@ namespace Seldon
     iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
 
     CallPastix(MPI_COMM_SELF, ptr_, ind_, values_, NULL, nrhs);
+
+    Ptr.Nullify();
+    IndRow.Nullify();
+    Val.Nullify();
   }
 
 
@@ -450,6 +468,10 @@ namespace Seldon
     Vector<T> rhs(n); rhs.Zero();
     T* rhs_ = rhs.GetData();
     CallPastix(comm_facto, ptr_, ind_, values_, rhs_, nrhs);    
+
+    Ptr.Nullify();
+    IndRow.Nullify();
+    Val.Nullify();
   }
 
 

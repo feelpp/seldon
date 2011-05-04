@@ -122,7 +122,7 @@ namespace Seldon
 	  }
   }
 
-
+  
   //! Successive overrelaxation.
   /*!
     Solving A X = B by using S.O.R algorithm.
@@ -171,6 +171,13 @@ namespace Seldon
               }
             
             ajj = A.Value(j, k);
+
+#ifdef SELDON_CHECK_BOUNDS
+	    if ((A.Index(j, k) != j) || (ajj == zero))
+	      throw WrongArgument("SOR", "Matrix must contain"
+				  "a non-null diagonal");
+#endif
+	    
             k++;
 	    while (k < A.GetRowSize(j))
 	      {
@@ -360,6 +367,13 @@ namespace Seldon
 	    {
 	      temp = zero;
 	      ajj = A.Value(j, 0);
+	      
+#ifdef SELDON_CHECK_BOUNDS
+	      if ((A.Index(j, 0) != j) || (ajj == zero))
+		throw WrongArgument("SOR", "Matrix must contain"
+				    "a non-null diagonal");
+#endif
+	      
 	      for (int k = 1; k < A.GetRowSize(j); k++)
                 temp += A.Value(j, k) * X(A.Index(j, k));
               
@@ -586,6 +600,13 @@ namespace Seldon
                 }
               
 	      ajj = A.Value(j, k);
+
+#ifdef SELDON_CHECK_BOUNDS
+	      if ((A.Index(j, k) != j) || (ajj == zero))
+		throw WrongArgument("SOR", "Matrix must contain"
+				    "a non-null diagonal");
+#endif
+	      
               X(j) = B(j) + coef * ajj * X(j);
 	    }
           
@@ -798,6 +819,12 @@ namespace Seldon
               int kmax = A.GetColumnSize(j)-1;
               ajj = A.Value(j, kmax);
 
+#ifdef SELDON_CHECK_BOUNDS
+	      if ((A.Index(j, kmax) != j) || (ajj == zero))
+		throw WrongArgument("SOR", "Matrix must contain"
+				    "a non-null diagonal");
+#endif
+	      
 	      for (int k = 0; k < kmax; k++)
                 X(A.Index(j, k)) -= A.Value(j, k) * X(j);
               
@@ -845,6 +872,133 @@ namespace Seldon
                 X(A.Index(j, k)) -= A.Value(j, k) * X(j);
 	    }
 	}
+  }
+
+
+  /*********************************
+   * S.O.R with transpose matrices *
+   *********************************/
+  
+  
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+	   const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
+	   Vector<T2, Storage2, Allocator2>& X,
+	   const Vector<T1, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor = 3)
+  {
+    Matrix<T0, Prop0, ColSparse, Allocator0> Ac;
+    Ac.SetData(A.GetN(), A.GetM(), A.GetDataSize(),
+	       A.GetData(), A.GetPtr(), A.GetInd());
+    
+    SOR(Ac, X, B, omega, iter, type_ssor);
+    Ac.Nullify();
+  }
+  
+  
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+	   const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+	   Vector<T2, Storage2, Allocator2>& X,
+	   const Vector<T1, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor = 3)
+  {
+    Matrix<T0, Prop0, RowSparse, Allocator0> Ac;
+    Ac.SetData(A.GetN(), A.GetM(), A.GetDataSize(),
+	       A.GetData(), A.GetPtr(), A.GetInd());
+    
+    SOR(Ac, X, B, omega, iter, type_ssor);
+    Ac.Nullify();
+  }
+
+  
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+	   const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+	   Vector<T2, Storage2, Allocator2>& X,
+	   const Vector<T1, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor = 3)
+  {
+    SOR(A, X, B, omega, iter, type_ssor);
+  }
+
+
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+	   const Matrix<T0, Prop0, ColSymSparse, Allocator0>& A,
+	   Vector<T2, Storage2, Allocator2>& X,
+	   const Vector<T1, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor = 3)
+  {
+    SOR(A, X, B, omega, iter, type_ssor);
+  }
+
+
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+	   const Matrix<T0, Prop0, ArrayRowSparse, Allocator0>& A,
+	   Vector<T2, Storage2, Allocator2>& X,
+	   const Vector<T1, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor = 3)
+  {
+    Matrix<T0, Prop0, ArrayColSparse, Allocator0> Ac;
+    Ac.SetData(A.GetN(), A.GetM(), A.GetData());
+    
+    SOR(Ac, X, B, omega, iter, type_ssor);
+    Ac.Nullify();
+  }
+
+
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+	   const Matrix<T0, Prop0, ArrayColSparse, Allocator0>& A,
+	   Vector<T2, Storage2, Allocator2>& X,
+	   const Vector<T1, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor = 3)
+  {
+    Matrix<T0, Prop0, ArrayRowSparse, Allocator0> Ac;
+    Ac.SetData(A.GetN(), A.GetM(), A.GetData());
+    
+    SOR(Ac, X, B, omega, iter, type_ssor);
+    Ac.Nullify();
+  }
+
+
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+	   const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
+	   Vector<T2, Storage2, Allocator2>& X,
+	   const Vector<T1, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor = 3)
+  {
+    SOR(A, X, B, omega, iter, type_ssor);
+  }
+
+
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+	   const Matrix<T0, Prop0, ArrayColSymSparse, Allocator0>& A,
+	   Vector<T2, Storage2, Allocator2>& X,
+	   const Vector<T1, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor = 3)
+  {
+    SOR(A, X, B, omega, iter, type_ssor);
   }
 
 } // end namespace

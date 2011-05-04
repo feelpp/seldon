@@ -36,6 +36,9 @@ namespace Seldon
     \param[in] b  Right hand side of the linear system
     \param[in] M Left preconditioner
     \param[in] iter Iteration parameters
+    
+    You should avoid this function since A A^T is often bad-conditioned,
+    and prefer another iterative algorithm
   */
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
   int Cgne(Matrix1& A, Vector1& x, const Vector1& b,
@@ -46,45 +49,36 @@ namespace Seldon
       return 0;
 
     typedef typename Vector1::value_type Complexe;
-    Complexe rho(1), rho_1(0), alpha, beta, delta;
+    Complexe rho(1), rho_1(0), alpha, beta, delta, one;
     Vector1 p(b), q(b), r(b), z(b);
-    Titer dp;
+    SetComplexOne(one);
 
     // x should be equal to 0
     // see Cg to understand implementation
     // we solve A^t A x = A^t b
     // left-preconditioner is equal to M M^t
 
-    // q = A^t b
-    Mlt(SeldonTrans, A, b, q);
+    // q = A^t (b - A x)
+    if (!iter.IsInitGuess_Null())
+      MltAdd(-one, A, x, one, r);
+    
+    Mlt(SeldonTrans, A, r, q);
+    Copy(q, r);
+    
     // we initialize iter
     int success_init = iter.Init(q);
     if (success_init != 0)
       return iter.ErrorCode();
-
-    if (!iter.IsInitGuess_Null())
-      {
-	// r = A^t b - A^t A x
-	Mlt(A, x, p);
-	Mlt(SeldonTrans, A, p, r); Mlt(Complexe(-1), r);
-	Add(Complexe(1), q, r);
-      }
-    else
-      {
-	Copy(q, r);
-	x.Zero();
-      }
-
-    dp = Norm2(q);
+    
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
-    while (! iter.Finished(dp))
+    while (! iter.Finished(r))
       {
 	// Preconditioning
 	M.TransSolve(A, r, q);
 	M.Solve(A, q, z);
 
-	rho = DotProd(r,z);
+	rho = DotProd(r, z);
 	if (rho == Complexe(0))
 	  {
 	    iter.Fail(1, "Cgne breakdown #1");
@@ -99,11 +93,11 @@ namespace Seldon
 	    Mlt(beta, p);
 	    Add(Complexe(1), z, p);
 	  }
-
+	
 	// instead of q = A*p, we compute q = A^t A *p
 	Mlt(A, p, q);
 	Mlt(SeldonTrans, A, q, z);
-
+	
 	delta = DotProd(p, z);
 	if (delta == Complexe(0))
 	  {
@@ -116,7 +110,6 @@ namespace Seldon
 	Add(-alpha, z, r);
 
 	rho_1 = rho;
-	dp = Norm2(r);
 
 	// two iterations, because of two multiplications with A
 	++iter;

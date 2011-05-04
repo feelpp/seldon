@@ -34,10 +34,10 @@
   xSPGV   (GetEigenvalues, GetEigenvaluesEigenvectors)
   xHPGV   (GetEigenvalues, GetEigenvaluesEigenvectors)
   xGESVD  (GetSVD)
-  xGEQRF  (GetHessenberg)
-  ZGEQRF + ZUNGQR + ZUNMQR + ZGGHRD   (GetHessenberg)
-  ZGEQRF + ZUNGQR + ZUNMQR + ZGGHRD + ZHGEQZ   (GetQZ)
-  (SolveSylvester)
+  xGEHRD + ZUNGHR/DORGHR  (GetHessenberg)
+  xGGHRD   (GetHessenberg)
+  xGGHRD + xHGEQZ   (GetQZ)
+  (GetPseudoInverse, SolveHessenberg, SolveHessenbergTwo, SolveSylvester)
 */
 
 namespace Seldon
@@ -57,6 +57,11 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator3>& wi,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvalues", "Matrix must be squared");
+#endif
+    
     int n = A.GetM(), lwork = 6*n;
     char jobvl('N');
     char jobvr('N');
@@ -84,6 +89,11 @@ namespace Seldon
 				  Matrix<float, General, RowMajor, Allocator4>& zr,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvaluesEigenvectors", "Matrix must be squared");
+#endif
+
     int n = A.GetM(), lwork = 6*n;
     char jobvl('V');
     char jobvr('N');
@@ -125,6 +135,11 @@ namespace Seldon
 		      Vector<complex<float>, VectFull, Allocator2>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvalues", "Matrix must be squared");
+#endif
+
     int n = A.GetM();
     char jobl('N'), jobr('N'); int lwork = 3*n;
     Vector<complex<float> > work(lwork);
@@ -151,6 +166,11 @@ namespace Seldon
 				  General, RowMajor, Allocator3>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvaluesEigenvectors", "Matrix must be squared");
+#endif
+
     int n = A.GetM();
     char jobl('V'), jobr('N'); int lwork = 3*n;
     Vector<complex<float> > work(lwork);
@@ -177,8 +197,14 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator3>& wi,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvalues", "Matrix must be squared");
+#endif
+
     int n = A.GetM(), lwork = 6*n;
-    char jobvl('N'), jobvr('N'); Vector<double> work(lwork);
+    char jobvl('N'), jobvr('N');
+    Vector<double> work(lwork);
     wr.Reallocate(n);
     wi.Reallocate(n);
     dgeev_(&jobvl, &jobvr, &n, A.GetData(), &n, wr.GetData(), wi.GetData(),
@@ -202,8 +228,14 @@ namespace Seldon
 				  Matrix<double, General, RowMajor, Allocator4>& zr,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvaluesEigenvectors", "Matrix must be squared");
+#endif
+
     int n = A.GetM(), lwork = 6*n;
-    char jobvl('V'), jobvr('N'); Vector<double> work(lwork);
+    char jobvl('V'), jobvr('N');
+    Vector<double> work(lwork);
     wr.Reallocate(n);
     wi.Reallocate(n);
     zr.Reallocate(n, n);
@@ -241,6 +273,11 @@ namespace Seldon
 		      Vector<complex<double>, VectFull, Allocator2>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvalues", "Matrix must be squared");
+#endif
+
     int n = A.GetM();
     char jobl('N'), jobr('N'); int lwork = 3*n;
     Vector<complex<double> > work(lwork);
@@ -268,6 +305,11 @@ namespace Seldon
 				  General, RowMajor, Allocator3>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvaluesEigenvectors", "Matrix must be squared");
+#endif
+
     int n = A.GetM();
     char jobl('V'), jobr('N'); int lwork = 3*n;
     Vector<complex<double> > work(lwork);
@@ -297,8 +339,14 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator3>& wi,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvalues", "Matrix must be squared");
+#endif
+
     int n = A.GetM(), lwork = 6*n;
-    char jobvl('N'), jobvr('N'); Vector<float> work(lwork);
+    char jobvl('N'), jobvr('N');
+    Vector<float> work(lwork);
     wr.Reallocate(n);
     wi.Reallocate(n);
     sgeev_(&jobvl, &jobvr, &n, A.GetData(), &n, wr.GetData(), wi.GetData(),
@@ -321,6 +369,11 @@ namespace Seldon
 				  Matrix<float, General, ColMajor, Allocator4>&zr,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvaluesEigenvectors", "Matrix must be squared");
+#endif
+
     int n = A.GetM(), lwork = 6*n;
     char jobvl('N'), jobvr('V');
     Vector<float> work(lwork);
@@ -345,6 +398,11 @@ namespace Seldon
 		      Vector<complex<float>, VectFull, Allocator2>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvalues", "Matrix must be squared");
+#endif
+
     int n = A.GetM();
     char jobl('N'), jobr('N'); int lwork = 3*n;
     Vector<complex<float> > work(lwork);
@@ -372,6 +430,11 @@ namespace Seldon
 				  General, ColMajor, Allocator3>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvaluesEigenvectors", "Matrix must be squared");
+#endif
+
     int n = A.GetM();
     char jobl('N'), jobr('V'); int lwork = 3*n;
     Vector<complex<float> > work(lwork);
@@ -396,8 +459,14 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator3>& wi,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvalues", "Matrix must be squared");
+#endif
+
     int n = A.GetM(), lwork = 6*n;
-    char jobvl('N'), jobvr('N'); Vector<double> work(lwork);
+    char jobvl('N'), jobvr('N');
+    Vector<double> work(lwork);
     wr.Reallocate(n);
     wi.Reallocate(n);
     dgeev_(&jobvl, &jobvr, &n, A.GetData(), &n, wr.GetData(), wi.GetData(),
@@ -421,6 +490,11 @@ namespace Seldon
 				  Matrix<double, General, ColMajor, Allocator4>&zr,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvaluesEigenvectors", "Matrix must be squared");
+#endif
+
     int n = A.GetM(), lwork = 6*n;
     char jobvl('N'), jobvr('V');
     Vector<double> work(lwork);
@@ -445,6 +519,11 @@ namespace Seldon
 		      Vector<complex<double>, VectFull, Allocator2>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvalues", "Matrix must be squared");
+#endif
+
     int n = A.GetM();
     char jobl('N'), jobr('N'); int lwork = 3*n;
     Vector<complex<double> > work(lwork);
@@ -472,6 +551,11 @@ namespace Seldon
 				  General, ColMajor, Allocator3>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetEigenvaluesEigenvectors", "Matrix must be squared");
+#endif
+
     int n = A.GetM();
     char jobl('N'), jobr('V'); int lwork = 3*n;
     Vector<complex<double> > work(lwork);
@@ -501,7 +585,8 @@ namespace Seldon
   {
     int n = A.GetM();
     char uplo('L'); char job('N');
-    int lwork = 3*n; Vector<float> work(lwork);
+    int lwork = 3*n;
+    Vector<float> work(lwork);
     w.Reallocate(n);
     ssyev_(&job, &uplo, &n, A.GetData(), &n, w.GetData(), work.GetData(),
 	   &lwork, &info.GetInfoRef());
@@ -523,13 +608,15 @@ namespace Seldon
   {
     int n = A.GetM();
     char uplo('L'); char job('V');
-    int lwork = 3*n; Vector<float> work(lwork);
-    w.Reallocate(n);
+    int lwork = 3*n;
     z.Reallocate(n, n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-
+    
+    A.Clear();
+    Vector<float> work(lwork);
+    w.Reallocate(n);
     ssyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(), work.GetData(),
 	   &lwork, &info.GetInfoRef());
 
@@ -548,13 +635,13 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    w.Reallocate(n);
     Matrix<complex<float>, General, ColMajor> B(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-
-    GetEigenvalues(B, w);
+    
+    A.Clear();
+    GetEigenvalues(B, w, info);
   }
 
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
@@ -567,14 +654,13 @@ namespace Seldon
 				  LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    w.Reallocate(n);
-    z.Reallocate(n, n);
     Matrix<complex<float>, General, RowMajor> B(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-
-    GetEigenvaluesEigenvectors(B, w, z);
+    
+    A.Clear();
+    GetEigenvaluesEigenvectors(B, w, z, info);
   }
 
 
@@ -584,8 +670,9 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('L'); char job('N');
-    int lwork = 3*n; Vector<double> work(lwork);
+    char uplo('L'), job('N');
+    int lwork = 3*n;
+    Vector<double> work(lwork);
     w.Reallocate(n);
     dsyev_(&job, &uplo, &n, A.GetData(), &n, w.GetData(), work.GetData(),
 	   &lwork, &info.GetInfoRef());
@@ -607,13 +694,15 @@ namespace Seldon
   {
     int n = A.GetM();
     char uplo('L'); char job('V');
-    int lwork = 3*n; Vector<double> work(lwork);
-    w.Reallocate(n);
-    z.Reallocate(n, n);
+    int lwork = 3*n;
+    z.Reallocate(n, n);    
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-
+    
+    A.Clear();
+    Vector<double> work(lwork);
+    w.Reallocate(n);    
     dsyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(), work.GetData(),
 	   &lwork, &info.GetInfoRef());
 
@@ -632,13 +721,13 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    w.Reallocate(n);
     Matrix<complex<double>, General, ColMajor> B(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
 
-    GetEigenvalues(B, w);
+    A.Clear();
+    GetEigenvalues(B, w, info);
   }
 
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
@@ -655,10 +744,11 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-
+    
+    A.Clear();
     w.Reallocate(n);
     z.Reallocate(n, n);
-    GetEigenvaluesEigenvectors(B, w, z);
+    GetEigenvaluesEigenvectors(B, w, z, info);
   }
 
 
@@ -671,7 +761,9 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('U'); char job('N'); int lwork = 3*n; Vector<float> work(lwork);
+    char uplo('U'); char job('N');
+    int lwork = 3*n;
+    Vector<float> work(lwork);
     w.Reallocate(n);
     ssyev_(&job, &uplo, &n, A.GetData(), &n, w.GetData(), work.GetData(),
 	   &lwork, &info.GetInfoRef());
@@ -693,13 +785,15 @@ namespace Seldon
   {
     int n = A.GetM();
     char uplo('U'); char job('V');
-    int lwork = 3*n; Vector<float> work(lwork);
-    w.Reallocate(n);
+    int lwork = 3*n;
     z.Reallocate(n, n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
 
+    A.Clear();
+    Vector<float> work(lwork);
+    w.Reallocate(n);
     ssyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(),
 	   work.GetData(), &lwork, &info.GetInfoRef());
 
@@ -718,13 +812,13 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    w.Reallocate(n);
     Matrix<complex<float>, General, ColMajor> B(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-
-    GetEigenvalues(B, w);
+    
+    A.Clear();
+    GetEigenvalues(B, w, info);
   }
 
 
@@ -742,10 +836,11 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-
+    
+    A.Clear();
     w.Reallocate(n);
     z.Reallocate(n, n);
-    GetEigenvaluesEigenvectors(B, w, z);
+    GetEigenvaluesEigenvectors(B, w, z, info);
   }
 
 
@@ -755,7 +850,9 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('U'); char job('N'); int lwork = 3*n; Vector<double> work(lwork);
+    char uplo('U'), job('N');
+    int lwork = 3*n;
+    Vector<double> work(lwork);
     w.Reallocate(n);
     dsyev_(&job, &uplo, &n, A.GetData(), &n, w.GetData(), work.GetData(),
 	   &lwork, &info.GetInfoRef());
@@ -776,13 +873,16 @@ namespace Seldon
 				  LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('U'); char job('V');
-    int lwork = 3*n; Vector<double> work(lwork);
-    w.Reallocate(n);
+    char uplo('U'), job('V');
+    int lwork = 3*n;
     z.Reallocate(n, n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
+    
+    A.Clear();
+    Vector<double> work(lwork);
+    w.Reallocate(n);
 
     dsyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(),
 	   work.GetData(), &lwork, &info.GetInfoRef());
@@ -803,12 +903,13 @@ namespace Seldon
   {
     int n = A.GetM();
     Matrix<complex<double>, General, ColMajor> B(n,n);
-    w.Reallocate(n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
 
-    GetEigenvalues(B, w);
+    A.Clear();
+    w.Reallocate(n);
+    GetEigenvalues(B, w, info);
   }
 
 
@@ -827,9 +928,10 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
 
+    A.Clear();
     w.Reallocate(n);
     z.Reallocate(n, n);
-    GetEigenvaluesEigenvectors(B, w, z);
+    GetEigenvaluesEigenvectors(B, w, z, info);
   }
 
 
@@ -842,10 +944,12 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('L'); char job('N');
-    int lwork = 2*n; Vector<complex<float> > work(lwork);
+    char uplo('L'), job('N');
+    int lwork = 2*n;
+    Vector<complex<float> > work(lwork);
     Vector<float> rwork(3*n);
     w.Reallocate(n);
+    Conjugate(A);
     cheev_(&job, &uplo, &n, A.GetDataVoid(), &n, w.GetData(),
 	   work.GetDataVoid(), &lwork, rwork.GetData(),
 	   &info.GetInfoRef());
@@ -868,16 +972,20 @@ namespace Seldon
 				  LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('L'); char job('V');
-    int lwork = 2*n; Vector<complex<float> > work(lwork);
-    Vector<float> rwork(3*n);
-    w.Reallocate(n);
-    z.Reallocate(n,n);
+    char uplo('L'), job('V');
+    int lwork = 2*n;    
+    z.Reallocate(n, n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
-	z(i,j) = A(i,j);
-
-    cheev_(&job, &uplo,&n, z.GetDataVoid(),&n, w.GetData(), work.GetDataVoid(),
+	z(i, j) = conj(A(i, j));
+    
+    A.Clear();
+    w.Reallocate(n);
+    Vector<complex<float> > work(lwork);
+    Vector<float> rwork(3*n);
+    
+    cheev_(&job, &uplo, &n, z.GetDataVoid(), &n,
+	   w.GetData(), work.GetDataVoid(),
 	   &lwork, rwork.GetData(), &info.GetInfoRef());
 
 #ifdef SELDON_LAPACK_CHECK_INFO
@@ -895,10 +1003,12 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('L'); char job('N');
-    int lwork = 2*n; Vector<complex<double> > work(lwork);
+    char uplo('L'), job('N');
+    int lwork = 2*n;
+    Vector<complex<double> > work(lwork);
     Vector<double> rwork(3*n);
     w.Reallocate(n);
+    Conjugate(A);
     zheev_(&job, &uplo, &n, A.GetDataVoid(), &n, w.GetData(),
 	   work.GetDataVoid(), &lwork, rwork.GetData(),
 	   &info.GetInfoRef());
@@ -921,14 +1031,17 @@ namespace Seldon
 				  LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('L'); char job('V');
-    int lwork = 2*n; Vector<complex<double> > work(lwork);
-    Vector<double> rwork(3*n);
-    w.Reallocate(n);
-    z.Reallocate(n,n);
+    char uplo('L'), job('V');
+    int lwork = 2*n;
+    z.Reallocate(n, n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
-	z(i,j) = A(i,j);
+	z(i,j) = conj(A(i,j));
+    
+    A.Clear();
+    Vector<complex<double> > work(lwork);
+    Vector<double> rwork(3*n);
+    w.Reallocate(n);
 
     zheev_(&job, &uplo,&n, z.GetDataVoid(),&n, w.GetData(), work.GetDataVoid(),
 	   &lwork, rwork.GetData() , &info.GetInfoRef());
@@ -978,15 +1091,18 @@ namespace Seldon
 				  LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('U'); char job('V'); int lwork = 2*n;
-    Vector<complex<float> > work(lwork);
-    Vector<float> rwork(3*n);
-    w.Reallocate(n);
+    char uplo('U'), job('V');
+    int lwork = 2*n;
     z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-
+    
+    A.Clear();
+    Vector<complex<float> > work(lwork);
+    Vector<float> rwork(3*n);
+    w.Reallocate(n);
+    
     cheev_(&job, &uplo, &n, z.GetDataVoid(), &n,
 	   w.GetData(), work.GetDataVoid(),
 	   &lwork, rwork.GetData() , &info.GetInfoRef());
@@ -1006,7 +1122,8 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('U'); char job('N'); int lwork = 2*n;
+    char uplo('U'), job('N');
+    int lwork = 2*n;
     Vector<complex<double> > work(lwork);
     Vector<double> rwork(3*n);
     w.Reallocate(n);
@@ -1032,15 +1149,18 @@ namespace Seldon
 				  LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('U'); char job('V'); int lwork = 2*n;
-    Vector<complex<double> > work(lwork);
-    Vector<double> rwork(3*n);
-    w.Reallocate(n);
+    char uplo('U'), job('V');
+    int lwork = 2*n;
     z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-
+    
+    A.Clear();
+    Vector<complex<double> > work(lwork);
+    Vector<double> rwork(3*n);
+    w.Reallocate(n);
+    
     zheev_(&job, &uplo, &n, z.GetDataVoid(), &n,
 	   w.GetData(), work.GetDataVoid(),
 	   &lwork, rwork.GetData() , &info.GetInfoRef());
@@ -1112,9 +1232,10 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-
+    
+    A.Clear();
     w.Reallocate(n);
-    GetEigenvalues(B, w);
+    GetEigenvalues(B, w, info);
   }
 
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
@@ -1131,9 +1252,10 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
 
+    A.Clear();
     w.Reallocate(n);
     z.Reallocate(n,n);
-    GetEigenvaluesEigenvectors(B, w, z);
+    GetEigenvaluesEigenvectors(B, w, z, info);
   }
 
 
@@ -1143,7 +1265,8 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('L'); char job('N'); Vector<double> work(3*n);
+    char uplo('L'), job('N');
+    Vector<double> work(3*n);
     w.Reallocate(n);
     dspev_(&job, &uplo, &n, A.GetData(), w.GetData(), A.GetData(), &n,
 	   work.GetData() , &info.GetInfoRef());
@@ -1164,7 +1287,8 @@ namespace Seldon
 				  LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('L'); char job('V'); Vector<double> work(3*n);
+    char uplo('L'), job('V');
+    Vector<double> work(3*n);
     w.Reallocate(n);
     z.Reallocate(n,n);
     dspev_(&job, &uplo, &n, A.GetData(), w.GetData(), z.GetData(), &n,
@@ -1191,8 +1315,9 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
 
+    A.Clear();
     w.Reallocate(n);
-    GetEigenvalues(B, w);
+    GetEigenvalues(B, w, info);
   }
 
 
@@ -1210,9 +1335,10 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
 
+    A.Clear();
     w.Reallocate(n);
     z.Reallocate(n,n);
-    GetEigenvaluesEigenvectors(B, w, z);
+    GetEigenvaluesEigenvectors(B, w, z, info);
   }
 
 
@@ -1225,7 +1351,7 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('U'); char job('N');
+    char uplo('U'), job('N');
     Vector<float> work(3*n);
     w.Reallocate(n);
     sspev_(&job, &uplo, &n, A.GetData(), w.GetData(), A.GetData(),
@@ -1247,7 +1373,7 @@ namespace Seldon
 				  LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('U'); char job('V');
+    char uplo('U'), job('V');
     Vector<float> work(3*n);
     w.Reallocate(n);
     z.Reallocate(n,n);
@@ -1275,8 +1401,9 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
 
+    A.Clear();
     w.Reallocate(n);
-    GetEigenvalues(B, w);
+    GetEigenvalues(B, w, info);
   }
 
 
@@ -1294,9 +1421,10 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
 
+    A.Clear();
     w.Reallocate(n);
     z.Reallocate(n,n);
-    GetEigenvaluesEigenvectors(B, w, z);
+    GetEigenvaluesEigenvectors(B, w, z, info);
   }
 
 
@@ -1306,7 +1434,8 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('U'); char job('N'); Vector<double> work(3*n);
+    char uplo('U'), job('N');
+    Vector<double> work(3*n);
     w.Reallocate(n);
     dspev_(&job, &uplo, &n, A.GetData(), w.GetData(), A.GetData(),
 	   &n, work.GetData() , &info.GetInfoRef());
@@ -1321,13 +1450,13 @@ namespace Seldon
 
 
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
-  void GetEigenvaluesEigenvectors(Matrix<double,Prop,ColSymPacked, Allocator1>& A,
+  void GetEigenvaluesEigenvectors(Matrix<double, Prop, ColSymPacked, Allocator1>& A,
 				  Vector<double, VectFull, Allocator2>& w,
 				  Matrix<double, General, ColMajor, Allocator3>&z,
 				  LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('U'); char job('V');
+    char uplo('U'), job('V');
     Vector<double> work(3*n);
     w.Reallocate(n);
     z.Reallocate(n,n);
@@ -1355,8 +1484,9 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
 
+    A.Clear();
     w.Reallocate(n);
-    GetEigenvalues(B, w);
+    GetEigenvalues(B, w, info);
   }
 
 
@@ -1374,9 +1504,10 @@ namespace Seldon
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
 
+    A.Clear();
     w.Reallocate(n);
     z.Reallocate(n,n);
-    GetEigenvaluesEigenvectors(B, w, z);
+    GetEigenvaluesEigenvectors(B, w, z, info);
   }
 
 
@@ -1390,10 +1521,11 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('L'); char job('N');
+    char uplo('L'), job('N');
     Vector<complex<float> > work(2*n);
     Vector<float> rwork(3*n);
     w.Reallocate(n);
+    Conjugate(A);
     chpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), A.GetDataVoid(), &n,
 	   work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
 
@@ -1415,11 +1547,12 @@ namespace Seldon
 				  LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('L'); char job('V');
+    char uplo('L'), job('V');
     Vector<complex<float> > work(2*n);
     Vector<float> rwork(3*n);
     w.Reallocate(n);
     z.Reallocate(n,n);
+    Conjugate(A);
     chpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), z.GetDataVoid(),
 	   &n, work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
 
@@ -1440,10 +1573,11 @@ namespace Seldon
 		      LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('L'); char job('N');
+    char uplo('L'), job('N');
     Vector<complex<double> > work(2*n);
     Vector<double> rwork(3*n);
     w.Reallocate(n);
+    Conjugate(A);
     zhpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), A.GetDataVoid(), &n,
 	   work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
 
@@ -1465,11 +1599,12 @@ namespace Seldon
 				  LapackInfo& info = lapack_info)
   {
     int n = A.GetM();
-    char uplo('L'); char job('V');
+    char uplo('L'), job('V');
     Vector<complex<double> > work(2*n);
     Vector<double> rwork(3*n);
     w.Reallocate(n);
-    z.Reallocate(n,n);
+    z.Reallocate(n, n);
+    Conjugate(A);
     zhpev_(&job, &uplo, &n, A.GetDataVoid(), w.GetData(), z.GetDataVoid(),
 	   &n, work.GetDataVoid(), rwork.GetData(), &info.GetInfoRef());
 
@@ -1604,10 +1739,18 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('L'); char job('N');
-    int lwork = 3*n; Vector<float> work(lwork);
+    char uplo('L'), job('N');
+    int lwork = 3*n;
+    Vector<float> work(lwork);
     w.Reallocate(n);
     ssygv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
@@ -1629,16 +1772,25 @@ namespace Seldon
 				  Matrix<float, General, RowMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('L'); char job('V');
-    int lwork = 3*n; Vector<float> work(lwork);
-    w.Reallocate(n);
+    char uplo('L'), job('V');
+    int lwork = 3*n;
     z.Reallocate(n, n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-
+    
+    A.Clear();
+    Vector<float> work(lwork);
+    w.Reallocate(n);
+    
     ssygv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
 
@@ -1647,7 +1799,8 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-
+    
+    Transpose(z);
   }
 
 
@@ -1659,22 +1812,24 @@ namespace Seldon
 		      Vector<complex<float>, VectFull, Allocator5>& beta,
 		      LapackInfo& info = lapack_info)
   {
-    int n = A.GetM();
-    char jobvl('N'), jobvr('N');
-    int lwork = 2*n; Vector<complex<float> > work(lwork);
-    Vector<float> rwork(8*n);
-    alpha.Reallocate(n);
-    beta.Reallocate(n);
-    cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
-	   alpha.GetData(), beta.GetData(), A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
-
-#ifdef SELDON_LAPACK_CHECK_INFO
-    if (info.GetInfo() != 0)
-      throw LapackError(info.GetInfo(), "GetEigenvalues",
-			"Failed to find eigenvalues ");
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
 #endif
 
+    int n = A.GetM();
+    Matrix<complex<float>, General, RowMajor, Allocator1> A2(n, n), B2(n, n);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < n; j++)
+	{
+	  A2(i, j) = A(i, j);
+	  B2(i, j) = B(i, j);
+	}
+    
+    A.Clear();
+    B.Clear();
+    GetEigenvalues(A2, B2, alpha, beta, info);
   }
 
 
@@ -1693,24 +1848,24 @@ namespace Seldon
 				  Prop3, RowMajor, Allocator6>& V,
 				  LapackInfo& info = lapack_info)
   {
-    int n = A.GetM();
-    char jobvl('V'), jobvr('N');
-    int lwork = 2*n; Vector<complex<float> > work(lwork);
-    Vector<float> rwork(8*n);
-    alpha.Reallocate(n);
-    beta.Reallocate(n);
-    V.Reallocate(n);
-    cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
-	   alpha.GetData(), beta.GetData(), V.GetData(), &n, V.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
-
-#ifdef SELDON_LAPACK_CHECK_INFO
-    if (info.GetInfo() != 0)
-      throw LapackError(info.GetInfo(), "GetEigenvalues",
-			"Failed to find eigenvalues ");
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
 #endif
 
-    TransposeConj(V);
+    int n = A.GetM();
+    Matrix<complex<float>, General, RowMajor, Allocator1> A2(n, n), B2(n, n);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < n; j++)
+	{
+	  A2(i, j) = A(i, j);
+	  B2(i, j) = B(i, j);
+	}
+    
+    A.Clear();
+    B.Clear();
+    GetEigenvaluesEigenvectors(A2, B2, alpha, beta, V, info);
   }
 
 
@@ -1721,10 +1876,17 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('L'); char job('N');
-    int lwork = 3*n; Vector<double> work(lwork);
+    char uplo('L'), job('N');
+    int lwork = 3*n;
+    Vector<double> work(lwork);
     w.Reallocate(n);
     dsygv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
@@ -1746,16 +1908,25 @@ namespace Seldon
 				  Matrix<double, General, RowMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('L'); char job('V');
-    int lwork = 3*n; Vector<double> work(lwork);
-    w.Reallocate(n);
+    char uplo('L'), job('V');
+    int lwork = 3*n;    
     z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-
+    
+    A.Clear();
+    Vector<double> work(lwork);
+    w.Reallocate(n);
+    
     dsygv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
 
@@ -1764,7 +1935,8 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-
+    
+    Transpose(z);
   }
 
 
@@ -1776,22 +1948,24 @@ namespace Seldon
 		      Vector<complex<double>, VectFull, Allocator5>& beta,
 		      LapackInfo& info = lapack_info)
   {
-    int n = A.GetM();
-    char jobvl('N'), jobvr('N');
-    int lwork = 2*n; Vector<complex<double> > work(lwork);
-    Vector<double> rwork(8*n);
-    alpha.Reallocate(n);
-    beta.Reallocate(n);
-    zggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
-	   alpha.GetData(), beta.GetData(), A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
-
-#ifdef SELDON_LAPACK_CHECK_INFO
-    if (info.GetInfo() != 0)
-      throw LapackError(info.GetInfo(), "GetEigenvalues",
-			"Failed to find eigenvalues ");
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
 #endif
 
+    int n = A.GetM();
+    Matrix<complex<double>, General, RowMajor, Allocator1> A2(n, n), B2(n, n);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < n; j++)
+	{
+	  A2(i, j) = A(i, j);
+	  B2(i, j) = B(i, j);
+	}
+    
+    A.Clear();
+    B.Clear();
+    GetEigenvalues(A2, B2, alpha, beta, info);
   }
 
 
@@ -1810,24 +1984,24 @@ namespace Seldon
 				  Prop3, RowMajor, Allocator6>& V,
 				  LapackInfo& info = lapack_info)
   {
-    int n = A.GetM();
-    char jobvl('V'), jobvr('N');
-    int lwork = 2*n; Vector<complex<double> > work(lwork);
-    Vector<double> rwork(8*n);
-    alpha.Reallocate(n);
-    beta.Reallocate(n);
-    V.Reallocate(n,n);
-    zggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
-	   alpha.GetData(), beta.GetData(), V.GetData(), &n, V.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
-
-#ifdef SELDON_LAPACK_CHECK_INFO
-    if (info.GetInfo() != 0)
-      throw LapackError(info.GetInfo(), "GetEigenvalues",
-			"Failed to find eigenvalues ");
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
 #endif
 
-    TransposeConj(V);
+    int n = A.GetM();
+    Matrix<complex<double>, General, RowMajor, Allocator1> A2(n, n), B2(n, n);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < n; j++)
+	{
+	  A2(i, j) = A(i, j);
+	  B2(i, j) = B(i, j);
+	}
+    
+    A.Clear();
+    B.Clear();
+    GetEigenvaluesEigenvectors(A2, B2, alpha, beta, V, info);
   }
 
 
@@ -1841,10 +2015,17 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('U'); char job('N');
-    int lwork = 3*n; Vector<float> work(lwork);
+    char uplo('U'), job('N');
+    int lwork = 3*n; 
+    Vector<float> work(lwork);
     w.Reallocate(n);
     ssygv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
@@ -1866,10 +2047,17 @@ namespace Seldon
 				  Matrix<float, General, ColMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('U'); char job('V');
-    int lwork = 3*n; Vector<float> work(lwork);
+    char uplo('U'), job('V');
+    int lwork = 3*n;
+    Vector<float> work(lwork);
     w.Reallocate(n);
     z.Reallocate(n, n);
     for (int i = 0; i < n; i++)
@@ -1896,22 +2084,24 @@ namespace Seldon
 		      Vector<complex<float>, VectFull, Allocator5>& beta,
 		      LapackInfo& info = lapack_info)
   {
-    int n = A.GetM();
-    char jobvl('N'), jobvr('N'); int lwork = 2*n;
-    Vector<complex<float> > work(lwork);
-    Vector<float> rwork(8*n);
-    alpha.Reallocate(n);
-    beta.Reallocate(n);
-    cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
-	   alpha.GetData(), beta.GetData(), A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
-
-#ifdef SELDON_LAPACK_CHECK_INFO
-    if (info.GetInfo() != 0)
-      throw LapackError(info.GetInfo(), "GetEigenvalues",
-			"Failed to find eigenvalues ");
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
 #endif
 
+    int n = A.GetM();
+    Matrix<complex<float>, General, ColMajor, Allocator1> A2(n, n), B2(n, n);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < n; j++)
+	{
+	  A2(i, j) = A(i, j);
+	  B2(i, j) = B(i, j);
+	}
+    
+    A.Clear();
+    B.Clear();
+    GetEigenvalues(A2, B2, alpha, beta, info);
   }
 
 
@@ -1927,23 +2117,24 @@ namespace Seldon
 				  Prop3, ColMajor, Alloc6>& V,
 				  LapackInfo& info = lapack_info)
   {
-    int n = A.GetM();
-    char jobvl('N'), jobvr('V');
-    int lwork = 2*n; Vector<complex<float> > work(lwork);
-    Vector<float> rwork(8*n);
-    alpha.Reallocate(n);
-    beta.Reallocate(n);
-    V.Reallocate(n,n);
-    cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
-	   alpha.GetData(), beta.GetData(), V.GetData(), &n, V.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
-
-#ifdef SELDON_LAPACK_CHECK_INFO
-    if (info.GetInfo() != 0)
-      throw LapackError(info.GetInfo(), "GetEigenvalues",
-			"Failed to find eigenvalues ");
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
 #endif
 
+    int n = A.GetM();
+    Matrix<complex<float>, General, ColMajor, Alloc1> A2(n, n), B2(n, n);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < n; j++)
+	{
+	  A2(i, j) = A(i, j);
+	  B2(i, j) = B(i, j);
+	}
+    
+    A.Clear();
+    B.Clear();
+    GetEigenvaluesEigenvectors(A2, B2, alpha, beta, V, info);
   }
 
   template<class Prop1, class Prop2, class Allocator1,
@@ -1953,10 +2144,17 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('U'); char job('N');
-    int lwork = 3*n; Vector<double> work(lwork);
+    char uplo('U'), job('N');
+    int lwork = 3*n;
+    Vector<double> work(lwork);
     w.Reallocate(n);
     dsygv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
@@ -1978,16 +2176,25 @@ namespace Seldon
 				  Matrix<double, General, ColMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('U'); char job('V');
-    int lwork = 3*n; Vector<double> work(lwork);
-    w.Reallocate(n);
+    char uplo('U'), job('V');
     z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-
+    
+    A.Clear();
+    int lwork = 3*n;
+    Vector<double> work(lwork);
+    w.Reallocate(n);
+    
     dsygv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
 
@@ -2008,22 +2215,24 @@ namespace Seldon
 		      Vector<complex<double>, VectFull, Allocator5>& beta,
 		      LapackInfo& info = lapack_info)
   {
-    int n = A.GetM();
-    char jobvl('N'), jobvr('N'); int lwork = 2*n;
-    Vector<complex<double> > work(lwork);
-    Vector<double> rwork(8*n);
-    alpha.Reallocate(n);
-    beta.Reallocate(n);
-    zggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
-	   alpha.GetData(), beta.GetData(), A.GetData(), &n, A.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
-
-#ifdef SELDON_LAPACK_CHECK_INFO
-    if (info.GetInfo() != 0)
-      throw LapackError(info.GetInfo(), "GetEigenvalues",
-			"Failed to find eigenvalues ");
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
 #endif
 
+    int n = A.GetM();
+    Matrix<complex<double>, Prop1, ColMajor, Allocator1> A2(n, n), B2(n, n);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < n; j++)
+	{
+	  A2(i, j) = A(i, j);
+	  B2(i, j) = B(i, j);
+	}
+    
+    A.Clear();
+    B.Clear();
+    GetEigenvalues(A2, B2, alpha, beta, info);
   }
 
 
@@ -2039,23 +2248,24 @@ namespace Seldon
 				  Prop3, ColMajor, Alloc6>& V,
 				  LapackInfo& info = lapack_info)
   {
-    int n = A.GetM();
-    char jobvl('N'), jobvr('V');
-    int lwork = 2*n; Vector<complex<double> > work(lwork);
-    Vector<double> rwork(8*n);
-    alpha.Reallocate(n);
-    beta.Reallocate(n);
-    V.Reallocate(n,n);
-    zggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
-	   alpha.GetData(), beta.GetData(), V.GetData(), &n, V.GetData(), &n,
-	   work.GetData(), &lwork, rwork.GetData(), &info.GetInfoRef());
-
-#ifdef SELDON_LAPACK_CHECK_INFO
-    if (info.GetInfo() != 0)
-      throw LapackError(info.GetInfo(), "GetEigenvalues",
-			"Failed to find eigenvalues ");
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
 #endif
 
+    int n = A.GetM();
+    Matrix<complex<double>, General, ColMajor, Alloc1> A2(n, n), B2(n, n);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < n; j++)
+	{
+	  A2(i, j) = A(i, j);
+	  B2(i, j) = B(i, j);
+	}
+    
+    A.Clear();
+    B.Clear();
+    GetEigenvaluesEigenvectors(A2, B2, alpha, beta, V, info);
   }
 
 
@@ -2069,12 +2279,20 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('L'); char job('N');
-    int lwork = 2*n; Vector<float> work(lwork);
+    char uplo('L'), job('N');
+    int lwork = 2*n;
+    Vector<complex<float> > work(lwork);
     Vector<float> rwork(3*n);
     w.Reallocate(n);
+    Conjugate(A); Conjugate(B);
     chegv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, rwork.GetData(),
 	   &info.GetInfoRef());
@@ -2099,17 +2317,27 @@ namespace Seldon
 				  General, RowMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('L'); char job('V');
-    int lwork = 2*n; Vector<float> work(lwork);
-    w.Reallocate(n);
+    char uplo('L'), job('V');
+    int lwork = 2*n;
     z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
-	z(i,j) = A(i,j);
+	z(i,j) = conj(A(i,j));
 
+    A.Clear();
+    Vector<complex<float> > work(lwork);
+    w.Reallocate(n);
     Vector<float> rwork(3*n);
+    Conjugate(B);
+    
     chegv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, rwork.GetData(),
 	   &info.GetInfoRef());
@@ -2119,7 +2347,8 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-
+    
+    Transpose(z);
   }
 
 
@@ -2130,12 +2359,23 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('L'); char job('N');
-    int lwork = 3*n; Vector<double> work(lwork);
+    char uplo('L'), job('N');
+    
+    int lwork = 3*n;
+    Vector<complex<double> > work(lwork);
     Vector<double> rwork(3*n);
     w.Reallocate(n);
+    Conjugate(A);
+    Conjugate(B);
+    
     zhegv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, rwork.GetData(),
 	   &info.GetInfoRef());
@@ -2160,16 +2400,26 @@ namespace Seldon
 				  General, RowMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('L'); char job('V');
-    int lwork = 3*n; Vector<double> work(lwork);
-    w.Reallocate(n);
+    char uplo('L'), job('V');
     z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
-	z(i,j) = A(i,j);
+	z(i,j) = conj(A(i,j));
 
+    A.Clear();
+    int lwork = 3*n;
+    Vector<complex<double> > work(lwork);
+    w.Reallocate(n);
+    Conjugate(B);
+    
     Vector<double> rwork(3*n);
     zhegv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, rwork.GetData(),
@@ -2180,7 +2430,8 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-
+    
+    Transpose(z);
   }
 
 
@@ -2194,10 +2445,17 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('U'); char job('N');
-    int lwork = 2*n; Vector<float> work(lwork);
+    char uplo('U'), job('N');
+    int lwork = 2*n;
+    Vector<complex<float> > work(lwork);
     Vector<float> rwork(3*n);
     w.Reallocate(n);
     chegv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
@@ -2224,16 +2482,24 @@ namespace Seldon
 				  General, ColMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('U'); char job('V');
-    int lwork = 3*n; Vector<float> work(lwork);
-    w.Reallocate(n);
     z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
 
+    A.Clear();
+    int lwork = 3*n;
+    Vector<complex<float> > work(lwork);
+    w.Reallocate(n);
     Vector<float> rwork(3*n);
     chegv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork,
@@ -2255,10 +2521,17 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('U'); char job('N');
-    int lwork = 3*n; Vector<double> work(lwork);
+    char uplo('U'), job('N');
+    int lwork = 3*n;
+    Vector<complex<double> > work(lwork);
     Vector<double> rwork(3*n);
     w.Reallocate(n);
     zhegv_(&itype, &job, &uplo, &n, A.GetData(), &n, B.GetData(), &n,
@@ -2285,17 +2558,26 @@ namespace Seldon
 				  General, ColMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('U'); char job('V');
-    int lwork = 3*n; Vector<double> work(lwork);
-    w.Reallocate(n);
+    char uplo('U'), job('V');
     z.Reallocate(n,n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-
+    
+    A.Clear();
+    int lwork = 3*n;
+    Vector<complex<double> > work(lwork);
+    w.Reallocate(n);
     Vector<double> rwork(3*n);
+
     zhegv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork,
 	   rwork.GetData(), &info.GetInfoRef());
@@ -2319,6 +2601,12 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('L'); char job('N');
@@ -2347,6 +2635,12 @@ namespace Seldon
 				  General, RowMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('L'); char job('V');
@@ -2361,7 +2655,8 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-
+    
+    Transpose(z);
   }
 
 
@@ -2375,6 +2670,12 @@ namespace Seldon
 		      Vector<complex<float>, VectFull, Allocator4>& beta,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     Matrix<complex<float>, General, ColMajor> C(n,n), D(n,n);
     for (int i = 0; i < n; i++)
@@ -2384,9 +2685,11 @@ namespace Seldon
 	  D(i,j) = B(i,j);
 	}
 
+    A.Clear();
+    B.Clear();
     alpha.Reallocate(n);
     beta.Reallocate(n);
-    GetEigenvalues(C, D, alpha, beta);
+    GetEigenvalues(C, D, alpha, beta, info);
   }
 
 
@@ -2404,6 +2707,12 @@ namespace Seldon
 				  General, RowMajor, Allocator5>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     Matrix<complex<float>, General, RowMajor> C(n,n), D(n,n);
     for (int i = 0; i < n; i++)
@@ -2413,10 +2722,12 @@ namespace Seldon
 	  D(i,j) = B(i,j);
 	}
 
+    A.Clear();
+    B.Clear();
     alpha.Reallocate(n);
     beta.Reallocate(n);
     z.Reallocate(n,n);
-    GetEigenvaluesEigenvectors(C, D, alpha, beta, z);
+    GetEigenvaluesEigenvectors(C, D, alpha, beta, z, info);
   }
 
 
@@ -2427,6 +2738,12 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('L'); char job('N');
@@ -2440,7 +2757,7 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-
+    
   }
 
 
@@ -2455,6 +2772,12 @@ namespace Seldon
 				  General, RowMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('L'); char job('V');
@@ -2469,7 +2792,8 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-
+    
+    Transpose(z);
   }
 
 
@@ -2483,6 +2807,12 @@ namespace Seldon
 		      Vector<complex<double>, VectFull, Allocator4>& beta,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     Matrix<complex<double>, General, ColMajor> C(n,n), D(n,n);
     for (int i = 0; i < n; i++)
@@ -2491,10 +2821,12 @@ namespace Seldon
 	  C(i,j) = A(i,j);
 	  D(i,j) = B(i,j);
 	}
-
+    
+    A.Clear();
+    B.Clear();
     alpha.Reallocate(n);
     beta.Reallocate(n);
-    GetEigenvalues(C, D, alpha, beta);
+    GetEigenvalues(C, D, alpha, beta, info);
   }
 
 
@@ -2512,6 +2844,12 @@ namespace Seldon
 				  General, RowMajor, Allocator5>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     Matrix<complex<double>, General, RowMajor> C(n,n), D(n,n);
     for (int i = 0; i < n; i++)
@@ -2521,10 +2859,12 @@ namespace Seldon
 	  D(i,j) = B(i,j);
 	}
 
+    A.Clear();
+    B.Clear();
     alpha.Reallocate(n);
     beta.Reallocate(n);
     z.Reallocate(n,n);
-    GetEigenvaluesEigenvectors(C, D, alpha, beta, z);
+    GetEigenvaluesEigenvectors(C, D, alpha, beta, z, info);
   }
 
 
@@ -2538,6 +2878,12 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('U'); char job('N');
@@ -2566,6 +2912,12 @@ namespace Seldon
 				  General, ColMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('U'); char job('V'); int lwork = 3*n;
@@ -2594,6 +2946,12 @@ namespace Seldon
 		      Vector<complex<float>, VectFull, Allocator4>& beta,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     Matrix<complex<float>, General, ColMajor> C(n,n), D(n,n);
     for (int i = 0; i < n; i++)
@@ -2602,10 +2960,12 @@ namespace Seldon
 	  C(i,j) = A(i,j);
 	  D(i,j) = B(i,j);
 	}
-
+    
+    A.Clear();
+    B.Clear();
     alpha.Reallocate(n);
     beta.Reallocate(n);
-    GetEigenvalues(C, D, alpha, beta);
+    GetEigenvalues(C, D, alpha, beta, info);
   }
 
 
@@ -2623,6 +2983,12 @@ namespace Seldon
 				  General, ColMajor, Allocator5>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     Matrix<complex<float>, General, ColMajor> C(n,n), D(n,n);
     for (int i = 0; i < n; i++)
@@ -2632,10 +2998,12 @@ namespace Seldon
 	  D(i,j) = B(i,j);
 	}
 
+    A.Clear();
+    B.Clear();
     alpha.Reallocate(n);
     beta.Reallocate(n);
     z.Reallocate(n,n);
-    GetEigenvaluesEigenvectors(C, D, alpha, beta, z);
+    GetEigenvaluesEigenvectors(C, D, alpha, beta, z, info);
   }
 
 
@@ -2646,6 +3014,12 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('U'); char job('N');
@@ -2674,6 +3048,12 @@ namespace Seldon
 				  General, ColMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('U'); char job('V'); int lwork = 3*n;
@@ -2702,6 +3082,12 @@ namespace Seldon
 		      Vector<complex<double>, VectFull, Allocator4>& beta,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     Matrix<complex<double>, General, ColMajor> C(n,n), D(n,n);
     for (int i = 0; i < n; i++)
@@ -2711,9 +3097,11 @@ namespace Seldon
 	  D(i,j) = B(i,j);
 	}
 
+    A.Clear();
+    B.Clear();
     alpha.Reallocate(n);
     beta.Reallocate(n);
-    GetEigenvalues(C, D, alpha, beta);
+    GetEigenvalues(C, D, alpha, beta, info);
   }
 
 
@@ -2731,6 +3119,12 @@ namespace Seldon
 				  General, ColMajor, Allocator5>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     Matrix<complex<double>, General, ColMajor> C(n,n), D(n,n);
     for (int i = 0; i < n; i++)
@@ -2739,11 +3133,13 @@ namespace Seldon
 	  C(i,j) = A(i,j);
 	  D(i,j) = B(i,j);
 	}
-
+    
+    A.Clear();
+    B.Clear();
     alpha.Reallocate(n);
     beta.Reallocate(n);
     z.Reallocate(n,n);
-    GetEigenvaluesEigenvectors(C, D, alpha, beta, z);
+    GetEigenvaluesEigenvectors(C, D, alpha, beta, z, info);
   }
 
 
@@ -2759,13 +3155,20 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('L'); char job('N');
+    char uplo('L'), job('N');
     int lwork = 2*n;
-    Vector<float> work(lwork);
+    Vector<complex<float> > work(lwork);
     Vector<float> rwork(3*n);
     w.Reallocate(n);
+    Conjugate(A); Conjugate(B);
     chpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
 	   A.GetData(), &n, work.GetData(), rwork.GetData(),
 	   &info.GetInfoRef());
@@ -2790,11 +3193,18 @@ namespace Seldon
 				  General, RowMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('L'); char job('V'); int lwork = 2*n;
-    Vector<float> work(lwork);
+    Vector<complex<float> > work(lwork);
     Vector<float> rwork(3*n);
+    Conjugate(A); Conjugate(B);
     w.Reallocate(n);
     z.Reallocate(n,n);
     chpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
@@ -2806,7 +3216,8 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-
+    
+    Transpose(z);
   }
 
 
@@ -2819,13 +3230,20 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
-    char uplo('L'); char job('N');
+    char uplo('L'), job('N');
     int lwork = 2*n;
-    Vector<double> work(lwork);
+    Vector<complex<double> > work(lwork);
     Vector<double> rwork(3*n);
     w.Reallocate(n);
+    Conjugate(A); Conjugate(B);
     zhpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
 	   A.GetData(), &n, work.GetData(), rwork.GetData(),
 	   &info.GetInfoRef());
@@ -2835,7 +3253,7 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-
+    
   }
 
 
@@ -2850,13 +3268,20 @@ namespace Seldon
 				  General, RowMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('L'); char job('V'); int lwork = 2*n;
-    Vector<double> work(lwork);
+    Vector<complex<double> > work(lwork);
     Vector<double> rwork(3*n);
     w.Reallocate(n);
     z.Reallocate(n,n);
+    Conjugate(A); Conjugate(B);
     zhpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(), w.GetData(),
 	   z.GetData(), &n, work.GetData(), rwork.GetData(),
 	   &info.GetInfoRef());
@@ -2866,7 +3291,8 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-
+    
+    Transpose(z);
   }
 
 
@@ -2882,11 +3308,17 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('U'); char job('N');
     int lwork = 2*n;
-    Vector<float> work(lwork);
+    Vector<complex<float> > work(lwork);
     Vector<float> rwork(3*n);
     w.Reallocate(n);
     chpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(),
@@ -2913,11 +3345,17 @@ namespace Seldon
 				  General, ColMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('U'); char job('V');
     int lwork = 3*n;
-    Vector<float> work(lwork);
+    Vector<complex<float> > work(lwork);
     Vector<float> rwork(3*n);
     w.Reallocate(n);
     z.Reallocate(n,n);
@@ -2943,11 +3381,17 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator3>& w,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('U'); char job('N');
     int lwork = 2*n;
-    Vector<double> work(lwork);
+    Vector<complex<double> > work(lwork);
     Vector<double> rwork(3*n);
     w.Reallocate(n);
     zhpgv_(&itype, &job, &uplo, &n, A.GetData(), B.GetData(),
@@ -2974,11 +3418,17 @@ namespace Seldon
 				  General, ColMajor, Allocator4>& z,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int itype = 1;
     int n = A.GetM();
     char uplo('U'); char job('V');
     int lwork = 3*n;
-    Vector<double> work(lwork);
+    Vector<complex<double> > work(lwork);
     Vector<double> rwork(3*n);
     w.Reallocate(n);
     z.Reallocate(n,n);
@@ -3007,7 +3457,17 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator4>& alpha_imag,
 		      Vector<float, VectFull, Allocator5>& beta,
 		      LapackInfo& info = lapack_info)
-  {
+  {    
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvalues",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('N'), jobvr('N');
     int lwork = 8*n+16; Vector<float> work(lwork);
@@ -3039,6 +3499,16 @@ namespace Seldon
 				  Matrix<float, Prop3, RowMajor, Allocator6>& V,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvaluesEigenvectors",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('V'), jobvr('N');
     int lwork = 8*n+16; Vector<float> work(lwork);
@@ -3085,6 +3555,16 @@ namespace Seldon
 		      Vector<complex<float>, VectFull, Allocator5>& beta,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvalues",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('N'), jobvr('N'); int lwork = 2*n;
     Vector<complex<float> > work(lwork);
@@ -3119,6 +3599,16 @@ namespace Seldon
 				  Prop3, RowMajor, Allocator6>& V,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvaluesEigenvectors",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('V'), jobvr('N');
     int lwork = 2*n; Vector<complex<float> > work(lwork);
@@ -3151,6 +3641,16 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator5>& beta,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvalues",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('N'), jobvr('N');
     int lwork = 8*n+16; Vector<double> work(lwork);
@@ -3182,6 +3682,16 @@ namespace Seldon
 				  Matrix<double, Prop3, RowMajor, Allocator6>& V,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvaluesEigenvectors",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('V'), jobvr('N');
     int lwork = 8*n+16; Vector<double> work(lwork);
@@ -3227,6 +3737,16 @@ namespace Seldon
 		      Vector<complex<double>, VectFull, Allocator5>& beta,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvalues",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('N'), jobvr('N'); int lwork = 2*n;
     Vector<complex<double> > work(lwork);
@@ -3261,6 +3781,16 @@ namespace Seldon
 				  Prop3, RowMajor, Allocator6>& V,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvaluesEigenvectors",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('V'), jobvr('N');
     int lwork = 2*n; Vector<complex<double> > work(lwork);
@@ -3295,6 +3825,16 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator5>& beta,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvalues",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('N'), jobvr('N');
     int lwork = 8*n+16; Vector<float> work(lwork);
@@ -3329,6 +3869,16 @@ namespace Seldon
 				  Matrix<float, Prop3, ColMajor, Allocator6>& V,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvaluesEigenvectors",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('V'), jobvr('N');
     int lwork = 8*n+16; Vector<float> work(lwork);
@@ -3358,6 +3908,16 @@ namespace Seldon
 		      Vector<complex<float>, VectFull, Allocator5>& beta,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvalues",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('N'), jobvr('N'); int lwork = 2*n;
     Vector<complex<float> > work(lwork);
@@ -3394,6 +3954,16 @@ namespace Seldon
 				  Prop3, ColMajor, Allocator6>& V,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvaluesEigenvectors",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('N'), jobvr('V'); int lwork = 2*n;
     Vector<complex<float> > work(lwork);
@@ -3425,6 +3995,16 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator5>& beta,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvalues",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('N'), jobvr('N');
     int lwork = 8*n+16; Vector<double> work(lwork);
@@ -3459,6 +4039,16 @@ namespace Seldon
 				  Matrix<double, Prop3, ColMajor, Allocator6>& V,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvaluesEigenvectors",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('V'), jobvr('N');
     int lwork = 8*n+16; Vector<double> work(lwork);
@@ -3489,6 +4079,16 @@ namespace Seldon
 		      Vector<complex<double>, VectFull, Allocator5>& beta,
 		      LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvalues",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvalues",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('N'), jobvr('N'); int lwork = 2*n;
     Vector<complex<double> > work(lwork);
@@ -3525,6 +4125,16 @@ namespace Seldon
 				  Prop3, ColMajor, Allocator6>& V,
 				  LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
+	throw WrongDim("GetEigenvaluesEigenvectors",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetEigenvaluesEigenvectors",
+		     "Matrix A and B must have the same size");
+#endif
+
     int n = A.GetM();
     char jobvl('N'), jobvr('V'); int lwork = 2*n;
     Vector<complex<double> > work(lwork);
@@ -3579,6 +4189,13 @@ namespace Seldon
     sgesvd_(&jobl, &jobr, &n, &m, A.GetData(), &n, lambda.GetData(),
 	    v.GetData(), &n, u.GetData(), &m, work.GetData(),
 	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetSVD",
+			"Failed to find singular value decomposition");
+#endif
+
   }
 
 
@@ -3605,6 +4222,13 @@ namespace Seldon
     cgesvd_(&jobl, &jobr, &n, &m, A.GetDataVoid(), &n, lambda.GetData(),
 	    v.GetDataVoid(), &n, u.GetDataVoid(), &m, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetSVD",
+			"Failed to find singular value decomposition");
+#endif
+
   }
 
 
@@ -3630,6 +4254,13 @@ namespace Seldon
     dgesvd_(&jobl, &jobr, &n, &m, A.GetData(), &n, lambda.GetData(),
 	    v.GetData(), &n, u.GetData(), &m, work.GetData(),
 	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetSVD",
+			"Failed to find singular value decomposition");
+#endif
+
   }
 
 
@@ -3656,6 +4287,13 @@ namespace Seldon
     zgesvd_(&jobl, &jobr, &n, &m, A.GetDataVoid(), &n, lambda.GetData(),
 	    v.GetDataVoid(), &n, u.GetDataVoid(), &m, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetSVD",
+			"Failed to find singular value decomposition");
+#endif
+
   }
 
 
@@ -3684,6 +4322,13 @@ namespace Seldon
     sgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &m, lambda.GetData(),
 	    u.GetData(), &m, v.GetData(), &n, work.GetData(),
 	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetSVD",
+			"Failed to find singular value decomposition");
+#endif
+
   }
 
 
@@ -3710,6 +4355,13 @@ namespace Seldon
     cgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &m, lambda.GetData(),
 	    u.GetDataVoid(), &m, v.GetDataVoid(), &n, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetSVD",
+			"Failed to find singular value decomposition");
+#endif
+
   }
 
 
@@ -3735,6 +4387,13 @@ namespace Seldon
     dgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &m, lambda.GetData(),
 	    u.GetData(), &m, v.GetData(), &n, work.GetData(),
 	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetSVD",
+			"Failed to find singular value decomposition");
+#endif
+
   }
 
 
@@ -3761,31 +4420,73 @@ namespace Seldon
     zgesvd_(&jobl, &jobr, &m, &n, A.GetDataVoid(), &m, sigma.GetData(),
 	    u.GetDataVoid(), &m, v.GetDataVoid(), &n, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetSVD",
+			"Failed to find singular value decomposition");
+#endif
+
   }
 
 
   // pseudo inverse
-  template<class Prop1, class Allocator1>
-  void GetPseudoInverse(Matrix<double, Prop1, ColMajor, Allocator1>& A,
-			double epsilon, LapackInfo& info = lapack_info)
+  template<class T, class Prop, class Storage, class Allocator>
+  void GetPseudoInverse(Matrix<T, Prop, Storage, Allocator>& A,
+			const T& epsilon, LapackInfo& info = lapack_info)
   {
     int m = A.GetM(), n = A.GetN();
-    Vector<double, VectFull, Allocator1> lambda;
-    Matrix<double, General, ColMajor, Allocator1> U;
-    Matrix<double, General, ColMajor, Allocator1> V;
-
+    Vector<T, VectFull, Allocator> lambda;
+    Matrix<T, Prop, Storage, Allocator> U;
+    Matrix<T, Prop, Storage, Allocator> V;
+    
     GetSVD(A, lambda, U, V);
-
-    A.Reallocate(n, m); A.Fill(0);
+    
+    A.Reallocate(n, m);
+    A.Fill(0.0);
     // computation of A = V Sigma U^*
     for (int k = 0; k < min(m, n); k++)
       if (abs(lambda(k)) > epsilon)
-	{
-	  lambda(k) = 1.0/lambda(k);
-	  for (int i = 0; i < n; i++)
-	    for (int j = 0; j < m; j++)
-	      A(i, j) += V(k, i)*lambda(k)*U(j, k);
-	}
+	for (int j = 0; j < m; j++)
+	  U(j, k) /= lambda(k);
+    
+    U.Resize(m, n);
+    for (int k = m; k < n; k++)
+      for (int j = 0; j < m; j++)
+	U(j, k) = 0.0;
+    
+    MltAdd(1.0, SeldonTrans, V, SeldonTrans, U, 0.0, A);
+  }
+
+
+  // pseudo inverse
+  template<class T, class Prop, class Storage, class Allocator>
+  void GetPseudoInverse(Matrix<complex<T>, Prop, Storage, Allocator>& A,
+			const T& epsilon, LapackInfo& info = lapack_info)
+  {
+    int m = A.GetM(), n = A.GetN();
+    Vector<T> lambda;
+    Matrix<complex<T>, Prop, Storage, Allocator> U;
+    Matrix<complex<T>, Prop, Storage, Allocator> V;
+    
+    GetSVD(A, lambda, U, V, info);
+    
+    complex<T> one(1.0, 0.0), zero(0.0, 0.0);
+    
+    A.Reallocate(n, m);
+    A.Fill(zero);
+    // computation of A = V Sigma U^*
+    for (int k = 0; k < min(m, n); k++)
+      if (abs(lambda(k)) > epsilon)
+	for (int j = 0; j < m; j++)
+	  U(j, k) /= lambda(k);
+    
+    U.Resize(m, n);
+    for (int k = m; k < n; k++)
+      for (int j = 0; j < m; j++)
+	U(j, k) = zero;
+    
+    MltAdd(one, SeldonConjTrans, V, SeldonConjTrans, U, zero, A);
   }
 
 
@@ -3797,56 +4498,180 @@ namespace Seldon
   // RESOLUTION SYLVESTER EQUATION //
 
 
-  void GetHessenberg(Matrix<complex<double>, General, ColMajor>& A,
-                     Matrix<complex<double>, General, ColMajor>& B,
-                     Matrix<complex<double>, General, ColMajor>& Q,
-                     Matrix<complex<double>, General, ColMajor>& Z)
+  //! Reduces A to their Hessenberg form
+  /*!
+    This methode reduces A to Hessenberg form through orthogonal transformation
+    such that Q^H A Q = AA, AA being an Hessenberg matrix.
+    A is overwritten with matrix AA
+    Equivalent Matlab function :
+    [Q, A] = hess(A);
+   */
+  template<class Alloc>
+  void GetHessenberg(Matrix<complex<double>, General, ColMajor, Alloc>& A,
+                     Matrix<complex<double>, General, ColMajor, Alloc>& Q,
+		     LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetHessenberg", "Matrix must be squared");
+#endif
+
+    int n = A.GetM();
+    int ilo = 1, ihi = n;
+    Vector<complex<double>, VectFull, Alloc> tau(n-1);
+    int lwork = n;
+    Vector<complex<double>, VectFull, Alloc> work(lwork);
+    zgehrd_(&n, &ilo, &ihi, A.GetDataVoid(), &n, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+   
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to reduce A to Hessenberg form");
+#endif
+ 
+    // generating Q
+    Q = A;
+    complex<double> zero(0, 0);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < i-1; j++)
+	A(i, j) = zero;
+    
+    zunghr_(&n, &ilo, &ihi, Q.GetDataVoid(), &n, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to generate unitary matrix Q");
+#endif
+  }
+  
+  
+  //! Reduces A and B to their Hessenberg form
+  /*!
+    From square matrices A and B, this method produces
+    an upper Hessenberg matrix AA and an
+    upper triangular matrix BB and orthogonal matrices Q, Z
+    such that Q^H A Z = AA  and Q^H B Z = BB
+    A and B are overwritten with matrices AA and BB
+    Equivalent Matlab function :
+    [A, B, Q, Z] = hess(A, B); Q = Q'; Z = Z';
+   */
+  template<class Alloc>
+  void GetHessenberg(Matrix<complex<double>, General, ColMajor, Alloc>& A,
+                     Matrix<complex<double>, General, ColMajor, Alloc>& B,
+                     Matrix<complex<double>, General, ColMajor, Alloc>& Q,
+                     Matrix<complex<double>, General, ColMajor, Alloc>& Z,
+		     LapackInfo& info = lapack_info)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
+	throw WrongDim("GetHessenberg",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetHessenberg",
+		     "Matrix A and B must have the same size");
+#endif
+
     char compq('V'), compz('I');
-    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4 * n;
+    int n = A.GetM(), ilo = 1, ihi = n, lwork = 4 * n;
     Vector<complex<double> > tau(n);
     Vector<complex<double> > work(lwork);
     zgeqrf_(&n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
-	    work.GetDataVoid(), &lwork, &info);
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to compute QR factorisation of B");
+#endif
 
     Q = B;
     zungqr_(&n, &n, &n, Q.GetDataVoid(), &n, tau.GetDataVoid(),
-	    work.GetDataVoid(), &lwork, &info);
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to generate unitary matrix Q");
+#endif
 
     char side('L'), trans('C');
     zunmqr_(&side, &trans, &n, &n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
-	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info);
+	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info.GetInfoRef());
 
     for (int i = 0; i < n; i++)
       for (int j = 0; j < i; j++)
 	B(i, j) = 0;
-
+    
+    Z.Reallocate(n, n);
     zgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n,
 	    B.GetDataVoid(), &n, Q.GetDataVoid(), &n, Z.GetDataVoid(),
-	    &n, &info);
+	    &n, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to generate unitary matrix Z");
+#endif
 
   }
 
 
-  void GetQZ(Matrix<complex<double>, General, ColMajor>& A,
-	     Matrix<complex<double>, General, ColMajor>& B,
-	     Matrix<complex<double>, General, ColMajor>& Q,
-	     Matrix<complex<double>, General, ColMajor>& Z)
+  //! Reduces A and B to quasi-triangular matrices
+  /*!
+    From square matrices A and B, this method produces
+    triangular matrices AA, BB and orthogonal matrices Q, Z
+    such that Q^H A Z = AA  and Q^H B Z = BB
+    A and B are overwritten with matrices AA and BB
+    Equivalent Matlab function :
+    [A, B, Q, Z] = qz(A, B); Q = Q'; Z = Z';
+   */
+  template<class Alloc>
+  void GetQZ(Matrix<complex<double>, General, ColMajor, Alloc>& A,
+	     Matrix<complex<double>, General, ColMajor, Alloc>& B,
+	     Matrix<complex<double>, General, ColMajor, Alloc>& Q,
+	     Matrix<complex<double>, General, ColMajor, Alloc>& Z,
+	     LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
+	throw WrongDim("GetQZ",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetQZ",
+		     "Matrix A and B must have the same size");
+#endif
+
     char compq('V'), compz('I');
-    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4*n;
+    int n = A.GetM(), ilo = 1, ihi = n, lwork = 4*n;
     Vector<complex<double> > tau(n);
     Vector<complex<double> > work(lwork);
     zgeqrf_(&n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
-	    work.GetDataVoid(), &lwork, &info);
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetQZ",
+			"Failed to compute QR factorisation of B");
+#endif
 
     Q = B;
     zungqr_(&n, &n, &n, Q.GetDataVoid(), &n, tau.GetDataVoid(),
-	    work.GetDataVoid(), &lwork, &info);
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetQZ",
+			"Failed to generate unitary matrix Q");
+#endif
 
     char side('L'), trans('C');
     zunmqr_(&side, &trans, &n, &n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
-	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info);
+	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info.GetInfoRef());
 
     for (int i = 0; i < n; i++)
       for (int j = 0; j < i; j++)
@@ -3854,7 +4679,7 @@ namespace Seldon
 
     zgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n,
 	    B.GetDataVoid(), &n, Q.GetDataVoid(), &n, Z.GetDataVoid(),
-	    &n, &info);
+	    &n, &info.GetInfoRef());
 
     char job('S');
     compq = 'V';
@@ -3864,72 +4689,179 @@ namespace Seldon
     zhgeqz_(&job, &compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n,
 	    B.GetDataVoid(), &n, alpha.GetDataVoid(), beta.GetDataVoid(),
 	    Q.GetDataVoid(), &n, Z.GetDataVoid(), &n, work.GetDataVoid(),
-	    &lwork, rwork.GetData(), &info);
+	    &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetQZ",
+			"Failed to generate qz factorisation");
+#endif
   }
 
 
-  void GetHessenberg(Matrix<complex<double>, General, RowMajor>& A,
-                     Matrix<complex<double>, General, RowMajor>& B,
-                     Matrix<complex<double>, General, RowMajor>& Q,
-                     Matrix<complex<double>, General, RowMajor>& Z)
+  template<class Alloc>
+  void GetHessenberg(Matrix<complex<double>, General, RowMajor, Alloc>& A,
+                     Matrix<complex<double>, General, RowMajor, Alloc>& Q,
+		     LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetHessenberg", "Matrix must be squared");
+#endif
+
+    int n = A.GetM();
+    int ilo = 1, ihi = n;
+    Vector<complex<double>, VectFull, Alloc> tau(n-1);
+    int lwork = n;
+    Vector<complex<double>, VectFull, Alloc> work(lwork);
+    Transpose(A);
+    zgehrd_(&n, &ilo, &ihi, A.GetDataVoid(), &n, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to reduce A to Hessenberg form");
+#endif
+    
+    // generating Q
+    Q = A;
+    zunghr_(&n, &ilo, &ihi, Q.GetDataVoid(), &n, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to generate unitary matrix Q");
+#endif
+    
+    Transpose(Q);
+    Transpose(A);
+    complex<double> zero(0, 0);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < i-1; j++)
+	A(i, j) = zero;        
+  }
+  
+  
+  template<class Alloc>
+  void GetHessenberg(Matrix<complex<double>, General, RowMajor, Alloc>& A,
+                     Matrix<complex<double>, General, RowMajor, Alloc>& B,
+                     Matrix<complex<double>, General, RowMajor, Alloc>& Q,
+                     Matrix<complex<double>, General, RowMajor, Alloc>& Z,
+		     LapackInfo& info = lapack_info)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
+	throw WrongDim("GetHessenberg",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetHessenberg",
+		     "Matrix A and B must have the same size");
+#endif
+
     char compq('V'), compz('I');
-    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4 * n;
+    int n = A.GetM(), ilo = 1, ihi = n, lwork = 4 * n;
     Transpose(A); Transpose(B);
     Vector<complex<double> > tau(n);
     Vector<complex<double> > work(lwork);
     zgeqrf_(&n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
-	    work.GetDataVoid(), &lwork, &info);
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to compute QR factorisation of B");
+#endif
 
     Q = B;
     zungqr_(&n, &n, &n, Q.GetDataVoid(), &n, tau.GetDataVoid(),
-	    work.GetDataVoid(), &lwork, &info);
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to generate unitary matrix Q");
+#endif
 
     char side('L'), trans('C');
     zunmqr_(&side, &trans, &n, &n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
-	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info);
+	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info.GetInfoRef());
 
     for (int i = 0; i < n; i++)
       for (int j = 0; j < i; j++)
 	B(j, i) = 0;
-
+    
+    Z.Reallocate(n, n);
     zgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n,
 	    B.GetDataVoid(), &n, Q.GetDataVoid(), &n, Z.GetDataVoid(),
-	    &n, &info);
+	    &n, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to generate unitary matrix Z");
+#endif
 
     Transpose(A); Transpose(B);
     Transpose(Q); Transpose(Z);
   }
 
-
-  void GetQZ(Matrix<complex<double>, General, RowMajor>& A,
-	     Matrix<complex<double>, General, RowMajor>& B,
-	     Matrix<complex<double>, General, RowMajor>& Q,
-	     Matrix<complex<double>, General, RowMajor>& Z)
+  
+  template<class Alloc>
+  void GetQZ(Matrix<complex<double>, General, RowMajor, Alloc>& A,
+	     Matrix<complex<double>, General, RowMajor, Alloc>& B,
+	     Matrix<complex<double>, General, RowMajor, Alloc>& Q,
+	     Matrix<complex<double>, General, RowMajor, Alloc>& Z,
+	     LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
+	throw WrongDim("GetQZ",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetQZ",
+		     "Matrix A and B must have the same size");
+#endif
+
     char compq('V'), compz('I');
-    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4*n;
+    int n = A.GetM(), ilo = 1, ihi = n, lwork = 4*n;
     Transpose(A); Transpose(B);
     Vector<complex<double> > tau(n);
     Vector<complex<double> > work(lwork);
     zgeqrf_(&n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
-	    work.GetDataVoid(), &lwork, &info);
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetQZ",
+			"Failed to compute QR factorisation of B");
+#endif
 
     Q = B;
     zungqr_(&n, &n, &n, Q.GetDataVoid(), &n, tau.GetDataVoid(),
-	    work.GetDataVoid(), &lwork, &info);
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetQZ",
+			"Failed to generate unitary matrix Q");
+#endif
 
     char side('L'), trans('C');
     zunmqr_(&side, &trans, &n, &n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
-	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info);
+	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info.GetInfoRef());
 
     for (int i = 0; i < n; i++)
       for (int j = 0; j < i; j++)
 	B(j,i) = 0;
 
+    Z.Reallocate(n, n);
     zgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n,
 	    B.GetDataVoid(), &n, Q.GetDataVoid(), &n, Z.GetDataVoid(),
-	    &n, &info);
+	    &n, &info.GetInfoRef());
 
     char job('S');
     compq = 'V';
@@ -3939,7 +4871,13 @@ namespace Seldon
     zhgeqz_(&job, &compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n,
 	    B.GetDataVoid(), &n, alpha.GetDataVoid(), beta.GetDataVoid(),
 	    Q.GetDataVoid(), &n, Z.GetDataVoid(), &n, work.GetDataVoid(),
-	    &lwork, rwork.GetData(), &info);
+	    &lwork, rwork.GetData(), &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetQZ",
+			"Failed to generate qz factorisation");
+#endif
 
     Transpose(A); Transpose(B);
     Transpose(Q); Transpose(Z);
@@ -4003,8 +4941,10 @@ namespace Seldon
   void SolveHessenbergTwo(Matrix<T, Prop, Storage, Allocator>& A, Vector1& B)
   {
     int n = A.GetM();
-    T tmp, pivot, invDiag;
-    T a1, a2, a3;
+    T tmp, pivot, invDiag, one, zero;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    typename ClassComplexType<T>::Treal a1, a2, a3;
     // loop over rows
     for (int i = 0; i < n-2; i++)
       {
@@ -4045,21 +4985,21 @@ namespace Seldon
         invDiag = 1.0/A(i, i);
         pivot = A(i+1, i)*invDiag;
         A(i, i) = invDiag;
-        A(i+1, i) = 0;
+        A(i+1, i) = zero;
         for (int j = i+1; j < n; j++)
           A(i+1, j) -= pivot*A(i, j);
 
         B(i+1) -= pivot*B(i);
-
+	
         // then elimination of A(i+2, i)
         pivot = A(i+2, i)*invDiag;
-        A(i+2, i) = 0;
+        A(i+2, i) = zero;
         for (int j = i+1; j < n; j++)
           A(i+2, j) -= pivot*A(i, j);
 
         B(i+2) -= pivot*B(i);
       }
-
+    
     // elimination of A(n, n-1)
     if (abs(A(n-1, n-2)) > abs(A(n-2, n-2)))
       {
@@ -4069,21 +5009,21 @@ namespace Seldon
             A(n-2, j) = A(n-1, j);
             A(n-1, j) = tmp;
           }
-
+	
         tmp = B(n-2);
         B(n-2) = B(n-1);
         B(n-1) = tmp;
       }
 
-    invDiag = 1.0/A(n-2, n-2);
+    invDiag = one/A(n-2, n-2);
     pivot = A(n-1, n-2)*invDiag;
     A(n-2, n-2) = invDiag;
     A(n-1, n-2) = 0;
     A(n-1, n-1) -= pivot*A(n-2, n-1);
     B(n-1) -= pivot*B(n-2);
-
+    
     // inverting last element
-    A(n-1, n-1) = 1.0/A(n-1, n-1);
+    A(n-1, n-1) = one/A(n-1, n-1);
 
     // then solving triangular system
     for (int i = n-1; i >= 0; i--)
@@ -4172,64 +5112,181 @@ namespace Seldon
   }
 
 
-  void GetHessenberg(Matrix<double, General, ColMajor>& A,
-                     Matrix<double, General, ColMajor>& B,
-                     Matrix<double, General, ColMajor>& Q,
-                     Matrix<double, General, ColMajor>& Z)
+  template<class Alloc>
+  void GetHessenberg(Matrix<double, General, ColMajor, Alloc>& A,
+                     Matrix<double, General, ColMajor, Alloc>& Q,
+		     LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetHessenberg", "Matrix must be squared");
+#endif
+
+    int n = A.GetM();
+    int ilo = 1, ihi = n;
+    Vector<double, VectFull, Alloc> tau(n-1);
+    int lwork = n;
+    Vector<double, VectFull, Alloc> work(lwork);
+    dgehrd_(&n, &ilo, &ihi, A.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to reduce A to Hessenberg form");
+#endif
+    
+    // generating Q
+    Q = A;
+    double zero(0);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < i-1; j++)
+	A(i, j) = zero;
+    
+    dorghr_(&n, &ilo, &ihi, Q.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to generate unitary matrix Q");
+#endif
+  }
+
+
+  //! Reduces A and B to their Hessenberg form
+  /*!
+    From square matrices A and B, this method produces
+    an upper Hessenberg matrix AA and an
+    upper triangular matrix BB and orthogonal matrices Q, Z
+    such that Q^T A Z = AA  and Q^T B Z = BB
+    A and B are overwritten with matrices AA and BB
+    Equivalent Matlab function :
+    [A, B, Q, Z] = hess(A, B); Q = Q'; Z = Z';
+   */
+  template<class Alloc>
+  void GetHessenberg(Matrix<double, General, ColMajor, Alloc>& A,
+                     Matrix<double, General, ColMajor, Alloc>& B,
+                     Matrix<double, General, ColMajor, Alloc>& Q,
+                     Matrix<double, General, ColMajor, Alloc>& Z,
+		     LapackInfo& info = lapack_info)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
+	throw WrongDim("GetHessenberg",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetHessenberg",
+		     "Matrix A and B must have the same size");
+#endif
+
     char compq('V'), compz('I');
-    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4 * n;
+    int n = A.GetM(), ilo = 1, ihi = n, lwork = 4 * n;
     Vector<double> tau(n);
     Vector<double> work(lwork);
     dgeqrf_(&n, &n, B.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &info);
+	    work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to compute QR factorisation of B");
+#endif
 
     Q = B;
     dorgqr_(&n, &n, &n, Q.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &info);
+	    work.GetData(), &lwork, &info.GetInfoRef());
 
     char side('L'), trans('T');
     dormqr_(&side, &trans, &n, &n, &n, B.GetData(), &n, tau.GetData(),
-	    A.GetData(), &n, work.GetData(), &lwork, &info);
+	    A.GetData(), &n, work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to generate unitary matrix Q");
+#endif
 
     for (int i = 0; i < n; i++)
       for (int j = 0; j < i; j++)
 	B(i, j) = 0;
 
+    Z.Reallocate(n, n);
     dgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetData(), &n,
 	    B.GetData(), &n, Q.GetData(), &n, Z.GetData(),
-	    &n, &info);
+	    &n, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to generate unitary matrix Z");
+#endif
 
   }
 
 
-  void GetQZ(Matrix<double, General, ColMajor>& A,
-	     Matrix<double, General, ColMajor>& B,
-	     Matrix<double, General, ColMajor>& Q,
-	     Matrix<double, General, ColMajor>& Z)
+  //! Reduces A and B to quasi-triangular matrices
+  /*!
+    From square matrices A and B, this method produces
+    quasi-triangular matrices AA, BB and orthogonal matrices Q, Z
+    such that Q^T A Z = AA  and Q^T B Z = BB
+    A and B are overwritten with matrices AA and BB
+    Equivalent Matlab function :
+    [A, B, Q, Z] = qz(A, B,'real'); Q = Q'; Z = Z';
+   */
+  template<class Alloc>
+  void GetQZ(Matrix<double, General, ColMajor, Alloc>& A,
+	     Matrix<double, General, ColMajor, Alloc>& B,
+	     Matrix<double, General, ColMajor, Alloc>& Q,
+	     Matrix<double, General, ColMajor, Alloc>& Z,
+	     LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
+	throw WrongDim("GetQZ",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetQZ",
+		     "Matrix A and B must have the same size");
+#endif
+
     char compq('V'), compz('I');
-    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4*n;
+    int n = A.GetM(), ilo = 1, ihi = n, lwork = 4*n;
     Vector<double> tau(n);
     Vector<double> work(lwork);
     dgeqrf_(&n, &n, B.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &info);
+	    work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetQZ",
+			"Failed to compute QR factorisation of B");
+#endif
 
     Q = B;
     dorgqr_(&n, &n, &n, Q.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &info);
+	    work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetQZ",
+			"Failed to generate unitary matrix Q");
+#endif
 
     char side('L'), trans('T');
     dormqr_(&side, &trans, &n, &n, &n, B.GetData(), &n, tau.GetData(),
-	    A.GetData(), &n, work.GetData(), &lwork, &info);
+	    A.GetData(), &n, work.GetData(), &lwork, &info.GetInfoRef());
 
     for (int i = 0; i < n; i++)
       for (int j = 0; j < i; j++)
 	B(i,j) = 0;
 
+    Z.Reallocate(n, n);
     dgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetData(), &n,
 	    B.GetData(), &n, Q.GetData(), &n, Z.GetData(),
-	    &n, &info);
+	    &n, &info.GetInfoRef());
 
     char job('S');
     compq = 'V';
@@ -4239,38 +5296,115 @@ namespace Seldon
     dhgeqz_(&job, &compq, &compz, &n, &ilo, &ihi, A.GetData(), &n,
 	    B.GetData(), &n, alphar.GetData(), alphai.GetData(), beta.GetData(),
 	    Q.GetData(), &n, Z.GetData(), &n, work.GetData(),
-	    &lwork, &info);
+	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetQZ",
+			"Failed to generate qz factorisation");
+#endif
+
   }
 
 
-  void GetHessenberg(Matrix<double, General, RowMajor>& A,
-                     Matrix<double, General, RowMajor>& B,
-                     Matrix<double, General, RowMajor>& Q,
-                     Matrix<double, General, RowMajor>& Z)
+  template<class Alloc>
+  void GetHessenberg(Matrix<double, General, RowMajor, Alloc>& A,
+                     Matrix<double, General, RowMajor, Alloc>& Q,
+		     LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (A.GetM() != A.GetN())
+      throw WrongDim("GetHessenberg", "Matrix must be squared");
+#endif
+
+    int n = A.GetM();
+    int ilo = 1, ihi = n;
+    Vector<double, VectFull, Alloc> tau(n-1);
+    int lwork = n;
+    Vector<double, VectFull, Alloc> work(lwork);
+    Transpose(A);
+    dgehrd_(&n, &ilo, &ihi, A.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to reduce A to Hessenberg form");
+#endif
+    
+    // generating Q
+    Q = A;
+    dorghr_(&n, &ilo, &ihi, Q.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to generate unitary matrix Q");
+#endif
+    
+    Transpose(A);
+    Transpose(Q);
+    double zero(0);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < i-1; j++)
+	A(i, j) = zero;
+  }
+  
+  
+  template<class Alloc>
+  void GetHessenberg(Matrix<double, General, RowMajor, Alloc>& A,
+                     Matrix<double, General, RowMajor, Alloc>& B,
+                     Matrix<double, General, RowMajor, Alloc>& Q,
+                     Matrix<double, General, RowMajor, Alloc>& Z,
+		     LapackInfo& info = lapack_info)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
+	throw WrongDim("GetHessenberg",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetHessenberg",
+		     "Matrix A and B must have the same size");
+#endif
+
     char compq('V'), compz('I');
-    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4 * n;
+    int n = A.GetM(), ilo = 1, ihi = n, lwork = 4 * n;
     Transpose(A); Transpose(B);
     Vector<double> tau(n);
     Vector<double> work(lwork);
     dgeqrf_(&n, &n, B.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &info);
+	    work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to compute QR factorisation of B");
+#endif
 
     Q = B;
     dorgqr_(&n, &n, &n, Q.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &info);
+	    work.GetData(), &lwork, &info.GetInfoRef());
 
     char side('L'), trans('T');
     dormqr_(&side, &trans, &n, &n, &n, B.GetData(), &n, tau.GetData(),
-	    A.GetData(), &n, work.GetData(), &lwork, &info);
+	    A.GetData(), &n, work.GetData(), &lwork, &info.GetInfoRef());
 
     for (int i = 0; i < n; i++)
       for (int j = 0; j < i; j++)
 	B(j, i) = 0;
 
+    Z.Reallocate(n, n);
     dgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetData(), &n,
 	    B.GetData(), &n, Q.GetData(), &n, Z.GetData(),
-	    &n, &info);
+	    &n, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetHessenberg",
+			"Failed to generate unitary matrix Z");
+#endif
 
     Transpose(A); Transpose(B);
     Transpose(Q); Transpose(Z);
@@ -4278,34 +5412,53 @@ namespace Seldon
   }
 
 
-  void GetQZ(Matrix<double, General, RowMajor>& A,
-	     Matrix<double, General, RowMajor>& B,
-	     Matrix<double, General, RowMajor>& Q,
-	     Matrix<double, General, RowMajor>& Z)
+  template<class Alloc>
+  void GetQZ(Matrix<double, General, RowMajor, Alloc>& A,
+	     Matrix<double, General, RowMajor, Alloc>& B,
+	     Matrix<double, General, RowMajor, Alloc>& Q,
+	     Matrix<double, General, RowMajor>& Z,
+	     LapackInfo& info = lapack_info)
   {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
+	throw WrongDim("GetQZ",
+		       "Matrix A and B must be squared");
+	
+    if (A.GetM() != B.GetM())
+      throw WrongDim("GetQZ",
+		     "Matrix A and B must have the same size");
+#endif
+
     char compq('V'), compz('I');
-    int n = A.GetM(), ilo = 1, ihi = n, info, lwork = 4*n;
+    int n = A.GetM(), ilo = 1, ihi = n, lwork = 4*n;
     Transpose(A); Transpose(B);
     Vector<double> tau(n);
     Vector<double> work(lwork);
     dgeqrf_(&n, &n, B.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &info);
+	    work.GetData(), &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetQZ",
+			"Failed to compute QR factorisation of B");
+#endif
 
     Q = B;
     dorgqr_(&n, &n, &n, Q.GetData(), &n, tau.GetData(),
-	    work.GetData(), &lwork, &info);
+	    work.GetData(), &lwork, &info.GetInfoRef());
 
     char side('L'), trans('T');
     dormqr_(&side, &trans, &n, &n, &n, B.GetData(), &n, tau.GetData(),
-	    A.GetData(), &n, work.GetData(), &lwork, &info);
+	    A.GetData(), &n, work.GetData(), &lwork, &info.GetInfoRef());
 
     for (int i = 0; i < n; i++)
       for (int j = 0; j < i; j++)
 	B(j, i) = 0;
 
+    Z.Reallocate(n, n);
     dgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetData(), &n,
 	    B.GetData(), &n, Q.GetData(), &n, Z.GetData(),
-	    &n, &info);
+	    &n, &info.GetInfoRef());
 
     char job('S');
     compq = 'V';
@@ -4315,7 +5468,13 @@ namespace Seldon
     dhgeqz_(&job, &compq, &compz, &n, &ilo, &ihi, A.GetData(), &n,
 	    B.GetData(), &n, alphar.GetData(), alphai.GetData(), beta.GetData(),
 	    Q.GetData(), &n, Z.GetData(), &n, work.GetData(),
-	    &lwork, &info);
+	    &lwork, &info.GetInfoRef());
+
+#ifdef SELDON_LAPACK_CHECK_INFO
+    if (info.GetInfo() != 0)
+      throw LapackError(info.GetInfo(), "GetQZ",
+			"Failed to generate qz factorisation");
+#endif
 
     Transpose(A); Transpose(B);
     Transpose(Q); Transpose(Z);

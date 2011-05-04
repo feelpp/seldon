@@ -2169,7 +2169,7 @@ namespace Seldon
 	    Matrix<T1, Prop1, ColSparse, Allocator1>& B)
   {
     Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
-    Vector<T1> AllVal;
+    Vector<T1, VectFull, Allocator1> AllVal;
 
     int n = A.GetM();
     General sym;
