@@ -73,6 +73,7 @@ namespace Seldon
     void Resize(int i, int j);
 
     // Element access and affectation.
+    pointer GetDataPointer(int i, int j) const;
     reference operator() (int i, int j);
 #ifndef SWIG
     const_reference operator() (int i, int j) const;
@@ -109,6 +110,7 @@ namespace Seldon
     void Print(int l) const;
 
     // Input/output functions.
+    void Append(string FileName) const;
     void Write(string FileName, bool with_size = true) const;
     void Write(ostream& FileStream, bool with_size = true) const;
     void WriteText(string FileName) const;
@@ -137,6 +139,9 @@ namespace Seldon
     Matrix(int i, int j);
     Matrix(const Matrix<T, Prop, ColMajor, Allocator>& A);
 
+    void WriteColumn(string FileName, int col) const;
+    void WriteColumn(ostream& FileStream, int col) const;
+
 #ifndef SWIG
     template <class T0>
     Matrix<T, Prop, ColMajor, Allocator>& operator= (const T0& x);
@@ -164,6 +169,9 @@ namespace Seldon
     Matrix()  throw();
     Matrix(int i, int j);
     Matrix(const Matrix<T, Prop, RowMajor, Allocator>& A);
+
+    void WriteRow(string FileName, int row) const;
+    void WriteRow(ostream& FileStream, int row) const;
 
 #ifndef SWIG
 

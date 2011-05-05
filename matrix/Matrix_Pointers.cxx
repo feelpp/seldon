@@ -462,6 +462,23 @@ namespace Seldon
    **********************************/
 
 
+  //! Returns a pointer to a data element.
+  /*!
+    \param i index along dimension #1.
+    \param j index along dimension #2.
+    \return A pointer to the data element.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  typename Matrix_Pointers<T, Prop, Storage, Allocator>::pointer
+  Matrix_Pointers<T, Prop, Storage, Allocator>::GetDataPointer(int i, int j)
+    const
+  {
+    int lgth = Storage::GetSecond(this->m_, this->n_);
+    return this->data_ + Storage::GetFirst(i, j) * lgth
+      + Storage::GetSecond(i, j);
+  }
+
+
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -861,6 +878,32 @@ namespace Seldon
    **************************/
 
 
+  //! Appends the matrix in a file.
+  /*!  
+    Appends the matrix in a file in binary format. The matrix elements are
+    appended in the same order as in memory (e.g. row-major storage).
+    \param FileName output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Pointers<T, Prop, Storage, Allocator>
+  ::Append(string FileName) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str(), ofstream::binary | ios::app);
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_Pointers::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Write(FileStream, false);
+
+    FileStream.close();
+  }
+
+
   //! Writes the matrix in a file.
   /*!
     Stores the matrix in a file in binary format.
@@ -1206,6 +1249,72 @@ namespace Seldon
    *****************/
 
 
+  //! Writes one column of matrix in a file.
+  /*!
+    Stores one column of matrix in a file in binary format.
+    The column indexed by \a col is written.
+    \param FileName output file name.
+    \param col column index.
+  */
+  template <class T, class Prop, class Allocator>
+  void Matrix<T, Prop, ColMajor, Allocator>
+  ::WriteColumn(string FileName, int col) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix::WriteColumn(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->WriteColumn(FileStream, col);
+
+    FileStream.close();
+  }
+
+
+  //! Writes one column of matrix in an output stream.
+  /*!
+    Stores one column of matrix in an output stream in binary format.
+    The column indexed by \a col is written.
+    \param FileStream output stream.
+    \param col column index.
+  */
+  template <class T, class Prop, class Allocator>
+  void Matrix<T, Prop, ColMajor, Allocator>
+  ::WriteColumn(ostream& FileStream, int col) const
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    if (col < 0 || col >= this->n_)
+      throw WrongCol("Matrix::WriteColumn(ostream& FileStream, int col)",
+		     string("Index should be in [0, ")
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(col) + ".");
+#endif
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix::WriteColumn(ostream& FileStream, int col)",
+		    "The stream is not ready.");
+#endif
+
+    FileStream.write(reinterpret_cast<char*>(this->me_[col]),
+		     this->m_ * sizeof(value_type));
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was written.
+    if (!FileStream.good())
+      throw IOError("Matrix::WriteColumn(ostream& FileStream, int col)",
+                    "Output operation failed.");
+#endif
+
+  }
+
+
   //! Fills the matrix with a given value.
   /*!
     \param x the value to fill the matrix with.
@@ -1298,6 +1407,72 @@ namespace Seldon
   /*****************
    * OTHER METHODS *
    *****************/
+
+
+  //! Writes one row of matrix in a file.
+  /*!
+    Stores one row of matrix in a file in binary format.
+    The row indexed by \a row is written.
+    \param FileName output file name.
+    \param row row index.
+  */
+  template <class T, class Prop, class Allocator>
+  void Matrix<T, Prop, RowMajor, Allocator>
+  ::WriteRow(string FileName, int row) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix::WriteRow(string FileName, int row)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->WriteRow(FileStream, row);
+
+    FileStream.close();
+  }
+
+
+  //! Writes one row of matrix in an output stream.
+  /*!
+    Stores one row of matrix in an output stream in binary format.
+    The row indexed by \a row is written.
+    \param FileStream output stream.
+    \param row row index.
+  */
+  template <class T, class Prop, class Allocator>
+  void Matrix<T, Prop, RowMajor, Allocator>
+  ::WriteRow(ostream& FileStream, int row) const
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    if (row < 0 || row >= this->m_)
+      throw WrongRow("Matrix::WriteRow(ostream& FileStream, int row)",
+		     string("Index should be in [0, ")
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(row) + ".");
+#endif
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix::WriteRow(ostream& FileStream, int rowm)",
+		    "The stream is not ready.");
+#endif
+
+    FileStream.write(reinterpret_cast<char*>(this->me_[row]),
+		     this->n_ * sizeof(value_type));
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was written.
+    if (!FileStream.good())
+      throw IOError("Matrix::WriteRow(ostream& FileStream, int row)",
+                    "Output operation failed.");
+#endif
+
+  }
 
 
   //! Fills the matrix with a given value.

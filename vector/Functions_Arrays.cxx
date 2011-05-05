@@ -48,6 +48,8 @@
   RemoveDuplicate(m, X, Y);
   RemoveDuplicate(X);
   RemoveDuplicate(X, Y);
+
+  HasElement(X, a);
 */
 
 namespace Seldon
@@ -738,6 +740,17 @@ namespace Seldon
 
   //  SORT  //
   ////////////
+
+
+  //! Whether \a X contains element \a a.
+  template<class T, class Storage, class Allocator>
+  bool HasElement(Vector<T, Storage, Allocator>& X, T& a)
+  {
+    for (int i = 0; i < X.GetM(); i++)
+      if (a == X(i))
+	return true;
+    return false;
+  }
 
 
 } // namespace Seldon

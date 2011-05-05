@@ -153,6 +153,8 @@ namespace Seldon
 #endif
     template <class T0>
     Vector<T, VectFull, Allocator>& operator*= (const T0& X);
+    Vector<T, VectFull, Allocator>& operator+= (const Vector<T, VectFull,
+						Allocator>& rhs);
     void FillRand();
     void Print() const;
 

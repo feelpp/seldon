@@ -24,8 +24,12 @@
 namespace Seldon
 {
   template class MallocAlloc<int>;
+
   template class Vector_Base<int, MallocAlloc<int> >;
   template class Vector<int, VectFull, MallocAlloc<int> >;
+  template class MallocAlloc<float>;
+  template class Vector_Base<float, MallocAlloc<float> >;
+  template class Vector<float, VectFull, MallocAlloc<float> >;
   template class MallocAlloc<double>;
   template class Vector_Base<double, MallocAlloc<double> >;
   template class Vector<double, VectFull, MallocAlloc<double> >;
@@ -33,9 +37,19 @@ namespace Seldon
   template class Matrix_Base<int, MallocAlloc<int> >;
   template class Matrix_Pointers<int, General, RowMajor, MallocAlloc<int> >;
   template class Matrix<int, General, RowMajor, MallocAlloc<int> >;
+  template class Matrix_Base<float, MallocAlloc<float> >;
+  template class Matrix_Pointers<float, General, RowMajor, MallocAlloc<float> >;
+  template class Matrix<float, General, RowMajor, MallocAlloc<float> >;
   template class Matrix_Base<double, MallocAlloc<double> >;
   template class Matrix_Pointers<double, General, RowMajor, MallocAlloc<double> >;
   template class Matrix<double, General, RowMajor, MallocAlloc<double> >;
+
+  template class Array3D<int, MallocAlloc<int> >;
+  template class Array3D<float, MallocAlloc<float> >;
+  template class Array3D<double, MallocAlloc<double> >;
+  template class Array4D<int, MallocAlloc<int> >;
+  template class Array4D<float, MallocAlloc<float> >;
+  template class Array4D<double, MallocAlloc<double> >;
 
   template class Vector<double, VectSparse, MallocAlloc<double> >;
 
@@ -47,10 +61,13 @@ namespace Seldon
                                              Vector<double, VectFull>& Val,
                                              int index = 0, bool sym = false);
 
+#ifndef SWIG
   template void ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
                                                Vector<double, VectFull>& Val,
                                                Matrix<double, General, RowSparse, MallocAlloc<double> >& A,
                                                int index = 0);
+#endif
+
 }
 
 
