@@ -89,5 +89,13 @@ void sneupd_(ARPACK_LOGICAL *rvec, char *HowMny, ARPACK_LOGICAL *select,
 	     ARPACK_INTEGER *ipntr, ARPACK_REAL *workd, ARPACK_REAL *workl,
 	     ARPACK_INTEGER *lworkl, ARPACK_INTEGER *info);
 
+// complex routines
+void znaupd_(int*, char*, int*, char*, int*, double*, void*,
+	     int*, void*, int*, int*, int*, void*, void*, int*, double*, int*);
+
+void zneupd_(int*, char*, int*, void*, void*, int*, void*, void*, char*, int*,
+	     char*, int*, double*, void*, int*, void*, int*, int*, int*, void*,
+	     void*, int*, double*, int*);
+
 
 #endif /* __CARPACK_H */

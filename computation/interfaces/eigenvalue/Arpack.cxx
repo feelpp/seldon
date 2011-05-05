@@ -1,0 +1,736 @@
+// Copyright (C) 2011 Marc Duruflé
+//
+// This file is part of the linear-algebra library Seldon,
+// http://seldon.sourceforge.net/.
+//
+// Seldon is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your option)
+// any later version.
+//
+// Seldon is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+// more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with Seldon. If not, see http://www.gnu.org/licenses/.
+
+#ifndef SELDON_FILE_ARPACK_CXX
+
+#include "Arpack.hxx"
+
+namespace Seldon
+{
+  
+  //! computation of eigenvalues and related eigenvectors
+  /*!
+    \param[in,out] var eigenproblem to solve
+    \param[out] eigen_values eigenvalue
+    \param[out] eigen_vectors eigenvectors
+  */
+  template<class EigenProblem, class T, class Allocator1,
+           class Allocator2, class Allocator3>
+  void FindEigenvaluesArpack(EigenProblem& var,
+                             Vector<T, VectFull, Allocator1>& eigen_values,
+                             Vector<T, VectFull, Allocator2>& lambda_imag,
+                             Matrix<T, General, ColMajor, Allocator3>& eigen_vectors)
+  {
+    // declaration (and initialization) of all the variables needed by CallArpack
+    int ido = 0, n = var.GetM();
+    char bmat;
+    string which("LM");
+    switch (var.GetTypeSorting())
+      {
+      case EigenProblem::SORTED_REAL : which = "LR"; break;
+      case EigenProblem::SORTED_IMAG : which = "LI"; break;
+      case EigenProblem::SORTED_MODULUS : which = "LM"; break;
+      }
+    
+    if (var.GetTypeSpectrum() == var.SMALL_EIGENVALUES)
+      {
+        switch (var.GetTypeSorting())
+          {
+          case EigenProblem::SORTED_REAL : which = "SR"; break;
+          case EigenProblem::SORTED_IMAG : which = "SI"; break;
+          case EigenProblem::SORTED_MODULUS : which = "SM"; break;
+          }
+      }
+    
+    // initializaing of computation
+    var.Init(n);
+    
+    int nev = var.GetNbAskedEigenvalues();
+    double tol = var.GetStoppingCriterion();
+    
+    Vector<T> resid;
+    int ncv = var.GetNbArnoldiVectors();
+    Matrix<T, General, ColMajor, Allocator2> v;
+    int ldv = n;
+		
+    IVect iparam(11), ipntr(14);
+    iparam.Fill(0); ipntr.Fill(0);
+    int ishift = 1, nb_max_iter = var.GetNbMaximumIterations();
+    bool sym = var.IsSymmetricProblem();
+    bool non_sym = false;
+    typedef typename EigenProblem::MassValue Tmass;
+    iparam(0) = ishift;
+    iparam(2) = nb_max_iter;
+    iparam(3) = 1;
+    
+    int lworkl = 3*ncv*ncv + 6*ncv, info(0);
+    Vector<T> workd, workl, Xh, Yh, Zh;
+    Vector<double> rwork;
+    
+    T shiftr = var.GetShiftValue(), shifti = var.GetImagShiftValue();    
+    T zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+        
+    // mass matrix for diagonal case, and Cholesky case
+    Vector<Tmass> Dh_diag;
+    int print_level = var.GetPrintLevel();
+    
+    // checking if computation mode is compatible with the spectrum
+    // the used wants to find
+    if (var.GetComputationalMode() == var.REGULAR_MODE)
+      {
+        if (var.GetTypeSpectrum() == var.CENTERED_EIGENVALUES)
+          {
+            cout << "You can not use regular mode to find "
+                 << "eigenvalues closest to a given value" << endl;
+            cout << "Try to use shifted mode for example "<<endl;
+            abort();
+          }
+      }
+    else
+      {
+        if (var.GetTypeSpectrum() != var.CENTERED_EIGENVALUES)
+          {
+            cout << "To find large or small eigenvalues, use a regular mode" << endl;
+            abort();
+          }
+        
+        if (var.GetComputationalMode() == var.IMAG_SHIFTED_MODE)
+          {
+            cout << "Currently not working" << endl;
+            abort();
+          }
+          
+        if ( (var.GetComputationalMode() == var.BUCKLING_MODE)
+             || (var.GetComputationalMode() == var.CAYLEY_MODE) )
+          {
+            if ( !var.IsSymmetricProblem() || IsComplexNumber(zero))
+              {
+                cout << "Cayley or Bucking mode are reserved for symmetric"
+                     << "generalized eigenproblems " << endl;                
+              }
+          }
+        else          
+          {
+            if (shifti != zero)
+              {
+                if (var.DiagonalMass() || var.UseCholeskyFactoForMass()
+                    || var.GetComputationalMode() == var.INVERT_MODE )
+                  {
+                    cout << "Complex shifts for unsymmetric real problems"
+                         << "are not possible with invert mode" << endl;
+                    
+                    cout << "Select SHIFTED_MODE or IMAG_SHIFTED_MODE" << endl;
+                    cout << "(mode 3 and 4 respectively in Arpack)" << endl;
+                    abort();
+                  }
+              }
+          }
+      }
+					 
+
+    // we want to find eigenvalues of the generalized problem
+    // K U  =  lambda M U
+    
+    // A first solution is to compute a cholesky factorization of M = L L^t
+    // the system is transformed into
+    // L^-1 K L^-T V = lambda V
+    // with V = L^T U
+    // we can use then regular or shifted mode for this standard problem
+    // Similarly, if matrix M is diagonal, we have the standard problem 
+    // D^-1/2 K D^-1/2 V = lambda V
+    // with V = D^1/2 U
+    
+    // a second solution is to consider the generalized problem    
+    if (var.DiagonalMass() || var.UseCholeskyFactoForMass())
+      {
+        // solving a standard eigenvalue problem
+        if (print_level >= 2)
+          cout << "We solve a standard eigenvalue problem " << endl;
+        
+        // we can reduce to a standard problem
+        // we consider S  = M^{-1/2}  K  M^{-1/2}
+        // if matrix M is diagonal
+        // and S = L^-1 K L^-T    if Cholesky factorisation of matrix
+        // M = L L^T is used        
+        bmat = 'I';
+        if (var.DiagonalMass())
+          {
+            // computation of M
+            var.ComputeDiagonalMass(Dh_diag);
+
+            // computation of M^{-1/2}
+            var.FactorizeDiagonalMass(Dh_diag);
+            Dh_diag.Clear();
+          }
+        else 
+          {
+            // computation of M for Cholesky factorisation
+            var.ComputeMassForCholesky();
+            
+            // computation of Cholesky factorisation M = L L^T
+            var.FactorizeCholeskyMass();
+          }
+        
+        if (var.GetComputationalMode() == var.REGULAR_MODE)
+          {
+            shiftr = zero;
+            // regular mode -> mode 1 for arpack
+            iparam(6) = 1;
+
+            // computation of the stiffness matrix
+            var.ComputeStiffnessMatrix();
+					 
+            // Initialization of variables
+            v.Reallocate(n, ncv);
+            workd.Reallocate(3*n);
+            workl.Reallocate(lworkl);
+            Xh.Reallocate(n);
+            Yh.Reallocate(n);
+            rwork.Reallocate(ncv);
+            resid.Reallocate(n);
+            resid.Fill(zero);
+            v.Fill(zero);
+            workd.Fill(zero);
+            workl.Fill(zero);
+            rwork.Fill(0.0);
+            Xh.Fill(zero);
+            Yh.Fill(zero);
+            
+            bool test_loop = true;
+            while (test_loop)
+              {
+                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                           iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
+						 
+                if ((ido == -1)||(ido == 1))
+                  {
+                    // matrix vector product with M^-1/2  K  M^-1/2
+                    //  or L^-1  K L^-T 
+                    for (int i = 0; i < n; i++)
+                      Xh(i) = workd(ipntr(0)+i-1);
+                    
+                    if (var.DiagonalMass())
+                      var.MltInvSqrtDiagonalMass(Xh);
+                    else
+                      var.SolveCholeskyMass(SeldonTrans, Xh);
+                    
+                    var.MltStiffness(Xh, Yh);
+                    var.IncrementProdMatVect();
+                    
+                    if(var.DiagonalMass())
+                      var.MltInvSqrtDiagonalMass(Yh);
+                    else
+                      var.SolveCholeskyMass(SeldonNoTrans, Yh);
+                     
+                    for (int i = 0; i < n; i++)
+                      workd(ipntr(1)+i-1) = Yh(i);
+                    
+                  }
+                else
+                  test_loop = false;
+						 
+              }
+          }
+        else
+          {
+            // shifted mode, we compute a factorization of (K - \sigma M)
+            // where \sigma is the shift
+            // shifted mode for regular problem -> mode 1 for arpack
+            iparam(6) = 1;
+            
+            // computation and factorization of K - sigma M
+            var.ComputeAndFactorizeStiffnessMatrix(-shiftr, one);
+            
+            // Initialization of variables
+            v.Reallocate(n, ncv);
+            workd.Reallocate(3*n);
+            workl.Reallocate(lworkl);
+            Xh.Reallocate(n);
+            Yh.Reallocate(n);
+            rwork.Reallocate(ncv);
+            resid.Reallocate(n);
+            resid.Fill(zero);
+            v.Fill(zero);
+            workd.Fill(zero);
+            workl.Fill(zero);
+            rwork.Fill(0.0);
+            Xh.Fill(zero);
+            Yh.Fill(zero);
+		
+            bool test_loop = true;			 
+            while (test_loop)
+              {
+                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                           iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
+		
+                if ((ido == -1)||(ido == 1))
+                  {
+                    // matrix vector product M^1/2 (K - sigma M)^-1 M^1/2  X
+                    // or L^T (K - sigma M)^-1 L  X
+                    for (int i = 0; i < n; i++)
+                      Xh(i) = workd(ipntr(0)+i-1);
+                      
+                    if(var.DiagonalMass())
+                      var.MltSqrtDiagonalMass(Xh);
+                    else
+                      var.MltCholeskyMass(SeldonNoTrans, Xh);
+                    
+                    var.ComputeSolution(Xh, Yh);
+                    var.IncrementProdMatVect();
+					
+                    if(var.DiagonalMass())
+                      var.MltSqrtDiagonalMass(Yh);
+                    else
+                      var.MltCholeskyMass(SeldonTrans, Yh);
+                    
+                    for (int i = 0; i < n; i++)
+                      workd(ipntr(1)+i-1) = Yh(i);
+                  }
+                else
+                  test_loop = false;
+                
+              }
+          }
+      }
+    else
+      {
+        // generalized problem
+        bmat = 'G';
+	
+        // different computational modes available in Arpack :
+        if (var.GetComputationalMode() == var.INVERT_MODE)
+          {
+            // we consider standard problem M^-1 K U = lambda U
+            // drawback : the matrix is non-symmetric even if K and M are symmetric            
+            bmat = 'I';
+            
+            // => regular mode for matrix (M^-1 K - sigma I)^-1
+            // = (K - sigma M)^-1 M
+            iparam(6) = 1;
+            
+            // computation and factorization of (K - sigma M)
+            var.ComputeAndFactorizeStiffnessMatrix(-shiftr, one);
+            
+            // computation of M
+            var.ComputeMassMatrix();
+					 
+            // Initialization of variables
+            v.Reallocate(n, ncv);
+            workd.Reallocate(3*n);
+            workl.Reallocate(lworkl);
+            Xh.Reallocate(n);
+            Yh.Reallocate(n);
+            Zh.Reallocate(n);
+            rwork.Reallocate(ncv);
+            resid.Reallocate(n);
+            resid.Fill(zero);
+            v.Fill(zero);
+            workd.Fill(zero);
+            workl.Fill(zero);
+            rwork.Fill(0.0);
+            Xh.Fill(zero);
+            Yh.Fill(zero);
+            Zh.Fill(zero);
+            
+            bool test_loop = true;			 
+            while (test_loop)
+              {
+                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                           iparam, ipntr, non_sym, workd, workl, lworkl, rwork, info);
+						 
+                if ((ido == -1)||(ido == 1))
+                  {
+                    // computation of (K - sigma M)^-1 M X
+                    for (int i = 0; i < n; i++)
+                      Xh(i) = workd(ipntr(0)+i-1);
+							 
+                    var.MltMass(Xh, Zh);
+                    var.ComputeSolution(Zh, Yh);
+                    var.IncrementProdMatVect();
+							 
+                    for (int i = 0; i < n; i++)
+                      workd(ipntr(1)+i-1) = Yh(i);
+                  }
+                else
+                  test_loop = false;
+						 
+              }
+          }
+        else if (var.GetComputationalMode() == var.REGULAR_MODE)
+          {
+            // regular mode for generalized eigenvalue problem -> mode 2 for arpack
+            iparam(6) = 2;
+            bmat = 'G';
+            
+            // factorization of the mass matrix
+            var.ComputeAndFactorizeStiffnessMatrix(one, zero);
+					 
+            // computation of stiffness and mass matrix
+            var.ComputeStiffnessMatrix();
+            var.ComputeMassMatrix();
+            					 
+            // Initialization of variables
+            v.Reallocate(n, ncv);
+            workd.Reallocate(3*n);
+            workl.Reallocate(lworkl);
+            Xh.Reallocate(n);
+            Yh.Reallocate(n);
+            Zh.Reallocate(n);
+            rwork.Reallocate(ncv);
+            resid.Reallocate(n);
+            resid.Fill(zero);
+            v.Fill(zero);
+            workd.Fill(zero);
+            workl.Fill(zero);
+            rwork.Fill(0.0);
+            Xh.Fill(zero);
+            Yh.Fill(zero);
+            Zh.Fill(zero);
+
+            bool test_loop = true;
+            while (test_loop)
+              {
+                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                           iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
+						 
+                if ((ido == -1)||(ido == 1))
+                  {
+                    // computation of M^-1 K X and K X
+                    for (int i = 0; i < n; i++)
+                      Xh(i) = workd(ipntr(0)+i-1);
+                    
+                    var.MltStiffness(Xh, Zh);
+                    var.ComputeSolution(Zh, Yh);
+                    var.IncrementProdMatVect();
+							 
+                    for (int i = 0; i < n; i++)
+                      {
+                        workd(ipntr(0)+i-1) = Zh(i);
+                        workd(ipntr(1)+i-1) = Yh(i);
+                      }
+                  }
+                else if (ido == 2)
+                  {
+                    // computation of M X
+                    for (int i = 0; i < n; i++)
+                      Xh(i) = workd(ipntr(0)+i-1);
+                    
+                    var.MltMass(Xh, Yh);
+							 
+                    for (int i = 0; i < n; i++)
+                      workd(ipntr(1)+i-1) = Yh(i);
+                  }
+                else
+                  test_loop = false;
+						 
+              }
+          }
+        else if ((var.GetComputationalMode() == var.SHIFTED_MODE)
+                 || (var.GetComputationalMode() == var.IMAG_SHIFTED_MODE) )
+          {
+            // shifted mode for generalized eigenvalue problem -> mode 3 for arpack
+            iparam(6) = 3;
+            
+            // computation and factorization of (K - sigma M)^-1
+            if (shifti != zero)
+              {
+                if (var.GetComputationalMode() == var.SHIFTED_MODE)
+                  var.ComputeAndFactorizeStiffnessMatrix(-complex<T>(shiftr, shifti),
+                                                         complex<T>(one, zero), true);
+                else
+                  {
+                    iparam(6) = 4;
+                    var.ComputeAndFactorizeStiffnessMatrix(-complex<T>(shiftr, shifti),
+                                                           complex<T>(one, zero), false);
+                  }
+                
+                var.ComputeStiffnessMatrix();
+              }
+            else
+              var.ComputeAndFactorizeStiffnessMatrix(-shiftr, one);
+            
+            // computation of mass matrix
+            var.ComputeMassMatrix();
+            					 
+            // Initialization of variables
+            v.Reallocate(n, ncv);
+            workd.Reallocate(3*n);
+            workl.Reallocate(lworkl);
+            Xh.Reallocate(n);
+            Yh.Reallocate(n);
+            Zh.Reallocate(n);
+            rwork.Reallocate(ncv);
+            resid.Reallocate(n);
+            resid.Fill(zero);
+            v.Fill(zero);
+            workd.Fill(zero);
+            workl.Fill(zero);
+            rwork.Fill(0.0);
+            Xh.Fill(zero);
+            Yh.Fill(zero);
+            Zh.Fill(zero);
+		
+            bool test_loop = true;
+            while (test_loop)
+              {
+                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                           iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
+                
+                if ((ido == -1)||(ido == 1))
+                  {
+                    // computation of Real( (K - sigma M)^-1  M) X
+                    // or Imag( (K - sigma M)^-1  M) X
+                    // if ido == 1, M X is already computed and available
+                    if (ido == -1)
+                      {
+                        for (int i = 0; i < n; i++)
+                          Zh(i) = workd(ipntr(0)+i-1);
+								 
+                        var.MltMass(Zh, Xh);
+                      }
+                    else
+                      for (int i = 0; i < n; i++)
+                        Xh(i) = workd(ipntr(2)+i-1);
+                    
+                    var.ComputeSolution(Xh, Yh);
+                    var.IncrementProdMatVect();
+                    
+                    for (int i = 0; i < n; i++)
+                      workd(ipntr(1)+i-1) = Yh(i);
+                    
+                  }
+                else if (ido == 2)
+                  {
+                    // computation of M X
+                    for (int i = 0; i < n; i++)
+                      Xh(i) = workd(ipntr(0)+i-1);
+                    
+                    var.MltMass(Xh, Yh);
+                                        
+                    for (int i = 0; i < n; i++)
+                      workd(ipntr(1)+i-1) = Yh(i);
+                  }
+                else
+                  test_loop = false;
+                
+              }
+					 
+          }
+        else if (var.GetComputationalMode() == var.BUCKLING_MODE)
+          {
+            // buckling mode for generalized eigenvalue problem -> mode 4 for arpack
+            iparam(6) = 4;
+            
+            // computation and factorisation of (K - sigma M)
+            var.ComputeAndFactorizeStiffnessMatrix(-shiftr, one);
+            
+            // computation of matrix K
+            var.ComputeStiffnessMatrix();
+            					 
+            // Initialization of variables
+            v.Reallocate(n, ncv);
+            workd.Reallocate(3*n);
+            workl.Reallocate(lworkl);
+            Xh.Reallocate(n);
+            Yh.Reallocate(n);
+            Zh.Reallocate(n);
+            rwork.Reallocate(ncv);
+            resid.Reallocate(n);
+            resid.Fill(zero);
+            v.Fill(zero);
+            workd.Fill(zero);
+            workl.Fill(zero);
+            rwork.Fill(0.0);
+            Xh.Fill(zero);
+            Yh.Fill(zero);
+            Zh.Fill(zero);
+            
+            bool test_loop = true;			 
+            while (test_loop)
+              {
+                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                           iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
+						 
+                if ((ido == -1)||(ido == 1))
+                  {
+                    // computation of (K - sigma M)^-1 K X or (K - sigma M)^-1 X
+                    if (ido == -1)
+                      {
+                        for (int i = 0; i < n; i++)
+                          Zh(i) = workd(ipntr(0)+i-1);
+								 
+                        var.MltStiffness(Zh, Xh);
+                      }
+                    else
+                      for (int i = 0; i < n; i++)
+                        Xh(i) = workd(ipntr(2)+i-1);
+							 
+                    var.ComputeSolution(Xh, Yh);
+                    var.IncrementProdMatVect();
+							 
+                    for (int i = 0; i < n; i++)
+                      workd(ipntr(1)+i-1) = Yh(i);
+                  }
+                else if (ido == 2)
+                  {
+                    // computation of M X
+                    for (int i = 0; i < n; i++)
+                      Xh(i) = workd(ipntr(0)+i-1);
+							 
+                    var.MltStiffness(Xh, Yh);
+                    var.IncrementProdMatVect();
+							 
+                    for (int i = 0; i < n; i++)
+                      workd(ipntr(1)+i-1) = Yh(i);
+                  }
+                else
+                  test_loop = false;
+						 
+              }
+          }
+        else if (var.GetComputationalMode() == var.CAYLEY_MODE)
+          {
+            // shifted mode for generalized eigenvalue problem -> mode 5 for arpack
+            iparam(6) = 5;
+            
+            // computation and factorization of (K - sigma M)
+            var.ComputeAndFactorizeStiffnessMatrix(-shiftr, one);
+            
+            // computation of M and (K + sigma M)
+            var.ComputeMassMatrix();
+            var.ComputeStiffnessMatrix(shiftr, one);
+            					 
+            // Initialization of variables
+            v.Reallocate(n, ncv);
+            workd.Reallocate(3*n);
+            workl.Reallocate(lworkl);
+            Xh.Reallocate(n);
+            Yh.Reallocate(n);
+            Zh.Reallocate(n);
+            rwork.Reallocate(ncv);
+            resid.Reallocate(n);
+            resid.Fill(zero);
+            v.Fill(zero);
+            workd.Fill(zero);
+            workl.Fill(zero);
+            rwork.Fill(0.0);
+            Xh.Fill(zero);
+            Yh.Fill(zero);
+            Zh.Fill(zero);
+            
+            bool test_loop = true;			 
+            while (test_loop)
+              {
+                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                           iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
+						 
+                if ((ido == -1)||(ido == 1))
+                  {
+                    // computation of (K - sigma M)^-1 (K + sigma M) X
+                    for (int i = 0; i < n; i++)
+                      Zh(i) = workd(ipntr(0)+i-1);
+							 
+                    var.MltStiffness(shiftr, one, Zh, Xh);
+                    var.ComputeSolution(Xh, Yh);
+                    var.IncrementProdMatVect();
+							 
+                    for (int i = 0; i < n; i++)
+                      workd(ipntr(1)+i-1) = Yh(i);
+                  }
+                else if (ido == 2)
+                  {
+                    // computation of M X
+                    for (int i = 0; i < n; i++)
+                      Xh(i) = workd(ipntr(0)+i-1);
+							 
+                    var.MltMass(Xh, Yh);
+							 
+                    for (int i = 0; i < n; i++)
+                      workd(ipntr(1)+i-1) = Yh(i);
+                  }
+                else
+                  test_loop = false;
+						 
+              }
+          }
+				 
+      }    
+    
+    if (info != 0)
+      {
+        if (info == 1)
+          {
+            cout << "Maximum number of iterations reached" << endl;
+            cout << "Try again with a larger number of iterations" 
+                 << "or with a less restrictive stopping criterion" << endl;
+            abort();
+          }
+        else
+          {
+            cout << "Error during the computation of eigenvalues, info = " << info << endl;
+            cout << "Look at documentation of ARPACK " << endl;
+            abort();
+          }
+      }
+			 
+    Xh.Clear();
+    Yh.Clear();
+    Zh.Clear();
+    
+    // we recover eigenvalues and eigenvectors
+    eigen_values.Reallocate(nev+1);
+    eigen_vectors.Reallocate(n, nev+1);
+    eigen_values.Fill(zero);
+    eigen_vectors.Fill(zero);
+    lambda_imag.Reallocate(nev+1);
+    lambda_imag.Fill(zero);
+    
+    char howmny = 'A';
+    IVect selec(ncv);
+    int rvec = 1;
+    int ldz = n;
+    if (print_level >= 2)
+      cout<<"recovering eigenvalues ..."<<endl;
+			 
+    if (var.GetComputationalMode() == var.INVERT_MODE)
+      CallArpack(rvec, howmny, selec, eigen_values, lambda_imag, eigen_vectors,
+                 ldz, shiftr, shifti, bmat, n, which, nev, tol, resid, ncv,
+                 v, ldv, iparam, ipntr, non_sym, workd, workl, lworkl, rwork, info);
+    else
+      CallArpack(rvec, howmny, selec, eigen_values, lambda_imag, eigen_vectors,
+                 ldz, shiftr, shifti, bmat, n, which, nev, tol, resid, ncv,
+                 v, ldv, iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
+    
+    if (print_level >= 2)
+      cout<<"end recover "<<endl;
+    
+    eigen_values.Resize(nev);
+    lambda_imag.Resize(nev);
+    eigen_vectors.Resize(n, nev);
+    ApplyScalingEigenvec(var, eigen_values, lambda_imag, eigen_vectors,
+                         shiftr, shifti);
+
+    var.Clear();
+  }
+  
+}
+			 
+#define SELDON_FILE_ARPACK_CXX
+#endif

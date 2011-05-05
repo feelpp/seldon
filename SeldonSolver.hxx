@@ -62,5 +62,11 @@
 
 #include "computation/solver/SparseCholeskyFactorisation.cxx"
 
+// eigenvalue stuff
+#ifdef SELDON_WITH_ARPACK
+#include "computation/interfaces/eigenvalue/Arpack.cxx"
+#include "computation/interfaces/eigenvalue/EigenvalueSolver.cxx"
+#endif
+
 #define SELDON_FILE_SELDON_SOLVER_HXX
 #endif
