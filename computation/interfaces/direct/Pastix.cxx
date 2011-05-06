@@ -281,6 +281,9 @@ namespace Seldon
 	perm.Fill(); invp.Fill();
       }
 
+    // pivot threshold
+    dparm[DPARM_EPSILON_MAGN_CTRL] = 1e-4;
+    
     iparm[IPARM_SYM] = API_SYM_NO;
     iparm[IPARM_FACTORIZATION] = API_FACT_LU;
 
@@ -298,7 +301,16 @@ namespace Seldon
     iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
 
     CallPastix(MPI_COMM_SELF, ptr_, ind_, values_, NULL, nrhs);
-
+    
+    if (iparm[IPARM_STATIC_PIVOTING] > 0)
+      {
+        if (!refine_solution)
+          {
+            cout << "Refining solution is needed when pivoting is used" << endl;
+            abort();
+          }
+      }
+    
     if (iparm[IPARM_VERBOSE] != API_VERBOSE_NOT)
       cout << "Factorization successful" << endl;
     
