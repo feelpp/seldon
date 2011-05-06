@@ -59,6 +59,25 @@ namespace Seldon
   }
 
 
+  // Function used to force factorisation when estimated space was too small
+  template<class T>
+  void MatrixMumps<T>::IterateFacto()
+  {
+    // if error -9 occured, retrying with larger size
+    int init_percentage = struct_mumps.icntl[13];
+    int new_percentage = init_percentage;
+    while ((struct_mumps.info[0] == -9) && (new_percentage < 300))
+      {
+        new_percentage *= 1.5;
+        struct_mumps.icntl[13] = new_percentage;
+        struct_mumps.job = 2;
+        CallMumps();
+      }
+    
+    struct_mumps.icntl[13] = init_percentage;
+  }
+  
+  
   //! initialization of the computation
   template<class T> template<class MatrixSparse>
   inline void MatrixMumps<T>
@@ -244,7 +263,7 @@ namespace Seldon
       numbers(i) = struct_mumps.sym_perm[i]-1;
   }
 
-
+  
   //! factorization of a given matrix
   /*!
     \param[in,out] mat matrix to factorize
@@ -271,6 +290,8 @@ namespace Seldon
     // Call the MUMPS package.
     struct_mumps.job = 4; // we analyse and factorize the system
     CallMumps();
+    
+    IterateFacto();
   }
 
 
@@ -315,6 +336,8 @@ namespace Seldon
     // Call the MUMPS package.
     struct_mumps.job = 2; // we factorize the system
     CallMumps();
+    
+    IterateFacto();
   }
 
 
@@ -374,7 +397,9 @@ namespace Seldon
     // Call the MUMPS package.
     struct_mumps.job = 4; // we analyse and factorize the system
     CallMumps();
-
+    
+    IterateFacto();
+    
     // resetting parameters related to Schur complement
     struct_mumps.icntl[18] = 0;
     struct_mumps.size_schur = 0;
@@ -544,9 +569,23 @@ namespace Seldon
     CallMumps();
 
     // overestimating size in order to avoid error -9
-    struct_mumps.icntl[22] = 1.3*struct_mumps.infog[25];
+    double coef = 1.3;
+    struct_mumps.icntl[22] = coef*struct_mumps.infog[25];
     struct_mumps.job = 2; // we factorize the system
     CallMumps();
+    
+    int info = 0;
+    comm_facto.Allreduce(&struct_mumps.info[0], &info, 1, MPI::INTEGER, MPI::MIN);
+    
+    while ((info == -9) || (coef > 3.0))
+      {
+        coef *= 1.2;
+        // increasing icntl(23) if error -9 occured
+        struct_mumps.icntl[22] = coef*struct_mumps.infog[25];
+        CallMumps();
+        
+        comm_facto.Allreduce(&struct_mumps.info[0], &info, 1, MPI::INTEGER, MPI::MIN);
+      }
     
     if ((comm_facto.Get_rank() == 0) && (print_level >= 0))
       cout<<"Factorization completed"<<endl;

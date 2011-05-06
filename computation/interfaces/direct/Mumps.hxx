@@ -78,6 +78,8 @@ namespace Seldon
 
     // internal methods
     void CallMumps();
+    void IterateFacto();
+    
     template<class MatrixSparse>
     void InitMatrix(const MatrixSparse&, bool dist = false);
 
