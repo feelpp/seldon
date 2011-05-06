@@ -21,6 +21,7 @@
 
 namespace Seldon
 {
+  
   template <class T>
   class SorPreconditioner
   {
@@ -38,12 +39,12 @@ namespace Seldon
     void SetParameterRelaxation(const T& param) { omega = param; }
     void SetNumberIterations(int nb_iterations) { nb_iter = nb_iterations; }
 
-    template<class Vector, class Matrix>
-    void Solve(const Matrix& A, const Vector& r, Vector& z,
+    template<class Vector1, class Matrix1>
+    void Solve(const Matrix1& A, const Vector1& r, Vector1& z,
 	       bool init_guess_null = true);
 
-    template<class Vector, class Matrix>
-    void TransSolve(const Matrix& A, const Vector& r, Vector& z,
+    template<class Vector1, class Matrix1>
+    void TransSolve(const Matrix1& A, const Vector1& r, Vector1& z,
 		    bool init_guess_null = true);
 
   };
@@ -59,10 +60,9 @@ namespace Seldon
 
 
   //! Solves M z = r
-  template<class T>
-  template<class Vector, class Matrix>
+  template<class T> template<class Vector1, class Matrix1>
   void SorPreconditioner<T>::
-  Solve(const Matrix& A, const Vector& r, Vector& z, bool init_guess_null)
+  Solve(const Matrix1& A, const Vector1& r, Vector1& z, bool init_guess_null)
   {
     if (init_guess_null)
       z.Zero();
@@ -75,18 +75,19 @@ namespace Seldon
 
 
   //! Solves M^t z = r
-  template<class T>
-  template<class Vector, class Matrix>
+  template<class T> template<class Vector1, class Matrix1>
   void SorPreconditioner<T>::
-  TransSolve(const Matrix& A, const Vector& r, Vector& z, bool init_guess_null)
+  TransSolve(const Matrix1& A, const Vector1& r,
+	     Vector1& z, bool init_guess_null)
   {
     if (init_guess_null)
       z.Zero();
-
+    
     if (symmetric_precond)
-      Seldon::SOR(A, z, r, omega, nb_iter, 0);
+      Seldon::SOR(SeldonTrans, A, z, r, omega, nb_iter, 0);
     else
-      Seldon::SOR(A, z, r, omega, nb_iter, 3);
+      Seldon::SOR(SeldonTrans, A, z, r, omega, nb_iter, 3);
+    
   }
 
 }

@@ -341,8 +341,8 @@ namespace Seldon
 		 bool keep_matrix)
   {
     InitMatrix(mat);
-
-    int n_schur = num.GetM(), n = mat.GetM();
+    
+    int n_schur = num.GetM();
     // Subscripts are changed to respect fortran convention
     IVect index_schur(n_schur);
     for (int i = 0; i < n_schur; i++)
@@ -350,14 +350,30 @@ namespace Seldon
 
     // array that will contain values of Schur matrix
     Vector<T, VectFull, Allocator2> vec_schur(n_schur*n_schur);
-
-    struct_mumps.icntl[18] = n_schur;
+    vec_schur.Fill(0);
+    
+    struct_mumps.icntl[18] = 1;
     struct_mumps.size_schur = n_schur;
     struct_mumps.listvar_schur = index_schur.GetData();
     struct_mumps.schur = reinterpret_cast<pointer>(vec_schur.GetData());
 
-    // factorization of the matrix
-    FactorizeMatrix(mat, keep_matrix);
+    int n = mat.GetM(), nnz = mat.GetNonZeros();
+    // conversion in coordinate format with fortran convention (1-index)
+    IVect num_row, num_col;
+    Vector<T, VectFull, Allocator> values;
+    ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
+    if (!keep_matrix)
+      mat.Clear();
+
+    struct_mumps.n = n;
+    struct_mumps.nz = nnz;
+    struct_mumps.irn = num_row.GetData();
+    struct_mumps.jcn = num_col.GetData();
+    struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
+
+    // Call the MUMPS package.
+    struct_mumps.job = 4; // we analyse and factorize the system
+    CallMumps();
 
     // resetting parameters related to Schur complement
     struct_mumps.icntl[18] = 0;
@@ -367,11 +383,19 @@ namespace Seldon
 
     // schur complement stored by rows
     int nb = 0;
-    mat_schur.Reallocate(n,n);
-    for (int i = 0; i < n; i++)
-      for (int j = 0; j < n ;j++)
-	mat_schur(i,j) = vec_schur(nb++);
-
+    mat_schur.Reallocate(n_schur, n_schur);
+    if (IsSymmetricMatrix(mat))
+      for (int i = 0; i < n_schur; i++)
+	for (int j = 0; j <= i; j++)
+	  {
+	    mat_schur(i, j) = vec_schur(i*n_schur + j);
+	    mat_schur(j, i) = vec_schur(i*n_schur + j);
+	  }
+    else
+      for (int i = 0; i < n_schur; i++)
+	for (int j = 0; j < n_schur;j++)
+	  mat_schur(i, j) = vec_schur(nb++);
+    
     vec_schur.Clear(); index_schur.Clear();
   }
 

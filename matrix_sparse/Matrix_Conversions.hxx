@@ -89,7 +89,6 @@ namespace Seldon
 			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
-
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
   void
@@ -137,6 +136,8 @@ namespace Seldon
 				 Matrix<T, Prop, RowSparse, Allocator3>& A,
 				 int index = 0);
 
+
+#ifndef SWIG
 
   template<class T, class Prop, class Allocator1,
 	   class Allocator2, class Allocator3>
@@ -216,7 +217,9 @@ namespace Seldon
 				 Allocator3>& A,
 				 int index = 0);
   
-  
+#endif // SWIG.
+
+
   /*
     From Sparse formats to CSC format
   */

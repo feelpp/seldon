@@ -276,14 +276,26 @@ namespace Seldon
   class Matrix<T, Prop, ArrayRowSymSparse, Allocator>;
 
   // 3D array.
+  template <class T, int N, class Allocator>
+  class Array;
+
+  // 3D array.
   template <class T, class Allocator>
   class Array3D;
+
+  // 4D array.
+  template <class T, class Allocator>
+  class Array4D;
 
 
 } // namespace Seldon.
 
+const int ARRAY_MINRANK = 3;
+const int ARRAY_MAXRANK = 9;
 
-#include "array3d/Array3D.hxx"
+#include "array/Array3D.hxx"
+#include "array/Array4D.hxx"
+#include "array/Array.hxx"
 #include "matrix/Matrix_Base.hxx"
 #include "matrix/Matrix_Pointers.hxx"
 #include "matrix/Matrix_Triangular.hxx"
@@ -335,10 +347,17 @@ extern "C"
 #endif
 #endif // SELDON_WITH_LAPACK.
 
+// Arpack interface.
+#ifdef SELDON_WITH_ARPACK
+#include "computation/interfaces/eigenvalue/Arpack.hxx"
+#include "computation/interfaces/eigenvalue/ArpackSolver.hxx"
+#endif // SELDON_WITH_ARPACK.
+
+
 namespace Seldon
 {
 
-
+  typedef Array3D<int, SELDON_DEFAULT_ALLOCATOR<int> > IArr3D;
   typedef Vector<int, VectFull, SELDON_DEFAULT_ALLOCATOR<int> > IVect;
   typedef Vector<float, VectFull, SELDON_DEFAULT_ALLOCATOR<float> > SVect;
   typedef Vector<double, VectFull, SELDON_DEFAULT_ALLOCATOR<double> > DVect;

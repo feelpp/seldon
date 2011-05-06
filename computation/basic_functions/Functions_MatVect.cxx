@@ -1337,7 +1337,72 @@ namespace Seldon
           }
   }
 
+  
+  //! Solve M^T Y = X with S.O.R. method.
+  /*!
+    Solving M Y = X by using S.O.R algorithm.
+    omega is the relaxation parameter, iter the number of iterations.
+    type_ssor = 2 forward sweep
+    type_ssor = 3 backward sweep
+    type_ssor = 0 forward and backward sweep
+  */
+  template <class T0, class Prop0, class Storage0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3>
+  inline void SOR(const class_SeldonTrans& transM,
+		  const Matrix<T0, Prop0, Storage0, Allocator0>& M,
+		  Vector<T2, Storage2, Allocator2>& Y,
+		  const Vector<T1, Storage1, Allocator1>& X,
+		  const T3& omega, int iter, int type_ssor = 3)
+  {
+    int i, j, k;
+    T1 temp;
+    T3 one;
 
+    int ma = M.GetM();
+    int na = M.GetN();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (na != ma)
+      throw WrongDim("SOR(M, X, Y, omega, iter)",
+		     "The matrix must be squared.");
+
+    CheckDim(M, X, Y, "SOR(M, X, Y, omega, iter)");
+#endif
+
+    // aborting computation if the matrix is sparse
+    if (Storage0::Sparse)
+      throw WrongArgument("SOR", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+    
+    SetComplexOne(one);
+    if (type_ssor%2 == 0)
+      for (i = 0; i < iter; i++)
+        for (j = 0; j < na; j++)
+          {
+            SetComplexZero(temp);
+            for (k = 0; k < j; k++)
+              temp -= M(k, j) * Y(k);
+            for (k = j + 1; k < na; k++)
+              temp -= M(k, j) * Y(k);
+            Y(j) = (one - omega) * Y(j) + omega * (X(j) + temp) / M(j, j);
+          }
+
+    if (type_ssor%3 == 0)
+      for (i = 0; i < iter; i++)
+        for (j = na-1; j >= 0; j--)
+          {
+            temp = 0;
+            for (k = 0; k < j; k++)
+              temp -= M(k, j) * Y(k);
+            for (k = j + 1; k < na; k++)
+              temp -= M(k, j) * Y(k);
+            Y(j) = (one - omega) * Y(j) + omega * (X(j) + temp) / M(j, j);
+          }
+  }
+
+  
   // S.O.R. method //
   ///////////////////
 

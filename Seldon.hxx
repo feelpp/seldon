@@ -58,7 +58,9 @@ namespace Seldon
 #include "share/Errors.cxx"
 #endif
 
-#include "array3d/Array3D.cxx"
+#include "array/Array3D.cxx"
+#include "array/Array4D.cxx"
+#include "array/Array.cxx"
 #include "matrix/Matrix_Base.cxx"
 #include "matrix/Matrix_Pointers.cxx"
 #include "matrix/Matrix_Triangular.cxx"
@@ -94,6 +96,11 @@ namespace Seldon
 #include "computation/interfaces/Lapack_LeastSquares.cxx"
 #include "computation/interfaces/Lapack_Eigenvalues.cxx"
 #endif // SELDON_WITH_LAPACK.
+
+// Arpack interface.
+#ifdef SELDON_WITH_ARPACK
+#include "computation/interfaces/eigenvalue/ArpackSolver.cxx"
+#endif // SELDON_WITH_ARPACK.
 
 #ifdef SELDON_WITH_COMPILED_LIBRARY
 #include "lib/Common.cpp"

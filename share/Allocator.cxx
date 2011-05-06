@@ -139,6 +139,7 @@ namespace Seldon
     void * memory_block;
     memcpy(&memory_block, reinterpret_cast<char *>(data)
            - sizeof(char*), sizeof(char*));
+    
     for (int i = 0; i < num; i++)
       data[i].~T();
     free(memory_block);

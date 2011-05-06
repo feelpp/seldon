@@ -862,7 +862,7 @@ namespace Seldon
 	A.Value(i_row, index_diag) = cone / Row_Val(i_row);
 
       } // end main loop
-
+    
     if (print_level > 0)
       cout << endl;
 

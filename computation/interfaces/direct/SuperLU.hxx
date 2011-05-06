@@ -28,6 +28,12 @@ extern "C"
 namespace Seldon
 {
 
+  void SetComplexOne(doublecomplex& one)
+  {
+    one.r = 1.0;
+    one.i = 0.0;
+  }
+
   //! class interfacing SuperLU functions
   template<class T>
   class MatrixSuperLU_Base
@@ -51,16 +57,6 @@ namespace Seldon
   public :
     MatrixSuperLU_Base();
     ~MatrixSuperLU_Base();
-
-    template<class Prop, class Allocator>
-    void GetLU(Matrix<double, Prop, ColSparse, Allocator>& Lmat,
-               Matrix<double, Prop, ColSparse, Allocator>& Umat,
-               bool permuted = true);
-
-    template<class Prop, class Allocator>
-    void GetLU(Matrix<double, Prop, RowSparse, Allocator>& Lmat,
-               Matrix<double, Prop, RowSparse, Allocator>& Umat,
-               bool permuted = true);
 
     const Vector<int>& GetRowPermutation() const;
     const Vector<int>& GetColPermutation() const;
@@ -90,6 +86,16 @@ namespace Seldon
   public:
     MatrixSuperLU() : MatrixSuperLU_Base<double>() {}
 
+    template<class Prop, class Allocator>
+    void GetLU(Matrix<double, Prop, ColSparse, Allocator>& Lmat,
+               Matrix<double, Prop, ColSparse, Allocator>& Umat,
+               bool permuted = true);
+
+    template<class Prop, class Allocator>
+    void GetLU(Matrix<double, Prop, RowSparse, Allocator>& Lmat,
+               Matrix<double, Prop, RowSparse, Allocator>& Umat,
+               bool permuted = true);
+
     template<class Prop, class Storage, class Allocator>
     void FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
@@ -110,6 +116,16 @@ namespace Seldon
   {
   public:
     MatrixSuperLU() : MatrixSuperLU_Base<complex<double> >() {}
+
+    template<class Prop, class Allocator>
+    void GetLU(Matrix<complex<double>, Prop, ColSparse, Allocator>& Lmat,
+               Matrix<complex<double>, Prop, ColSparse, Allocator>& Umat,
+               bool permuted = true);
+
+    template<class Prop, class Allocator>
+    void GetLU(Matrix<complex<double>, Prop, RowSparse, Allocator>& Lmat,
+               Matrix<complex<double>, Prop, RowSparse, Allocator>& Umat,
+               bool permuted = true);
 
     template<class Prop, class Storage, class Allocator>
     void FactorizeMatrix(Matrix<complex<double>, Prop,

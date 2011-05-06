@@ -567,6 +567,8 @@ namespace Seldon
   }
 
 
+#ifndef SWIG
+
   //! Conversion from coordinate format to ColSparse.
   template<class T, class Prop, class Allocator1,
 	   class Allocator2, class Allocator3>
@@ -1095,7 +1097,9 @@ namespace Seldon
     A.Assemble();
   }
 
-  
+#endif
+
+
   /*
     From Sparse formats to CSC format
   */
@@ -2169,7 +2173,7 @@ namespace Seldon
 	    Matrix<T1, Prop1, ColSparse, Allocator1>& B)
   {
     Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
-    Vector<T1> AllVal;
+    Vector<T1, VectFull, Allocator1> AllVal;
 
     int n = A.GetM();
     General sym;

@@ -59,7 +59,7 @@ namespace Seldon
       }
     else if (type_factorisation == param.ILU_K)
       {
-	GetIluk(lfil, A);
+	GetIluk(lfil, print_level, A);
         return;
       }
 
@@ -68,12 +68,7 @@ namespace Seldon
     int i_row, j_col, index_lu, length;
     int i, j, k;
 
-    if (lfil < 0)
-      {
-        cout << "Incorrect fill level." << endl;
-        abort();
-      }
-
+    lfil = n;
     typedef Vector<cplx, VectFull, Allocator2> VectCplx;
     VectCplx Row_Val(n);
     IVect Index(n), Row_Ind(n);
@@ -81,7 +76,8 @@ namespace Seldon
 
     Index.Fill(-1);
 
-    bool element_dropped; cplx dropsum;
+    bool element_dropped; cplx dropsum, czero;
+    SetComplexZero(czero);
 
     // We convert A into an unsymmetric matrix.
     Matrix<cplx, General, ArrayRowSparse, Allocator2> B;
@@ -109,7 +105,7 @@ namespace Seldon
         // 1-norm of the row of initial matrix.
 	size_row = B.GetRowSize(i_row);
 	tnorm = zero;
-	dropsum = zero;
+	dropsum = czero;
 	for (k = 0 ; k < size_row; k++)
           tnorm += abs(B.Value(i_row, k));
 
@@ -130,7 +126,7 @@ namespace Seldon
 	length_upper = 1;
 	length_lower = 0;
 	Row_Ind(i_row) = i_row;
-	Row_Val(i_row) = 0.0;
+	Row_Val(i_row) = czero;
 	Index(i_row) = i_row;
 
 	for (j = 0; j < size_row; j++)
@@ -163,8 +159,7 @@ namespace Seldon
 
 	j_col = 0;
 	length = 0;
-
-
+	
         // We eliminate previous rows.
 	while (j_col <length_lower)
 	  {
@@ -227,7 +222,7 @@ namespace Seldon
 	      {
 		// Combines current row and row jrow.
 		for (k = 1; k < A.GetRowSize(jrow); k++)
-		  {
+	 	  {
 		    s = fact * A.Value(jrow,k);
 		    j = A.Index(jrow,k);
 
@@ -283,10 +278,9 @@ namespace Seldon
 
 	// Resets double-pointer to zero (U-part).
 	for (k = 0; k < length_upper; k++)
-          Index(Row_Ind(i_row+k )) = -1;
+          Index(Row_Ind(i_row + k)) = -1;
 
 	// Updating U-matrix -- first apply dropping strategy.
-
 	length = 0;
 	for (k = 1; k <= (length_upper-1); k++)
 	  {
@@ -315,6 +309,8 @@ namespace Seldon
 	// Copies U-part in matrix A.
 	A.ReallocateRow(i_row, length);
 	index_lu = 1;
+	// sorting column numbers
+	Sort(i_row+1, i_row + length - 1, Row_Ind, Row_Val);
 	for (k = (i_row+1) ; k <= (i_row+length-1) ; k++)
 	  {
 	    A.Index(i_row,index_lu) = Row_Ind(k);
@@ -326,7 +322,7 @@ namespace Seldon
 	if (standard_dropping)
 	  Row_Val(i_row) += alpha*dropsum;
 
-	if (Row_Val(i_row) == zero)
+	if (Row_Val(i_row) == czero)
           Row_Val(i_row) = (droptol + 1e-4) * tnorm;
 
 	A.Value(i_row,0) = 1.0 / Row_Val(i_row);
@@ -347,234 +343,290 @@ namespace Seldon
 
   }
 
-
+  
+  //! Basic ilu(k) solver 
+  /*!
+    \param lfil level k
+    \param print_level if print_level > 0, messages are displayed
+    \param A on input the matrix, on output factors L and U
+  */
   template<class cplx, class Allocator>
-  void GetIluk(int lfil,
+  void GetIluk(int lfil, int print_level,
                Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator>& A)
   {
     int n = A.GetM();
-    Vector<cplx, VectFull, CallocAlloc<cplx> > w;
-    w.Reallocate(n+1);
-    IVect jw(3*n);
-    Vector<IVect, VectFull, NewAlloc<IVect> > levs(n);
-
-    // Local variables.
     cplx fact, s, t;
-    int length_lower, length_upper, jpos, jrow, i_row, j_col;
-    int i, j, k, index_lu;
-    bool element_dropped;
+    int length_lower, length_upper, jpos, jrow;
+    int i_row, j_col, index_lu, length;
+    int i, j, k;
+    typename ClassComplexType<cplx>::Treal tnorm;
+    
+    if (lfil < 0)
+      {
+        cout << "Incorrect fill level." << endl;
+        abort();
+      }
 
-    // Initializes nonzero indicator array.
-    int n2 = 2*n, jlev, k_, size_upper;
-    jw.Fill(-1);
+    typedef Vector<cplx, VectFull, Allocator> VectCplx;
+    VectCplx Row_Val(n);
+    IVect Index(n), Row_Ind(n), Row_Level(n);
+    Row_Val.Zero(); Row_Ind.Fill(-1);
+    Row_Level.Fill(-1);
+    Index.Fill(-1);
+
+    bool element_dropped;
 
     // We convert A into an unsymmetric matrix.
     Matrix<cplx, General, ArrayRowSparse, Allocator> B;
-    Seldon::Copy(A,B);
-
+    Seldon::Copy(A, B);
+    
+    A.Clear();
+    A.Reallocate(n, n);
+    Vector<IVect, VectFull, NewAlloc<IVect> > levs(n);
+    
     // Main loop.
+    int new_percent = 0, old_percent = 0;
     for (i_row = 0; i_row < n; i_row++)
       {
-	int size_row = A.GetRowSize(i_row);
+        // Progress bar if print level is high enough.
+        if (print_level > 0)
+          {
+            new_percent = int(double(i_row)/(n-1)*80);
+            for (int percent = old_percent; percent < new_percent; percent++)
+              {
+                cout << "#"; cout.flush();
+              }
 
-	// Unpacks L-part and U-part of row of A in arrays w, jw.
+            old_percent = new_percent;
+          }
+
+        // 1-norm of the row of initial matrix.
+	int size_row = B.GetRowSize(i_row);
+	tnorm = 0.0;
+	for (k = 0 ; k < size_row; k++)
+          tnorm += abs(B.Value(i_row, k));
+	
+	if (tnorm == 0.0)
+	  {
+            cout << "Structurally singular matrix." << endl;
+            cout << "Norm of row " << i_row << " is equal to 0." << endl;
+            abort();
+          }
+
+	// current row will be stored in arrays Row_Val, Row_Ind 
+	// (respectively values and column indexes)
+	// the array Index returns for global column index
+	// the local column index used in Row_Ind
+	// (Index is the reciprocal array of Row_Ind)	
+	
+	// Row_Level will store the level associated with each
+	// column index (-1 for an entry in the original matrix,
+	// 0 for an entry appearing because of a single combination,
+	// 1 for an entry appearing because of at least two combinations, etc)
+	
+        // Separating lower part from upper part for this row.
 	length_upper = 1;
 	length_lower = 0;
-	jw(i_row) = i_row;
-	w(i_row) = 0.0;
-	jw(n + i_row) = i_row;
+	
+	Row_Ind(i_row) = i_row;
+	Row_Val(i_row) = 0.0;
+	Index(i_row) = i_row;
 
 	for (j = 0; j < size_row; j++)
 	  {
-	    k = B.Index(i_row,j);
-	    t = B.Value(i_row,j);
+	    k = B.Index(i_row, j);
+            t = B.Value(i_row, j);
 	    if (k < i_row)
 	      {
-		jw(length_lower) = k;
-		w(length_lower) = t;
-		jw(n + k) = length_lower;
-		jw(n2+length_lower) = -1;
+		// part in L
+		Row_Ind(length_lower) = k;
+		Row_Val(length_lower) = t;
+		Index(k) = length_lower;
+		Row_Level(length_lower) = -1;
 		++length_lower;
 	      }
 	    else if (k == i_row)
 	      {
-		w(i_row) = t;
-		jw(n2+length_lower) = -1;
+		// diagonal part
+		Row_Val(i_row) = t;
+		Row_Level(i_row) = -1;
 	      }
 	    else
 	      {
+		// part in U
 		jpos = i_row + length_upper;
-		jw(jpos) = k;
-		w(jpos) = t;
-		jw(n + k) = jpos;
+		Row_Ind(jpos) = k;
+		Row_Val(jpos) = t;
+		Row_Level(jpos) = -1;
+		Index(k) = jpos;
 		length_upper++;
 	      }
-	  }
+          }
 
+        // This row of B is cleared (since already stored in Row_Ind/Row_Val)
         B.ClearRow(i_row);
 
 	j_col = 0;
+	length = 0;
 
-	// Eliminates previous rows.
-	while (j_col <length_lower)
+        // We eliminate previous rows.
+	while (j_col < length_lower)
 	  {
-
 	    // In order to do the elimination in the correct order, we must
-            // select the smallest column index among jw(k); k = j_col + 1,
-            // ..., length_lower.
-            jrow = jw(j_col);
+            // select the smallest column index.
+	    jrow = Row_Ind(j_col);
 	    k = j_col;
 
-	    // Determines smallest column index.
+	    // We determine smallest column index.
 	    for (j = (j_col+1) ; j < length_lower; j++)
 	      {
-		if (jw(j) < jrow)
+		if (Row_Ind(j) < jrow)
 		  {
-		    jrow = jw(j);
-		    k = j;
+		    jrow = Row_Ind(j);
+		    k = j;		    
 		  }
 	      }
 
-	    if (k!=j_col)
+            // If needed, we exchange positions of this element in
+            // Row_Ind/Row_Val so that it appears first.
+	    if (k != j_col)
 	      {
-		// Exchanges in jw.
-		j = jw(j_col);
-		jw(j_col) = jw(k);
-		jw(k) = j;
 
-                // Exchanges in jw(n+  (pointers/ nonzero indicator).
-		jw(n+jrow) = j_col;
-		jw(n+j) = k;
+		j = Row_Ind(j_col);
+		Row_Ind(j_col) = Row_Ind(k);
+		Row_Ind(k) = j;
 
-                // Exchanges in jw(n2+  (levels).
-		j = jw(n2+j_col);
-		jw(n2+j_col)  = jw(n2+k);
-		jw(n2+k) = j;
+		Index(jrow) = j_col;
+		Index(j) = k;
+		
+		j = Row_Level(j_col);
+		Row_Level(j_col) = Row_Level(k);
+		Row_Level(k) = j;
 
-                // Exchanges in w.
-		s = w(j_col);
-		w(j_col) = w(k);
-		w(k) = s;
+		s = Row_Val(j_col);
+		Row_Val(j_col) = Row_Val(k);
+	        Row_Val(k) = s;
 	      }
 
-	    // Zero out element in row by setting jw(n+jrow) to zero.
-
-	    jw(n + jrow) = -1;
+            // Zero out element in row by setting Index to -1.
+	    Index(jrow) = -1;
 
 	    element_dropped = false;
-
-	    // Gets the multiplier for row to be eliminated (jrow).
-	    fact = w(j_col) * A.Value(jrow,0);
-
-	    jlev = jw(n2+j_col) + 1;
+	    fact = Row_Val(j_col) * A.Value(jrow, 0);
+	    
+	    int jlev = Row_Level(j_col) + 1;
 	    if (jlev > lfil)
 	      element_dropped = true;
-
+	    
 	    if (!element_dropped)
 	      {
 		// Combines current row and row jrow.
-		k_ = 0;
-		for (k = 1; k < A.GetRowSize(jrow) ; k++)
-		  {
-		    s = fact * A.Value(jrow,k);
-		    j = A.Index(jrow,k);
+		for (k = 1; k < A.GetRowSize(jrow); k++)
+	 	  {
+		    s = fact * A.Value(jrow, k);
+		    j = A.Index(jrow, k);
 
-		    jpos = jw(n + j);
-
+		    jpos = Index(j);
 		    if (j >= i_row)
 		      {
-                        // Dealing with upper part.
+			// Dealing with upper part.
 			if (jpos == -1)
 			  {
-                            // This is a fill-in element.
+			    // This is a fill-in element.
 			    i = i_row + length_upper;
-			    jw(i) = j;
-			    jw(n + j) = i;
-			    w(i) = -s;
-
-			    jw(n2+i) = jlev + levs(jrow)(k_) + 1;
+			    Row_Ind(i) = j;
+			    Index(j) = i;
+			    Row_Val(i) = -s;
+			    Row_Level(i) = jlev + levs(jrow)(k) + 1;
 			    ++length_upper;
 			  }
 			else
 			  {
-                            // This is not a fill-in element.
-			    w(jpos) -= s;
-			    jw(n2+jpos) = min(jw(n2+jpos),
-                                              jlev+levs(jrow)(k_)+1);
+			    // This is not a fill-in element.
+			    Row_Val(jpos) -= s;
+			    Row_Level(jpos) = min(Row_Level(jpos),
+						  jlev + levs(jrow)(k)+1);
 			  }
 		      }
 		    else
 		      {
                         // Dealing  with lower part.
-                        if (jpos == -1)
+			if (jpos == -1)
 			  {
                             // This is a fill-in element.
-			    jw(length_lower) = j;
-			    jw(n + j) = length_lower;
-			    w(length_lower) = -s;
-			    jw(n2+length_lower) = jlev + levs(jrow)(k_) + 1;
+                            Row_Ind(length_lower) = j;
+			    Index(j) = length_lower;
+			    Row_Val(length_lower) = -s;
+			    Row_Level(length_lower) = jlev + levs(jrow)(k) + 1;
 			    ++length_lower;
 			  }
 			else
 			  {
-                            // This is not a fill-in element.
-                            w(jpos) -= s;
-			    jw(n2+jpos) = min(jw(n2+jpos),
-                                              jlev+levs(jrow)(k_)+1);
+			    // This is not a fill-in element.
+			    Row_Val(jpos) -= s;
+			    Row_Level(jpos) = min(Row_Level(jpos),
+						  jlev + levs(jrow)(k)+1);
 			  }
 		      }
-                    k_++;
 		  }
 
+		// We store this pivot element (from left to right -- no
+		// danger of overlap with the working elements in L (pivots).
+		Row_Val(length) = fact;
+		Row_Ind(length) = jrow;
+		++length;
 	      }
-
-            // Stores this pivot element from left to right : no danger of
-            // overlap with the working elements in L (pivots).
-	    w(j_col) = fact;
-	    jw(j_col) = jrow;
 
 	    j_col++;
 	  }
-
+	
 	// Resets double-pointer to zero (U-part).
 	for (k = 0; k < length_upper; k++)
-          jw(n + jw(i_row + k )) = -1;
+          Index(Row_Ind(i_row+k )) = -1;
 
-	// Updates L-matrix.
-	size_row = 1; // we have the diagonal value.
-
-	// Size of U-matrix.
-	size_upper = 0;
+	// couting size of upper part after dropping
+	length = 1;
+	for (k = 1; k <= (length_upper-1); k++)
+	  if (Row_Level(i_row+k) < lfil)
+	    length++;
+	
+	// sorting column indexes in U
+	Sort(i_row+1, i_row+length_upper-1, Row_Ind, Row_Val, Row_Level);
+	
+	// Copies U-part in matrix A.
+	// L-part is not stored since A is symmetric
+	A.ReallocateRow(i_row, length);
+	levs(i_row).Reallocate(length);
+	
+	// diagonal element
+	A.Index(i_row, 0) = i_row;
+	A.Value(i_row, 0) = 1.0 / Row_Val(i_row);
+	levs(i_row)(0) = -1;
+	
+	// extra-diagonal elements
+	index_lu = 1;
 	for (k = (i_row+1) ; k <= (i_row+length_upper-1) ; k++)
-	  if (jw(n2+k) < lfil)
-	    size_upper++;
-
-	size_row += size_upper;
-	A.ReallocateRow(i_row, size_row);
-	levs(i_row).Reallocate(size_upper);
-
-	index_lu = 0;
-
-	A.Value(i_row,index_lu) = 1.0 / w(i_row);
-	A.Index(i_row,index_lu++) = i_row;
-
-        // Updates U-matrix -- first apply dropping strategy.
-	for (k = (i_row+1) ; k <= (i_row+length_upper-1) ; k++)
-	  {
-	    if (jw(n2+k) < lfil)
-	      {
-		A.Index(i_row,index_lu) = jw(k);
-		A.Value(i_row,index_lu) = w(k);
-		levs(i_row)(index_lu-1) = jw(n2+k);
-                ++index_lu;
-	      }
-	  }
-      } // End main loop.
-
-    // For each row of A, we divide by diagonal value.
+	  if (Row_Level(k) < lfil)
+	    {
+	      A.Index(i_row, index_lu) = Row_Ind(k);
+	      A.Value(i_row, index_lu) = Row_Val(k);
+	      levs(i_row)(index_lu) = Row_Level(k);
+	      ++index_lu;
+	    }
+	
+      } // end main loop.
+    
+    if (print_level > 0)
+      cout<<endl;
+    
+    // for each row of A, we divide by diagonal value
     for (int i = 0; i < n; i++)
       for (int j = 1; j < A.GetRowSize(i); j++)
 	A.Value(i,j) *= A.Value(i,0);
+    
+    if (print_level > 0)
+      cout << "The matrix takes " <<
+        int((A.GetDataSize()*(sizeof(cplx)+4))/(1024*1024)) << " MB" << endl;
 
   }
 
@@ -582,16 +634,149 @@ namespace Seldon
   template<class cplx, class Allocator>
   void GetIlu0(Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator>& A)
   {
-    cout << "Not implemented." << endl;
-    abort();
+    int n = A.GetM();
+    cplx one, invDiag, fact, zero;
+    SetComplexOne(one);
+    SetComplexZero(zero);
+    IVect Index(n);
+    Index.Fill(-1);
+    // loop on rows
+    for (int i = 0; i < n; i++)
+      {
+	if (A.GetRowSize(i) == 0)
+	  {
+	    cout << "Empty row " << i << endl;
+	    cout << "Factorisation cannot be completed" << endl;
+	    abort();
+	  }
+	
+	if (A.Index(i, 0) != i)
+	  {
+	    cout << "No diagonal element on row " << i << endl;
+	    cout << "ILU(0) needs one" << endl;
+	    abort();
+	  }
+	
+	if (A.Value(i, 0) == zero)
+	  {
+	    cout << "Factorization fails because we found a null coefficient"
+                 << " on diagonal " << i << endl;	    
+            abort(); 
+	  }
+
+	// updating Index, Index(j) will be the local position of column j
+	// in the row i (-1 if there is no non-zero entry (i, j))
+	for (int jloc = 1; jloc < A.GetRowSize(i); jloc++)
+	  Index(A.Index(i, jloc)) = jloc;
+	
+	invDiag = one / A.Value(i, 0);
+	// loop on each extra-diagonal element of the row
+	for (int jloc = 1; jloc < A.GetRowSize(i); jloc++)
+	  {
+	    int j = A.Index(i, jloc);
+	    // combination Lj <- Lj - a_ji / a_ii L_i
+	    // for upper part of the row Lj
+	    fact = A.Value(i, jloc) * invDiag;
+	    
+	    for (int kloc = 0; kloc < A.GetRowSize(j); kloc++)
+	      {
+		// ILU(0) -> combination performed only if a non-zero entry
+		// exists at position (j, k)
+		int k = A.Index(j, kloc);
+		if (Index(k) >= 0)
+		  A.Value(j, kloc) -= fact * A.Value(i, Index(k));
+	      }
+	  }
+	
+	// storing inverse of diagonal
+	A.Value(i, 0) = invDiag;
+	
+	// reverting Index to -1
+	for (int jloc = 1; jloc < A.GetRowSize(i); jloc++)
+	  Index(A.Index(i, jloc)) = -1;
+	
+      }
+
+    // for each row of A, we divide by diagonal value
+    for (int i = 0; i < n; i++)
+      for (int j = 1; j < A.GetRowSize(i); j++)
+	A.Value(i, j) *= A.Value(i, 0);
   }
 
 
   template<class cplx, class Allocator>
   void GetMilu0(Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator>& A)
   {
-    cout << "Not implemented." << endl;
-    abort();
+    int n = A.GetM();
+    cplx one, invDiag, fact, zero;
+    SetComplexOne(one);
+    SetComplexZero(zero);
+    Vector<cplx> SumRow(n);
+    SumRow.Fill(zero);
+    // loop on rows
+    for (int i = 0; i < n; i++)
+      {
+	if (A.GetRowSize(i) == 0)
+	  {
+	    cout << "Empty row " << i << endl;
+	    cout << "Factorisation cannot be completed" << endl;
+	    abort();
+	  }
+	
+	if (A.Index(i, 0) != i)
+	  {
+	    cout << "No diagonal element on row " << i << endl;
+	    cout << "ILU(0) needs one" << endl;
+	    abort();
+	  }
+	
+	// adding fill-in values to the diagonal
+	A.Value(i, 0) += SumRow(i);
+	if (A.Value(i, 0) == zero)
+	  {
+	    cout << "Factorization fails because we found a null coefficient"
+                 << " on diagonal " << i << endl;	    
+            abort(); 
+	  }
+	
+	invDiag = one / A.Value(i, 0);
+	// loop on each extra-diagonal element of the row
+	for (int jloc = 1; jloc < A.GetRowSize(i); jloc++)
+	  {
+	    int j = A.Index(i, jloc);
+	    // combination Lj <- Lj - a_ji / a_ii L_i
+	    // for upper part of the row Lj
+	    fact = A.Value(i, jloc) * invDiag;
+	    
+	    int k2 = 0;
+	    while ((k2 < A.GetRowSize(i)) && (A.Index(i, k2) < j))
+	      k2++;
+	    
+	    for (int kloc = 0; kloc < A.GetRowSize(j); kloc++)
+	      {
+		int k = A.Index(j, kloc);
+		// MILU(0) -> combination performed only if a non-zero entry
+		// exists at position (j, k)
+		// Fill-in elements are summed and reported to the diagonal
+		while ((k2 < A.GetRowSize(i)) && (A.Index(i, k2) < k))
+		  SumRow(j) -= fact * A.Value(i, k2++);
+		
+		if ((k2 < A.GetRowSize(i)) && (A.Index(i, k2) == k))
+		  A.Value(j, kloc) -= fact * A.Value(i, k2++);
+	      }
+	    
+	    while (k2 < A.GetRowSize(i))
+	      SumRow(j) -= fact * A.Value(i, k2++);
+	  }
+	
+	// storing inverse of diagonal
+	A.Value(i, 0) = invDiag;		
+      }
+
+    // for each row of A, we divide by diagonal value
+    for (int i = 0; i < n; i++)
+      for (int j = 1; j < A.GetRowSize(i); j++)
+	A.Value(i, j) *= A.Value(i, 0);
   }
 
 

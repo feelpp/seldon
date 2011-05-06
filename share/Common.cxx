@@ -145,7 +145,7 @@ namespace Seldon
   template<class T>
   T ComplexAbs(const complex<T>& val)
   {
-#if defined(SELDON_WITH_BLAS) && !defined(SELDON_WITH_LAPACK) 
+#if defined(SELDON_WITH_BLAS) && !defined(SELDON_WITH_LAPACK)
     // we choose Blas convention
     return abs(real(val)) + abs(imag(val));
 #else
