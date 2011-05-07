@@ -961,7 +961,7 @@ namespace Seldon
     // Checks if data was read.
     if (!stream.good())
       throw IOError("Vector<VectSparse>::Read(istream& stream)",
-                    "Output operation failed.");
+                    "Input operation failed.");
 #endif
 
   }

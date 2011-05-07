@@ -744,7 +744,7 @@ namespace Seldon
     // Checks if data was read.
     if (!FileStream.good())
       throw IOError("Vector<Collection>::Read(istream& FileStream)",
-                    "Output operation failed.");
+                    "Input operation failed.");
 #endif
 
   }

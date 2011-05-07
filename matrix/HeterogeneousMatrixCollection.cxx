@@ -1605,7 +1605,7 @@ namespace Seldon
     if (!FileStream.good())
       throw IOError("HeterogeneousMatrixCollection"
                     "::Read(istream& FileStream)",
-                    "Output operation failed.");
+                    "Input operation failed.");
 #endif
 
   }
