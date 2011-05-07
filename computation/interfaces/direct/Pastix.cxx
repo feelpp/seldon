@@ -453,7 +453,8 @@ namespace Seldon
       }
 
     iparm[IPARM_GRAPHDIST] = API_YES;
-
+    iparm[IPARM_FREE_CSCUSER] = API_CSC_PRESERVE;
+    
     pastix_int_t* ptr_ = Ptr.GetData();
     pastix_int_t nrhs = 1;
     // changing to 1-index notation
@@ -481,9 +482,10 @@ namespace Seldon
     T* rhs_ = rhs.GetData();
     CallPastix(comm_facto, ptr_, ind_, values_, rhs_, nrhs);    
 
-    Ptr.Nullify();
-    IndRow.Nullify();
-    Val.Nullify();
+    iparm[IPARM_FREE_CSCUSER] = API_CSC_FREE;
+    //Ptr.Nullify();
+    //IndRow.Nullify();
+    //Val.Nullify();
   }
 
 

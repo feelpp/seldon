@@ -577,7 +577,7 @@ namespace Seldon
     int info = 0;
     comm_facto.Allreduce(&struct_mumps.info[0], &info, 1, MPI::INTEGER, MPI::MIN);
     
-    while ((info == -9) || (coef > 3.0))
+    while ((info == -9) && (coef < 3.0))
       {
         coef *= 1.2;
         // increasing icntl(23) if error -9 occured
