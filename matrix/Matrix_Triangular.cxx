@@ -1038,8 +1038,8 @@ namespace Seldon
     // Checks if data was read.
     if (!FileStream.good())
       throw IOError("Matrix_Triangular::Read(ifstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The intput file may have been removed")
+                    string("Input operation failed.")
+		    + string(" The input file may have been removed")
 		    + " or may not contain enough data.");
 #endif
 

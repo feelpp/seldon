@@ -838,7 +838,7 @@ namespace Seldon
     // Checks if data was read.
     if (!FileStream.good())
       throw IOError("MatrixCollection::Read(istream& FileStream)",
-                    "Output operation failed.");
+                    "Input operation failed.");
 #endif
 
   }

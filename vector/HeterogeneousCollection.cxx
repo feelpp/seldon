@@ -1196,7 +1196,7 @@ namespace Seldon
     if (!FileStream.good())
       throw IOError("Vector<FloatDouble, DenseSparseCollection>"
                     "::Read(istream& FileStream)",
-                    "Output operation failed.");
+                    "Input operation failed.");
 #endif
 
   }
