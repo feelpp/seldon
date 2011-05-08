@@ -1461,7 +1461,7 @@ namespace Seldon
     // Solves R^t x = b.
     float alpha(1);
     cblas_strsm(CblasColMajor, CblasLeft, CblasUpper, CblasTrans,
-		CblasNonUnit, b.GetM(), nrhs,
+		CblasNonUnit, k, nrhs,
 		alpha, A.GetData(), A.GetN(), b.GetData(), b.GetM());
     
     for (int i = m; i < n; i++)
@@ -1503,7 +1503,7 @@ namespace Seldon
     // Solves R^t x = b.
     double alpha(1);
     cblas_dtrsm(CblasColMajor, CblasLeft, CblasUpper, CblasTrans,
-		CblasNonUnit, b.GetM(), nrhs,
+		CblasNonUnit, k, nrhs,
 		alpha, A.GetData(), A.GetN(), b.GetData(), b.GetM());
 
     for (int i = m; i < n; i++)
@@ -1545,7 +1545,7 @@ namespace Seldon
     // Solves R^t x = b.
     complex<double> alpha(1);
     cblas_ztrsm(CblasColMajor, CblasLeft, CblasUpper, CblasTrans,
-		CblasNonUnit, b.GetM(), nrhs,
+		CblasNonUnit,k, nrhs,
 		&alpha, A.GetData(), A.GetN(), b.GetData(), b.GetM());
 
     for (int i = m; i < n; i++)

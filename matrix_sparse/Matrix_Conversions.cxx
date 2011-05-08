@@ -151,8 +151,9 @@ namespace Seldon
       {
 	nnz *= 2;
 	for (i = 0; i < m; i++)
-	  if (ind[ptr[i]] == i)
-	    nnz--;
+	  if (ptr[i] < ptr[i+1])
+            if (ind[ptr[i]] == i)
+              nnz--;
 
 	IndRow.Reallocate(nnz);
 	IndCol.Reallocate(nnz);
@@ -3362,7 +3363,7 @@ namespace Seldon
     GetSymmetricPattern(A, Ptr, Ind);
 
     int n = A.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > Val(Ptr(n));
+    Vector<int, VectFull, AllocI> Val(Ptr(n));
     // We put Ptr and Ind into the matrix B.
     B.SetData(n, n, Val, Ptr, Ind);
   }
@@ -3504,7 +3505,7 @@ namespace Seldon
         if (abs(A(i, j)) > threshold)
           nnz++;
     
-    IVect IndCol(nnz), IndRow(n+1); 
+    Vector<int, VectFull, CallocAlloc<int> > IndCol(nnz), IndRow(n+1); 
     Vector<T> Value(nnz);
     nnz = 0; IndRow(0) = 0;
     for (int i = 0; i < n; i++)

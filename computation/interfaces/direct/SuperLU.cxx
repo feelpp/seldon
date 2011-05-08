@@ -111,6 +111,7 @@ namespace Seldon
   MatrixSuperLU_Base<T>::~MatrixSuperLU_Base()
   {
     Clear();
+    StatFree(&stat);
   }
 
 
@@ -165,7 +166,6 @@ namespace Seldon
     if (n > 0)
       {
 	// SuperLU objects are cleared
-	Destroy_SuperMatrix_Store(&B);
 	Destroy_SuperNode_Matrix(&L);
 	Destroy_CompCol_Matrix(&U);
 	if (permc_spec != MY_PERMC)
@@ -376,10 +376,10 @@ namespace Seldon
     dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
 
-    SuperLUStat_t stat;
-    StatInit(&stat);
     dgstrs(trans, &L, &U, perm_c.GetData(),
 	   perm_r.GetData(), &B, &stat, &info);
+
+    Destroy_SuperMatrix_Store(&B);
   }
 
 
@@ -399,10 +399,10 @@ namespace Seldon
     dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
 
-    SuperLUStat_t stat;
-    StatInit(&stat);
     dgstrs(trans, &L, &U, perm_c.GetData(),
 	   perm_r.GetData(), &B, &stat, &info);
+
+    Destroy_SuperMatrix_Store(&B);
   }
 
 
@@ -584,6 +584,8 @@ namespace Seldon
 
     zgstrs(trans, &L, &U, perm_c.GetData(),
 	   perm_r.GetData(), &B, &stat, &info);
+
+    Destroy_SuperMatrix_Store(&B);
   }
 
 
@@ -607,6 +609,8 @@ namespace Seldon
 
     zgstrs(trans, &L, &U, perm_c.GetData(),
 	   perm_r.GetData(), &B, &stat, &info);
+
+    Destroy_SuperMatrix_Store(&B);
   }
 
 

@@ -230,7 +230,7 @@ namespace Seldon
   {
     int m = A.GetM(), n = A.GetN();
     int nnz = A.GetDataSize();
-    IVect IndRow(nnz), IndCol(nnz);
+    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
     Vector<T, VectFull, Allocator> Val(nnz);
 
     int* ptr = A.GetPtr();
@@ -263,7 +263,7 @@ namespace Seldon
     
     // then column numbers
     A.Clear();
-    IVect Ptr(m+1);
+    Vector<int, VectFull, CallocAlloc<int> > Ptr(m+1);
     Ptr(0) = 0; k = 0;
     for (int i = 0; i < m; i++)
       {
@@ -292,7 +292,7 @@ namespace Seldon
   {
     int m = A.GetM(), n = A.GetN();
     int nnz = A.GetDataSize();
-    IVect IndRow(nnz), IndCol(nnz);
+    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
     Vector<T, VectFull, Allocator> Val(nnz);
 
     int* ptr = A.GetPtr();
@@ -325,7 +325,7 @@ namespace Seldon
     
     // then row numbers
     A.Clear();
-    IVect Ptr(n+1);
+    Vector<int, VectFull, CallocAlloc<int> > Ptr(n+1);
     Ptr(0) = 0; k = 0;
     for (int i = 0; i < n; i++)
       {
@@ -456,7 +456,7 @@ namespace Seldon
     // the user can provide row_perm = col_perm.
     int m = A.GetM();
     int nnz = A.GetDataSize();
-    IVect IndRow(nnz), IndCol(nnz);
+    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
     Vector<T, VectFull, Allocator> Val(nnz);
 
     // First we convert the matrix in coordinate format and we permute the
@@ -526,7 +526,7 @@ namespace Seldon
     // the user can provide row_perm = col_perm.
     int m = A.GetM();
     int nnz = A.GetDataSize();
-    IVect IndRow(nnz), IndCol(nnz);
+    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
     Vector<T,VectFull,Allocator> Val(nnz);
 
     // First we convert the matrix in coordinate format and we permute the

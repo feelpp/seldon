@@ -22,6 +22,7 @@
 extern "C"
 {
 #include "umfpack.h"
+#include "colamd.h"
 }
 
 namespace Seldon

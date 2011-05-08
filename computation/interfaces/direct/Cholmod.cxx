@@ -37,10 +37,9 @@ namespace Seldon
   MatrixCholmod::~MatrixCholmod()
   {
     if (n > 0)
-      {
-        Clear();
-        cholmod_finish(&param_chol);
-      }
+      Clear();
+    
+    cholmod_finish(&param_chol);
   }
 
 
