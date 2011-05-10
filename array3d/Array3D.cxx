@@ -501,7 +501,7 @@ namespace Seldon
   ::Write(string FileName) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str(), ofstream::binary);
+    FileStream.open(FileName.c_str());
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -569,7 +569,7 @@ namespace Seldon
   void Array3D<T, Allocator>::Read(string FileName)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str(), ifstream::binary);
+    FileStream.open(FileName.c_str());
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -617,8 +617,8 @@ namespace Seldon
     // Checks if data was read.
     if (!FileStream.good())
       throw IOError("Array3D::Read(ifstream& FileStream)",
-                    string("Input operation failed.")
-		    + string(" The input file may have been removed")
+                    string("Output operation failed.")
+		    + string(" The intput file may have been removed")
 		    + " or may not contain enough data.");
 #endif
 

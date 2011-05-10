@@ -25,13 +25,13 @@ Matrix<double> A;
 Matrix<float, Symmetric, RowSymPacked> B;
 
 // dense hermitian matrix
-Matrix<double, General, RowHermPacked> C;
+Matrix<double, General, RowHermPacked> > C;
 
 // dense lower triangular matrix
-Matrix<double, General, RowLoTriangPacked> D;
+Matrix<double, General, RowLoTriangPacked> > D;
 
 // dense upper triangular matrix
-Matrix<double, General, RowUpTriangPacked> E;
+Matrix<double, General, RowUpTriangPacked> > E;
 \endprecode
 
 <h2>Methods :</h2>

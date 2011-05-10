@@ -318,8 +318,7 @@ namespace Seldon
   //! Copy constructor
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_Sparse<T, Prop, Storage, Allocator>::
-  Matrix_Sparse(const Matrix_Sparse<T, Prop, Storage, Allocator>& A):
-    Matrix_Base<T, Allocator>(A)
+  Matrix_Sparse(const Matrix_Sparse<T, Prop, Storage, Allocator>& A)
   {
     this->m_ = 0;
     this->n_ = 0;
@@ -1101,7 +1100,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Matrix_Sparse::Write(string FileName)",
+      throw IOError("Matrix_ArraySparse::Write(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
@@ -1126,7 +1125,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Matrix_Sparse::Write(ofstream& FileStream)",
+      throw IOError("Matrix_ArraySparse::Write(ofstream& FileStream)",
 		    "Stream is not ready.");
 #endif
 

@@ -109,46 +109,46 @@ extern "C"
 #define TRY try {
 #endif
 #ifndef END
-#define END                                                             \
-  }                                                                     \
-    catch(Seldon::Error& Err)                                           \
-      {                                                                 \
-        Err.CoutWhat();                                                 \
-        return 1;                                                       \
-      }                                                                 \
-    catch (std::exception& Err)                                         \
-      {                                                                 \
-        std::cout << "C++ exception: " << Err.what() << std::endl;      \
-        return 1;                                                       \
-      }                                                                 \
-    catch (std::string& str)                                            \
-      {                                                                 \
-        std::cout << str << std::endl;                                  \
-        return 1;                                                       \
-      }                                                                 \
-    catch (const char* str)                                             \
-      {                                                                 \
-        std::cout << str << std::endl;                                  \
-        return 1;                                                       \
-      }                                                                 \
-    catch(...)                                                          \
-      {                                                                 \
-        std::cout << "Unknown exception..." << std::endl;               \
-        return 1;                                                       \
+#define END                                                     \
+  }                                                             \
+    catch(Seldon::Error& Err)                                   \
+      {                                                         \
+        Err.CoutWhat();                                         \
+        return 1;                                               \
+      }                                                         \
+    catch (std::exception& Err)                                 \
+      {                                                         \
+        cout << "C++ exception: " << Err.what() << endl;        \
+        return 1;                                               \
+      }                                                         \
+    catch (std::string& str)                                    \
+      {                                                         \
+        cout << str << endl;                                    \
+        return 1;                                               \
+      }                                                         \
+    catch (const char* str)                                     \
+      {                                                         \
+        cout << str << endl;                                    \
+        return 1;                                               \
+      }                                                         \
+    catch(...)                                                  \
+      {                                                         \
+        cout << "Unknown exception..." << endl;                 \
+        return 1;                                               \
       }
 #endif
 
 //! To display a message... call Hermes!
 #ifndef ERR
-#define ERR(x) std::cout << "Hermes - " #x << std::endl
+#define ERR(x) cout << "Hermes - " #x << endl
 #endif
 //! To display a variable (with its name); same as DISPLAY.
 #ifndef DISP
-#define DISP(x) std::cout << #x ": " << x << std::endl
+#define DISP(x) cout << #x ": " << x << endl
 #endif
 //! To display a variable (with its name); same as DISP.
 #ifndef DISPLAY
-#define DISPLAY(x) std::cout << #x ": " << x << std::endl
+#define DISPLAY(x) cout << #x ": " << x << endl
 #endif
 
 // For backward compatibility. These lines should be removed one day.

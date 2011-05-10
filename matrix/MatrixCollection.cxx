@@ -640,7 +640,7 @@ namespace Seldon
   ::Write(string FileName, bool with_size) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str(), ofstream::binary);
+    FileStream.open(FileName.c_str());
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -777,7 +777,7 @@ namespace Seldon
   void MatrixCollection<T, Prop, Storage, Allocator>::Read(string FileName)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str(), ifstream::binary);
+    FileStream.open(FileName.c_str());
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -838,7 +838,7 @@ namespace Seldon
     // Checks if data was read.
     if (!FileStream.good())
       throw IOError("MatrixCollection::Read(istream& FileStream)",
-                    "Input operation failed.");
+                    "Output operation failed.");
 #endif
 
   }

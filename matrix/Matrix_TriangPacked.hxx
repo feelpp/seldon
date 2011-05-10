@@ -127,9 +127,7 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, ColUpTriangPacked, Allocator>& operator= (const T0& x);
-    Matrix<T, Prop, ColUpTriangPacked, Allocator>&
-    operator= (const Matrix<T, Prop, ColUpTriangPacked, Allocator>& A);
-    template <class T0>
+    template<class T0>
     Matrix<T, Prop, ColUpTriangPacked, Allocator>& operator*= (const T0& x);
   };
 
@@ -153,8 +151,6 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, ColLoTriangPacked, Allocator>& operator= (const T0& x);
-    Matrix<T, Prop, ColLoTriangPacked, Allocator>&
-    operator= (const Matrix<T, Prop, ColLoTriangPacked, Allocator>& A);
     template<class T0>
     Matrix<T, Prop, ColLoTriangPacked, Allocator>& operator*= (const T0& x);
   };
@@ -179,8 +175,6 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, RowUpTriangPacked, Allocator>& operator= (const T0& x);
-    Matrix<T, Prop, RowUpTriangPacked, Allocator>&
-    operator= (const Matrix<T, Prop, RowUpTriangPacked, Allocator>& A);
     template<class T0>
     Matrix<T, Prop, RowUpTriangPacked, Allocator>& operator*= (const T0& x);
   };
@@ -205,8 +199,6 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, RowLoTriangPacked, Allocator>& operator= (const T0& x);
-    Matrix<T, Prop, RowLoTriangPacked, Allocator>&
-    operator= (const Matrix<T, Prop, RowLoTriangPacked, Allocator>& A);
     template<class T0>
     Matrix<T, Prop, RowLoTriangPacked, Allocator>& operator*= (const T0& x);
   };

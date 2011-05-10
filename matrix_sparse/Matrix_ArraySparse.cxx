@@ -678,7 +678,7 @@ namespace Seldon
   Write(string FileName) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str(), ofstream::binary);
+    FileStream.open(FileName.c_str());
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -792,7 +792,7 @@ namespace Seldon
   Read(string FileName)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str(), ifstream::binary);
+    FileStream.open(FileName.c_str());
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
