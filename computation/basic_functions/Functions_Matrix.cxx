@@ -364,6 +364,84 @@ namespace Seldon
 
 
   //! Multiplies two row-major sparse matrices in Harwell-Boeing format.
+  /*! It performs the operation \f$ C = A B \f$ where \f$ A \f$, \f$ B \f$ and
+    \f$ C \f$ are row-major sparse matrices in Harwell-Boeing format.
+    \param[in] A row-major sparse matrix in Harwell-Boeing format.
+    \param[in] B row-major sparse matrix in Harwell-Boeing format.
+    \param[out] C row-major sparse matrix in Harwell-Boeing format, result of
+    the product of \a A with \a B. It does not need to have the right non-zero
+    entries.
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Prop2, class Allocator2>
+  void Mlt(const Matrix<T0, Prop0, RowMajor, Allocator0>& A,
+	   const Matrix<T1, Prop1, RowSparse, Allocator1>& B,
+	   Matrix<T2, Prop2, RowMajor, Allocator2>& C)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, B, "Mlt(const Matrix<RowMajor>& A, const "
+             "Matrix<RowSparse>& B, Matrix<RowMajor>& C)");
+#endif
+
+    int m = A.GetM();
+    int n = A.GetN();
+
+    C.Reallocate(A.GetM(), B.GetN());
+    C.Fill(T2(0));
+
+    for (int i = 0; i < m; i++)
+      {
+        for (int k = 0; k < n; k++)
+          {
+            // Loop on all elements in the k-th row in B. These elements
+            // are multiplied with the element (i, k) of A.
+            for (int l = B.GetPtr()[k]; l < B.GetPtr()[k + 1]; l++)
+              C(i, B.GetInd()[l]) += A(i, k) * B.GetData()[l];
+          }
+      }
+  }
+
+
+  //! Multiplies two row-major sparse matrices in Harwell-Boeing format.
+  /*! It performs the operation \f$ C = A B \f$ where \f$ A \f$, \f$ B \f$ and
+    \f$ C \f$ are row-major sparse matrices in Harwell-Boeing format.
+    \param[in] A row-major sparse matrix in Harwell-Boeing format.
+    \param[in] B row-major sparse matrix in Harwell-Boeing format.
+    \param[out] C row-major sparse matrix in Harwell-Boeing format,result of
+    the product of \a A with \a B transposed. It does not need to have the
+    right non-zero entries.
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Prop2, class Allocator2>
+  void MltNoTransTrans(const Matrix<T0, Prop0, RowMajor, Allocator0>& A,
+                       const Matrix<T1, Prop1, RowSparse, Allocator1>& B,
+                       Matrix<T2, Prop2, RowMajor, Allocator2>& C)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(SeldonNoTrans, A, SeldonTrans, B,
+             "MltNoTransTrans(const Matrix<RowMajor>& A, const "
+             "Matrix<RowSparse>& B, Matrix<RowMajor>& C)");
+#endif
+
+    int m = A.GetM();
+    C.Reallocate(A.GetM(), B.GetM());
+    C.Fill(T2(0));
+    for (int i = 0; i < m; i++)
+      {
+        for (int j = 0; j < B.GetM(); j++)
+          {
+            // Loop on all elements in the i-th row in B. These elements
+            // are multiplied with the element (i, k) of A.
+            for (int l = B.GetPtr()[j]; l < B.GetPtr()[j + 1]; l++)
+              C(i, j) += A(i, B.GetInd()[l]) * B.GetData()[l];
+          }
+      }
+  }
+
+
+  //! Multiplies two row-major sparse matrices in Harwell-Boeing format.
   /*! It performs the operation \f$ C = A B^T \f$ where \f$ A \f$, \f$ B \f$
     and \f$ C \f$ are row-major sparse matrices in Harwell-Boeing format.
     \param[in] A row-major sparse matrix in Harwell-Boeing format.
