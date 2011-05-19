@@ -1088,6 +1088,207 @@ namespace Seldon
       MltAdd(alpha, A, B, beta, C);
   }
 
+  
+  template<class T0, class T1, class Prop1, class Allocator1, class T4,
+           class T2, class Prop2, class Storage2, class Allocator2,
+           class T3, class Prop3, class Storage3, class Allocator3>
+  void MltAdd(const T0& alpha,
+              const Matrix<T1, Prop1, RowSparse, Allocator1>& A,              
+              const Matrix<T2, Prop2, Storage2, Allocator2>& B,
+              const T4& beta,
+              Matrix<T3, Prop3, Storage3, Allocator3>& C)
+  {
+    if (Storage2::Sparse || Storage3::Sparse)
+      throw WrongArgument("Mlt", "Function intended for product "
+                          " between a sparse matrix and a dense matrix");
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, B, C, "Mlt(A, B, C)");
+#endif
+    
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T1* data = A.GetData();
+    T3 zero, val;
+    SetComplexZero(zero);
+    
+    int m = A.GetM();
+    int n = B.GetN();
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+    
+    for (int i = 0; i < m; i++)
+      for (int k2 = ptr[i]; k2 < ptr[i+1]; k2++)
+	{
+          int k = ind[k2];
+	  val = data[k2] * alpha;
+          // c_ij = \sum_k a_ik b_kj
+          for (int j = 0; j < n; j++)
+            C(i, j) += val*B(k, j);
+        }
+  }
+
+  
+  template<class T0, class T1, class Prop1, class Allocator1, class T4,
+           class T2, class Prop2, class Storage2, class Allocator2,
+           class T3, class Prop3, class Storage3, class Allocator3>
+  void MltAddTransNoTrans(const T0& alpha,
+                          const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
+                          const Matrix<T2, Prop2, Storage2, Allocator2>& B,
+                          const T4& beta,
+                          Matrix<T3, Prop3, Storage3, Allocator3>& C)
+  {
+    if (Storage2::Sparse || Storage3::Sparse)
+      throw WrongArgument("Mlt", "Function intended for product "
+                          " between a sparse matrix and a dense matrix");
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(SeldonTrans, A, SeldonNoTrans, B, C, "MltAdd(A, B, C)");
+#endif
+    
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T1* data = A.GetData();
+    T3 zero, val;
+    SetComplexZero(zero);
+    
+    int m = A.GetM();
+    int n = B.GetN();
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+    
+    for (int i = 0; i < m; i++)
+      for (int k2 = ptr[i]; k2 < ptr[i+1]; k2++)
+	{
+          int k = ind[k2];
+	  val = data[k2] * alpha;
+          // c_kj = \sum_i a_ik b_ij
+          for (int j = 0; j < n; j++)
+            C(k, j) += val*B(i, j);
+        }
+  }
+
+
+  template<class T0, class T1, class Prop1, class Allocator1, class T4,
+           class T2, class Prop2, class Storage2, class Allocator2,
+           class T3, class Prop3, class Storage3, class Allocator3>
+  void MltAddTransTrans(const T0& alpha,
+                        const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
+                        const Matrix<T2, Prop2, Storage2, Allocator2>& B,
+                        const T4& beta,
+                        Matrix<T3, Prop3, Storage3, Allocator3>& C)
+  {
+    if (Storage2::Sparse || Storage3::Sparse)
+      throw WrongArgument("Mlt", "Function intended for product "
+                          " between a sparse matrix and a dense matrix");
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(SeldonTrans, A, SeldonTrans, B, C, "MltAdd(A, B, C)");
+#endif
+    
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T1* data = A.GetData();
+    T3 zero, val;
+    SetComplexZero(zero);
+    
+    int m = A.GetM();
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+    
+    for (int i = 0; i < m; i++)
+      for (int k2 = ptr[i]; k2 < ptr[i+1]; k2++)
+	{
+          int k = ind[k2];
+	  val = data[k2] * alpha;
+          // c_kj = \sum_i a_ik b_ji
+          for (int j = 0; j < B.GetM(); j++)
+            C(k, j) += val*B(j, i);
+        }
+  }
+
+  
+  template<class T0, class T1, class Prop1, class Allocator1, class T4,
+           class T2, class Prop2, class Storage2, class Allocator2,
+           class T3, class Prop3, class Storage3, class Allocator3>
+  void MltAddNoTransTrans(const T0& alpha,
+                          const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
+                          const Matrix<T2, Prop2, Storage2, Allocator2>& B,
+                          const T4& beta,
+                          Matrix<T3, Prop3, Storage3, Allocator3>& C)
+  {
+    if (Storage2::Sparse || Storage3::Sparse)
+      throw WrongArgument("Mlt", "Function intended for product "
+                          " between a sparse matrix and a dense matrix");
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(SeldonNoTrans, A, SeldonTrans, B, C, "MltAdd(A, B, C)");
+#endif
+    
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T1* data = A.GetData();
+    T3 zero, val;
+    SetComplexZero(zero);
+    
+    int m = A.GetM();
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+    
+    for (int i = 0; i < m; i++)
+      for (int k2 = ptr[i]; k2 < ptr[i+1]; k2++)
+	{
+          int k = ind[k2];
+	  val = data[k2] * alpha;
+          // c_ij = \sum_k a_ik b_jk
+          for (int j = 0; j < B.GetM(); j++)
+            C(i, j) += val*B(j, k);
+        }
+  }
+
+  
+  template<class T0, class T1, class Prop1, class Allocator1, class T4,
+           class T2, class Prop2, class Storage2, class Allocator2,
+           class T3, class Prop3, class Storage3, class Allocator3>
+  void MltAdd(const T0& alpha,
+              const SeldonTranspose& TransA,
+              const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
+              const SeldonTranspose& TransB,
+              const Matrix<T2, Prop2, Storage2, Allocator2>& B,
+              const T4& beta,
+              Matrix<T3, Prop3, Storage3, Allocator3>& C)
+  {
+    if (TransA.NoTrans())
+      {
+        if (TransB.NoTrans())
+          MltAdd(alpha, A, B, beta, C);
+        else if (TransB.Trans())
+          MltAddNoTransTrans(alpha, A, B, beta, C);
+        else
+          throw Undefined("MltAdd", "Not implemented for ConjTrans");
+      }
+    else if (TransA.Trans())
+      {
+        if (TransB.NoTrans())
+          MltAddTransNoTrans(alpha, A, B, beta, C);
+        else if (TransB.Trans())
+          MltAddTransTrans(alpha, A, B, beta, C);
+        else
+          throw Undefined("MltAdd", "Not implemented for ConjTrans");
+      }
+    else
+      throw Undefined("MltAdd", "Not implemented for ConjTrans");
+    
+  }
+
 
   // MLTADD //
   ////////////
