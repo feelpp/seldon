@@ -656,7 +656,7 @@ namespace Seldon
   }
 
 
-   //! Multiplies two matrices, and adds the result to a third matrix.
+  //! Multiplies two matrices, and adds the result to a third matrix.
   /*! It performs the operation \f$ C = \alpha A B + \beta C \f$ where \f$
     \alpha \f$ and \f$ \beta \f$ are scalars, and \f$ A \f$, \f$ B \f$ and \f$
     C \f$ are matrices.
@@ -798,10 +798,10 @@ namespace Seldon
 
 
   template <class T0,
-	   class Allocator1,
-	   class Allocator2,
-	   class Allocator3,
-	   class T4, class Prop4, class Storage4, class Allocator4>
+            class Allocator1,
+            class Allocator2,
+            class Allocator3,
+            class T4, class Prop4, class Storage4, class Allocator4>
   void MltAdd_heterogeneous(const T0 alpha,
 			    const Matrix<FloatDouble, General,
 			    DenseSparseCollection, Allocator1>& A,
@@ -1187,7 +1187,7 @@ namespace Seldon
   }
 
 
-   //! Adds two matrices.
+  //! Adds two matrices.
   /*! It performs the operation \f$ B = \alpha A + B \f$ where \f$ \alpha \f$
     is a scalar, and \f$ A \f$ and \f$ B \f$ are matrices.
     \param[in] alpha scalar.
