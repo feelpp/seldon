@@ -39,6 +39,7 @@ class VectorCollectionTest: public CppUnit::TestFixture
   CPPUNIT_TEST(test_mlt_add);
   CPPUNIT_TEST(test_write_read);
   CPPUNIT_TEST(test_label);
+  CPPUNIT_TEST(test_collection);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -172,6 +173,14 @@ public:
     Nvector_ = 1000;
     Nsub_vector_max_ = 10;
     label();
+  }
+
+
+  void test_collection()
+  {
+    Nvector_ = 2;
+    Nsub_vector_max_ = 4;
+    collection();
   }
 
 
@@ -770,5 +779,55 @@ public:
     A.Nullify();
   }
 
+
+  void collection()
+  {
+    typedef double real;
+    typedef Vector<real> vector_real_dense;
+    typedef Vector<vector_real_dense, Collection>
+      collection_real_dense;
+
+    int length;
+    Vector<collection_real_dense, Collection> C;
+    collection_real_dense A, B, D;
+    vector_real_dense U;
+
+    for (int k = 0; k < Nvector_; k++)
+      {
+	length = rand() % Nsub_vector_max_ + 1;
+	U.Reallocate(length);
+	U.FillRand();
+	A.AddVector(U);
+	U.Nullify();
+      }
+
+    for (int k = 0; k < Nvector_; k++)
+      {
+	length = rand() % Nsub_vector_max_ + 1;
+	U.Reallocate(length);
+	U.FillRand();
+	B.AddVector(U);
+	U.Nullify();
+      }
+
+    D.Copy(A);
+
+    C.AddVector(A);
+    C.AddVector(B);
+    C.AddVector(D);
+
+    // Checking adress.
+    for (int i = 0; i < A.GetNvector(); i++)
+      CPPUNIT_ASSERT(&A.GetVector(i).GetData()[0] ==
+		     &C.GetVector(0).GetVector(i).GetData()[0]);
+
+    // Checking adress.
+    for (int i = 0; i < B.GetNvector(); i++)
+      CPPUNIT_ASSERT(&B.GetVector(i).GetData()[0] ==
+		     &C.GetVector(1).GetVector(i).GetData()[0]);
+
+    A.Deallocate();
+    B.Deallocate();
+  }
 
 };

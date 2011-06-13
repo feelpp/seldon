@@ -303,10 +303,10 @@ namespace Seldon
     \param[inout] x overwritten by the solution
    */
   template<class classTrans,
-	   class T, class Prop, class Allocator>
+	   class T0, class T1, class Prop, class Allocator>
   void SolveCholesky(const classTrans& TransA,
-		     const Matrix<T, Prop, RowSymSparse>& A,
-                     Vector<T, VectFull, Allocator>& X)
+		     const Matrix<T0, Prop, RowSymSparse>& A,
+                     Vector<T1, VectFull, Allocator>& X)
   {
     int n = A.GetM();
     if (n <= 0)
@@ -314,8 +314,8 @@ namespace Seldon
     
     int* ind = A.GetInd();
     int* ptr = A.GetPtr();
-    T* data = A.GetData();
-    T val = 0;
+    T0* data = A.GetData();
+    T1 val = 0;
     
     if (TransA.Trans())
       {

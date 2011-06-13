@@ -101,8 +101,10 @@ namespace Seldon
 
     void PushBack(int i, const T& x);
     void PushBack(const Vector<T, VectFull, Allocator0>& X);
+#ifndef SWIG
     void PushBack(const Vector<Vector<T, VectFull, Allocator0>,
 		  VectFull, Allocator1>& V);
+#endif
     void PushBack(const Vector2<T, Allocator0, Allocator1>& V);
 
     void Clear();
@@ -110,9 +112,9 @@ namespace Seldon
 
     void Fill(const T& x);
 
+#ifndef SWIG
     Vector<Vector<T, VectFull, Allocator0>, VectFull, Allocator1>&
     GetVector();
-#ifndef SWIG
     const Vector<Vector<T, VectFull, Allocator0>, VectFull,
                  Allocator1> GetVector() const;
 #endif

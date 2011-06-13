@@ -56,6 +56,26 @@ namespace std
     {
       $action
 	}
+  catch(Seldon::WrongIndex& e)
+    {
+      PyErr_SetString(PyExc_IndexError, e.What().c_str());
+      return NULL;
+    }
+  catch(Seldon::WrongRow& e)
+    {
+      PyErr_SetString(PyExc_IndexError, e.What().c_str());
+      return NULL;
+    }
+  catch(Seldon::WrongCol& e)
+    {
+      PyErr_SetString(PyExc_IndexError, e.What().c_str());
+      return NULL;
+    }
+  catch(Seldon::WrongDim& e)
+    {
+      PyErr_SetString(PyExc_IndexError, e.What().c_str());
+      return NULL;
+    }
   catch(Seldon::Error& e)
     {
       PyErr_SetString(PyExc_Exception, e.What().c_str());

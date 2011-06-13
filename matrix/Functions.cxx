@@ -1071,6 +1071,30 @@ namespace Seldon
     \param X new column of M
     M(:, j) = X
   */
+  template <class T0, class Allocator0,
+	    class T1, class Allocator1>
+  void SetCol(const Vector<T1, VectFull, Allocator1>& X,
+	      int j, Matrix<T0, General, RowSparse, Allocator0>& M)
+  {
+    Vector<T1, VectSparse, Allocator1> X_sparse;
+    for (int k = 0; k < X.GetLength(); k++)
+      {
+        T1 value = X(k);
+        if (value != T1(0.))
+          X_sparse.AddInteraction(k, value);
+      }
+
+    SetCol(X_sparse, j, M);
+  }
+
+
+  //! Sets a column of a matrix
+  /*!
+    \param M matrix
+    \param j column index
+    \param X new column of M
+    M(:, j) = X
+  */
   template <class T0, class Allocator0, class T1, class Allocator1>
   void SetCol(const Vector<T1, VectSparse, Allocator1>& X,
 	      int j, Matrix<T0, General, RowSparse, Allocator0>& M)

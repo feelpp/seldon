@@ -61,6 +61,11 @@ namespace Seldon
   void SetCol(const Vector<T1, Storage1, Allocator1>& X,
 	      int j, Matrix<T0, Prop0, Storage0, Allocator0>& M);
 
+  template <class T0, class Allocator0,
+	    class T1, class Allocator1>
+  void SetCol(const Vector<T1, VectFull, Allocator1>& X,
+	      int j, Matrix<T0, General, RowSparse, Allocator0>& M);
+
   template <class T0, class Allocator0, class T1, class Allocator1>
   void SetCol(const Vector<T1, VectSparse, Allocator1>& X,
 	      int j, Matrix<T0, General, RowSparse, Allocator0>& M);
