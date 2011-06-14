@@ -419,6 +419,9 @@ namespace Seldon
   ::Resize(int i, int j)
   {
 
+    if (i == this->m_ && j == this->n_)
+      return;
+
     // Storing the old values of the matrix.
     int iold = Storage::GetFirst(this->m_, this->n_);
     int jold = Storage::GetSecond(this->m_, this->n_);
@@ -812,7 +815,7 @@ namespace Seldon
   ::Write(string FileName, bool with_size) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -954,7 +957,7 @@ namespace Seldon
   ::Read(string FileName, bool with_size)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.

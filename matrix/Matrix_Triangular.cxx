@@ -854,7 +854,7 @@ namespace Seldon
   ::Write(string FileName) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -991,7 +991,7 @@ namespace Seldon
   void Matrix_Triangular<T, Prop, Storage, Allocator>::Read(string FileName)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -1038,8 +1038,8 @@ namespace Seldon
     // Checks if data was read.
     if (!FileStream.good())
       throw IOError("Matrix_Triangular::Read(ifstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The intput file may have been removed")
+                    string("Input operation failed.")
+		    + string(" The input file may have been removed")
 		    + " or may not contain enough data.");
 #endif
 
@@ -1201,6 +1201,22 @@ namespace Seldon
   }
 
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ColUpTriang, Allocator>&
+  Matrix<T, Prop, ColUpTriang, Allocator>::operator=
+  (const Matrix<T, Prop, ColUpTriang, Allocator>& A)
+  {
+    this->Copy(A);
+    return *this;
+  }
+
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1268,6 +1284,22 @@ namespace Seldon
   {
     this->Fill(x);
 
+    return *this;
+  }
+
+
+//! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ColLoTriang, Allocator>&
+  Matrix<T, Prop, ColLoTriang, Allocator>::operator=
+  (const Matrix<T, Prop, ColLoTriang, Allocator>& A)
+  {
+    this->Copy(A);
     return *this;
   }
 
@@ -1343,6 +1375,22 @@ namespace Seldon
   }
 
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, RowUpTriang, Allocator>&
+  Matrix<T, Prop, RowUpTriang, Allocator>::operator=
+  (const Matrix<T, Prop, RowUpTriang, Allocator>& A)
+  {
+    this->Copy(A);
+    return *this;
+  }
+
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1410,6 +1458,22 @@ namespace Seldon
   {
     this->Fill(x);
 
+    return *this;
+  }
+
+
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, RowLoTriang, Allocator>&
+  Matrix<T, Prop, RowLoTriang, Allocator>::operator=
+  (const Matrix<T, Prop, RowLoTriang, Allocator>& A)
+  {
+    this->Copy(A);
     return *this;
   }
 

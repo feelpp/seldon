@@ -794,7 +794,7 @@ namespace Seldon
   void Vector<T, VectSparse, Allocator>::Write(string FileName) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -917,7 +917,7 @@ namespace Seldon
   void Vector<T, VectSparse, Allocator>::Read(string FileName)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -961,7 +961,7 @@ namespace Seldon
     // Checks if data was read.
     if (!stream.good())
       throw IOError("Vector<VectSparse>::Read(istream& stream)",
-                    "Output operation failed.");
+                    "Input operation failed.");
 #endif
 
   }

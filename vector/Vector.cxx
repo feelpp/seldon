@@ -762,7 +762,7 @@ namespace Seldon
   ::Write(string FileName, bool with_size) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -887,7 +887,7 @@ namespace Seldon
   ::Read(string FileName, bool with_size)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -937,7 +937,7 @@ namespace Seldon
     // Checks if data was read.
     if (!FileStream.good())
       throw IOError("Vector<VectFull>::Read(istream& FileStream)",
-                    "Output operation failed.");
+                    "Input operation failed.");
 #endif
 
   }
