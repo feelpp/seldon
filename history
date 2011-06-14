@@ -1,4 +1,4 @@
-Version 5.1.1 (2011-05-11)
+Version 5.1.2 (2011-06-14)
 -------------
 
 * Bug fixes and improvements
@@ -20,6 +20,10 @@ Version 5.1.1 (2011-05-11)
   ERR, DISP, DISPLAY and END.
 - 'Matrix_Pointers::Resize' does not perform a useless copy anymore when the
   dimensions do not change.
+
+
+Version 5.1.1 (2011-05-11)
+-------------
 
 
 Version 5.1 (2011-03-03)
