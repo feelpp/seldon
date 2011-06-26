@@ -52,7 +52,6 @@ extern "C"
 }
 #endif
 
-
 //////////////////
 // DEBUG LEVELS //
 //////////////////
@@ -308,14 +307,28 @@ const int ARRAY_MAXRANK = 9;
 #include "matrix/Matrix_TriangPacked.hxx"
 #include "vector/Vector.hxx"
 #include "vector/SparseVector.hxx"
+#include "vector/Functions_Arrays.hxx"
 #include "matrix/Functions.hxx"
 #include "matrix_sparse/Matrix_Conversions.hxx"
+#include "computation/basic_functions/Functions_Vector.hxx"
+#include "computation/basic_functions/Functions_MatVect.hxx"
+#include "computation/basic_functions/Functions_Matrix.hxx"
 
 #include "matrix/SubMatrix_Base.hxx"
 #include "matrix/SubMatrix.hxx"
 
+// Blas interface.
+#ifdef SELDON_WITH_BLAS
+
+#include "computation/interfaces/Blas_1.hxx"
+#include "computation/interfaces/Blas_2.hxx"
+#include "computation/interfaces/Blas_3.hxx"
+
+#endif
+
 // Lapack interface.
 #ifdef SELDON_WITH_LAPACK
+
 #undef LAPACK_INTEGER
 #define LAPACK_INTEGER int
 #undef LAPACK_REAL
@@ -345,6 +358,11 @@ extern "C"
 #define SELDON_CHECK_INFO(f, lf)
 #endif
 #endif
+
+#include "computation/interfaces/Lapack_LinearEquations.hxx"
+#include "computation/interfaces/Lapack_LeastSquares.hxx"
+#include "computation/interfaces/Lapack_Eigenvalues.hxx"
+
 #endif // SELDON_WITH_LAPACK.
 
 // Arpack interface.

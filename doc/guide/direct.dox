@@ -34,7 +34,7 @@
 <li> <b>tar zxvf scotch_5.1.11_esmumps.tar.gz</b> </li>
 <li> <b>cd scotch_5.1.11_esmumps/src</b> </li>
 <li> <b>cp Make.inc/Makefile.inc.i686_pc_linux2 Makefile.inc </b> </li>
-<li> You have other Makefile.inc in the directory Make.inc if you are not using a Linux architecture </li>
+<li> You have other model files "Makefile.inc" in the directory Make.inc if you are not using a Linux architecture </li>
 <li> If your machine is a single-core machine, you can edit Makefile.inc and remove thread-related flags </li>
 <li> For a sequential library : <b> make </b> </li>
 <li> For a parallel library, replace gcc by mpicc in Makefile.inc and type : <b> make ptscotch </b> </li>
@@ -185,7 +185,7 @@ SolveLU(mat_lu, x);
 
 <p>If you are hesitating about which direct solver to use, or if you 
 prefer to choose the direct solver in an input file for example, a class SparseDirectSolver 
- has been implemented. This class regroups all the direct solvers interfaced by Seldon, it provides also 
+ has been implemented for LU and LDL<sup>T</sup> solver, and SparseCholeskySolver for Cholesky solver. This class regroups all the direct solvers interfaced by Seldon, it provides also 
  a default sparse solver (but slow). Here an example how to use this class : </p>
 
 \precode
@@ -225,7 +225,7 @@ mat_lu.SelectMatrixOrdering(SparseMatrixOrdering::SCOTCH);
 
 \endprecode
 
-<h2>Methods of SparseDirectSolver :</h2>
+<h2>Methods of SparseDirectSolver/SparseCholeskySolver :</h2>
 
 <table class="category-table">
 <tr class="category-table-tr-1">
@@ -271,12 +271,15 @@ mat_lu.SelectMatrixOrdering(SparseMatrixOrdering::SCOTCH);
 <td class="category-table-td"> <a href="#Solve"> Solve </a></td>
 <td class="category-table-td"> Solves A x = b or A<sup>T</sup> x = b, assuming that Factorize has been called</td> </tr>
 <tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#Mlt"> Mlt </a></td>
+<td class="category-table-td"> computation of y = L<sup>T</sup> x or y = L x for Cholesky solver</td> </tr>
+<tr class="category-table-tr-1">
 <td class="category-table-td"> <a href="#FactorizeDistributed"> FactorizeDistributed </a></td>
 <td class="category-table-td"> Performs the factorization of a distributed matrix (parallel execution) </td> </tr>
-<tr class="category-table-tr-1">
+<tr class="category-table-tr-2">
 <td class="category-table-td"> <a href="#SolveDistributed"> SolveDistributed </a></td>
 <td class="category-table-td"> Solves A x = b or A<sup>T</sup> x = b, assuming that FactorizeDistributed has been called </td> </tr>
-<tr class="category-table-tr-2">
+<tr class="category-table-tr-1">
 <td class="category-table-td"> <a href="#Clear"> Clear </a></td>
 <td class="category-table-td"> Releases memory used by factorization </td> </tr>
 </table>
@@ -343,9 +346,12 @@ mat_lu.SelectMatrixOrdering(SparseMatrixOrdering::SCOTCH);
 <td class="category-table-td"> uses LU factorization to solve a linear
  system</td> </tr>
 <tr class="category-table-tr-1">
+ <td class="category-table-td"> <a href="#Mlt">Mlt</a></td>
+<td class="category-table-td"> Multiplication by L or L^T for Cholesky factorisation</td> </tr>
+<tr class="category-table-tr-2">
 <td class="category-table-td"> <a href="#FactorizeDistributed"> FactorizeDistributedMatrix </a></td>
 <td class="category-table-td"> Performs the factorization of a distributed matrix (parallel execution) </td> </tr>
-<tr class="category-table-tr-2">
+<tr class="category-table-tr-1">
 <td class="category-table-td"> <a href="#SolveDistributed"> SolveDistributed </a></td>
 <td class="category-table-td"> Solves A x = b or A<sup>T</sup> x = b, assuming that FactorizeDistributed has been called </td> </tr>
 </table>
@@ -363,6 +369,9 @@ mat_lu.SelectMatrixOrdering(SparseMatrixOrdering::SCOTCH);
 <td class="category-table-td"> uses LU factorization to solve a linear
  system</td> </tr>
 <tr class="category-table-tr-2">
+ <td class="category-table-td"> <a href="#FindSparseOrdering">FindSparseOrdering</a></td>
+<td class="category-table-td"> computes matrix ordering to reduce fill-in during factorisation </td> </tr>
+<tr class="category-table-tr-1">
  <td class="category-table-td"> <a href="#GetSchurMatrix_func">GetSchurMatrix</a></td>
 <td class="category-table-td"> forms Schur complement</td> </tr>
 </table>
@@ -813,7 +822,7 @@ SparseSolver.cxx</p>
 </pre>
 
 
-<p>This method computes the solution of <code>A x = b</code> or <code>A<sup>T</sup> x = b</code>, assuming that <code>GetLU</code> (or Factorize/FactorizeMatrix) has been called before.  This is equivalent to use function <a href="#SolveLu">SolveLU</a>. </p>
+<p>This method computes the solution of <code>A x = b</code> or <code>A<sup>T</sup> x = b</code>, assuming that <code>GetLU</code> (or Factorize/FactorizeMatrix) has been called before.  This is equivalent to use function <a href="#SolveLU">SolveLU</a>. </p>
 
 <h4>Example :</h4>
 \precode
@@ -831,6 +840,16 @@ mat_lu.Solve(x);
 // to solve A^T x = b :
 x = b;
 mat_lu.Solve(SeldonTrans, x);
+
+// for Cholesky factorisation, it will
+// solve either L x = b or L^T x = b
+A.Reallocate(n, n);
+MatrixCholmod mat_chol;
+mat_chol.Factorize(A);
+// so you need to call the method twice to recover the solution
+x = b;
+mat_chol.Solve(SeldonNoTrans, x);
+mat_chol.Solve(SeldonTrans, x);
 \endprecode
 
 <h4>Location :</h4>
@@ -838,7 +857,51 @@ mat_lu.Solve(SeldonTrans, x);
 UmfPack.cxx<br/>
 SuperLU.cxx<br/>
 Pastix.cxx<br/>
+Cholmod.cxx<br/>
+SparseCholeskyFactorisation.cxx <br/>
 SparseSolver.cxx</p>
+
+
+
+<div class="separator"><a name="Mlt"></a></div>
+
+
+
+<h3>Mlt</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void Mlt(Vector&amp;);
+</pre>
+
+
+<p>This method computes the matrix-vector product L x or L<sup>T</sup> x, once the Cholesky
+ factorization (A = L L<sup>T</sup>) has been computed. </p>
+
+<h4>Example :</h4>
+\precode
+// for Cholesky factorisation, it will
+// compute either L x or L^T x
+// the result is overwritten in x
+
+// filling A
+A.Reallocate(n, n);
+
+// factorisation of A
+MatrixCholmod mat_chol;
+mat_chol.Factorize(A);
+
+// computation of y = A x
+Vector<double> x(n), y(n);
+y = x;
+mat_chol.Mlt(SeldonTrans, y);
+mat_chol.Mlt(SeldonNoTrans, y);
+\endprecode
+
+<h4>Location :</h4>
+<p>Cholmod.cxx<br/>
+SparseCholeskyFactorisation.cxx</p>
 
 
 
@@ -1223,6 +1286,37 @@ mat_lu.FindOrdering(A, permutation, true);
 <h4>Location :</h4>
 <p>Mumps.cxx<br/>
 Pastix.cxx</p>
+
+
+
+<div class="separator"><a name="FindSparseOrdering"></a></div>
+
+
+
+<h3>FindSparseOrdering </h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void FindSparseOrdering(Matrix&amp;, Vector&lt;int&gt;&amp;, int type_ordering);
+</pre>
+
+
+<p>This function computes a reordering array for a given matrix. The different types of ordering are listed in the method <a href="#SelectOrdering">SelectOrdering</a>. Some orderings may be unavailable if Seldon is not interfaced with direct solvers. </p>
+
+
+<h4>Example :</h4>
+\precode
+// you fill a sparse matrix
+Matrix<double, General, ArrayRowSparse> A;
+IVect permutation;
+// we find the best ordering for A
+FindSparseOrdering(A, permutation, SparseMatrixOrdering::SCOTCH); 
+\endprecode
+
+
+<h4>Location :</h4>
+<p>SparseSolver.cxx</p>
 
 
 

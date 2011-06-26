@@ -27,134 +27,140 @@ Vector<float, VectFull, NewAlloc<float> > V;
 <tr class="category-table-tr-1">
  <td class="category-table-td"> <a href="#operator"> Vector operators </a> </td> <td></td></tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getm"> GetM </a> </td>
+ <td class="category-table-td"> <a href="#Get"> Get </a> </td>
+ <td class="category-table-td"> returns a reference to an element of the vector </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"> <a href="#GetM"> GetM </a> </td>
  <td class="category-table-td"> returns the number of elements in the vector </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#getm"> GetLength </a> </td>
+ <td class="category-table-td"> <a href="#GetM"> GetLength </a> </td>
  <td class="category-table-td"> returns the number of elements in the vector </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getm"> GetSize </a> </td>
+ <td class="category-table-td"> <a href="#GetM"> GetSize </a> </td>
  <td class="category-table-td"> returns the number of elements in the vector </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#getdata"> GetData </a> </td>
+ <td class="category-table-td"> <a href="#GetData"> GetData </a> </td>
  <td class="category-table-td"> returns a pointer to the array contained in the vector </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getdata"> GetDataConst </a> </td>
+ <td class="category-table-td"> <a href="#GetData"> GetDataConst </a> </td>
  <td class="category-table-td"> returns a pointer to the array contained in the vector </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#getdata"> GetDataVoid </a> </td>
+ <td class="category-table-td"> <a href="#GetData"> GetDataVoid </a> </td>
  <td class="category-table-td"> returns a pointer to the array contained in the vector </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getdata"> GetDataConstVoid </a> </td>
+ <td class="category-table-td"> <a href="#GetData"> GetDataConstVoid </a> </td>
  <td class="category-table-td"> returns a pointer to the array contained in the vector </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#clear"> Clear </a> </td>
+ <td class="category-table-td"> <a href="#Clear"> Clear </a> </td>
  <td class="category-table-td"> removes all elements of the vector </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#reallocate"> Reallocate </a> </td>
+ <td class="category-table-td"> <a href="#Reallocate"> Reallocate </a> </td>
  <td class="category-table-td"> changes the size of vector (removes previous elements) </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#resize"> Resize </a> </td>
+ <td class="category-table-td"> <a href="#Resize"> Resize </a> </td>
  <td class="category-table-td"> changes the size of vector (keeps previous elements) </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#setdata"> SetData </a> </td>
+ <td class="category-table-td"> <a href="#SetData"> SetData </a> </td>
  <td class="category-table-td"> sets the pointer to the array contained in the vector</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#nullify"> Nullify </a> </td>
+ <td class="category-table-td"> <a href="#Nullify"> Nullify </a> </td>
  <td class="category-table-td"> clears the vector without releasing memory</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#copy"> Copy </a> </td>
+ <td class="category-table-td"> <a href="#Copy"> Copy </a> </td>
  <td class="category-table-td"> copies a vector</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#pushback"> PushBack </a> </td>
- <td class="category-table-td"> adds an element to the end of the vector</td> </tr>
+ <td class="category-table-td"> <a href="#PushBack"> PushBack </a> </td>
+ <td class="category-table-td"> appends an element to the end of the vector</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getm"> GetDataSize </a> </td>
+ <td class="category-table-td"> <a href="#Append"> Append </a> </td>
+ <td class="category-table-td"> appends an element to the end of the vector</td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"> <a href="#GetM"> GetDataSize </a> </td>
  <td class="category-table-td"> returns the number of elements in the vector</td> </tr>
-<tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#zero"> Zero </a> </td>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"> <a href="#Zero"> Zero </a> </td>
  <td class="category-table-td"> sets all elements to zero </td> </tr>
-<tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#fill"> Fill </a> </td>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"> <a href="#Fill"> Fill </a> </td>
  <td class="category-table-td"> sets all elements to a given value </td> </tr>
-<tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#fillrand"> FillRand </a> </td>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"> <a href="#FillRand"> FillRand </a> </td>
  <td class="category-table-td"> fills randomly the vector </td> </tr>
-<tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getnorminf"> GetNormInf </a> </td>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"> <a href="#GetNormInf"> GetNormInf </a> </td>
  <td class="category-table-td"> returns highest absolute value </td> </tr>
-<tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#getnorminf"> GetNormInfIndex </a> </td>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"> <a href="#GetNormInf"> GetNormInfIndex </a> </td>
  <td class="category-table-td"> returns the index of the highest absolute value </td> </tr>
-<tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#print"> Print </a> </td>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"> <a href="#Print"> Print </a> </td>
  <td class="category-table-td"> displays the vector </td> </tr>
-<tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#write"> Write </a> </td>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"> <a href="#Write"> Write </a> </td>
  <td class="category-table-td"> writes the vector in binary format </td> </tr>
-<tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#read"> Read </a> </td>
- <td class="category-table-td"> reads the vector in binary format </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#writetext"> WriteText </a> </td>
- <td class="category-table-td"> writes the vector in text format </td> </tr>
+ <td class="category-table-td"> <a href="#Read"> Read </a> </td>
+ <td class="category-table-td"> reads the vector in binary format </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#readtext"> ReadText </a> </td>
+ <td class="category-table-td"> <a href="#WriteText"> WriteText </a> </td>
+ <td class="category-table-td"> writes the vector in text format </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"> <a href="#ReadText"> ReadText </a> </td>
  <td class="category-table-td"> reads the vector in text format </td> </tr>
 </table>
 
 <h2>Functions :</h2>
 <table class="category-table">
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#mlt">Mlt </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Mlt">Mlt </a></td> 
  <td class="category-table-td"> multiplies the elements of the vector by a scalar </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#add">Add </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Add">Add </a></td> 
  <td class="category-table-td"> adds two vectors </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#copy">Copy </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Copy">Copy </a></td> 
  <td class="category-table-td"> copies one vector into another one </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#swap">Swap </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Swap">Swap </a></td> 
  <td class="category-table-td"> exchanges two vectors </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#genrot">ApplyRot </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#GenRot">ApplyRot </a></td> 
  <td class="category-table-td"> applies rotation to 2-D points </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#genrot">ApplyModifRot </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#GenRot">ApplyModifRot </a></td> 
  <td class="category-table-td"> applies rotation to 2-D points </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#dotprod">DotProd </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#DotProd">DotProd </a></td> 
  <td class="category-table-td"> scalar product between two vectors</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#dotprod">DotProdConj </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#DotProd">DotProdConj </a></td> 
  <td class="category-table-td"> scalar product between two vectors, first vector being conjugated</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#conjugate">Conjugate </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Conjugate">Conjugate </a></td> 
  <td class="category-table-td"> conjugates a vector</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#getmaxabsindex">GetMaxAbsIndex </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#GetMaxAbsIndex">GetMaxAbsIndex </a></td> 
  <td class="category-table-td"> returns index where highest absolute value is reached </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#norm1">Norm1 </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Norm1">Norm1 </a></td> 
  <td class="category-table-td"> returns 1-norm of a vector </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#norm2">Norm2 </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Norm2">Norm2 </a></td> 
  <td class="category-table-td"> returns 2-norm of a vector</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_vector.php#quicksort">QuickSort </a></td> 
+ <td class="category-table-td"><a href="functions_vector.php#QuickSort">QuickSort </a></td> 
  <td class="category-table-td"> sorts a vector with quick sort algorithm</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_vector.php#mergesort">MergeSort </a></td> 
+ <td class="category-table-td"><a href="functions_vector.php#MergeSort">MergeSort </a></td> 
  <td class="category-table-td"> sorts a vector with merge sort algorithm</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_vector.php#sort">Sort </a></td> 
+ <td class="category-table-td"><a href="functions_vector.php#Sort">Sort </a></td> 
  <td class="category-table-td"> sorts a vector</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_vector.php#assemble">Assemble </a></td> 
+ <td class="category-table-td"><a href="functions_vector.php#Assemble">Assemble </a></td> 
  <td class="category-table-td"> assembles a vector</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_vector.php#removeduplicate">RemoveDuplicate </a></td> 
+ <td class="category-table-td"><a href="functions_vector.php#RemoveDuplicate">RemoveDuplicate </a></td> 
  <td class="category-table-td"> sorts and removes duplicate elements of a vector</td> </tr>
 </table>
 
@@ -194,8 +200,8 @@ W.Fill(1.0);
 
 
 <h4>Related topics : </h4>
-<p><a href="#reallocate">Reallocate</a><br/>
-<a href="#fill">Fill</a></p>
+<p><a href="#Reallocate">Reallocate</a><br/>
+<a href="#Fill">Fill</a></p>
 
 
 <h4>Location :</h4>
@@ -218,6 +224,7 @@ Vector.cxx</p>
   Vector&amp; operator =(const Vector&amp; )
   Vector&amp; operator =(const T0&amp; alpha)
   Vector&amp; operator *=(const T0&amp; alpha)
+  Vector&amp; operator +=(const Vector<T0>&amp; V)
 </pre>
 
 
@@ -239,11 +246,16 @@ U = 1; // all elements of U are equal to 1
 // multiplication by a scalar
 U.Fill();
 U *= 1.5;
+
+// adding two vectors
+Vector<double> U2(3);
+U2.FillRand();
+U += U2;
 \endprecode
 
 
 <h4>Related topics : </h4>
-<p><a href="#copy">Copy</a></p>
+<p><a href="#Copy">Copy</a></p>
 
 
 <h4>Location :</h4>
@@ -253,7 +265,45 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="getm"></a></div>
+<div class="separator"><a name="Get"></a></div>
+
+
+
+<h3>Get</h3>
+
+<h4>Syntax : </h4>
+ <pre class="syntax-box">
+  const T&amp; Get(int) const;
+  T&amp; Get(int);
+</pre>
+
+<p>This method has been added for compatibility with sparse vectors. </p>
+
+<h4>Example : </h4>
+\precode
+Vector<double> V(3);
+// use of operator () to modify vector
+V(0) = 1.4;
+V(2) = -0.5;
+
+// you can also use Get
+V.Get(1) = 2.3;
+// V should be equal to [1.4, 2.3, -0.5]
+\endprecode
+
+
+<h4>Related topics : </h4>
+<p><a href="#operator">vector operators</a></p>
+
+
+<h4>Location :</h4>
+<p>Class <code>Vector<T, VectFull></code><br/>
+Vector.hxx<br/>
+Vector.cxx</p>
+
+
+
+<div class="separator"><a name="GetM"></a></div>
 
 
 
@@ -287,7 +337,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="getdata"></a></div>
+<div class="separator"><a name="GetData"></a></div>
 
 
 
@@ -302,7 +352,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p>Those methods are useful to retrieve the pointer to the array.  In practice, you can use those methods in order to interface with C/fortran subroutines or to perform some low level operations.  But in this last case, you have to be careful, because debugging operations will be more tedious.</p>
+<p>Those methods are useful to retrieve the pointer to the array.  In practice, you can use those methods in order to interface with C/fortran subroutines or to perform some low level operations. But in this last case, you have to be careful, because debugging operations will be more tedious.</p>
 
 
 <h4>Example : </h4>
@@ -336,8 +386,8 @@ zaxpy(reinterpret_cast<const void*>(beta),
 
 
 <h4>Related topics : </h4>
-<p> <a href="#setdata">SetData</a><br/>
-<a href="#nullify">Nullify</a></p>
+<p> <a href="#SetData">SetData</a><br/>
+<a href="#Nullify">Nullify</a></p>
 
 
 <h4>Location :</h4>
@@ -347,7 +397,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="clear"></a></div>
+<div class="separator"><a name="Clear"></a></div>
 
 
 
@@ -378,7 +428,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="reallocate"></a></div>
+<div class="separator"><a name="Reallocate"></a></div>
 
 
 
@@ -390,7 +440,8 @@ Vector.cxx</p>
   void Reallocate(int);
 </pre>
 
-<p>This method changes the size of the vector, but removes previous elements.</p>
+<p>This method changes the size of the vector, but removes previous elements.
+ If you have selected CallocAlloc or MallocAlloc allocator, previous elements are kept. </p>
 
 <h4>Example : </h4>
 \precode
@@ -400,11 +451,18 @@ V.Fill();
 V.Reallocate(20);
 // you need to initialize all vector
 V.Zero();
+
+// same behaviour as Resize with CallocAlloc
+Vector<double, VectFull, CallocAlloc<double> > U(3);
+U.Fill();
+U.Resize(4);
+U(3) = -2.0;
+// U should be equal to [0, 1, 2, -2]
 \endprecode
 
 
 <h4>Related topics :</h4>
-<p><a href="#resize">Resize</a></p>
+<p><a href="#Resize">Resize</a></p>
 
 
 <h4>Location :</h4>
@@ -414,7 +472,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="resize"></a></div>
+<div class="separator"><a name="Resize"></a></div>
 
 
 
@@ -439,7 +497,7 @@ for (int i = 5; i < 20; i++)
 
 
 <h4>Related topics :</h4>
-<p><a href="#reallocate">Reallocate</a></p>
+<p><a href="#Reallocate">Reallocate</a></p>
 
 
 <h4>Location :</h4>
@@ -449,7 +507,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="setdata"></a></div>
+<div class="separator"><a name="SetData"></a></div>
 
 
 
@@ -481,8 +539,8 @@ void f(double* data)
 
 
 <h4>Related topics :</h4>
-<p><a href="#getdata">GetData</a><br/>
-<a href="#nullify">Nullify</a></p>
+<p><a href="#GetData">GetData</a><br/>
+<a href="#Nullify">Nullify</a></p>
 
 
 <h4>Location :</h4>
@@ -492,7 +550,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="nullify"></a></div>
+<div class="separator"><a name="Nullify"></a></div>
 
 
 
@@ -508,8 +566,8 @@ Vector.cxx</p>
 
 
 <h4>Related topics :</h4>
-<p><a href="#setdata">SetData</a><br/>
-<a href="#getdata">GetData</a></p>
+<p><a href="#SetData">SetData</a><br/>
+<a href="#GetData">GetData</a></p>
 
 
 <h4>Location :</h4>
@@ -519,7 +577,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="copy"></a></div>
+<div class="separator"><a name="Copy"></a></div>
 
 
 
@@ -556,7 +614,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="pushback"></a></div>
+<div class="separator"><a name="PushBack"></a></div>
 
 
 
@@ -586,7 +644,7 @@ V.PushBack(W);
 
 
 <h4>Related topics :</h4>
-<p><a href="#resize">Resize</a></p>
+<p><a href="#Resize">Resize</a></p>
 
 
 <h4>Location :</h4>
@@ -596,7 +654,47 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="zero"></a></div>
+<div class="separator"><a name="Append"></a></div>
+
+
+
+<h3>Append</h3>
+
+<h4>Syntax : </h4>
+ <pre class="syntax-box">
+  void Append(const T0&amp;);
+</pre>
+
+
+<p> This method inserts a single element to the end of the vector. This method can be 
+used with allocators CallocAlloc, MallocAlloc, but not with NewAlloc. For this last allocator, prefer the method PushBack. </p>
+
+
+<h4>Example : </h4>
+\precode
+// using an allocator allowing that functionality
+Vector<double, VectFull, CallocAlloc<double> > V;
+// a single element is appended
+V.Append(1.0);
+// now other elements
+V.Append(1.5);
+W.Append(-1.0);
+// W should contain [1.0 1.5 -1.0]
+\endprecode
+
+
+<h4>Related topics :</h4>
+<p><a href="#PushBack">PushBack</a></p>
+
+
+<h4>Location :</h4>
+<p>Class <code>Vector<T, VectFull></code><br/>
+Vector.hxx<br/>
+Vector.cxx</p>
+
+
+
+<div class="separator"><a name="Zero"></a></div>
 
 
 
@@ -608,7 +706,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p>This method fills memory of 0, is convenient for vector made of doubles, integers, floats, but not for more complicated types.  In that case, it is better to use the method <a href="#fill">Fill</a>.  </p>
+<p>This method fills memory of 0, is convenient for vector made of doubles, integers, floats, but not for more complicated types.  In that case, it is better to use the method <a href="#Fill">Fill</a>.  </p>
 
 
 <h4>Example : </h4>
@@ -626,7 +724,7 @@ W.Fill(zero);
 
 
 <h4>Related topics :</h4>
-<p><a href="#fill">Fill</a></p>
+<p><a href="#Fill">Fill</a></p>
 
 
 <h4>Location :</h4>
@@ -636,7 +734,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="fill"></a></div>
+<div class="separator"><a name="Fill"></a></div>
 
 
 
@@ -664,7 +762,7 @@ V.Fill(2);
 
 
 <h4>Related topics :</h4>
-<p><a href="#zero">Zero</a></p>
+<p><a href="#Zero">Zero</a></p>
 
 
 <h4>Location :</h4>
@@ -674,7 +772,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="fillrand"></a></div>
+<div class="separator"><a name="FillRand"></a></div>
 
 
 
@@ -698,7 +796,7 @@ V.FillRand();
 
 
 <h4>Related topics :</h4>
-<p><a href="#fill">Fill</a></p>
+<p><a href="#Fill">Fill</a></p>
 
 
 <h4>Location :</h4>
@@ -708,7 +806,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="getnorminf"></a></div>
+<div class="separator"><a name="GetNormInf"></a></div>
 
 
 
@@ -721,7 +819,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p> <code>GetNormInf</code> returns the highest absolute value whereas <code>GetNormInfIndex</code> returns the index where this maximum is reached. This method does not work for complex numbers.</p>
+<p> <code>GetNormInf</code> returns the highest absolute value (modulus for complex numbers) whereas <code>GetNormInfIndex</code> returns the index where this maximum is reached.</p>
 
 
 <h4>Example : </h4>
@@ -740,7 +838,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="print"></a></div>
+<div class="separator"><a name="Print"></a></div>
 
 
 
@@ -771,7 +869,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="write"></a></div>
+<div class="separator"><a name="Write"></a></div>
 
 
 
@@ -781,9 +879,10 @@ Vector.cxx</p>
  <pre class="syntax-box">
   void Write(string) const;
   void Write(ofstream&amp;) const;
+  void Write(ofstream&amp;, bool with_size) const;
 </pre>
 
-<p>This method writes the vector on a file/stream in binary format.  The file will contain the number of elements, then the list of elements.</p>
+<p>This method writes the vector on a file/stream in binary format.  The file will contain the number of elements, then the list of elements. You can also write the list of elements without the size.</p>
 
 
 <h4>Example : </h4>
@@ -799,13 +898,24 @@ int my_info = 3;
 file_out.write(reinterpret_cast<char*>(&amp;my_info), sizeof(int));
 V.Write(file_out);
 file_out.close();
+
+// you can ask to write the values without the size at the beginning
+// in this example, we write two vectors of the same size
+file_out.open("vector2.dat");
+Vector<double> U(V); 
+// first vector is written with its size
+U.Write(file_out);
+// second vector has the same size, elements are written directly
+V.Write(file_out, false);
+file_out.close();
+
 \endprecode
 
 
 <h4>Related topics :</h4>
-<p><a href="#read">Read</a><br/>
-<a href="#writetext">WriteText</a><br/>
-<a href="#readtext">ReadText</a></p>
+<p><a href="#Read">Read</a><br/>
+<a href="#WriteText">WriteText</a><br/>
+<a href="#ReadText">ReadText</a></p>
 
 
 
@@ -816,7 +926,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="read"></a></div>
+<div class="separator"><a name="Read"></a></div>
 
 
 
@@ -826,10 +936,12 @@ Vector.cxx</p>
  <pre class="syntax-box">
   void Read(string);
   void Read(istream&amp;);
+  void Read(istream&amp;, bool with_size);
 </pre>
 
 
-<p>This method sets the vector from a file/stream in binary format.  The file contains the number of elements, then the list of elements. The method ReadText can also be useful to initialize an array with a string. </p>
+<p>This method sets the vector from a file/stream in binary format.  The file contains the number of elements, then the list of elements. If with_size is set to false,
+ the number of elements is not expected in the stream (and not read). </p>
 
 
 <h4>Example : </h4>
@@ -845,17 +957,22 @@ file_in.read(reinterpret_cast<char*<(&amp;my_info), sizeof(int));
 V.Read(file_in);
 file_in.close();
 
-// or initialize values of a vector with a string
-string values("1.23  -4.1  2.5  0.1 0.6 -0.7");
-istringstream stream_data(values);
-V.ReadText(stream_data);
+// we read two vectors of the same size
+Vector<double> U;
+file_in.open("vector2.dat");
+V.Read(file_in);
+// second vector has same size
+U.Reallocate(V.GetM());
+U.Read(file_in, false);
+file_in.close();
+
 \endprecode
 
 
 <h4>Related topics :</h4>
-<p><a href="#write">Write</a><br/>
-<a href="#writetext">WriteText</a><br/>
-<a href="#readtext">ReadText</a></p>
+<p><a href="#Write">Write</a><br/>
+<a href="#WriteText">WriteText</a><br/>
+<a href="#ReadText">ReadText</a></p>
 
 
 <h4>Location :</h4>
@@ -865,7 +982,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="writetext"></a></div>
+<div class="separator"><a name="WriteText"></a></div>
 
 
 
@@ -898,9 +1015,9 @@ file_out.close();
 
 
 <h4>Related topics :</h4>
-<p><a href="#write">Write</a><br/>
-<a href="#read">Read</a><br/>
-<a href="#readtext">ReadText</a></p>
+<p><a href="#Write">Write</a><br/>
+<a href="#Read">Read</a><br/>
+<a href="#ReadText">ReadText</a></p>
 
 
 <h4>Location :</h4>
@@ -910,7 +1027,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="readtext"></a></div>
+<div class="separator"><a name="ReadText"></a></div>
 
 
 
@@ -923,7 +1040,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p>This method sets the vector from a file/stream in text format.  The file contains the list of elements.</p>
+<p>This method sets the vector from a file/stream in text format.  The file contains the list of elements. The method ReadText can also be useful to initialize an array with a string.</p>
 
 
 <h4>Example : </h4>
@@ -938,13 +1055,19 @@ int my_info;
 file_in >> my_info;
 V.ReadText(file_in);
 file_in.close();
+
+// or initialize values of a vector with a string
+string values("1.23  -4.1  2.5  0.1 0.6 -0.7");
+istringstream stream_data(values);
+V.ReadText(stream_data);
+
 \endprecode
 
 
 <h4>Related topics :</h4>
-<p><a href="#write">Write</a><br/>
-<a href="#read">Read</a><br/>
-<a href="#writetext">WriteText</a></p>
+<p><a href="#Write">Write</a><br/>
+<a href="#Read">Read</a><br/>
+<a href="#WriteText">WriteText</a></p>
 
 
 <h4>Location :</h4>

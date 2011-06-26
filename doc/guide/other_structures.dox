@@ -10,8 +10,14 @@
 <ul>
 
   <li> <code>Vector2</code> is a structure that acts like a vector of vectors. The inner vectors can be of any dimension, so that this structure is more flexible than a matrix. </li>
+
+  <li> <code>Vector3</code> is a structure that acts like a vector of vectors of vectors. The inner vectors can be of any dimension, so that this structure is more flexible than an Array3D. </li>
   
   <li> <code>Array3D</code> is a three-dimensional array.</li>
+
+  <li> <code>Array4D</code> is a four-dimensional array.</li>
+
+  <li> <code>Array</code> is a multi-dimensional array (up to 9 dimensions).</li>
 
 </ul>
 

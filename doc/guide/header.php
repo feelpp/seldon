@@ -68,6 +68,7 @@ or basename($_SERVER['REQUEST_URI'], ".php") == "functions_vector")
 <?php if (basename($_SERVER['REQUEST_URI'], ".php") == "matrices"
 or basename($_SERVER['REQUEST_URI'], ".php") == "class_matrix"
 or basename($_SERVER['REQUEST_URI'], ".php") == "class_sparse_matrix"
+or basename($_SERVER['REQUEST_URI'], ".php") == "sparse_complex_matrices"
 or basename($_SERVER['REQUEST_URI'], ".php") == "functions_matrix"
 or basename($_SERVER['REQUEST_URI'], ".php") == "submatrix"
 or basename($_SERVER['REQUEST_URI'], ".php") == "matrix_miscellaneous")
@@ -77,6 +78,9 @@ or basename($_SERVER['REQUEST_URI'], ".php") == "matrix_miscellaneous")
   echo '</li>';
   echo '<li class="jelly">';
   HL($file, "class_sparse_matrix", "Sparse Matrices");
+  echo '</li>';
+  echo '<li class="jelly">';
+  HL($file, "sparse_complex_matrices", "Sparse Complex Matrices");
   echo '</li>';
   echo '<li class="jelly">';
   HL($file, "functions_matrix", "Functions");
@@ -94,13 +98,25 @@ or basename($_SERVER['REQUEST_URI'], ".php") == "matrix_miscellaneous")
 <li class="jelly"> <?php HL($file, "other_structures", "Other Structures");?>
 <?php if (basename($_SERVER['REQUEST_URI'], ".php") == "other_structures"
 or basename($_SERVER['REQUEST_URI'], ".php") == "vector2"
-or basename($_SERVER['REQUEST_URI'], ".php") == "array3d")
+or basename($_SERVER['REQUEST_URI'], ".php") == "vector3"
+or basename($_SERVER['REQUEST_URI'], ".php") == "array3d"
+or basename($_SERVER['REQUEST_URI'], ".php") == "array4d"
+or basename($_SERVER['REQUEST_URI'], ".php") == "arraynd")
 {
   echo '<ul class="navsubul"> <li class="jelly">';
   HL($file, "vector2", "Vector2");
   echo '</li>';
   echo '<li class="jelly">';
-  HL($file, "array3d", "3D&nbsp;Array");
+  HL($file, "vector3", "Vector3");
+  echo '</li>';
+  echo '<li class="jelly">';
+  HL($file, "array3d", "3-D&nbsp;Array");
+  echo '</li>';
+  echo '<li class="jelly">';
+  HL($file, "array4d", "4-D&nbsp;Array");
+  echo '</li>';
+  echo '<li class="jelly">';
+  HL($file, "arraynd", "N-D&nbsp;Array");
   echo '</li> </ul>';
 } ?>
 </li>

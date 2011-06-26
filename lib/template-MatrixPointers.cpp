@@ -35,12 +35,29 @@ typedef std::complex<double> complexdouble;
 namespace Seldon
 {
 
+#ifdef SELDON_WITH_SLOW_COMPILED_LIBRARY
+
   SELDON_EXTERN template class Matrix_Base<@scalar, MallocAlloc<@scalar> >;
   SELDON_EXTERN template class Matrix_Pointers<@scalar, General, @storage_blasGE, MallocAlloc<@scalar> >;
   SELDON_EXTERN template class Matrix<@scalar, General, @storage_blasGE, MallocAlloc<@scalar> >;
+  SELDON_EXTERN template void Matrix_Pointers<@real_complex, General, @storage_blasGE, MallocAlloc<@real_complex> >::Fill(const @real_complex&);
+  SELDON_EXTERN template void Matrix_Pointers<@scalar, General, @storage_blasGE, MallocAlloc<@scalar> >::Fill(const int&);
 
 #ifndef SWIG
   SELDON_EXTERN template ostream& operator << (ostream&, const Matrix<@scalar, General, @storage_blasGE, MallocAlloc<@scalar> >&);
 #endif
 
+
+  SELDON_EXTERN template class Matrix_Base<@scalar, NewAlloc<@scalar> >;
+  SELDON_EXTERN template class Matrix_Pointers<@scalar, General, @storage_blasGE, NewAlloc<@scalar> >;
+  SELDON_EXTERN template class Matrix<@scalar, General, @storage_blasGE, NewAlloc<@scalar> >;
+  SELDON_EXTERN template void Matrix_Pointers<@real_complex, General, @storage_blasGE, NewAlloc<@real_complex> >::Fill(const @real_complex&);
+  SELDON_EXTERN template void Matrix_Pointers<@scalar, General, @storage_blasGE, NewAlloc<@scalar> >::Fill(const int&);
+
+#ifndef SWIG
+  SELDON_EXTERN template ostream& operator << (ostream&, const Matrix<@scalar, General, @storage_blasGE, NewAlloc<@scalar> >&);
+#endif
+
+#endif
+  
 }

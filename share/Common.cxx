@@ -135,7 +135,7 @@ namespace Seldon
   
   //! returns absolute value of val
   template<class T>
-  T ComplexAbs(const T& val)
+  inline T ComplexAbs(const T& val)
   {
     return abs(val);
   }
@@ -143,7 +143,7 @@ namespace Seldon
   
   //! returns modulus of val
   template<class T>
-  T ComplexAbs(const complex<T>& val)
+  inline T ComplexAbs(const complex<T>& val)
   {
 #if defined(SELDON_WITH_BLAS) && !defined(SELDON_WITH_LAPACK)
     // we choose Blas convention

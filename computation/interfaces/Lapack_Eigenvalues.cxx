@@ -55,7 +55,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<float, Prop, RowMajor, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& wr,
 		      Vector<float, VectFull, Allocator3>& wi,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -87,7 +87,7 @@ namespace Seldon
 				  Vector<float, VectFull, Allocator2>& wr,
 				  Vector<float, VectFull, Allocator3>& wi,
 				  Matrix<float, General, RowMajor, Allocator4>& zr,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -133,7 +133,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, RowMajor, Allocator1>& A,
 		      Vector<complex<float>, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -164,7 +164,7 @@ namespace Seldon
 				  Vector<complex<float>, VectFull, Allocator2>& w,
 				  Matrix<complex<float>,
 				  General, RowMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -195,7 +195,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<double, Prop, RowMajor, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& wr,
 		      Vector<double, VectFull, Allocator3>& wi,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -226,7 +226,7 @@ namespace Seldon
 				  Vector<double, VectFull, Allocator2>& wr,
 				  Vector<double, VectFull, Allocator3>& wi,
 				  Matrix<double, General, RowMajor, Allocator4>& zr,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -271,7 +271,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, RowMajor, Allocator1>& A,
 		      Vector<complex<double>, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -303,7 +303,7 @@ namespace Seldon
 				  VectFull, Allocator2>& w,
 				  Matrix<complex<double>,
 				  General, RowMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -337,7 +337,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<float, Prop, ColMajor, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& wr,
 		      Vector<float, VectFull, Allocator3>& wi,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -367,7 +367,7 @@ namespace Seldon
 				  Vector<float, VectFull, Allocator2>& wr,
 				  Vector<float, VectFull, Allocator3>& wi,
 				  Matrix<float, General, ColMajor, Allocator4>&zr,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -396,7 +396,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, ColMajor, Allocator1>& A,
 		      Vector<complex<float>, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -428,7 +428,7 @@ namespace Seldon
 				  VectFull, Allocator2>& w,
 				  Matrix<complex<float>,
 				  General, ColMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -457,7 +457,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<double, Prop, ColMajor, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& wr,
 		      Vector<double, VectFull, Allocator3>& wi,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -488,7 +488,7 @@ namespace Seldon
 				  Vector<double, VectFull, Allocator2>& wr,
 				  Vector<double, VectFull, Allocator3>& wi,
 				  Matrix<double, General, ColMajor, Allocator4>&zr,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -517,7 +517,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, ColMajor, Allocator1>& A,
 		      Vector<complex<double>, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -549,7 +549,7 @@ namespace Seldon
 				  VectFull, Allocator2>& w,
 				  Matrix<complex<double>,
 				  General, ColMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -581,7 +581,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<float, Prop, RowSym, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'); char job('N');
@@ -604,7 +604,7 @@ namespace Seldon
   void GetEigenvaluesEigenvectors(Matrix<float, Prop, RowSym, Allocator1>& A,
 				  Vector<float, VectFull, Allocator2>& w,
 				  Matrix<float, General, RowMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'); char job('V');
@@ -632,7 +632,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, RowSym, Allocator1>& A,
 		      Vector<complex<float>, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<float>, General, ColMajor> B(n,n);
@@ -651,7 +651,7 @@ namespace Seldon
 				  VectFull, Allocator2>& w,
 				  Matrix<complex<float>,
 				  General, RowMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<float>, General, RowMajor> B(n,n);
@@ -667,7 +667,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<double, Prop, RowSym, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'), job('N');
@@ -690,7 +690,7 @@ namespace Seldon
   void GetEigenvaluesEigenvectors(Matrix<double, Prop, RowSym, Allocator1>& A,
 				  Vector<double, VectFull, Allocator2>& w,
 				  Matrix<double, General, RowMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'); char job('V');
@@ -718,7 +718,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, RowSym, Allocator1>& A,
 		      Vector<complex<double>, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<double>, General, ColMajor> B(n,n);
@@ -737,7 +737,7 @@ namespace Seldon
 				  VectFull, Allocator2>& w,
 				  Matrix<complex<double>,
 				  General, RowMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<double>, General, RowMajor> B(n,n);
@@ -758,7 +758,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<float, Prop, ColSym, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'); char job('N');
@@ -781,7 +781,7 @@ namespace Seldon
   void GetEigenvaluesEigenvectors(Matrix<float, Prop, ColSym, Allocator1>& A,
 				  Vector<float, VectFull, Allocator2>& w,
 				  Matrix<float, General, ColMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'); char job('V');
@@ -809,7 +809,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, ColSym, Allocator1>& A,
 		      Vector<complex<float>, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<float>, General, ColMajor> B(n,n);
@@ -829,7 +829,7 @@ namespace Seldon
 				  VectFull, Allocator2>& w,
 				  Matrix<complex<float>,
 				  General, ColMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<float>, General, ColMajor> B(n,n);
@@ -847,7 +847,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<double, Prop, ColSym, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'), job('N');
@@ -870,7 +870,7 @@ namespace Seldon
   void GetEigenvaluesEigenvectors(Matrix<double, Prop, ColSym, Allocator1>& A,
 				  Vector<double, VectFull, Allocator2>& w,
 				  Matrix<double, General, ColMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'), job('V');
@@ -899,7 +899,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, ColSym, Allocator1>& A,
 		      Vector<complex<double>, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<double>, General, ColMajor> B(n,n);
@@ -920,7 +920,7 @@ namespace Seldon
 				  VectFull, Allocator2>& w,
 				  Matrix<complex<double>,
 				  General, ColMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<double>, General, ColMajor> B(n,n);
@@ -941,7 +941,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, RowHerm, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'), job('N');
@@ -969,7 +969,7 @@ namespace Seldon
 				  Vector<float, VectFull, Allocator2>& w,
 				  Matrix<complex<float>,
 				  General, RowMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'), job('V');
@@ -1000,7 +1000,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, RowHerm, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'), job('N');
@@ -1028,7 +1028,7 @@ namespace Seldon
 				  Vector<double, VectFull, Allocator2>& w,
 				  Matrix<complex<double>,
 				  General, RowMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'), job('V');
@@ -1062,7 +1062,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, ColHerm, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'); char job('N'); int lwork = 2*n;
@@ -1088,7 +1088,7 @@ namespace Seldon
 				  Vector<float, VectFull, Allocator2>& w,
 				  Matrix<complex<float>,
 				  General, ColMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'), job('V');
@@ -1119,7 +1119,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, ColHerm, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'), job('N');
@@ -1146,7 +1146,7 @@ namespace Seldon
 				  Vector<double, VectFull, Allocator2>& w,
 				  Matrix<complex<double>,
 				  General, ColMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'), job('V');
@@ -1180,7 +1180,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<float, Prop, RowSymPacked, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'); char job('N');
@@ -1202,7 +1202,7 @@ namespace Seldon
   void GetEigenvaluesEigenvectors(Matrix<float, Prop,RowSymPacked, Allocator1>& A,
 				  Vector<float, VectFull, Allocator2>& w,
 				  Matrix<float, General, RowMajor, Allocator3>&z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'); char job('V');
@@ -1225,7 +1225,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, RowSymPacked, Allocator1>& A,
 		      Vector<complex<float>, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<float>, General, ColMajor> B(n,n);
@@ -1244,7 +1244,7 @@ namespace Seldon
 				  Vector<complex<float>,VectFull, Allocator2>& w,
 				  Matrix<complex<float>,
 				  General, RowMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<float>, General, RowMajor> B(n,n);
@@ -1262,7 +1262,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<double, Prop, RowSymPacked, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'), job('N');
@@ -1284,7 +1284,7 @@ namespace Seldon
   void GetEigenvaluesEigenvectors(Matrix<double,Prop,RowSymPacked, Allocator1>& A,
 				  Vector<double, VectFull, Allocator2>& w,
 				  Matrix<double, General, RowMajor, Allocator3>&z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'), job('V');
@@ -1307,7 +1307,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, RowSymPacked, Allocator1>& A,
 		      Vector<complex<double>, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<double>, General, ColMajor> B(n,n);
@@ -1327,7 +1327,7 @@ namespace Seldon
 				  Vector<complex<double>,VectFull, Allocator2>& w,
 				  Matrix<complex<double>,
 				  General, RowMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<double>, General, RowMajor> B(n,n);
@@ -1348,7 +1348,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<float, Prop, ColSymPacked, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'), job('N');
@@ -1370,7 +1370,7 @@ namespace Seldon
   void GetEigenvaluesEigenvectors(Matrix<float, Prop,ColSymPacked, Allocator1>& A,
 				  Vector<float, VectFull, Allocator2>& w,
 				  Matrix<float, General, ColMajor, Allocator3>&z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'), job('V');
@@ -1393,7 +1393,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<complex<float>,
 		      Prop, ColSymPacked, Allocator1>& A,
 		      Vector<complex<float>, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<float>, General, ColMajor> B(n,n);
@@ -1413,7 +1413,7 @@ namespace Seldon
 				  Vector<complex<float>, VectFull, Allocator2>& w,
 				  Matrix<complex<float>,
 				  General, ColMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<float>, General, ColMajor> B(n,n);
@@ -1431,7 +1431,7 @@ namespace Seldon
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<double, Prop, ColSymPacked, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'), job('N');
@@ -1453,7 +1453,7 @@ namespace Seldon
   void GetEigenvaluesEigenvectors(Matrix<double, Prop, ColSymPacked, Allocator1>& A,
 				  Vector<double, VectFull, Allocator2>& w,
 				  Matrix<double, General, ColMajor, Allocator3>&z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'), job('V');
@@ -1476,7 +1476,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<complex<double>,
 		      Prop, ColSymPacked, Allocator1>& A,
 		      Vector<complex<double>, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<double>, General, ColMajor> B(n,n);
@@ -1496,7 +1496,7 @@ namespace Seldon
 				  Vector<complex<double>, VectFull, Allocator2>& w,
 				  Matrix<complex<double>,
 				  General, ColMajor, Allocator3>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     Matrix<complex<double>, General, ColMajor> B(n,n);
@@ -1518,7 +1518,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<complex<float>,
 		      Prop, RowHermPacked, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'), job('N');
@@ -1544,7 +1544,7 @@ namespace Seldon
 				  Vector<float, VectFull, Allocator2>& w,
 				  Matrix<complex<float>,
 				  General, RowMajor, Allocator3>&z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'), job('V');
@@ -1570,7 +1570,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<complex<double>,
 		      Prop, RowHermPacked, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'), job('N');
@@ -1596,7 +1596,7 @@ namespace Seldon
 				  Vector<double, VectFull, Allocator2>& w,
 				  Matrix<complex<double>,
 				  General, RowMajor, Allocator3>&z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('L'), job('V');
@@ -1625,7 +1625,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<complex<float>,
 		      Prop, ColHermPacked, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U');
@@ -1651,7 +1651,7 @@ namespace Seldon
 				  Vector<float, VectFull, Allocator2>& w,
 				  Matrix<complex<float>,
 				  General, ColMajor, Allocator3>&z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'); char job('V');
@@ -1675,7 +1675,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<complex<double>,
 		      Prop, ColHermPacked, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U');
@@ -1701,7 +1701,7 @@ namespace Seldon
 				  Vector<double, VectFull, Allocator2>& w,
 				  Matrix<complex<double>,
 				  General, ColMajor, Allocator3>&z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
     int n = A.GetM();
     char uplo('U'); char job('V');
@@ -1737,7 +1737,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<float, Prop1, RowSym, Allocator1>& A,
 		      Matrix<float, Prop2, RowSym, Allocator2>& B,
 		      Vector<float, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -1770,7 +1770,7 @@ namespace Seldon
 				  Matrix<float, Prop2, RowSym, Allocator2>& B,
 				  Vector<float, VectFull, Allocator3>& w,
 				  Matrix<float, General, RowMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -1810,7 +1810,7 @@ namespace Seldon
 		      Matrix<complex<float>, Prop2, RowSym, Allocator2>& B,
 		      Vector<complex<float>, VectFull, Allocator4>& alpha,
 		      Vector<complex<float>, VectFull, Allocator5>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -1846,7 +1846,7 @@ namespace Seldon
 				  VectFull, Allocator5>& beta,
 				  Matrix<complex<float>,
 				  Prop3, RowMajor, Allocator6>& V,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -1874,7 +1874,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<double, Prop1, RowSym, Allocator1>& A,
 		      Matrix<double, Prop2, RowSym, Allocator2>& B,
 		      Vector<double, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -1906,7 +1906,7 @@ namespace Seldon
 				  Matrix<double, Prop2, RowSym, Allocator2>& B,
 				  Vector<double, VectFull, Allocator3>& w,
 				  Matrix<double, General, RowMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -1946,7 +1946,7 @@ namespace Seldon
 		      Matrix<complex<double>, Prop2, RowSym, Allocator2>& B,
 		      Vector<complex<double>, VectFull, Allocator4>& alpha,
 		      Vector<complex<double>, VectFull, Allocator5>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -1982,7 +1982,7 @@ namespace Seldon
 				  VectFull, Allocator5>& beta,
 				  Matrix<complex<double>,
 				  Prop3, RowMajor, Allocator6>& V,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2013,7 +2013,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<float, Prop1, ColSym, Allocator1>& A,
 		      Matrix<float, Prop2, ColSym, Allocator2>& B,
 		      Vector<float, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2045,7 +2045,7 @@ namespace Seldon
 				  Matrix<float, Prop2, ColSym, Allocator2>& B,
 				  Vector<float, VectFull, Allocator3>& w,
 				  Matrix<float, General, ColMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2082,7 +2082,7 @@ namespace Seldon
 		      Matrix<complex<float>, Prop2, ColSym, Allocator2>& B,
 		      Vector<complex<float>, VectFull, Allocator4>& alpha,
 		      Vector<complex<float>, VectFull, Allocator5>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2115,7 +2115,7 @@ namespace Seldon
 				  Vector<complex<float>, VectFull, Alloc5>& beta,
 				  Matrix<complex<float>,
 				  Prop3, ColMajor, Alloc6>& V,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2142,7 +2142,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<double, Prop1, ColSym, Allocator1>& A,
 		      Matrix<double, Prop2, ColSym, Allocator2>& B,
 		      Vector<double, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2174,7 +2174,7 @@ namespace Seldon
 				  Matrix<double, Prop2, ColSym, Allocator2>& B,
 				  Vector<double, VectFull, Allocator3>& w,
 				  Matrix<double, General, ColMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2213,7 +2213,7 @@ namespace Seldon
 		      Matrix<complex<double>, Prop2, ColSym, Allocator2>& B,
 		      Vector<complex<double>, VectFull, Allocator4>& alpha,
 		      Vector<complex<double>, VectFull, Allocator5>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2246,7 +2246,7 @@ namespace Seldon
 				  Vector<complex<double>, VectFull, Alloc5>& beta,
 				  Matrix<complex<double>,
 				  Prop3, ColMajor, Alloc6>& V,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2277,7 +2277,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<complex<float>, Prop1, RowHerm, Allocator1>& A,
 		      Matrix<complex<float>, Prop2, RowHerm, Allocator2>& B,
 		      Vector<float, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2315,7 +2315,7 @@ namespace Seldon
 				  Vector<float, VectFull, Allocator3>& w,
 				  Matrix<complex<float>,
 				  General, RowMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2357,7 +2357,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A,
 		      Matrix<complex<double>, Prop2, RowHerm, Allocator2>& B,
 		      Vector<double, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2398,7 +2398,7 @@ namespace Seldon
 				  Vector<double, VectFull, Allocator3>& w,
 				  Matrix<complex<double>,
 				  General, RowMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2443,7 +2443,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<complex<float>, Prop1, ColHerm, Allocator1>& A,
 		      Matrix<complex<float>, Prop2, ColHerm, Allocator2>& B,
 		      Vector<float, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2480,7 +2480,7 @@ namespace Seldon
 				  Vector<float, VectFull, Allocator3>& w,
 				  Matrix<complex<float>,
 				  General, ColMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2519,7 +2519,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A,
 		      Matrix<complex<double>, Prop2, ColHerm, Allocator2>& B,
 		      Vector<double, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2556,7 +2556,7 @@ namespace Seldon
 				  Vector<double, VectFull, Allocator3>& w,
 				  Matrix<complex<double>,
 				  General, ColMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2599,7 +2599,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<float, Prop1, RowSymPacked, Allocator1>& A,
 		      Matrix<float, Prop2, RowSymPacked, Allocator2>& B,
 		      Vector<float, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2633,7 +2633,7 @@ namespace Seldon
 				  Vector<float, VectFull, Allocator3>& w,
 				  Matrix<float,
 				  General, RowMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2668,7 +2668,7 @@ namespace Seldon
 		      Prop2, RowSymPacked, Allocator2>& B,
 		      Vector<complex<float>, VectFull, Allocator3>& alpha,
 		      Vector<complex<float>, VectFull, Allocator4>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2705,7 +2705,7 @@ namespace Seldon
 				  VectFull, Allocator4>& beta,
 				  Matrix<complex<float>,
 				  General, RowMajor, Allocator5>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2736,7 +2736,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<double, Prop1, RowSymPacked, Allocator1>& A,
 		      Matrix<double, Prop2, RowSymPacked, Allocator2>& B,
 		      Vector<double, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2770,7 +2770,7 @@ namespace Seldon
 				  Vector<double, VectFull, Allocator3>& w,
 				  Matrix<double,
 				  General, RowMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2805,7 +2805,7 @@ namespace Seldon
 		      Prop2, RowSymPacked, Allocator2>& B,
 		      Vector<complex<double>, VectFull, Allocator3>& alpha,
 		      Vector<complex<double>, VectFull, Allocator4>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2842,7 +2842,7 @@ namespace Seldon
 				  VectFull, Allocator4>& beta,
 				  Matrix<complex<double>,
 				  General, RowMajor, Allocator5>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2876,7 +2876,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<float, Prop1, ColSymPacked, Allocator1>& A,
 		      Matrix<float, Prop2, ColSymPacked, Allocator2>& B,
 		      Vector<float, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2910,7 +2910,7 @@ namespace Seldon
 				  Vector<float, VectFull, Allocator3>& w,
 				  Matrix<float,
 				  General, ColMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2944,7 +2944,7 @@ namespace Seldon
 		      Prop2, ColSymPacked, Allocator2>& B,
 		      Vector<complex<float>, VectFull, Allocator3>& alpha,
 		      Vector<complex<float>, VectFull, Allocator4>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -2981,7 +2981,7 @@ namespace Seldon
 				  VectFull, Allocator4>& beta,
 				  Matrix<complex<float>,
 				  General, ColMajor, Allocator5>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -3012,7 +3012,7 @@ namespace Seldon
   void GetEigenvalues(Matrix<double, Prop1, ColSymPacked, Allocator1>& A,
 		      Matrix<double, Prop2, ColSymPacked, Allocator2>& B,
 		      Vector<double, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -3046,7 +3046,7 @@ namespace Seldon
 				  Vector<double, VectFull, Allocator3>& w,
 				  Matrix<double,
 				  General, ColMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -3080,7 +3080,7 @@ namespace Seldon
 		      Prop2, ColSymPacked, Allocator2>& B,
 		      Vector<complex<double>, VectFull, Allocator3>& alpha,
 		      Vector<complex<double>, VectFull, Allocator4>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -3117,7 +3117,7 @@ namespace Seldon
 				  VectFull, Allocator4>& beta,
 				  Matrix<complex<double>,
 				  General, ColMajor, Allocator5>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -3153,7 +3153,7 @@ namespace Seldon
 		      Matrix<complex<float>,
 		      Prop2, RowHermPacked, Allocator2>& B,
 		      Vector<float, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -3191,7 +3191,7 @@ namespace Seldon
 				  Vector<float, VectFull, Allocator3>& w,
 				  Matrix<complex<float>,
 				  General, RowMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -3228,7 +3228,7 @@ namespace Seldon
 		      Matrix<complex<double>,
 		      Prop2, RowHermPacked, Allocator2>& B,
 		      Vector<double, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -3266,7 +3266,7 @@ namespace Seldon
 				  Vector<double, VectFull, Allocator3>& w,
 				  Matrix<complex<double>,
 				  General, RowMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -3306,7 +3306,7 @@ namespace Seldon
 		      Matrix<complex<float>,
 		      Prop2, ColHermPacked, Allocator2>& B,
 		      Vector<float, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -3343,7 +3343,7 @@ namespace Seldon
 				  Vector<float, VectFull, Allocator3>& w,
 				  Matrix<complex<float>,
 				  General, ColMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -3379,7 +3379,7 @@ namespace Seldon
 		      Matrix<complex<double>,
 		      Prop2, ColHermPacked, Allocator2>& B,
 		      Vector<double, VectFull, Allocator3>& w,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -3416,7 +3416,7 @@ namespace Seldon
 				  Vector<double, VectFull, Allocator3>& w,
 				  Matrix<complex<double>,
 				  General, ColMajor, Allocator4>& z,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != B.GetM())
@@ -3456,7 +3456,7 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator3>& alpha_real,
 		      Vector<float, VectFull, Allocator4>& alpha_imag,
 		      Vector<float, VectFull, Allocator5>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {    
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -3497,7 +3497,7 @@ namespace Seldon
 				  Vector<float, VectFull, Allocator4>& alpha_imag,
 				  Vector<float, VectFull, Allocator5>& beta,
 				  Matrix<float, Prop3, RowMajor, Allocator6>& V,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -3553,7 +3553,7 @@ namespace Seldon
 		      Matrix<complex<float>, Prop2, RowMajor, Allocator2>& B,
 		      Vector<complex<float>, VectFull, Allocator4>& alpha,
 		      Vector<complex<float>, VectFull, Allocator5>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -3597,7 +3597,7 @@ namespace Seldon
 				  VectFull, Allocator5>& beta,
 				  Matrix<complex<float>,
 				  Prop3, RowMajor, Allocator6>& V,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -3639,7 +3639,7 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator3>& alpha_real,
 		      Vector<double, VectFull, Allocator4>& alpha_imag,
 		      Vector<double, VectFull, Allocator5>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -3680,7 +3680,7 @@ namespace Seldon
 				  Vector<double, VectFull, Allocator4>& alpha_imag,
 				  Vector<double, VectFull, Allocator5>& beta,
 				  Matrix<double, Prop3, RowMajor, Allocator6>& V,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -3735,7 +3735,7 @@ namespace Seldon
 		      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& B,
 		      Vector<complex<double>, VectFull, Allocator4>& alpha,
 		      Vector<complex<double>, VectFull, Allocator5>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -3779,7 +3779,7 @@ namespace Seldon
 				  VectFull, Allocator5>& beta,
 				  Matrix<complex<double>,
 				  Prop3, RowMajor, Allocator6>& V,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -3823,7 +3823,7 @@ namespace Seldon
 		      Vector<float, VectFull, Allocator3>& alpha_real,
 		      Vector<float, VectFull, Allocator4>& alpha_imag,
 		      Vector<float, VectFull, Allocator5>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -3867,7 +3867,7 @@ namespace Seldon
 				  VectFull, Allocator4>& alpha_imag,
 				  Vector<float, VectFull, Allocator5>& beta,
 				  Matrix<float, Prop3, ColMajor, Allocator6>& V,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -3906,7 +3906,7 @@ namespace Seldon
 		      Matrix<complex<float>, Prop2, ColMajor, Allocator2>& B,
 		      Vector<complex<float>, VectFull, Allocator4>& alpha,
 		      Vector<complex<float>, VectFull, Allocator5>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -3952,7 +3952,7 @@ namespace Seldon
 				  VectFull, Allocator5>& beta,
 				  Matrix<complex<float>,
 				  Prop3, ColMajor, Allocator6>& V,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -3993,7 +3993,7 @@ namespace Seldon
 		      Vector<double, VectFull, Allocator3>& alpha_real,
 		      Vector<double, VectFull, Allocator4>& alpha_imag,
 		      Vector<double, VectFull, Allocator5>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -4037,7 +4037,7 @@ namespace Seldon
 				  VectFull, Allocator4>& alpha_imag,
 				  Vector<double, VectFull, Allocator5>& beta,
 				  Matrix<double, Prop3, ColMajor, Allocator6>& V,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -4077,7 +4077,7 @@ namespace Seldon
 		      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& B,
 		      Vector<complex<double>, VectFull, Allocator4>& alpha,
 		      Vector<complex<double>, VectFull, Allocator5>& beta,
-		      LapackInfo& info = lapack_info)
+		      LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -4123,7 +4123,7 @@ namespace Seldon
 				  VectFull, Allocator5>& beta,
 				  Matrix<complex<double>,
 				  Prop3, ColMajor, Allocator6>& V,
-				  LapackInfo& info = lapack_info)
+				  LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()) )
@@ -4173,7 +4173,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator4>& lambda,
 	      Matrix<float, General, RowMajor, Allocator2>& u,
 	      Matrix<float, General, RowMajor, Allocator3>& v,
-	      LapackInfo& info = lapack_info)
+	      LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -4205,7 +4205,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator4>& lambda,
 	      Matrix<complex<float>, General, RowMajor, Allocator2>& u,
 	      Matrix<complex<float>, General, RowMajor, Allocator3>& v,
-	      LapackInfo& info = lapack_info)
+	      LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -4238,7 +4238,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator4>& lambda,
 	      Matrix<double, General, RowMajor, Allocator2>& u,
 	      Matrix<double, General, RowMajor, Allocator3>& v,
-	      LapackInfo& info = lapack_info)
+	      LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -4270,7 +4270,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator4>& lambda,
 	      Matrix<complex<double>, General, RowMajor, Allocator2>& u,
 	      Matrix<complex<double>, General, RowMajor, Allocator3>& v,
-	      LapackInfo& info = lapack_info)
+	      LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -4306,7 +4306,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator4>& lambda,
 	      Matrix<float, General, ColMajor, Allocator2>& u,
 	      Matrix<float, General, ColMajor, Allocator3>& v,
-	      LapackInfo& info = lapack_info)
+	      LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -4338,7 +4338,7 @@ namespace Seldon
 	      Vector<float, VectFull, Allocator4>& lambda,
 	      Matrix<complex<float>, General, ColMajor, Allocator2>& u,
 	      Matrix<complex<float>, General, ColMajor, Allocator3>& v,
-	      LapackInfo& info = lapack_info)
+	      LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -4371,7 +4371,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator4>& lambda,
 	      Matrix<double, General, ColMajor, Allocator2>& u,
 	      Matrix<double, General, ColMajor, Allocator3>& v,
-	      LapackInfo& info = lapack_info)
+	      LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -4403,7 +4403,7 @@ namespace Seldon
 	      Vector<double, VectFull, Allocator4>& sigma,
 	      Matrix<complex<double>, General, ColMajor, Allocator2>& u,
 	      Matrix<complex<double>, General, ColMajor, Allocator3>& v,
-	      LapackInfo& info = lapack_info)
+	      LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -4433,7 +4433,7 @@ namespace Seldon
   // pseudo inverse
   template<class T, class Prop, class Storage, class Allocator>
   void GetPseudoInverse(Matrix<T, Prop, Storage, Allocator>& A,
-			const T& epsilon, LapackInfo& info = lapack_info)
+			const T& epsilon, LapackInfo& info)
   {
     int m = A.GetM(), n = A.GetN();
     Vector<T, VectFull, Allocator> lambda;
@@ -4462,7 +4462,7 @@ namespace Seldon
   // pseudo inverse
   template<class T, class Prop, class Storage, class Allocator>
   void GetPseudoInverse(Matrix<complex<T>, Prop, Storage, Allocator>& A,
-			const T& epsilon, LapackInfo& info = lapack_info)
+			const T& epsilon, LapackInfo& info)
   {
     int m = A.GetM(), n = A.GetN();
     Vector<T> lambda;
@@ -4509,7 +4509,7 @@ namespace Seldon
   template<class Alloc>
   void GetHessenberg(Matrix<complex<double>, General, ColMajor, Alloc>& A,
                      Matrix<complex<double>, General, ColMajor, Alloc>& Q,
-		     LapackInfo& info = lapack_info)
+		     LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -4563,7 +4563,7 @@ namespace Seldon
                      Matrix<complex<double>, General, ColMajor, Alloc>& B,
                      Matrix<complex<double>, General, ColMajor, Alloc>& Q,
                      Matrix<complex<double>, General, ColMajor, Alloc>& Z,
-		     LapackInfo& info = lapack_info)
+		     LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
@@ -4634,7 +4634,7 @@ namespace Seldon
 	     Matrix<complex<double>, General, ColMajor, Alloc>& B,
 	     Matrix<complex<double>, General, ColMajor, Alloc>& Q,
 	     Matrix<complex<double>, General, ColMajor, Alloc>& Z,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
@@ -4702,7 +4702,7 @@ namespace Seldon
   template<class Alloc>
   void GetHessenberg(Matrix<complex<double>, General, RowMajor, Alloc>& A,
                      Matrix<complex<double>, General, RowMajor, Alloc>& Q,
-		     LapackInfo& info = lapack_info)
+		     LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -4749,7 +4749,7 @@ namespace Seldon
                      Matrix<complex<double>, General, RowMajor, Alloc>& B,
                      Matrix<complex<double>, General, RowMajor, Alloc>& Q,
                      Matrix<complex<double>, General, RowMajor, Alloc>& Z,
-		     LapackInfo& info = lapack_info)
+		     LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
@@ -4814,7 +4814,7 @@ namespace Seldon
 	     Matrix<complex<double>, General, RowMajor, Alloc>& B,
 	     Matrix<complex<double>, General, RowMajor, Alloc>& Q,
 	     Matrix<complex<double>, General, RowMajor, Alloc>& Z,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
@@ -5115,7 +5115,7 @@ namespace Seldon
   template<class Alloc>
   void GetHessenberg(Matrix<double, General, ColMajor, Alloc>& A,
                      Matrix<double, General, ColMajor, Alloc>& Q,
-		     LapackInfo& info = lapack_info)
+		     LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -5169,7 +5169,7 @@ namespace Seldon
                      Matrix<double, General, ColMajor, Alloc>& B,
                      Matrix<double, General, ColMajor, Alloc>& Q,
                      Matrix<double, General, ColMajor, Alloc>& Z,
-		     LapackInfo& info = lapack_info)
+		     LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
@@ -5240,7 +5240,7 @@ namespace Seldon
 	     Matrix<double, General, ColMajor, Alloc>& B,
 	     Matrix<double, General, ColMajor, Alloc>& Q,
 	     Matrix<double, General, ColMajor, Alloc>& Z,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
@@ -5310,7 +5310,7 @@ namespace Seldon
   template<class Alloc>
   void GetHessenberg(Matrix<double, General, RowMajor, Alloc>& A,
                      Matrix<double, General, RowMajor, Alloc>& Q,
-		     LapackInfo& info = lapack_info)
+		     LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (A.GetM() != A.GetN())
@@ -5357,7 +5357,7 @@ namespace Seldon
                      Matrix<double, General, RowMajor, Alloc>& B,
                      Matrix<double, General, RowMajor, Alloc>& Q,
                      Matrix<double, General, RowMajor, Alloc>& Z,
-		     LapackInfo& info = lapack_info)
+		     LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))
@@ -5417,7 +5417,7 @@ namespace Seldon
 	     Matrix<double, General, RowMajor, Alloc>& B,
 	     Matrix<double, General, RowMajor, Alloc>& Q,
 	     Matrix<double, General, RowMajor>& Z,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if ((A.GetM() != A.GetN()) || (B.GetM() != B.GetN()))

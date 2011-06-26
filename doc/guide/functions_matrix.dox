@@ -10,46 +10,52 @@
 
 <table class="category-table">
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#transpose">Transpose </a></td> 
+ <td class="category-table-td"><a href="#Transpose">Transpose </a></td> 
  <td class="category-table-td"> replaces a matrix by its transpose
  </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#transpose">TransposeConj </a></td> 
+ <td class="category-table-td"><a href="#Transpose">TransposeConj </a></td> 
  <td class="category-table-td"> replaces a matrix by its conjugate transpose
  </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#setrow">SetRow </a></td> 
+ <td class="category-table-td"><a href="#SetRow">SetRow </a></td> 
  <td class="category-table-td"> modifies a row of the matrix </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#getrow">GetRow </a></td> 
+ <td class="category-table-td"><a href="#GetRow">GetRow </a></td> 
  <td class="category-table-td"> extracts a row from the matrix</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#setcol">SetCol </a></td> 
+ <td class="category-table-td"><a href="#SetCol">SetCol </a></td> 
  <td class="category-table-td"> modifies a column of the matrix </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#getcol">GetCol </a></td> 
+ <td class="category-table-td"><a href="#GetCol">GetCol </a></td> 
  <td class="category-table-td"> extracts a column from the matrix
  </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#maxabs">MaxAbs </a></td> 
+ <td class="category-table-td"><a href="#MaxAbs">MaxAbs </a></td> 
  <td class="category-table-td"> returns highest absolute value of A
  </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#norm1">Norm1 </a></td> 
+ <td class="category-table-td"><a href="#Norm1">Norm1 </a></td> 
  <td class="category-table-td"> returns 1-norm of A
  </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#norminf">NormInf </a></td> 
+ <td class="category-table-td"><a href="#NormInf">NormInf </a></td> 
  <td class="category-table-td"> returns infinity-norm of A </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#permutematrix">ApplyInversePermutation </a></td> 
+ <td class="category-table-td"><a href="#ApplyPermutation">ApplyPermutation </a></td> 
+ <td class="category-table-td"> permutes row and column numbers of a matrix </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="#ApplyPermutation">ApplyInversePermutation </a></td> 
  <td class="category-table-td"> permutes row and column numbers of a matrix </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#scalematrix">ScaleMatrix </a></td> 
+ <td class="category-table-td"><a href="#ScaleMatrix">ScaleMatrix </a></td> 
  <td class="category-table-td"> multiplies rows and columns of a matrix by coefficients </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#scaleleftmatrix">ScaleLeftMatrix </a></td> 
+ <td class="category-table-td"><a href="#ScaleLeftMatrix">ScaleLeftMatrix </a></td> 
  <td class="category-table-td"> multiplies rows of a matrix by coefficients</td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="#ScaleRightMatrix">ScaleRightMatrix </a></td> 
+ <td class="category-table-td"> multiplies columns of a matrix by coefficients</td> </tr>
 <tr class="category-table-tr-1">
  <td class="category-table-td"><a href="#Copy">Copy </a></td> 
  <td class="category-table-td"> copies a sparse matrix into another one (conversion of format if needed) </td> </tr> 
@@ -65,11 +71,20 @@
 <tr class="category-table-tr-1">
  <td class="category-table-td"><a href="#ConvertToCSR">ConvertToCSR </a></td> 
  <td class="category-table-td"> converts a sparse matrix to CSR (Compressed Sparse Row) format </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="#GetSymmetricPattern">GetSymmetricPattern </a></td> 
+ <td class="category-table-td"> computes the sparsity pattern of A + A' </td> </tr>
 <tr class="category-table-tr-2">
  <td class="category-table-td"><a href="#ConvertToSparse">ConvertToSparse </a></td> 
  <td class="category-table-td"> converts dense matrices to sparse matrices by specifying a threshold. </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="#Gauss">Gauss </a></td> 
+ <td class="category-table-td"> basic Gauss pivoting for dense matrices. </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="#GaussSeidel">GaussSeidel </a></td> 
+ <td class="category-table-td"> performs a Gauss-Seidel iteration for dense matrices. </td> </tr>
  <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="iterative.php#sor">SOR</a></td> 
+ <td class="category-table-td"><a href="iterative.php#SOR">SOR</a></td> 
  <td class="category-table-td"> applies successive over-relaxations to matrix</td> </tr>
  <tr class="category-table-tr-2">
  <td class="category-table-td"><a href="iterative.php#solvers">Cg, Gmres, BiCgSTAB, etc</a></td> 
@@ -78,16 +93,25 @@
  <td class="category-table-td"><a href="#IsComplexMatrix">IsComplexMatrix </a></td> 
  <td class="category-table-td"> returns true if the matrix is complex </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#IsSparseMatrix">IsSparseMatrix </a></td> 
- <td class="category-table-td"> returns true if the matrix is sparse </td> </tr>
-<tr class="category-table-tr-1">
  <td class="category-table-td"><a href="#IsSymmetricMatrix">IsSymmetricMatrix </a></td> 
  <td class="category-table-td"> returns true if the matrix is symmetric </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="#GetLowerTriangular">GetLowerTriangular </a></td> 
+ <td class="category-table-td"> extracts lower triangular part of a matrix </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="#GetUpperTriangular"> GetUpperTriangular </a></td> 
+ <td class="category-table-td"> extracts upper triangular part of a matrix </td> </tr>
+ <tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="#ReadCoordinateMatrix">ReadCoordinateMatrix</a></td> 
+ <td class="category-table-td"> reads a matrix in coordinate format (as in Matlab) </td> </tr>
+ <tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="#WriteCoordinateMatrix">WriteCoordinateMatrix</a></td> 
+ <td class="category-table-td"> writes a matrix in coordinate format (as in Matlab) </td> </tr>
 </table>
 
 
 
-<div class="separator"><a name="transpose"></a></div>
+<div class="separator"><a name="Transpose"></a></div>
 
 
 
@@ -97,11 +121,13 @@
 <h4>Syntax :</h4>
  <pre class="syntax-box">
   void Transpose(Matrix&amp;);
+  void Transpose(const Matrix&amp;, Matrix&amp;);
   void TransposeConj(Matrix&amp;);
+  void TransposeConj(const Matrix&amp;, Matrix&amp;);
 </pre>
 
 
-<p><code>Transpose</code> overwrites a matrix by its transpose, while <code>TransposeConj</code> overwrites a matrix by its conjugate transpose. These functions are only available for dense matrices.</p>
+<p><code>Transpose</code> overwrites a matrix by its transpose, while <code>TransposeConj</code> overwrites a matrix by its conjugate transpose. You can also compute the tranpose (or conjugate transpose) and copy this transpose into another matrix.</p>
 
 
 <h4> Example : </h4>
@@ -114,6 +140,18 @@ Transpose(A);
 Matrix<complex<double> > B(5, 5);
 // you fill B as you want, then overwrites it by conj(transpose(B))
 TransposeConj(B);
+
+// You can keep the original matrix
+Matrix<double, General, ArrayRowSparse> As, Atrans;
+// the original matrix As is constructed then
+Transpose(As, Atrans);
+// Atrans contains now the transpose of As
+
+Matrix<complex<double>, General, RowSparse> Bs Btrans;
+// the original matrix Bs is constructed then
+TransposeConj(As, Atrans);
+// Btrans contains now the conjugate transpose of Bs
+
 \endprecode
 
 
@@ -122,7 +160,7 @@ TransposeConj(B);
 
 
 
-<div class="separator"><a name="setrow"></a></div>
+<div class="separator"><a name="SetRow"></a></div>
 
 
 
@@ -135,7 +173,7 @@ TransposeConj(B);
 </pre>
 
 
-<p>This function modifies a row in the provided matrix. This function is available only for dense matrices.</p>
+<p>This function modifies a row in the provided matrix. For sparse matrices, the expected vector is sparse. </p>
 
 
 <h4> Example : </h4>
@@ -150,6 +188,16 @@ row.FillRand();
 // and you put it in A
 int irow = 1;
 SetRow(row, irow, A);
+
+// For sparse matrices the row is sparse
+Matrix<double, General, ArrayRowSparse> B(10, 10);
+Vector<double, VectSparse> row_sparse(2);
+row_sparse.Index(0) = 2; row_sparse.Value(0) = 1.2;
+row_sparse.Index(1) = 7; row_sparse.Value(1) = 2.4;
+
+// setting a row of B
+SetRow(row_sparse, irow, B);
+
 \endprecode
 
 
@@ -158,7 +206,7 @@ SetRow(row, irow, A);
 
 
 
-<div class="separator"><a name="getrow"></a></div>
+<div class="separator"><a name="GetRow"></a></div>
 
 
 
@@ -171,8 +219,8 @@ SetRow(row, irow, A);
 </pre>
 
 
-<p>This function extracts a row from the provided matrix. This function is
- available only for dense matrices.</p>
+<p>This function extracts a row from the provided matrix. For sparse matrices, the extracted vector is
+ a sparse vector.</p>
 
 
 <h4> Example : </h4>
@@ -183,6 +231,12 @@ A.Fill();
 // now you extract the first row
 Vector<double> row;
 GetRow(A, 0, row);
+
+// For sparse matrices, declare a sparse vector
+Matrix<double, General, RowSparse> B(10, 10);
+Vector<double, VectSparse> row_sparse;
+
+GetRow(B, 0, row_sparse);
 \endprecode
 
 
@@ -191,7 +245,7 @@ GetRow(A, 0, row);
 
 
 
-<div class="separator"><a name="setcol"></a></div>
+<div class="separator"><a name="SetCol"></a></div>
 
 
 
@@ -204,7 +258,7 @@ GetRow(A, 0, row);
 </pre>
 
 
-<p>This function modifies a column in the provided matrix. This function is available only for dense matrices.</p>
+<p>This function modifies a column in the provided matrix. For sparse matrices, the expected vector is sparse.</p>
 
 
 <h4> Example : </h4>
@@ -219,6 +273,16 @@ col.FillRand();
 // and you put it in A
 int icol = 1;
 SetCol(col, icol, A);
+
+// For sparse matrices the column is sparse
+Matrix<double, General, ArrayRowSparse> B(10, 10);
+Vector<double, VectSparse> col_sparse(2);
+col_sparse.Index(0) = 2; col_sparse.Value(0) = 1.2;
+col_sparse.Index(1) = 7; col_sparse.Value(1) = 2.4;
+
+// setting a column of B
+SetCol(col_sparse, icol, B);
+
 \endprecode
 
 
@@ -227,7 +291,7 @@ SetCol(col, icol, A);
 
 
 
-<div class="separator"><a name="getcol"></a></div>
+<div class="separator"><a name="GetCol"></a></div>
 
 
 
@@ -240,7 +304,8 @@ SetCol(col, icol, A);
 </pre>
 
 
-<p>This function extracts a column from the provided matrix. This function is available only for dense matrices.</p>
+<p>This function extracts a column from the provided matrix. For sparse matrices, the extracted vector is
+ a sparse vector. </p>
 
 
 <h4> Example : </h4>
@@ -251,6 +316,13 @@ A.Fill();
 // now you extract the first column
 Vector<double> col;
 GetCol(A, 0, col);
+
+// For sparse matrices, declare a sparse vector
+Matrix<double, General, RowSparse> B(10, 10);
+Vector<double, VectSparse> col_sparse;
+
+GetCol(B, 0, col_sparse);
+
 \endprecode
 
 
@@ -259,7 +331,7 @@ GetCol(A, 0, col);
 
 
 
-<div class="separator"><a name="maxabs"></a></div>
+<div class="separator"><a name="MaxAbs"></a></div>
 
 
 
@@ -289,7 +361,7 @@ double module_max = MaxAbs(A);
 
 
 
-<div class="separator"><a name="norm1"></a></div>
+<div class="separator"><a name="Norm1"></a></div>
 
 
 
@@ -319,7 +391,7 @@ double anorm_one = Norm1(A);
 
 
 
-<div class="separator"><a name="norminf"></a></div>
+<div class="separator"><a name="NormInf"></a></div>
 
 
 
@@ -332,7 +404,7 @@ double anorm_one = Norm1(A);
 </pre>
 
 
-<p>This function returns the infinite norm of a matrix.</p>
+<p>This function returns the infinity-norm of a matrix.</p>
 
 
 <h4> Example : </h4>
@@ -349,7 +421,7 @@ double anorm_inf = NormInf(A);
 
 
 
-<div class="separator"><a name="permutematrix"></a></div>
+<div class="separator"><a name="ApplyPermutation"></a></div>
 
 
 
@@ -358,11 +430,12 @@ double anorm_inf = NormInf(A);
 
 <h4>Syntax :</h4>
  <pre class="syntax-box">
+  void ApplyPermutation(Matrix&amp;, const Vector&lt;int&gt;&amp;, const Vector&lt;int&gt;&amp;);
   void ApplyInversePermutation(Matrix&amp;, const Vector&lt;int&gt;&amp;, const Vector&lt;int&gt;&amp;);
 </pre>
 
 
-<p>This function permutes a given matrix with the provided new row numbers and column numbers. <code>ApplyInversePermutation(A, row, col)</code> does the same operation as <code>A(row, col) = A</code> in Matlab. This function is only available for RowMajor, ColMajor, ArrayRowSparse, ArrayRowSymSparse, ArrayRowComplexSparse and ArrayRowSymComplexSparse. </p>
+<p>This function permutes a given matrix with the provided new row numbers and column numbers. <code>ApplyInversePermutation(A, row, col)</code> does the same operation as <code>A(row, col) = A</code> in Matlab, whereas <code>ApplyPermutation</code> is similar to <code>A = A(row, col)</code>. </p>
 
 
 <h4> Example : </h4>
@@ -371,14 +444,18 @@ double anorm_inf = NormInf(A);
 Matrix<double, Symmetric, ArrayRowSymSparse> A(5, 5);
 // then new row and column numbers
 IVect row(5);
-// for symmetric matrix, row and column permutation must be the same
-// if you want to keep symmetry
+// for symmetric matrix,
+// only second argument is actually used for the permutation
+// of both rows and columns in order to preserve symmetry
 ApplyInversePermutation(A, row, row);
 
 // for unsymmetric matrices, you can specify different permutations
 IVect col(5);
 Matrix<double, General, ArrayRowSparse> B(5, 5);
 ApplyInversePermutation(B, row, col);
+
+// reciprocal operation
+ApplyPermutation(B, row, col);
 \endprecode
 
 
@@ -387,7 +464,7 @@ ApplyInversePermutation(B, row, col);
 
 
 
-<div class="separator"><a name="scalematrix"></a></div>
+<div class="separator"><a name="ScaleMatrix"></a></div>
 
 
 
@@ -396,11 +473,11 @@ ApplyInversePermutation(B, row, col);
 
 <h4>Syntax :</h4>
  <pre class="syntax-box">
-  void ScaleMatrix(Matrix&amp;, const Vector&amp;, const Vector&amp;);
+  void ScaleMatrix(Matrix&amp;, const Vector&amp; L, const Vector&amp; R);
 </pre>
 
 
-<p>This function multiplies each row and column with a coefficient, i.e. <code>A</code> is replaced by <code>L*A*R</code> where <code>L</code> and <code>R</code> are diagonal matrices and you provide the diagonal when you call <code>ScaleMatrix</code>.  This function is only available for ArrayRowSparse, ArrayRowSymSparse, ArrayRowComplexSparse and ArrayRowSymComplexSparse. </p>
+<p>This function multiplies each row and column with a coefficient, i.e. <code>A</code> is replaced by <code>L*A*R</code> where <code>L</code> and <code>R</code> are diagonal matrices and you provide the diagonal when you call <code>ScaleMatrix</code>. </p>
 
 
 <h4> Example : </h4>
@@ -414,9 +491,9 @@ Vector<double> scale(5);
 ScaleMatrix(A, scale, scale);
 
 // for unsymmetric matrices, you can specify different scalings
-IVect scale_right(5);
+Vector<double> scale_right(5);
 Matrix<double, General, ArrayRowSparse> B(5, 5);
-ApplyInversePermutation(B, scale, scale_right);
+ScaleMatrix(B, scale, scale_right);
 \endprecode
 
 
@@ -425,7 +502,7 @@ ApplyInversePermutation(B, scale, scale_right);
 
 
 
-<div class="separator"><a name="scaleleftmatrix"></a></div>
+<div class="separator"><a name="ScaleLeftMatrix"></a></div>
 
 
 
@@ -434,11 +511,11 @@ ApplyInversePermutation(B, scale, scale_right);
 
 <h4>Syntax :</h4>
  <pre class="syntax-box">
-  void ScaleLeftMatrix(Matrix&amp;, const Vector&amp;);
+  void ScaleLeftMatrix(Matrix&amp;, const Vector&amp; L);
 </pre>
 
 
-<p>This function multiplies each row with a coefficient, i.e. <code>A</code> is replaced by <code>L*A</code> where <code>L</code> is diagonal and you provide the diagonal when you call <code>ScaleLeftMatrix</code>.  This function is only available for ArrayRowSparse, and ArrayRowComplexSparse. </p>
+<p>This function multiplies each row with a coefficient, i.e. <code>A</code> is replaced by <code>L*A</code> where <code>L</code> is diagonal and you provide the diagonal when you call <code>ScaleLeftMatrix</code>. This function is not available for symmetric matrices since this operation would break the symmetry.</p>
 
 
 <h4> Example : </h4>
@@ -448,6 +525,37 @@ Matrix<double, General, ArrayRowSparse> A(5, 5);
 // then scaling vector
 Vector<double> scale(5);
 ScaleLeftMatrix(A, scale);
+\endprecode
+
+
+<h4>Location :</h4>
+<p>Permutation_ScalingMatrix.cxx</p>
+
+
+
+<div class="separator"><a name="ScaleRightMatrix"></a></div>
+
+
+
+<h3>ScaleLeftMatrix</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void ScaleRightMatrix(Matrix&amp;, const Vector&amp; R);
+</pre>
+
+
+<p>This function multiplies each column with a coefficient, i.e. <code>A</code> is replaced by <code>A*R</code> where <code>R</code> is diagonal and you provide the diagonal when you call <code>ScaleRightMatrix</code>. This function is not available for symmetric matrices since this operation would break the symmetry.</p>
+
+
+<h4> Example : </h4>
+\precode
+// you fill A as you wish
+Matrix<double, General, ArrayRowSparse> A(5, 5);
+// then scaling vector
+Vector<double> scale(5);
+ScaleRightMatrix(A, scale);
 \endprecode
 
 
@@ -512,7 +620,7 @@ ConvertMatrix_from_Coordinates(IndRow, IndCol, Val, C, 0);
 
 <h4>Syntax :</h4>
  <pre class="syntax-box">
-  void ConvertMatrix_to_Coordinates(const Matrix& A, Vector& IndRow, Vector& IndCol, Vector& Val, int index, bool sym);
+  void ConvertMatrix_to_Coordinates(const Matrix& A, Vector<int>& IndRow, Vector<int>& IndCol, Vector<T>& Val, int index, bool sym);
 </pre>
 
 
@@ -555,7 +663,7 @@ for (int i = 0; i < nnz; i++)
 
 <h4>Syntax :</h4>
  <pre class="syntax-box">
-  void ConvertMatrix_from_Coordinates(Vector& IndRow, Vector& IndCol, Vector& Val, Matrix& A, int index);
+  void ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol, Vector<T>& Val, Matrix& A, int index);
 </pre>
 
 
@@ -601,7 +709,7 @@ ConvertMatrix_from_Coordinates(IndRow, IndCol, Val, A, 0);
 
 <h4>Syntax :</h4>
  <pre class="syntax-box">
-  void ConvertToCSC(const Matrix& A, Property& sym, Vector& Ptr, Vector& Ind, Vector& Val, bool sym_pat);
+  void ConvertToCSC(const Matrix& A, Property& sym, Vector<int>& Ptr, Vector<int>& Ind, Vector<T>& Val, bool sym_pat);
 </pre>
 
 
@@ -623,6 +731,8 @@ Matrix<double, General, ArrayRowSparse> A(5, 5);
 
 // then you can retrieve Ptr, Ind, Val arrays of CSC format
 General prop;
+IVect Ptr, Ind;
+Vector<double> Val;
 ConvertToCSC(A, prop, Ptr, Ind, Val);
 
 \endprecode
@@ -638,7 +748,7 @@ ConvertToCSC(A, prop, Ptr, Ind, Val);
 
 <h4>Syntax :</h4>
  <pre class="syntax-box">
-  void ConvertToCSR(const Matrix& A, Property& sym, Vector& Ptr, Vector& Ind, Vector& Val);
+  void ConvertToCSR(const Matrix& A, Property& sym, Vector<int>& Ptr, Vector<int>& Ind, Vector<T>& Val);
 </pre>
 
 
@@ -657,7 +767,45 @@ Matrix<double, General, ArrayColSparse> A(5, 5);
 
 // then you can retrieve Ptr, Ind, Val arrays of CSR format
 General prop;
+IVect Ptr, Ind;
+Vector<double> Val;
 ConvertToCSR(A, prop, Ptr, Ind, Val);
+
+\endprecode
+
+
+<h4>Location :</h4>
+<p>Matrix_Conversions.cxx</p>
+
+
+
+<div class="separator"><a name="GetSymmetricPattern"></a></div>
+
+
+
+<h3>GetSymmetricPattern</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void GetSymmetricPattern(const Matrix& A, Vector<int>& Ptr, Vector<int>& Ind);
+</pre>
+
+
+<p>This function extracts the profile of a given matrix. The pattern is stored in Compressed Sparse Row (CSR) format. Ind stores the column indexes of the non-zero entries, and Ptr the index of starting entries of a row. </p>
+
+
+<h4> Example : </h4>
+
+\precode
+
+// you fill A as you wish
+Matrix<double, General, ArrayColSparse> A(5, 5);
+
+// then you can retrieve Ptr, Ind arrays of CSR format
+// profile is symmetrized if needed
+IVect Ptr, Ind;
+GetSymmetricPattern(A, Ptr, Ind);
 
 \endprecode
 
@@ -702,6 +850,95 @@ int nnz = B.GetDataSize();
 
 <h4>Location :</h4>
 <p>Matrix_Conversions.cxx</p>
+
+
+
+<div class="separator"><a name="Gauss"></a></div>
+
+
+
+<h3>Gauss</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void Gauss(A, b);
+</pre>
+
+
+<p>This function overwrites b with the solution of A x = b by performing Gauss algorithm. This basic method is only implemented for dense matrices
+ and without partial pivoting. It is probably to use <a href="functions_lapack.php#GetLU">GetLU</a> or <a href="functions_lapack.php#GetLU">GetAndSolveLU</a>. </p>
+
+
+<h4> Example : </h4>
+
+\precode
+
+// you fill A as you wish
+Matrix<double, General, RowMajor> A(5, 5);
+A.FillRand();
+
+// forming the right hand side
+Vector<double> b(5);
+b.FillRand();
+
+// then computation of the solution of A x = b
+// A is modified during the operation
+Vector<double> x(b);
+Gauss(A, x);
+
+\endprecode
+
+
+<h4>Location :</h4>
+<p>Functions_MatVect.cxx</p>
+
+
+
+<div class="separator"><a name="GaussSeidel"></a></div>
+
+
+
+<h3>GaussSeidel</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void GaussSeidel(A, x, b, nb_iterations);
+  void GaussSeidel(A, x, b, nb_iterations, int type_algo);
+</pre>
+
+
+<p>This function overwrites b with an approximate solution of A x = b by performing nb_iterations Gauss-Seidel steps. This basic method is only implemented for dense matrices.
+ For sparse matrices, you can use <a href="iterative.php#SOR">SOR</a> function by choosing a relaxation parameter equal to one. If type_algo is equal to 0, a forward sweep is followed
+ by a backward sweep (so that the associated operator is symmetric) for each iteration. If type_algo is equal to 2, only forward sweeps are applied, and if type_algo is equal to 3, only
+ backward sweeps are applied. The default value of type_algo is equal to 2.  </p>
+
+
+<h4> Example : </h4>
+
+\precode
+
+// you fill A as you wish
+Matrix<double, General, RowMajor> A(5, 5);
+A.FillRand();
+
+// forming the right hand side
+Vector<double> b(5);
+b.FillRand();
+
+// then computation of the solution of A x = b
+// with Gauss-Seidel algorithm
+Vector<double> x(5);
+x.Zero();
+int nb_iterations = 100;
+GaussSeidel(A, x, b, nb_iterations, 0);
+
+\endprecode
+
+
+<h4>Location :</h4>
+<p>Functions_MatVect.cxx</p>
 
 
 
@@ -782,40 +1019,213 @@ if (IsSymmetricMatrix(A))
 
 
 
-<div class="separator"><a name="IsSparseMatrix"></a></div>
+<div class="separator"><a name="GetLowerTriangular"></a></div>
 
+ 
 
-
-<h3>IsSparseMatrix</h3>
+<h3>GetLowerTriangular</h3>
 
 
 <h4>Syntax :</h4>
  <pre class="syntax-box">
-  void IsSparseMatrix(const Matrix&)
+  void GetLowerTriangular(const Matrix&, Matrix&)
 </pre>
 
 
-<p>This function returns true if the matrix is sparse. It does not check 
- if all the values are different from 0, but merely returns true if the storage associated with the matrix is a sparse storage. </p>
+<p>This function extracts the lower part of a matrix, this function is implemented only for dense storages. </p>
 
 
 <h4> Example : </h4>
 
 \precode
 
-// complex matrix
-Matrix<complex<double>, General, ArrayRowSparse> A;
+// dense matrix
+int n = 6;
+Matrix<complex<double>, General, RowMajor> A(n, n);
 
-// IsSparseMatrix should return true
-if (IsSparseMatrix(A))
-  { 
-    cout << "A is sparse" << endl;
-  }
+A.FillRand();
+
+Matrix<complex<double>, General, RowMajor> L;
+// equivalent Matlab function L = tril(A)
+GetLowerTriangular(A, L);
 
 \endprecode
 
 
 <h4>Location :</h4>
 <p>Functions_Matrix.cxx</p>
+
+
+
+<div class="separator"><a name="GetUpperTriangular"></a></div>
+
+ 
+
+<h3>GetUpperTriangular</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void GetUpperTriangular(const Matrix&, Matrix&)
+</pre>
+
+
+<p>This function extracts the upper part of a matrix, this function is implemented only for dense storages. </p>
+
+
+<h4> Example : </h4>
+
+\precode
+
+// dense matrix
+int n = 6;
+Matrix<complex<double>, General, RowMajor> A(n, n);
+
+A.FillRand();
+
+Matrix<complex<double>, General, RowMajor> U;
+// equivalent Matlab function U = triu(A)
+GetUpperTriangular(A, U);
+
+\endprecode
+
+
+<h4>Location :</h4>
+<p>Functions_Matrix.cxx</p>
+
+
+
+<div class="separator"><a name="ReadCoordinateMatrix"></a></div>
+
+ 
+
+<h3>ReadCoordinateMatrix</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void ReadCoordinateMatrix(istream& file_stream, Vector<int>& rows, Vector<int>& cols, Vector<T>& values, bool cplx)
+</pre>
+
+
+<p>This function reads a sparse matrix from a file. The file is expected to look like : </p>
+
+<pre class="fragment">
+1  1  0.545432
+1  3  -0.4349
+1  7  33.42343
+2  1  -8.43321
+2  4  0.987987
+</pre>
+
+<p>The sparse matrix is stored in coordinate format, with the three arrays rows, col, vals, respctively the row indexes, column indexes and the values, that will be equal for this file : </p>
+
+<pre class="fragment">
+rows = [1, 1, 1, 2, 2]
+cols = [1, 3, 7, 1, 4]
+values = [0.545432, -0.4349, 33.42343, -8.43321, 0.987987]
+</pre>
+
+<p> If you know already the number of non-zero entries, it is better to allocate these arrays before calling ReadCoordinateMatrix. If cplx is equal to true, a complex matrix is expected to be stored in the following file </p>
+
+<pre class="fragment">
+1  1  0.545432  0.0
+1  3  -0.4349   -1.23
+1  7  33.42343  34.211
+2  1  -8.43321  0.0113
+2  4  0.987987  0.0
+</pre>
+
+<h4> Example : </h4>
+
+\precode
+
+// sparse matrix in coordinate format
+Vector<int> rows, cols;
+Vector<double> values;
+
+// initializing this matrix by reading it in a file
+// first line of the file contains m, n, nnz
+int m, n, nnz;
+ifstream file_in("mat.dat");
+if (!file_in.good())
+  cout << "File does not exist" << endk;
+
+file_in >> m >> n >> nnz;
+rows.Reallocate(nnz);
+cols.Reallocate(nnz);
+values.Reallocate(nnz);
+ReadCoordinateMatrix(file_in, rows, col, values);
+
+file_in.close();
+
+\endprecode
+
+
+<h4>Location :</h4>
+<p>Matrix_Sparse.cxx</p>
+
+
+
+<div class="separator"><a name="WriteCoordinateMatrix"></a></div>
+
+ 
+
+<h3>WriteCoordinateMatrix</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void WriteCoordinateMatrix(ostream& file_stream, const Vector<int>& rows, const Vector<int>& cols, const Vector<T>& values, bool cplx)
+</pre>
+
+
+<p>This function writes a sparse matrix in a file. If we have taken the following arguments </p>
+
+<pre class="fragment">
+rows = [1, 1, 1, 2, 2]
+cols = [1, 3, 7, 1, 4]
+values = [0.545432, -0.4349, 33.42343, -8.43321, 0.987987]
+</pre>
+
+<p> The file will look like : </p>
+
+<pre class="fragment">
+1  1  0.545432
+1  3  -0.4349
+1  7  33.42343
+2  1  -8.43321
+2  4  0.987987
+</pre>
+
+<p>If cplx is equal to true, the values of a complex matrix will be stored with two separated columns for the real and imaginary part (no parenthesis). </p>
+
+
+<h4> Example : </h4>
+
+\precode
+
+// sparse matrix in coordinate format
+Vector<int> rows, cols;
+Vector<double> values;
+
+// initializaing those arrays
+int m = 6, n, 8, nnz = 20;
+rows.Reallocate(nnz); cols.Reallocate(nnz);
+values.Reallocate(nnz);
+
+ofstream file_out("mat.dat");
+// writing m, n, nnz
+file_out << m << " " << n << " " << nnz << endl;
+// then writing triplets i, j, val
+WriteCoordinateMatrix(file_out, rows, col, values);
+file_out.close();
+
+
+\endprecode
+
+
+<h4>Location :</h4>
+<p>Matrix_Sparse.cxx</p>
 
 */

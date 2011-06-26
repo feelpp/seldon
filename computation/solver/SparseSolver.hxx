@@ -206,13 +206,13 @@ namespace Seldon
 
 
   template <class T, class Prop0, class Allocator0, class Allocator1>
-  void Solve(Matrix<T, Prop0, ColSparse, Allocator0>& M,
-             Vector<T, VectFull, Allocator1>& Y);
+  void GetAndSolveLU(Matrix<T, Prop0, ColSparse, Allocator0>& M,
+		     Vector<T, VectFull, Allocator1>& Y);
 
-
+  
   template <class T, class Prop0, class Allocator0, class Allocator1>
-  void Solve(Matrix<T, Prop0, RowSparse, Allocator0>& M,
-             Vector<T, VectFull, Allocator1>& Y);
+  void GetAndSolveLU(Matrix<T, Prop0, RowSparse, Allocator0>& M,
+		     Vector<T, VectFull, Allocator1>& Y);
 
 
 }  // namespace Seldon.

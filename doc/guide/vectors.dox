@@ -117,11 +117,11 @@ AfterAddInteractionRow, V =
 
 <p>You noticed that the row indices are displayed with indices beginning at 1 instead of 0, this is more convenient for debugging, or exporting datas into Matlab for example. </p>
 
-<p>You can also use the <code>operator(int)</code> to modify directly values.</p>
+<p>You can also use the method<code>Get(int)</code> to modify directly values.</p>
 
 \precode Vector<double, VectSparse> V;
-V(5) = -3;
-V(0) = 2 * V(5);\endprecode
+V.Get(5) = -3;
+V.Get(0) = 2 * V(5);\endprecode
 
 <p>If the non-zero entry doesn't exist, it is created at the correction position as for <code>AddInteraction</code>.</p>
 

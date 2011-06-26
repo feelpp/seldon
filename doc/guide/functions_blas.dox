@@ -12,71 +12,71 @@
  
 <table class="category-table">
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#mlt">Mlt </a></td> 
+ <td class="category-table-td"><a href="#Mlt">Mlt </a></td> 
  <td class="category-table-td"> multiplies the elements of the
  vector/matrix by a scalar, or performs a matrix-vector product </td>
  </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#mltadd">MltAdd </a></td> 
+ <td class="category-table-td"><a href="#MltAdd">MltAdd </a></td> 
  <td class="category-table-td"> performs a matrix-vector product or a
  matrix-matrix product</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#add">Add </a></td> 
+ <td class="category-table-td"><a href="#Add">Add </a></td> 
  <td class="category-table-td"> adds two vectors or two matrices </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#copy">Copy </a></td> 
+ <td class="category-table-td"><a href="#Copy">Copy </a></td> 
  <td class="category-table-td"> copies a vector into another one, or
  a matrix into another matrix </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#swap">Swap </a></td> 
+ <td class="category-table-td"><a href="#Swap">Swap </a></td> 
  <td class="category-table-td"> exchanges two vectors </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#genrot">GenRot </a></td> 
+ <td class="category-table-td"><a href="#GenRot">GenRot </a></td> 
  <td class="category-table-td"> computes givens rotation  </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#genrot">GenModifRot </a></td> 
+ <td class="category-table-td"><a href="#GenRot">GenModifRot </a></td> 
  <td class="category-table-td"> computes givens roation </td>
  </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#genrot">ApplyRot </a></td> 
+ <td class="category-table-td"><a href="#GenRot">ApplyRot </a></td> 
  <td class="category-table-td"> applies givens rotation </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#genrot">ApplyModifRot </a></td> 
+ <td class="category-table-td"><a href="#GenRot">ApplyModifRot </a></td> 
  <td class="category-table-td"> applies givens rotation </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#dotprod">DotProd </a></td> 
+ <td class="category-table-td"><a href="#DotProd">DotProd </a></td> 
  <td class="category-table-td"> scalar product between two vectors</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#dotprod">DotProdConj </a></td> 
+ <td class="category-table-td"><a href="#DotProd">DotProdConj </a></td> 
  <td class="category-table-td"> scalar product between two vectors, first vector being conjugated</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#conjugate">Conjugate </a></td> 
+ <td class="category-table-td"><a href="#Conjugate">Conjugate </a></td> 
  <td class="category-table-td"> conjugates all elements of a vector</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#getmaxabsindex">GetMaxAbsIndex </a></td> 
+ <td class="category-table-td"><a href="#GetMaxAbsIndex">GetMaxAbsIndex </a></td> 
  <td class="category-table-td"> returns index where highest absolute value is reached </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#norm1">Norm1 </a></td> 
+ <td class="category-table-td"><a href="#Norm1">Norm1 </a></td> 
  <td class="category-table-td"> returns 1-norm of a vector </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#norm2">Norm2 </a></td> 
+ <td class="category-table-td"><a href="#Norm2">Norm2 </a></td> 
  <td class="category-table-td"> returns 2-norm of a vector</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#rank1update">Rank1Update </a></td> 
+ <td class="category-table-td"><a href="#Rank1Update">Rank1Update </a></td> 
  <td class="category-table-td"> Adds a contribution X.Y' to a matrix
  </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#rank2update">Rank2Update </a></td> 
+ <td class="category-table-td"><a href="#Rank2Update">Rank2Update </a></td> 
  <td class="category-table-td"> Adds a contribution X.Y' + Y.X' to a symmetric matrix
  </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#solve">Solve </a></td> 
+ <td class="category-table-td"><a href="#Solve">Solve </a></td> 
  <td class="category-table-td"> solves a triangular system </td> </tr>
 </table>
 
 
 
-<div class="separator"><a name="mlt"></a></div>
+<div class="separator"><a name="Mlt"></a></div>
 
 
 
@@ -87,7 +87,9 @@
  <pre class="syntax-box">
   void Mlt(T0, Vector&amp;);
   void Mlt(T0, Matrix&amp;);
-  void Mlt(Matrix&amp;, const Vector&amp;, Vector&amp;);
+  void Mlt(const Matrix&amp;, const Vector&amp;, Vector&amp;);
+  void Mlt(SeldonTrans, const Matrix&amp;, const Matrix&amp;, Matrix&amp;);
+  void Mlt(const Matrix&amp;, const Matrix&amp;, Matrix&amp;);
 </pre>
 
 
@@ -102,13 +104,13 @@ X.Fill();
 Mlt(2.0, X);
 
 // similar method for matrix
-Matrix<double> A(3,3);
+Matrix<double> A(3, 3);
 A.Fill();
 // we multiply all elements by -3.4
 Mlt(-3.4, A);
 
 // and sparse matrix as well
-Matrix<double, General, ArrayRowSparse> Asp(3,3);
+Matrix<double, General, ArrayRowSparse> Asp(3,3), Bsp(3, 3), Csp(3, 3);
 Asp(0, 1) = 1.4;
 Asp(1, 1) = -0.3; 
 Asp(2, 0) = 2.1;
@@ -118,25 +120,53 @@ Mlt(2.1, Asp);
 Vector<double> Y(3);
 Mlt(A, X, Y);
 Mlt(Asp, X, Y);
+
+// matrix-matrix product
+// available for dense and sparse matrices
+Mlt(Asp, Bsp, Csp);
+
+// you can multiply with the transpose matrix
+// Y = A^T x
+Mlt(SeldonTrans, A, X, Y);
+
+// for triangular matrices, the result is overwritten in X
+// X = T X
+Matrix<double, General, RowUpTriangPacked> T(3, 3);
+Mlt(T, X);
+
+// multiplication with transpose
+Mlt(SeldonTrans, SeldonNonUnit, T, X);
+
+// multiplication with T, assuming that diagonal of T is equal to 1
+X = transpose(T) X
+Mlt(SeldonNoTrans, SeldonUnit, T, X);
+
+// multiplication triangular/ dense matrices
+// M = T M
+Matrix<double> M(3, 5);
+Mlt(T, M);
+
 \endprecode
 
 
 <h4>Related topics : </h4>
 <p><a href="class_vector.php#operator">Vector operators</a><br/>
 <a href="class_matrix.php#operator">Matrix operators</a><br/>
-<a href="#mltadd">MltAdd</a></p>
+<a href="#MltAdd">MltAdd</a></p>
 
 
 <h4>Location :</h4>
 <p>Functions_Vector.cxx<br/>
 Functions_MatVect.cxx<br/>
+Functions_Matrix.cxx<br/>
 Functions_MatrixArray.cxx<br/>
 Blas_1.cxx<br/>
-Blas_2.cxx</p>
+Blas_2.cxx<br/>
+Blas_3.cxx</p>
 
 
 
-<div class="separator"><a name="mltadd"></a></div>
+<div class="separator"><a name="MltAdd"></a></div>
 
 
 
@@ -153,7 +183,7 @@ Blas_2.cxx</p>
 </pre>
 
 
-<p>This function performs a matrix-vector product or a matrix-matrix product. You can specify a product with the transpose of the matrix, or the conjugate of the transpose. The size of matrices need to be compatible in order to complete the matrix-matrix product.  The matrix-matrix product is not available for sparse matrices.</p>
+<p>This function performs a matrix-vector product or a matrix-matrix product. You can specify a product with the transpose of the matrix, or the conjugate of the transpose. The size of matrices need to be compatible in order to complete the matrix-matrix product. </p>
 
 
 <h4> Example : </h4>
@@ -177,6 +207,7 @@ MltAdd(alpha, Asp, X, beta, B);
 MltAdd(alpha, SeldonTrans, Asp, X, beta, B);
 
 // similar method for matrix-matrix product
+// available for sparse and dense matrices
 Matrix<double> M(3,4), N(4,3);
 // computation of A = beta*A + alpha*M*N
 MltAdd(alpha, M, N, beta, A);
@@ -198,7 +229,7 @@ MltAdd(alpha, SeldonConjTrans, Bc, SeldonTrans, Cc, beta, Ac);
 <h4>Related topics : </h4>
 <p><a href="class_vector.php#operator">Vector operators</a><br/>
 <a href="class_matrix.php#operator">Matrix operators</a><br/>
-<a href="#mlt">Mlt</a></p>
+<a href="#Mlt">Mlt</a></p>
 
 
 <h4>Location :</h4>
@@ -210,7 +241,7 @@ Blas_3.cxx</p>
 
 
 
-<div class="separator"><a name="add"></a></div>
+<div class="separator"><a name="Add"></a></div>
 
 
 
@@ -259,7 +290,7 @@ Blas_1.cxx</p>
 
 
 
-<div class="separator"><a name="copy"></a></div>
+<div class="separator"><a name="Copy"></a></div>
 
 
 
@@ -306,7 +337,7 @@ Matrix_Conversions.cxx</p>
 
 
 
-<div class="separator"><a name="swap"></a></div>
+<div class="separator"><a name="Swap"></a></div>
 
 
 
@@ -342,7 +373,7 @@ Blas_1.cxx</p>
 
 
 
-<div class="separator"><a name="genrot"></a></div>
+<div class="separator"><a name="GenRot"></a></div>
 
 
 
@@ -386,7 +417,7 @@ Blas_1.cxx</p>
 
 
 
-<div class="separator"><a name="dotprod"></a></div>
+<div class="separator"><a name="DotProd"></a></div>
 
 
 
@@ -427,7 +458,7 @@ Blas_1.cxx</p>
 
 
 
-<div class="separator"><a name="conjugate"></a></div>
+<div class="separator"><a name="Conjugate"></a></div>
 
 
 
@@ -437,10 +468,11 @@ Blas_1.cxx</p>
 <h4>Syntax : </h4>
  <pre class="syntax-box">
   void Conjugate(Vector&amp;);
+  void Conjugate(Matrix&amp;);
 </pre>
 
 
-<p>Each component of the vector is conjugated. In the case of real numbers, the vector is not modified.</p>
+<p>Each component of the vector (or matrix) is conjugated. In the case of real numbers, the vector (or matrix) is not modified.</p>
 
 
 <h4>Example : </h4>
@@ -451,6 +483,13 @@ X.FillRand();
 
 // we take the conjugate
 Conjugate(X);
+
+// complex matrix
+Matrix<complex<double> > A(10, 8);
+A.FillRand(); 
+
+// we take the conjugate
+Conjugate(A);
 \endprecode
 
 
@@ -460,7 +499,7 @@ Blas_1.cxx</p>
 
 
 
-<div class="separator"><a name="getmaxabsindex"></a></div>
+<div class="separator"><a name="GetMaxAbsIndex"></a></div>
 
 
 
@@ -494,7 +533,7 @@ Blas_1.cxx</p>
 
 
 
-<div class="separator"><a name="norm1"></a></div>
+<div class="separator"><a name="Norm1"></a></div>
 
 
 
@@ -527,7 +566,7 @@ Blas_1.cxx</p>
 
 
 
-<div class="separator"><a name="norm2"></a></div>
+<div class="separator"><a name="Norm2"></a></div>
 
 
 
@@ -560,7 +599,7 @@ Blas_1.cxx</p>
 
 
 
-<div class="separator"><a name="rank1update"></a></div>
+<div class="separator"><a name="Rank1Update"></a></div>
 
 
 
@@ -616,7 +655,7 @@ Rank1Update(beta, Xr, Br);
 
 
 
-<div class="separator"><a name="rank2update"></a></div>
+<div class="separator"><a name="Rank2Update"></a></div>
 
 
 
@@ -665,7 +704,7 @@ Rank2Update(beta, Xr, Yr, Br);
 
 
 
-<div class="separator"><a name="solve"></a></div>
+<div class="separator"><a name="Solve"></a></div>
 
 
 
@@ -705,12 +744,14 @@ Solve(SeldonTrans, SeldonNonUnit, T, B);
 for (int i = 0; i < T.GetM(); i++)
   T(i, i) = 1.0;
 
-// then we can call Solve with Seldonunit to solve T*X = B
+// then we can call Solve with SeldonUnit to solve T*X = B
+// B can be also a dense matrix
 Solve(SeldonNoTrans, SeldonUnit, T, B);
 \endprecode
 
 
 <h4>Location :</h4>
-<p>Blas_2.cxx</p>
+<p>Blas_2.cxx<br/>
+Blas_3.cxx</p>
 
 */

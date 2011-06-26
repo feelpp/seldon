@@ -23,94 +23,104 @@ Vector<double, VectSparse> V;
 <tr class="category-table-tr-1">
  <td class="category-table-td"> <a href="#operator"> Vector operators </a> </td> <td></td></tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getm"> GetM </a> </td>
+ <td class="category-table-td"> <a href="#GetM"> GetM </a> </td>
  <td class="category-table-td"> returns the number of elements in the vector </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#getm"> GetLength </a> </td>
+ <td class="category-table-td"> <a href="#GetM"> GetLength </a> </td>
  <td class="category-table-td"> returns the number of elements in the vector </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getm"> GetSize </a> </td>
+ <td class="category-table-td"> <a href="#GetM"> GetSize </a> </td>
  <td class="category-table-td"> returns the number of elements in the vector </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#getindex"> GetIndex </a> </td>
+ <td class="category-table-td"> <a href="#GetIndex"> GetIndex </a> </td>
  <td class="category-table-td"> returns a pointer to the row numbers </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#getdata"> GetData </a> </td>
+ <td class="category-table-td"> <a href="#GetData"> GetData </a> </td>
  <td class="category-table-td"> returns a pointer to the values</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getdata"> GetDataConst </a> </td>
+ <td class="category-table-td"> <a href="#GetData"> GetDataConst </a> </td>
  <td class="category-table-td"> returns a pointer to the values </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#getdata"> GetDataVoid </a> </td>
+ <td class="category-table-td"> <a href="#GetData"> GetDataVoid </a> </td>
  <td class="category-table-td"> returns a pointer to the values </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getdata"> GetDataConstVoid </a> </td>
+ <td class="category-table-td"> <a href="#GetData"> GetDataConstVoid </a> </td>
  <td class="category-table-td"> returns a pointer to the values </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#clear"> Clear </a> </td>
+ <td class="category-table-td"> <a href="#Clear"> Clear </a> </td>
  <td class="category-table-td"> removes all elements of the vector </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#reallocate"> Reallocate </a> </td>
+ <td class="category-table-td"> <a href="#Reallocate"> Reallocate </a> </td>
  <td class="category-table-td"> changes the size of vector (removes previous elements) </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#resize"> Resize </a> </td>
+ <td class="category-table-td"> <a href="#Resize"> Resize </a> </td>
  <td class="category-table-td"> changes the size of vector (keeps previous elements) </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#setdata"> SetData </a> </td>
+ <td class="category-table-td"> <a href="#SetData"> SetData </a> </td>
  <td class="category-table-td"> sets the pointer to the array contained in the vector</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#nullify"> Nullify </a> </td>
+ <td class="category-table-td"> <a href="#Nullify"> Nullify </a> </td>
  <td class="category-table-td"> clears the vector without releasing memory</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#index"> Index </a> </td>
+ <td class="category-table-td"> <a href="#Index"> Index </a> </td>
  <td class="category-table-td"> access to row number</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#value"> Value </a> </td>
+ <td class="category-table-td"> <a href="#Value"> Value </a> </td>
  <td class="category-table-td"> access to value </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#copy"> Copy </a> </td>
+ <td class="category-table-td"> <a href="#Get"> Get </a> </td>
+ <td class="category-table-td"> modification of V(i) </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"> <a href="#Val"> Val </a> </td>
+ <td class="category-table-td"> modification of V(i)
+ if the non-zero entry exists </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"> <a href="#Copy"> Copy </a> </td>
  <td class="category-table-td"> copies a vector</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#assemble"> Assemble </a> </td>
+ <td class="category-table-td"> <a href="#Assemble"> Assemble </a> </td>
  <td class="category-table-td"> sorts row numbers </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getm"> GetDataSize </a> </td>
+ <td class="category-table-td"> <a href="#GetM"> GetDataSize </a> </td>
  <td class="category-table-td"> returns the number of elements in the vector</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#zero"> Zero </a> </td>
+ <td class="category-table-td"> <a href="#Zero"> Zero </a> </td>
  <td class="category-table-td"> sets all elements to zero </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#fill"> Fill </a> </td>
+ <td class="category-table-td"> <a href="#Fill"> Fill </a> </td>
  <td class="category-table-td"> sets all elements to a given value </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#fillrand"> FillRand </a> </td>
+ <td class="category-table-td"> <a href="#FillRand"> FillRand </a> </td>
  <td class="category-table-td"> fills randomly the vector </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#addinteraction"> AddInteraction </a> </td>
+ <td class="category-table-td"> <a href="#AddInteraction"> AddInteraction </a> </td>
  <td class="category-table-td"> adds a coefficient to the vector</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#addinteractionrow"> AddInteractionRow </a> </td>
+ <td class="category-table-td"> <a href="#AddInteractionRow"> AddInteractionRow </a> </td>
  <td class="category-table-td"> adds coefficients to the vector</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getnorminf"> GetNormInf </a> </td>
+ <td class="category-table-td"> <a href="#RemoveSmallEntry"> RemoveSmallEntry </a> </td>
+ <td class="category-table-td"> removes small values of the vector </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"> <a href="#GetNormInf"> GetNormInf </a> </td>
  <td class="category-table-td"> returns highest absolute value </td> </tr>
-<tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#getnorminf"> GetNormInfIndex </a> </td>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"> <a href="#GetNormInf"> GetNormInfIndex </a> </td>
  <td class="category-table-td"> returns the index of the highest absolute value </td> </tr>
-<tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#print"> Print </a> </td>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"> <a href="#Print"> Print </a> </td>
  <td class="category-table-td"> displays the vector </td> </tr>
-<tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#write"> Write </a> </td>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"> <a href="#Write"> Write </a> </td>
  <td class="category-table-td"> writes the vector in binary format </td> </tr>
-<tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#read"> Read </a> </td>
- <td class="category-table-td"> reads the vector in binary format </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#writetext"> WriteText </a> </td>
- <td class="category-table-td"> writes the vector in text format </td> </tr>
+ <td class="category-table-td"> <a href="#Read"> Read </a> </td>
+ <td class="category-table-td"> reads the vector in binary format </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#readtext"> ReadText </a> </td>
+ <td class="category-table-td"> <a href="#WriteText"> WriteText </a> </td>
+ <td class="category-table-td"> writes the vector in text format </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"> <a href="#ReadText"> ReadText </a> </td>
  <td class="category-table-td"> reads the vector in text format </td> </tr>
 </table>
 
@@ -119,34 +129,34 @@ Vector<double, VectSparse> V;
 
 <table class="category-table">
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#mlt">Mlt </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Mlt">Mlt </a></td> 
  <td class="category-table-td"> multiplies the elements of the vector by a scalar </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#add">Add </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Add">Add </a></td> 
  <td class="category-table-td"> adds two vectors </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#copy">Copy </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Copy">Copy </a></td> 
  <td class="category-table-td"> copies one vector into another one </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#swap">Swap </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Swap">Swap </a></td> 
  <td class="category-table-td"> exchanges two vectors </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#dotprod">DotProd </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#DotProd">DotProd </a></td> 
  <td class="category-table-td"> scalar product between two vectors</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#dotprod">DotProdConj </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#DotProd">DotProdConj </a></td> 
  <td class="category-table-td"> scalar product between two vectors, first vector being conjugated</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#conjugate">Conjugate </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Conjugate">Conjugate </a></td> 
  <td class="category-table-td"> conjugates a vector</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#getmaxabsindex">GetMaxAbsIndex </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#GetMaxAbsIndex">GetMaxAbsIndex </a></td> 
  <td class="category-table-td"> returns index where highest absolute value is reached </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#norm1">Norm1 </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Norm1">Norm1 </a></td> 
  <td class="category-table-td"> returns 1-norm of a vector </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#norm2">Norm2 </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Norm2">Norm2 </a></td> 
  <td class="category-table-td"> returns 2-norm of a vector</td> </tr>
 </table>
 
@@ -196,10 +206,10 @@ W.Assemble();
 
 
 <h4>Related topics : </h4>
-<p><a href="#reallocate">Reallocate</a><br/>
-<a href="#assemble">Assemble</a><br/>
-<a href="#index">Index</a><br/>
-<a href="#fill">Fill</a></p>
+<p><a href="#Reallocate">Reallocate</a><br/>
+<a href="#Assemble">Assemble</a><br/>
+<a href="#Index">Index</a><br/>
+<a href="#Fill">Fill</a></p>
 
 
 <h4>Location :</h4>
@@ -253,7 +263,7 @@ W *= 1.5;
 
 
 <h4>Related topics : </h4>
-<p><a href="#copy">Copy</a></p>
+<p><a href="#Copy">Copy</a></p>
 
 
 <h4>Location :</h4>
@@ -263,52 +273,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="Get"></a></div>
-
-
-
-<h3>Get</h3>
-
-<h4>Syntax : </h4>
- <pre class="syntax-box">
-  T& Get(int i);
-</pre>
-
-
-<p> This function can be used to modify (or insert) a non-zero entry in the sparse vector. This function
- should be used in replacement of operator () when the user wants to modify the sparse vector. </p>
-
-
-<h4>Example : </h4>
-\precode
-Vector<double, VectSparse> V;
-// use of Get to insert non-zero entry
-V.Get(2) = 1.5;
-V.Get(5) = -1.0;
-// you can display value of V at row i
-// V(4) should return 0 (zero entry)
-cout << "V(4) = " << V(4) << endl;
-// but V(2) should return 1.5
-cout << "V(2) = " << V(2) << endl;
-
-// warning : a non-zero entry V(20) will be created here :
-double val = V.Get(20);
- 
-\endprecode
-
-
-<h4>Related topics : </h4>
-<p><a href="#operator">Operators</a></p>
-
-
-<h4>Location :</h4>
-<p>Class Vector&lt;T, VectSparse&gt;<br/>
-SparseVector.hxx<br/>
-SparseVector.cxx</p>
-
-
-
-<div class="separator"><a name="getm"></a></div>
+<div class="separator"><a name="GetM"></a></div>
 
 
 
@@ -343,7 +308,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="getindex"></a></div>
+<div class="separator"><a name="GetIndex"></a></div>
 
 
 
@@ -356,7 +321,7 @@ Vector.cxx</p>
 </pre>
 
 
-<p>This method is used to retrieve the pointer to the row numbers and should be used in conjunction with method <a href="#getdata">GetData</a>.</p>
+<p>This method is used to retrieve the pointer to the row numbers and should be used in conjunction with method <a href="#GetData">GetData</a>.</p>
 
 
 
@@ -373,10 +338,10 @@ cout << "row number 1 : " << index[0] << endl;
 
 
 <h4>Related topics : </h4>
-<p><a href="#getdata">GetData</a><br/>
-<a href="#index">Index</a><br/>
-<a href="#setdata">SetData</a><br/>
-<a href="#nullify">Nullify</a></p>
+<p><a href="#GetData">GetData</a><br/>
+<a href="#Index">Index</a><br/>
+<a href="#SetData">SetData</a><br/>
+<a href="#Nullify">Nullify</a></p>
 
 
 <h4>Location :</h4>
@@ -386,7 +351,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="getdata"></a></div>
+<div class="separator"><a name="GetData"></a></div>
 
 
 
@@ -442,10 +407,10 @@ zaxpy(reinterpret_cast<const void*>(beta), >m,
 
 
 <h4>Related topics : </h4>
-<p><a href="#getindex">GetIndex</a><br/>
-<a href="#value">Value</a><br/>
-<a href="#setdata">SetData</a><br/>
-<a href="#nullify">Nullify</a></p>
+<p><a href="#GetIndex">GetIndex</a><br/>
+<a href="#Value">Value</a><br/>
+<a href="#SetData">SetData</a><br/>
+<a href="#Nullify">Nullify</a></p>
 
 
 
@@ -456,7 +421,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="clear"></a></div>
+<div class="separator"><a name="Clear"></a></div>
 
 
 
@@ -486,7 +451,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="reallocate"></a></div>
+<div class="separator"><a name="Reallocate"></a></div>
 
 
 
@@ -498,14 +463,14 @@ SparseVector.cxx</p>
 </pre>
 
 
-<p>This method changes the number of non-zero entries contained in the vector, but removes previous values. For sparse vectors, this may be a better solution to use methods <a href="#addinteraction">AddInteraction</a>, <a href="#addinteractionrow">AddInteractionRow</a> or the access operator.</p>
+<p>This method changes the number of non-zero entries contained in the vector, but removes previous values. For sparse vectors, this may be a better solution to use methods <a href="#AddInteraction">AddInteraction</a>, <a href="#AddInteractionRow">AddInteractionRow</a> or <a href="#Get">Get</a>.</p>
 
 
 <h4>Example : </h4>
 \precode
 Vector<long double, VectSparse> V;
-V(1) = 1.5;
-V(5) = -1.0;
+V.Get(1) = 1.5;
+V.Get(5) = -1.0;
 // resizes vector V
 V.Reallocate(20);
 // you need to initialize all new values
@@ -517,9 +482,9 @@ for (int k = 0; k < 20; k++)
 
 
 <h4>Related topics :</h4>
-<p><a href="#resize">Resize</a><br/>
-<a href="#addinteraction">AddInteraction</a><br/>
-<a href="#addinteractionrow">AddInteractionRow</a></p>
+<p><a href="#Resize">Resize</a><br/>
+<a href="#AddInteraction">AddInteraction</a><br/>
+<a href="#AddInteractionRow">AddInteractionRow</a></p>
 
 
 <h4>Location :</h4>
@@ -529,7 +494,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="resize"></a></div>
+<div class="separator"><a name="Resize"></a></div>
 
 
 
@@ -541,7 +506,7 @@ SparseVector.cxx</p>
 </pre>
 
 
-<p>This method changes the size of the vector, and keeps previous elements. For sparse vectors, this may be a better solution to use methods <a href="#addinteraction">AddInteraction</a>, <a href="#addinteractionrow">AddInteractionRow</a> or the access operator.</p>
+<p>This method changes the size of the vector, and keeps previous elements. For sparse vectors, this may be a better solution to use methods <a href="#AddInteraction">AddInteraction</a>, <a href="#AddInteractionRow">AddInteractionRow</a> or <a href="#Get">Get</a>.</p>
 
 
 <h4>Example : </h4>
@@ -561,9 +526,9 @@ V.Assemble();
 
 
 <h4>Related topics :</h4>
-<p><a href="#addinteraction">AddInteraction</a><br/>
-<a href="#addinteractionrow">AddInteractionRow</a><br/>
-<a href="#reallocate">Reallocate</a></p>
+<p><a href="#AddInteraction">AddInteraction</a><br/>
+<a href="#AddInteractionRow">AddInteractionRow</a><br/>
+<a href="#Reallocate">Reallocate</a></p>
 
 
 <h4>Location :</h4>
@@ -572,7 +537,7 @@ SparseVector.hxx<br/>
 SparseVector.cxx</p>
 
 
-<div class="separator"><a name="setdata"></a></div>
+<div class="separator"><a name="SetData"></a></div>
 
 
 
@@ -608,9 +573,9 @@ U.Assemble();
 
 
 <h4>Related topics :</h4>
-<p><a href="#assemble">Assemble</a><br/>
-<a href="#getdata">GetData</a><br/>
-<a href="#nullify">Nullify</a></p>
+<p><a href="#Assemble">Assemble</a><br/>
+<a href="#GetData">GetData</a><br/>
+<a href="#Nullify">Nullify</a></p>
 
 
 <h4>Location :</h4>
@@ -620,7 +585,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="nullify"></a></div>
+<div class="separator"><a name="Nullify"></a></div>
 
 
 
@@ -636,8 +601,8 @@ SparseVector.cxx</p>
 
 
 <h4>Related topics :</h4>
-<p><a href="#setdata">SetData</a><br/>
-<a href="#getdata">GetData</a></p>
+<p><a href="#SetData">SetData</a><br/>
+<a href="#GetData">GetData</a></p>
 
 
 <h4>Location :</h4>
@@ -647,7 +612,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="index"></a></div>
+<div class="separator"><a name="Index"></a></div>
 
 
 
@@ -683,7 +648,7 @@ for (int k = 0; k < V.GetM(); k++)
 
 
 <h4>Related topics :</h4>
-<p><a href="#value">Value</a></p>
+<p><a href="#Value">Value</a></p>
 
 
 <h4>Location :</h4>
@@ -693,7 +658,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="value"></a></div>
+<div class="separator"><a name="Value"></a></div>
 
 
 
@@ -732,7 +697,7 @@ for (int k = 0; k < V.GetM(); k++)
 
 
 <h4>Related topics :</h4>
-<p><a href="#index">Index</a></p>
+<p><a href="#Index">Index</a></p>
 
 
 <h4>Location :</h4>
@@ -742,7 +707,101 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="copy"></a></div>
+<div class="separator"><a name="Get"></a></div>
+
+
+
+<h3>Get</h3>
+
+
+<h4>Syntax : </h4>
+ <pre class="syntax-box">
+  T Get(int) const;
+  T&amp; Get(int);
+</pre>
+
+
+
+<p>This method returns access to V(i). If there is non-zero entry at this position, it is created. </p>
+
+
+
+<h4>Example : </h4>
+\precode
+Vector<double, VectSparse> V;
+
+// you can set non-zero entries with Get
+V.Get(3) = 1.5;
+V.Get(1) = -0.7;
+V.Get(7) = 1.3;
+// V would be equal to [0, -0.7, 0, 1.5, 0, 0, 0, 1.3]
+
+\endprecode
+
+
+
+<h4>Related topics :</h4>
+<p><a href="#operator">operator</a></p>
+
+
+<h4>Location :</h4>
+<p>Class Vector&lt;T, VectSparse&gt;<br/>
+SparseVector.hxx<br/>
+SparseVector.cxx</p>
+
+
+
+<div class="separator"><a name="Val"></a></div>
+
+
+
+<h3>Val</h3>
+
+
+<h4>Syntax : </h4>
+ <pre class="syntax-box">
+  T Val(int) const;
+  T&amp; Val(int);
+</pre>
+
+
+<p>This method returns access to V(i), if there is a non-zero entry at this position, otherwise an exception is raised. </p>
+
+
+<h4>Example : </h4>
+\precode
+Vector<double, VectSparse> V;
+
+// you can set non-zero entries with Get
+V.Get(3) = 1.5;
+V.Get(1) = -0.7;
+V.Get(7) = 1.3;
+// V would be equal to [0, -0.7, 0, 1.5, 0, 0, 0, 1.3]
+
+// you can modify values already present
+V.Val(3) = 2.8;
+V.Val(7) = 1.7;
+// V would be equal to [0, -0.7, 0, 2.8, 0, 0, 0, 1.7]
+
+// next line would raise an exception
+V.Val(2) = 0.4;
+
+\endprecode
+
+
+
+<h4>Related topics :</h4>
+<p><a href="#operator">operator</a></p>
+
+
+<h4>Location :</h4>
+<p>Class Vector&lt;T, VectSparse&gt;<br/>
+SparseVector.hxx<br/>
+SparseVector.cxx</p>
+
+
+
+<div class="separator"><a name="Copy"></a></div>
 
 
 
@@ -783,7 +842,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="assemble"></a></div>
+<div class="separator"><a name="Assemble"></a></div>
 
 
 
@@ -797,7 +856,7 @@ SparseVector.cxx</p>
 
 
 
-<p>This method sorts row numbers, and adds values if there are two same row numbers. You don't need to call this method if you are using the access operator () or methods <a href="#addinteraction">AddInteraction</a>.</p>
+<p>This method sorts row numbers, and adds values if there are two same row numbers. You don't need to call this method if you are using the access operator () or methods <a href="#AddInteraction">AddInteraction</a>.</p>
 
 
 
@@ -815,8 +874,8 @@ cout << "V = " << V << endl;
 
 
 <h4>Related topics :</h4>
-<p><a href="#index">Index</a><br/>
-<a href="#value">Value</a></p>
+<p><a href="#Index">Index</a><br/>
+<a href="#Value">Value</a></p>
 
 
 <h4>Location :</h4>
@@ -826,7 +885,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="zero"></a></div>
+<div class="separator"><a name="Zero"></a></div>
 
 
 
@@ -840,7 +899,7 @@ SparseVector.cxx</p>
 
 
 
-<p>This method fills memory of 0. All non-zero entries have their values set to 0. This is useful in order to keep the same profile for the vector, and initialize it to 0, before adding new interactions. Since the profile is conserved, there is no insertion of non-zero entries, therefore the strategy is more efficient</p>
+<p>This method fills memory of 0. All non-zero entries have their values set to 0. This is useful in order to keep the same profile for the vector, and initialize it to 0, before adding new interactions. Since the sparsity pattern is conserved, there is no insertion of non-zero entries, therefore the strategy is more efficient</p>
 
 
 
@@ -863,7 +922,7 @@ V.AddInteraction(2, 3.0);
 
 
 <h4>Related topics :</h4>
-<p><a href="#fill">Fill</a></p>
+<p><a href="#Fill">Fill</a></p>
 
 
 <h4>Location :</h4>
@@ -872,7 +931,7 @@ Vector.hxx<br/>
 Vector.cxx</p>
 
 
-<div class="separator"><a name="fill"></a></div>
+<div class="separator"><a name="Fill"></a></div>
 
 
 
@@ -910,7 +969,7 @@ V.Fill(2);
 
 
 <h4>Related topics :</h4>
-<p><a href="#zero">Zero</a></p>
+<p><a href="#Zero">Zero</a></p>
 
 
 <h4>Location :</h4>
@@ -920,7 +979,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="fillrand"></a></div>
+<div class="separator"><a name="FillRand"></a></div>
 
 
 
@@ -954,7 +1013,7 @@ V.FillRand();
 
 
 <h4>Related topics :</h4>
-<p><a href="#fill">Fill</a></p>
+<p><a href="#Fill">Fill</a></p>
 
 
 <h4>Location :</h4>
@@ -964,7 +1023,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="addinteraction"></a></div>
+<div class="separator"><a name="AddInteraction"></a></div>
 
 
 
@@ -1000,7 +1059,7 @@ V(3) = -0.8;
 
 <h4>Related topics :</h4>
 <p><a href="#operator">Vector operators</a><br/>
-<a href="#addinteractionrow">AddInteractionRow</a></p>
+<a href="#AddInteractionRow">AddInteractionRow</a></p>
 
 
 <h4>Location :</h4>
@@ -1010,7 +1069,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="addinteractionrow"></a></div>
+<div class="separator"><a name="AddInteractionRow"></a></div>
 
 
 
@@ -1047,7 +1106,7 @@ cout << "V = " << endl;
 
 <h4>Related topics :</h4>
 <p><a href="#operator">Vector operators</a><br/>
-<a href="#addinteraction">AddInteraction</a></p>
+<a href="#AddInteraction">AddInteraction</a></p>
 
 
 <h4>Location :</h4>
@@ -1057,7 +1116,49 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="getnorminf"></a></div>
+<div class="separator"><a name="RemoveSmallEntry"></a></div>
+
+
+
+<h3>RemoveSmallEntry</h3>
+
+
+<h4>Syntax : </h4>
+ <pre class="syntax-box">
+  void RemoveSmallEntry(T epsilon);
+</pre>
+
+<p>This method removes non-zero entries whose values are below epsilon.</p>
+
+<h4>Example : </h4>
+\precode
+// empty vector
+Vector<double, VectSparse> V;
+
+V(1) = 1e-3;
+V(4) = 0.2;
+V(5) = -1.3;
+V(7) = -1e-4;
+
+V.RemoveSmallEntry(0.1);
+// V should be equal to [0, 0, 0, 0, 0.2, -1.3, 0, 0]
+
+\endprecode
+
+
+<h4>Related topics :</h4>
+<p><a href="#operator">Vector operators</a><br/>
+<a href="#AddInteraction">AddInteraction</a></p>
+
+
+<h4>Location :</h4>
+<p>Class Vector&lt;T, VectSparse&gt;<br/>
+SparseVector.hxx<br/>
+SparseVector.cxx</p>
+
+
+
+<div class="separator"><a name="GetNormInf"></a></div>
 
 
 
@@ -1072,7 +1173,7 @@ SparseVector.cxx</p>
 
 
 
-<p><code>GetNormInf</code> returns the highest absolute value whereas <code>GetNormInfIndex</code> returns the index where this maximum is reached. This returns the index and not the row number. This method does not work for complex numbers.</p>
+<p><code>GetNormInf</code> returns the highest absolute value (modulus for complex numbers) whereas <code>GetNormInfIndex</code> returns the index where this maximum is reached. This returns the index and not the row number.</p>
 
 
 
@@ -1095,7 +1196,7 @@ Vector.cxx</p>
 
 
 
-<div class="separator"><a name="print"></a></div>
+<div class="separator"><a name="Print"></a></div>
 
 
 
@@ -1129,7 +1230,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="write"></a></div>
+<div class="separator"><a name="Write"></a></div>
 
 
 
@@ -1166,9 +1267,9 @@ file_out.close();
 
 
 <h4>Related topics :</h4>
-<p><a href="#read">Read</a><br/>
-<a href="#writetext">WriteText</a><br/>
-<a href="#readtext">ReadText</a></p>
+<p><a href="#Read">Read</a><br/>
+<a href="#WriteText">WriteText</a><br/>
+<a href="#ReadText">ReadText</a></p>
 
 
 <h4>Location :</h4>
@@ -1178,7 +1279,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="read"></a></div>
+<div class="separator"><a name="Read"></a></div>
 
 
 
@@ -1214,9 +1315,9 @@ file_in.close();
 
 
 <h4>Related topics :</h4>
-<p><a href="#write">Write</a><br/>
-<a href="#writetext">WriteText</a><br/>
-<a href="#readtext">ReadText</a></p>
+<p><a href="#Write">Write</a><br/>
+<a href="#WriteText">WriteText</a><br/>
+<a href="#ReadText">ReadText</a></p>
 
 
 <h4>Location :</h4>
@@ -1226,7 +1327,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="writetext"></a></div>
+<div class="separator"><a name="WriteText"></a></div>
 
 
 
@@ -1264,9 +1365,9 @@ file_out.close();
 
 
 <h4>Related topics :</h4>
-<p><a href="#write">Write</a><br/>
-<a href="#read">Read</a><br/>
-<a href="#readtext">ReadText</a></p>
+<p><a href="#Write">Write</a><br/>
+<a href="#Read">Read</a><br/>
+<a href="#ReadText">ReadText</a></p>
 
 
 <h4>Location :</h4>
@@ -1276,7 +1377,7 @@ SparseVector.cxx</p>
 
 
 
-<div class="separator"><a name="readtext"></a></div>
+<div class="separator"><a name="ReadText"></a></div>
 
 
 
@@ -1291,7 +1392,7 @@ SparseVector.cxx</p>
 
 
 
-<p>This method reads the vector on a file/stream in text format.  The used format is detailed above in the explanation of the method <a href="#writetext">WriteText</a>.</p>
+<p>This method reads the vector on a file/stream in text format.  The used format is detailed above in the explanation of the method <a href="#WriteText">WriteText</a>.</p>
 
 
 
@@ -1312,9 +1413,9 @@ file_in.close();
 
 
 <h4>Related topics :</h4>
-<p><a href="#write">Write</a><br/>
-<a href="#read">Read</a><br/>
-<a href="#writetext">WriteText</a></p>
+<p><a href="#Write">Write</a><br/>
+<a href="#Read">Read</a><br/>
+<a href="#WriteText">WriteText</a></p>
 
 
 <h4>Location :</h4>
