@@ -1225,6 +1225,8 @@ namespace Seldon
     : EigenProblem_Base<T, MatStiff, MatMass>()
   {
     imag_solution = false;
+    mat_lu.RefineSolution();
+    mat_lu_cplx.RefineSolution();
   }
     
   
@@ -1236,7 +1238,14 @@ namespace Seldon
     if (this->Mh == NULL)
       this->PrintErrorInit();
     
+    if (this->print_level > 0)
+      chol_facto_mass_matrix.ShowMessages();
+    
     chol_facto_mass_matrix.Factorize(*this->Mh, true);    
+    
+    if (this->print_level < 2)
+      chol_facto_mass_matrix.HideMessages();
+    
     Xchol_real.Reallocate(this->n_);
     Xchol_imag.Reallocate(this->n_);
   }
@@ -1312,6 +1321,9 @@ namespace Seldon
     if (this->Kh == NULL)
       this->PrintErrorInit();
     
+    if (this->print_level > 0)
+      mat_lu.ShowMessages();
+    
     // forming a M + b K
     if (IsSymmetricMatrix(*this->Kh))
       {
@@ -1343,6 +1355,9 @@ namespace Seldon
         
         mat_lu.Factorize(A);
       }      
+
+    if (this->print_level < 2)
+      mat_lu.HideMessages();
   }
   
   
@@ -1391,7 +1406,13 @@ namespace Seldon
     else
       Add(a, *(this->Mh), A);
     
+    if (this->print_level > 0)
+      mat_lu_cplx.ShowMessages();
+
     mat_lu_cplx.Factorize(A);
+
+    if (this->print_level < 2)
+      mat_lu_cplx.HideMessages();
   }
 
   

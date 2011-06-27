@@ -1,4 +1,5 @@
 // Copyright (C) 2010 Vivien Mallet
+// Copyright (C) 2010 Marc Durufle
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -164,6 +165,9 @@ namespace Seldon
     void SetNonSymmetricIlut();
 
     int GetDirectSolver();
+
+    void RefineSolution();
+    void DoNotRefineSolution();
     
     double GetThresholdMatrix() const;
     

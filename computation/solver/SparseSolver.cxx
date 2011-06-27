@@ -1439,6 +1439,25 @@ namespace Seldon
   }
     
   
+  template<class T>
+  void SparseDirectSolver<T>::RefineSolution()
+  {
+#ifdef SELDON_WITH_PASTIX
+    mat_pastix.RefineSolution();
+#endif
+  }
+  
+  
+  template<class T>
+  void SparseDirectSolver<T>::DoNotRefineSolution()
+  {
+#ifdef SELDON_WITH_PASTIX
+    mat_pastix.DoNotRefineSolution();
+#endif
+
+  }
+  
+  
   //! returns threshold used for ilut (if this solver is selected)
   template<class T>
   double SparseDirectSolver<T>::GetThresholdMatrix() const
