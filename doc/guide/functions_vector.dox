@@ -10,25 +10,26 @@
 
 <table class="category-table">
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#quicksort">QuickSort </a></td> 
+ <td class="category-table-td"><a href="#QuickSort">QuickSort </a></td> 
  <td class="category-table-td"> sorts a vector with quick sort algorithm</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#mergesort">MergeSort </a></td> 
+ <td class="category-table-td"><a href="#MergeSort">MergeSort </a></td> 
  <td class="category-table-td"> sorts a vector with merge sort algorithm</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#sort">Sort </a></td> 
+ <td class="category-table-td"><a href="#Sort">Sort </a></td> 
  <td class="category-table-td"> sorts a vector</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#assemble">Assemble </a></td> 
+ <td class="category-table-td"><a href="#Assemble">Assemble </a></td> 
  <td class="category-table-td"> assembles a vector</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#removeduplicate">RemoveDuplicate </a></td> 
+ <td class="category-table-td"><a href="#RemoveDuplicate">RemoveDuplicate </a></td> 
  <td class="category-table-td"> sorts and removes duplicate elements of a vector</td> </tr>
+
 </table>
 
 
 
-<div class="separator"><a name="quicksort"></a></div>
+<div class="separator"><a name="QuickSort"></a></div>
 
 
 
@@ -75,7 +76,7 @@ QuickSort(0, X.GetM()-1, X, Y, Z);
 
 
 
-<div class="separator"><a name="mergesort"></a></div>
+<div class="separator"><a name="MergeSort"></a></div>
 
 
 
@@ -123,7 +124,7 @@ MergeSort(0, X.GetM()-1, X, Y, Z);
 
 
 
-<div class="separator"><a name="sort"></a></div>
+<div class="separator"><a name="Sort"></a></div>
 
 
 
@@ -184,7 +185,7 @@ Sort(start_index, end_index, X);
 
 
 
-<div class="separator"><a name="assemble"></a></div>
+<div class="separator"><a name="Assemble"></a></div>
 
 
 
@@ -231,7 +232,7 @@ Assemble(nb, num, values);
 
 
 
-<div class="separator"><a name="removeduplicate"></a></div>
+<div class="separator"><a name="RemoveDuplicate"></a></div>
 
 
 

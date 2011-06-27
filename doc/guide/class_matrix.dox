@@ -25,7 +25,7 @@ Matrix<double> A;
 Matrix<float, Symmetric, RowSymPacked> B;
 
 // dense hermitian matrix
-Matrix<double, General, RowHermPacked> C;
+Matrix<complex<double>, Hermitian, RowHermPacked> C;
 
 // dense lower triangular matrix
 Matrix<double, General, RowLoTriangPacked> D;
@@ -41,77 +41,83 @@ Matrix<double, General, RowUpTriangPacked> E;
 <tr class="category-table-tr-1">
  <td class="category-table-td"> <a href="#operator"> Matrix operators </a> </td> <td></td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getm"> GetM </a> </td>
+ <td class="category-table-td"> <a href="#GetM"> GetM </a> </td>
  <td class="category-table-td"> returns the number of rows in the
  matrix </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#getn"> GetN </a> </td>
+ <td class="category-table-td"> <a href="#GetN"> GetN </a> </td>
  <td class="category-table-td"> returns the number of columns in the matrix </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getsize"> GetSize </a> </td>
+ <td class="category-table-td"> <a href="#GetSize"> GetSize </a> </td>
  <td class="category-table-td"> returns the number of elements in the matrix </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#getdatasize"> GetDataSize </a> </td>
+ <td class="category-table-td"> <a href="#GetDataSize"> GetDataSize </a> </td>
  <td class="category-table-td"> returns the number of elements effectively stored </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getdata"> GetData </a> </td>
+ <td class="category-table-td"> <a href="#GetData"> GetData </a> </td>
  <td class="category-table-td"> returns a pointer to the array containing the values </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#getdata"> GetDataConst </a> </td>
+ <td class="category-table-td"> <a href="#GetData"> GetDataConst </a> </td>
  <td class="category-table-td"> returns a pointer to the array containing the values </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#getdata"> GetDataVoid </a> </td>
+ <td class="category-table-td"> <a href="#GetData"> GetDataVoid </a> </td>
  <td class="category-table-td"> returns a pointer to the array containing the values </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#getdata"> GetDataConstVoid </a> </td>
+ <td class="category-table-td"> <a href="#GetData"> GetDataConstVoid </a> </td>
  <td class="category-table-td"> returns a pointer to the array containing the values </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#clear"> Clear </a> </td>
+ <td class="category-table-td"> <a href="#Clear"> Clear </a> </td>
  <td class="category-table-td"> removes all elements of the matrix </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#reallocate"> Reallocate </a> </td>
+ <td class="category-table-td"> <a href="#Reallocate"> Reallocate </a> </td>
  <td class="category-table-td"> changes the size of matrix (does not keep previous elements) </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#resize"> Resize </a> </td>
+ <td class="category-table-td"> <a href="#Resize"> Resize </a> </td>
  <td class="category-table-td"> changes the size of matrix (keeps previous elements) </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#setdata"> SetData </a> </td>
+ <td class="category-table-td"> <a href="#SetData"> SetData </a> </td>
  <td class="category-table-td"> sets the pointer to the array containing the values</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#nullify"> Nullify </a> </td>
+ <td class="category-table-td"> <a href="#Nullify"> Nullify </a> </td>
  <td class="category-table-td"> clears the matrix without releasing memory</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#val"> Val </a> </td>
+ <td class="category-table-td"> <a href="#Val"> Val </a> </td>
  <td class="category-table-td"> access to a matrix element</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#copy"> Copy </a> </td>
+ <td class="category-table-td"> <a href="#Get"> Get </a> </td>
+ <td class="category-table-td"> access to a matrix element</td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"> <a href="#Set"> Set </a> </td>
+ <td class="category-table-td"> modifies an entry of the matrix </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"> <a href="#Copy"> Copy </a> </td>
  <td class="category-table-td"> copies a matrix</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#zero"> Zero </a> </td>
+ <td class="category-table-td"> <a href="#Zero"> Zero </a> </td>
  <td class="category-table-td"> sets all elements to zero </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#setidentity"> SetIdentity </a> </td>
+ <td class="category-table-td"> <a href="#SetIdentity"> SetIdentity </a> </td>
  <td class="category-table-td"> sets matrix to identity matrix </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#fill"> Fill </a> </td>
+ <td class="category-table-td"> <a href="#Fill"> Fill </a> </td>
  <td class="category-table-td"> sets all elements to a given value </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#fillrand"> FillRand </a> </td>
+ <td class="category-table-td"> <a href="#FillRand"> FillRand </a> </td>
  <td class="category-table-td"> fills randomly the matrix </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#print"> Print </a> </td>
+ <td class="category-table-td"> <a href="#Print"> Print </a> </td>
  <td class="category-table-td"> displays the matrix </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#write"> Write </a> </td>
+ <td class="category-table-td"> <a href="#Write"> Write </a> </td>
  <td class="category-table-td"> writes the matrix in binary format </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#read"> Read </a> </td>
+ <td class="category-table-td"> <a href="#Read"> Read </a> </td>
  <td class="category-table-td"> reads the matrix in binary format </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#writetext"> WriteText </a> </td>
+ <td class="category-table-td"> <a href="#WriteText"> WriteText </a> </td>
  <td class="category-table-td"> writes the matrix in text format </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#readtext"> ReadText </a> </td>
+ <td class="category-table-td"> <a href="#ReadText"> ReadText </a> </td>
  <td class="category-table-td"> reads the matrix in text format </td> </tr>
 </table>
 
@@ -119,103 +125,127 @@ Matrix<double, General, RowUpTriangPacked> E;
 
 <table class="category-table">
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#mlt">Mlt </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Mlt">Mlt </a></td> 
  <td class="category-table-td"> multiplication by a scalar or matrix-vector product </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#mltadd">MltAdd </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#MltAdd">MltAdd </a></td> 
  <td class="category-table-td"> performs a matrix-vector or
  matrix-matrix product </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#add">Add </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Add">Add </a></td> 
  <td class="category-table-td"> adds two matrices </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#copy">Copy </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Copy">Copy </a></td> 
  <td class="category-table-td"> copies a matrix into another one
  </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#rank1update">Rank1Update </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Rank1Update">Rank1Update </a></td> 
  <td class="category-table-td"> Adds a contribution X.Y' to a matrix
  </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_blas.php#rank2update">Rank2Update </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Rank2Update">Rank2Update </a></td> 
  <td class="category-table-td"> Adds a contribution X.Y' + Y.X' to a symmetric matrix
  </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_blas.php#solve">Solve </a></td> 
+ <td class="category-table-td"><a href="functions_blas.php#Solve">Solve </a></td> 
  <td class="category-table-td"> solves a triangular system </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_matrix.php#transpose">Transpose </a></td> 
+ <td class="category-table-td"><a href="functions_matrix.php#Transpose">Transpose </a></td> 
  <td class="category-table-td"> replaces a matrix by its transpose </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_matrix.php#transpose">TransposeConj </a></td> 
+ <td class="category-table-td"><a href="functions_matrix.php#Transpose">TransposeConj </a></td> 
  <td class="category-table-td"> replaces a matrix by its conjugate transpose </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_matrix.php#maxabs">MaxAbs </a></td> 
+ <td class="category-table-td"><a href="functions_matrix.php#MaxAbs">MaxAbs </a></td> 
  <td class="category-table-td"> returns highest absolute value of A </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_matrix.php#norm1">Norm1 </a></td> 
+ <td class="category-table-td"><a href="functions_matrix.php#Norm1">Norm1 </a></td> 
  <td class="category-table-td"> returns 1-norm of A </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_matrix.php#norminf">NormInf </a></td> 
+ <td class="category-table-td"><a href="functions_matrix.php#NormInf">NormInf </a></td> 
  <td class="category-table-td"> returns infinity-norm of A </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_matrix.php#getrow">GetRow </a></td> 
+ <td class="category-table-td"><a href="functions_matrix.php#GetRow">GetRow </a></td> 
  <td class="category-table-td"> returns a matrix row </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_matrix.php#setrow">SetRow </a></td> 
+ <td class="category-table-td"><a href="functions_matrix.php#SetRow">SetRow </a></td> 
  <td class="category-table-td"> changes a matrix row </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_matrix.php#getcol">GetCol </a></td> 
+ <td class="category-table-td"><a href="functions_matrix.php#GetCol">GetCol </a></td> 
  <td class="category-table-td"> returns a matrix column </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_matrix.php#setcol">SetCol </a></td> 
+ <td class="category-table-td"><a href="functions_matrix.php#SetCol">SetCol </a></td> 
  <td class="category-table-td"> changes a matrix column </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_lapack.php#getlu">GetLU</a></td> 
+ <td class="category-table-td"><a href="functions_matrix.php#ApplyPermutation">ApplyPermutation </a></td> 
+ <td class="category-table-td"> permutes rows and columns of a matrix </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="functions_matrix.php#ApplyPermutation">ApplyInversePermutation </a></td> 
+ <td class="category-table-td"> permutes rows and columns of a matrix </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="functions_matrix.php#ScaleMatrix">ScaleMatrix </a></td> 
+ <td class="category-table-td"> multiplies rows and columns by coefficients </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="functions_matrix.php#ScaleLeftMatrix">ScaleLeftMatrix </a></td> 
+ <td class="category-table-td"> multiplies rows by coefficients </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="functions_matrix.php#ScaleRightMatrix">ScaleRightMatrix </a></td> 
+ <td class="category-table-td"> multiplies columns by coefficients </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="iterative.php#SOR">SOR </a></td> 
+ <td class="category-table-td"> performs successive over-relaxation algorithm </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="functions_lapack.php#GetLU">GetLU</a></td> 
  <td class="category-table-td"> performs a LU (or LDL^t) factorization</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_lapack.php#getlu">SolveLU</a></td> 
+ <td class="category-table-td"><a href="functions_lapack.php#GetLU">SolveLU</a></td> 
  <td class="category-table-td"> solve linear system by using LU factorization</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_lapack.php#refinesolutionlu">RefineSolutionLU</a></td> 
+ <td class="category-table-td"><a href="functions_lapack.php#RefineSolutionLU">RefineSolutionLU</a></td> 
  <td class="category-table-td"> improves solution computed by SolveLU</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_lapack.php#reciprocalconditionnumber">ReciprocalConditionNumber </a></td> 
+ <td class="category-table-td"><a href="functions_lapack.php#ReciprocalConditionNumber">ReciprocalConditionNumber </a></td> 
  <td class="category-table-td"> computes the inverse of matrix condition number</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_lapack.php#getscalingfactors">GetScalingFactors </a></td> 
+ <td class="category-table-td"><a href="functions_lapack.php#GetScalingFactors">GetScalingFactors </a></td> 
  <td class="category-table-td"> computes row and column scalings to equilibrate a matrix</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_lapack.php#getinverse">GetInverse </a></td> 
+ <td class="category-table-td"><a href="functions_lapack.php#GetInverse">GetInverse </a></td> 
  <td class="category-table-td"> computes the matrix inverse </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_lapack.php#getqr">GetQR </a></td> 
+ <td class="category-table-td"><a href="functions_lapack.php#GetQR">GetQR </a></td> 
  <td class="category-table-td"> QR factorization of matrix </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_lapack.php#getlq">GetLQ </a></td> 
+ <td class="category-table-td"><a href="functions_lapack.php#GetLQ">GetLQ </a></td> 
  <td class="category-table-td"> LQ factorization of matrix </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_lapack.php#getq_fromqr">GetQ_FromQR </a></td> 
- <td class="category-table-td"> Forms explicitely Q from QR factorization</td> </tr>
+ <td class="category-table-td"><a href="functions_lapack.php#GetQ_FromQR">GetQ_FromQR </a></td> 
+ <td class="category-table-td"> Forms explicitly Q from QR factorization</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_lapack.php#mltq_fromqr">MltQ_FromQR </a></td> 
+ <td class="category-table-td"><a href="functions_lapack.php#MltQ_FromQR">MltQ_FromLQ </a></td> 
  <td class="category-table-td"> multiplies vector by Q </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_lapack.php#getqr">SolveQR </a></td> 
+ <td class="category-table-td"><a href="functions_lapack.php#GetQ_FromQR">GetQ_FromLQ </a></td> 
+ <td class="category-table-td"> Forms explicitly Q from LQ factorization</td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"><a href="functions_lapack.php#MltQ_FromQR">MltQ_FromQR </a></td> 
+ <td class="category-table-td"> multiplies vector by Q </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"><a href="functions_lapack.php#GetQR">SolveQR </a></td> 
  <td class="category-table-td"> solves least-square problems by using QR factorization</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_lapack.php#getlq">SolveLQ </a></td> 
+ <td class="category-table-td"><a href="functions_lapack.php#GetLQ">SolveLQ </a></td> 
  <td class="category-table-td"> solves least-square problems by using
  LQ factorization </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_lapack.php#geteigenvalues">GetEigenvalues </a></td> 
+ <td class="category-table-td"><a href="functions_lapack.php#GetEigenvalues">GetEigenvalues </a></td> 
  <td class="category-table-td"> computes eigenvalues</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="functions_lapack.php#geteigenvalueseigenvec">GetEigenvaluesEigenvectors </a></td> 
+ <td class="category-table-td"><a href="functions_lapack.php#GetEigenvaluesEigenvectors">GetEigenvaluesEigenvectors </a></td> 
  <td class="category-table-td"> computes eigenvalues and
  eigenvectors</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="functions_lapack.php#getsvd">GetSVD </a></td> 
+ <td class="category-table-td"><a href="functions_lapack.php#GetSVD">GetSVD </a></td> 
  <td class="category-table-td"> performs singular value decomposition (SVD) </td> </tr>
 </table>
 
@@ -251,8 +281,8 @@ W.Fill(1.0);
 
 
 <h4>Related topics : </h4>
-<p><a href="#reallocate">Reallocate</a><br/>
-<a href="#fill">Fill</a></p>
+<p><a href="#Reallocate">Reallocate</a><br/>
+<a href="#Fill">Fill</a></p>
 
 
 <h4>Location :</h4>
@@ -291,7 +321,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>The operator [] should not be used in normal use. The operator () can't be used to modify values of matrix for specific storages, e.g.  RowSym, RowHerm, RowUpTriang.</p>
+<p>The operator [] gives a direct access to the 1-D array storing values of the matrix, its use should be considered carefully. The operator () can't be used to modify values of matrix for specific storages, e.g.  RowSym, RowHerm, RowUpTriang, use Get or Val instead.</p>
 
 
 <h4>Example : </h4>
@@ -320,8 +350,8 @@ A *= 1.5;
 
 
 <h4>Related topics : </h4>
-<p><a href="#copy">Copy</a><br/>
-<a href="#val">Val</a></p>
+<p><a href="#Copy">Copy</a><br/>
+<a href="#Val">Val</a></p>
 
 
 <h4>Location :</h4>
@@ -342,7 +372,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="getm"></a></div>
+<div class="separator"><a name="GetM"></a></div>
 
 
 
@@ -355,7 +385,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method returns the number of rows </p>
+<p>This method returns the number of rows. </p>
 
 
 <h4>Example : </h4>
@@ -373,7 +403,7 @@ Matrix_Base.cxx</p>
 
 
 
-<div class="separator"><a name="getn"></a></div>
+<div class="separator"><a name="GetN"></a></div>
 
 
 
@@ -392,7 +422,7 @@ Matrix_Base.cxx</p>
 \precode
 Matrix<float> V(3, 2);
 // V.GetN() should return 2 
-cout << "Number of rows of V " << V.GetM() << endl;
+cout << "Number of columns of V " << V.GetN() << endl;
 \endprecode
 
 
@@ -403,7 +433,7 @@ Matrix_Base.cxx</p>
 
 
 
-<div class="separator"><a name="getsize"></a></div>
+<div class="separator"><a name="GetSize"></a></div>
 
 
 
@@ -417,7 +447,7 @@ Matrix_Base.cxx</p>
 
 
 
-<p>This method returns the number of elements in the matrix</p>
+<p>This method returns the number of elements in the matrix.</p>
 
 
 <h4>Example : </h4>
@@ -435,7 +465,7 @@ Matrix_Base.cxx</p>
 
 
 
-<div class="separator"><a name="getdatasize"></a></div>
+<div class="separator"><a name="GetDataSize"></a></div>
 
 
 
@@ -476,7 +506,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="getdata"></a></div>
+<div class="separator"><a name="GetData"></a></div>
 
 
 
@@ -518,8 +548,8 @@ zaxpy(reinterpret_cast<const void*>(beta), Xc.GetDataVoid());
 \endprecode
 
 <h4>Related topics : </h4>
-<p><a href="#setdata">SetData</a><br/>
-<a href="#nullify">Nullify</a></p>
+<p><a href="#SetData">SetData</a><br/>
+<a href="#Nullify">Nullify</a></p>
 
 
 <h4>Location :</h4>
@@ -529,7 +559,7 @@ Matrix_Base.cxx</p>
 
 
 
-<div class="separator"><a name="clear"></a></div>
+<div class="separator"><a name="Clear"></a></div>
 
 
 
@@ -571,7 +601,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="reallocate"></a></div>
+<div class="separator"><a name="Reallocate"></a></div>
 
 
 
@@ -584,7 +614,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method changes the size of the matrix, but removes previous elements.</p>
+<p>This method changes the size of the matrix, but removes previous elements if NewAlloc is used.</p>
 
 
 <h4>Example : </h4>
@@ -599,7 +629,7 @@ A.Zero();
 
 
 <h4>Related topics :</h4>
-<p><a href="#resize">Resize</a></p>
+<p><a href="#Resize">Resize</a></p>
 
 
 <h4>Location :</h4>
@@ -620,7 +650,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="resize"></a></div>
+<div class="separator"><a name="Resize"></a></div>
 
 
 
@@ -648,7 +678,7 @@ for (int i = 0; i < 4; i++)
 
 
 <h4>Related topics :</h4>
-<p><a href="#reallocate">Reallocate</a></p>
+<p><a href="#Reallocate">Reallocate</a></p>
 
 
 <h4>Location :</h4>
@@ -669,7 +699,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="setdata"></a></div>
+<div class="separator"><a name="SetData"></a></div>
 
 
 
@@ -681,7 +711,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method sets the pointer to the array containing elements.  This method should be used carefully, and generally in conjunction with method Nullify. </p>
+<p>This method sets the pointer to the array containing elements. This method should be used carefully, and generally in conjunction with method Nullify. </p>
 
 
 <h4>Example : </h4>
@@ -702,8 +732,8 @@ void f(int m, int n, double* data)
 
 
 <h4>Related topics :</h4>
-<p><a href="#getdata">GetData</a><br/>
-<a href="#nullify">Nullify</a></p>
+<p><a href="#GetData">GetData</a><br/>
+<a href="#Nullify">Nullify</a></p>
 
 
 <h4>Location :</h4>
@@ -724,7 +754,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="nullify"></a></div>
+<div class="separator"><a name="Nullify"></a></div>
 
 
 
@@ -740,8 +770,8 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 <h4>Related topics :</h4>
-<p><a href="#setdata">SetData</a><br/>
-<a href="#getdata">GetData</a></p>
+<p><a href="#SetData">SetData</a><br/>
+<a href="#GetData">GetData</a></p>
 
 
 <h4>Location :</h4>
@@ -762,7 +792,147 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="copy"></a></div>
+<div class="separator"><a name="Val"></a></div>
+
+
+
+<h3>Val</h3>
+
+<h4>Syntax : </h4>
+ <pre class="syntax-box">
+  T&amp; Val(int, int);
+  const T&amp; Val(int, int) const;
+</pre>
+
+
+<p>This method is similar to operator (), except that it always works, especially for storages like RowSym, RowHerm, RowUpTriang. It gives a direct access to the values of the matrix, so that it is up to the user to take care that only upper part of symmetric matrices is accessed. In the case of sparse matrices, this method modifies only entries that are belonging to the sparsity pattern. An exception is raised, if you try to modify an entry which does not exist. If you prefer a more flexible access, use <a href="#Get">Get instead</a>.</p>
+
+
+<h4>Example : </h4>
+\precode
+Matrix<double, General, RowUpTriang> A(3,3);
+// operator () does not work to change the value
+// A(0, 0) = 1;  => Error during compilation
+A.Val(0, 0) = 2.0;  // Okay it works
+\endprecode
+
+
+<h4>Related topics :</h4>
+<p><a href="#operator">Operators</a></p>
+
+
+<h4>Location :</h4>
+<p>Class Matrix_Pointers<br/>
+Class Matrix_Symmetric<br/>
+Class Matrix_SymPacked<br/>
+Class Matrix_Hermitian<br/>
+Class Matrix_HermPacked<br/>
+Class Matrix_Triangular<br/>
+Class Matrix_TriangPacked<br/>
+Matrix_Pointers.hxx Matrix_Pointers.cxx<br/>
+Matrix_Symmetric.hxx Matrix_Symmetric.cxx<br/>
+Matrix_SymPacked.hxx Matrix_SymPacked.cxx<br/>
+Matrix_Hermitian.hxx Matrix_Hermitian.cxx<br/>
+Matrix_HermPacked.hxx Matrix_HermPacked.cxx<br/>
+Matrix_Triangular.hxx Matrix_Triangular.cxx<br/>
+Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
+
+
+
+<div class="separator"><a name="Get"></a></div>
+
+
+
+<h3>Get</h3>
+
+<h4>Syntax : </h4>
+ <pre class="syntax-box">
+  T&amp; Get(int, int);
+  const T&amp; Get(int, int) const;
+</pre>
+
+
+<p>This method is similar to operator (), except that it always works, especially for storages like RowSym, RowHerm, RowUpTriang. It gives access to A(i, j). The only restriction to that method occurs for hermitian matrix. In that case, only upper part can be modified, if you wish to modify lower part, the method <a href="#Set">Set</a> should be considered.</p>
+
+
+<h4>Example : </h4>
+\precode
+Matrix<double, General, RowUpTriang> A(3,3);
+// operator () does not work to change the value
+// A(0,0) = 1;  => Error during compilation
+A.Get(0, 0) = 2.0;  // Okay it works
+\endprecode
+
+
+<h4>Related topics :</h4>
+<p><a href="#operator">Operators</a></p>
+
+
+<h4>Location :</h4>
+<p>Class Matrix_Pointers<br/>
+Class Matrix_Symmetric<br/>
+Class Matrix_SymPacked<br/>
+Class Matrix_Hermitian<br/>
+Class Matrix_HermPacked<br/>
+Class Matrix_Triangular<br/>
+Class Matrix_TriangPacked<br/>
+Matrix_Pointers.hxx Matrix_Pointers.cxx<br/>
+Matrix_Symmetric.hxx Matrix_Symmetric.cxx<br/>
+Matrix_SymPacked.hxx Matrix_SymPacked.cxx<br/>
+Matrix_Hermitian.hxx Matrix_Hermitian.cxx<br/>
+Matrix_HermPacked.hxx Matrix_HermPacked.cxx<br/>
+Matrix_Triangular.hxx Matrix_Triangular.cxx<br/>
+Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
+
+
+
+<div class="separator"><a name="Set"></a></div>
+
+
+
+<h3>Set</h3>
+
+<h4>Syntax : </h4>
+ <pre class="syntax-box">
+  void Set(int, int, T);
+</pre>
+
+
+<p>This method allows the modification of A(i, j), there is no restriction on i or j. </p>
+
+
+<h4>Example : </h4>
+\precode
+Matrix<double, General, RowUpTriang> A(3,3);
+// operator () does not work to change the value
+// A(0,0) = 1;  => Error during compilation
+A.Set(0, 0, 2.0);  // Okay it works
+\endprecode
+
+
+<h4>Related topics :</h4>
+<p><a href="#operator">Operators</a></p>
+
+
+<h4>Location :</h4>
+<p>Class Matrix_Pointers<br/>
+Class Matrix_Symmetric<br/>
+Class Matrix_SymPacked<br/>
+Class Matrix_Hermitian<br/>
+Class Matrix_HermPacked<br/>
+Class Matrix_Triangular<br/>
+Class Matrix_TriangPacked<br/>
+Matrix_Pointers.hxx Matrix_Pointers.cxx<br/>
+Matrix_Symmetric.hxx Matrix_Symmetric.cxx<br/>
+Matrix_SymPacked.hxx Matrix_SymPacked.cxx<br/>
+Matrix_Hermitian.hxx Matrix_Hermitian.cxx<br/>
+Matrix_HermPacked.hxx Matrix_HermPacked.cxx<br/>
+Matrix_Triangular.hxx Matrix_Triangular.cxx<br/>
+Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
+
+
+
+<div class="separator"><a name="Copy"></a></div>
 
 
 
@@ -810,54 +980,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="val"></a></div>
-
-
-
-<h3>Val</h3>
-
-<h4>Syntax : </h4>
- <pre class="syntax-box">
-  T&amp; Val(int, int);
-  const T&amp; Val(int, int) const;
-</pre>
-
-
-<p>This method is similar to operator (), except that it always works, especially for storages like RowSym, RowHerm, RowUpTriang.</p>
-
-
-<h4>Example : </h4>
-\precode
-Matrix<double, General, RowUpTriang> A(3,3);
-// operator () does not work to change the value
-// A(0,0) = 1;  => Error during compilation
-A.Val(0,0) = 2.0;  // Okay it works
-\endprecode
-
-
-<h4>Related topics :</h4>
-<p><a href="#operator">Operators</a></p>
-
-
-<h4>Location :</h4>
-<p>Class Matrix_Pointers<br/>
-Class Matrix_Symmetric<br/>
-Class Matrix_SymPacked<br/>
-Class Matrix_Hermitian<br/>
-Class Matrix_HermPacked<br/>
-Class Matrix_Triangular<br/>
-Class Matrix_TriangPacked<br/>
-Matrix_Pointers.hxx Matrix_Pointers.cxx<br/>
-Matrix_Symmetric.hxx Matrix_Symmetric.cxx<br/>
-Matrix_SymPacked.hxx Matrix_SymPacked.cxx<br/>
-Matrix_Hermitian.hxx Matrix_Hermitian.cxx<br/>
-Matrix_HermPacked.hxx Matrix_HermPacked.cxx<br/>
-Matrix_Triangular.hxx Matrix_Triangular.cxx<br/>
-Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
-
-
-
-<div class="separator"><a name="zero"></a></div>
+<div class="separator"><a name="Zero"></a></div>
 
 
 
@@ -870,7 +993,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method fills memory of 0, is convenient for matrices made of doubles, integers, floats, but not for more complicated types.  In that case, it is better to use the method <a href="#fill">Fill</a>.</p>
+<p>This method fills memory of 0, is convenient for matrices made of doubles, integers, floats, but not for more complicated types.  In that case, it is better to use the method <a href="#Fill">Fill</a>.</p>
 
 
 <h4>Example : </h4>
@@ -888,7 +1011,7 @@ W.Fill(zero);
 
 
 <h4>Related topics :</h4>
-<p><a href="#fill">Fill</a></p>
+<p><a href="#Fill">Fill</a></p>
 
 
 <h4>Location :</h4>
@@ -909,7 +1032,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="setidentity"></a></div>
+<div class="separator"><a name="SetIdentity"></a></div>
 
 
 
@@ -933,7 +1056,7 @@ V.SetIdentity();
 
 
 <h4>Related topics :</h4>
-<p><a href="#fill">Fill</a></p>
+<p><a href="#Fill">Fill</a></p>
 
 
 <h4>Location :</h4>
@@ -954,7 +1077,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="fill"></a></div>
+<div class="separator"><a name="Fill"></a></div>
 
 
 
@@ -981,7 +1104,7 @@ A.Fill(2);
 \endprecode
 
 <h4>Related topics :</h4>
-<p><a href="#zero">Zero</a></p>
+<p><a href="#Zero">Zero</a></p>
 
 
 <h4>Location :</h4>
@@ -1002,7 +1125,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="fillrand"></a></div>
+<div class="separator"><a name="FillRand"></a></div>
 
 
 
@@ -1026,7 +1149,7 @@ A.FillRand();
 
 
 <h4>Related topics :</h4>
-<p><a href="#fill">Fill</a></p>
+<p><a href="#Fill">Fill</a></p>
 
 
 <h4>Location :</h4>
@@ -1047,7 +1170,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="print"></a></div>
+<div class="separator"><a name="Print"></a></div>
 
 
 
@@ -1067,10 +1190,10 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 <h4>Example : </h4>
 \precode
 Matrix<string> A(2, 2);
-A(0,0) = string("hello");
-A(0,1) = string("world");
-A(1,0) = string("you");
-A(1,1) = string("welcome");
+A(0, 0) = string("hello");
+A(0, 1) = string("world");
+A(1, 0) = string("you");
+A(1, 1) = string("welcome");
 A.Print(); 
 // should display :
 // hello world
@@ -1103,7 +1226,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="write"></a></div>
+<div class="separator"><a name="Write"></a></div>
 
 
 
@@ -1113,15 +1236,16 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
  <pre class="syntax-box">
   void Write(string) const;
   void Write(ofstream&amp;) const;
+  void Write(ofstream&amp;, bool with_size) const;
 </pre>
 
 
-<p>This method writes the matrix on a file/stream in binary format.  The file will contain the number of rows, columns, then the list of elements.</p>
+<p>This method writes the matrix on a file/stream in binary format.  The file will contain the number of rows, columns, then the list of elements. You can also require that the number of rows and columns is not written by setting with_size to false.</p>
 
 
 <h4>Example : </h4>
 \precode
-Matrix<double> A(2, 2); 
+Matrix<double> A(2, 2), B(2, 2); 
 // you can write directly in a file
 A.Fill();
 A.Write("matrix.dat");
@@ -1131,14 +1255,16 @@ ofstream file_out("matrix.dat");
 int my_info = 3;
 file_out.write(reinterpret_cast<char*>(>my_info), sizeof(int));
 A.Write(file_out);
+// you can write directly values of B without the number of rows and columns 
+B.Write(file_out, false);
 file_out.close();
 \endprecode
 
 
 <h4>Related topics :</h4>
-<p><a href="#read">Read</a><br/>
-<a href="#writetext">WriteText</a><br/>
-<a href="#readtext">ReadText</a></p>
+<p><a href="#Read">Read</a><br/>
+<a href="#WriteText">WriteText</a><br/>
+<a href="#ReadText">ReadText</a></p>
 
 <h4>Location :</h4>
 <p>Class Matrix_Pointers<br/>
@@ -1158,7 +1284,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="read"></a></div>
+<div class="separator"><a name="Read"></a></div>
 
 
 
@@ -1168,15 +1294,16 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
  <pre class="syntax-box">
   void Read(string);
   void Read(ifstream&amp;);
+  void Read(ifstream&amp;, bool with_size);
 </pre>
 
 
-<p>This method sets the matrix from a file/stream in binary format.  The file contains the number of rows, columns, then the list of elements.</p>
+<p>This method sets the matrix from a file/stream in binary format.  The file contains the number of rows, columns, then the list of elements. If with_size is false, the number of rows and columns won't be read.</p>
 
 
 <h4>Example : </h4>
 \precode
-Matrix<double> V(3, 4); 
+Matrix<double> V, W(3, 4); 
 // you can read directly on a file
 V.Read("matrix.dat");
 
@@ -1184,15 +1311,19 @@ V.Read("matrix.dat");
 ifstream file_in("matrix.dat");
 int my_info;
 file_in.read(reinterpret_cast<char*<(>my_info), sizeof(int));
+// V may be resized depending on the matrix stored on the file
 V.Read(file_in);
+// if the size is not written, W is considered to be allocated
+// with the correct size (here 3x4)
+W.Read(file_in, false);
 file_in.close();
 \endprecode
 
 
 <h4>Related topics :</h4>
-<p><a href="#write">Write</a><br/>
-<a href="#writetext">WriteText</a><br/>
-<a href="#readtext">ReadText</a></p>
+<p><a href="#Write">Write</a><br/>
+<a href="#WriteText">WriteText</a><br/>
+<a href="#ReadText">ReadText</a></p>
 
 
 <h4>Location :</h4>
@@ -1213,7 +1344,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="writetext"></a></div>
+<div class="separator"><a name="WriteText"></a></div>
 
 
 
@@ -1226,13 +1357,16 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method writes the matrix on a file/stream in text format.  The file will contain the list of elements.</p>
+<p>This method writes the matrix on a file/stream in text format.  The file will contain the list of elements.
+ The matrix is then directly readable in Matlab (load) or in Python (loadtxt). </p>
 
 <h4>Example : </h4>
 \precode
 Matrix<double> V(2); 
 // you can write directly in a file
 V.Fill();
+// for more digits, cout.precision should be called
+cout.precision(15);
 V.WriteText("matrix.dat");
 
 // or open a stream with other datas
@@ -1245,9 +1379,9 @@ file_out.close();
 
 
 <h4>Related topics :</h4>
-<p><a href="#write">Write</a><br/>
-<a href="#read">Read</a><br/>
-<a href="#readtext">ReadText</a></p>
+<p><a href="#Write">Write</a><br/>
+<a href="#Read">Read</a><br/>
+<a href="#ReadText">ReadText</a></p>
 
 
 <h4>Location :</h4>
@@ -1268,7 +1402,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 
 
 
-<div class="separator"><a name="readtext"></a></div>
+<div class="separator"><a name="ReadText"></a></div>
 
 
 
@@ -1281,7 +1415,7 @@ Matrix_TriangPacked.hxx Matrix_TriangPacked.cxx</p>
 </pre>
 
 
-<p>This method sets the matrix from a file/stream in text format.  The file contains the list of elements.</p>
+<p>This method sets the matrix from a file/stream in text format. The file contains the list of elements.</p>
 
 
 <h4>Example : </h4>
@@ -1300,9 +1434,9 @@ file_in.close();
 
 
 <h4>Related topics :</h4>
-<a href="#write">Write</a><br/>
-<a href="#read">Read</a><br/>
-<a href="#writetext">WriteText</a>
+<a href="#Write">Write</a><br/>
+<a href="#Read">Read</a><br/>
+<a href="#WriteText">WriteText</a>
 
 
 <h4>Location :</h4>

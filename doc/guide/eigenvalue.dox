@@ -345,6 +345,133 @@ int main()
 
 <p> The choice of eigensolver is made when calling function <a href="#GetEigenvaluesEigenvectors">GetEigenvaluesEigenvectors</a> by providing an optional argument. If this argument is not provided, default eigenvalue solver will be used (Arpack). </p>
 
+<h2>Expert use</h2>
+
+<p>If you want to use directly Arpack (through a reverse-communication interface), a simple class ArpackSolver has been written : </p>
+
+\precode
+// dimensions of the matrix
+int m = 500, n = 100;
+// example of matrix
+Matrix<double, General, RowSparse> A(m, n);
+// number of eigenvalues you want to compute
+int nev = 4;
+// number of Arnoldi vectors
+int ncv = 20;
+// maximum number of iterations
+int maxit = 100;
+// stopping criterion
+double tol = 1e-6;
+// solver (symmetric, non-symmetric)
+string solver = "symmetric";
+// Arpack mode (see Arpack documentation)
+int mode = 1;
+// eigenvalues desired (largest, smallest, etc)
+string which = "LM";
+// standard eigenvalue problem
+char bmat = 'I';
+// eigenvectors are also retrieved
+char HowMny = 'A';
+// true for displaying informations of Arpack
+bool with_arpack_verbose = false;
+
+// initialisation
+ArpackSolver<double, double> S;
+S.Init(n, nev, ncv, maxit, tol, solver_type, mode,
+       which, bmat, HowMny, with_arpack_verbose);
+
+Vector<double> x, y;
+
+while (S.Continue())
+  {    
+    int ido = S.GetReverseCommunicationFlag();
+    if (ido == 1 || ido == -1)
+     {
+       // matrix-vector product y = A*x
+       // you can put your own matrix-vector product here
+       x.SetData(n, S.GetFirstWorkVector());
+       y.SetData(m, S.GetSecondWorkVector());
+       Mlt(A, x, y);
+       x.Nullify();
+       y.Nullify();
+     }
+  }
+
+bool success = S.Finish();
+// displaying eigenvalues and eigenvectors
+if (success)
+  {
+    for (int j = 0; j < S.GetConvergedNumber(); j++)
+      {
+        x.SetData(n, S.GetEigenVector(j));
+        cout << "Eigenvalue " << S.GetEigenValue(j) << endl;
+        cout << "Eigenvector " << x << endl;
+        x.Nullify();
+      }
+  }
+\endprecode
+
+<p> An example is present in <code>test/program/arpack_test_svd.cpp</code>. Methods of ArpackSolver are listed below : </p>
+
+<table class="category-table">
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#Init_arpack"> Init </a></td>
+<td class="category-table-td"> Initialization of eigenvalue problem </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#CheckParameter"> CheckParameter </a></td>
+<td class="category-table-td"> Checking input parameters </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#arpack_Clear"> Clear </a></td>
+<td class="category-table-td"> Clears memory used by internal arrays </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#Allocate"> Allocate </a></td>
+<td class="category-table-td"> allocation of internal arrays </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#Deallocate"> Deallocate </a></td>
+<td class="category-table-td"> deallocation of internal arrays </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#SetArpackVerbose"> SetArpackVerbose </a></td>
+<td class="category-table-td"> switches to verbose mode </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#ClearArpackVerbose"> ClearArpackVerbose </a></td>
+<td class="category-table-td"> returns to silent mode </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetFirstWorkVector"> GetFirstWorkVector </a></td>
+<td class="category-table-td"> returns pointer to first working vector </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#GetSecondWorkVector"> GetSecondWorkVector </a></td>
+<td class="category-table-td"> returns pointer to second working vector </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetEigenVector"> GetEigenVector </a></td>
+<td class="category-table-td"> returns pointer to i-th eigenvector </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#GetEigenValue"> GetEigenValue </a></td>
+<td class="category-table-td"> returns i-th eigenvalue </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetReverseCommunicationFlag"> GetReverseCommunicationFlag </a></td>
+<td class="category-table-td"> returns reverse-communication flag (ido parameter) </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#GetReverseCommunicationFlag"> SetReverseCommunicationFlag </a></td>
+<td class="category-table-td"> modifies reverse-communication flag (ido parameter) </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetInfoFlag"> GetInfoFlag </a></td>
+<td class="category-table-td"> returns info parameter (result of iterative algorithm) </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#GetInfoFlag"> SetInfoFlag </a></td>
+<td class="category-table-td"> modifies info parameter </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetConvergedNumber"> GetConvergedNumber </a></td>
+<td class="category-table-td"> returns the number of converged eigenvalues </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#Continue"> Continue </a></td>
+<td class="category-table-td"> performs one step of the algorithm, returns true if the iterative algorithm has ended </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#Finish"> Finish </a></td>
+<td class="category-table-td"> completes computation of eigenvalues and eigenvectors </td> </tr>
+</table>
+
+
+
 <p><br/> <br/></p>
 
 
@@ -1797,5 +1924,326 @@ GetEigenvaluesEigenvectors(var_eig, lambda, lambda_imag, eigen_vec);
 <p>EigenvalueSolver.cxx</p>
 
 
+
+<div class="separator"><a name="Init_arpack"></a></div>
+
+
+
+<h3>Init</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+void Init(int n, int nev, int ncv, int maxit, double tolerance, string solver_type,
+          int mode, string which, char bmat, char HowMny, bool arpack_with_verbose)
+</pre>
+
+
+<p>This function inits parameters related to eigenvalue problem (see Arpack documentation). </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="CheckParameter"></a></div>
+
+
+
+<h3>CheckParameter</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+void CheckParameter();
+</pre>
+
+
+<p>This function checks if the parameters - given when calling Init - are correct. </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="arpack_Clear"></a></div>
+
+
+
+<h3>Clear</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+void Clear()
+</pre>
+
+
+<p>This function clears memory used by internal arrays. </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="Allocate"></a></div>
+
+
+
+<h3>Allocate</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+void Allocate()
+</pre>
+
+
+<p>This function allocates memory used by internal arrays. </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="Deallocate"></a></div>
+
+
+
+<h3>Deallocate</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+void Deallocate()
+</pre>
+
+
+<p>This function deallocates memory used by internal arrays. </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="SetArpackVerbose"></a></div>
+
+
+
+<h3>SetArpackVerbose</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+void SetArpackVerbose()
+</pre>
+
+
+<p>This function sets verbose mode. </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="ClearArpackVerbose"></a></div>
+
+
+
+<h3>ClearArpackVerbose</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+void ClearArpackVerbose()
+</pre>
+
+
+<p>This function returns to silent mode. </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="GetFirstWorkVector"></a></div>
+
+
+
+<h3>GetFirstWorkVector</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+T* GetFirstWorkVector()
+</pre>
+
+
+<p>This function returns a pointer to the first work vector. </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="GetSecondWorkVector"></a></div>
+
+
+
+<h3>GetSecondWorkVector</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+T* GetSecondWorkVector()
+</pre>
+
+
+<p>This function returns a pointer to the second work vector. </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="GetEigenValue"></a></div>
+
+
+
+<h3>GetEigenValue</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+T GetEigenValue(int i)
+</pre>
+
+
+<p>This function returns the i-th eigenvalue. </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="GetEigenVector"></a></div>
+
+
+
+<h3>GetEigenVector</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+T* GetEigenVector(int i)
+</pre>
+
+
+<p>This function returns the i-th eigenvector. </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="GetReverseCommunicationFlag"></a></div>
+
+
+
+<h3>GetReverseCommunicationFlag, SetReverseCommunicationFlag</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+void SetReverseCommunicationFlag(int flag)
+int GetReverseCommunicationFlag()
+</pre>
+
+
+<p>This function gives access to the reverse-communication flag (ido). </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="GetInfoFlag"></a></div>
+
+
+
+<h3>GetInfoFlag, SetInfoFlag</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+void SetInfoFlag(int flag)
+int GetInfoFlag()
+</pre>
+
+
+<p>This function gives access to the information flag (info). </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="GetConvergedNumber"></a></div>
+
+
+
+<h3>GetConvergedNumber</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+int GetConvergedNumber() const
+</pre>
+
+
+<p>This function returns the number of converged eigenvalues. </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="Continue"></a></div>
+
+
+
+<h3>Continue</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+bool Continue()
+</pre>
+
+
+<p>This function completes one step of the algorithm, it should return true if the iterative algorithm has ended. </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
+
+
+
+<div class="separator"><a name="Finish"></a></div>
+
+
+
+<h3>Finish</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+bool Finish()
+</pre>
+
+
+<p>This function completes the computation of eigenvalues and eigenvectors, it is called once the iterative algorithm has ended. </p>
+
+<h4>Location :</h4>
+<p>ArpackSolver.cxx</p>
 
 */

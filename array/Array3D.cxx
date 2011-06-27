@@ -563,7 +563,7 @@ namespace Seldon
     \param FileName output file name.
   */
   template <class T, class Allocator> void Array3D<T, Allocator>
-  ::Write(string FileName, bool with_size = true) const
+  ::Write(string FileName, bool with_size) const
   {
     ofstream FileStream;
     FileStream.open(FileName.c_str());
@@ -590,7 +590,7 @@ namespace Seldon
     \param FileStream output stream.
   */
   template <class T, class Allocator> void Array3D<T, Allocator>
-  ::Write(ofstream& FileStream, bool with_size = true) const
+  ::Write(ofstream& FileStream, bool with_size) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -634,7 +634,7 @@ namespace Seldon
     \param FileName input file name.
   */
   template <class T, class Allocator>
-  void Array3D<T, Allocator>::Read(string FileName, bool with_size = true)
+  void Array3D<T, Allocator>::Read(string FileName, bool with_size)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -662,7 +662,7 @@ namespace Seldon
   */
   template <class T, class Allocator>
   void Array3D<T, Allocator>
-  ::Read(ifstream& FileStream, bool with_size = true)
+  ::Read(ifstream& FileStream, bool with_size)
   {
 
 #ifdef SELDON_CHECK_IO

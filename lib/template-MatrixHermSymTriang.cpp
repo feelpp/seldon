@@ -50,4 +50,17 @@ namespace Seldon
   SELDON_EXTERN template ostream& operator << (ostream&, const Matrix<@real_complex, General, @storage_blasTR, MallocAlloc<@real_complex> >&);
 #endif
 
+  SELDON_EXTERN template class Matrix_Hermitian<@complex, General, @storage_blasHP, NewAlloc<@complex> >;
+  SELDON_EXTERN template class Matrix<@complex, General, @storage_blasHE, NewAlloc<@complex> >;
+  SELDON_EXTERN template class Matrix_Symmetric<@real_complex, General, @storage_blasSY, NewAlloc<@real_complex> >;
+  SELDON_EXTERN template class Matrix<@real_complex, General, @storage_blasSY, NewAlloc<@real_complex> >;
+  SELDON_EXTERN template class Matrix_Triangular<@real_complex, General, @storage_blasTR, NewAlloc<@real_complex> >;
+  SELDON_EXTERN template class Matrix<@real_complex, General, @storage_blasTR, NewAlloc<@real_complex> >;
+
+#ifndef SWIG
+  SELDON_EXTERN template ostream& operator << (ostream&, const Matrix<@complex, General, @storage_blasHE, NewAlloc<@complex> >&);
+  SELDON_EXTERN template ostream& operator << (ostream&, const Matrix<@real_complex, General, @storage_blasSY, NewAlloc<@real_complex> >&);
+  SELDON_EXTERN template ostream& operator << (ostream&, const Matrix<@real_complex, General, @storage_blasTR, NewAlloc<@real_complex> >&);
+#endif
+
 }

@@ -15,7 +15,7 @@ int Gmres(const Matrix&amp; A, Vector&amp; x, const Vector&amp; b,
 </pre>
 
 
-<p>The first argument <code>A</code> is the matrix to solve. The type of this argument is template, therefore you can provide your own class defining the matrix. The second and third argument are vectors, <code>x</code> contains the initial guess on input, the solution on output, <code>b</code> contains the right-hand-side. Again, the type of x and b is template, so you can have your own class to define the vectors. The fourth template argument is the preconditioner. For the moment, there is an implementation of the identity preconditioner (no preconditioning) and a SOR (Successive Over Relaxation) preconditioner. The last argument is a %Seldon structure defining the parameters of the iteration.</p>
+<p>The first argument <code>A</code> is the matrix to solve. The type of this argument is template, therefore you can provide your own class defining the matrix. The second and third argument are vectors, <code>x</code> contains the initial guess on input, the solution on output, <code>b</code> contains the right-hand-side. Again, the type of x and b is template, so you can have your own class to define the vectors. The fourth template argument is the preconditioner. For the moment, there is an implementation of the identity preconditioner (no preconditioning) and a SOR (Successive Over Relaxation) preconditioner. The last argument is a %Seldon structure defining the parameters of the iteration. The input matrix is assumed to be squared for all the iterative solvers.</p>
 
 
 <h2>Basic use</h2>
@@ -59,7 +59,7 @@ Gmres(A, x, b, precond, iter);
 <h2>Advanced use</h2>
 
 
-<p>Now, we will show an example where we construct a new class for a matrix that we don't store. If you want to test iterative solvers with that kind of strategy, you can take a look at the file test/program/iterative_test.cpp. The main thing to do is to overload the functions <a href="functions_blas.php#mlt">Mlt</a> and <a href="functions_blas.php#mltadd">MltAdd</a> that are called by iterative solvers to perform the matrix-vector product.</p>
+<p>Now, we will show an example where we construct a new class for a matrix that we don't store. If you want to test iterative solvers with that kind of strategy, you can take a look at the file test/program/iterative_test.cpp. The main thing to do is to overload the functions <a href="functions_blas.php#Mlt">Mlt</a> and <a href="functions_blas.php#MltAdd">MltAdd</a> that are called by iterative solvers to perform the matrix-vector product.</p>
 
 
 \precode
@@ -220,7 +220,7 @@ int main()
 \endprecode
 
 
-<p>If you want to use your own class of vector, there are other functions to define : <a href="functions_blas.php#add">Add</a>, <a href="functions_blas.php#norm2">Norm2</a>, <a href="functions_blas.php#dotprod">DotProd</a>, <a href="functions_blas.php#dotprod">DotProdConj</a> , <a href="functions_blas.php#copy">Copy</a>, <a href="functions_blas.php#copy">Copy</a> and the method <a href="class_vector.php#zero">Zero</a>. </p>
+<p>If you want to use your own class of vector, there are other functions to define : <a href="functions_blas.php#Add">Add</a>, <a href="functions_blas.php#Norm2">Norm2</a>, <a href="functions_blas.php#DotProd">DotProd</a>, <a href="functions_blas.php#DotProd">DotProdConj</a> , <a href="functions_blas.php#Copy">Copy</a> and the copy constructor. By default, three preconditioning are provided : Identity (Preconditioner_Base), SOR (SorPreconditioner) and incomplete factorisation (IlutPreconditioning). </p>
 
 
 <h2>Methods of Preconditioner_Base:</h2>
@@ -228,10 +228,10 @@ int main()
 
 <table class="category-table">
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#solve"> Solve </a></td>
+<td class="category-table-td"> <a href="#Solve"> Solve </a></td>
 <td class="category-table-td"> Applies the preconditioner </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#solve">TransSolve</a></td>
+ <td class="category-table-td"> <a href="#Solve">TransSolve</a></td>
 <td class="category-table-td"> Applies the transpose of the preconditioner </td> </tr>
 </table>
 
@@ -241,22 +241,95 @@ int main()
 
 <table class="category-table">
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#initsymmetricpreconditioning"> InitSymmetricPreconditioning</a></td>
+<td class="category-table-td"> <a href="#InitSymmetricPreconditioning"> InitSymmetricPreconditioning</a></td>
 <td class="category-table-td"> Symmetric SOR will be used </td> </tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#initsymmetricpreconditioning"> InitUnsymmetricPreconditioning </a></td>
+<td class="category-table-td"> <a href="#InitSymmetricPreconditioning"> InitUnSymmetricPreconditioning </a></td>
 <td class="category-table-td"> SOR will be used </td> </tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#setparameterrelaxation"> SetParameterRelaxation </a></td>
+<td class="category-table-td"> <a href="#SetParameterRelaxation"> SetParameterRelaxation </a></td>
 <td class="category-table-td"> changes the relaxation parameter </td> </tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#setparameterrelaxation"> SetNumberIterations </a></td>
+<td class="category-table-td"> <a href="#SetNumberIterations"> SetNumberIterations </a></td>
 <td class="category-table-td"> changes the number of iterations </td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"> <a href="#sor_solve"> Solve</a></td>
+ <td class="category-table-td"> <a href="#sor_Solve"> Solve</a></td>
 <td class="category-table-td"> Applies the preconditioner </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#sor_solve"> TransSolve</a></td>
+ <td class="category-table-td"> <a href="#sor_Solve"> TransSolve</a></td>
+<td class="category-table-td"> Applies the transpose of the preconditioner </td> </tr>
+</table>
+
+
+<h2>Methods of IlutPreconditioning :</h2>
+
+
+<table class="category-table">
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#ilut_Clear"> Clear</a></td>
+<td class="category-table-td"> clears memory used by incomplete factorisation </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetFactorisationType"> GetFactorisationType</a></td>
+<td class="category-table-td"> returns the type of incomplete factorisation </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#GetFillLevel"> GetFillLevel </a></td>
+<td class="category-table-td"> returns the fill-level k (if ILU(k) is set) </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetAdditionalFillNumber"> GetAdditionalFillNumber </a></td>
+<td class="category-table-td"> returns the number of additional elements per row (used for ILUT(k))  </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#GetPrintLevel"> GetPrintLevel </a></td>
+<td class="category-table-td"> returns the verbose level </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetPivotBlockInteger"> GetPivotBlockInteger </a></td>
+<td class="category-table-td"> returns the maximum k = |i-j| allowed when pivoting </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#SetSymmetricAlgorithm"> SetSymmetricAlgorithm </a></td>
+<td class="category-table-td"> sets symmetric incomplete factorisation </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#SetUnsymmetricAlgorithm"> SetUnsymmetricAlgorithm </a></td>
+<td class="category-table-td"> sets unsymmetric incomplete factorisation (even for symmetric matrices) </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetFactorisationType"> SetFactorisationType</a></td>
+<td class="category-table-td"> sets the type of incomplete factorisation </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#GetFillLevel"> SetFillLevel </a></td>
+<td class="category-table-td"> sets the fill-level k (if ILU(k) is set) </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetAdditionalFillNumber"> SetAdditionalFillNumber </a></td>
+<td class="category-table-td"> sets the number of additional elements per row (used for ILUT(k))  </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#GetPrintLevel"> SetPrintLevel </a></td>
+<td class="category-table-td"> sets the verbose level </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetPivotBlockInteger"> SetPivotBlockInteger </a></td>
+<td class="category-table-td"> sets the maximum k = |i-j| allowed when pivoting </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetDroppingThreshold"> GetDroppingThreshold </a></td>
+<td class="category-table-td"> returns threshold to determine elements to drop </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#GetDroppingThreshold"> SetDroppingThreshold </a></td>
+<td class="category-table-td"> sets threshold to determine elements to drop </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetDiagonalCoefficient"> GetDiagonalCoefficient </a></td>
+<td class="category-table-td"> returns diagonal coefficient used in ILUD </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#GetDiagonalCoefficient"> SetDiagonalCoefficient </a></td>
+<td class="category-table-td"> sets diagonal coefficient used in ILUD </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetPivotThreshold"> GetPivotThreshold </a></td>
+<td class="category-table-td"> returns threshold used when pivoting columns </td> </tr>
+<tr class="category-table-tr-1">
+<td class="category-table-td"> <a href="#GetPivotThreshold"> SetPivotThreshold </a></td>
+<td class="category-table-td"> sets threshold used when pivoting columns </td> </tr>
+<tr class="category-table-tr-2">
+<td class="category-table-td"> <a href="#FactorizeMatrix"> FactorizeMatrix </a></td>
+<td class="category-table-td"> performs incomplete factorisation </td> </tr>
+<tr class="category-table-tr-2">
+ <td class="category-table-td"> <a href="#ilut_Solve"> Solve</a></td>
+<td class="category-table-td"> Applies the preconditioner </td> </tr>
+<tr class="category-table-tr-1">
+ <td class="category-table-td"> <a href="#ilut_Solve"> TransSolve</a></td>
 <td class="category-table-td"> Applies the transpose of the preconditioner </td> </tr>
 </table>
 
@@ -268,25 +341,25 @@ int main()
 <tr class="category-table-tr-2">
 <td class="category-table-td"> <a href="#constructor">Constructors</a></td></tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#restart">GetRestart</a></td>
+<td class="category-table-td"> <a href="#GetRestart">GetRestart</a></td>
 <td class="category-table-td"> returns restart parameter </td> </tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#restart">SetRestart</a></td>
+<td class="category-table-td"> <a href="#GetRestart">SetRestart</a></td>
 <td class="category-table-td"> changes restart parameter </td> </tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#tolerance">GetTolerance</a></td>
+<td class="category-table-td"> <a href="#GetTolerance">GetTolerance</a></td>
 <td class="category-table-td"> returns stopping criterion </td> </tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#tolerance">SetTolerance</a></td>
+<td class="category-table-td"> <a href="#GetTolerance">SetTolerance</a></td>
 <td class="category-table-td"> changes stopping criterion </td> </tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#maxiter">SetMaxIterationNumber</a></td>
+<td class="category-table-td"> <a href="#SetMaxIterationNumber">SetMaxIterationNumber</a></td>
 <td class="category-table-td"> changes maximum number of iterations </td> </tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#iter">GetIterationNumber</a></td>
+<td class="category-table-td"> <a href="#GetNumberIteration">GetNumberIteration</a></td>
 <td class="category-table-td"> returns iteration number </td> </tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#iter">SetIterationNumber</a></td>
+<td class="category-table-td"> <a href="#GetNumberIteration">SetNumberIteration</a></td>
 <td class="category-table-td"> changes iteration number </td> </tr>
 <tr class="category-table-tr-2">
 <td class="category-table-td"> <a href="#messages">ShowMessages</a></td>
@@ -298,25 +371,25 @@ int main()
 <td class="category-table-td"> <a href="#messages">ShowFullHistory</a></td>
 <td class="category-table-td"> displays residual each iteration</td> </tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#init">Init</a></td>
+<td class="category-table-td"> <a href="#Init">Init</a></td>
 <td class="category-table-td"> provides right hand side</td> </tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#first">First</a></td>
+<td class="category-table-td"> <a href="#First">First</a></td>
 <td class="category-table-td"> returns true for the first iteration</td> </tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#initguessnull">IsInitGuess_Null</a></td>
+<td class="category-table-td"> <a href="#SetInitGuess">IsInitGuess_Null</a></td>
 <td class="category-table-td"> returns true if the initial guess is zero</td> </tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#initguessnull">SetInitGuess</a></td>
-<td class="category-table-td"> informs if the initial guess is zero or no</td> </tr>
+<td class="category-table-td"> <a href="#SetInitGuess">SetInitGuess</a></td>
+<td class="category-table-td"> informs if the initial guess is zero or not</td> </tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#finished">Finished</a></td>
+<td class="category-table-td"> <a href="#Finished">Finished</a></td>
 <td class="category-table-td"> returns true if the stopping criteria are satisfied</td> </tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#fail">Fail</a></td>
+<td class="category-table-td"> <a href="#Fail">Fail</a></td>
 <td class="category-table-td"> informs that the iterative solver failed</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#errorcode">ErrorCode</a></td>
+ <td class="category-table-td"> <a href="#ErrorCode">ErrorCode</a></td>
 <td class="category-table-td"> returns error code </td> </tr>
 </table>
 
@@ -326,64 +399,64 @@ int main()
 
 <table class="category-table">
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#sor">SOR</a></td>
+<td class="category-table-td"> <a href="#SOR">SOR</a></td>
 <td class="category-table-td"> Performs SOR iterations</td></tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#bicg">BiCg</a></td>
+<td class="category-table-td"> <a href="#BiCg">BiCg</a></td>
 <td class="category-table-td"> BIConjugate Gradient </td></tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#bicgcr">BiCgcr</a></td>
+<td class="category-table-td"> <a href="#BiCgcr">BiCgcr</a></td>
 <td class="category-table-td"> BIConjugate Gradient Conjugate Residual</td></tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#bicgstab">BiCgStab</a></td>
+<td class="category-table-td"> <a href="#BiCgStab">BiCgStab</a></td>
 <td class="category-table-td"> BIConjugate Gradient STABilized</td></tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#bicgstabl">BiCgStabl</a></td>
+<td class="category-table-td"> <a href="#BiCgStabl">BiCgStabl</a></td>
 <td class="category-table-td"> BIConjugate Gradient STABilized (L)</td></tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#cg">Cg</a></td>
+<td class="category-table-td"> <a href="#Cg">Cg</a></td>
 <td class="category-table-td"> Conjugate Gradient</td></tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#cgne">Cgne</a></td>
+<td class="category-table-td"> <a href="#Cgne">Cgne</a></td>
 <td class="category-table-td"> Conjugate Gradient Normal Equation</td></tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#cgs">Cgs</a></td>
+<td class="category-table-td"> <a href="#Cgs">Cgs</a></td>
 <td class="category-table-td"> Conjugate Gradient Squared</td></tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#cocg">CoCg</a></td>
+<td class="category-table-td"> <a href="#CoCg">CoCg</a></td>
 <td class="category-table-td"> Conjugate Orthogonal Conjugate Gradient</td></tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#gcr">Gcr</a></td>
+<td class="category-table-td"> <a href="#Gcr">Gcr</a></td>
 <td class="category-table-td"> Generalized Conjugate Residual</td></tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#gmres">Gmres</a></td>
+<td class="category-table-td"> <a href="#Gmres">Gmres</a></td>
 <td class="category-table-td"> Generalized Minimum RESidual</td></tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#lsqr">Lsqr</a></td>
+<td class="category-table-td"> <a href="#Lsqr">Lsqr</a></td>
 <td class="category-table-td"> Least SQuaRes</td></tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#minres">MinRes</a></td>
+<td class="category-table-td"> <a href="#MinRes">MinRes</a></td>
 <td class="category-table-td"> Minimum RESidual</td></tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#qcgs">QCgs</a></td>
+<td class="category-table-td"> <a href="#QCgs">QCgs</a></td>
 <td class="category-table-td"> Quasi Conjugate Gradient Squared</td></tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#qmr">Qmr</a></td>
+<td class="category-table-td"> <a href="#Qmr">Qmr</a></td>
 <td class="category-table-td"> Quasi Minimum Residual</td></tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#qmrsym">QmrSym</a></td>
+<td class="category-table-td"> <a href="#QmrSym">QmrSym</a></td>
 <td class="category-table-td"> Quasi Minimum Residual SYMmetric</td></tr>
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#symmlq">Symmlq</a></td>
+<td class="category-table-td"> <a href="#Symmlq">Symmlq</a></td>
 <td class="category-table-td"> SYMMetric Least sQuares</td></tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="#tfqmr">TfQmr</a></td>
+<td class="category-table-td"> <a href="#TfQmr">TfQmr</a></td>
 <td class="category-table-td"> Transpose Free Quasi Minimum Residual</td></tr>
 </table>
 
 
 
-<div class="separator"><a name="solve"></a></div>
+<div class="separator"><a name="Solve"></a></div>
 
 
 
@@ -397,7 +470,7 @@ int main()
 </pre>
 
 
-<p>These methods should be overloaded if you want to define your own preconditioner since they define the application of the preconditioner and its transpose to a vector.</p>
+<p>These methods should be overloaded if you want to define your own preconditioner since they define the application of the preconditioner or its transpose to a vector.</p>
 
 
 <h4> Example : </h4>
@@ -432,7 +505,7 @@ Iterative.cxx</p>
 
 
 
-<div class="separator"><a name="sor_solve"></a></div>
+<div class="separator"><a name="sor_Solve"></a></div>
 
 
 
@@ -446,7 +519,7 @@ Iterative.cxx</p>
 </pre>
 
 
-<p>These methods define the application of the preconditioner and its transpose to a vector. The used preconditioner is SOR (Successive Over Relaxation).  It can be used in its symmetric version (SSOR), or the unsymmetric version.  In this last case, the application of the preconditioner consists of a forward sweep while the transpose consists of a backward sweep. If you are using %Seldon structures of sparse matrices, the function <a href="#sor">SOR</a> is available. If you are using other structures, it is necessary to overload the function SOR.</p>
+<p>These methods define the application of the preconditioner and its transpose to a vector. The used preconditioner is SOR (Successive Over Relaxation).  It can be used in its symmetric version (SSOR), or the unsymmetric version.  In this last case, the application of the preconditioner consists of a forward sweep while the transpose consists of a backward sweep. If you are using %Seldon structures of sparse matrices, the function <a href="#SOR">SOR</a> is available. If you are using other structures, it is necessary to overload the function SOR.</p>
 
 
 <h4> Example : </h4>
@@ -484,7 +557,7 @@ M.TransSolve(A, r, z);
 
 
 <h4>Related topics :</h4>
-<p><a href="#sor">SOR</a></p>
+<p><a href="#SOR">SOR</a></p>
 
 <h4>Location :</h4>
 <p>Class SorPreconditioner<br/>
@@ -492,7 +565,7 @@ Precond_Ssor.cxx</p>
 
 
 
-<div class="separator"><a name="initsymmetricpreconditioning"></a></div>
+<div class="separator"><a name="InitSymmetricPreconditioning"></a></div>
 
 
 
@@ -506,7 +579,7 @@ Precond_Ssor.cxx</p>
 </pre>
 
 
-<p><code>InitSymmetricPreconditioning</code> sets SSOR as preconditioning. The symmetric SOR consists of a forward sweep followed by a backward sweep. <code>InitSymmetricPreconditioning</code> sets SOR, it consists of a forward sweep for the preconditioner, and a backward sweep for the transpose of the preconditioner.</p>
+<p><code>InitSymmetricPreconditioning</code> sets SSOR as preconditioning. The symmetric SOR consists of a forward sweep followed by a backward sweep. <code>InitUnSymmetricPreconditioning</code> sets SOR, it consists of a forward sweep for the preconditioner, and a backward sweep for the transpose of the preconditioner.</p>
 
 
 <h4> Example : </h4>
@@ -515,12 +588,13 @@ Precond_Ssor.cxx</p>
 SorPreconditioner<double> M;
 
 // by default, symmetric preconditioning
-M.InitUnsymmetricPreconditioning();
+// use InitUnSymmetricPreconditioning to force a non-symmetric preconditioning
+M.InitUnSymmetricPreconditioning();
 \endprecode
 
 
 <h4>Related topics:</h4>
-<p><a href="#sor">SOR</a></p>
+<p><a href="#SOR">SOR</a></p>
 
 
 <h4>Location :</h4>
@@ -529,7 +603,7 @@ Precond_Ssor.cxx</p>
 
 
 
-<div class="separator"><a name="setparameterrelaxation"></a></div>
+<div class="separator"><a name="SetParameterRelaxation"></a></div>
 
 
 
@@ -551,7 +625,7 @@ Precond_Ssor.cxx</p>
 
 
 
-<div class="separator"><a name="setnumberiterations"></a></div>
+<div class="separator"><a name="SetNumberIterations"></a></div>
 
 
 
@@ -570,6 +644,668 @@ Precond_Ssor.cxx</p>
 <h4>Location :</h4>
 <p>Class SorPreconditioner<br/>
 Precond_Ssor.cxx</p>
+
+
+
+<div class="separator"><a name="ilut_Clear"></a></div>
+
+
+
+<h3>Clear for IlutPreconditioning</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void Clear()
+</pre>
+
+
+<p>This methods clears the factorisation stored in the structure.</p>
+
+
+<h4>Location :</h4>
+<p>Class IlutPreconditioning<br/>
+IlutPreconditioning.cxx</p>
+
+
+
+<div class="separator"><a name="GetFactorisationType"></a></div>
+
+
+
+<h3>GetFactorisationType for IlutPreconditioning</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  int GetFactorisationType() const
+  void SetFactorisationType(int type)
+</pre>
+
+
+<p>These methods return (or set) the type of incomplete factorisation set. The following types of incomplete factorisation are available :</p>
+
+<ul>
+<li> ILUT : incomplete factorisation with threshold </li>
+<li> ILU_D : incomplete factorisation with diagonal compensation </li>
+<li> ILUT_K : incomplete factorisation with threshold </li>
+<li> ILU_0 : incomplete factorisation on the same pattern as the original matrix </li>
+<li> MILU_0 : incomplete factorisation on the same pattern as the original matrix with diagonal compensation </li>
+<li> ILU_K : incomplete factorisation ILU(k) </li>
+</ul>
+
+\precode
+// constructing a symmetric matrix
+int n = 50;
+Matrix<double, Symmetric, ArrayRowSymSparse> A(n, n);
+
+// initialization of the preconditioning
+IlutPreconditioning<double, double> ilut;
+
+// type of incomplete factorisation
+ilut.SetFactorisationType(ilut.ILU_K):
+// for ILU_K, you need to set the fill level k
+ilut.SetFillLevel(2);
+
+// we want a symmetric preconditioning
+ilut.SetSymmetricAlgorithm();
+
+// then you can compute the incomplete factorisation
+IVect permutation(n);
+permutation.Fill();
+ilut.FactorizeMatrix(permutation, A, true);
+
+// and solve the linear system
+Vector<double> x(n), b(n);
+b.FillRand();
+x.Zero();
+Iteration<double> iter(1000, 1e-6);
+Cg(A, x, b, ilut, iter);
+\endprecode
+
+
+<h4>Location :</h4>
+<p>Class IlutPreconditioning<br/>
+IlutPreconditioning.cxx</p>
+
+
+
+<div class="separator"><a name="GetFillLevel"></a></div>
+
+
+
+<h3>GetFillLevel, SetFillLevel for IlutPreconditioning</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  int GetFillLevel() const
+  void SetFillLevel(int level);
+</pre>
+
+
+<p>These methods return (and set) the level k associated with ILU(k) factorisation. </p>
+
+\precode
+// constructing a symmetric matrix
+int n = 50;
+Matrix<double, Symmetric, ArrayRowSymSparse> A(n, n);
+
+// initialization of the preconditioning
+IlutPreconditioning<double, double> ilut;
+
+// type of incomplete factorisation
+ilut.SetFactorisationType(ilut.ILU_K):
+// for ILU_K, you need to set the fill level k
+ilut.SetFillLevel(2);
+
+// we want a symmetric preconditioning
+ilut.SetSymmetricAlgorithm();
+
+// then you can compute the incomplete factorisation
+IVect permutation(n);
+permutation.Fill();
+ilut.FactorizeMatrix(permutation, A, true);
+
+// and solve the linear system
+Vector<double> x(n), b(n);
+b.FillRand();
+x.Zero();
+Iteration<double> iter(1000, 1e-6);
+Cg(A, x, b, ilut, iter);
+\endprecode
+
+<h4>Location :</h4>
+<p>Class IlutPreconditioning<br/>
+IlutPreconditioning.cxx</p>
+
+
+
+<div class="separator"><a name="GetAdditionalFillNumber"></a></div>
+
+
+
+<h3>GetAdditionalFillNumber, SetAdditionalFillNumber for IlutPreconditioning</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  int GetAdditionalFillNumber() const
+  void SetAdditionalFillNumber(int k)
+</pre>
+
+
+<p>These methods return (and set) the number of fill-in elements allowed per row during the factorisation. </p>
+
+
+\precode
+// constructing a symmetric matrix
+int n = 50;
+Matrix<double, Symmetric, ArrayRowSymSparse> A(n, n);
+
+// initialization of the preconditioning
+IlutPreconditioning<double, double> ilut;
+
+// type of incomplete factorisation
+ilut.SetFactorisationType(ilut.ILUT):
+// for ILUT, you need to set the allowed additional fill-in elements
+// for each row. If you put n, there will be no limit.
+ilut.SetAdditionalFillNumber(n);
+ilut.SetDroppingThreshold(0.01);
+
+// we want a symmetric preconditioning
+ilut.SetSymmetricAlgorithm();
+
+// then you can compute the incomplete factorisation
+IVect permutation(n);
+permutation.Fill();
+ilut.FactorizeMatrix(permutation, A, true);
+
+// and solve the linear system
+Vector<double> x(n), b(n);
+b.FillRand();
+x.Zero();
+Iteration<double> iter(1000, 1e-6);
+Cg(A, x, b, ilut, iter);
+\endprecode
+
+<h4>Location :</h4>
+<p>Class IlutPreconditioning<br/>
+IlutPreconditioning.cxx</p>
+
+
+
+<div class="separator"><a name="GetPrintLevel"></a></div>
+
+
+
+<h3>GetPrintLevel, SetPrintLevel for IlutPreconditioning</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  int GetPrintLevel() const
+  void SetPrintLevel(int print_level)
+</pre>
+
+
+<p>These methods return (and set) the print level. </p>
+
+\precode
+// constructing a symmetric matrix
+int n = 50;
+Matrix<double, Symmetric, ArrayRowSymSparse> A(n, n);
+
+// initialization of the preconditioning
+IlutPreconditioning<double, double> ilut;
+
+// type of incomplete factorisation
+ilut.SetFactorisationType(ilut.ILU_K):
+// for ILU_K, you need to set the fill level k
+ilut.SetFillLevel(2);
+// if you want messages to be displayed during factorisation
+ilut.SetPrintLevel(2);
+
+// we want a symmetric preconditioning
+ilut.SetSymmetricAlgorithm();
+
+// then you can compute the incomplete factorisation
+IVect permutation(n);
+permutation.Fill();
+ilut.FactorizeMatrix(permutation, A, true);
+
+// and solve the linear system
+Vector<double> x(n), b(n);
+b.FillRand();
+x.Zero();
+Iteration<double> iter(1000, 1e-6);
+Cg(A, x, b, ilut, iter);
+\endprecode
+
+
+<h4>Location :</h4>
+<p>Class IlutPreconditioning<br/>
+IlutPreconditioning.cxx</p>
+
+
+
+<div class="separator"><a name="GetPivotBlockInteger"></a></div>
+
+
+
+<h3>GetPivotBlockInteger, SetPivotBlockInteger for IlutPreconditioning</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  int GetPivotBlockInteger() const
+  void SetPivotBlockInteger(int k)
+</pre>
+
+
+<p>These methods return (and set) the maximal difference between diagonal index and pivot index allowed when pivoting. </p>
+
+\precode
+// constructing a non-symmetric matrix
+int n = 50;
+Matrix<double, General, ArrayRowSparse> A(n, n);
+
+// initialization of the preconditioning
+IlutPreconditioning<double, double> ilut;
+
+// type of incomplete factorisation
+ilut.SetFactorisationType(ilut.ILUT):
+// pivot are searching within the block |i-j| <= k
+// if you allow any pivot, put n
+ilut.SetPivotBlockInteger(n);
+ilut.SetPivotThreshold(0.1);
+ilut.SetAdditionalFillNumber(n);
+ilut.SetDroppingThreshold(0.01);
+
+// then you can compute the incomplete factorisation
+IVect permutation(n);
+permutation.Fill();
+ilut.FactorizeMatrix(permutation, A, true);
+
+// and solve the linear system
+Vector<double> x(n), b(n);
+b.FillRand();
+x.Zero();
+Iteration<double> iter(1000, 1e-6);
+Qmr(A, x, b, ilut, iter);
+\endprecode
+
+<h4>Location :</h4>
+<p>Class IlutPreconditioning<br/>
+IlutPreconditioning.cxx</p>
+
+
+
+<div class="separator"><a name="GetDroppingThreshold"></a></div>
+
+
+
+<h3>GetDroppingThreshold, SetDroppingThreshold for IlutPreconditioning</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  double GetDroppingThreshold() const
+  void SetDroppingThreshold(double eps)
+</pre>
+
+
+<p>These methods return (and set) the dropping threshold. </p>
+
+\precode
+// constructing a non-symmetric matrix
+int n = 50;
+Matrix<double, General, ArrayRowSparse> A(n, n);
+
+// initialization of the preconditioning
+IlutPreconditioning<double, double> ilut;
+
+// type of incomplete factorisation
+ilut.SetFactorisationType(ilut.ILUT):
+// pivot are searching within the block |i-j| <= k
+// if you allow any pivot, put n
+ilut.SetPivotBlockInteger(n);
+ilut.SetPivotThreshold(0.1);
+ilut.SetAdditionalFillNumber(n);
+// threshold used to drop small values of the factorisation
+ilut.SetDroppingThreshold(0.01);
+
+// then you can compute the incomplete factorisation
+IVect permutation(n);
+permutation.Fill();
+ilut.FactorizeMatrix(permutation, A, true);
+
+// and solve the linear system
+Vector<double> x(n), b(n);
+b.FillRand();
+x.Zero();
+Iteration<double> iter(1000, 1e-6);
+Qmr(A, x, b, ilut, iter);
+\endprecode
+
+<h4>Location :</h4>
+<p>Class IlutPreconditioning<br/>
+IlutPreconditioning.cxx</p>
+
+
+
+<div class="separator"><a name="GetPivotThreshold"></a></div>
+
+
+
+<h3>GetPivotThreshold, SetPivotThreshold for IlutPreconditioning</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  double GetPivotThreshold() const
+  void SetPivotThreshold(double eps)
+</pre>
+
+
+<p>These methods return (and set) the pivot threshold. </p>
+
+\precode
+// constructing a non-symmetric matrix
+int n = 50;
+Matrix<double, General, ArrayRowSparse> A(n, n);
+
+// initialization of the preconditioning
+IlutPreconditioning<double, double> ilut;
+
+// type of incomplete factorisation
+ilut.SetFactorisationType(ilut.ILUT):
+// pivot are searching within the block |i-j| <= k
+// if you allow any pivot, put n
+ilut.SetPivotBlockInteger(n);
+// threshold used to determine if pivoting is needed
+ilut.SetPivotThreshold(0.1);
+ilut.SetAdditionalFillNumber(n);
+// threshold used to drop small values of the factorisation
+ilut.SetDroppingThreshold(0.01);
+
+// then you can compute the incomplete factorisation
+IVect permutation(n);
+permutation.Fill();
+ilut.FactorizeMatrix(permutation, A, true);
+
+// and solve the linear system
+Vector<double> x(n), b(n);
+b.FillRand();
+x.Zero();
+Iteration<double> iter(1000, 1e-6);
+Qmr(A, x, b, ilut, iter);
+\endprecode
+
+<h4>Location :</h4>
+<p>Class IlutPreconditioning<br/>
+IlutPreconditioning.cxx</p>
+
+
+
+<div class="separator"><a name="GetDiagonalCoefficient"></a></div>
+
+
+
+<h3>GetDiagonalCoefficient, SetDiagonalCoefficient for IlutPreconditioning</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  double GetDiagonalCoefficient() const
+  void SetDiagonalCoefficient(double eps)
+</pre>
+
+
+<p>These methods return (and set) the coefficient used in the compensation of diagonal. </p>
+
+\precode
+// constructing a non-symmetric matrix
+int n = 50;
+Matrix<double, General, ArrayRowSparse> A(n, n);
+
+// initialization of the preconditioning
+IlutPreconditioning<double, double> ilut;
+
+// type of incomplete factorisation
+ilut.SetFactorisationType(ilut.ILU_D):
+// pivot are searching within the block |i-j| <= k
+// if you allow any pivot, put n
+ilut.SetPivotBlockInteger(n);
+// threshold used to determine if pivoting is needed
+ilut.SetPivotThreshold(0.1);
+ilut.SetAdditionalFillNumber(n);
+// threshold used to drop small values of the factorisation
+ilut.SetDroppingThreshold(0.01);
+// diagonal compensation coefficient for ILU_D
+ilut.SetDiagonalCoefficient(0.9);
+
+// then you can compute the incomplete factorisation
+IVect permutation(n);
+permutation.Fill();
+ilut.FactorizeMatrix(permutation, A, true);
+
+// and solve the linear system
+Vector<double> x(n), b(n);
+b.FillRand();
+x.Zero();
+Iteration<double> iter(1000, 1e-6);
+Qmr(A, x, b, ilut, iter);
+\endprecode
+
+<h4>Location :</h4>
+<p>Class IlutPreconditioning<br/>
+IlutPreconditioning.cxx</p>
+
+
+
+<div class="separator"><a name="FactorizeMatrix"></a></div>
+
+
+
+<h3>FactorizeMatrix for IlutPreconditioning</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void FactorizeMatrix(const Vector<int>& permut, Matrix&amp;);
+  void FactorizeMatrix(const Vector<int>& permut, Matrix&amp;, bool keep_matrix);
+</pre>
+
+
+<p>This method performs the incomplete factorisation of the given matrix. By default, the matrix is cleared during the process. </p>
+
+\precode
+// constructing a non-symmetric matrix
+int n = 50;
+Matrix<double, General, ArrayRowSparse> A(n, n);
+
+// initialization of the preconditioning
+IlutPreconditioning<double, double> ilut;
+
+// type of incomplete factorisation
+ilut.SetFactorisationType(ilut.ILU_D):
+// pivot are searching within the block |i-j| <= k
+// if you allow any pivot, put n
+ilut.SetPivotBlockInteger(n);
+// threshold used to determine if pivoting is needed
+ilut.SetPivotThreshold(0.1);
+ilut.SetAdditionalFillNumber(n);
+// threshold used to drop small values of the factorisation
+ilut.SetDroppingThreshold(0.01);
+// diagonal compensation coefficient for ILU_D
+ilut.SetDiagonalCoefficient(0.9);
+
+// then you can compute the incomplete factorisation
+IVect permutation(n);
+permutation.Fill();
+// put true if you want to keep the original matrix
+ilut.FactorizeMatrix(permutation, A, true);
+
+// and solve the linear system
+Vector<double> x(n), b(n);
+b.FillRand();
+x.Zero();
+Iteration<double> iter(1000, 1e-6);
+Qmr(A, x, b, ilut, iter);
+\endprecode
+
+<h4>Location :</h4>
+<p>Class IlutPreconditioning<br/>
+IlutPreconditioning.cxx</p>
+
+
+
+<div class="separator"><a name="ilut_Solve"></a></div>
+
+
+
+<h3>FactorizeMatrix for IlutPreconditioning</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void Solve(Vector&amp;)
+  void TransSolve(Vector&amp;)
+  void Solve(const Matrix&amp;, const Vector&amp;, Vector&amp;)
+  void TransSolve(const Matrix&amp;, const Vector&amp;, Vector&amp;)
+</pre>
+
+
+<p>This method performs the approximate resolution of A x = b or A<sup>T</sup> x = b by using 
+ the incomplete factorisation. </p>
+
+\precode
+// constructing a non-symmetric matrix
+int n = 50;
+Matrix<double, General, ArrayRowSparse> A(n, n);
+
+// initialization of the preconditioning
+IlutPreconditioning<double, double> ilut;
+
+// type of incomplete factorisation
+ilut.SetFactorisationType(ilut.ILU_K):
+ilut.SetFillLevel(2);
+
+// then you can compute the incomplete factorisation
+IVect permutation(n);
+permutation.Fill();
+// put true if you want to keep the original matrix
+ilut.FactorizeMatrix(permutation, A, true);
+
+// and solve the linear system (Solve and TransSolve will be called by Qmr)
+Vector<double> x(n), b(n);
+b.FillRand();
+x.Zero();
+Iteration<double> iter(1000, 1e-6);
+Qmr(A, x, b, ilut, iter);
+
+// if you want to call Solve independently
+x = b;
+ilut.Solve(x);
+
+\endprecode
+
+<h4>Location :</h4>
+<p>Class IlutPreconditioning<br/>
+IlutPreconditioning.cxx</p>
+
+
+
+<div class="separator"><a name="SetSymmetricAlgorithm"></a></div>
+
+
+
+<h3>SetSymmetricAlgorithm for IlutPreconditioning</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void SetSymmetricAlgorithm() const
+</pre>
+
+
+<p>This methods informs to construct a symmetric preconditioning (if the given matrix is symmetric). </p>
+
+
+\precode
+// constructing a symmetric matrix
+int n = 50;
+Matrix<double, Symmetric, ArrayRowSymSparse> A(n, n);
+
+// initialization of the preconditioning
+IlutPreconditioning<double, double> ilut;
+
+// we want a symmetric preconditioning
+ilut.SetSymmetricAlgorithm();
+
+// then you can compute the incomplete factorisation
+IVect permutation(n);
+permutation.Fill();
+ilut.FactorizeMatrix(permutation, A, true);
+
+// and solve the linear system
+Vector<double> x(n), b(n);
+b.FillRand();
+x.Zero();
+Iteration<double> iter(1000, 1e-6);
+Cg(A, x, b, ilut, iter);
+\endprecode
+
+<h4>Location :</h4>
+<p>Class IlutPreconditioning<br/>
+IlutPreconditioning.cxx</p>
+
+
+<div class="separator"><a name="SetUnsymmetricAlgorithm"></a></div>
+
+
+
+<h3>SetUnsymmetricAlgorithm for IlutPreconditioning</h3>
+
+
+<h4>Syntax :</h4>
+ <pre class="syntax-box">
+  void SetUnsymmetricAlgorithm() const
+</pre>
+
+
+<p>This methods informs to construct an unsymmetric preconditioning (even if the given matrix is symmetric). </p>
+
+
+\precode
+// constructing a symmetric matrix
+int n = 50;
+Matrix<double, Symmetric, ArrayRowSymSparse> A(n, n);
+
+// initialization of the preconditioning
+IlutPreconditioning<double, double> ilut;
+
+// we want a non-symmetric preconditioning
+ilut.SetUnsymmetricAlgorithm();
+
+// then you can compute the incomplete factorisation
+IVect permutation(n);
+permutation.Fill();
+ilut.FactorizeMatrix(permutation, A, true);
+
+// and solve the linear system
+// with an iterative algorithm adpated to non-symmetric linear systems
+Vector<double> x(n), b(n);
+b.FillRand();
+x.Zero();
+Iteration<double> iter(1000, 1e-6);
+BiCg(A, x, b, ilut, iter);
+\endprecode
+
+<h4>Location :</h4>
+<p>Class IlutPreconditioning<br/>
+IlutPreconditioning.cxx</p>
 
 
 
@@ -597,7 +1333,7 @@ Iterative.cxx</p>
 
 
 
-<div class="separator"><a name="restart"></a></div>
+<div class="separator"><a name="GetRestart"></a></div>
 
 
 
@@ -620,7 +1356,7 @@ Iterative.cxx</p>
 
 
 
-<div class="separator"><a name="tolerance"></a></div>
+<div class="separator"><a name="GetTolerance"></a></div>
 
 
 
@@ -644,7 +1380,7 @@ Iterative.cxx</p>
 
 
 
-<div class="separator"><a name="maxiter"></a></div>
+<div class="separator"><a name="SetMaxIterationNumber"></a></div>
 
 
 
@@ -667,17 +1403,17 @@ Iterative.cxx</p>
 
 
 
-<div class="separator"><a name="iter"></a></div>
+<div class="separator"><a name="GetNumberIteration"></a></div>
 
 
 
-<h3>GetIterationNumber, SetIterationNumber for Iteration</h3>
+<h3>GetNumberIteration, SetNumberIteration for Iteration</h3>
 
 
 <h4>Syntax :</h4>
  <pre class="syntax-box">
-  int GetIterationNumber();
-  void SetIterationNumber(int);
+  int GetNumberIteration();
+  void SetNumberIteration(int);
 </pre>
 
 
@@ -706,7 +1442,7 @@ Iterative.cxx</p>
 </pre>
 
 
-<p>If <code>ShowMessages</code> is called, it will display residual each 100 iterations during the resolution. If <code>HideMessages</code> is called, there is no display at all, whereas <code>ShowFullHistory</code> displays residual each iteration.</p>
+<p>If <code>ShowMessages</code> is called, it will display residual each 100 iterations during the resolution. If <code>HideMessages</code> is called, there is no display at all, whereas <code>ShowFullHistory</code> displays residual at each iteration.</p>
 
 
 <h4>Location :</h4>
@@ -716,7 +1452,7 @@ Iterative.cxx</p>
 
 
 
-<div class="separator"><a name="init"></a></div>
+<div class="separator"><a name="Init"></a></div>
 
 
 
@@ -739,7 +1475,7 @@ Iterative.cxx</p>
 
 
 
-<div class="separator"><a name="first"></a></div>
+<div class="separator"><a name="First"></a></div>
 
 
 
@@ -762,7 +1498,7 @@ Iterative.cxx</p>
 
 
 
-<div class="separator"><a name="initguessnull"></a></div>
+<div class="separator"><a name="SetInitGuess"></a></div>
 
 
 
@@ -806,7 +1542,7 @@ Iterative.cxx</p>
 
 
 
-<div class="separator"><a name="finished"></a></div>
+<div class="separator"><a name="Finished"></a></div>
 
 
 
@@ -829,7 +1565,7 @@ Iterative.cxx</p>
 
 
 
-<div class="separator"><a name="fail"></a></div>
+<div class="separator"><a name="Fail"></a></div>
 
 
 
@@ -852,7 +1588,7 @@ Iterative.cxx</p>
 
 
 
-<div class="separator"><a name="errorcode"></a></div>
+<div class="separator"><a name="ErrorCode"></a></div>
 
 
 
@@ -875,7 +1611,7 @@ Iterative.cxx</p>
 
 
 
-<div class="separator"><a name="sor"></a></div>
+<div class="separator"><a name="SOR"></a></div>
 
 
 
@@ -924,7 +1660,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="bicg"></a></div>
+<div class="separator"><a name="BiCg"></a></div>
 
 
 
@@ -946,7 +1682,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="bicgcr"></a></div>
+<div class="separator"><a name="BiCgcr"></a></div>
 
 
 
@@ -968,7 +1704,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="bicgstab"></a></div>
+<div class="separator"><a name="BiCgStab"></a></div>
 
 
 
@@ -990,7 +1726,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="bicgstabl"></a></div>
+<div class="separator"><a name="BiCgStabl"></a></div>
 
 
 
@@ -1012,7 +1748,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="cg"></a></div>
+<div class="separator"><a name="Cg"></a></div>
 
 
 
@@ -1034,7 +1770,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="cgne"></a></div>
+<div class="separator"><a name="Cgne"></a></div>
 
 
 
@@ -1056,7 +1792,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="cgs"></a></div>
+<div class="separator"><a name="Cgs"></a></div>
 
 
 
@@ -1078,7 +1814,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="cocg"></a></div>
+<div class="separator"><a name="CoCg"></a></div>
 
 
 
@@ -1100,7 +1836,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="gcr"></a></div>
+<div class="separator"><a name="Gcr"></a></div>
 
 
 
@@ -1122,7 +1858,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="gmres"></a></div>
+<div class="separator"><a name="Gmres"></a></div>
 
 
 
@@ -1144,7 +1880,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="lsqr"></a></div>
+<div class="separator"><a name="Lsqr"></a></div>
 
 
 
@@ -1166,7 +1902,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="minres"></a></div>
+<div class="separator"><a name="MinRes"></a></div>
 
 
 
@@ -1188,7 +1924,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="qcgs"></a></div>
+<div class="separator"><a name="QCgs"></a></div>
 
 
 
@@ -1210,7 +1946,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="qmr"></a></div>
+<div class="separator"><a name="Qmr"></a></div>
 
 
 
@@ -1232,7 +1968,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="qmrsym"></a></div>
+<div class="separator"><a name="QmrSym"></a></div>
 
 
 
@@ -1254,7 +1990,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="symmlq"></a></div>
+<div class="separator"><a name="Symmlq"></a></div>
 
 
 
@@ -1276,7 +2012,7 @@ SOR(A, x, b, omega, nb_iterations, 3);
 
 
 
-<div class="separator"><a name="tfqmr"></a></div>
+<div class="separator"><a name="TfQmr"></a></div>
 
 
 

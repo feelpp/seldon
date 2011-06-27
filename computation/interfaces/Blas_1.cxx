@@ -600,8 +600,9 @@ namespace Seldon
   {
 #ifdef SELDON_WITH_LAPACK
     // we use Lapack routine in order to have genuine absolue value
-    return scsum1_(X.GetLength(), 
-		   reinterpret_cast<const void*>(X.GetData()), 1);
+    int n = X.GetLength(), incx = 1;
+    return scsum1_(&n, 
+		   reinterpret_cast<const void*>(X.GetData()), &incx);
 #else
     return cblas_scasum(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
@@ -696,7 +697,7 @@ namespace Seldon
 #ifdef SELDON_WITH_LAPACK
     int n = X.GetLength(), incx = 1;
     size_t p = icmax1_(&n,
-		       reinterpret_cast<const void*>(X.GetData()), &incx);
+		       reinterpret_cast<void*>(X.GetData()), &incx);
     
     return p-1;
 #else

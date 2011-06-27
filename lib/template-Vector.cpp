@@ -21,34 +21,12 @@
 
 #ifndef SELDON_WITH_COMPILED_LIBRARY
 #include "share/Errors.hxx"
-
-namespace Seldon
-{
-  const int& max(const int& a, const int& b)
-  {
-    return std::max(a, b);
-  }
-  const float& max(const float& a, const float& b)
-  {
-    return std::max(a, b);
-  }
-  const double& max(const double& a, const double& b)
-  {
-    return std::max(a, b);
-  }
-  const complex<float>& max(const complex<float>& a, const complex<float>& b)
-  {
-    throw Undefined("max(complex<float>, complex<float>)");
-  }
-  const complex<double>& max(const complex<double>& a, const complex<double>& b)
-  {
-    throw Undefined("max(complex<float>, complex<float>)");
-  }
-}
-
 #include "share/Allocator.cxx"
 #include "vector/Vector.cxx"
+#include "vector/Functions_Arrays.cxx"
 #endif
+
+#include "share/Common.cxx"
 
 
 #include <complex>
@@ -59,6 +37,8 @@ typedef std::complex<double> complexdouble;
 namespace Seldon
 {
 
+#ifdef SELDON_WITH_SLOW_COMPILED_LIBRARY
+  
   SELDON_EXTERN template class MallocAlloc<@scalar>;
   SELDON_EXTERN template class Vector_Base<@scalar, MallocAlloc<@scalar> >;
   SELDON_EXTERN template class Vector<@scalar, VectFull, MallocAlloc<@scalar> >;
@@ -67,7 +47,8 @@ namespace Seldon
   SELDON_EXTERN template void Vector<@scalar, VectFull, MallocAlloc<@scalar> >::SetData(const Vector<@scalar, VectFull, MallocAlloc<@scalar> >&);
   SELDON_EXTERN template void Vector<@scalar, VectFull, MallocAlloc<@scalar> >::PushBack(const @scalar&);
   SELDON_EXTERN template void Vector<@scalar, VectFull, MallocAlloc<@scalar> >::PushBack(const Vector<@scalar, VectFull, MallocAlloc<@scalar> >&);
-  SELDON_EXTERN template void Vector<@scalar, VectFull, MallocAlloc<@scalar> >::Fill(const @scalar&);
+  SELDON_EXTERN template void Vector<@real_complex, VectFull, MallocAlloc<@real_complex> >::Fill(const @real_complex&);
+  SELDON_EXTERN template void Vector<@scalar, VectFull, MallocAlloc<@scalar> >::Fill(const int&);
 #ifndef SWIG
   SELDON_EXTERN template Vector<@scalar, VectFull, MallocAlloc<@scalar> >& Vector<@scalar, VectFull, MallocAlloc<@scalar> >::operator= (const @scalar&);
 #endif
@@ -77,4 +58,67 @@ namespace Seldon
   SELDON_EXTERN template ostream& operator << (ostream& out, const Vector<@scalar, VectFull, MallocAlloc<@scalar> >& V);
 #endif
 
+  SELDON_EXTERN template class NewAlloc<@scalar>;
+  SELDON_EXTERN template class Vector_Base<@scalar, NewAlloc<@scalar> >;
+  SELDON_EXTERN template class Vector<@scalar, VectFull, NewAlloc<@scalar> >;
+
+  // Function templates.
+  SELDON_EXTERN template void Vector<@scalar, VectFull, NewAlloc<@scalar> >::SetData(const Vector<@scalar, VectFull, NewAlloc<@scalar> >&);
+  SELDON_EXTERN template void Vector<@scalar, VectFull, NewAlloc<@scalar> >::PushBack(const @scalar&);
+  SELDON_EXTERN template void Vector<@scalar, VectFull, NewAlloc<@scalar> >::PushBack(const Vector<@scalar, VectFull, NewAlloc<@scalar> >&);
+  SELDON_EXTERN template void Vector<@real_complex, VectFull, NewAlloc<@real_complex> >::Fill(const @real_complex&);
+  SELDON_EXTERN template void Vector<@scalar, VectFull, NewAlloc<@scalar> >::Fill(const int&);
+#ifndef SWIG
+  SELDON_EXTERN template Vector<@scalar, VectFull, NewAlloc<@scalar> >& Vector<@scalar, VectFull, NewAlloc<@scalar> >::operator= (const @scalar&);
+#endif
+  SELDON_EXTERN template Vector<@scalar, VectFull, NewAlloc<@scalar> >& Vector<@scalar, VectFull, NewAlloc<@scalar> >::operator*= (const @scalar&);
+
+#ifndef SWIG
+  SELDON_EXTERN template ostream& operator << (ostream& out, const Vector<@scalar, VectFull, NewAlloc<@scalar> >& V);
+#endif
+  
+#endif
+
+  // Functions Sort, RemoveDuplicate, QuickSort, etc
+  SELDON_EXTERN template void QuickSort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
+  SELDON_EXTERN template void QuickSort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
+  SELDON_EXTERN template void QuickSort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+
+  SELDON_EXTERN template void MergeSort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
+  SELDON_EXTERN template void MergeSort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
+  SELDON_EXTERN template void MergeSort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+
+  SELDON_EXTERN template void Sort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
+  SELDON_EXTERN template void Sort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
+  SELDON_EXTERN template void Sort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
+  SELDON_EXTERN template void Sort(int, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
+  SELDON_EXTERN template void Sort(int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
+  SELDON_EXTERN template void Sort(int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
+  SELDON_EXTERN template void Sort(Vector<@real, VectFull, NewAlloc<@real> >&);
+  
+  SELDON_EXTERN template void Sort(Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
+  SELDON_EXTERN template void Sort(Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
+  SELDON_EXTERN template void Assemble(int&, Vector<int, VectFull, NewAlloc<int> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+
+  SELDON_EXTERN template void Assemble(int&, Vector<int, VectFull, NewAlloc<int> >&);
+  
+  SELDON_EXTERN template void Assemble(Vector<int, VectFull, NewAlloc<int> >&);
+
+  SELDON_EXTERN template void RemoveDuplicate(int&, Vector<int, VectFull, NewAlloc<int> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+
+  SELDON_EXTERN template void RemoveDuplicate(int&, Vector<int, VectFull, NewAlloc<int> >&);
+
+  SELDON_EXTERN template void RemoveDuplicate(Vector<int, VectFull, NewAlloc<int> >&);
 }

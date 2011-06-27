@@ -2092,8 +2092,8 @@ namespace Seldon
 
   //! \copydoc SparseSolve(Matrix<T0, Prop0, Storage0, Allocator0>& M, Vector<T1, Storage1, Allocator1>& Y)
   template <class T, class Prop0, class Allocator0, class Allocator1>
-  void Solve(Matrix<T, Prop0, ColSparse, Allocator0>& M,
-             Vector<T, VectFull, Allocator1>& Y)
+  void GetAndSolveLU(Matrix<T, Prop0, ColSparse, Allocator0>& M,
+		     Vector<T, VectFull, Allocator1>& Y)
   {
     SparseSolve(M, Y);
   }
@@ -2101,8 +2101,8 @@ namespace Seldon
 
   //! \copydoc SparseSolve(Matrix<T0, Prop0, Storage0, Allocator0>& M, Vector<T1, Storage1, Allocator1>& Y)
   template <class T, class Prop0, class Allocator0, class Allocator1>
-  void Solve(Matrix<T, Prop0, RowSparse, Allocator0>& M,
-             Vector<T, VectFull, Allocator1>& Y)
+  void GetAndSolveLU(Matrix<T, Prop0, RowSparse, Allocator0>& M,
+		     Vector<T, VectFull, Allocator1>& Y)
   {
     SparseSolve(M, Y);
   }

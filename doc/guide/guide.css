@@ -145,7 +145,14 @@ PRE.fragment {
 /* Within Doxygen (below the tabs) */
 .contents {
     padding: 0px 10px 0px 10px;
+    margin: 0px 0px 0px 200px;
     font-family: serif;
+}
+
+.separator{
+  height: 20px;
+  /*background-image:url(hr1.gif);*/
+  background: #fff url(hr1.gif) no-repeat scroll center;
 }
 
 .doxygen h1 {
