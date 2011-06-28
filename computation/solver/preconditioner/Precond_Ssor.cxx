@@ -32,12 +32,12 @@ namespace Seldon
 
   public :
     SorPreconditioner();
-    ~SorPreconditioner(){}
+    inline ~SorPreconditioner(){}
 
-    void InitSymmetricPreconditioning() { symmetric_precond = true; }
-    void InitUnSymmetricPreconditioning() { symmetric_precond = false; }
-    void SetParameterRelaxation(const T& param) { omega = param; }
-    void SetNumberIterations(int nb_iterations) { nb_iter = nb_iterations; }
+    inline void InitSymmetricPreconditioning() { symmetric_precond = true; }
+    inline void InitUnSymmetricPreconditioning() { symmetric_precond = false; }
+    inline void SetParameterRelaxation(const T& param) { omega = param; }
+    inline void SetNumberIterations(int nb_iterations) { nb_iter = nb_iterations; }
 
     template<class Vector1, class Matrix1>
     void Solve(const Matrix1& A, const Vector1& r, Vector1& z,
@@ -52,7 +52,7 @@ namespace Seldon
 
   //! Default constructor
   template<class T>
-  SorPreconditioner<T>::SorPreconditioner()
+  inline SorPreconditioner<T>::SorPreconditioner()
   {
     nb_iter = 1; omega = T(1);
     symmetric_precond = true;
@@ -61,7 +61,7 @@ namespace Seldon
 
   //! Solves M z = r
   template<class T> template<class Vector1, class Matrix1>
-  void SorPreconditioner<T>::
+  inline void SorPreconditioner<T>::
   Solve(const Matrix1& A, const Vector1& r, Vector1& z, bool init_guess_null)
   {
     if (init_guess_null)
@@ -76,7 +76,7 @@ namespace Seldon
 
   //! Solves M^t z = r
   template<class T> template<class Vector1, class Matrix1>
-  void SorPreconditioner<T>::
+  inline void SorPreconditioner<T>::
   TransSolve(const Matrix1& A, const Vector1& r,
 	     Vector1& z, bool init_guess_null)
   {

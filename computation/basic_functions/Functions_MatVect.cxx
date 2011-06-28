@@ -1295,10 +1295,10 @@ namespace Seldon
     T1 temp;
     T3 one;
 
-    int ma = M.GetM();
     int na = M.GetN();
 
 #ifdef SELDON_CHECK_DIMENSIONS
+    int ma = M.GetM();
     if (na != ma)
       throw WrongDim("SOR(M, X, Y, omega, iter)",
 		     "The matrix must be squared.");
@@ -1360,10 +1360,10 @@ namespace Seldon
     T1 temp;
     T3 one;
 
-    int ma = M.GetM();
     int na = M.GetN();
 
 #ifdef SELDON_CHECK_DIMENSIONS
+    int ma = M.GetM();
     if (na != ma)
       throw WrongDim("SOR(M, X, Y, omega, iter)",
 		     "The matrix must be squared.");

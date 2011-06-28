@@ -20,6 +20,9 @@
 
 #ifndef SELDON_FILE_COMPUTATION_SPARSESOLVER_HXX
 
+#ifdef SELDON_WITH_PRECONDITIONING
+#include "computation/solver/preconditioner/IlutPreconditioning.hxx"
+#endif
 
 namespace Seldon
 {
