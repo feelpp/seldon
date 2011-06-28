@@ -59,7 +59,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQR(Matrix<float, Prop0, ColMajor, Allocator0>& A,
 	     Vector<float, VectFull, Allocator1>& tau,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -75,7 +75,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQR(Matrix<double, Prop0, ColMajor, Allocator0>& A,
 	     Vector<double, VectFull, Allocator1>& tau,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -91,7 +91,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQR(Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	     Vector<complex<double>, VectFull, Allocator1>& tau,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -110,7 +110,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQR(Matrix<float, Prop0, RowMajor, Allocator0>& A,
 	     Vector<float, VectFull, Allocator1>& tau,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -127,7 +127,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQR(Matrix<double, Prop0, RowMajor, Allocator0>& A,
 	     Vector<double, VectFull, Allocator1>& tau,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -144,7 +144,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQR(Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 	     Vector<complex<double>, VectFull, Allocator1>& tau,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -172,7 +172,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQR_Pivot(Matrix<double, Prop0, ColMajor, Allocator0>& A,
 		   Vector<double, VectFull, Allocator1>& tau,
-		   Vector<int>& ipivot, LapackInfo& info = lapack_info)
+		   Vector<int>& ipivot, LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -199,7 +199,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQ_FromQR(Matrix<double, Prop0, ColMajor, Allocator0>& A,
 		   Vector<double, VectFull, Allocator1>& tau,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -224,7 +224,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQ_FromQR(Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 		   Vector<complex<double>, VectFull, Allocator1>& tau,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -249,7 +249,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQ_FromLQ(Matrix<double, Prop0, ColMajor, Allocator0>& A,
 		   Vector<double, VectFull, Allocator1>& tau,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -274,7 +274,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQ_FromLQ(Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 		   Vector<complex<double>, VectFull, Allocator1>& tau,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -299,7 +299,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQ_FromQR(Matrix<double, Prop0, RowMajor, Allocator0>& A,
 		   Vector<double, VectFull, Allocator1>& tau,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -325,7 +325,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQ_FromQR(Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 		   Vector<complex<double>, VectFull, Allocator1>& tau,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -350,7 +350,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQ_FromLQ(Matrix<double, Prop0, RowMajor, Allocator0>& A,
 		   Vector<double, VectFull, Allocator1>& tau,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -375,7 +375,7 @@ namespace Seldon
 	   class Allocator1>
   void GetQ_FromLQ(Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 		   Vector<complex<double>, VectFull, Allocator1>& tau,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -411,7 +411,7 @@ namespace Seldon
 	   class Allocator1>
   void GetLQ(Matrix<float, Prop0, ColMajor, Allocator0>& A,
 	     Vector<float, VectFull, Allocator1>& tau,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -427,7 +427,7 @@ namespace Seldon
 	   class Allocator1>
   void GetLQ(Matrix<double, Prop0, ColMajor, Allocator0>& A,
 	     Vector<double, VectFull, Allocator1>& tau,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -443,7 +443,7 @@ namespace Seldon
 	   class Allocator1>
   void GetLQ(Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	     Vector<complex<double>, VectFull, Allocator1>& tau,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -462,7 +462,7 @@ namespace Seldon
 	   class Allocator1>
   void GetLQ(Matrix<float, Prop0, RowMajor, Allocator0>& A,
 	     Vector<float, VectFull, Allocator1>& tau,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -479,7 +479,7 @@ namespace Seldon
 	   class Allocator1>
   void GetLQ(Matrix<double, Prop0, RowMajor, Allocator0>& A,
 	     Vector<double, VectFull, Allocator1>& tau,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -496,7 +496,7 @@ namespace Seldon
 	   class Allocator1>
   void GetLQ(Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 	     Vector<complex<double>, VectFull, Allocator1>& tau,
-	     LapackInfo& info = lapack_info)
+	     LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -526,7 +526,7 @@ namespace Seldon
 		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,		   
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int lda = A.GetM();
 
@@ -557,7 +557,7 @@ namespace Seldon
 		   const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Vector<complex<double>, VectFull, Allocator2>& b,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int lda = A.GetM();
 
@@ -588,7 +588,7 @@ namespace Seldon
 		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Matrix<double, Prop0, ColMajor, Allocator2>& C,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -621,7 +621,7 @@ namespace Seldon
 		   const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Matrix<complex<double>, Prop0, ColMajor, Allocator2>& C,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -654,7 +654,7 @@ namespace Seldon
 		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,		   
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int lda = A.GetM();
 
@@ -685,7 +685,7 @@ namespace Seldon
 		   const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Vector<complex<double>, VectFull, Allocator2>& b,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int lda = A.GetM();
 
@@ -716,7 +716,7 @@ namespace Seldon
 		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Matrix<double, Prop0, ColMajor, Allocator2>& C,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -749,7 +749,7 @@ namespace Seldon
 		   const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Matrix<complex<double>, Prop0, ColMajor, Allocator2>& C,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -785,7 +785,7 @@ namespace Seldon
 		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,		   
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int lda = A.GetN();
 
@@ -816,7 +816,7 @@ namespace Seldon
 		   const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Vector<complex<double>, VectFull, Allocator2>& b,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int lda = A.GetN();
 
@@ -853,7 +853,7 @@ namespace Seldon
 		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Matrix<double, Prop0, RowMajor, Allocator2>& C,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -886,7 +886,7 @@ namespace Seldon
 		   const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Matrix<complex<double>, Prop0, RowMajor, Allocator2>& C,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
         
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -919,7 +919,7 @@ namespace Seldon
 		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,		   
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int lda = A.GetN();
 
@@ -950,7 +950,7 @@ namespace Seldon
 		   const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Vector<complex<double>, VectFull, Allocator2>& b,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     int lda = A.GetN();
 
@@ -987,7 +987,7 @@ namespace Seldon
 		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Matrix<double, Prop0, RowMajor, Allocator2>& C,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
     
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1020,7 +1020,7 @@ namespace Seldon
 		   const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Matrix<complex<double>, Prop0, RowMajor, Allocator2>& C,
-		   LapackInfo& info = lapack_info)
+		   LapackInfo& info)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (tau.GetM() < min(A.GetM(), A.GetN()))
@@ -1062,7 +1062,7 @@ namespace Seldon
   void SolveQR(const Matrix<float, Prop0, ColMajor, Allocator0>& A,
 	       const Vector<float, VectFull, Allocator1>& tau,
 	       Vector<float, VectFull, Allocator2>& b,
-	       LapackInfo& info = lapack_info)
+	       LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -1095,7 +1095,7 @@ namespace Seldon
   void SolveQR(const Matrix<double, Prop0, ColMajor, Allocator0>& A,
 	       const Vector<double, VectFull, Allocator1>& tau,
 	       Vector<double, VectFull, Allocator2>& b,
-	       LapackInfo& info = lapack_info)
+	       LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -1135,7 +1135,7 @@ namespace Seldon
   void SolveQR(const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	       const Vector<complex<double>, VectFull, Allocator1>& tau,
 	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info = lapack_info)
+	       LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -1178,7 +1178,7 @@ namespace Seldon
   void SolveQR(const Matrix<float, Prop0, RowMajor, Allocator0>& A,
 	       const Vector<float, VectFull, Allocator1>& tau,
 	       Vector<float, VectFull, Allocator2>& b,
-	       LapackInfo& info = lapack_info)
+	       LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -1218,7 +1218,7 @@ namespace Seldon
   void SolveQR(const Matrix<double, Prop0, RowMajor, Allocator0>& A,
 	       const Vector<double, VectFull, Allocator1>& tau,
 	       Vector<double, VectFull, Allocator2>& b,
-	       LapackInfo& info = lapack_info)
+	       LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -1260,7 +1260,7 @@ namespace Seldon
   void SolveQR(const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 	       const Vector<complex<double>, VectFull, Allocator1>& tau,
 	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info = lapack_info)
+	       LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -1313,7 +1313,7 @@ namespace Seldon
   void SolveLQ(const Matrix<float, Prop0, ColMajor, Allocator0>& A,
 	       const Vector<float, VectFull, Allocator1>& tau,
 	       Vector<float, VectFull, Allocator2>& b,
-	       LapackInfo& info = lapack_info)
+	       LapackInfo& info)
   {    
     int m = A.GetM();
     int n = A.GetN();
@@ -1348,7 +1348,7 @@ namespace Seldon
   void SolveLQ(const Matrix<double, Prop0, ColMajor, Allocator0>& A,
 	       const Vector<double, VectFull, Allocator1>& tau,
 	       Vector<double, VectFull, Allocator2>& b,
-	       LapackInfo& info = lapack_info)
+	       LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -1391,7 +1391,7 @@ namespace Seldon
   void SolveLQ(const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	       const Vector<complex<double>, VectFull, Allocator1>& tau,
 	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info = lapack_info)
+	       LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -1437,7 +1437,7 @@ namespace Seldon
   void SolveLQ(const Matrix<float, Prop0, RowMajor, Allocator0>& A,
 	       const Vector<float, VectFull, Allocator1>& tau,
 	       Vector<float, VectFull, Allocator2>& b,
-	       LapackInfo& info = lapack_info)
+	       LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -1479,7 +1479,7 @@ namespace Seldon
   void SolveLQ(const Matrix<double, Prop0, RowMajor, Allocator0>& A,
 	       const Vector<double, VectFull, Allocator1>& tau,
 	       Vector<double, VectFull, Allocator2>& b,
-	       LapackInfo& info = lapack_info)
+	       LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();
@@ -1521,7 +1521,7 @@ namespace Seldon
   void SolveLQ(const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 	       const Vector<complex<double>, VectFull, Allocator1>& tau,
 	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info = lapack_info)
+	       LapackInfo& info)
   {
     int m = A.GetM();
     int n = A.GetN();

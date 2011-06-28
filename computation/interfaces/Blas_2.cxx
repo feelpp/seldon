@@ -2612,7 +2612,7 @@ namespace Seldon
     CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
 #endif
 
-    cblas_dsyr(CblasColMajor, CblasUpper, A.GetM(), alpha,
+    cblas_ssyr(CblasColMajor, CblasUpper, A.GetM(), alpha,
 	       X.GetData(), 1, A.GetData(), A.GetM());
   }
 
@@ -2955,7 +2955,7 @@ namespace Seldon
   }
 
   
-    template <class Allocator0,
+  template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
   Rank1Update(const float alpha,

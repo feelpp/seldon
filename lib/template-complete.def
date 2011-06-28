@@ -60,10 +60,15 @@
 (define @storage_blasGE = ColMajor, RowMajor);
 (define @storage_blasHE = ColHerm, RowHerm);
 (define @storage_blasHP = ColHermPacked, RowHermPacked);
+(define @storage_blasH = ColHerm, RowHerm, ColHermPacked, RowHermPacked);
 (define @storage_blasSY = ColSym, RowSym);
 (define @storage_blasSP = ColSymPacked, RowSymPacked);
+(define @storage_blasS = ColSym, RowSym, ColSymPacked, RowSymPacked);
 (define @storage_blasTR = ColUpTriang, ColLoTriang, RowUpTriang, RowLoTriang);
 (define @storage_blasTP = ColUpTriangPacked, ColLoTriangPacked,
+ RowUpTriangPacked, RowLoTriangPacked);
+(define @storage_blasTCol = ColUpTriang, ColLoTriang, ColUpTriangPacked, ColLoTriangPacked);
+(define @storage_blasTRow = RowUpTriang, RowLoTriang,
  RowUpTriangPacked, RowLoTriangPacked);
 (define @storage_blasT = ColUpTriang, ColLoTriang, RowUpTriang, RowLoTriang,
  ColUpTriangPacked, ColLoTriangPacked, RowUpTriangPacked, RowLoTriangPacked);
@@ -103,9 +108,9 @@
 (define @real_complex = float, double, complexfloat, complexdouble);
 
 // Seldon objects.
-(define @trans = SeldonTrans, SeldonNoTrans, SeldonConjTrans);
-(define @trans+ = SeldonTrans, SeldonNoTrans, SeldonConjTrans);
-(define @diag = SeldonUnit, SeldonNonUnit);
+(define @trans = class_SeldonTrans, class_SeldonNoTrans, class_SeldonConjTrans);
+(define @trans+ = class_SeldonTrans, class_SeldonNoTrans, class_SeldonConjTrans);
+(define @diag = class_SeldonUnit, class_SeldonNonUnit);
 (define @uplo = SeldonUpper, SeldonLower);
 (define @norm = SeldonNorm1, SeldonNormInf);
 (define @conj = SeldonConj, SeldonUnconj);

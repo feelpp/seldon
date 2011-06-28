@@ -194,7 +194,7 @@ namespace Seldon
 
   public:
     SeldonConjugate(bool status);
-    inline bool Conj() const;
+    bool Conj() const;
   };
 
 

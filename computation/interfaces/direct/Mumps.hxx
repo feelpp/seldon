@@ -24,13 +24,6 @@ extern "C"
 {
 #include "dmumps_c.h"
 #include "zmumps_c.h"
-
-  // including mpi from sequential version of Mumps if the
-  // compilation is not made on a parallel machine
-#ifndef SELDON_WITH_MPI
-#include "mpi.h"
-#endif
-
 }
 
 namespace Seldon

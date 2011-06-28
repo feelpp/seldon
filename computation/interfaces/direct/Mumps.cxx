@@ -21,6 +21,15 @@
 
 #include "Mumps.hxx"
 
+extern "C"
+{
+  // including mpi from sequential version of Mumps if the
+  // compilation is not made on a parallel machine
+#ifndef SELDON_WITH_MPI
+#include "mpi.h"
+#endif
+}
+
 namespace Seldon
 {
 

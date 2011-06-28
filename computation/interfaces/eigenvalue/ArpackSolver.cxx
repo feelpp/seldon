@@ -19,9 +19,12 @@
 
 #ifndef SELDON_FILE_ARPACKSOLVER_CXX
 
+#ifndef SELDON_WITH_PRECOMPILED_LIBRARY
+ArpackLog debug_;
+#endif
+
 namespace Seldon
 {
-
 
   //! Constructor.
   template<class T, class Y>

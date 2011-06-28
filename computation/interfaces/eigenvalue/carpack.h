@@ -13,14 +13,15 @@
 #define __CARPACK_H
  
 
-struct
+struct ArpackLog
 {
   ARPACK_INTEGER logfil, ndigit, mgetv0;
   ARPACK_INTEGER msaupd, msaup2, msaitr, mseigt, msapps, msgets, mseupd;
   ARPACK_INTEGER mnaupd, mnaup2, mnaitr, mneigt, mnapps, mngets, mneupd;
   ARPACK_INTEGER mcaupd, mcaup2, mcaitr, mceigt, mcapps, mcgets, mceupd;
-} debug_;
+};
 
+extern ArpackLog debug_;
 
 // double precision symmetric routines.
 void dsaupd_(ARPACK_INTEGER *ido, char *bmat, ARPACK_INTEGER *n, char *which,
