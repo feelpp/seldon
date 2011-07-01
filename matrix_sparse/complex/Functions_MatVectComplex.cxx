@@ -1461,7 +1461,7 @@ namespace Seldon
   void SOR(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
 	   Vector<complex<T2>, Storage2, Allocator2>& X,
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 2)
+	   const T3& omega, int iter, int type_ssor)
   {
     complex<T1> temp, zero, one;
     SetComplexZero(zero);
@@ -1560,7 +1560,7 @@ namespace Seldon
   void SOR(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
 	   Vector<complex<T2>, Storage2, Allocator2>& X,
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 2)
+	   const T3& omega, int iter, int type_ssor)
   {
     complex<T1> temp, zero, one;
     SetComplexZero(zero);
@@ -1653,7 +1653,7 @@ namespace Seldon
   void SOR(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& A,
 	   Vector<complex<T2>, Storage2, Allocator2>& X,
            const Vector<complex<T1>, Storage1, Allocator1>& B,
-           const T3& omega,int iter, int type_ssor = 2)
+           const T3& omega,int iter, int type_ssor)
   {
     complex<T1> zero, one;
     SetComplexZero(zero);
@@ -1851,7 +1851,7 @@ namespace Seldon
   void SOR(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& A,
 	   Vector<complex<T2>, Storage2, Allocator2>& X,
            const Vector<complex<T1>, Storage1, Allocator1>& B,
-           const T3& omega,int iter, int type_ssor = 2)
+           const T3& omega,int iter, int type_ssor)
   {
     complex<T1> zero, one;
     SetComplexZero(zero);
@@ -2041,7 +2041,7 @@ namespace Seldon
   void SOR(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
 	   Vector<complex<T2>, Storage2, Allocator2>& X,
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 2)
+	   const T3& omega, int iter, int type_ssor)
   {
     complex<T1> temp, zero, one;
     SetComplexZero(zero);
@@ -2194,7 +2194,7 @@ namespace Seldon
   void SOR(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
 	   Vector<complex<T2>, Storage2, Allocator2>& X,
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 2)
+	   const T3& omega, int iter, int type_ssor)
   {
     complex<T1> temp, zero, one;
     SetComplexZero(zero);
@@ -2339,7 +2339,7 @@ namespace Seldon
   void SOR(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
 	   Vector<complex<T2>, Storage2, Allocator2>& X,
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 2)
+	   const T3& omega, int iter, int type_ssor)
   {
     complex<T1> temp, zero, one;
     SetComplexZero(zero);
@@ -2492,7 +2492,7 @@ namespace Seldon
   void SOR(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
 	   Vector<complex<T2>, Storage2, Allocator2>& X,
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 2)
+	   const T3& omega, int iter, int type_ssor)
   {
     complex<T1> temp, zero, one;
     SetComplexZero(zero);

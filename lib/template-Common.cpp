@@ -37,6 +37,7 @@ namespace Seldon
 {
 
   SELDON_EXTERN template std::string to_str<int>(const int&);
+  SELDON_EXTERN template std::string to_str<long>(const long&);
   SELDON_EXTERN template std::string to_str<float>(const float&);
   SELDON_EXTERN template std::string to_str<double>(const double&);
   SELDON_EXTERN template std::string to_str<complex<float> >(const complex<float>&);

@@ -124,6 +124,38 @@ namespace Seldon
 
   };
 
+  template<class real, class cplx, class Storage, class Allocator>
+  void qsplit_ilut(Vector<cplx, Storage, Allocator>& a, IVect& ind, int first,
+                   int n, int ncut, const real& abs_ncut);
+
+  template<class real, class cplx, class Allocator1, class Allocator2>
+  void GetIlut(const IlutPreconditioning<real, cplx, Allocator1>& param,
+               Matrix<cplx, General, ArrayRowSparse, Allocator2>& A,
+               IVect& iperm, IVect& rperm);
+
+  template<class cplx, class Allocator>
+  void GetIluk(int lfil, Matrix<cplx, General, ArrayRowSparse, Allocator>& A);
+
+  template<class cplx, class Allocator>
+  void GetIlu0(Matrix<cplx, General, ArrayRowSparse, Allocator>& A);
+
+  template<class cplx, class Allocator>
+  void GetMilu0(Matrix<cplx, General, ArrayRowSparse, Allocator>& A);
+
+  template<class real, class cplx, class Allocator1, class Allocator2>
+  void GetIlut(const IlutPreconditioning<real, cplx, Allocator1>& param,
+               Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator2>& A);
+  
+  template<class cplx, class Allocator>
+  void GetIluk(int lfil, int print_level,
+               Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator>& A);
+  
+  template<class cplx, class Allocator>
+  void GetIlu0(Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator>& A);
+  
+  template<class cplx, class Allocator>
+  void GetMilu0(Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator>& A);
+
 }
 
 #define SELDON_FILE_ILUT_PRECONDITIONING_HXX

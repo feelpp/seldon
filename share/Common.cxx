@@ -22,7 +22,7 @@
 #include "Common.hxx"
 
 template <class T>
-void PrintArray(T* v, int lgth)
+inline void PrintArray(T* v, int lgth)
 {
   for (int k = 0; k < lgth - 1; k++)
     std::cout << v[k] << " | ";
@@ -39,7 +39,7 @@ namespace Seldon
     \return A string containing 'input'.
   */
   template<typename T>
-  std::string to_str(const T& input)
+  inline std::string to_str(const T& input)
   {
     std::ostringstream output;
     output << input;
@@ -52,7 +52,7 @@ namespace Seldon
     \param[out] num \a s converted to 'T'.
   */
   template <class T>
-  void to_num(std::string s, T& num)
+  inline void to_num(std::string s, T& num)
   {
     std::istringstream str(s);
     str >> num;
@@ -64,7 +64,7 @@ namespace Seldon
     \return \a s converted to 'T'.
   */
   template <class T>
-  T to_num(std::string s)
+  inline T to_num(std::string s)
   {
     T num;
     std::istringstream str(s);

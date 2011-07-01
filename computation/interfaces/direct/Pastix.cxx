@@ -520,7 +520,7 @@ namespace Seldon
 
   template<class T, class Prop, class Storage, class Allocator>
   void GetLU(Matrix<T, Prop, Storage, Allocator>& A, MatrixPastix<T>& mat_lu,
-	     bool keep_matrix = false)
+	     bool keep_matrix)
   {
     mat_lu.FactorizeMatrix(A, keep_matrix);
   }

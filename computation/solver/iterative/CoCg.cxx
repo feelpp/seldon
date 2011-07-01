@@ -118,5 +118,5 @@ namespace Seldon
 
 } // end namespace
 
-#define ITERATIVE_COCG_CXX
+#define SELDON_FILE_ITERATIVE_COCG_CXX
 #endif

@@ -702,7 +702,7 @@ namespace Seldon
 
   template<class T, class Storage, class Allocator>
   void GetLU(Matrix<T,Symmetric,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
-	     bool keep_matrix = false)
+	     bool keep_matrix)
   {
     mat_lu.FactorizeMatrix(A, keep_matrix);
   }
@@ -710,7 +710,7 @@ namespace Seldon
 
   template<class T, class Storage, class Allocator>
   void GetLU(Matrix<T,General,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
-	     bool keep_matrix = false)
+	     bool keep_matrix)
   {
     mat_lu.FactorizeMatrix(A, keep_matrix);
   }
@@ -719,7 +719,7 @@ namespace Seldon
   template<class T, class Storage, class Allocator, class MatrixFull>
   void GetSchurMatrix(Matrix<T, Symmetric, Storage, Allocator>& A,
                       MatrixMumps<T>& mat_lu, const IVect& num,
-                      MatrixFull& schur_matrix, bool keep_matrix = false)
+                      MatrixFull& schur_matrix, bool keep_matrix)
   {
     mat_lu.GetSchurMatrix(A, num, schur_matrix, keep_matrix);
   }
@@ -728,7 +728,7 @@ namespace Seldon
   template<class T, class Storage, class Allocator, class MatrixFull>
   void GetSchurMatrix(Matrix<T, General, Storage, Allocator>& A,
                       MatrixMumps<T>& mat_lu, const IVect& num,
-                      MatrixFull& schur_matrix, bool keep_matrix = false)
+                      MatrixFull& schur_matrix, bool keep_matrix)
   {
     mat_lu.GetSchurMatrix(A, num, schur_matrix, keep_matrix);
   }

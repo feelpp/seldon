@@ -136,5 +136,5 @@ namespace Seldon
 
 } // end namespace
 
-#define SELDON_FILE_ITERATIVE_CGNR_CXX
+#define SELDON_FILE_ITERATIVE_LSQR_CXX
 #endif

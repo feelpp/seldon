@@ -141,6 +141,17 @@ namespace Seldon
 
   };
 
+  template<class T, class Prop, class Storage, class Allocator>
+  void GetLU(Matrix<T, Prop, Storage, Allocator>& A, MatrixSuperLU<T>& mat_lu,
+	     bool keep_matrix = false);
+
+  template<class T, class Allocator>
+  void SolveLU(MatrixSuperLU<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
+
+  template<class T, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
+	       MatrixSuperLU<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
+  
 }
 
 #define SELDON_FILE_SUPERLU_HXX

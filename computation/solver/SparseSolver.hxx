@@ -76,7 +76,49 @@ namespace Seldon
     void Solve(const TransStatus& TransA, Vector1& z);
     
   };
-  
+
+  template<class T, class Allocator>
+  void GetLU(Matrix<T, General, ArrayRowSparse, Allocator>& A,
+	     IVect& iperm, IVect& rperm, 
+	     double permtol, int print_level);
+
+  template<class cplx,
+	   class Allocator, class Storage2, class Allocator2>
+  void SolveLU(const Matrix<cplx, General, ArrayRowSparse, Allocator>& A,
+               Vector<cplx, Storage2, Allocator2>& x);
+
+  template<class cplx, class TransStatus,
+	   class Allocator, class Storage2, class Allocator2>
+  void SolveLU(const TransStatus& transA,
+               const Matrix<cplx, General, ArrayRowSparse, Allocator>& A,
+               Vector<cplx, Storage2, Allocator2>& x);
+
+  template<class T, class Allocator>
+  void GetLU(Matrix<T, Symmetric, ArrayRowSymSparse, Allocator>& A, int print_level);
+
+  template<class real, class cplx, class Allocator,
+           class Storage2, class Allocator2>
+  void SolveLU(const Matrix<real, Symmetric, ArrayRowSymSparse, Allocator>& A,
+               Vector<cplx, Storage2, Allocator2>& x);
+
+  template<class T, class Storage, class Allocator, class Alloc2>
+  void GetLU(Matrix<T, Symmetric, Storage, Allocator>& A,
+	     SparseSeldonSolver<T, Alloc2>& mat_lu,
+	     bool keep_matrix = false);
+
+  template<class T, class Storage, class Allocator, class Alloc2>
+  void GetLU(Matrix<T, General, Storage, Allocator>& A,
+	     SparseSeldonSolver<T, Alloc2>& mat_lu,
+	     bool keep_matrix = false);
+
+  template<class T, class Alloc2, class Allocator>
+  void SolveLU(SparseSeldonSolver<T, Alloc2>& mat_lu,
+	       Vector<T, VectFull, Allocator>& x);
+
+  template<class T, class Alloc2, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       SparseSeldonSolver<T, Alloc2>& mat_lu,
+	       Vector<T, VectFull, Allocator>& x);
   
   //! basic class grouping different ordering strategies
   class SparseMatrixOrdering
@@ -86,7 +128,12 @@ namespace Seldon
     enum {IDENTITY, REVERSE_CUTHILL_MCKEE, PORD,
 	  SCOTCH, METIS, AMD, COLAMD, QAMD, USER, AUTO};    
   };
-  
+
+  template<class T, class Prop, class Storage, class Allocator,
+	   class Tint, class Alloc>
+  void FindReverseCuthillMcKeeOrdering(const Matrix<T, Prop,
+				       Storage, Allocator>& A,
+				       Vector<Tint, VectFull, Alloc>& num);  
   
   template<class T, class Prop, class Storage, class Allocator,
 	   class Tint, class Alloc>

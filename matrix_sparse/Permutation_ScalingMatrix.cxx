@@ -780,7 +780,7 @@ namespace Seldon
   }
   
   
-    //! Each row and column are scaled.
+  //! Each row and column are scaled.
   /*!
     We compute diag(scale_left)*A*diag(scale_right).
   */

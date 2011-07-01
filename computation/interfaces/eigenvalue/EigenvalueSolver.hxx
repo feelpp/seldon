@@ -410,8 +410,6 @@ namespace Seldon
     
   };
   
-  int TypeEigenvalueSolver::default_solver(0);  
-  
   template<class EigenPb, class Vector1, class Vector2,
             class T, class Prop, class Storage, class Alloc3>
   void GetEigenvaluesEigenvectors(EigenPb& var_eig, Vector1& lambda,

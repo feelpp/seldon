@@ -222,7 +222,7 @@ namespace Seldon
 
   template<class T, class Prop, class Storage, class Allocator>
   void GetCholesky(Matrix<T, Prop, Storage, Allocator>& A,
-                   MatrixCholmod& mat_chol, bool keep_matrix = false)
+                   MatrixCholmod& mat_chol, bool keep_matrix)
   {
     mat_chol.FactorizeMatrix(A, keep_matrix);
   }
