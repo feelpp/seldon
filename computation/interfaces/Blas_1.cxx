@@ -101,7 +101,7 @@ namespace Seldon
   template <class Allocator>
   void ApplyRot(Vector<float, VectFull, Allocator>& X,
 		Vector<float, VectFull, Allocator>& Y,
-		const float c, const float s)
+		const float& c, const float& s)
   {
     cblas_srot(X.GetLength(), X.GetData(), 1,
 	       Y.GetData(), 1, c, s);
@@ -111,7 +111,7 @@ namespace Seldon
   template <class Allocator>
   void ApplyRot(Vector<double, VectFull, Allocator>& X,
 		Vector<double, VectFull, Allocator>& Y,
-		const double c, const double s)
+		const double& c, const double& s)
   {
     cblas_drot(X.GetLength(), X.GetData(), 1,
 	       Y.GetData(), 1, c, s);
@@ -222,7 +222,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const float alpha,
+  void Mlt(const float& alpha,
 	   Vector<float, VectFull, Allocator>& X)
   {
     cblas_sscal(X.GetLength(), alpha, X.GetData(), 1);
@@ -230,7 +230,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const double alpha,
+  void Mlt(const double& alpha,
 	   Vector<double, VectFull, Allocator>& X)
   {
     cblas_dscal(X.GetLength(), alpha, X.GetData(), 1);
@@ -238,7 +238,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const float alpha,
+  void Mlt(const float& alpha,
 	   Vector<complex<float>, VectFull, Allocator>& X)
   {
     cblas_csscal(X.GetLength(), alpha,
@@ -247,7 +247,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const double alpha,
+  void Mlt(const double& alpha,
 	   Vector<complex<double>, VectFull, Allocator>& X)
   {
     cblas_zdscal(X.GetLength(), alpha,
@@ -256,7 +256,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const complex<float> alpha,
+  void Mlt(const complex<float>& alpha,
 	   Vector<complex<float>, VectFull, Allocator>& X)
   {
     cblas_cscal(X.GetLength(),
@@ -266,7 +266,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const complex<double> alpha,
+  void Mlt(const complex<double>& alpha,
 	   Vector<complex<double>, VectFull, Allocator>& X)
   {
     cblas_zscal(X.GetLength(),
@@ -354,7 +354,7 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Add(const float alpha,
+  void Add(const float& alpha,
 	   const Vector<float, VectFull, Allocator0>& X,
 	   Vector<float, VectFull, Allocator1>& Y)
   {
@@ -371,7 +371,7 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Add(const double alpha,
+  void Add(const double& alpha,
 	   const Vector<double, VectFull, Allocator0>& X,
 	   Vector<double, VectFull, Allocator1>& Y)
   {
@@ -388,7 +388,7 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Add(const complex<float> alpha,
+  void Add(const complex<float>& alpha,
 	   const Vector<complex<float>, VectFull, Allocator0>& X,
 	   Vector<complex<float>, VectFull, Allocator1>& Y)
   {
@@ -405,7 +405,7 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Add(const complex<double> alpha,
+  void Add(const complex<double>& alpha,
 	   const Vector<complex<double>, VectFull, Allocator0>& X,
 	   Vector<complex<double>, VectFull, Allocator1>& Y)
   {
@@ -508,7 +508,7 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  float ScaledDotProd(const float alpha,
+  float ScaledDotProd(const float& alpha,
 		      const Vector<float, VectFull, Allocator0>& X,
 		      const Vector<float, VectFull, Allocator1>& Y)
   {

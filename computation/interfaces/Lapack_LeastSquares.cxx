@@ -89,6 +89,22 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1>
+  void GetQR(Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+	     Vector<complex<float>, VectFull, Allocator1>& tau,
+	     LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = max(m,n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    tau.Reallocate(min(m, n));
+    cgeqrf_(&m, &n, A.GetData(), &m, tau.GetData(),
+	    work.GetData(), &lwork, &info.GetInfoRef());
+  }
+
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
   void GetQR(Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	     Vector<complex<double>, VectFull, Allocator1>& tau,
 	     LapackInfo& info)
@@ -140,6 +156,23 @@ namespace Seldon
   }
 
 
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQR(Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+	     Vector<complex<float>, VectFull, Allocator1>& tau,
+	     LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = max(m,n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    tau.Reallocate(min(m, n));
+    // Factorization LQ of A^t.
+    cgelqf_(&n, &m, A.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info.GetInfoRef());
+  }
+
+  
   template<class Prop0, class Allocator0,
 	   class Allocator1>
   void GetQR(Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
@@ -197,6 +230,56 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1>
+  void GetQ_FromQR(Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		   Vector<float, VectFull, Allocator1>& tau,
+		   LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = 2 * max(m, n);
+    int k = min(m, n);
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < k)
+      throw WrongDim("GetQ_FromQR", "tau not large enough");
+#endif
+
+    Vector<float, VectFull, Allocator1> work(lwork);
+    sorgqr_(&m, &k, &k, A.GetData(), &m, tau.GetData(),
+	    work.GetData(), &lwork, &info.GetInfoRef());
+    
+    if (m < n)
+      A.Resize(m, m);
+  }
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQ_FromQR(Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		   Vector<complex<float>, VectFull, Allocator1>& tau,
+		   LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = 2 * max(m, n);
+    int k = min(m, n);
+    
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < k)
+      throw WrongDim("GetQ_FromQR", "tau not large enough");
+#endif
+
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    cungqr_(&m, &k, &k, A.GetDataVoid(), &m, tau.GetData(),
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+    
+    if (m < n)
+      A.Resize(m, m);
+  }
+
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
   void GetQ_FromQR(Matrix<double, Prop0, ColMajor, Allocator0>& A,
 		   Vector<double, VectFull, Allocator1>& tau,
 		   LapackInfo& info)
@@ -245,6 +328,56 @@ namespace Seldon
   }
 
 
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQ_FromLQ(Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		   Vector<float, VectFull, Allocator1>& tau,
+		   LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = 2 * max(m, n);
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(m, n))
+      throw WrongDim("GetQ_FromLQ", "tau not large enough");
+#endif
+
+    int k = min(m, n);
+    Vector<float, VectFull, Allocator1> work(lwork);
+    sorglq_(&k, &n, &k, A.GetData(), &m, tau.GetData(),
+	    work.GetData(), &lwork, &info.GetInfoRef());
+
+    if (m > n)
+      A.Resize(n, n);
+  }
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQ_FromLQ(Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		   Vector<complex<float>, VectFull, Allocator1>& tau,
+		   LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = 2 * max(m, n);
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(m, n))
+      throw WrongDim("GetQ_FromLQ", "tau not large enough");
+#endif
+
+    int k = min(m, n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    cunglq_(&k, &n, &k, A.GetDataVoid(), &m, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+    if (m > n)
+      A.Resize(n, n);
+  }
+
+  
   template<class Prop0, class Allocator0,
 	   class Allocator1>
   void GetQ_FromLQ(Matrix<double, Prop0, ColMajor, Allocator0>& A,
@@ -297,6 +430,57 @@ namespace Seldon
   
   template<class Prop0, class Allocator0,
 	   class Allocator1>
+  void GetQ_FromQR(Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		   Vector<float, VectFull, Allocator1>& tau,
+		   LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = 2 * max(m, n);
+    int k = min(m, n);
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < k)
+      throw WrongDim("GetQ_FromQR", "tau not large enough");
+#endif
+
+    Vector<float, VectFull, Allocator1> work(lwork);
+    sorglq_(&k, &m, &k, A.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info.GetInfoRef());
+    
+    if (n > m)
+      A.Resize(m, m);
+    
+  }
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQ_FromQR(Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		   Vector<complex<float>, VectFull, Allocator1>& tau,
+		   LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = 2 * max(m, n);
+    int k = min(m, n);
+    
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < k)
+      throw WrongDim("GetQ_FromQR", "tau not large enough");
+#endif
+
+    Vector<complex<double>, VectFull, Allocator1> work(lwork);
+    cunglq_(&k, &m, &k, A.GetDataVoid(), &n, tau.GetData(),
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+    if (n > m)
+      A.Resize(m, m);
+  }
+  
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
   void GetQ_FromQR(Matrix<double, Prop0, RowMajor, Allocator0>& A,
 		   Vector<double, VectFull, Allocator1>& tau,
 		   LapackInfo& info)
@@ -346,6 +530,56 @@ namespace Seldon
   }
 
 
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQ_FromLQ(Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		   Vector<float, VectFull, Allocator1>& tau,
+		   LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = 2 * max(m, n);
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(m, n))
+      throw WrongDim("GetQ_FromLQ", "tau not large enough");
+#endif
+    
+    int k = min(m, n);
+    Vector<float, VectFull, Allocator1> work(lwork);
+    sorgqr_(&n, &k, &k, A.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info.GetInfoRef());
+
+    if (m > n)
+      A.Resize(n, n);    
+  }
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQ_FromLQ(Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		   Vector<complex<float>, VectFull, Allocator1>& tau,
+		   LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = 2 * max(m, n);
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(m, n))
+      throw WrongDim("GetQ_FromLQ", "tau not large enough");
+#endif
+
+    int k = min(m, n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    cungqr_(&n, &k, &k, A.GetDataVoid(), &n, tau.GetDataVoid(),
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+
+    if (m > n)
+      A.Resize(n, n);
+  }
+  
+  
   template<class Prop0, class Allocator0,
 	   class Allocator1>
   void GetQ_FromLQ(Matrix<double, Prop0, RowMajor, Allocator0>& A,
@@ -441,6 +675,22 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1>
+  void GetLQ(Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+	     Vector<complex<float>, VectFull, Allocator1>& tau,
+	     LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = max(m,n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    tau.Reallocate(min(m, n));
+    cgelqf_(&m, &n, A.GetData(), &m, tau.GetData(),
+	    work.GetData(), &lwork, &info.GetInfoRef());
+  }
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
   void GetLQ(Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	     Vector<complex<double>, VectFull, Allocator1>& tau,
 	     LapackInfo& info)
@@ -494,6 +744,23 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1>
+  void GetLQ(Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+	     Vector<complex<float>, VectFull, Allocator1>& tau,
+	     LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int lwork = max(m,n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    tau.Reallocate(min(m, n));
+    // Factorization LQ of A^t.
+    cgeqrf_(&n, &m, A.GetData(), &n, tau.GetData(),
+	    work.GetData(), &lwork, &info.GetInfoRef());
+  }
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
   void GetLQ(Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 	     Vector<complex<double>, VectFull, Allocator1>& tau,
 	     LapackInfo& info)
@@ -518,6 +785,68 @@ namespace Seldon
 
 
   /*** ColMajor ***/
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromQR(const IsTranspose& trans,
+		   const Matrix<float, Prop0, ColMajor, Allocator0>& A,		   
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Vector<float, VectFull, Allocator2>& b,
+		   LapackInfo& info)
+  {
+    int lda = A.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(lda, A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if (b.GetM() < lda)
+      throw WrongDim("MltQ_FromQR", "b not large enough");
+#endif
+    
+    int m = b.GetM();
+    int n = 1;
+    int k = tau.GetM();
+    int lwork = max(m, n);
+    Vector<float, VectFull, Allocator1> work(lwork);
+    char side('L');
+    char trans_ = trans.Char();
+    sormqr_(&side, &trans_, &m, &n, &k, A.GetData(), &lda, tau.GetData(),
+	    b.GetData(), &m, work.GetData(), &lwork,
+	    &info.GetInfoRef());
+  }
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromQR(const IsTranspose& trans,
+		   const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Vector<complex<float>, VectFull, Allocator2>& b,
+		   LapackInfo& info)
+  {
+    int lda = A.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(lda, A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if (b.GetM() < lda)
+      throw WrongDim("MltQ_FromQR", "b not large enough");
+#endif
+    
+    int m = b.GetM();
+    int n = 1;
+    int k = tau.GetM();
+    int lwork = max(m, n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    char side('L');
+    char trans_ = trans.Char();
+    cunmqr_(&side, &trans_, &m, &n, &k, A.GetDataVoid(), &lda, tau.GetDataVoid(),
+	    b.GetDataVoid(), &m, work.GetDataVoid(), &lwork,
+	    &info.GetInfoRef());
+  }
 
 
   template<class Prop0, class Allocator0,
@@ -579,6 +908,72 @@ namespace Seldon
     zunmqr_(&side, &trans_, &m, &n, &k, A.GetDataVoid(), &lda, tau.GetDataVoid(),
 	    b.GetDataVoid(), &m, work.GetDataVoid(), &lwork,
 	    &info.GetInfoRef());
+  }
+
+  
+    template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromQR(const Side& side, const Trans& trans,
+		   const Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Matrix<float, Prop0, ColMajor, Allocator2>& C,
+		   LapackInfo& info)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetM())
+	 || (side.Right() && C.GetN() < A.GetM()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<float, VectFull, Allocator1> work(lwork);
+    char side_ = side.Char();
+    char trans_ = trans.Char();
+    int lda = A.GetM();
+    int k = min(A.GetM(), A.GetN());
+    
+    sormqr_(&side_, &trans_, &m, &n, &k, A.GetData(), &lda,
+	    tau.GetData(), C.GetData(), &m, work.GetData(), &lwork,
+	    &info.GetInfoRef());
+  }
+
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromQR(const Side& side, const Trans& trans,
+		   const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Matrix<complex<float>, Prop0, ColMajor, Allocator2>& C,
+		   LapackInfo& info)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetM())
+	 || (side.Right() && C.GetN() < A.GetM()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    char side_ = side.Char();
+    char trans_ = trans.Char();
+    int lda = A.GetM();
+    int k = min(A.GetM(), A.GetN());
+    
+    cunmqr_(&side_, &trans_, &m, &n, &k, A.GetDataVoid(), &lda,
+	    tau.GetDataVoid(), C.GetDataVoid(), &m,
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
   }
 
   
@@ -651,6 +1046,68 @@ namespace Seldon
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
   void MltQ_FromLQ(const IsTranspose& trans,
+		   const Matrix<float, Prop0, ColMajor, Allocator0>& A,		   
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Vector<float, VectFull, Allocator2>& b,
+		   LapackInfo& info)
+  {
+    int lda = A.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(lda, A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if (b.GetM() < A.GetN())
+      throw WrongDim("MltQ_FromLQ", "b not large enough");
+#endif
+
+    int m = b.GetM();
+    int n = 1;
+    int k = tau.GetM();
+    int lwork = max(m, n);
+    Vector<float, VectFull, Allocator1> work(lwork);
+    char side('L');
+    char trans_ = trans.Char();
+    sormlq_(&side, &trans_, &m, &n, &k, A.GetData(), &lda, tau.GetData(),
+	    b.GetData(), &m, work.GetData(), &lwork,
+	    &info.GetInfoRef());
+  }
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromLQ(const IsTranspose& trans,
+		   const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Vector<complex<float>, VectFull, Allocator2>& b,
+		   LapackInfo& info)
+  {
+    int lda = A.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(lda, A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if (b.GetM() < A.GetN())
+      throw WrongDim("MltQ_FromLQ", "b not large enough");
+#endif
+
+    int m = b.GetM();
+    int n = 1;
+    int k = tau.GetM();
+    int lwork = max(m, n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    char side('L');
+    char trans_ = trans.Char();
+    cunmlq_(&side, &trans_, &m, &n, &k, A.GetDataVoid(), &lda, tau.GetDataVoid(),
+	    b.GetDataVoid(), &m, work.GetDataVoid(), &lwork,
+	    &info.GetInfoRef());
+  }
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromLQ(const IsTranspose& trans,
 		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,		   
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
@@ -710,6 +1167,72 @@ namespace Seldon
   }
 
   
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromLQ(const Side& side, const Trans& trans,
+		   const Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Matrix<float, Prop0, ColMajor, Allocator2>& C,
+		   LapackInfo& info)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetN())
+	 || (side.Right() && C.GetN() < A.GetN()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<float, VectFull, Allocator1> work(lwork);
+    char side_ = side.Char();
+    char trans_ = trans.Char();
+    int lda = A.GetM();
+    int k = min(A.GetM(), A.GetN());
+    
+    sormlq_(&side_, &trans_, &m, &n, &k, A.GetData(), &lda,
+	    tau.GetData(), C.GetData(), &m, work.GetData(), &lwork,
+	    &info.GetInfoRef());
+  }
+
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromLQ(const Side& side, const Trans& trans,
+		   const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Matrix<complex<float>, Prop0, ColMajor, Allocator2>& C,
+		   LapackInfo& info)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetN())
+	 || (side.Right() && C.GetN() < A.GetN()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    char side_ = side.Char();
+    char trans_ = trans.Char();
+    int lda = A.GetM();
+    int k = min(A.GetM(), A.GetN());
+    
+    cunmlq_(&side_, &trans_, &m, &n, &k, A.GetDataVoid(), &lda,
+	    tau.GetDataVoid(), C.GetDataVoid(), &m,
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+  }
+
+
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class Side, class Trans>
   void MltQ_FromLQ(const Side& side, const Trans& trans,
@@ -782,6 +1305,74 @@ namespace Seldon
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
   void MltQ_FromQR(const IsTranspose& trans,
+		   const Matrix<float, Prop0, RowMajor, Allocator0>& A,		   
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Vector<float, VectFull, Allocator2>& b,
+		   LapackInfo& info)
+  {
+    int lda = A.GetN();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(lda, A.GetM()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if (b.GetM() < A.GetM())
+      throw WrongDim("MltQ_FromQR", "b not large enough");
+#endif
+    
+    int m = b.GetM();
+    int n = 1;
+    int k = tau.GetM();
+    int lwork = max(m, n);
+    Vector<float, VectFull, Allocator1> work(lwork);
+    char side('L');
+    char trans_ = trans.RevChar();
+    sormlq_(&side, &trans_, &m, &n, &k, A.GetData(), &lda, tau.GetData(),
+	    b.GetData(), &m, work.GetData(), &lwork,
+	    &info.GetInfoRef());
+  }
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromQR(const IsTranspose& trans,
+		   const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Vector<complex<float>, VectFull, Allocator2>& b,
+		   LapackInfo& info)
+  {
+    int lda = A.GetN();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(lda, A.GetM()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if (b.GetM() < A.GetM())
+      throw WrongDim("MltQ_FromQR", "b not large enough");
+#endif
+    
+    int m = b.GetM();
+    int n = 1;
+    int k = tau.GetM();
+    int lwork = max(m, n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    char side('L');
+    char trans_('C');
+    if (trans.ConjTrans())
+      trans_ = 'N';
+    
+    Conjugate(b);
+    cunmlq_(&side, &trans_, &m, &n, &k, A.GetDataVoid(), &lda, tau.GetDataVoid(),
+	    b.GetDataVoid(), &m, work.GetDataVoid(), &lwork,
+	    &info.GetInfoRef());
+
+    Conjugate(b);
+  }
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromQR(const IsTranspose& trans,
 		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,		   
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
@@ -847,6 +1438,72 @@ namespace Seldon
   }
 
   
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromQR(const Side& side, const Trans& trans,
+		   const Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Matrix<float, Prop0, RowMajor, Allocator2>& C,
+		   LapackInfo& info)
+  {
+    
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetM())
+	 || (side.Right() && C.GetN() < A.GetM()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<float, VectFull, Allocator1> work(lwork);
+    char side_ = side.RevChar();
+    char trans_ = trans.Char();
+    int lda = A.GetN();
+    int k = min(A.GetM(), A.GetN());
+    
+    sormlq_(&side_, &trans_, &n, &m, &k, A.GetData(), &lda,
+	    tau.GetData(), C.GetData(), &n, work.GetData(), &lwork,
+	    &info.GetInfoRef());
+  }
+  
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromQR(const Side& side, const Trans& trans,
+		   const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Matrix<complex<float>, Prop0, RowMajor, Allocator2>& C,
+		   LapackInfo& info)
+  {
+        
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetM())
+	 || (side.Right() && C.GetN() < A.GetM()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    char side_ = side.RevChar();
+    char trans_ = trans.Char();
+    int lda = A.GetN();
+    int k = min(A.GetM(), A.GetN());
+    
+    cunmlq_(&side_, &trans_, &n, &m, &k, A.GetDataVoid(), &lda,
+	    tau.GetDataVoid(), C.GetDataVoid(), &n,
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+  }
+
+
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class Side, class Trans>
   void MltQ_FromQR(const Side& side, const Trans& trans,
@@ -916,6 +1573,74 @@ namespace Seldon
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
   void MltQ_FromLQ(const IsTranspose& trans,
+		   const Matrix<float, Prop0, RowMajor, Allocator0>& A,		   
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Vector<float, VectFull, Allocator2>& b,
+		   LapackInfo& info)
+  {
+    int lda = A.GetN();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(lda, A.GetM()))
+      throw WrongDim("MltQ_FromLQ", "tau not large enough");
+
+    if (b.GetM() < A.GetN())
+      throw WrongDim("MltQ_FromLQ", "b not large enough");
+#endif
+
+    int m = b.GetM();
+    int n = 1;
+    int k = tau.GetM();
+    int lwork = max(m, n);
+    Vector<float, VectFull, Allocator1> work(lwork);
+    char side('L');
+    char trans_ = trans.RevChar();
+    sormqr_(&side, &trans_, &m, &n, &k, A.GetData(), &lda, tau.GetData(),
+	    b.GetData(), &m, work.GetData(), &lwork,
+	    &info.GetInfoRef());
+  }
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromLQ(const IsTranspose& trans,
+		   const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Vector<complex<float>, VectFull, Allocator2>& b,
+		   LapackInfo& info)
+  {
+    int lda = A.GetN();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(lda, A.GetM()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if (b.GetM() < A.GetN())
+      throw WrongDim("MltQ_FromLQ", "b not large enough");
+#endif
+
+    int m = b.GetM();
+    int n = 1;
+    int k = tau.GetM();
+    int lwork = max(m, n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    char side('L');
+    char trans_('C');
+    if (trans.ConjTrans())
+      trans_ = 'N';
+    
+    Conjugate(b);
+    cunmqr_(&side, &trans_, &m, &n, &k, A.GetDataVoid(), &lda, tau.GetDataVoid(),
+	    b.GetDataVoid(), &m, work.GetDataVoid(), &lwork,
+	    &info.GetInfoRef());
+    
+    Conjugate(b);
+  }
+
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromLQ(const IsTranspose& trans,
 		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,		   
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
@@ -981,6 +1706,71 @@ namespace Seldon
   }
   
   
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromLQ(const Side& side, const Trans& trans,
+		   const Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Matrix<float, Prop0, RowMajor, Allocator2>& C,
+		   LapackInfo& info)
+  {
+    
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetN())
+	 || (side.Right() && C.GetN() < A.GetN()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<float, VectFull, Allocator1> work(lwork);
+    char side_ = side.RevChar();
+    char trans_ = trans.Char();
+    int lda = A.GetN();
+    int k = min(A.GetM(), A.GetN());
+    
+    sormqr_(&side_, &trans_, &n, &m, &k, A.GetData(), &lda,
+	    tau.GetData(), C.GetData(), &n, work.GetData(), &lwork,
+	    &info.GetInfoRef());
+  }
+  
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromLQ(const Side& side, const Trans& trans,
+		   const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Matrix<complex<float>, Prop0, RowMajor, Allocator2>& C,
+		   LapackInfo& info)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(A.GetM(), A.GetN()))
+      throw WrongDim("MltQ_FromQR", "tau not large enough");
+
+    if ( (side.Left() && C.GetM() < A.GetN())
+	 || (side.Right() && C.GetN() < A.GetN()))
+      throw WrongDim("MltQ_FromQR", "C not large enough");
+#endif
+
+    int m = C.GetM();
+    int n = C.GetN();
+    int lwork = max(A.GetM(), A.GetN());
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    char side_ = side.RevChar();
+    char trans_ = trans.Char();
+    int lda = A.GetN();
+    int k = min(A.GetM(), A.GetN());
+    
+    cunmqr_(&side_, &trans_, &n, &m, &k, A.GetDataVoid(), &lda,
+	    tau.GetDataVoid(), C.GetDataVoid(), &n,
+	    work.GetDataVoid(), &lwork, &info.GetInfoRef());
+  }
+
+
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class Side, class Trans>
   void MltQ_FromLQ(const Side& side, const Trans& trans,
@@ -1132,6 +1922,46 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
+  void SolveQR(const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+	       const Vector<complex<float>, VectFull, Allocator1>& tau,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
+	       LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int k = tau.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(m, n))
+      throw WrongDim("SolveQR", "tau not large enough");
+
+    if (b.GetM() < m)
+      throw WrongDim("SolveQR", "b not large enough");
+#endif
+
+    int nrhs = 1;
+    char side('L');
+    char trans('C');
+    int lwork = max(m, n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    // Computes Q^t b.
+    cunmqr_(&side, &trans, &m, &nrhs, &k, A.GetData(),
+	    &m, tau.GetData(), b.GetData(),
+	    &m, work.GetData(), &lwork, &info.GetInfoRef());
+
+    if (m > n)
+      b.Resize(n);
+    
+    // Then solves R x = Q^t b.
+    complex<float> alpha(1);
+    cblas_ctrsm(CblasColMajor, CblasLeft, CblasUpper, CblasNoTrans,
+		CblasNonUnit, b.GetM(), nrhs,
+		&alpha, A.GetData(), A.GetM(), b.GetData(), b.GetM());
+  }
+
+
+  template <class Prop0, class Allocator0,
+	    class Allocator1,class Allocator2>
   void SolveQR(const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	       const Vector<complex<double>, VectFull, Allocator1>& tau,
 	       Vector<complex<double>, VectFull, Allocator2>& b,
@@ -1252,6 +2082,48 @@ namespace Seldon
 		alpha, A.GetData(), n, b.GetData(), b.GetM());
     
     
+  }
+
+
+  template <class Prop0, class Allocator0,
+	    class Allocator1,class Allocator2>
+  void SolveQR(const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+	       const Vector<complex<float>, VectFull, Allocator1>& tau,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
+	       LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int k = tau.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(m, n))
+      throw WrongDim("SolveQR", "tau not large enough");
+
+    if (b.GetM() < m)
+      throw WrongDim("SolveQR", "b not large enough");
+#endif
+
+    int nrhs = 1;
+    char side('L');
+    char trans('N');
+    int lwork = max(m, n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    Conjugate(b);
+    // Computes Q b.
+    cunmlq_(&side, &trans, &m, &nrhs, &k, A.GetData(),
+	    &n, tau.GetData(), b.GetData(),
+	    &m, work.GetData(), &lwork, &info.GetInfoRef());
+
+    Conjugate(b);
+    if (m > n)
+      b.Resize(n);
+
+    // Solves L^t y = b.
+    complex<float> alpha(1);
+    cblas_ctrsm(CblasColMajor, CblasLeft, CblasLower, CblasTrans,
+		CblasNonUnit, k, nrhs,
+		&alpha, A.GetData(), n, b.GetData(), b.GetM());
   }
 
 
@@ -1388,6 +2260,49 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
+  void SolveLQ(const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+	       const Vector<complex<float>, VectFull, Allocator1>& tau,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
+	       LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    if (m > n)
+      throw Undefined("SolveLQ", "Function implemented only for n >= m");
+    
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(m, n))
+      throw WrongDim("SolveLQ", "tau not large enough");
+
+    if (b.GetM() < n)
+      throw WrongDim("SolveLQ", "b not large enough");
+#endif
+
+    int k = tau.GetM();
+    int nrhs = 1;
+    char side('L');
+    char trans('C');
+    int lwork = max(m, n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    // Solve L y = b.
+    complex<float> alpha(1);
+    cblas_ctrsm(CblasColMajor, CblasLeft, CblasLower, CblasNoTrans,
+		CblasNonUnit, m, nrhs,
+		&alpha, A.GetData(), m, b.GetData(), b.GetM());
+
+    // setting extra-components to 0
+    for (int i = m; i < n; i++)
+      b(i) = 0;
+
+    // Applies Q^t.
+    cunmlq_(&side, &trans, &n, &nrhs, &k, A.GetData(),
+	    &m, tau.GetData(), b.GetData(),
+	    &n, work.GetData(), &lwork, &info.GetInfoRef());
+  }
+
+
+  template <class Prop0, class Allocator0,
+	    class Allocator1,class Allocator2>
   void SolveLQ(const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	       const Vector<complex<double>, VectFull, Allocator1>& tau,
 	       Vector<complex<double>, VectFull, Allocator2>& b,
@@ -1513,6 +2428,51 @@ namespace Seldon
     dormqr_(&side, &trans, &n, &nrhs, &k, A.GetData(),
 	    &n, tau.GetData(), b.GetData(),
 	    &n, work.GetData(), &lwork, &info.GetInfoRef());
+  }
+
+
+  template <class Prop0, class Allocator0,
+	    class Allocator1,class Allocator2>
+  void SolveLQ(const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+	       const Vector<complex<float>, VectFull, Allocator1>& tau,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
+	       LapackInfo& info)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    if (m > n)
+      throw Undefined("SolveLQ", "Function implemented only for n >= m");
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (tau.GetM() < min(m, n))
+      throw WrongDim("SolveLQ", "tau not large enough");
+
+    if (b.GetM() < n)
+      throw WrongDim("SolveLQ", "b not large enough");
+#endif
+    
+    int k = tau.GetM();
+    int nrhs = 1;
+    char side('L');
+    char trans('N');
+    int lwork = max(m, n);
+    Vector<complex<float>, VectFull, Allocator1> work(lwork);
+    // Solves R^t x = b.
+    complex<float> alpha(1);
+    cblas_ctrsm(CblasColMajor, CblasLeft, CblasUpper, CblasTrans,
+		CblasNonUnit,k, nrhs,
+		&alpha, A.GetData(), A.GetN(), b.GetData(), b.GetM());
+
+    for (int i = m; i < n; i++)
+      b(i) = 0;
+    
+    Conjugate(b);
+    // Computes Q b.
+    cunmqr_(&side, &trans, &n, &nrhs, &k, A.GetData(),
+	    &n, tau.GetData(), b.GetData(),
+	    &n, work.GetData(), &lwork, &info.GetInfoRef());
+    
+    Conjugate(b);
   }
 
 

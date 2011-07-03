@@ -1473,10 +1473,6 @@ namespace Seldon
     Xchol_imag.Clear();    
   }
   
-#ifndef SELDON_WITH_COMPILED_LIBRARY
-  int TypeEigenvalueSolver::default_solver(0);  
-#endif
-  
 }
 
 #define SELDON_FILE_EIGENVALUE_SOLVER_CXX

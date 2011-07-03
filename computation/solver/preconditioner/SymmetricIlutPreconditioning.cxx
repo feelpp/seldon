@@ -782,5 +782,5 @@ namespace Seldon
 
 } // end namespace
 
-#define SELDON_SYMMETRIC_ILUT_PRECONDITIONING_CXX
+#define SELDON_FILE_SYMMETRIC_ILUT_PRECONDITIONING_CXX
 #endif

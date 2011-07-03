@@ -111,7 +111,7 @@ namespace Seldon
     void TransSolve(const Matrix1& A, const Vector1& r, Vector1& z);
 
     template<class Matrix1, class Vector1>
-     void Solve(const Matrix1& A, const Vector1& r, Vector1& z);
+    void Solve(const Matrix1& A, const Vector1& r, Vector1& z);
 
     template<class Vector1>
     void TransSolve(Vector1& z);

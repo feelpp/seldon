@@ -80,7 +80,7 @@ namespace Seldon
     Clear();
 
     n = mat.GetM();
-    Matrix<double, Symmetric, RowSymSparse, MallocAlloc<double> > Acsc;
+    Matrix<double, Symmetric, RowSymSparse> Acsc;
     Copy(mat, Acsc);
     if (!keep_matrix)
       mat.Clear();
@@ -182,7 +182,7 @@ namespace Seldon
     Ychol.dtype = CHOLMOD_DOUBLE;
 
     // Conversion from Lsparse to Seldon structure.
-    Matrix<double, General, RowSparse, MallocAlloc<double> > Lcsr;
+    Matrix<double, General, RowSparse> Lcsr;
     Lcsr.SetData(n, n, Lsparse->nzmax, reinterpret_cast<double*>(Lsparse->x),
                  reinterpret_cast<int*>(Lsparse->p),
                  reinterpret_cast<int*>(Lsparse->i));

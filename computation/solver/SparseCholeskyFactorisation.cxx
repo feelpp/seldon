@@ -31,7 +31,7 @@ namespace Seldon
    */
   template<class T, class Prop, class Allocator>
   void GetCholesky(Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A,
-                   int print_level = 0)
+                   int print_level)
   {
     int n = A.GetN();
     T t, s, fact;

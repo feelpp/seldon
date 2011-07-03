@@ -37,12 +37,12 @@ namespace Seldon
   template <class Allocator>
   void ApplyRot(Vector<float, VectFull, Allocator>& X,
 		Vector<float, VectFull, Allocator>& Y,
-		const float c, const float s);
+		const float& c, const float& s);
 
   template <class Allocator>
   void ApplyRot(Vector<double, VectFull, Allocator>& X,
 		Vector<double, VectFull, Allocator>& Y,
-		const double c, const double s);
+		const double& c, const double& s);
 
   template <class Allocator>
   void ApplyModifRot(Vector<float, VectFull, Allocator>& X,
@@ -71,27 +71,27 @@ namespace Seldon
 	    Vector<complex<double>, VectFull, Allocator>& Y);
 
   template <class Allocator>
-  void Mlt(const float alpha,
+  void Mlt(const float& alpha,
 	   Vector<float, VectFull, Allocator>& X);
 
   template <class Allocator>
-  void Mlt(const double alpha,
+  void Mlt(const double& alpha,
 	   Vector<double, VectFull, Allocator>& X);
 
   template <class Allocator>
-  void Mlt(const float alpha,
+  void Mlt(const float& alpha,
 	   Vector<complex<float>, VectFull, Allocator>& X);
 
   template <class Allocator>
-  void Mlt(const double alpha,
+  void Mlt(const double& alpha,
 	   Vector<complex<double>, VectFull, Allocator>& X);
 
   template <class Allocator>
-  void Mlt(const complex<float> alpha,
+  void Mlt(const complex<float>& alpha,
 	   Vector<complex<float>, VectFull, Allocator>& X);
 
   template <class Allocator>
-  void Mlt(const complex<double> alpha,
+  void Mlt(const complex<double>& alpha,
 	   Vector<complex<double>, VectFull, Allocator>& X);
 
   template <class Allocator0, class Allocator1>
@@ -111,22 +111,22 @@ namespace Seldon
 	    Vector<complex<double>, VectFull, Allocator1>& Y);
 
   template <class Allocator0, class Allocator1>
-  void Add(const float alpha,
+  void Add(const float& alpha,
 	   const Vector<float, VectFull, Allocator0>& X,
 	   Vector<float, VectFull, Allocator1>& Y);
 
   template <class Allocator0, class Allocator1>
-  void Add(const double alpha,
+  void Add(const double& alpha,
 	   const Vector<double, VectFull, Allocator0>& X,
 	   Vector<double, VectFull, Allocator1>& Y);
 
   template <class Allocator0, class Allocator1>
-  void Add(const complex<float> alpha,
+  void Add(const complex<float>& alpha,
 	   const Vector<complex<float>, VectFull, Allocator0>& X,
 	   Vector<complex<float>, VectFull, Allocator1>& Y);
 
   template <class Allocator0, class Allocator1>
-  void Add(const complex<double> alpha,
+  void Add(const complex<double>& alpha,
 	   const Vector<complex<double>, VectFull, Allocator0>& X,
 	   Vector<complex<double>, VectFull, Allocator1>& Y);
 
@@ -149,7 +149,7 @@ namespace Seldon
 	  const Vector<complex<double>, VectFull, Allocator1>& Y);
 
   template <class Allocator0, class Allocator1>
-  float ScaledDotProd(const float alpha,
+  float ScaledDotProd(const float& alpha,
 		      const Vector<float, VectFull, Allocator0>& X,
 		      const Vector<float, VectFull, Allocator1>& Y);
 

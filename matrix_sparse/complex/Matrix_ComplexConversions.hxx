@@ -403,8 +403,6 @@ namespace Seldon
        ArrayRowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSymComplexSparse, Allocator1>& mat_csr);
   
-  
-
 } 
 
 #define SELDON_FILE_MATRIX_COMPLEX_CONVERSIONS_HXX

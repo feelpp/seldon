@@ -400,7 +400,7 @@ namespace Seldon
     
     static int default_solver;
     
-    static int GetDefaultSolver()
+    static inline int GetDefaultSolver()
     {
 #ifdef SELDON_WITH_ARPACK
       return ARPACK;
@@ -412,9 +412,9 @@ namespace Seldon
   
   template<class EigenPb, class Vector1, class Vector2,
             class T, class Prop, class Storage, class Alloc3>
-  void GetEigenvaluesEigenvectors(EigenPb& var_eig, Vector1& lambda,
-                                  Vector2& lambda_imag,
-                                  Matrix<T, Prop, Storage, Alloc3>& eigen_vec)
+  inline void GetEigenvaluesEigenvectors(EigenPb& var_eig, Vector1& lambda,
+                                         Vector2& lambda_imag,
+                                         Matrix<T, Prop, Storage, Alloc3>& eigen_vec)
   {
     int type_solver = TypeEigenvalueSolver::default_solver;
     if (type_solver == TypeEigenvalueSolver::DEFAULT)

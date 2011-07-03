@@ -1399,7 +1399,7 @@ namespace Seldon
   }
 
   
-    //! Sets a column of a matrix
+  //! Sets a column of a matrix
   /*!
     \param M matrix
     \param j column index

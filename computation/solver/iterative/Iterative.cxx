@@ -59,7 +59,7 @@ namespace Seldon
   */
   template<class Matrix1, class Vector1>
   void Preconditioner_Base::Solve(const Matrix1& A, const Vector1& r,
-				  Vector1& z)
+                                  Vector1& z)
   {
     Copy(r,z);
   }
@@ -251,7 +251,7 @@ namespace Seldon
 
   //! Returns true if it is the first iteration
   template<class Titer>
-  inline bool Iteration<Titer>::First() const
+  bool Iteration<Titer>::First() const
   {
     if (nb_iter == 0)
       return true;
@@ -262,7 +262,7 @@ namespace Seldon
 
   //! Returns true if the initial guess is null
   template<class Titer>
-  inline bool Iteration<Titer>::IsInitGuess_Null() const
+  bool Iteration<Titer>::IsInitGuess_Null() const
   {
     return init_guess_null;
   }
@@ -270,7 +270,7 @@ namespace Seldon
 
   //! Returns true if the iterative solver has reached its end
   template<class Titer> template<class Vector1>
-  inline bool Iteration<Titer>::
+  bool Iteration<Titer>::
   Finished(const Vector1& r) const
   {
     // absolute residual
@@ -297,7 +297,7 @@ namespace Seldon
 
   //! Returns true if the iterative solver has reached its end
   template<class Titer>
-  inline bool Iteration<Titer>::Finished(const Titer& r) const
+  bool Iteration<Titer>::Finished(const Titer& r) const
   {
     // relative residual
     Titer reste = facteur_reste*r;
@@ -333,7 +333,7 @@ namespace Seldon
 
   //! Increment the number of iterations
   template<class Titer>
-  inline Iteration<Titer>& Iteration<Titer>::operator ++ (void)
+  Iteration<Titer>& Iteration<Titer>::operator ++ (void)
   {
     ++nb_iter;
     return *this;

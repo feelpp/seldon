@@ -78,6 +78,38 @@ namespace Seldon
     
   };
 
+
+  template<class T, class Prop, class Allocator>
+  void GetCholesky(Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A,
+                   int print_level = 0);
+
+  template<class classTrans, 
+           class T0, class T1, class Prop, class Storage,
+           class Allocator1, class Allocator2>
+  void SolveCholesky(const classTrans& TransA,
+                     const Matrix<T0, Prop, ArrayRowSymSparse, Allocator1>& A,
+                     Vector<T1, Storage, Allocator2>& x);
+
+  template<class classTrans,
+	   class T0, class T1, class Prop, class Allocator>
+  void SolveCholesky(const classTrans& TransA,
+		     const Matrix<T0, Prop, RowSymSparse>& A,
+                     Vector<T1, VectFull, Allocator>& X);
+
+  template<class classTrans, 
+           class T0, class T1, class Prop, class Storage,
+           class Allocator1, class Allocator2>
+  void MltCholesky(const classTrans& TransA,
+                   const Matrix<T0, Prop, ArrayRowSymSparse, Allocator1>& A,
+                   Vector<T1, Storage, Allocator2>& x);
+
+  template<class classTrans, 
+           class T0, class T1, class Prop, class Storage,
+           class Allocator1, class Allocator2>
+  void MltCholesky(const classTrans& TransA,
+                   const Matrix<T0, Prop, RowSymSparse, Allocator1>& A,
+                   Vector<T1, Storage, Allocator2>& x);
+  
 }
 
 #define SELDON_FILE_SPARSE_CHOLESKY_FACTORISATION_HXX

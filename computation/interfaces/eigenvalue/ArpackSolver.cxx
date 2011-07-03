@@ -19,7 +19,7 @@
 
 #ifndef SELDON_FILE_ARPACKSOLVER_CXX
 
-#ifndef SELDON_WITH_PRECOMPILED_LIBRARY
+#ifndef SELDON_WITH_COMPILED_LIBRARY
 ArpackLog debug_;
 #endif
 
@@ -353,7 +353,10 @@ namespace Seldon
 
     return (i_success && p_success);
   }
-
+  
+#ifndef SELDON_WITH_COMPILED_LIBRARY
+  int TypeEigenvalueSolver::default_solver(0);  
+#endif
 
 } // namespace Seldon.
 

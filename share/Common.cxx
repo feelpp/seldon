@@ -153,7 +153,6 @@ namespace Seldon
     return abs(val);
 #endif
   }
-
   
 }  // namespace Seldon.
 

@@ -213,8 +213,9 @@ namespace Seldon
                             const Vector<T, VectFull, Allocator>& values,
                             bool cplx = false);
   
-  template<class Matrix1, class T>
-  void WriteCoordinateMatrix(const Matrix1& A, ostream& FileStream, T& zero,
+  template<class T0, class Prop0, class Storage0, class Alloc0, class T>
+  void WriteCoordinateMatrix(const Matrix<T0, Prop0, Storage0, Alloc0>& A,
+                             ostream& FileStream, T& zero,
                              int index = 1, bool cplx = false);
 
 } // namespace Seldon.

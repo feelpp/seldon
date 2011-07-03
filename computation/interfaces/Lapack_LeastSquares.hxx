@@ -38,6 +38,12 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1>
+  void GetQR(Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+	     Vector<complex<float>, VectFull, Allocator1>& tau,
+	     LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
   void GetQR(Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	     Vector<complex<double>, VectFull, Allocator1>& tau,
 	     LapackInfo& info = lapack_info);
@@ -56,6 +62,12 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1>
+  void GetQR(Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+	     Vector<complex<float>, VectFull, Allocator1>& tau,
+	     LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
   void GetQR(Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 	     Vector<complex<double>, VectFull, Allocator1>& tau,
 	     LapackInfo& info = lapack_info);
@@ -68,6 +80,18 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1>
+  void GetQ_FromQR(Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		   Vector<float, VectFull, Allocator1>& tau,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQ_FromQR(Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		   Vector<complex<float>, VectFull, Allocator1>& tau,
+		   LapackInfo& info = lapack_info);
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
   void GetQ_FromQR(Matrix<double, Prop0, ColMajor, Allocator0>& A,
 		   Vector<double, VectFull, Allocator1>& tau,
 		   LapackInfo& info = lapack_info);
@@ -76,6 +100,18 @@ namespace Seldon
 	   class Allocator1>
   void GetQ_FromQR(Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 		   Vector<complex<double>, VectFull, Allocator1>& tau,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQ_FromLQ(Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		   Vector<float, VectFull, Allocator1>& tau,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQ_FromLQ(Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		   Vector<complex<float>, VectFull, Allocator1>& tau,
 		   LapackInfo& info = lapack_info);
 
   template<class Prop0, class Allocator0,
@@ -92,10 +128,34 @@ namespace Seldon
   
   template<class Prop0, class Allocator0,
 	   class Allocator1>
+  void GetQ_FromQR(Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		   Vector<float, VectFull, Allocator1>& tau,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQ_FromQR(Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		   Vector<complex<float>, VectFull, Allocator1>& tau,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
   void GetQ_FromQR(Matrix<double, Prop0, RowMajor, Allocator0>& A,
 		   Vector<double, VectFull, Allocator1>& tau,
 		   LapackInfo& info = lapack_info);
 
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQ_FromLQ(Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		   Vector<float, VectFull, Allocator1>& tau,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
+  void GetQ_FromLQ(Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		   Vector<complex<float>, VectFull, Allocator1>& tau,
+		   LapackInfo& info = lapack_info);
+  
   template<class Prop0, class Allocator0,
 	   class Allocator1>
   void GetQ_FromQR(Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
@@ -128,6 +188,12 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1>
+  void GetLQ(Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+	     Vector<complex<float>, VectFull, Allocator1>& tau,
+	     LapackInfo& info = lapack_info);
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
   void GetLQ(Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	     Vector<complex<double>, VectFull, Allocator1>& tau,
 	     LapackInfo& info = lapack_info);
@@ -146,6 +212,12 @@ namespace Seldon
 
   template<class Prop0, class Allocator0,
 	   class Allocator1>
+  void GetLQ(Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+	     Vector<complex<float>, VectFull, Allocator1>& tau,
+	     LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1>
   void GetLQ(Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 	     Vector<complex<double>, VectFull, Allocator1>& tau,
 	     LapackInfo& info = lapack_info);
@@ -153,6 +225,22 @@ namespace Seldon
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
   void MltQ_FromQR(const IsTranspose& trans,
+		   const Matrix<float, Prop0, ColMajor, Allocator0>& A,		   
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Vector<float, VectFull, Allocator2>& b,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromQR(const IsTranspose& trans,
+		   const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Vector<complex<float>, VectFull, Allocator2>& b,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromQR(const IsTranspose& trans,
 		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,		   
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
@@ -169,6 +257,22 @@ namespace Seldon
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class Side, class Trans>
   void MltQ_FromQR(const Side& side, const Trans& trans,
+		   const Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Matrix<float, Prop0, ColMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info);
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromQR(const Side& side, const Trans& trans,
+		   const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Matrix<complex<float>, Prop0, ColMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromQR(const Side& side, const Trans& trans,
 		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Matrix<double, Prop0, ColMajor, Allocator2>& C,
@@ -180,6 +284,22 @@ namespace Seldon
 		   const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Matrix<complex<double>, Prop0, ColMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromLQ(const IsTranspose& trans,
+		   const Matrix<float, Prop0, ColMajor, Allocator0>& A,		   
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Vector<float, VectFull, Allocator2>& b,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromLQ(const IsTranspose& trans,
+		   const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Vector<complex<float>, VectFull, Allocator2>& b,
 		   LapackInfo& info = lapack_info);
 
   template<class Prop0, class Allocator0,
@@ -201,6 +321,22 @@ namespace Seldon
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class Side, class Trans>
   void MltQ_FromLQ(const Side& side, const Trans& trans,
+		   const Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Matrix<float, Prop0, ColMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info);
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromLQ(const Side& side, const Trans& trans,
+		   const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Matrix<complex<float>, Prop0, ColMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromLQ(const Side& side, const Trans& trans,
 		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Matrix<double, Prop0, ColMajor, Allocator2>& C,
@@ -214,6 +350,22 @@ namespace Seldon
 		   Matrix<complex<double>, Prop0, ColMajor, Allocator2>& C,
 		   LapackInfo& info = lapack_info);
 
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromQR(const IsTranspose& trans,
+		   const Matrix<float, Prop0, RowMajor, Allocator0>& A,		   
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Vector<float, VectFull, Allocator2>& b,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromQR(const IsTranspose& trans,
+		   const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Vector<complex<float>, VectFull, Allocator2>& b,
+		   LapackInfo& info = lapack_info);
+  
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
   void MltQ_FromQR(const IsTranspose& trans,
@@ -230,6 +382,22 @@ namespace Seldon
 		   Vector<complex<double>, VectFull, Allocator2>& b,
 		   LapackInfo& info = lapack_info);
   
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromQR(const Side& side, const Trans& trans,
+		   const Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Matrix<float, Prop0, RowMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromQR(const Side& side, const Trans& trans,
+		   const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Matrix<complex<float>, Prop0, RowMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info);
+
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class Side, class Trans>
   void MltQ_FromQR(const Side& side, const Trans& trans,
@@ -249,6 +417,22 @@ namespace Seldon
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class IsTranspose>
   void MltQ_FromLQ(const IsTranspose& trans,
+		   const Matrix<float, Prop0, RowMajor, Allocator0>& A,		   
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Vector<float, VectFull, Allocator2>& b,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromLQ(const IsTranspose& trans,
+		   const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Vector<complex<float>, VectFull, Allocator2>& b,
+		   LapackInfo& info = lapack_info);
+
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class IsTranspose>
+  void MltQ_FromLQ(const IsTranspose& trans,
 		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,		   
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
@@ -262,6 +446,22 @@ namespace Seldon
 		   Vector<complex<double>, VectFull, Allocator2>& b,
 		   LapackInfo& info = lapack_info);
   
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromLQ(const Side& side, const Trans& trans,
+		   const Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<float, VectFull, Allocator1>& tau,
+		   Matrix<float, Prop0, RowMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info);
+  
+  template<class Prop0, class Allocator0,
+	   class Allocator1, class Allocator2, class Side, class Trans>
+  void MltQ_FromLQ(const Side& side, const Trans& trans,
+		   const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		   const Vector<complex<float>, VectFull, Allocator1>& tau,
+		   Matrix<complex<float>, Prop0, RowMajor, Allocator2>& C,
+		   LapackInfo& info = lapack_info);
+
   template<class Prop0, class Allocator0,
 	   class Allocator1, class Allocator2, class Side, class Trans>
   void MltQ_FromLQ(const Side& side, const Trans& trans,
@@ -294,6 +494,13 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
+  void SolveQR(const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+	       const Vector<complex<float>, VectFull, Allocator1>& tau,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
+	       LapackInfo& info = lapack_info);
+
+  template <class Prop0, class Allocator0,
+	    class Allocator1,class Allocator2>
   void SolveQR(const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	       const Vector<complex<double>, VectFull, Allocator1>& tau,
 	       Vector<complex<double>, VectFull, Allocator2>& b,
@@ -311,6 +518,13 @@ namespace Seldon
   void SolveQR(const Matrix<double, Prop0, RowMajor, Allocator0>& A,
 	       const Vector<double, VectFull, Allocator1>& tau,
 	       Vector<double, VectFull, Allocator2>& b,
+	       LapackInfo& info = lapack_info);
+
+  template <class Prop0, class Allocator0,
+	    class Allocator1,class Allocator2>
+  void SolveQR(const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+	       const Vector<complex<float>, VectFull, Allocator1>& tau,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info);
 
   template <class Prop0, class Allocator0,
@@ -336,6 +550,13 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
+  void SolveLQ(const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+	       const Vector<complex<float>, VectFull, Allocator1>& tau,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
+	       LapackInfo& info = lapack_info);
+
+  template <class Prop0, class Allocator0,
+	    class Allocator1,class Allocator2>
   void SolveLQ(const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	       const Vector<complex<double>, VectFull, Allocator1>& tau,
 	       Vector<complex<double>, VectFull, Allocator2>& b,
@@ -353,6 +574,13 @@ namespace Seldon
   void SolveLQ(const Matrix<double, Prop0, RowMajor, Allocator0>& A,
 	       const Vector<double, VectFull, Allocator1>& tau,
 	       Vector<double, VectFull, Allocator2>& b,
+	       LapackInfo& info = lapack_info);
+
+  template <class Prop0, class Allocator0,
+	    class Allocator1,class Allocator2>
+  void SolveLQ(const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+	       const Vector<complex<float>, VectFull, Allocator1>& tau,
+	       Vector<complex<float>, VectFull, Allocator2>& b,
 	       LapackInfo& info = lapack_info);
 
   template <class Prop0, class Allocator0,

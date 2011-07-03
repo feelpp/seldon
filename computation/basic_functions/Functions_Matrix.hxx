@@ -570,18 +570,37 @@ namespace Seldon
   template<class T, class Prop, class Storage, class Allocator>
   void TransposeConj(Matrix<T, Prop, Storage, Allocator>& A);
   
+  //! returns true if the matrix is symmetric
   template<class T, class Prop, class Storage, class Allocator>
-  bool IsSymmetricMatrix(const Matrix<T, Prop, Storage, Allocator>& A);
-  
-  template<class T, class Storage, class Allocator>
-  bool IsSymmetricMatrix(const Matrix<T, Symmetric, Storage, Allocator>& A);
-  
-  template<class T, class Prop, class Storage, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop, Storage, Allocator>& A);
-  
-  template<class T, class Prop, class Storage, class Allocator>
-  bool IsComplexMatrix(const Matrix<complex<T>, Prop, Storage, Allocator>& A);
+  inline bool IsSymmetricMatrix(const Matrix<T, Prop, Storage, Allocator>& A)
+  {
+    return false;
+  }
 
+
+  //! returns true if the matrix is symmetric
+  template<class T, class Storage, class Allocator>
+  inline bool IsSymmetricMatrix(const Matrix<T, Symmetric, Storage, Allocator>& A)
+  {
+    return true;
+  }
+  
+  
+  //! returns true if the matrix is complex
+  template<class T, class Prop, class Storage, class Allocator>
+  inline bool IsComplexMatrix(const Matrix<T, Prop, Storage, Allocator>& A)
+  {
+    return false;
+  }
+
+
+  //! returns true if the matrix is complex
+  template<class T, class Prop, class Storage, class Allocator>
+  inline bool IsComplexMatrix(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
+  {
+    return true;
+  }
+    
 } // namespace Seldon.
 
 #define SELDON_FILE_FUNCTIONS_MATRIX_HXX

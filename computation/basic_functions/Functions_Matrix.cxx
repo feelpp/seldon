@@ -64,11 +64,6 @@
   conjugate of matrix A
   Conjugate(A)
   
-  returns true for symmetric matrices
-  IsSymmetricMatrix
-
-  returns true for complex matrices
-  IsComplexMatrix
 */
 
 namespace Seldon
@@ -2797,46 +2792,7 @@ namespace Seldon
   // TRANSPOSE //
   ///////////////
 
-
-  ///////////////////////
-  // ISSYMMETRICMATRIX //
-
-
-  //! returns true if the matrix is symmetric
-  template<class T, class Prop, class Storage, class Allocator>
-  bool IsSymmetricMatrix(const Matrix<T, Prop, Storage, Allocator>& A)
-  {
-    return false;
-  }
-
-
-  //! returns true if the matrix is symmetric
-  template<class T, class Storage, class Allocator>
-  bool IsSymmetricMatrix(const Matrix<T, Symmetric, Storage, Allocator>& A)
-  {
-    return true;
-  }
   
-  
-  //! returns true if the matrix is complex
-  template<class T, class Prop, class Storage, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop, Storage, Allocator>& A)
-  {
-    return false;
-  }
-
-
-  //! returns true if the matrix is complex
-  template<class T, class Prop, class Storage, class Allocator>
-  bool IsComplexMatrix(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
-  {
-    return true;
-  }
-  
-    
-  // ISSYMMETRICMATRIX //
-  ///////////////////////
-
 } // namespace Seldon.
 
 #define SELDON_FILE_FUNCTIONS_MATRIX_CXX

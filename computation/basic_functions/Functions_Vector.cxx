@@ -63,7 +63,7 @@ namespace Seldon
   //! Multiplication of a vector by a scalar
   template <class T0,
 	    class T1, class Storage1, class Allocator1>
-  void Mlt(const T0 alpha,
+  void Mlt(const T0& alpha,
 	   Vector<T1, Storage1, Allocator1>& X)  throw()
   {
     X *= alpha;
@@ -83,7 +83,7 @@ namespace Seldon
   template <class T0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
-  void Add(const T0 alpha,
+  void Add(const T0& alpha,
 	   const Vector<T1, Storage1, Allocator1>& X,
 	   Vector<T2, Storage2, Allocator2>& Y)  throw(WrongDim, NoMemory)
   {
@@ -107,7 +107,7 @@ namespace Seldon
   template <class T0,
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
-  void Add(const T0 alpha,
+  void Add(const T0& alpha,
 	   const Vector<T1, VectSparse, Allocator1>& X,
 	   Vector<T2, VectSparse, Allocator2>& Y)  throw(WrongDim, NoMemory)
   {
@@ -125,7 +125,7 @@ namespace Seldon
   template <class T0,
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
-  void Add(const T0 alpha,
+  void Add(const T0& alpha,
 	   const Vector<T1, Collection, Allocator1>& X,
 	   Vector<T2, Collection, Allocator2>& Y)
   {
@@ -142,7 +142,7 @@ namespace Seldon
   template <class T0,
 	    class T1, template <class U1> class Allocator1,
 	    class T2, template <class U2> class Allocator2>
-  void Add(const T0 alpha,
+  void Add(const T0& alpha,
 	   const
            Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
 	   Vector<FloatDouble, DenseSparseCollection, Allocator2<T2> >& Y)
@@ -163,7 +163,7 @@ namespace Seldon
   template <class T0,
 	    class T1, template <class U1> class Allocator1,
 	    class T2, class Storage2, class Allocator2>
-  void Add(const T0 alpha,
+  void Add(const T0& alpha,
 	   const
            Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
 	   Vector<T2, Storage2, Allocator2>& Y)  throw(WrongDim, NoMemory)
@@ -637,7 +637,7 @@ namespace Seldon
 
   //! Rotation of a point in 2-D.
   template<class T>
-  void ApplyRot(T& x, T& y, const T c_, const T s_)
+  void ApplyRot(T& x, T& y, const T& c_, const T& s_)
   {
     T temp = c_ * x + s_ * y;
     y = c_ * y - s_ * x;

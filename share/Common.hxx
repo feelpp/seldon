@@ -22,16 +22,25 @@
 #include <complex>
 #include <iostream>
 
+
 template <class T>
 void PrintArray(T* v, int lgth);
 
 namespace Seldon
 {
-
-
   using namespace std;
+  
+  // conj available for real numbers for compatibility
+  inline float conj(float x)
+  {
+    return x;
+  }
 
-
+  inline double conj(double x)
+  {
+    return x;
+  }
+  
   template<typename T>
   std::string to_str(const T& input);
 
@@ -84,7 +93,7 @@ namespace Seldon
 
   template<class T>
   T ComplexAbs(const complex<T>& val);
-
+  
 }  // namespace Seldon.
 
 #define SELDON_FILE_COMMON_HXX

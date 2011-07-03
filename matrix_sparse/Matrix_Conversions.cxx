@@ -2735,7 +2735,7 @@ namespace Seldon
   //! Conversion from ArrayRowSymSparse to RowSymSparse.
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
-  void Copy(const Matrix<T0, Prop0, ArrayRowSymSparse,Allocator0>& mat_array,
+  void Copy(const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& mat_array,
 	    Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
   {
     Vector<T1, VectFull, Allocator1> Val;

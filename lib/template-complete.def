@@ -114,7 +114,7 @@
 (define @uplo = SeldonUpper, SeldonLower);
 (define @norm = SeldonNorm1, SeldonNormInf);
 (define @conj = SeldonConj, SeldonUnconj);
-(define @side = SeldonLeft, SeldonRight);
+(define @side = class_SeldonLeft, class_SeldonRight);
 
 // Miscellaneous.
 (define @colrow = Col, Row);

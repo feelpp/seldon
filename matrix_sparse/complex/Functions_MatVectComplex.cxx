@@ -43,10 +43,10 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const Matrix<T1, Prop1, RowComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     int i, j;
 
@@ -93,10 +93,10 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const Matrix<T1, Prop1, ColComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     int i, j;
 
@@ -134,10 +134,10 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const Matrix<T1, Prop1, RowSymComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     int ma = M.GetM();
 
@@ -187,10 +187,10 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     int ma = M.GetM();
 
@@ -244,11 +244,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const class_SeldonNoTrans& Trans,
 	      const Matrix<T1, Prop1, RowComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     MltAdd(alpha, M, X, beta, Y);
   }
@@ -260,11 +260,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const class_SeldonTrans& Trans,
 	      const Matrix<T1, Prop1, RowComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     int i, j;
 
@@ -301,11 +301,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const class_SeldonConjTrans& Trans,
 	      const Matrix<T1, Prop1, RowComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     int i, j;
 
@@ -342,11 +342,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const class_SeldonNoTrans& Trans,
 	      const Matrix<T1, Prop1, ColComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     MltAdd(alpha, M, X, beta, Y);
   }
@@ -358,11 +358,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const class_SeldonTrans& Trans,
 	      const Matrix<T1, Prop1, ColComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     int i, j;
 
@@ -403,11 +403,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const class_SeldonConjTrans& Trans,
 	      const Matrix<T1, Prop1, ColComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     int i, j;
 
@@ -451,11 +451,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const class_SeldonNoTrans& Trans,
 	      const Matrix<T1, Prop1, RowSymComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     MltAdd(alpha, M, X, beta, Y);
   }
@@ -467,11 +467,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const class_SeldonTrans& Trans,
 	      const Matrix<T1, Prop1, RowSymComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     MltAdd(alpha, M, X, beta, Y);
   }
@@ -483,11 +483,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const class_SeldonConjTrans& Trans,
 	      const Matrix<T1, Prop1, RowSymComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     int ma = M.GetM();
 
@@ -538,11 +538,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const class_SeldonNoTrans& Trans,
 	      const Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     MltAdd(alpha, M, X, beta, Y);
   }
@@ -554,11 +554,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const class_SeldonTrans& Trans,
 	      const Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     MltAdd(alpha, M, X, beta, Y);
   }
@@ -570,11 +570,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const class_SeldonConjTrans& Trans,
 	      const Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3 beta, Vector<T4, Storage4, Allocator4>& Y)
+	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y)
   {
     int ma = M.GetM();
 
