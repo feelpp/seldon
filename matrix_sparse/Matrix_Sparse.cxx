@@ -2086,7 +2086,7 @@ namespace Seldon
     // conversion to coordinate format (if symmetric part, lower and upper part
     // are recovered)
     Vector<int, VectFull, CallocAlloc<int> > IndRow, IndCol;
-    Vector<T, VectFull, Alloc0> Value;
+    Vector<T, VectFull, CallocAlloc<T> > Value;
     ConvertMatrix_to_Coordinates(A, IndRow, IndCol,
                                  Value, index, true);
     
