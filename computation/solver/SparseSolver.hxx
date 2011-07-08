@@ -218,6 +218,10 @@ namespace Seldon
 
     void RefineSolution();
     void DoNotRefineSolution();
+
+    void SetCoefficientEstimationNeededMemory(double);
+    void SetMaximumCoefficientEstimationNeededMemory(double);
+    void SetIncreaseCoefficientEstimationNeededMemory(double);
     
     double GetThresholdMatrix() const;
     

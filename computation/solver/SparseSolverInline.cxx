@@ -497,6 +497,36 @@ namespace Seldon
   }
   
   
+  template<class T>
+  inline void SparseDirectSolver<T>::
+  SetCoefficientEstimationNeededMemory(double coef)
+  {
+#ifdef SELDON_WITH_MUMPS
+    mat_mumps.SetCoefficientEstimationNeededMemory(coef);
+#endif
+  }
+  
+  
+  template<class T>
+  inline void SparseDirectSolver<T>::
+  SetMaximumCoefficientEstimationNeededMemory(double coef)
+  {
+#ifdef SELDON_WITH_MUMPS
+    mat_mumps.SetMaximumCoefficientEstimationNeededMemory(coef);
+#endif
+  }
+  
+  
+  template<class T>
+  inline void SparseDirectSolver<T>::
+  SetIncreaseCoefficientEstimationNeededMemory(double coef)
+  {
+#ifdef SELDON_WITH_MUMPS
+    mat_mumps.SetIncreaseCoefficientEstimationNeededMemory(coef);
+#endif
+  }
+  
+  
   //! returns threshold used for ilut (if this solver is selected)
   template<class T>
   inline double SparseDirectSolver<T>::GetThresholdMatrix() const

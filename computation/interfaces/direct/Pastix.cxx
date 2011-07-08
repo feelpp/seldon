@@ -282,7 +282,7 @@ namespace Seldon
       }
 
     // pivot threshold
-    dparm[DPARM_EPSILON_MAGN_CTRL] = 1e-4;
+    //dparm[DPARM_EPSILON_MAGN_CTRL] = 1e-4;
     
     iparm[IPARM_SYM] = API_SYM_NO;
     iparm[IPARM_FACTORIZATION] = API_FACT_LU;

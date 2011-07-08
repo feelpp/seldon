@@ -65,6 +65,9 @@ namespace Seldon
     type_ordering = 7; // default : we let Mumps choose the ordering
     print_level = -1;
     out_of_core = false;
+    coef_overestimate = 1.3;
+    coef_increase_memory = 1.5;
+    coef_max_overestimate = 10.0;
   }
 
 
@@ -75,9 +78,9 @@ namespace Seldon
     // if error -9 occured, retrying with larger size
     int init_percentage = struct_mumps.icntl[13];
     int new_percentage = init_percentage;
-    while ((struct_mumps.info[0] == -9) && (new_percentage < 300))
+    while (((struct_mumps.info[0] == -9) || (struct_mumps.info[0] == -8)) && (new_percentage < coef_max_overestimate*100.0))
       {
-        new_percentage *= 1.5;
+        new_percentage *= coef_increase_memory;
         struct_mumps.icntl[13] = new_percentage;
         struct_mumps.job = 2;
         CallMumps();
@@ -119,7 +122,7 @@ namespace Seldon
     // mumps is called
     CallMumps();
 
-    struct_mumps.icntl[13] = 20;
+    struct_mumps.icntl[13] = int(100.0*(coef_overestimate-1.0));
     struct_mumps.icntl[6] = type_ordering;
     if (type_ordering == 1)
       struct_mumps.perm_in = perm.GetData();
@@ -236,6 +239,27 @@ namespace Seldon
     out_of_core = false;
   }
 
+  
+  template<class T>
+  inline void MatrixMumps<T>::SetCoefficientEstimationNeededMemory(double coef)
+  {
+    coef_overestimate = coef;
+  }
+  
+  
+  template<class T>
+  inline void MatrixMumps<T>::SetMaximumCoefficientEstimationNeededMemory(double coef)
+  {
+    coef_max_overestimate = coef;
+  }
+  
+  
+  template<class T>
+  void MatrixMumps<T>::SetIncreaseCoefficientEstimationNeededMemory(double coef)
+  {
+    coef_increase_memory = coef;
+  }
+  
 
   //! Computes an ordering for matrix renumbering.
   /*!
@@ -578,7 +602,7 @@ namespace Seldon
     CallMumps();
 
     // overestimating size in order to avoid error -9
-    double coef = 1.3;
+    double coef = coef_overestimate;
     struct_mumps.icntl[22] = coef*struct_mumps.infog[25];
     struct_mumps.job = 2; // we factorize the system
     CallMumps();
@@ -586,9 +610,9 @@ namespace Seldon
     int info = 0;
     comm_facto.Allreduce(&struct_mumps.info[0], &info, 1, MPI::INTEGER, MPI::MIN);
     
-    while ((info == -9) && (coef < 3.0))
+    while (((info == -9)||(info==-8)) && (coef < coef_max_overestimate))
       {
-        coef *= 1.2;
+        coef *= coef_increase_memory;
         // increasing icntl(23) if error -9 occured
         struct_mumps.icntl[22] = coef*struct_mumps.infog[25];
         CallMumps();

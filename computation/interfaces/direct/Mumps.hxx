@@ -68,6 +68,9 @@ namespace Seldon
     bool out_of_core;
     IVect num_row_glob, num_col_glob;
     IVect perm;
+    double coef_overestimate;
+    double coef_increase_memory;
+    double coef_max_overestimate;
 
     // internal methods
     void CallMumps();
@@ -90,7 +93,11 @@ namespace Seldon
 
     void EnableOutOfCore();
     void DisableOutOfCore();
-
+    
+    void SetCoefficientEstimationNeededMemory(double);
+    void SetMaximumCoefficientEstimationNeededMemory(double);
+    void SetIncreaseCoefficientEstimationNeededMemory(double);
+    
     int GetInfoFactorization() const;
 
     template<class Prop, class Storage, class Allocator>
