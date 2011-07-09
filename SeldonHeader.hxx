@@ -332,6 +332,9 @@ namespace Seldon
 #include "vector/SparseVector.hxx"
 #include "matrix/Functions.hxx"
 #include "matrix_sparse/Matrix_Conversions.hxx"
+#include "computation/basic_functions/Functions_Matrix.hxx"
+#include "computation/basic_functions/Functions_Vector.hxx"
+#include "computation/basic_functions/Functions_MatVect.hxx"
 
 #include "matrix/SubMatrix_Base.hxx"
 #include "matrix/SubMatrix.hxx"

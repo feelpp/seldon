@@ -21,6 +21,9 @@
 #define SELDON_FILE_FUNCTIONS_MATVECT_CXX
 
 
+#include "Functions_MatVect.hxx"
+
+
 /*
   Functions defined in this file:
 
@@ -1316,7 +1319,7 @@ namespace Seldon
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 		const Vector<T1, Storage1, Allocator1>& X,
 		const Vector<T2, Storage2, Allocator2>& Y,
-		string function = "")
+		string function)
   {
     if (X.GetLength() != M.GetN() || Y.GetLength() != M.GetM())
       throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
@@ -1346,7 +1349,7 @@ namespace Seldon
   void CheckDim(const Matrix<T0, Prop0, RowMajorCollection, Allocator0>& M,
 		const Vector<T1, Collection, Allocator1>& X,
 		const Vector<T2, Collection, Allocator2>& Y,
-		string function = "")
+		string function)
   {
     if (X.GetNvector() != M.GetNmatrix() || Y.GetNvector() != M.GetMmatrix())
       throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
@@ -1376,7 +1379,7 @@ namespace Seldon
   void CheckDim(const Matrix<T0, Prop0, ColMajorCollection, Allocator0>& M,
 		const Vector<T1, Collection, Allocator1>& X,
 		const Vector<T2, Collection, Allocator2>& Y,
-		string function = "")
+		string function)
   {
     if (X.GetNvector() != M.GetNmatrix() || Y.GetNvector() != M.GetMmatrix())
       throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
@@ -1406,7 +1409,7 @@ namespace Seldon
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 		const Vector<T1, Collection, Allocator1>& X,
 		const Vector<T2, Storage2, Allocator2>& Y,
-		string function = "")
+		string function)
   {
     if (X.GetLength() != M.GetN() || Y.GetLength() != M.GetM())
       throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
@@ -1440,7 +1443,7 @@ namespace Seldon
 		const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 		const Vector<T1, Storage1, Allocator1>& X,
 		const Vector<T2, Storage2, Allocator2>& Y,
-		string function = "", string op = "M X + Y -> Y")
+		string function, string op)
   {
     if (op == "M X + Y -> Y")
       if (trans.Trans())
@@ -1476,7 +1479,7 @@ namespace Seldon
 	    class T1, class Storage1, class Allocator1>
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 		const Vector<T1, Storage1, Allocator1>& X,
-		string function = "", string op = "M X")
+		string function, string op)
   {
     if (X.GetLength() != M.GetN())
       throw WrongDim(function, string("Operation ") + op + " not permitted:"

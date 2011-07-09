@@ -24,6 +24,9 @@
 #define SELDON_FILE_FUNCTIONS_MATRIX_CXX
 
 
+#include "Functions_Matrix.hxx"
+
+
 /*
   Function defined in this file:
 
@@ -1664,7 +1667,7 @@ namespace Seldon
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
-		string function = "")
+		string function)
   {
     if (B.GetM() != A.GetN() || C.GetM() != A.GetM() || B.GetN() != C.GetN())
       throw WrongDim(function, string("Operation A B + C -> C not permitted:")
@@ -1696,7 +1699,7 @@ namespace Seldon
 		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
-		string function = "")
+		string function)
   {
     if ( SeldonSide(side).Left() &&
 	 (B.GetM() != A.GetN() || C.GetM() != A.GetM()
@@ -1740,7 +1743,7 @@ namespace Seldon
 		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const SeldonTranspose& TransB,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
-		string function = "")
+		string function)
   {
     SeldonTranspose status_A(TransA);
     SeldonTranspose status_B(TransB);
@@ -1788,7 +1791,7 @@ namespace Seldon
 		const SeldonTranspose& TransB,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
-		string function = "")
+		string function)
   {
     string op;
     if (TransA.Trans())
@@ -1830,7 +1833,7 @@ namespace Seldon
 	    class T1, class Prop1, class Storage1, class Allocator1>
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
-		string function = "")
+		string function)
   {
     CheckDim(SeldonLeft, A, B, function);
   }
@@ -1851,7 +1854,7 @@ namespace Seldon
   void CheckDim(const SeldonSide& side,
 		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
-		string function = "")
+		string function)
   {
     if (side.Left() && B.GetM() != A.GetN())
       throw WrongDim(function, string("Operation A B not permitted:")

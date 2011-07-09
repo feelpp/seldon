@@ -24,6 +24,9 @@
 #define SELDON_FILE_FUNCTIONS_VECTOR_CXX
 
 
+#include "Functions_Vector.hxx"
+
+
 /*
   Functions defined in this file:
 
@@ -648,7 +651,7 @@ namespace Seldon
 	    class T1, class Storage1, class Allocator1>
   void CheckDim(const Vector<T0, Storage0, Allocator0>& X,
 		const Vector<T1, Storage1, Allocator1>& Y,
-		string function = "", string op = "X + Y")
+		string function, string op)
   {
     if (X.GetLength() != Y.GetLength())
       throw WrongDim(function, string("Operation ") + op
@@ -676,7 +679,7 @@ namespace Seldon
 	    class T1, class Allocator1>
   void CheckDim(const Vector<T0, Vect_Sparse, Allocator0>& X,
 		const Vector<T1, Vect_Sparse, Allocator1>& Y,
-		string function = "", string op = "X + Y")
+		string function, string op)
   {
     // The dimension of a Vector<Vect_Sparse> is infinite,
     // so no vector dimension checking has to be done.
@@ -698,7 +701,7 @@ namespace Seldon
 	    class T1, class Allocator1>
   void CheckDim(const Vector<T0, Collection, Allocator0>& X,
 		const Vector<T1, Collection, Allocator1>& Y,
-		string function = "", string op = "X + Y")
+		string function, string op)
   {
     if (X.GetLength() != Y.GetLength())
       throw WrongDim(function, string("Operation ") + op
@@ -737,7 +740,7 @@ namespace Seldon
                 Collection, Allocator00>& X,
 		const Vector<Vector<T1, Vect_Sparse, Allocator1>,
                 Collection, Allocator11>& Y,
-		string function = "", string op = "X + Y")
+		string function, string op)
   {
     if (X.GetNvector() != Y.GetNvector())
       throw WrongDim(function, string("Operation ") + op
@@ -765,7 +768,7 @@ namespace Seldon
 	    class T1, class Allocator1>
   void CheckDim(const Vector<T0, VectFull, Allocator0>& X,
 		Vector<T1, Collection, Allocator1>& Y,
-		string function = "", string op = "X + Y")
+		string function, string op)
   {
     if (X.GetLength() != Y.GetM())
       throw WrongDim(function, string("Operation ") + op
@@ -796,7 +799,7 @@ namespace Seldon
            Vector<FloatDouble, DenseSparseCollection, Allocator0<T0> >& X,
            const
            Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& Y,
-           string function = "", string op = "X + Y")
+           string function, string op)
   {
     if (X.GetNvector() != Y.GetNvector())
       throw WrongDim(function, string("Operation ") + op
