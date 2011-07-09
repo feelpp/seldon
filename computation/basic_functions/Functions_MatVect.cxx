@@ -18,6 +18,8 @@
 
 
 #ifndef SELDON_FILE_FUNCTIONS_MATVECT_CXX
+#define SELDON_FILE_FUNCTIONS_MATVECT_CXX
+
 
 /*
   Functions defined in this file:
@@ -1497,5 +1499,5 @@ namespace Seldon
 
 }  // namespace Seldon.
 
-#define SELDON_FUNCTIONS_MATVECT_CXX
+
 #endif
