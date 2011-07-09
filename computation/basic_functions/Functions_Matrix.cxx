@@ -21,6 +21,8 @@
 
 
 #ifndef SELDON_FILE_FUNCTIONS_MATRIX_CXX
+#define SELDON_FILE_FUNCTIONS_MATRIX_CXX
+
 
 /*
   Function defined in this file:
@@ -54,6 +56,7 @@
 
   Transpose(A)
 */
+
 
 namespace Seldon
 {
@@ -592,7 +595,6 @@ namespace Seldon
 
   // MLT //
   /////////
-
 
 
   ////////////
@@ -1589,7 +1591,6 @@ namespace Seldon
   /////////
 
 
-
   ///////////
   // GETLU //
 
@@ -1641,7 +1642,6 @@ namespace Seldon
 
   // GETLU //
   ///////////
-
 
 
   //////////////
@@ -2006,7 +2006,6 @@ namespace Seldon
   ///////////
 
 
-
   ///////////////
   // TRANSPOSE //
 
@@ -2154,7 +2153,8 @@ namespace Seldon
   // ISSYMMETRICMATRIX //
   ///////////////////////
 
+
 } // namespace Seldon.
 
-#define SELDON_FILE_FUNCTIONS_MATRIX_CXX
+
 #endif

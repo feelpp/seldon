@@ -48,6 +48,7 @@
   Solve(M, Y)
 */
 
+
 namespace Seldon
 {
 
@@ -124,15 +125,14 @@ namespace Seldon
     Y.Fill(T2(0));
     MltAdd(T2(1), Trans, M, X, T3(0), Y);
   }
-    
-  
+
+
   // MLT //
   /////////
 
 
-
   ////////////
-  // MltAdd //
+  // MLTADD //
 
 
   /*** Sparse matrices ***/
@@ -387,7 +387,6 @@ namespace Seldon
 	if (ind[j] != i)
 	  Y(ind[j]) += alpha * data[j] * X(i);
   }
-
 
 
   /*** Symmetric complex sparse matrices ***/
@@ -808,13 +807,12 @@ namespace Seldon
   }
 
 
-  // MltAdd //
+  // MLTADD //
   ////////////
 
 
-
   ////////////
-  // MltAdd //
+  // MLTADD //
 
 
   /*! \brief Performs the multiplication of a matrix with a vector, and adds
@@ -1063,12 +1061,12 @@ namespace Seldon
   }
 
 
-  // MltAdd //
+  // MLTADD //
   ////////////
 
 
   ///////////
-  // Gauss //
+  // GAUSS //
 
 
   // Solve X = M*Y with Gauss method.
@@ -1112,13 +1110,12 @@ namespace Seldon
   }
 
 
-  // Gauss //
+  // GAUSS //
   ///////////
 
 
-
-  ////////////////////
-  // Gauss - Seidel //
+  //////////////////
+  // GAUSS-SEIDEL //
 
 
   // Solve X = M*Y with Gauss-Seidel method.
@@ -1157,13 +1154,12 @@ namespace Seldon
   }
 
 
-  // Gauss-Seidel //
+  // GAUSS-SEIDEL //
   //////////////////
 
 
-
   ///////////////////
-  // S.O.R. method //
+  // S.O.R. METHOD //
 
 
   // Solve X = M*Y with S.O.R. method.
@@ -1204,13 +1200,13 @@ namespace Seldon
   }
 
 
-  // S.O.R. method //
+  // S.O.R. METHOD //
   ///////////////////
 
 
 
   /////////////
-  // SolveLU //
+  // SOLVELU //
 
 
   //! Solves a linear system whose matrix has been LU-factorized.
@@ -1264,7 +1260,7 @@ namespace Seldon
   }
 
 
-  // SolveLU //
+  // SOLVELU //
   /////////////
 
 
@@ -1298,7 +1294,6 @@ namespace Seldon
 
   // SOLVE //
   ///////////
-
 
 
   //////////////

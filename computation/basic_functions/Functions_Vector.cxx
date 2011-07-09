@@ -21,6 +21,8 @@
 
 
 #ifndef SELDON_FILE_FUNCTIONS_VECTOR_CXX
+#define SELDON_FILE_FUNCTIONS_VECTOR_CXX
+
 
 /*
   Functions defined in this file:
@@ -52,6 +54,7 @@
 
 */
 
+
 namespace Seldon
 {
 
@@ -71,7 +74,6 @@ namespace Seldon
 
   // MLT //
   /////////
-
 
 
   /////////
@@ -184,7 +186,6 @@ namespace Seldon
   /////////
 
 
-
   //////////
   // COPY //
 
@@ -211,7 +212,6 @@ namespace Seldon
 
   // COPY //
   //////////
-
 
 
   //////////
@@ -247,7 +247,6 @@ namespace Seldon
 
   // SWAP //
   //////////
-
 
 
   /////////////
@@ -405,7 +404,6 @@ namespace Seldon
   /////////////
 
 
-
   ///////////
   // NORM1 //
 
@@ -460,7 +458,6 @@ namespace Seldon
 
   // NORM1 //
   ///////////
-
 
 
   ///////////
@@ -519,7 +516,6 @@ namespace Seldon
   ///////////
 
 
-
   ////////////////////
   // GETMAXABSINDEX //
 
@@ -533,7 +529,6 @@ namespace Seldon
 
   // GETMAXABSINDEX //
   ////////////////////
-
 
 
   //////////////
@@ -632,7 +627,6 @@ namespace Seldon
 
   // APPLYROT //
   //////////////
-
 
 
   //////////////
@@ -819,7 +813,6 @@ namespace Seldon
   //////////////
 
 
-
   ///////////////
   // CONJUGATE //
 
@@ -848,5 +841,5 @@ namespace Seldon
 
 } // namespace Seldon.
 
-#define SELDON_FILE_FUNCTIONS_VECTOR_CXX
+
 #endif
