@@ -19,6 +19,11 @@
 
 
 #ifndef SELDON_FILE_FUNCTIONS_MATVECT_CXX
+#define SELDON_FILE_FUNCTIONS_MATVECT_CXX
+
+
+#include "Functions_MatVect.hxx"
+
 
 /*
   Functions defined in this file:
@@ -46,6 +51,7 @@
 
   GetAndSolveLU(M, Y)
 */
+
 
 namespace Seldon
 {
@@ -195,15 +201,14 @@ namespace Seldon
     Y.Fill(zero);
     MltAdd(one, Trans, M, X, zero, Y);
   }
-    
-  
+
+
   // MLT //
   /////////
 
 
-
   ////////////
-  // MltAdd //
+  // MLTADD //
 
 
   /*** Sparse matrices ***/
@@ -435,6 +440,9 @@ namespace Seldon
 	if (ind[j] != i)
 	  Y(ind[j]) += alpha * data[j] * X(i);
   }
+
+
+  /*** Symmetric complex sparse matrices ***/
 
 
   template <class T0,
@@ -812,13 +820,12 @@ namespace Seldon
   }
 
   
-  // MltAdd //
+  // MLTADD //
   ////////////
 
 
-
   ////////////
-  // MltAdd //
+  // MLTADD //
 
 
   /*! \brief Performs the multiplication of a matrix with a vector, and adds
@@ -1135,12 +1142,12 @@ namespace Seldon
   }
 
   
-  // MltAdd //
+  // MLTADD //
   ////////////
 
 
   ///////////
-  // Gauss //
+  // GAUSS //
 
 
   //! Solves M*Y = X with Gauss method.
@@ -1195,13 +1202,12 @@ namespace Seldon
   }
 
 
-  // Gauss //
+  // GAUSS //
   ///////////
 
 
-
-  ////////////////////
-  // Gauss - Seidel //
+  //////////////////
+  // GAUSS-SEIDEL //
 
 
   //! Solve M*Y = X with Gauss-Seidel method.
@@ -1265,13 +1271,12 @@ namespace Seldon
   }
 
 
-  // Gauss-Seidel //
+  // GAUSS-SEIDEL //
   //////////////////
 
 
-
   ///////////////////
-  // S.O.R. method //
+  // S.O.R. METHOD //
 
 
   //! Solve M Y = X with S.O.R. method.
@@ -1409,7 +1414,7 @@ namespace Seldon
 
 
   /////////////
-  // SolveLU //
+  // SOLVELU //
 
 
   //! Solves a linear system whose matrix has been LU-factorized.
@@ -1468,7 +1473,7 @@ namespace Seldon
   }
 
 
-  // SolveLU //
+  // SOLVELU //
   /////////////
 
 
@@ -1504,7 +1509,6 @@ namespace Seldon
   ///////////////////
 
 
-
   //////////////
   // CHECKDIM //
 
@@ -1525,7 +1529,7 @@ namespace Seldon
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 		const Vector<T1, Storage1, Allocator1>& X,
 		const Vector<T2, Storage2, Allocator2>& Y,
-		string function = "")
+		string function)
   {
     if (X.GetLength() != M.GetN() || Y.GetLength() != M.GetM())
       throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
@@ -1555,7 +1559,7 @@ namespace Seldon
   void CheckDim(const Matrix<T0, Prop0, RowMajorCollection, Allocator0>& M,
 		const Vector<T1, Collection, Allocator1>& X,
 		const Vector<T2, Collection, Allocator2>& Y,
-		string function = "")
+		string function)
   {
     if (X.GetNvector() != M.GetNmatrix() || Y.GetNvector() != M.GetMmatrix())
       throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
@@ -1585,7 +1589,7 @@ namespace Seldon
   void CheckDim(const Matrix<T0, Prop0, ColMajorCollection, Allocator0>& M,
 		const Vector<T1, Collection, Allocator1>& X,
 		const Vector<T2, Collection, Allocator2>& Y,
-		string function = "")
+		string function)
   {
     if (X.GetNvector() != M.GetNmatrix() || Y.GetNvector() != M.GetMmatrix())
       throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
@@ -1615,7 +1619,7 @@ namespace Seldon
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 		const Vector<T1, Collection, Allocator1>& X,
 		const Vector<T2, Storage2, Allocator2>& Y,
-		string function = "")
+		string function)
   {
     if (X.GetLength() != M.GetN() || Y.GetLength() != M.GetM())
       throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
@@ -1649,7 +1653,7 @@ namespace Seldon
 		const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 		const Vector<T1, Storage1, Allocator1>& X,
 		const Vector<T2, Storage2, Allocator2>& Y,
-		string function = "", string op = "M X + Y -> Y")
+		string function, string op)
   {
     if (op == "M X + Y -> Y")
       if (trans.Trans())
@@ -1685,7 +1689,7 @@ namespace Seldon
 	    class T1, class Storage1, class Allocator1>
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 		const Vector<T1, Storage1, Allocator1>& X,
-		string function = "", string op = "M X")
+		string function, string op)
   {
     if (X.GetLength() != M.GetN())
       throw WrongDim(function, string("Operation ") + op + " not permitted:"
@@ -1703,5 +1707,5 @@ namespace Seldon
 
 }  // namespace Seldon.
 
-#define SELDON_FUNCTIONS_MATVECT_CXX
+
 #endif

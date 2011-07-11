@@ -20,8 +20,43 @@
 
 #ifndef SELDON_FILE_FUNCTIONS_MATVECT_HXX
 
+#define SELDON_FILE_FUNCTIONS_MATVECT_HXX
+
+
+/*
+  Functions defined in this file:
+
+  M X -> Y
+  Mlt(M, X, Y)
+
+  alpha M X -> Y
+  Mlt(alpha, M, X, Y)
+
+  M X -> Y
+  M^T X -> Y
+  Mlt(Trans, M, X, Y)
+
+  alpha M X + beta Y -> Y
+  MltAdd(alpha, M, X, beta, Y)
+
+  Gauss(M, X)
+
+  GaussSeidel(M, X, Y, iter)
+
+  SOR(M, X, Y, omega, iter)
+
+  SolveLU(M, Y)
+
+  Solve(M, Y)
+*/
+
 namespace Seldon
 {
+
+
+  /////////
+  // MLT //
+
 
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
@@ -77,6 +112,18 @@ namespace Seldon
 	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
 	   const Vector<T2, Storage2, Allocator2>& X,
 	   Vector<T3, Storage3, Allocator3>& Y);
+  
+
+  // MLT //
+  /////////
+
+
+  ////////////
+  // MLTADD //
+
+
+  /*** Sparse matrices ***/
+
 
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
@@ -97,6 +144,8 @@ namespace Seldon
 	      const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Collection, Allocator4>& Y);
+
+  /*** Complex sparse matrices ***/
   
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
@@ -107,6 +156,8 @@ namespace Seldon
 	      const Matrix<T1, Prop1, ColSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+
+  /*** Symmetric sparse matrices ***/
 
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
@@ -148,6 +199,10 @@ namespace Seldon
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Collection, Allocator4>& Y);
   
+
+  /*** Sparse matrices, *Trans ***/
+
+  // NoTrans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -159,6 +214,7 @@ namespace Seldon
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
+  // Trans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -169,7 +225,8 @@ namespace Seldon
 	      const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
-  
+
+  // ConjTrans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -180,7 +237,11 @@ namespace Seldon
 	      const Matrix<complex<T1>, Prop1, RowSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
-  
+
+
+  /*** Complex sparse matrices, *Trans ***/
+
+  // NoTrans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -192,6 +253,7 @@ namespace Seldon
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
+  // Trans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -202,7 +264,8 @@ namespace Seldon
 	      const Matrix<T1, Prop1, ColSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
-  
+
+  // ConjTrans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -213,7 +276,10 @@ namespace Seldon
 	      const Matrix<complex<T1>, Prop1, ColSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
-  
+
+  /*** Symmetric sparse matrices, *Trans ***/
+
+  // NoTrans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -225,6 +291,7 @@ namespace Seldon
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
+  // Trans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -235,7 +302,8 @@ namespace Seldon
 	      const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
-  
+
+  // ConjTrans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -247,6 +315,7 @@ namespace Seldon
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
+  // NoTrans
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -257,7 +326,8 @@ namespace Seldon
 	      const Matrix<T1, Prop1, ColSymSparse, Allocator1>& M,
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
-  
+
+  // Trans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -269,6 +339,7 @@ namespace Seldon
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
+  // ConjTrans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -280,6 +351,14 @@ namespace Seldon
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
+  // MLTADD //
+  ////////////
+
+
+  ////////////
+  // MLTADD //
+
+
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -290,7 +369,7 @@ namespace Seldon
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta,
 	      Vector<T4, Storage4, Allocator4>& Y);
-  
+
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -301,7 +380,7 @@ namespace Seldon
 	      const Vector<T2, Storage2, Allocator2>& X,
 	      const T3& beta,
 	      Vector<T4, Collection, Allocator4>& Y);
-  
+
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Allocator2,
@@ -312,7 +391,7 @@ namespace Seldon
 	      const Vector<T2, Collection, Allocator2>& X,
 	      const T3& beta,
 	      Vector<T4, Collection, Allocator4>& Y);
-  
+
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Allocator2,
@@ -360,28 +439,46 @@ namespace Seldon
 	      const T3& beta,
 	      Vector<T4, Storage4, Allocator4>& Y);
   
+  
+  // MLTADD //
+  ////////////
+
+
+  ///////////
+  // GAUSS //
+
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
-  void Gauss(Matrix<T0, Prop0, Storage0, Allocator0>& M,
-	     Vector<T1, Storage1, Allocator1>& X);
-  
+  inline void Gauss(Matrix<T0, Prop0, Storage0, Allocator0>& M,
+		    Vector<T1, Storage1, Allocator1>& X);
+
+  // GAUSS //
+  ///////////
+
+
+  //////////////////
+  // GAUSS-SEIDEL //
+
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
-  void GaussSeidel(const Matrix<T0, Prop0, Storage0, Allocator0>& M,			  
-		   Vector<T2, Storage2, Allocator2>& Y,
-		   const Vector<T1, Storage1, Allocator1>& X,
-		   int iter, int type_algo = 2);
-  
-  template <class T0, class Prop0, class Storage0, class Allocator0,
-	    class T1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2,
-	    class T3>
-  void SOR(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
-	   Vector<T2, Storage2, Allocator2>& Y,
-	   const Vector<T1, Storage1, Allocator1>& X,
-	   const T3& omega, int iter, int type_ssor = 2);
-  
+  inline void GaussSeidel(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
+			  const Vector<T1, Storage1, Allocator1>& X,
+			  Vector<T2, Storage2, Allocator2>& Y,
+			  int iter);
+
+
+  // GAUSS-SEIDEL //
+  //////////////////
+
+
+
+  ///////////////////
+  // S.O.R. METHOD //
+
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -392,16 +489,44 @@ namespace Seldon
 	  const Vector<T1, Storage1, Allocator1>& X,
 	  const T3& omega, int iter, int type_ssor = 3);
   
+
+  // S.O.R. METHOD //
+  ///////////////////
+
+
+
+  /////////////
+  // SOLVELU //
+
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void SolveLU(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 	       Vector<T1, Storage1, Allocator1>& Y);
   
+
+  // SOLVELU //
+  /////////////
+
+
+  ///////////
+  // SOLVE //
+
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void GetAndSolveLU(Matrix<T0, Prop0, Storage0, Allocator0>& M,
                      Vector<T1, Storage1, Allocator1>& Y);
   
+
+  // SOLVE //
+  ///////////
+
+
+  //////////////
+  // CHECKDIM //
+
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
@@ -409,7 +534,7 @@ namespace Seldon
 		const Vector<T1, Storage1, Allocator1>& X,
 		const Vector<T2, Storage2, Allocator2>& Y,
 		string function = "");
-  
+
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
@@ -425,7 +550,7 @@ namespace Seldon
 		const Vector<T1, Collection, Allocator1>& X,
 		const Vector<T2, Collection, Allocator2>& Y,
 		string function = "");
-  
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
@@ -433,7 +558,7 @@ namespace Seldon
 		const Vector<T1, Collection, Allocator1>& X,
 		const Vector<T2, Storage2, Allocator2>& Y,
 		string function = "");
-  
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
@@ -442,14 +567,17 @@ namespace Seldon
 		const Vector<T1, Storage1, Allocator1>& X,
 		const Vector<T2, Storage2, Allocator2>& Y,
 		string function = "", string op = "M X + Y -> Y");
-  
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
 		const Vector<T1, Storage1, Allocator1>& X,
 		string function = "", string op = "M X");
+  
+  // CHECKDIM //
+  //////////////
+
 
 }  // namespace Seldon.
 
-#define SELDON_FUNCTIONS_MATVECT_HXX
 #endif

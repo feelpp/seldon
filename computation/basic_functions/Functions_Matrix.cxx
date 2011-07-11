@@ -21,6 +21,11 @@
 
 
 #ifndef SELDON_FILE_FUNCTIONS_MATRIX_CXX
+#define SELDON_FILE_FUNCTIONS_MATRIX_CXX
+
+
+#include "Functions_Matrix.hxx"
+
 
 /*
   Function defined in this file:
@@ -65,6 +70,7 @@
   Conjugate(A)
   
 */
+
 
 namespace Seldon
 {
@@ -619,7 +625,6 @@ namespace Seldon
 
   // MLT //
   /////////
-
 
 
   ////////////
@@ -1946,7 +1951,6 @@ namespace Seldon
   /////////
 
 
-
   ///////////
   // GETLU //
 
@@ -2004,7 +2008,6 @@ namespace Seldon
   ///////////
 
 
-
   //////////////
   // CHECKDIM //
 
@@ -2022,10 +2025,10 @@ namespace Seldon
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2>
-  inline void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		       const Matrix<T1, Prop1, Storage1, Allocator1>& B,
-		       const Matrix<T2, Prop2, Storage2, Allocator2>& C,
-		       string function = "")
+  void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
+		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
+		string function)
   {
     if (B.GetM() != A.GetN() || C.GetM() != A.GetM() || B.GetN() != C.GetN())
       throw WrongDim(function, string("Operation A B + C -> C not permitted:")
@@ -2053,11 +2056,11 @@ namespace Seldon
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2>
-  inline void CheckDim(const SeldonSide& side,
-		       const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		       const Matrix<T1, Prop1, Storage1, Allocator1>& B,
-		       const Matrix<T2, Prop2, Storage2, Allocator2>& C,
-		       string function = "")
+  void CheckDim(const SeldonSide& side,
+		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
+		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
+		string function)
   {
     if ( SeldonSide(side).Left() &&
 	 (B.GetM() != A.GetN() || C.GetM() != A.GetM()
@@ -2097,11 +2100,11 @@ namespace Seldon
   */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
-  inline void CheckDim(const SeldonTranspose& TransA,
-		       const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		       const SeldonTranspose& TransB,
-		       const Matrix<T1, Prop1, Storage1, Allocator1>& B,
-		       string function = "")
+  void CheckDim(const SeldonTranspose& TransA,
+		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		const SeldonTranspose& TransB,
+		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
+		string function)
   {
     SeldonTranspose status_A(TransA);
     SeldonTranspose status_B(TransB);
@@ -2144,12 +2147,12 @@ namespace Seldon
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2>
-  inline void CheckDim(const SeldonTranspose& TransA,
-		       const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		       const SeldonTranspose& TransB,
-		       const Matrix<T1, Prop1, Storage1, Allocator1>& B,
-		       const Matrix<T2, Prop2, Storage2, Allocator2>& C,
-		       string function = "")
+  void CheckDim(const SeldonTranspose& TransA,
+		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		const SeldonTranspose& TransB,
+		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
+		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
+		string function)
   {
     string op;
     if (TransA.Trans())
@@ -2189,9 +2192,9 @@ namespace Seldon
   */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
-  inline void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		       const Matrix<T1, Prop1, Storage1, Allocator1>& B,
-		       string function = "")
+  void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
+		string function)
   {
     CheckDim(SeldonLeft, A, B, function);
   }
@@ -2209,10 +2212,10 @@ namespace Seldon
   */
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
-  inline void CheckDim(const SeldonSide& side,
-		       const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		       const Matrix<T1, Prop1, Storage1, Allocator1>& B,
-		       string function = "")
+  void CheckDim(const SeldonSide& side,
+		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
+		string function)
   {
     if (side.Left() && B.GetM() != A.GetN())
       throw WrongDim(function, string("Operation A B not permitted:")
@@ -2549,7 +2552,6 @@ namespace Seldon
   ///////////
 
 
-
   ///////////////
   // TRANSPOSE //
 
@@ -2795,5 +2797,5 @@ namespace Seldon
   
 } // namespace Seldon.
 
-#define SELDON_FILE_FUNCTIONS_MATRIX_CXX
+
 #endif

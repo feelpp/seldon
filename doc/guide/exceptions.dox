@@ -93,7 +93,6 @@ Err.CoutWhat();
         cout << "Unknown exception..." << endl;                 \
         return 1;                                               \
       }
-#endif
 \endprecode
 
 <p>It is advocated that you enclose your code (in the <code>main</code> function) with <code>TRY;</code> and <code>END;</code>:</p>

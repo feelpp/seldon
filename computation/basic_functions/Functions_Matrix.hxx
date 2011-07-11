@@ -22,8 +22,49 @@
 
 #ifndef SELDON_FILE_FUNCTIONS_MATRIX_HXX
 
+#define SELDON_FILE_FUNCTIONS_MATRIX_HXX
+
+
+/*
+  Function defined in this file:
+
+  alpha A -> A
+  Mlt(alpha, A)
+
+  A B -> C
+  Mlt(A, B, C)
+
+  alpha A B -> C
+  Mlt(alpha, A, B, C)
+
+  alpha A B + beta C -> C
+  MltAdd(alpha, A, B, beta, C)
+
+  alpha A + B -> B
+  Add(alpha, A, B)
+
+  LU factorization of matrix A without pivoting.
+  GetLU(A)
+
+  Highest absolute value of A.
+  MaxAbs(A)
+
+  1-norm of matrix A.
+  Norm1(A)
+
+  infinity norm of matrix A.
+  NormInf(A)
+
+  Transpose(A)
+*/
+
 namespace Seldon
 {
+
+
+  /////////
+  // MLT //
+
 
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
@@ -52,14 +93,14 @@ namespace Seldon
 	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
 	   const Matrix<T2, Prop2, Storage2, Allocator2>& B,
 	   Matrix<T3, Prop3, Storage3, Allocator3>& C);
-  
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2>
   void Mlt(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 	   const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 	   Matrix<T2, Prop2, Storage2, Allocator2>& C);
-  
+
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Prop2, class Allocator2>
@@ -88,6 +129,15 @@ namespace Seldon
                        const Matrix<T1, Prop1, RowSparse, Allocator1>& B,
                        Matrix<T2, Prop2, RowSparse, Allocator2>& C);
   
+  
+  // MLT //
+  /////////
+
+
+  ////////////
+  // MLTADD //
+
+
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2,
@@ -98,7 +148,7 @@ namespace Seldon
 	      const Matrix<T2, Prop2, Storage2, Allocator2>& B,
 	      const T3& beta,
 	      Matrix<T4, Prop4, Storage4, Allocator4>& C);
-  
+
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Prop2, class Allocator2,
@@ -109,7 +159,7 @@ namespace Seldon
 	      const Matrix<T2, Prop2, RowMajorCollection, Allocator2>& B,
 	      const T3& beta,
 	      Matrix<T4, Prop4, RowMajorCollection, Allocator4>& C);
-  
+
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Prop2, class Allocator2,
@@ -194,7 +244,7 @@ namespace Seldon
 	      const T3& beta,
 	      Matrix<FloatDouble, General, DenseSparseCollection,
 	      Allocator4>& C);
-  
+
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Prop2, class Allocator2,
@@ -205,7 +255,7 @@ namespace Seldon
               const Matrix<T2, Prop2, RowSparse, Allocator2>& B,
               const T3& beta,
               Matrix<T4, Prop4, RowSparse, Allocator4>& C);
-  
+
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Prop2, class Allocator2,
@@ -216,7 +266,7 @@ namespace Seldon
                           const Matrix<T2, Prop2, RowSparse, Allocator2>& B,
                           const T3& beta,
                           Matrix<T4, Prop4, RowSparse, Allocator4>& C);
-  
+
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Prop2, class Allocator2,
@@ -277,6 +327,15 @@ namespace Seldon
               const T4& beta,
               Matrix<T3, Prop3, Storage3, Allocator3>& C);
   
+
+  // MLTADD //
+  ////////////
+
+
+  /////////
+  // ADD //
+
+
   template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
 	   class T2, class Prop2, class Storage2, class Allocator2>
   void Add(const T0& alpha,
@@ -414,9 +473,27 @@ namespace Seldon
            const Matrix<T1, Symmetric, ColSymSparse, Allocator1>& A,
            Matrix<T2, Symmetric, ColSymSparse, Allocator2>& B);
   
+  
+  // ADD //
+  /////////
+
+
+  ///////////
+  // GETLU //
+
+
   template <class T0, class Prop0, class Storage0, class Allocator0>
   void GetLU(Matrix<T0, Prop0, Storage0, Allocator0>& A);
-  
+
+
+  // GETLU //
+  ///////////
+
+
+  //////////////
+  // CHECKDIM //
+
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2>
@@ -424,7 +501,7 @@ namespace Seldon
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
 		string function = "");
-  
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2>
@@ -433,7 +510,7 @@ namespace Seldon
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
 		string function = "");
-  
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
   void CheckDim(const SeldonTranspose& TransA,
@@ -441,7 +518,7 @@ namespace Seldon
 		const SeldonTranspose& TransB,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		string function = "");
-  
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2>
@@ -451,19 +528,28 @@ namespace Seldon
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
 		string function = "");
-  
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		string function = "");
-  
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
   void CheckDim(const SeldonSide& side,
 		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		string function = "");
+
+
+  // CHECKDIM //
+  //////////////
+
+
+  ///////////
+  // NORMS //
+
   
   template <class T, class Prop, class Storage, class Allocator>
   typename ClassComplexType<T>::Treal
@@ -524,6 +610,15 @@ namespace Seldon
   template <class T, class Prop, class Allocator>
   typename ClassComplexType<T>::Treal
   NormInf(const Matrix<T, Prop, ColSymSparse, Allocator>& A);
+
+  
+  // NORMS //
+  ///////////
+  
+
+  ///////////////
+  // TRANSPOSE //  
+  
   
   template<class T, class Prop, class Storage, class Allocator>
   void Transpose(Matrix<T, Prop, Storage, Allocator>& A);
@@ -569,6 +664,11 @@ namespace Seldon
   
   template<class T, class Prop, class Storage, class Allocator>
   void TransposeConj(Matrix<T, Prop, Storage, Allocator>& A);
+
+
+  // TRANSPOSE //    
+  ///////////////
+  
   
   //! returns true if the matrix is symmetric
   template<class T, class Prop, class Storage, class Allocator>
@@ -603,5 +703,4 @@ namespace Seldon
     
 } // namespace Seldon.
 
-#define SELDON_FILE_FUNCTIONS_MATRIX_HXX
 #endif

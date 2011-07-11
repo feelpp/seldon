@@ -1,5 +1,5 @@
+// Copyright (C) 2001-2011 Vivien Mallet
 // Copyright (C) 2003-2009 Marc Duruflé
-// Copyright (C) 2001-2009 Vivien Mallet
 // Copyright (C) 2010 INRIA
 // Author(s): Marc Fragu
 //
@@ -22,13 +22,59 @@
 
 #ifndef SELDON_FILE_FUNCTIONS_VECTOR_HXX
 
+#define SELDON_FILE_FUNCTIONS_VECTOR_HXX
+
+
+/*
+  Functions defined in this file:
+
+  alpha X -> X
+  Mlt(alpha, X)
+
+  alpha X + Y -> Y
+  Add(alpha, X, Y)
+
+  X -> Y
+  Copy(X, Y)
+
+  X <-> Y
+  Swap(X, Y)
+
+  X.Y
+  DotProd(X, Y)
+  DotProdConj(X, Y)
+
+  ||X||
+  Norm1(X)
+  Norm2(X)
+  GetMaxAbsIndex(X)
+
+  Omega X
+  GenRot(x, y, cos, sin)
+  ApplyRot(x, y, cos, sin)
+
+*/
+
 namespace Seldon
 {
 
+  /////////
+  // MLT //
+  
+  
   template <class T0,
 	    class T1, class Storage1, class Allocator1>
   void Mlt(const T0& alpha,
 	   Vector<T1, Storage1, Allocator1>& X)  throw();
+  
+  
+  // MLT //
+  /////////
+  
+  
+  /////////
+  // ADD //
+  
   
   template <class T0,
 	    class T1, class Storage1, class Allocator1,
@@ -66,7 +112,15 @@ namespace Seldon
 	   const
            Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
 	   Vector<T2, Storage2, Allocator2>& Y)  throw(WrongDim, NoMemory);
-
+  
+  // ADD //
+  /////////
+  
+  
+  //////////
+  // COPY //
+  
+  
   template <class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
   void Copy(const Vector<T1, Storage1, Allocator1>& X,
@@ -77,6 +131,15 @@ namespace Seldon
   void Copy(const Vector<T1, Collection, Allocator1>& X,
 	    Vector<T2, VectFull, Allocator2>& Y);
 
+  
+  // COPY //
+  //////////
+  
+  
+  //////////
+  // SWAP //
+  
+  
   template <class T, class Storage, class Allocator>
   void Swap(Vector<T, Storage, Allocator>& X,
 	    Vector<T, Storage, Allocator>& Y);
@@ -84,6 +147,15 @@ namespace Seldon
   template <class T, class Allocator>
   void Swap(Vector<T, VectSparse, Allocator>& X,
 	    Vector<T, VectSparse, Allocator>& Y);
+  
+  
+  // SWAP //
+  //////////
+  
+  
+  /////////////
+  // DOTPROD //
+  
   
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
@@ -117,13 +189,22 @@ namespace Seldon
 	   class T2, class Allocator2>
   T1 DotProd(const Vector<T1, VectSparse, Allocator1>& X,
 	     const Vector<T2, VectSparse, Allocator2>& Y);
-  
+
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
   complex<T1>
   DotProdConj(const Vector<complex<T1>, VectSparse, Allocator1>& X,
 	      const Vector<T2, VectSparse, Allocator2>& Y);
   
+  
+  // DOTPROD //
+  /////////////
+
+
+  ///////////
+  // NORM1 //
+
+
   template<class T1, class Storage1, class Allocator1>
   T1 Norm1(const Vector<T1, Storage1, Allocator1>& X);
   
@@ -135,6 +216,15 @@ namespace Seldon
   
   template<class T1, class Allocator1>
   T1 Norm1(const Vector<complex<T1>, VectSparse, Allocator1>& X);
+
+
+  // NORM1 //
+  ///////////
+
+
+  ///////////
+  // NORM2 //
+
   
   template<class T1, class Storage1, class Allocator1>
   T1 Norm2(const Vector<T1, Storage1, Allocator1>& X);
@@ -147,9 +237,27 @@ namespace Seldon
   
   template<class T1, class Allocator1>
   T1 Norm2(const Vector<complex<T1>, VectSparse, Allocator1>& X);
+
+
+  // NORM2 //
+  ///////////
+
+
+  ////////////////////
+  // GETMAXABSINDEX //
+
   
   template<class T, class Storage, class Allocator>
   int GetMaxAbsIndex(const Vector<T, Storage, Allocator>& X);
+
+
+  // GETMAXABSINDEX //
+  ////////////////////
+
+
+  //////////////
+  // APPLYROT //
+
   
   template<class T>
   void GenRot(T& a_in, T& b_in, T& c_, T& s_);
@@ -164,24 +272,33 @@ namespace Seldon
   void ApplyRot(complex<T>& x, complex<T>& y,
 		const T& c_, const complex<T>& s_);
   
+  
+  // APPLYROT //
+  //////////////
+
+
+  //////////////
+  // CHECKDIM //
+
+
   template <class T0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void CheckDim(const Vector<T0, Storage0, Allocator0>& X,
 		const Vector<T1, Storage1, Allocator1>& Y,
 		string function = "", string op = "X + Y");
-  
+
   template <class T0, class Allocator0,
 	    class T1, class Allocator1>
   void CheckDim(const Vector<T0, Vect_Sparse, Allocator0>& X,
 		const Vector<T1, Vect_Sparse, Allocator1>& Y,
 		string function = "", string op = "X + Y");
-  
+
   template <class T0, class Allocator0,
 	    class T1, class Allocator1>
   void CheckDim(const Vector<T0, Collection, Allocator0>& X,
 		const Vector<T1, Collection, Allocator1>& Y,
 		string function = "", string op = "X + Y");
-  
+
   template <class T0, class Allocator0, class Allocator00,
 	    class T1, class Allocator1, class Allocator11>
   void CheckDim(const Vector<Vector<T0, Vect_Sparse, Allocator0>,
@@ -189,13 +306,13 @@ namespace Seldon
 		const Vector<Vector<T1, Vect_Sparse, Allocator1>,
                 Collection, Allocator11>& Y,
 		string function = "", string op = "X + Y");
-  
+
   template <class T0, class Allocator0,
 	    class T1, class Allocator1>
   void CheckDim(const Vector<T0, VectFull, Allocator0>& X,
 		Vector<T1, Collection, Allocator1>& Y,
 		string function = "", string op = "X + Y");
-  
+
   template <class T0, template <class U0> class Allocator0,
 	    class T1, template <class U1> class Allocator1>
   void
@@ -204,14 +321,27 @@ namespace Seldon
            const
            Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& Y,
            string function = "", string op = "X + Y");
+
+
+  // CHECKDIM //
+  //////////////
+
+
+  ///////////////
+  // CONJUGATE //
+
   
   template<class T, class Prop, class Allocator>
   void Conjugate(Vector<T, Prop, Allocator>& X);
   
   template<class T, class Allocator>
   void Conjugate(Vector<T, VectSparse, Allocator>& X);
+  
+  
+  // CONJUGATE //
+  ///////////////
+
 
 } // namespace Seldon.
 
-#define SELDON_FILE_FUNCTIONS_VECTOR_HXX
 #endif
