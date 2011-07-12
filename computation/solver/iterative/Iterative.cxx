@@ -43,39 +43,10 @@
 #include "TfQmr.cxx"
 #include "Symmlq.cxx"
 
+#include "IterativeInline.cxx"
 
 namespace Seldon
 {
-
-  //! Default constructor
-  Preconditioner_Base::Preconditioner_Base()
-  {
-  }
-
-
-  //! Solves M z = r
-  /*!
-    Identity preconditioner M = I
-  */
-  template<class Matrix1, class Vector1>
-  void Preconditioner_Base::Solve(const Matrix1& A, const Vector1& r,
-                                  Vector1& z)
-  {
-    Copy(r,z);
-  }
-
-
-  //! Solves M^t z = r
-  /*!
-    Identity preconditioner M = I
-  */
-  template<class Matrix1, class Vector1>
-  void Preconditioner_Base::
-  TransSolve(const Matrix1& A, const Vector1 & r, Vector1 & z)
-  {
-    Solve(A, r, z);
-  }
-
 
   //! Default constructor
   template<class Titer>
