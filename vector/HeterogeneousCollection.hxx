@@ -60,6 +60,7 @@ namespace Seldon
 		   SELDON_DEFAULT_COLLECTION_ALLOCATOR<double_sparse_v> >
     double_sparse_c;
 
+    typedef DenseSparseCollection storage;
 
     // Attributes.
   protected:
