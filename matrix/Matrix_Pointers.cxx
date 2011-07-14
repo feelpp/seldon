@@ -1128,7 +1128,7 @@ namespace Seldon
     Builds a empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColMajor, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, ColMajor, Allocator>::Matrix():
     Matrix_Pointers<T, Prop, ColMajor, Allocator>()
   {
   }
@@ -1222,7 +1222,7 @@ namespace Seldon
     Builds a empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowMajor, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, RowMajor, Allocator>::Matrix():
     Matrix_Pointers<T, Prop, RowMajor, Allocator>()
   {
   }

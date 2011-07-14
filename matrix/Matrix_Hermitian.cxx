@@ -1128,7 +1128,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColHerm, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, ColHerm, Allocator>::Matrix():
     Matrix_Hermitian<T, Prop, ColHerm, Allocator>()
   {
   }
@@ -1214,7 +1214,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowHerm, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, RowHerm, Allocator>::Matrix():
     Matrix_Hermitian<T, Prop, RowHerm, Allocator>()
   {
   }

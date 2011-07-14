@@ -50,7 +50,7 @@ namespace Seldon
     // Methods.
   public:
     // Constructor.
-    explicit Vector()  throw();
+    explicit Vector();
     explicit Vector(int i);
     Vector(const Vector<T, VectSparse, Allocator>& A);
 

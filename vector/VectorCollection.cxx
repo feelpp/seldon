@@ -43,7 +43,7 @@ namespace Seldon
     Nothing is allocated. The vector length is set to zero.
   */
   template <class T, class Allocator>
-  inline Vector<T, Collection, Allocator>::Vector() throw():
+  inline Vector<T, Collection, Allocator>::Vector():
     Vector_Base<T, Allocator>(), label_map_(), label_vector_()
   {
     Nvector_ = 0;

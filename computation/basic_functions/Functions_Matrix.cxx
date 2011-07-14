@@ -76,8 +76,7 @@ namespace Seldon
   */
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
-  void Mlt(const T0 alpha,
-	   Matrix<T1, Prop1, Storage1, Allocator1>& A)  throw()
+  void Mlt(const T0 alpha, Matrix<T1, Prop1, Storage1, Allocator1>& A)
   {
     T1 alpha_ = alpha;
 
@@ -1337,7 +1336,7 @@ namespace Seldon
            class T2, class Prop2, class Allocator2>
   void Add(const T0& alpha,
 	   const Matrix<T1, Prop1, RowMajor, Allocator1>& A,
-	   Matrix<T2, Prop2, RowSparse, Allocator2>& B) throw()
+	   Matrix<T2, Prop2, RowSparse, Allocator2>& B)
   {
     throw Undefined("void Add(const T0& alpha,"
 		    "const Matrix<T1, Prop1, RowMajor, Allocator1>& A,"
@@ -1349,7 +1348,7 @@ namespace Seldon
            class T2, class Prop2, class Allocator2>
   void Add(const T0& alpha,
 	   const Matrix<T1, Prop1, ColMajor, Allocator1>& A,
-	   Matrix<T2, Prop2, RowSparse, Allocator2>& B) throw()
+	   Matrix<T2, Prop2, RowSparse, Allocator2>& B)
   {
     throw Undefined("void Add(const T0& alpha,"
 		    "const Matrix<T1, Prop1, RowMajor, Allocator1>& A,"

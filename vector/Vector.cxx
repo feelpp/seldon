@@ -209,7 +209,7 @@ namespace Seldon
     On exit, the vector is empty.
   */
   template <class T, class Allocator>
-  Vector<T, VectFull, Allocator>::Vector()  throw():
+  Vector<T, VectFull, Allocator>::Vector():
     Vector_Base<T, Allocator>()
   {
   }

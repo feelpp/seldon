@@ -1062,7 +1062,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColSymSparse, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, ColSymSparse, Allocator>::Matrix():
     Matrix_SymSparse<T, Prop, ColSymSparse, Allocator>()
   {
   }
@@ -1138,7 +1138,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowSymSparse, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, RowSymSparse, Allocator>::Matrix():
     Matrix_SymSparse<T, Prop, RowSymSparse, Allocator>()
   {
   }

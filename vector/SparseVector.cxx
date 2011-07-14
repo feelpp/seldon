@@ -36,7 +36,7 @@ namespace Seldon
     On exit, the vector is empty.
   */
   template <class T, class Allocator>
-  Vector<T, VectSparse, Allocator>::Vector()  throw():
+  Vector<T, VectSparse, Allocator>::Vector():
     Vector<T, VectFull, Allocator>()
   {
     index_ = NULL;

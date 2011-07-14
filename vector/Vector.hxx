@@ -106,7 +106,7 @@ namespace Seldon
     // Methods.
   public:
     // Constructor.
-    explicit Vector()  throw();
+    explicit Vector();
     explicit Vector(int i);
     Vector(int i, pointer data);
     Vector(const Vector<T, VectFull, Allocator>& A);

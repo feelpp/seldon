@@ -1162,7 +1162,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColUpTriang, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, ColUpTriang, Allocator>::Matrix():
     Matrix_Triangular<T, Prop, ColUpTriang, Allocator>()
   {
   }
@@ -1249,7 +1249,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColLoTriang, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, ColLoTriang, Allocator>::Matrix():
     Matrix_Triangular<T, Prop, ColLoTriang, Allocator>()
   {
   }
@@ -1336,7 +1336,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowUpTriang, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, RowUpTriang, Allocator>::Matrix():
     Matrix_Triangular<T, Prop, RowUpTriang, Allocator>()
   {
   }
@@ -1423,7 +1423,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowLoTriang, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, RowLoTriang, Allocator>::Matrix():
     Matrix_Triangular<T, Prop, RowLoTriang, Allocator>()
   {
   }

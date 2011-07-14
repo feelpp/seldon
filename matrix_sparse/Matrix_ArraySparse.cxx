@@ -958,7 +958,7 @@ namespace Seldon
     Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayColSparse, Allocator>::Matrix()  throw():
+  inline Matrix<T, Prop, ArrayColSparse, Allocator>::Matrix():
     Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>()
   {
   }
@@ -1168,7 +1168,7 @@ namespace Seldon
     Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayRowSparse, Allocator>::Matrix()  throw():
+  inline Matrix<T, Prop, ArrayRowSparse, Allocator>::Matrix():
     Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>()
   {
   }
@@ -1379,7 +1379,7 @@ namespace Seldon
     Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayColSymSparse, Allocator>::Matrix()  throw():
+  inline Matrix<T, Prop, ArrayColSymSparse, Allocator>::Matrix():
     Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>()
   {
   }
@@ -1671,7 +1671,7 @@ namespace Seldon
     Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Matrix()  throw():
+  inline Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Matrix():
     Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>()
   {
   }
