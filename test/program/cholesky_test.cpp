@@ -49,7 +49,7 @@ int main()
   x.Fill();
   Mlt(A, x, b);
 
-  // Cholesky factorisation using Seldon function
+  // Cholesky factorization using Seldon function
   GetCholesky(A);
 
   x = b;

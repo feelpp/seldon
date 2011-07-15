@@ -125,9 +125,9 @@ C++ functions (that do not call Blas) are available in <code>Seldon-[version]/co
 
   <li> <code>MltQ_FromQR(A, tau, x)</code> multiplies by matrix Q issued from QR factorization of matrix A. It is assumed that GetQR has been called before.  (<b>dormqr</b>) </li>
 
-  <li> <code>SolveQR(A, tau, x)</code> solves least-squares problem by using QR factorisation of matrix A. It is assumed that GetQR has been called before. </li>
+  <li> <code>SolveQR(A, tau, x)</code> solves least-squares problem by using QR factorization of matrix A. It is assumed that GetQR has been called before. </li>
 
-  <li> <code>SolveLQ(A, tau, x)</code> solves least-squares problem by using LQ factorisation of matrix A. It is assumed that GetLQ has been called before. </li>
+  <li> <code>SolveLQ(A, tau, x)</code> solves least-squares problem by using LQ factorization of matrix A. It is assumed that GetLQ has been called before. </li>
 
   <li> <code>GetEigenvalues(A, lambda_real, lambda_imag)</code> computes eigenvalues (real part and imaginary part) of unsymmetric real matrix. (<b>dgeev</b> ) </li>
 

@@ -35,29 +35,29 @@ namespace Seldon
     real alpha = param.GetDiagonalCoefficient();
     bool variable_fill = false;
     bool standard_dropping = true;
-    int type_factorisation = param.GetFactorisationType();
+    int type_factorization = param.GetFactorizationType();
     int additional_fill = param.GetAdditionalFillNumber();
     int print_level = param.GetPrintLevel();
-    if (type_factorisation == param.ILUT)
+    if (type_factorization == param.ILUT)
       standard_dropping = false;
-    else if (type_factorisation == param.ILU_D)
+    else if (type_factorization == param.ILU_D)
       standard_dropping = true;
-    else if (type_factorisation == param.ILUT_K)
+    else if (type_factorization == param.ILUT_K)
       {
         variable_fill = true;
 	standard_dropping = false;
       }
-    else if (type_factorisation == param.ILU_0)
+    else if (type_factorization == param.ILU_0)
       {
         GetIlu0(A);
         return;
       }
-    else if (type_factorisation == param.MILU_0)
+    else if (type_factorization == param.MILU_0)
       {
 	GetMilu0(A);
         return;
       }
-    else if (type_factorisation == param.ILU_K)
+    else if (type_factorization == param.ILU_K)
       {
 	GetIluk(lfil, A);
         return;

@@ -344,12 +344,13 @@ namespace Seldon
 	mem_usage_t mem_usage;
 	Lstore = (SCformat *) L.Store;
 	Ustore = (NCformat *) U.Store;
-	cout<<"No of nonzeros in factor L = "<<Lstore->nnz<<endl;
-	cout<<"No of nonzeros in factor U = "<<Ustore->nnz<<endl;
-	cout<<"No of nonzeros in L+U     = "<<(Lstore->nnz+Ustore->nnz)<<endl;
+	cout << "Number of nonzeros in factor L = " << Lstore->nnz << endl;
+	cout << "Number of nonzeros in factor U = " << Ustore->nnz << endl;
+	cout << "Number of nonzeros in L+U     = "
+             << Lstore->nnz + Ustore->nnz < <endl;
 	dQuerySpace(&L, &U, &mem_usage);
-	cout<<"Memory used for factorisation in Mo "
-	    <<mem_usage.total_needed/(1024*1024)<<endl;
+	cout << "Memory used for factorization in MB: "
+             << mem_usage.total_needed / (1024. * 1024.) << endl;
       }
 
     Acsr.Nullify();
@@ -442,7 +443,7 @@ namespace Seldon
     int relax = sp_ienv(2);
     int lwork = 0;
 
-    // factorisation
+    // Factorization.
     zgstrf(&options, &A, relax, panel_size, etree.GetData(),
            NULL, lwork, perm_c.GetData(), perm_r.GetData(), &L, &U, &stat,
            &info_facto);
@@ -456,12 +457,13 @@ namespace Seldon
 	mem_usage_t mem_usage;
 	Lstore = (SCformat *) L.Store;
 	Ustore = (NCformat *) U.Store;
-	cout<<"No of nonzeros in factor L = "<<Lstore->nnz<<endl;
-	cout<<"No of nonzeros in factor U = "<<Ustore->nnz<<endl;
-	cout<<"No of nonzeros in L+U     = "<<(Lstore->nnz+Ustore->nnz)<<endl;
+	cout << "Number of nonzeros in factor L = " << Lstore->nnz<<endl;
+	cout << "Number of nonzeros in factor U = " << Ustore->nnz<<endl;
+	cout << "Number of nonzeros in L+U     = "
+             << Lstore->nnz + Ustore->nnz<<endl;
 	zQuerySpace(&L, &U, &mem_usage);
-	cout<<"Memory used for factorisation in Mo "
-	    <<mem_usage.total_needed/1e6<<endl;
+	cout << "Memory used for factorization in MB: "
+	     << mem_usage.total_needed / (1024. * 1024.) << endl;
       }
 
     Acsr.Nullify();

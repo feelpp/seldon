@@ -525,7 +525,7 @@ GetEigenvaluesEigenvectors(var_eig, lambda, lambda_imag, eigen_vec);
 <li> CAYLEY_MODE : available for real generalized symmetric eigenproblems (5 for Arpack) : (K - &sigma; M)<sup>-1</sup> (K + &sigma; M) x = &mu; x  </li>
 </ul>
 
-<p> INVERT_MODE is not a computational mode of Arpack, but rather a trick in order to use mode 1 for generalized eigenvalue problems. Similarly, if you inform that the mass matrix is diagonal, or if you ask to perform a Cholesky factorisation of the mass matrix, GetEigenvaluesEigenvectors will use mode 1 (a regular mode on K or (K - &sigma; M)<sup>-1</sup> M ) to compute eigenvalues. However for diagonal mass and Cholesky factorisation, the eigenproblem stays symmetric, while INVERT_MODE breaks the symmetry, and the computation should be less efficient. </p>
+<p> INVERT_MODE is not a computational mode of Arpack, but rather a trick in order to use mode 1 for generalized eigenvalue problems. Similarly, if you inform that the mass matrix is diagonal, or if you ask to perform a Cholesky factorization of the mass matrix, GetEigenvaluesEigenvectors will use mode 1 (a regular mode on K or (K - &sigma; M)<sup>-1</sup> M ) to compute eigenvalues. However for diagonal mass and Cholesky factorization, the eigenproblem stays symmetric, while INVERT_MODE breaks the symmetry, and the computation should be less efficient. </p>
 
 <h4>Example :</h4>
 \precode
@@ -1278,7 +1278,7 @@ void ComputeMassForCholesky();
 </pre>
 
 
-<p>This method is assumed to compute the mass matrix when a Cholesky factorisation is required. It can differ from the computation of the mass matrix when a matrix vector product is required, since that in that latter case, the matrix may be not stored. This method is used internally and should not be called directly by the user. However, if you need to change how Cholesky factorisation is handled, you can overload this function as shown in the example of member function <a href="#FactorizeCholeskyMass">FactorizeCholeskyMass</a>. </p>
+<p>This method is assumed to compute the mass matrix when a Cholesky factorization is required. It can differ from the computation of the mass matrix when a matrix vector product is required, since that in that latter case, the matrix may be not stored. This method is used internally and should not be called directly by the user. However, if you need to change how Cholesky factorization is handled, you can overload this function as shown in the example of member function <a href="#FactorizeCholeskyMass">FactorizeCholeskyMass</a>. </p>
 
 <h4>Location :</h4>
 <p>EigenvalueSolver.cxx</p>
@@ -1616,7 +1616,7 @@ void FactorizeCholeskyMass();
 </pre>
 
 
-<p>This method computes a Cholesky factorization of mass matrix. It is used internally, and should not be called directly. However, if you derive a class for your own eigenproblem, and you want to change how Cholesky factorisation is handled, you can overload this method. Then, look at the example detailed in <a href="#MltCholeskyMass">MltCholeskyMass</a>. </p>
+<p>This method computes a Cholesky factorization of mass matrix. It is used internally, and should not be called directly. However, if you derive a class for your own eigenproblem, and you want to change how Cholesky factorization is handled, you can overload this method. Then, look at the example detailed in <a href="#MltCholeskyMass">MltCholeskyMass</a>. </p>
 
 <h4>Location :</h4>
 <p>EigenvalueSolver.cxx</p>

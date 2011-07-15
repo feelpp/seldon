@@ -1082,7 +1082,7 @@ namespace Seldon
   }
 
 
-  //! Returns the number of rows of the factorised matrix.
+  //! Returns the number of rows of the factorized matrix.
   template<class T>
   int SparseDirectSolver<T>::GetM() const
   {
@@ -1090,7 +1090,7 @@ namespace Seldon
   }
 
 
-  //! Returns the number of rows of the factorised matrix.
+  //! Returns the number of rows of the factorized matrix.
   template<class T>
   int SparseDirectSolver<T>::GetN() const
   {

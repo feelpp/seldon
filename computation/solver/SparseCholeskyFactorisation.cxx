@@ -25,7 +25,7 @@
 namespace Seldon
 {
 
-  //! implementation of Cholesky factorisation for sparse symmetric matrix
+  //! Implementation of Cholesky factorization for sparse symmetric matrix
   /*!
     This method may be slow for large matrices. For large matrices,
     it is more efficient to use an external library (Cholmod for example).
