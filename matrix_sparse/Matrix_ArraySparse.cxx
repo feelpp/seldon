@@ -1,4 +1,4 @@
-// Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2003-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -776,6 +776,26 @@ namespace Seldon
     for (int i = 0; i < IndRow.GetM(); i++)
       FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
 
+    // If the last element a_{m,n} does not exist, we add a zero.
+    int m = Storage::GetFirst(this->m_, this->n_);
+    int n = Storage::GetSecond(this->m_, this->n_);
+    if (m > 0 && n > 0)
+      {
+	bool presence_last_elt = false;
+	if (this->val_(m-1).GetM() > 0)
+	  {
+	    int p = this->val_(m-1).GetM();
+	    if (this->val_(m-1).Index(p-1) == n-1)
+	      presence_last_elt = true;
+	  }
+
+	if (!presence_last_elt)
+	  {
+	    T zero;
+	    SetComplexZero(zero);
+	    FileStream << this->m_ << " " << this->n_ << " " << zero << '\n';
+	  }
+      }
   }
 
 
