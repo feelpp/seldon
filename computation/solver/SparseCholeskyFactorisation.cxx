@@ -545,7 +545,7 @@ namespace Seldon
 
   //! Modifies the type of ordering used.
   template<class T>
-  void SparseCholeskySolver<T>::SetTypeOrdering(int type)
+  void SparseCholeskySolver<T>::SelectOrdering(int type)
   {
     type_ordering = type;
   }

@@ -1117,7 +1117,7 @@ namespace Seldon
 
   //! Modifies the ordering algorithm to use.
   template<class T>
-  void SparseDirectSolver<T>::SetTypeOrdering(int type)
+  void SparseDirectSolver<T>::SelectOrdering(int type)
   {
     type_ordering = type;
   }

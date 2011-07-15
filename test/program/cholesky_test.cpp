@@ -118,7 +118,7 @@ int main()
   // Cholesky factorization using Seldon function.
   SparseCholeskySolver<double> solver;
   solver.ShowMessages();
-  solver.SetTypeOrdering(SparseMatrixOrdering::METIS);
+  solver.SelectOrdering(SparseMatrixOrdering::METIS);
   solver.SelectDirectSolver(solver.SELDON_SOLVER);
   // solver.SelectDirectSolver(solver.CHOLMOD);
   solver.Factorize(A);
