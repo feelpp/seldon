@@ -1,0 +1,76 @@
+/*! \file eigenvalue.dox
+    \brief Eigenvalue Solvers.
+*/
+
+/*!
+\page eigenvalue Eigenvalue Solvers
+
+<p>%Seldon is interfaced with libraries performing the research of eigenvalues and eigenvectors of very large sparse linear systems : <b><a href="http://www.caam.rice.edu/software/ARPACK/">Arpack</a></b> and <b><a href="http://trilinos.sandia.gov/packages/anasazi/">Anasazi</a></b>. An example file is located in test/program/eigenvalue_test.cpp. For an efficient computation, the user should compile with one of the direct solvers interfaced by Seldon (ie. Mumps, Pastix, SuperLU or UmfPack). For example, if you are compiling with SuperLU and Arpack, you have to type. </p>
+
+<pre class="fragment">g++ -DSELDON_WITH_SUPERLU -DSELDON_WITH_ARPACK eigenvalue_test.cpp -ISuperLUdir/SRC -LSuperLUdir -lsuperlu -LArpackdir -larpack </pre>
+
+<p>where <b>Arpackdir</b> denotes the directory where Arpack has been installed. </p>
+
+
+<h2>Syntax</h2>
+
+
+<p>The syntax of all eigenvalue solvers is similar </p>
+
+
+<pre class="syntax-box">
+void GetEigenvaluesEigenvectors(EigenPb&amp;, Vector&amp; lambda, Vector&amp; lambda_imag, Matrix&amp; eigen_vec);
+</pre>
+
+
+<p>The interface has been done only for double precision (real or complex numbers),
+ since single precision is not accurate enough when seeking eigenvalues of very large sparse linear systems.</p>
+
+
+<h2>Basic use</h2>
+
+
+<p> We provide an example of eigenvalue resolution with a sparse matrix.</p>
+
+
+\precode
+// first we construct a sparse matrix
+int n = 1000; // size of linear system
+// we assume that you will construct A correctly
+Matrix&lt;double, General, ArrayRowSparse&gt; A(n, n);
+// if A is symmetric, prefer a symmetric storage
+// so that dsaupd routine will be called (more efficient)
+
+// then we declare the eigenproblem K x = lambda M x
+// where K is the stiffness matrix, and M mass matrix
+// the syntax is SparseEigenProblem&lt;T, MatrixStiff&gt; 
+// where T is double or complex&lt;double&gt;
+// and MatrixStiff the type of the stiffness matrix K
+SparseEigenProblem&lt;double, Matrix&lt;double, General, ArrayRowSparse&gt; &gt; var_eig;
+
+// setting parameters of eigenproblem
+var_eig.SetStoppingCriterion(1e-12);
+var_eig.SetNbAskedEigenvalues(10);
+// you can ask largest eigenvalues of M^-1 K, smallest 
+// or eigenvalues closest to a shift sigma
+var_eig.SetTypeSpectrum(var_eig.LARGE_EIGENVALUES, 0);
+// for small eigenvalues
+var_eig.SetTypeSpectrum(var_eig.SMALL_EIGENVALUES, 0);
+// eigenvalues clustered around a shift sigma :
+double sigma = 0.5;
+var_eig.SetTypeSpectrum(var_eig.CENTERED_EIGENVALUES, sigma);
+
+// then you select the computation mode
+// REGULAR => you only need of matrix vector product K x (if M = I)
+// SHIFTED => the matrix (K - sigma M) will be factorized by
+//            using an available direct solver
+var_eig.SetComputationalMode(var_eig.REGULAR_MODE);
+
+// declaring arrays that will contains eigenvalues and eigenvectors
+Vector<double> lambda, lambda_imag;
+Matrix<double> eigen_vec;
+GetEigenvaluesEigenvectors(var_eig, lambda, lambda_imag, eigen_vec);
+
+\endprecode
+
+*/
