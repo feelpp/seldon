@@ -508,6 +508,7 @@ namespace Seldon
   }
 
 
+  //! A is written in Harwell-Boeing file (.rua extension)
   template<class T, class Prop, class Storage, class Allocator>
   void WriteHarwellBoeing(const Matrix<T, Prop, Storage, Allocator>& A,
                           const string& file_name)
@@ -516,6 +517,7 @@ namespace Seldon
   }
 
 
+  //! A is written in Harwell-Boeing file (.cua extension)
   template<class T, class Prop, class Storage, class Allocator>
   void WriteHarwellBoeing(const Matrix<complex<T>,
                           Prop, Storage, Allocator>& A,
