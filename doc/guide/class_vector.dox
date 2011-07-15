@@ -16,16 +16,16 @@ Vector<double> U;
 IVect num;
 
 // with a different allocator
-Vector<float, Vect_Full, NewAlloc<float> > V;
+Vector<float, VectFull, NewAlloc<float> > V;
 \endprecode
 
 <h2>Methods :</h2>
 
 <table class="category-table">
 <tr class="category-table-tr-2">
-<td class="category-table-td"> <a href="#constructor"> Vector constructors </a> </td> </tr>
+<td class="category-table-td"> <a href="#constructor"> Vector constructors </a> </td> <td></td></tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"> <a href="#operator"> Vector operators </a> </td> </tr>
+ <td class="category-table-td"> <a href="#operator"> Vector operators </a> </td> <td></td></tr>
 <tr class="category-table-tr-2">
  <td class="category-table-td"> <a href="#getm"> GetM </a> </td>
  <td class="category-table-td"> returns the number of elements in the vector </td> </tr>
@@ -199,7 +199,7 @@ W.Fill(1.0);
 
 
 <h4>Location :</h4>
-<p> Class <code>Vector<T, Vect_Full></code><br/>
+<p> Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -247,7 +247,7 @@ U *= 1.5;
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -372,7 +372,7 @@ V.Clear();
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -408,7 +408,7 @@ V.Zero();
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -443,7 +443,7 @@ for (int i = 5; i < 20; i++)
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -486,7 +486,7 @@ void f(double* data)
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -513,7 +513,7 @@ Vector.cxx</p>
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -550,7 +550,7 @@ W = V;
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -590,7 +590,7 @@ V.PushBack(W);
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -630,7 +630,7 @@ W.Fill(zero);
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -668,7 +668,7 @@ V.Fill(2);
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -702,7 +702,7 @@ V.FillRand();
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -734,7 +734,7 @@ int pos = V.GetNormInfIndex(); // should return 1
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -765,7 +765,7 @@ V.Print(); // should display "hello world"
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -810,7 +810,7 @@ file_out.close();
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -859,7 +859,7 @@ V.ReadText(stream_data);
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -904,7 +904,7 @@ file_out.close();
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
@@ -948,7 +948,7 @@ file_in.close();
 
 
 <h4>Location :</h4>
-<p>Class <code>Vector<T, Vect_Full></code><br/>
+<p>Class <code>Vector<T, VectFull></code><br/>
 Vector.hxx<br/>
 Vector.cxx</p>
 
