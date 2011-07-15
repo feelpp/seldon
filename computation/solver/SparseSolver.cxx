@@ -1108,7 +1108,7 @@ namespace Seldon
 
   //! Sets directly the new ordering (by giving a permutation vector).
   template<class T>
-  void SparseDirectSolver<T>::SetOrdering(const IVect& num)
+  void SparseDirectSolver<T>::SetPermutation(const IVect& num)
   {
     type_ordering = SparseMatrixOrdering::USER;
     permut = num;
@@ -1738,7 +1738,7 @@ namespace Seldon
   */
   template<class T> template<class TransStatus, class Vector1>
   void SparseDirectSolver<T>::
-  SolveDistributed(const TransStatus& TransA, MPI::Comm& comm_facto,
+  SolveDistributed(MPI::Comm& comm_facto, const TransStatus& TransA,
                    Vector1& x_solution, const IVect& glob_number)
   {
     if (type_solver == MUMPS)

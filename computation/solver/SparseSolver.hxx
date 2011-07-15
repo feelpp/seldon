@@ -146,7 +146,7 @@ namespace Seldon
     int GetN() const;
 
     int GetTypeOrdering() const;
-    void SetOrdering(const IVect&);
+    void SetPermutation(const IVect&);
     void SelectOrdering(int);
 
     void SetNumberThreadPerNode(int m);
@@ -184,8 +184,8 @@ namespace Seldon
                           const IVect& glob_number);
 
     template<class TransStatus, class Vector1>
-    void SolveDistributed(const TransStatus& TransA,
-                          MPI::Comm& comm_facto, Vector1& x_solution,
+    void SolveDistributed(MPI::Comm& comm_facto,
+			  const TransStatus& TransA, Vector1& x_solution,
                           const IVect& glob_number);
 #endif
 
