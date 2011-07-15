@@ -119,6 +119,9 @@ namespace Seldon
     template<class Vector1>
     void Solve(Vector1& z);
 
+    template<class TransStatus, class Vector1>
+    void Solve(const TransStatus& transA, Vector1& z);
+
   };
 
 }

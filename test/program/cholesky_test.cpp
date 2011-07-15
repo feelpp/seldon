@@ -19,10 +19,6 @@
 
 #include "Seldon.hxx"
 #include "SeldonSolver.hxx"
-#include "computation/solver/SparseCholeskyFactorisation.cxx"
-#ifdef SELDON_WITH_CHOLMOD
-#include "computation/interfaces/direct/Cholmod.cxx"
-#endif
 
 using namespace Seldon;
 

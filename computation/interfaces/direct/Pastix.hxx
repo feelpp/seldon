@@ -91,7 +91,7 @@ namespace Seldon
     void Solve(const Transpose_status& TransA,
 	       Vector<T, VectFull, Allocator2>& x);
 
-    void SetNbThreadPerNode(int);
+    void SetNumberThreadPerNode(int num_thread);
 
     template<class Alloc1, class Alloc2, class Alloc3, class Tint>
     void FactorizeDistributedMatrix(MPI::Comm& comm_facto,
