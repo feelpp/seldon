@@ -40,6 +40,31 @@ namespace Seldon
                          Matrix<T, Prop, Storage, Allocator> & A);
 
 
+  template<class T>
+  void PrintComplexValuesHarwell(int nnz, const Vector<complex<T> >& Val,
+                                 ofstream& file_out);
+
+
+  template<class T>
+  void PrintComplexValuesHarwell(int nnz, const Vector<T>& Val,
+                                 ofstream& file_out);
+
+
+  template<class T, class Prop, class Storage, class Allocator>
+  void WriteHarwellBoeing(const Matrix<T, Prop, Storage, Allocator>& A,
+                          const string& file_name, bool complex);
+
+
+  template<class T, class Prop, class Storage, class Allocator>
+  void WriteHarwellBoeing(const Matrix<T, Prop, Storage, Allocator>& A,
+                          const string& file_name);
+
+
+  template<class T, class Prop, class Storage, class Allocator>
+  void WriteHarwellBoeing(const Matrix<complex<T>,
+                          Prop, Storage, Allocator>& A,
+                          const string& file_name);
+
 }
 
 

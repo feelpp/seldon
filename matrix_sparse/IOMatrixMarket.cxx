@@ -21,7 +21,7 @@
 
 
 #include "IOMatrixMarket.hxx"
-
+#include <iomanip>
 
 namespace Seldon
 {
@@ -360,6 +360,169 @@ namespace Seldon
     A.SetData(Nrow, Ncol, Nnonzero, A_data, A_ptr, A_ind);
   }
 
+
+  template<class T>
+  void PrintComplexValuesHarwell(int nnz, const Vector<complex<T> >& Val,
+                                 ofstream& file_out)
+  {
+    for (int i = 0; i < 2*nnz; i += 3)
+      {
+        for (int j = i; j < min(i+3, 2*nnz); j++)
+          {
+            if (j%2 == 0)
+              file_out << setw(23) << real(Val(j/2));
+            else
+              file_out << setw(23) << imag(Val(j/2));
+          }
+
+        file_out << '\n';
+      }
+  }
+
+
+  template<class T>
+  void PrintComplexValuesHarwell(int nnz, const Vector<T>& Val,
+                                 ofstream& file_out)
+  {
+    for (int i = 0; i < nnz; i += 3)
+      {
+        for (int j = i; j < min(i+3, nnz); j++)
+          file_out << setw(23) << Val(j);
+
+        file_out << '\n';
+      }
+  }
+
+
+  template<class T, class Prop, class Storage, class Allocator>
+  void WriteHarwellBoeing(const Matrix<T, Prop, Storage, Allocator>& A,
+                          const string& file_name, bool complex)
+  {
+    // converting to CSR
+    IVect Ptr, Ind;
+    Vector<T> Val;
+    General sym;
+    ConvertToCSC(A, sym, Ptr, Ind, Val);
+
+    // number of columns and non-zero entries
+    int nnz = Val.GetM();
+    int m = A.GetM();
+    int n = A.GetN();
+
+    // First line
+    ofstream file_out(file_name.data());
+
+    string title("Seldon");
+    string key("S0000008");
+    file_out.setf(ios::left);
+    file_out << setw(72) << title;
+    file_out << setw(8) << key;
+    file_out << endl;
+
+    // Compute column pointer format
+    int ptr_len = int(ceil( log10(0.1 + nnz + 1) )) + 1;
+    int ptr_nperline = min(80 / ptr_len, n+1);
+    int ptrcrd = n / ptr_nperline + 1;
+    string ptrfmt = string("(") + to_str(ptr_nperline)
+      + "I" + to_str(ptr_len) + ")";
+
+    // Compute row index format
+    int ind_len = int(ceil( log10(0.1 + n + 1) )) + 1;
+    int ind_nperline = min(80 / ind_len, nnz);
+    int indcrd = (nnz-1) / ind_nperline + 1;
+    string indfmt = string("(") + to_str(ind_nperline)
+      + 'I' + to_str(ind_len) + ')';
+
+    // compute value format
+    string valfmt("(3D23.15)");
+    int valcrd = (nnz-1) / 3 + 1;
+    if (complex)
+      valcrd = (2*nnz-1) / 3 + 1;
+
+    int rhscrd = 0;
+    int totcrd = ptrcrd + indcrd + valcrd + rhscrd;
+
+    // Second line
+    file_out << setw(14) << totcrd;
+    file_out << setw(14) << ptrcrd;
+    file_out << setw(14) << indcrd;
+    file_out << setw(14) << valcrd;
+    file_out << setw(14) << rhscrd;
+    file_out << endl;
+
+    // Third line
+    int neltvl = 0;
+    char mxtype[4];
+    if (complex)
+      mxtype[0] = 'C';
+    else
+      mxtype[0] = 'R';
+
+    if (m == n)
+      mxtype[1] = 'U';
+    else
+      mxtype[1] = 'R';
+
+    mxtype[2] = 'A';
+    mxtype[3] = '\0';
+
+    file_out << mxtype << "           ";
+    file_out << setw(14) << m;
+    file_out << setw(14) << n;
+    file_out << setw(14) << nnz;
+    file_out << setw(14) << neltvl;
+    file_out << endl;
+
+    // Fourth line
+    file_out << setw(16) << ptrfmt;
+    file_out << setw(16) << indfmt;
+    file_out << setw(20) << valfmt;
+    file_out << setw(20) << valfmt;
+    file_out << endl;
+
+    // printing ptr values
+    file_out.setf(ios::left);
+    for (int i = 0; i <= n; i += ptr_nperline)
+      {
+        for (int j = i; j < min(i+ptr_nperline, n+1); j++)
+          file_out << setw(ptr_len) << Ptr(j)+1;
+
+        file_out << '\n';
+      }
+
+    // printing ind values
+    for (int i = 0; i < nnz; i += ind_nperline)
+      {
+        for (int j = i; j < min(i+ind_nperline, nnz); j++)
+          file_out << setw(ind_len) << Ind(j)+1;
+
+        file_out << '\n';
+      }
+
+    // printing values
+    file_out.precision(15);
+    file_out.setf(ios::scientific);
+    PrintComplexValuesHarwell(nnz, Val, file_out);
+
+    file_out.close();
+  }
+
+
+  template<class T, class Prop, class Storage, class Allocator>
+  void WriteHarwellBoeing(const Matrix<T, Prop, Storage, Allocator>& A,
+                          const string& file_name)
+  {
+    WriteHarwellBoeing(A, file_name, false);
+  }
+
+
+  template<class T, class Prop, class Storage, class Allocator>
+  void WriteHarwellBoeing(const Matrix<complex<T>,
+                          Prop, Storage, Allocator>& A,
+                          const string& file_name)
+  {
+    WriteHarwellBoeing(A, file_name, true);
+  }
 
 }
 
