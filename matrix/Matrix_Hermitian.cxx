@@ -715,6 +715,8 @@ namespace Seldon
   //! Fills a matrix with a given value.
   /*!
     \param x the value to fill the matrix with.
+    \note If the imaginary part of x is non-null, the upper part will
+    contain x, whereas lower part will contain conj(x).
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
@@ -728,6 +730,8 @@ namespace Seldon
   //! Fills a matrix with a given value.
   /*!
     \param x the value to fill the matrix with.
+    \note If the imaginary part of x is non-null, the upper part will
+    contain x, whereas lower part will contain conj(x).
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
@@ -1185,6 +1189,8 @@ namespace Seldon
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
+    \warning The imaginary part of x should be null to keep an Hermitian
+    matrix.
   */
   template <class T, class Prop, class Allocator>
   template <class T0>

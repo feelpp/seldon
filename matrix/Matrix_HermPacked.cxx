@@ -497,6 +497,8 @@ namespace Seldon
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
+    \note If the imaginary part of x is non-null, the upper part will
+    contain x, whereas lower part will contain conj(x).
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
@@ -510,6 +512,8 @@ namespace Seldon
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
+    \note If the imaginary part of x is non-null, the upper part will
+    contain x, whereas lower part will contain conj(x).
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
