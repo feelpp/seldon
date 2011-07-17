@@ -274,67 +274,6 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_TriangPacked<T, Prop, Storage, Allocator>::reference
-  Matrix_TriangPacked<T, Prop, Storage, Allocator>::operator() (int i, int j)
-  {
-
-#ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_TriangPacked::operator()(int, int)",
-		     string("Index should be in [0, ") + to_str(this->m_-1)
-		     + "], but is equal to " + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_TriangPacked::operator()(int, int)",
-		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");
-
-    if (Storage::UpLo())
-      {
-	if (i > j)
-	  throw WrongRow("Matrix_TriangPacked::operator()(int, int)",
-			 string("Attempted to access to element (")
-			 + to_str(i) + ", " + to_str(j) + string(") but row")
-			 + string(" index should not be strictly more")
-			 + " than column index (upper triangular matrix).");
-	return this->data_[Storage::GetFirst(i * this->n_
-					     - (i * (i + 1)) / 2 + j,
-					     (j * (j + 1)) / 2 + i)];
-      }
-    else
-      {
-	if (j > i)
-	  throw WrongCol("Matrix_TriangPacked::operator()(int, int)",
-			 string("Attempted to access to element (")
-			 + to_str(i) + ", " + to_str(j) + string(") but")
-			 + string(" column index should not be strictly more")
-			 + " than row index (lower triangular matrix).");
-	return this->data_[Storage::GetFirst((i * (i + 1)) / 2 + j,
-					     j * this->m_
-					     - (j * (j + 1)) / 2 + i)];
-      }
-
-#endif
-
-    if (Storage::UpLo())
-      return this->data_[Storage::GetFirst(i * this->n_
-					   - (i * (i + 1)) / 2 + j,
-					   (j * (j + 1)) / 2 + i)];
-    else
-      return this->data_[Storage::GetFirst((i * (i + 1)) / 2 + j,
-					   j * this->m_
-					   - (j * (j + 1)) / 2 + i)];
-
-  }
-
-
-  //! Access operator.
-  /*!
-    Returns the value of element (i, j).
-    \param i row index.
-    \param j column index.
-    \return Element (i, j) of the matrix.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
   inline typename Matrix_TriangPacked<T, Prop, Storage, Allocator>::value_type
   Matrix_TriangPacked<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
@@ -487,6 +426,37 @@ namespace Seldon
   }
 
 
+  //! Returns the element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_TriangPacked<T, Prop, Storage, Allocator>::reference
+  Matrix_TriangPacked<T, Prop, Storage, Allocator>::Get(int i, int j)
+  {
+    return this->Val(i, j);
+  }
+
+
+  //! Returns the element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_TriangPacked<T, Prop, Storage, Allocator>
+  ::const_reference
+  Matrix_TriangPacked<T, Prop, Storage, Allocator>::Get(int i, int j) const
+  {
+    return this->Val(i, j);
+  }
+
+
   //! Access to elements of the data array.
   /*!
     Provides a direct access to the data array.
@@ -548,6 +518,20 @@ namespace Seldon
     this->Copy(A);
 
     return *this;
+  }
+
+
+  //! Sets an element of the matrix.
+  /*!
+    \param i row index.
+    \param j column index.
+    \param x new value for the matrix element (\a i, \a j).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_TriangPacked<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const T& x)
+  {
+    this->Val(i, j) = x;
   }
 
 
