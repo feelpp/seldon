@@ -489,6 +489,27 @@ namespace Seldon
   }
 
 
+  //! Access to element \a i.
+  /*!
+    \param i index.
+    \return The value of the vector at \a i.
+  */
+  template <class T, class Allocator>
+  inline typename Vector<T, VectFull, Allocator>::reference
+  Vector<T, VectFull, Allocator>::Get(int i)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongIndex("Vector<VectFull>::Get(int)",
+		       string("Index should be in [0, ") + to_str(this->m_-1)
+		       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    return this->data_[i];
+  }
+
+
   //! Access operator.
   /*!
     \param i index.
@@ -501,7 +522,28 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<VectFull>::operator()",
+      throw WrongIndex("Vector<VectFull>::operator() const",
+		       string("Index should be in [0, ") + to_str(this->m_-1)
+		       + "], but is equal to " + to_str(i) + ".");
+#endif
+
+    return this->data_[i];
+  }
+
+
+  //! Access to element \a i.
+  /*!
+    \param i index.
+    \return The value of the vector at \a i.
+  */
+  template <class T, class Allocator>
+  inline typename Vector<T, VectFull, Allocator>::const_reference
+  Vector<T, VectFull, Allocator>::Get(int i) const
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongIndex("Vector<VectFull>::Get(int) const",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
