@@ -78,13 +78,18 @@ namespace Seldon
     const_reference operator() (int i, int j) const;
 #endif
     reference Val(int i, int j);
+    reference Get(int i, int j);
 #ifndef SWIG
     const_reference Val(int i, int j) const;
+    const_reference Get(int i, int j) const;
     reference operator[] (int i);
     const_reference operator[] (int i) const;
+
     Matrix_Pointers<T, Prop, Storage, Allocator>&
     operator= (const Matrix_Pointers<T, Prop, Storage, Allocator>& A);
 #endif
+
+    void Set(int i, int j, const T& val);
     void Copy(const Matrix_Pointers<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.

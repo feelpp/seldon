@@ -556,6 +556,21 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Pointers<T, Prop, Storage, Allocator>::reference
+  Matrix_Pointers<T, Prop, Storage, Allocator>::Get(int i, int j)
+  {
+    return Val(i, j);
+  }
+
+
+  //! Access operator.
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
   inline typename Matrix_Pointers<T, Prop, Storage, Allocator>
   ::const_reference
   Matrix_Pointers<T, Prop, Storage, Allocator>::Val(int i, int j) const
@@ -573,6 +588,22 @@ namespace Seldon
 #endif
 
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
+  }
+
+
+  //! Access operator.
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Pointers<T, Prop, Storage, Allocator>
+  ::const_reference
+  Matrix_Pointers<T, Prop, Storage, Allocator>::Get(int i, int j) const
+  {
+    return Val(i, j);
   }
 
 
@@ -620,6 +651,20 @@ namespace Seldon
 #endif
 
     return this->data_[i];
+  }
+
+
+  //! Sets an element of the matrix.
+  /*!
+    \param i row index.
+    \param j column index.
+    \param x new value for the matrix element (\a i, \a j).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Pointers<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const T& val)
+  {
+    this->Val(i, j) = val;
   }
 
 
