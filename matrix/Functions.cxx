@@ -36,7 +36,7 @@ namespace Seldon
   */
   template <class T0, class Allocator0, class T1, class Allocator1>
   void GetRow(const Matrix<T0, General, RowSparse, Allocator0>& M,
-	      int i, Vector<T1, Vect_Sparse, Allocator1>& X)
+	      int i, Vector<T1, VectSparse, Allocator1>& X)
   {
 #ifdef SELDON_CHECK_BOUNDS
     int m = M.GetM();
@@ -86,7 +86,7 @@ namespace Seldon
   */
   template <class T0, class Allocator0, class T1, class Allocator1>
   void GetCol(const Matrix<T0, General, RowSparse, Allocator0>& M,
-	      int j, Vector<T1, Vect_Sparse, Allocator1>& X)
+	      int j, Vector<T1, VectSparse, Allocator1>& X)
   {
 #ifdef SELDON_CHECK_BOUNDS
     int n = M.GetN();
@@ -143,7 +143,8 @@ namespace Seldon
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
   void GetCol(const Matrix<T0, Prop0, Storage0, Allocator0>& M_in,
-	      int begin, int end, Matrix<T1, Prop1, Storage1, Allocator1>& M_out)
+	      int begin, int end,
+              Matrix<T1, Prop1, Storage1, Allocator1>& M_out)
   {
     M_out.Reallocate(M_in.GetM(), end - begin);
     for (int i = 0; i < M_in.GetM(); i++)
@@ -175,7 +176,7 @@ namespace Seldon
     \param[out] M matrix.
   */
   template <class T0, class Allocator0, class T1, class Allocator1>
-  void SetRow(const Vector<T1, Vect_Sparse, Allocator1>& X,
+  void SetRow(const Vector<T1, VectSparse, Allocator1>& X,
 	      int i, Matrix<T0, General, RowSparse, Allocator0>& M)
   {
     int m = M.GetM();
@@ -293,7 +294,7 @@ namespace Seldon
     int column_size_difference = Nx - Ncolumn_j;
 
     // Built a vector indexed with the rows of column_j and X.
-    Vector<int, Vect_Sparse> column_j_mask;
+    Vector<int, VectSparse> column_j_mask;
     Vector<int> index_j(Ncolumn_j);
     Vector<int> value_j(Ncolumn_j);
     for (int p = 0; p < Ncolumn_j; p++)
@@ -302,7 +303,7 @@ namespace Seldon
     column_j_mask.SetData(value_j, index_j);
     value_j.Nullify();
     index_j.Nullify();
-    Vector<int, Vect_Sparse> X_mask;
+    Vector<int, VectSparse> X_mask;
     Vector<int> index_x(Nx);
     Vector<int> value_x(Nx);
     for (int p = 0; p < Nx; p++)
@@ -333,7 +334,7 @@ namespace Seldon
     Vector<T0, VectFull, Allocator0>
       new_data_vector(nnz + column_size_difference);
 
-    Vector<T0, Vect_Sparse, Allocator0> working_vector;
+    Vector<T0, VectSparse, Allocator0> working_vector;
     int Nworking_vector;
 
     int line = 0;
