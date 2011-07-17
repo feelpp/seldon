@@ -327,7 +327,7 @@ namespace Seldon
 		     string("Attempted to access to element (")
 		     + to_str(i) + ", " + to_str(j)
 		     + ") but row index should not be strictly"
-		     + " more than column index.");
+		     + " greater than column index.");
 #endif
 
     return this->data_[Storage::GetFirst(i * this->n_ - (i*(i+1)) / 2 + j,
@@ -363,7 +363,7 @@ namespace Seldon
 		     string("Attempted to access to element (")
 		     + to_str(i) + ", " + to_str(j)
 		     + string(") but row index should not be strictly")
-		     + " more than column index.");
+		     + " greater than column index.");
 #endif
 
     return this->data_[Storage::GetFirst(i * this->n_ - (i*(i+1)) / 2 + j,
