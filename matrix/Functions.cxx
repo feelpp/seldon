@@ -134,7 +134,7 @@ namespace Seldon
 	      int i, Matrix<T0, Prop0, Storage0, Allocator0>& M)
   {
     for (int j = 0; j < M.GetN(); j++)
-      M(i, j) = X(j);
+      M.Set(i, j, X(j));
   }
 
 
@@ -201,7 +201,7 @@ namespace Seldon
 	      int j, Matrix<T0, Prop0, Storage0, Allocator0>& M)
   {
     for (int i = 0; i < M.GetM(); i++)
-      M(i, j) = X(i);
+      M.Set(i, j, X(i));
   }
 
 
