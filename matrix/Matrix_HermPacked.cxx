@@ -475,9 +475,10 @@ namespace Seldon
   {
     this->Fill(T(0));
 
-    T one(1);
+    T one;
+    SetComplexOne(one);
     for (int i = 0; i < min(this->m_, this->n_); i++)
-      (*this)(i,i) = one;
+      this->Val(i,i) = one;
   }
 
 
