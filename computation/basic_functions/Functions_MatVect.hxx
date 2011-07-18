@@ -450,8 +450,8 @@ namespace Seldon
 
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
-  inline void Gauss(Matrix<T0, Prop0, Storage0, Allocator0>& M,
-		    Vector<T1, Storage1, Allocator1>& X);
+  void Gauss(Matrix<T0, Prop0, Storage0, Allocator0>& M,
+             Vector<T1, Storage1, Allocator1>& X);
 
   // GAUSS //
   ///////////
@@ -464,10 +464,10 @@ namespace Seldon
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
-  inline void GaussSeidel(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
-			  const Vector<T1, Storage1, Allocator1>& X,
-			  Vector<T2, Storage2, Allocator2>& Y,
-			  int iter);
+  void GaussSeidel(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
+                   Vector<T2, Storage2, Allocator2>& Y,
+                   const Vector<T1, Storage1, Allocator1>& X,                   
+                   int iter, int type_algo = 2);
 
 
   // GAUSS-SEIDEL //
@@ -483,11 +483,20 @@ namespace Seldon
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3>
- void SOR(const class_SeldonTrans& transM,
-	  const Matrix<T0, Prop0, Storage0, Allocator0>& M,
-	  Vector<T2, Storage2, Allocator2>& Y,
-	  const Vector<T1, Storage1, Allocator1>& X,
-	  const T3& omega, int iter, int type_ssor = 3);
+  void SOR(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
+           Vector<T2, Storage2, Allocator2>& Y,
+           const Vector<T1, Storage1, Allocator1>& X,
+           const T3& omega, int iter, int type_ssor = 2);
+  
+  template <class T0, class Prop0, class Storage0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3>
+  void SOR(const class_SeldonTrans& transM,
+           const Matrix<T0, Prop0, Storage0, Allocator0>& M,
+           Vector<T2, Storage2, Allocator2>& Y,
+           const Vector<T1, Storage1, Allocator1>& X,
+           const T3& omega, int iter, int type_ssor = 3);
   
 
   // S.O.R. METHOD //
