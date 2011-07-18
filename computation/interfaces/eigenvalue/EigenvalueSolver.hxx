@@ -261,7 +261,7 @@ namespace Seldon
     Matrix<T, Prop, Storage> mat_lu;
     
     //! pivot used by the LU factorisation
-    IVect pivot;
+    Vector<int> pivot;
 
     //! Cholesky factorisation of mass matrix
     Matrix<Tmass, PropM, StorageM> mat_chol;

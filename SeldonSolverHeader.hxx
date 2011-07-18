@@ -66,6 +66,7 @@
 #ifdef SELDON_WITH_ARPACK
 #include "computation/interfaces/eigenvalue/Arpack.hxx"
 #include "computation/interfaces/eigenvalue/EigenvalueSolver.hxx"
+#include "computation/interfaces/eigenvalue/ArpackSolver.hxx"
 #endif
 
 #define SELDON_FILE_SELDON_SOLVER_HEADER_HXX

@@ -97,11 +97,6 @@ namespace Seldon
 #include "computation/interfaces/Lapack_Eigenvalues.cxx"
 #endif // SELDON_WITH_LAPACK.
 
-// Arpack interface.
-#ifdef SELDON_WITH_ARPACK
-#include "computation/interfaces/eigenvalue/ArpackSolver.cxx"
-#endif // SELDON_WITH_ARPACK.
-
 #include "share/Common.cxx"
 
 #ifdef SELDON_WITH_COMPILED_LIBRARY

@@ -19,6 +19,8 @@
 
 #ifndef SELDON_FILE_ARPACKSOLVER_CXX
 
+#include "ArpackSolver.hxx"
+
 #ifndef SELDON_WITH_COMPILED_LIBRARY
 ArpackLog debug_;
 #endif

@@ -365,13 +365,6 @@ extern "C"
 
 #endif // SELDON_WITH_LAPACK.
 
-// Arpack interface.
-#ifdef SELDON_WITH_ARPACK
-#include "computation/interfaces/eigenvalue/Arpack.hxx"
-#include "computation/interfaces/eigenvalue/ArpackSolver.hxx"
-#endif // SELDON_WITH_ARPACK.
-
-
 namespace Seldon
 {
 
