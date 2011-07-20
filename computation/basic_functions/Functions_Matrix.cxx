@@ -2030,14 +2030,20 @@ namespace Seldon
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
 		string function)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Achar = to_str(&A), Bchar = to_str(&B), Cchar = to_str(&C);
+#else
+    string Achar("A"), Bchar("B"), Cchar("C");
+#endif
+
     if (B.GetM() != A.GetN() || C.GetM() != A.GetM() || B.GetN() != C.GetN())
       throw WrongDim(function, string("Operation A B + C -> C not permitted:")
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix;\n     C (")
-		     + to_str(&C) + string(") is a ") + to_str(C.GetM())
+		     + Cchar + string(") is a ") + to_str(C.GetM())
 		     + string(" x ") + to_str(C.GetN()) + string(" matrix."));
   }
 
@@ -2062,27 +2068,33 @@ namespace Seldon
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
 		string function)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Achar = to_str(&A), Bchar = to_str(&B), Cchar = to_str(&C);
+#else
+    string Achar("A"), Bchar("B"), Cchar("C");
+#endif
+
     if ( SeldonSide(side).Left() &&
 	 (B.GetM() != A.GetN() || C.GetM() != A.GetM()
 	  || B.GetN() != C.GetN()) )
       throw WrongDim(function, string("Operation A B + C -> C not permitted:")
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix;\n     C (")
-		     + to_str(&C) + string(") is a ") + to_str(C.GetM())
+		     + Cchar + string(") is a ") + to_str(C.GetM())
 		     + string(" x ") + to_str(C.GetN()) + string(" matrix."));
     else if ( SeldonSide(side).Right() &&
 	      (B.GetN() != A.GetM() || C.GetM() != B.GetM()
 	       || A.GetN() != C.GetN()) )
       throw WrongDim(function, string("Operation B A + C -> C not permitted:")
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix;\n     C (")
-		     + to_str(&C) + string(") is a ") + to_str(C.GetM())
+		     + Cchar + string(") is a ") + to_str(C.GetM())
 		     + string(" x ") + to_str(C.GetN()) + string(" matrix."));
   }
 
@@ -2106,6 +2118,12 @@ namespace Seldon
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		string function)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Achar = to_str(&A), Bchar = to_str(&B);
+#else
+    string Achar("A"), Bchar("B");
+#endif
+
     SeldonTranspose status_A(TransA);
     SeldonTranspose status_B(TransB);
     string op;
@@ -2124,9 +2142,9 @@ namespace Seldon
     op = string("Operation ") + op + string(" not permitted:");
     if (B.GetM(status_B) != A.GetN(status_A))
       throw WrongDim(function, op
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix."));
   }
@@ -2154,6 +2172,12 @@ namespace Seldon
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
 		string function)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Achar = to_str(&A), Bchar = to_str(&B), Cchar = to_str(&C);
+#else
+    string Achar("A"), Bchar("B"), Cchar("C");
+#endif
+
     string op;
     if (TransA.Trans())
       op = string("A'");
@@ -2171,12 +2195,12 @@ namespace Seldon
     if (B.GetM(TransB) != A.GetN(TransA) || C.GetM() != A.GetM(TransA)
 	|| B.GetN(TransB) != C.GetN())
       throw WrongDim(function, op
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix;\n     C (")
-		     + to_str(&C) + string(") is a ") + to_str(C.GetM())
+		     + Cchar + string(") is a ") + to_str(C.GetM())
 		     + string(" x ") + to_str(C.GetN()) + string(" matrix."));
   }
 
@@ -2217,18 +2241,24 @@ namespace Seldon
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		string function)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Achar = to_str(&A), Bchar = to_str(&B);
+#else
+    string Achar("A"), Bchar("B");
+#endif
+
     if (side.Left() && B.GetM() != A.GetN())
       throw WrongDim(function, string("Operation A B not permitted:")
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix."));
     else if (side.Right() && B.GetN() != A.GetM())
       throw WrongDim(function, string("Operation B A not permitted:")
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix."));
   }

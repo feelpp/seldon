@@ -679,12 +679,18 @@ namespace Seldon
 		const Vector<T1, Storage1, Allocator1>& Y,
 		string function, string op)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Xchar = to_str(&X), Ychar = to_str(&Y);
+#else
+    string Xchar("X"), Ychar("Y");
+#endif
+
     if (X.GetLength() != Y.GetLength())
       throw WrongDim(function, string("Operation ") + op
 		     + string(" not permitted:")
-		     + string("\n     X (") + to_str(&X) + string(") is a ")
+		     + string("\n     X (") + Xchar + string(") is a ")
 		     + string("vector of length ") + to_str(X.GetLength())
-		     + string(";\n     Y (") + to_str(&Y) + string(") is a ")
+		     + string(";\n     Y (") + Ychar + string(") is a ")
 		     + string("vector of length ") + to_str(Y.GetLength())
 		     + string("."));
   }
@@ -768,12 +774,18 @@ namespace Seldon
                 Collection, Allocator11>& Y,
 		string function, string op)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Xchar = to_str(&X), Ychar = to_str(&Y);
+#else
+    string Xchar("X"), Ychar("Y");
+#endif
+
     if (X.GetNvector() != Y.GetNvector())
       throw WrongDim(function, string("Operation ") + op
 		     + string(" not permitted:")
-		     + string("\n     X (") + to_str(&X) + string(") is a ")
+		     + string("\n     X (") + Xchar + string(") is a ")
 		     + string("vector of length ") + to_str(X.GetNvector())
-		     + string(";\n     Y (") + to_str(&Y) + string(") is a ")
+		     + string(";\n     Y (") + Ychar + string(") is a ")
 		     + string("vector of length ") + to_str(Y.GetNvector())
 		     + string("."));
   }
@@ -796,12 +808,18 @@ namespace Seldon
 		Vector<T1, Collection, Allocator1>& Y,
 		string function, string op)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Xchar = to_str(&X), Ychar = to_str(&Y);
+#else
+    string Xchar("X"), Ychar("Y");
+#endif
+
     if (X.GetLength() != Y.GetM())
       throw WrongDim(function, string("Operation ") + op
 		     + string(" not permitted:")
-		     + string("\n     X (") + to_str(&X) + string(") is a ")
+		     + string("\n     X (") + Xchar + string(") is a ")
 		     + string("vector of length ") + to_str(X.GetLength())
-		     + string(";\n     Y (") + to_str(&Y) + string(") is a ")
+		     + string(";\n     Y (") + Ychar + string(") is a ")
 		     + string("vector of length ") + to_str(Y.GetM())
 		     + string("."));
   }
@@ -827,12 +845,18 @@ namespace Seldon
            Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& Y,
            string function, string op)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Xchar = to_str(&X), Ychar = to_str(&Y);
+#else
+    string Xchar("X"), Ychar("Y");
+#endif
+
     if (X.GetNvector() != Y.GetNvector())
       throw WrongDim(function, string("Operation ") + op
 		     + string(" not permitted:")
-		     + string("\n     X (") + to_str(&X) + string(") is a ")
+		     + string("\n     X (") + Xchar + string(") is a ")
 		     + string("vector of length ") + to_str(X.GetNvector())
-		     + string(";\n     Y (") + to_str(&Y) + string(") is a ")
+		     + string(";\n     Y (") + Ychar + string(") is a ")
 		     + string("vector of length ") + to_str(Y.GetNvector())
 		     + string("."));
   }
