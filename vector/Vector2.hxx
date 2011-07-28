@@ -1,5 +1,6 @@
 // Copyright (C) 2010, INRIA
 // Author(s): Marc Fragu, Vivien Mallet
+// Copyright (C) 2011, Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -142,6 +143,13 @@ namespace Seldon
     template <class V2>
     bool HasSameShape(const V2& V) const;
     void Print() const;
+
+    /*** Input/output functions ***/
+
+    void Write(string file_name, bool with_size = true) const;
+    void Write(ostream& file_stream, bool with_size = true) const;
+    void Read(string file_name, bool with_size = true);
+    void Read(istream& file_stream, bool with_size = true);
   };
 
 
