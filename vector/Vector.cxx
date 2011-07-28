@@ -809,7 +809,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Vector<VectFull>::Write(string FileName)",
+      throw IOError("Vector<VectFull>::Write(string FileName, "
+                    "bool with_size)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
@@ -834,7 +835,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Vector<VectFull>::Write(ostream& FileStream)",
+      throw IOError("Vector<VectFull>::Write(ostream& FileStream, "
+                    "bool with_size)",
                     "The stream is not ready.");
 #endif
 
@@ -848,7 +850,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!FileStream.good())
-      throw IOError("Vector<VectFull>::Write(ostream& FileStream)",
+      throw IOError("Vector<VectFull>::Write(ostream& FileStream, "
+                    "bool with_size)",
                     "Output operation failed.");
 #endif
 
@@ -934,7 +937,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Vector<VectFull>::Read(string FileName)",
+      throw IOError("Vector<VectFull>::Read(string FileName, bool with_size)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
@@ -961,7 +964,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Vector<VectFull>::Read(istream& FileStream)",
+      throw IOError("Vector<VectFull>::Read(istream& FileStream, "
+                    "bool with_size)",
                     "The stream is not ready.");
 #endif
 
@@ -978,8 +982,9 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.
     if (!FileStream.good())
-      throw IOError("Vector<VectFull>::Read(istream& FileStream)",
-                    "Input operation failed.");
+      throw IOError("Vector<VectFull>::Read(istream& FileStream, "
+                    "bool with_size)",
+                    "Output operation failed.");
 #endif
 
   }
