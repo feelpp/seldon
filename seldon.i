@@ -20,6 +20,11 @@
 %module seldon
 %{
 #include "SeldonHeader.hxx"
+namespace Seldon
+{
+  void skip_vector_double(istream& input_stream);
+  void skip_matrix_double(istream& input_stream);
+}
   %}
 
 %include "std_iostream.i"
@@ -220,6 +225,9 @@ namespace Seldon
 
   %template(BaseMatrixSparseDouble) Matrix_Sparse<double, General, RowSparse, MallocAlloc<double> >;
   %template(MatrixSparseDouble) Matrix<double, General, RowSparse, MallocAlloc<double> >;
+
+  void skip_vector_double(istream& input_stream);
+  void skip_matrix_double(istream& input_stream);
 }
 
 
@@ -249,18 +257,24 @@ def load_vector(filename, array = False):
     return vector
 
 
-def load_vector_list(filename, array = False, N = 0):
+def load_vector_list(filename, array = False, begin = 0, N = 0):
     """
-    Loads a list of Seldon vectors (in double precision) from a file. If
-    'array' is set to True, the vectors are converted to numpy arrays. 'N' is
-    the number of vectors to read; all vectors are read if 'N' is 0 or
-    negative.
+    Loads a list of Seldon vectors (in double precision) from a file, skipping
+    the first 'begin' vectors. If 'array' is set to True, the vectors are
+    converted to numpy arrays. 'N' is the number of vectors to read; all
+    vectors are read if 'N' is 0 or negative.
     """
     import seldon
     if isinstance(filename, str):
         stream = seldon.ifstream(filename)
     else: # assuming 'filename' is already a stream.
         stream = filename
+
+    begin = max(begin, 0)
+    count = 0
+    while stream.peek() != -1 and count != begin:
+        skip_vector_double(stream)
+        count += 1
 
     vector_list = []
     count = 0
@@ -315,18 +329,24 @@ def load_matrix(filename, array = False):
     return matrix
 
 
-def load_matrix_list(filename, array = False, N = 0):
+def load_matrix_list(filename, array = False, begin = 0, N = 0):
     """
-    Loads a list of Seldon matrices (in double precision) from a file. If
-    'array' is set to True, the matrices are converted to numpy arrays. 'N' is
-    the number of matrices to read; all matrices are read if 'N' is 0 or
-    negative.
+    Loads a list of Seldon matrices (in double precision) from a file,
+    skipping the first 'begin' matrices.. If 'array' is set to True, the
+    matrices are converted to numpy arrays. 'N' is the number of matrices to
+    read; all matrices are read if 'N' is 0 or negative.
     """
     import seldon
     if isinstance(filename, str):
         stream = seldon.ifstream(filename)
     else: # assuming 'filename' is already a stream.
         stream = filename
+
+    begin = max(begin, 0)
+    count = 0
+    while stream.peek() != -1 and count != begin:
+        skip_matrix_double(stream)
+        count += 1
 
     matrix_list = []
     count = 0

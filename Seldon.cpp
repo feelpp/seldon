@@ -51,6 +51,23 @@ namespace Seldon
                                                Vector<double, VectFull>& Val,
                                                Matrix<double, General, RowSparse, MallocAlloc<double> >& A,
                                                int index = 0);
+
+  // Skips one vector in an input stream.
+  void skip_vector_double(istream& input_stream)
+  {
+    int size;
+    input_stream.read(reinterpret_cast<char*>(&size), sizeof(int));
+    input_stream.seekg(size * sizeof(double), istream::cur);
+  }
+
+  // Skips one matrix in an input stream.
+  void skip_matrix_double(istream& input_stream)
+  {
+    int m, n;
+    input_stream.read(reinterpret_cast<char*>(&m), sizeof(int));
+    input_stream.read(reinterpret_cast<char*>(&n), sizeof(int));
+    input_stream.seekg(m * n * sizeof(double), istream::cur);
+  }
 }
 
 
