@@ -143,8 +143,7 @@ namespace Seldon
     GetVector(int i) const;
 
     Vector<T, Vect_Full, Allocator0>& GetVector(int i, int j);
-    const Vector<T, Vect_Full, Allocator0>& GetVector(int i, int j)
-      const;
+    const Vector<T, Vect_Full, Allocator0>& GetVector(int i, int j) const;
 
     /*** Element access and assignment ***/
     const
