@@ -163,6 +163,13 @@ namespace Seldon
     /*** Convenient method ***/
 
     void Print() const;
+
+    /*** Input/output functions ***/
+
+    void Write(string file_name, bool with_size = true) const;
+    void Write(ostream& file_stream, bool with_size = true) const;
+    void Read(string file_name, bool with_size = true);
+    void Read(istream& file_stream, bool with_size = true);
   };
 
 }
