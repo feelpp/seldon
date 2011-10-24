@@ -158,25 +158,29 @@ namespace Seldon
 
     if (initial_num < num)
       {
-	memory_block = realloc(memory_block,
-			       sizeof(int) + sizeof(char*) +
+	memory_block = realloc(memory_block, sizeof(int) + sizeof(char*) +
                                (num + 2) * sizeof(T));
-	new(reinterpret_cast<char *>(data)
-            + initial_num * sizeof(T)) T[num - initial_num];
+
+	new(static_cast<char *>(memory_block) + sizeof(int) + sizeof(T) +
+            sizeof(char*) + initial_num * sizeof(T)) T[num - initial_num];
       }
     else if (initial_num > num)
       {
 	for (int i = num; i < initial_num; i++)
 	  data[i].~T();
-	memory_block = realloc(memory_block,
-			       sizeof(int) + sizeof(char*)
-                               + (num + 2) * sizeof(T));
+
+	memory_block = realloc(memory_block, sizeof(int) + sizeof(char*) +
+                               (num + 2) * sizeof(T));
+
       }
     else
       return data;
 
     memcpy(memory_block, &num, sizeof(int));
-    pointer data_P = reinterpret_cast<pointer>(data);
+
+    pointer data_P =
+      reinterpret_cast<pointer>(static_cast<char*>(memory_block) +
+                                sizeof(int) + sizeof(char*) + sizeof(T));
     memcpy(reinterpret_cast<char *>(data_P) - sizeof(char*),
            &memory_block, sizeof(char*));
 
