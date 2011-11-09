@@ -1135,6 +1135,70 @@ namespace Seldon
   }
 
 
+  /*! \brief Multiplies a row-major matrix with a row-major sparse matrix
+    and adds it to a third.*/
+  /*! It performs the operation \f$ C = \alpha A B^T + \beta C \f$ where \f$ A
+    \f$ and \f$ C \f$ are row-major dense matrices and \f$ B \f$ a row-major
+    sparse matrix in Harwell-Boeing format.
+    \param[in] A row-major dense matrix.
+    \param[in] B row-major sparse matrix in Harwell-Boeing format.
+    \param[out] C resulting row-major dense matrix.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Prop2, class Allocator2,
+	    class T3,
+            class T4, class Prop4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const SeldonTranspose& TransA,
+              const Matrix<T1, Prop1, RowMajor, Allocator1>& A,
+              const SeldonTranspose& TransB,
+              const Matrix<T2, Prop2, RowSparse, Allocator2>& B,
+              const T3 beta,
+              Matrix<T4, Prop4, RowMajor, Allocator4>& C)
+  {
+    if (!TransA.NoTrans())
+      throw WrongArgument("MltAdd(T0 alpha, SeldonTranspose TransA, "
+                          "const Matrix<RowMajor>& A, SeldonTranspose "
+                          "TransB, const Matrix<RowSparse>& B, T3 beta, "
+                          "Matrix<RowSparse>& C)",
+                          "'TransA' must be equal to 'SeldonNoTrans'.");
+    if (!TransB.NoTrans() && !TransB.Trans())
+      throw WrongArgument("MltAdd(T0 alpha, SeldonTranspose TransA, "
+                          "const Matrix<RowMajor>& A, SeldonTranspose "
+                          "TransB, const Matrix<RowSparse>& B, T3 beta, "
+                          "Matrix<RowMajor>& C)",
+                          "'TransB' must be equal to 'SeldonNoTrans' or "
+                          "'SeldonTrans'.");
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(SeldonNoTrans, A, SeldonTrans, B, C,
+             "MltAdd(T0 alpha, const Matrix<RowMajor>& A, const "
+             "Matrix<RowSparse>& B, T3 beta, Matrix<RowMajor>& C)");
+#endif
+
+    if (TransB.Trans())
+      {
+        int m = A.GetM();
+        if (beta == 0)
+          C.Fill(T2(0));
+        else
+          Mlt(beta, C);
+        if (alpha != 0)
+          for (int i = 0; i < m; i++)
+            for (int j = 0; j < B.GetM(); j++)
+              {
+                // Loop on all elements in the i-th row in B. These elements
+                // are multiplied with the element (i, k) of A.
+                for (int l = B.GetPtr()[j]; l < B.GetPtr()[j + 1]; l++)
+                  C(i, j) += alpha * A(i, B.GetInd()[l]) * B.GetData()[l];
+              }
+      }
+    else
+      MltAdd(alpha, A, B, beta, C);
+  }
+
+
   // MLTADD //
   ////////////
 
