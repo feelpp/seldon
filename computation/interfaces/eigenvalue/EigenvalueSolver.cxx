@@ -38,6 +38,12 @@ namespace Seldon
     complex_system = false;
     Mh = NULL;
     Kh = NULL;
+
+#ifdef SELDON_WITH_MPI
+    // for parallel execution, default communicator : all the processors
+    comm = MPI::COMM_WORLD;
+#endif
+    
   }
   
   
@@ -47,18 +53,24 @@ namespace Seldon
   {
     n_ = n;
     nb_prod = 0;
-    if (nb_eigenvalues_wanted >= (n_ - 2))
+
+    int nglob = n;
+#ifdef SELDON_WITH_MPI
+    comm.Allreduce(&n, &nglob, 1, MPI::INTEGER, MPI::SUM);    
+#endif
+
+    if (nb_eigenvalues_wanted >= (nglob - 2))
       {
-        cout<<"Too many wanted eigenvalues "<<endl;
+        cout << "Too many wanted eigenvalues " << endl;
         cout << nb_eigenvalues_wanted <<
           " asked eigenvalues, but the rank of the matrix is lower than "
              << n_ << endl;
         
         abort();
       }
-      
+    
     if (automatic_selection_arnoldi_vectors)
-      nb_arnoldi_vectors = min(n_, 2*nb_eigenvalues_wanted+2);
+      nb_arnoldi_vectors = min(nglob, 2*nb_eigenvalues_wanted+2);
     
     //cout << "n = " << n << endl;
     //cout << "nb_arnoldi_vectors = " << nb_arnoldi_vectors << endl;
@@ -133,6 +145,20 @@ namespace Seldon
     return nb_eigenvalues_wanted;
   }
   
+
+#ifdef SELDON_WITH_MPI
+  template<class T, class MatStiff, class MatMass>
+  MPI::Intracomm& EigenProblem_Base<T, MatStiff, MatMass>::GetCommunicator()
+  {
+    return comm;
+  }
+
+  template<class T, class MatStiff, class MatMass>
+  void EigenProblem_Base<T, MatStiff, MatMass>::SetCommunicator(MPI::Comm& comm_)
+  {
+    comm = comm_;
+  }
+#endif
   
   //! sets the number of eigenvalues to compute
   template<class T, class MatStiff, class MatMass>
@@ -367,12 +393,18 @@ namespace Seldon
     if (print_level >= 3)
       {
         if (nb_prod%10 == 0)
-          cout<<" Iteration number " << nb_prod << endl;
+#ifdef SELDON_WITH_MPI
+          if (comm.Get_rank() == 0)
+#endif
+            cout<<" Iteration number " << nb_prod << endl;
       }
     else if (print_level >= 1)
       {
         if (nb_prod%100 == 0)
-          cout<<" Iteration number " << nb_prod << endl;
+#ifdef SELDON_WITH_MPI
+          if (comm.Get_rank() == 0)
+#endif
+            cout<<" Iteration number " << nb_prod << endl;
       }			
   }
   
@@ -1221,7 +1253,8 @@ namespace Seldon
   
   //! default constructor
   template<class T, class MatStiff, class MatMass>
-  SparseEigenProblem<T, MatStiff, MatMass>::SparseEigenProblem()
+  SparseEigenProblem<T, MatStiff, MatMass>::
+  SparseEigenProblem()
     : EigenProblem_Base<T, MatStiff, MatMass>()
   {
     imag_solution = false;
@@ -1471,6 +1504,14 @@ namespace Seldon
     chol_facto_mass_matrix.Clear();
     Xchol_real.Clear();
     Xchol_imag.Clear();    
+  }
+
+
+  template<class T, class MatStiff>
+  MatrixFreeEigenProblem<T, MatStiff>::
+  MatrixFreeEigenProblem() 
+    : EigenProblem_Base<T, MatStiff, Matrix<double, Symmetric, ArrayRowSymSparse> >()
+  {
   }
   
 }

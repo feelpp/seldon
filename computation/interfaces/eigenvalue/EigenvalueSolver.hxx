@@ -116,6 +116,10 @@ namespace Seldon
     //! stiffness matrix
     MatStiff* Kh;
 
+#ifdef SELDON_WITH_MPI
+    //! communicator used to compute eigenvalues
+    MPI::Intracomm comm;
+#endif
     
   public :
 
@@ -130,6 +134,11 @@ namespace Seldon
     // basic functions
     int GetComputationalMode() const;
     void SetComputationalMode(int mode);
+    
+#ifdef SELDON_WITH_MPI
+    void SetCommunicator(MPI::Comm& comm_);
+    MPI::Intracomm& GetCommunicator();
+#endif
     
     int GetNbAskedEigenvalues() const;
     void SetNbAskedEigenvalues(int n);
@@ -389,6 +398,10 @@ namespace Seldon
     : public EigenProblem_Base<T, MatStiff,
                                Matrix<double, Symmetric, ArrayRowSymSparse> >
   {
+  public :
+
+    MatrixFreeEigenProblem();
+    
   };
   
   

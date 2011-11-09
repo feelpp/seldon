@@ -90,7 +90,14 @@ namespace Seldon
     // mass matrix for diagonal case, and Cholesky case
     Vector<Tmass> Dh_diag;
     int print_level = var.GetPrintLevel();
-    
+
+#ifdef SELDON_WITH_MPI
+    MPI::Intracomm& comm = var.GetCommunicator();
+    int comm_f = MPI_Comm_c2f(comm);
+#else
+    int comm_f(0);
+#endif
+
     // checking if computation mode is compatible with the spectrum
     // the used wants to find
     if (var.GetComputationalMode() == var.REGULAR_MODE)
@@ -124,6 +131,7 @@ namespace Seldon
               {
                 cout << "Cayley or Bucking mode are reserved for symmetric"
                      << "generalized eigenproblems " << endl;                
+                abort();
               }
           }
         else          
@@ -162,7 +170,10 @@ namespace Seldon
       {
         // solving a standard eigenvalue problem
         if (print_level >= 2)
-          cout << "We solve a standard eigenvalue problem " << endl;
+#ifdef SELDON_WITH_MPI
+          if (comm.Get_rank() == 0)
+#endif
+            cout << "We solve a standard eigenvalue problem " << endl;
         
         // we can reduce to a standard problem
         // we consider S  = M^{-1/2}  K  M^{-1/2}
@@ -216,9 +227,9 @@ namespace Seldon
             bool test_loop = true;
             while (test_loop)
               {
-                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                CallArpack(comm_f, ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
                            iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
-						 
+                
                 if ((ido == -1)||(ido == 1))
                   {
                     // matrix vector product with M^-1/2  K  M^-1/2
@@ -277,7 +288,7 @@ namespace Seldon
             bool test_loop = true;			 
             while (test_loop)
               {
-                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                CallArpack(comm_f, ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
                            iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
 		
                 if ((ido == -1)||(ido == 1))
@@ -352,9 +363,9 @@ namespace Seldon
             bool test_loop = true;			 
             while (test_loop)
               {
-                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                CallArpack(comm_f, ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
                            iparam, ipntr, non_sym, workd, workl, lworkl, rwork, info);
-						 
+                
                 if ((ido == -1)||(ido == 1))
                   {
                     // computation of (K - sigma M)^-1 M X
@@ -407,9 +418,9 @@ namespace Seldon
             bool test_loop = true;
             while (test_loop)
               {
-                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                CallArpack(comm_f, ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
                            iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
-						 
+                
                 if ((ido == -1)||(ido == 1))
                   {
                     // computation of M^-1 K X and K X
@@ -490,7 +501,7 @@ namespace Seldon
             bool test_loop = true;
             while (test_loop)
               {
-                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                CallArpack(comm_f, ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
                            iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
                 
                 if ((ido == -1)||(ido == 1))
@@ -565,9 +576,9 @@ namespace Seldon
             bool test_loop = true;			 
             while (test_loop)
               {
-                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                CallArpack(comm_f, ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
                            iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
-						 
+                
                 if ((ido == -1)||(ido == 1))
                   {
                     // computation of (K - sigma M)^-1 K X or (K - sigma M)^-1 X
@@ -638,9 +649,9 @@ namespace Seldon
             bool test_loop = true;			 
             while (test_loop)
               {
-                CallArpack(ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
+                CallArpack(comm_f, ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
                            iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
-						 
+                
                 if ((ido == -1)||(ido == 1))
                   {
                     // computation of (K - sigma M)^-1 (K + sigma M) X
@@ -679,7 +690,7 @@ namespace Seldon
           {
             cout << "Maximum number of iterations reached" << endl;
             cout << "Try again with a larger number of iterations" 
-                 << "or with a less restrictive stopping criterion" << endl;
+                 << " or with a less restrictive stopping criterion" << endl;
             abort();
           }
         else
@@ -707,19 +718,25 @@ namespace Seldon
     int rvec = 1;
     int ldz = n;
     if (print_level >= 2)
-      cout<<"recovering eigenvalues ..."<<endl;
-			 
+#ifdef SELDON_WITH_MPI
+      if (comm.Get_rank() == 0)
+#endif
+        cout << "recovering eigenvalues ..." << endl;
+    
     if (var.GetComputationalMode() == var.INVERT_MODE)
-      CallArpack(rvec, howmny, selec, eigen_values, lambda_imag, eigen_vectors,
+      CallArpack(comm_f, rvec, howmny, selec, eigen_values, lambda_imag, eigen_vectors,
                  ldz, shiftr, shifti, bmat, n, which, nev, tol, resid, ncv,
                  v, ldv, iparam, ipntr, non_sym, workd, workl, lworkl, rwork, info);
     else
-      CallArpack(rvec, howmny, selec, eigen_values, lambda_imag, eigen_vectors,
+      CallArpack(comm_f, rvec, howmny, selec, eigen_values, lambda_imag, eigen_vectors,
                  ldz, shiftr, shifti, bmat, n, which, nev, tol, resid, ncv,
                  v, ldv, iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
     
     if (print_level >= 2)
-      cout<<"end recover "<<endl;
+#ifdef SELDON_WITH_MPI
+      if (comm.Get_rank() == 0)
+#endif
+        cout << "end recover " << endl;
     
     eigen_values.Resize(nev);
     lambda_imag.Resize(nev);
