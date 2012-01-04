@@ -478,9 +478,10 @@ namespace Seldon
     iparm[IPARM_START_TASK] = API_TASK_ORDERING;
     iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
     
-    Vector<T> rhs(n); rhs.Zero();
-    T* rhs_ = rhs.GetData();
-    CallPastix(comm_facto, ptr_, ind_, values_, rhs_, nrhs);    
+    //Vector<T> rhs(n); rhs.Zero();
+    //T* rhs_ = rhs.GetData();
+    //CallPastix(comm_facto, ptr_, ind_, values_, rhs_, nrhs);    
+    CallPastix(comm_facto, ptr_, ind_, values_, NULL, nrhs);    
 
     iparm[IPARM_FREE_CSCUSER] = API_CSC_FREE;
     //Ptr.Nullify();

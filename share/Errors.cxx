@@ -105,7 +105,17 @@ namespace Seldon
   */
   void Error::CoutWhat()
   {
+#ifdef SELDON_WITH_MPI
+    cout << "Error on processor " << MPI::COMM_WORLD.Get_rank() << endl;
+#endif
+
     cout << this->What() << endl;
+
+#ifdef SELDON_WITH_MPI
+    // waiting 5 seconds so that each processor should have the time
+    // to display its own errors before aborting the processus
+    sleep(5);
+#endif
   }
 
 

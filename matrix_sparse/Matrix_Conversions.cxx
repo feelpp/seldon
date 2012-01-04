@@ -3414,6 +3414,28 @@ namespace Seldon
     
   }
 
+
+  //! conversion from RowSymSparse to RowSymPacked
+  template<class T, class Prop, class Allocator1, class Allocator2>
+  void Copy(Matrix<T, Prop, RowSymSparse, Allocator1>& A,
+            Matrix<T, Prop, RowSymPacked, Allocator2>& B)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T* data = A.GetData();
+    
+    B.Reallocate(m, n);
+    T zero;
+    SetComplexZero(zero);
+    B.Fill(zero);
+    for (int i = 0; i < m; i++)
+      for (int j = ptr[i]; j < ptr[i+1]; j++)
+        B(i, ind[j]) = data[j];
+    
+  }
+
   
   //! conversion from ArrayRowSymSparse to RowSymPacked
   template<class T, class Prop, class Allocator1, class Allocator2>

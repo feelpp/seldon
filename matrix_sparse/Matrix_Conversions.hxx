@@ -700,6 +700,11 @@ namespace Seldon
   void Copy(Matrix<T, Prop, ArrayRowSparse, Allocator1>& A,
             Matrix<T, Prop, RowMajor, Allocator2>& B);
   
+
+  template<class T, class Prop, class Allocator1, class Allocator2>
+  void Copy(Matrix<T, Prop, RowSymSparse, Allocator1>& A,
+            Matrix<T, Prop, RowSymPacked, Allocator2>& B);
+
   
   template<class T, class Prop, class Allocator1, class Allocator2>
   void Copy(Matrix<T, Prop, ArrayRowSymSparse, Allocator1>& A,
