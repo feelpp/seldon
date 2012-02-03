@@ -68,9 +68,9 @@ namespace Seldon
       z.Zero();
 
     if (symmetric_precond)
-      Seldon::SOR(A, z, r, omega, nb_iter, 0);
+      SOR(A, z, r, omega, nb_iter, 0);
     else
-      Seldon::SOR(A, z, r, omega, nb_iter, 2);
+      SOR(A, z, r, omega, nb_iter, 2);
   }
 
 
@@ -84,9 +84,9 @@ namespace Seldon
       z.Zero();
     
     if (symmetric_precond)
-      Seldon::SOR(SeldonTrans, A, z, r, omega, nb_iter, 0);
+      SOR(SeldonTrans, A, z, r, omega, nb_iter, 0);
     else
-      Seldon::SOR(SeldonTrans, A, z, r, omega, nb_iter, 3);
+      SOR(SeldonTrans, A, z, r, omega, nb_iter, 3);
     
   }
 

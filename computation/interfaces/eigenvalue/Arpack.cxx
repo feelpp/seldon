@@ -73,6 +73,7 @@ namespace Seldon
     int ishift = 1, nb_max_iter = var.GetNbMaximumIterations();
     bool sym = var.IsSymmetricProblem();
     bool non_sym = false;
+    bool sym_mode = sym;
     typedef typename EigenProblem::MassValue Tmass;
     iparam(0) = ishift;
     iparam(2) = nb_max_iter;
@@ -360,7 +361,8 @@ namespace Seldon
             Yh.Fill(zero);
             Zh.Fill(zero);
             
-            bool test_loop = true;			 
+            bool test_loop = true;		
+            sym_mode = false;
             while (test_loop)
               {
                 CallArpack(comm_f, ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
@@ -723,14 +725,9 @@ namespace Seldon
 #endif
         cout << "recovering eigenvalues ..." << endl;
     
-    if (var.GetComputationalMode() == var.INVERT_MODE)
-      CallArpack(comm_f, rvec, howmny, selec, eigen_values, lambda_imag, eigen_vectors,
-                 ldz, shiftr, shifti, bmat, n, which, nev, tol, resid, ncv,
-                 v, ldv, iparam, ipntr, non_sym, workd, workl, lworkl, rwork, info);
-    else
-      CallArpack(comm_f, rvec, howmny, selec, eigen_values, lambda_imag, eigen_vectors,
-                 ldz, shiftr, shifti, bmat, n, which, nev, tol, resid, ncv,
-                 v, ldv, iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
+    CallArpack(comm_f, rvec, howmny, selec, eigen_values, lambda_imag, eigen_vectors,
+               ldz, shiftr, shifti, bmat, n, which, nev, tol, resid, ncv,
+               v, ldv, iparam, ipntr, sym_mode, workd, workl, lworkl, rwork, info);
     
     if (print_level >= 2)
 #ifdef SELDON_WITH_MPI

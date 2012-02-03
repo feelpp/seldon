@@ -410,7 +410,6 @@ namespace Seldon
     else
       {
         Vector<double> workev(3*ncv);
-
         // real non-symmetric
         // call of dneupd
 #ifdef SELDON_WITH_MPI

@@ -2623,6 +2623,674 @@ namespace Seldon
   }
   
   
+  //! Successive overrelaxation.
+  /*!
+    Solving A^T X = B by using S.O.R algorithm.
+    omega is the relaxation parameter, iter the number of iterations.
+    type_ssor = 2 forward sweep
+    type_ssor = 3 backward sweep
+    type_ssor = 0 forward and backward sweep
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+           const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& A,
+	   Vector<complex<T2>, Storage2, Allocator2>& X,
+	   const Vector<complex<T1>, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor)
+  {
+    complex<T1> temp, zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+
+    int ma = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDS
+    int na = A.GetN();
+    if (na != ma)
+      throw WrongDim("SOR", "Matrix must be squared.");
+
+    if (ma != X.GetLength() || ma != B.GetLength())
+      throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
+#endif
+
+    int* ptr_real = A.GetRealPtr();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_real = A.GetRealInd();
+    int* ind_imag = A.GetImagInd();
+    
+    T0* data_real = A.GetRealData();
+    T0* data_imag = A.GetImagData();
+    
+    complex<T0> ajj;
+
+    if (type_ssor % 2 == 0)
+      for (int i = 0; i < iter; i++)
+	for (int j = 0; j < ma; j++)
+	  {
+	    temp = zero;
+            ajj = zero;
+            for (int k = ptr_real[j]; k < ptr_real[j+1]; k++)
+	      {
+                if (ind_real[k] != j)
+                  temp += data_real[k] * X(ind_real[k]);
+                else
+                  ajj = data_real[k];
+              }
+
+	    for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
+              {
+                if (ind_imag[k] != j)
+                  temp += complex<T1>(0, data_imag[k]) * X(ind_imag[k]);
+                else
+                  ajj += complex<T1>(0, data_imag[k]);
+              }
+            
+#ifdef SELDON_CHECK_BOUNDS
+            if (ajj == zero)
+              throw WrongArgument("SOR", "Matrix must contain"
+                                  " a non-null diagonal");
+#endif
+            
+	    X(j) = (one-omega) * X(j) + omega * (B(j) - temp) / ajj;
+	  }
+
+    if (type_ssor % 3 == 0)
+      for (int i = 0; i < iter; i++)
+	for (int j = ma-1; j >= 0; j--)
+	  {
+	    temp = zero;
+            ajj = zero;
+            for (int k = ptr_real[j]; k < ptr_real[j+1]; k++)
+	      {
+                if (ind_real[k] != j)
+                  temp += data_real[k] * X(ind_real[k]);
+                else
+                  ajj = data_real[k];
+              }
+
+	    for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
+              {
+                if (ind_imag[k] != j)
+                  temp += complex<T1>(0, data_imag[k]) * X(ind_imag[k]);
+                else
+                  ajj += complex<T1>(0, data_imag[k]);
+              }
+            
+	    X(j) = (one-omega) * X(j) + omega * (B(j) - temp) / ajj;
+	  }
+  }
+
+
+  //! Successive overrelaxation.
+  /*!
+    Solving A X = B by using S.O.R algorithm.
+    omega is the relaxation parameter, iter the number of iterations.
+    type_ssor = 2 forward sweep
+    type_ssor = 3 backward sweep
+    type_ssor = 0 forward and backward sweep
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+           const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& A,
+	   Vector<complex<T2>, Storage2, Allocator2>& X,
+	   const Vector<complex<T1>, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor)
+  {
+    complex<T1> temp, zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+
+    int ma = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDS
+    int na = A.GetN();
+    if (na != ma)
+      throw WrongDim("SOR", "Matrix must be squared.");
+
+    if (ma != X.GetLength() || ma != B.GetLength())
+      throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
+#endif
+
+    complex<T0> ajj(1);
+
+    if (type_ssor%2 == 0)
+      for (int i = 0; i < iter; i++)
+        for (int j = 0; j < ma; j++)
+          {
+            temp = zero;
+            ajj = zero;
+            for (int k = 0; k < A.GetRealColumnSize(j); k++)
+              {
+                if (A.IndexReal(j, k) != j)
+                  temp += A.ValueReal(j,k) * X(A.IndexReal(j,k));
+                else
+                  ajj += A.ValueReal(j, k);
+              }
+            
+            for (int k = 0; k < A.GetImagColumnSize(j); k++)
+              {
+                if (A.IndexImag(j, k) != j)
+                  temp += complex<T0>(0, A.ValueImag(j,k))
+                    * X(A.IndexImag(j, k));
+                else
+                  ajj += complex<T0>(0, A.ValueImag(j,k));
+              }
+            
+#ifdef SELDON_CHECK_BOUNDS
+            if (ajj == zero)
+              throw WrongArgument("SOR", "Matrix must contain"
+                                  " a non-null diagonal");
+#endif
+            
+            X(j) = (one-omega) * X(j) + omega * (B(j) - temp) / ajj;
+          }
+
+    if (type_ssor % 3 == 0)
+      for (int i = 0; i < iter; i++)
+	for (int j = ma-1; j >= 0; j--)
+	  {
+	      temp = zero;
+	      ajj = zero;
+	      for (int k = 0; k < A.GetRealColumnSize(j); k++)
+		{
+		  if (A.IndexReal(j, k) != j)
+                    temp += A.ValueReal(j,k) * X(A.IndexReal(j,k));
+		  else
+		    ajj += A.ValueReal(j, k);
+		}
+              
+	      for (int k = 0; k < A.GetImagColumnSize(j); k++)
+		{
+		  if (A.IndexImag(j, k) != j)
+                    temp += complex<T0>(0, A.ValueImag(j,k))
+                      * X(A.IndexImag(j, k));
+		  else
+		    ajj += complex<T0>(0, A.ValueImag(j,k));
+		}
+              
+              X(j) = (one-omega) * X(j) + omega * (B(j) - temp) / ajj;
+	  }
+  }
+
+  
+  //! Successive overrelaxation.
+  /*!
+    Solving A X = B by using S.O.R algorithm.
+    omega is the relaxation parameter, iter the number of iterations.
+    type_ssor = 2 forward sweep
+    type_ssor = 3 backward sweep
+    type_ssor = 0 forward and backward sweep
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+           const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
+	   Vector<complex<T2>, Storage2, Allocator2>& X,
+           const Vector<complex<T1>, Storage1, Allocator1>& B,
+           const T3& omega,int iter, int type_ssor)
+  {
+    complex<T1> zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    
+    int ma = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDS
+    int na = A.GetN();
+    if (na != ma)
+      throw WrongDim("SOR", "Matrix must be squared.");
+
+    if (ma != X.GetLength() || ma != B.GetLength())
+      throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
+#endif
+
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T0* data_real = A.GetRealData();
+
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T0* data_imag = A.GetImagData();
+
+    // Let us consider the following splitting : A = D - L - U
+    // D diagonal of A
+    // L lower part of A
+    // U upper part of A
+
+    // Forward sweep
+    // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
+    complex<T0> ajj;
+    T3 coef = (one - omega) / omega;
+    if (type_ssor % 2 == 0)
+      for (int i = 0; i < iter; i++)
+	{
+          // First we compute X = (U + (1-omega)/omega D) X + B	      
+	  for (int j = 0; j < ma; j++)
+	    {
+              int kr = ptr_real[j];
+              while ( (kr < ptr_real[j+1]) && (ind_real[kr] < j))
+                {
+                  X(ind_real[kr]) -= data_real[kr]*X(j);
+                  kr++;
+                }
+              
+              if ( (kr < ptr_real[j+1]) && (ind_real[kr] == j))
+                ajj = data_real[kr];
+
+              int ki = ptr_imag[j];
+              while ( (ki < ptr_imag[j+1]) && (ind_imag[ki] < j))
+                {
+                  X(ind_imag[ki]) -= complex<T0>(0, data_imag[ki])*X(j);
+                  ki++;
+                }
+
+              if ( (ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
+                ajj += complex<T0>(0, data_imag[ki]);
+              
+#ifdef SELDON_CHECK_BOUNDS
+              if (ajj == zero)
+                throw WrongArgument("SOR", "Matrix must contain"
+                                    " a non-null diagonal");
+#endif
+              
+              X(j) = B(j) + coef * ajj * X(j);
+	    }
+
+          // Then we solve (D/omega - L) X = X
+	  for (int j = 0; j < ma; j++)
+	    {
+              int kr = ptr_real[j];
+              while ( (kr < ptr_real[j+1]) && (ind_real[kr] < j))
+                kr++;
+                             
+              if ( (kr < ptr_real[j+1]) && (ind_real[kr] == j))
+                {
+                  ajj = data_real[kr];
+                  kr++;
+                }
+
+              int ki = ptr_imag[j];
+              while ( (ki < ptr_imag[j+1]) && (ind_imag[ki] < j))
+                ki++;
+              
+              if ( (ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
+                {
+                  ajj += complex<T0>(0, data_imag[ki]);
+                  ki++;
+                }
+              
+              X(j) *= omega/ajj;
+              while (kr < ptr_real[j+1])
+                {
+                  X(ind_real[kr]) -= data_real[kr]*X(j);
+                  kr++;
+                }
+
+              while (ki < ptr_imag[j+1])
+                {
+                  X(ind_imag[ki]) -= complex<T0>(0, data_imag[ki])*X(j);
+                  ki++;
+                }
+            }
+	}
+    
+    // Backward sweep.
+    // (D/omega - U) X^{n+1} = (L + (1-omega)/omega D) X^{n+1/2} + B
+    if (type_ssor % 3 == 0)
+      for (int i = 0; i < iter; i++)
+	{
+          // First we compute X = (L + (1-omega)/omega D) X + B.
+          for (int j = ma-1; j >= 0; j--)
+            {
+              int kr = ptr_real[j+1]-1;
+              while ( (kr >= ptr_real[j]) && (ind_real[kr] > j) )
+                {
+                  X(ind_real[kr]) -= data_real[kr]*X(j);
+                  kr--;
+                }
+              
+              if ( (kr >= ptr_real[j]) && (ind_real[kr] == j))
+                ajj = data_real[kr];
+              
+              int ki = ptr_imag[j+1]-1;
+              while ( (ki >= ptr_imag[j]) && (ind_imag[ki] > j) )
+                {
+                  X(ind_imag[ki]) -= complex<T0>(0, data_imag[ki])*X(j);
+                  ki--;
+                }
+              
+              if ( (ki >= ptr_imag[j]) && (ind_imag[ki] == j))
+                ajj += complex<T0>(0, data_imag[ki]);
+              
+#ifdef SELDON_CHECK_BOUNDS
+              if (ajj == zero)
+                throw WrongArgument("SOR", "Matrix must contain"
+                                    " a non-null diagonal");
+#endif
+              
+              X(j) = B(j) + coef * ajj * X(j);
+            }
+                    
+          // Then we solve (D/omega - U) X = X.
+          for (int j = ma-1; j >= 0; j--)
+            {
+              int kr = ptr_real[j+1]-1;
+              while ( (kr >= ptr_real[j]) && (ind_real[kr] > j) )
+                kr--;
+              
+              if ( (kr >= ptr_real[j]) && (ind_real[kr] == j))
+                {
+                  ajj = data_real[kr];
+                  kr--;
+                }
+              
+              int ki = ptr_imag[j+1]-1;
+              while ( (ki >= ptr_imag[j]) && (ind_imag[ki] > j) )
+                ki--;
+              
+              if ( (ki >= ptr_imag[j]) && (ind_imag[ki] == j))
+                {
+                  ajj += complex<T0>(0, data_imag[ki]);
+                  ki--;
+                }
+
+              X(j) *= omega/ajj;
+              while (kr >= ptr_real[j])
+                {
+                  X(ind_real[kr]) -= data_real[kr]*X(j);
+                  kr--;
+                }
+
+              while (ki >= ptr_imag[j])
+                {
+                  X(ind_imag[ki]) -= complex<T0>(0, data_imag[ki])*X(j);
+                  ki--;
+                }
+            }
+        }
+  }
+
+  
+  //! Successive overrelaxation.
+  /*!
+    Solving A X = B by using S.O.R algorithm.
+    omega is the relaxation parameter, iter the number of iterations.
+    type_ssor = 2 forward sweep
+    type_ssor = 3 backward sweep
+    type_ssor = 0 forward and backward sweep
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+           const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
+	   Vector<complex<T2>, Storage2, Allocator2>& X,
+           const Vector<complex<T1>, Storage1, Allocator1>& B,
+           const T3& omega,int iter, int type_ssor)
+  {
+    complex<T1> zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    
+    int ma = A.GetM();
+
+#ifdef SELDON_CHECK_BOUNDS
+    int na = A.GetN();
+    if (na != ma)
+      throw WrongDim("SOR", "Matrix must be squared.");
+
+    if (ma != X.GetLength() || ma != B.GetLength())
+      throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
+#endif
+
+    // Let us consider the following splitting : A = D - L - U
+    // D diagonal of A
+    // L lower part of A
+    // U upper part of A
+
+    // Forward sweep
+    // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
+    complex<T0> ajj;
+    T3 coef = (one - omega) / omega;
+    if (type_ssor % 2 == 0)
+      for (int i = 0; i < iter; i++)
+	{
+          // First we compute X = (U + (1-omega)/omega D) X + B	      
+	  for (int j = 0; j < ma; j++)
+	    {
+              int kr = 0;
+              while ( (kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) < j))
+                {
+                  X(A.IndexReal(j, kr)) -= A.ValueReal(j, kr) * X(j);
+                  kr++;
+                }
+              
+              if ( (kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j))
+                ajj = A.ValueReal(j, kr);
+              
+              int ki = 0;
+              while ( (ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) < j))
+                {
+                  X(A.IndexImag(j, ki)) -= complex<T0>(0, A.ValueImag(j, ki))*X(j);
+                  ki++;
+                }
+
+              if ( (ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) == j) )
+                ajj += complex<T0>(0, A.ValueImag(j, ki));
+              
+#ifdef SELDON_CHECK_BOUNDS
+              if (ajj == zero)
+                throw WrongArgument("SOR", "Matrix must contain"
+                                    " a non-null diagonal");
+#endif
+              
+              X(j) = B(j) + coef * ajj * X(j);
+	    }
+
+          // Then we solve (D/omega - L) X = X
+	  for (int j = 0; j < ma; j++)
+	    {
+              int kr = 0;
+              while ( (kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) < j))
+                kr++;
+                             
+              if ( (kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j) )
+                {
+                  ajj = A.ValueReal(j, kr);
+                  kr++;
+                }
+
+              int ki = 0;
+              while ( (ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) < j))
+                ki++;
+              
+              if ( (ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) == j))
+                {
+                  ajj += complex<T0>(0, A.ValueImag(j, ki));
+                  ki++;
+                }
+              
+              X(j) *= omega/ajj;
+              while (kr < A.GetRealRowSize(j))
+                {
+                  X(A.IndexReal(j, kr)) -= A.ValueReal(j, kr)*X(j);
+                  kr++;
+                }
+
+              while (ki < A.GetImagRowSize(j))
+                {
+                  X(A.IndexImag(j, ki)) -= complex<T0>(0, A.ValueImag(j, ki))*X(j);
+                  ki++;
+                }
+            }
+	}
+    
+    // Backward sweep.
+    // (D/omega - U) X^{n+1} = (L + (1-omega)/omega D) X^{n+1/2} + B
+    if (type_ssor % 3 == 0)
+      for (int i = 0; i < iter; i++)
+	{
+          // First we compute X = (L + (1-omega)/omega D) X + B.
+          for (int j = ma-1; j >= 0; j--)
+            {
+              int kr = A.GetRealRowSize(j)-1;
+              while ( (kr >= 0) && (A.IndexReal(j, kr) > j) )
+                {
+                  X(A.IndexReal(j, kr)) -= A.ValueReal(j, kr)*X(j);
+                  kr--;
+                }
+              
+              if ( (kr >= 0) && (A.IndexReal(j, kr) == j))
+                ajj = A.ValueReal(j, kr);
+              
+              int ki = A.GetImagRowSize(j)-1;
+              while ( (ki >= 0) && (A.IndexImag(j, ki) > j) )
+                {
+                  X(A.IndexImag(j, ki)) -= complex<T0>(0, A.ValueImag(j, ki))*X(j);
+                  ki--;
+                }
+              
+              if ( (ki >= 0) && (A.IndexImag(j, ki) == j))
+                ajj += complex<T0>(0, A.ValueImag(j, ki));
+              
+#ifdef SELDON_CHECK_BOUNDS
+              if (ajj == zero)
+                throw WrongArgument("SOR", "Matrix must contain"
+                                    " a non-null diagonal");
+#endif
+              
+              X(j) = B(j) + coef * ajj * X(j);
+            }
+                    
+          // Then we solve (D/omega - U) X = X.
+          for (int j = ma-1; j >= 0; j--)
+            {
+              int kr = A.GetRealRowSize(j)-1;
+              while ( (kr >= 0) && (A.IndexReal(j, kr) > j) )
+                kr--;
+              
+              if ( (kr >= 0) && (A.IndexReal(j, kr) == j))
+                {
+                  ajj = A.ValueReal(j, kr);
+                  kr--;
+                }
+              
+              int ki = A.GetImagRowSize(j)-1;
+              while ( (ki >= 0) && (A.IndexImag(j, ki) > j) )
+                ki--;
+              
+              if ( (ki >= 0) && (A.IndexImag(j, ki) == j))
+                {
+                  ajj += complex<T0>(0, A.ValueImag(j, ki));
+                  ki--;
+                }
+
+              X(j) *= omega/ajj;
+              while (kr >= 0)
+                {
+                  X(A.IndexReal(j, kr)) -= A.ValueReal(j, kr)*X(j);
+                  kr--;
+                }
+
+              while (ki >= 0)
+                {
+                  X(A.IndexImag(j, ki)) -= complex<T0>(0, A.ValueImag(j, ki))*X(j);
+                  ki--;
+                }
+            }
+        }
+  }
+
+  
+  //! Successive overrelaxation.
+  /*!
+    Solving A X = B by using S.O.R algorithm.
+    omega is the relaxation parameter, iter the number of iterations.
+    type_ssor = 2 forward sweep
+    type_ssor = 3 backward sweep
+    type_ssor = 0 forward and backward sweep
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+           const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+	   Vector<complex<T2>, Storage2, Allocator2>& X,
+	   const Vector<complex<T1>, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor)
+  {
+    SOR(A, X, B, omega, iter, type_ssor);
+  }
+  
+  
+  //! Successive overrelaxation.
+  /*!
+    Solving A X = B by using S.O.R algorithm.
+    omega is the relaxation parameter, iter the number of iterations.
+    type_ssor = 2 forward sweep
+    type_ssor = 3 backward sweep
+    type_ssor = 0 forward and backward sweep
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+           const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+	   Vector<complex<T2>, Storage2, Allocator2>& X,
+	   const Vector<complex<T1>, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor)
+  {
+    SOR(A, X, B, omega, iter, type_ssor);
+  }
+
+  
+  //! Successive overrelaxation.
+  /*!
+    Solving A X = B by using S.O.R algorithm.
+    omega is the relaxation parameter, iter the number of iterations.
+    type_ssor = 2 forward sweep
+    type_ssor = 3 backward sweep
+    type_ssor = 0 forward and backward sweep
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+           const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
+	   Vector<complex<T2>, Storage2, Allocator2>& X,
+	   const Vector<complex<T1>, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor)
+  {
+    SOR(A, X, B, omega, iter, type_ssor);
+  }
+
+
+  //! Successive overrelaxation.
+  /*!
+    Solving A X = B by using S.O.R algorithm.
+    omega is the relaxation parameter, iter the number of iterations.
+    type_ssor = 2 forward sweep
+    type_ssor = 3 backward sweep
+    type_ssor = 0 forward and backward sweep
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SOR(const class_SeldonTrans& transM,
+           const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
+	   Vector<complex<T2>, Storage2, Allocator2>& X,
+	   const Vector<complex<T1>, Storage1, Allocator1>& B,
+	   const T3& omega, int iter, int type_ssor)
+  {
+    SOR(A, X, B, omega, iter, type_ssor);
+  }
+
+  
   // SOR //
   /////////
   

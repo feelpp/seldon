@@ -470,11 +470,18 @@ namespace Seldon
     CheckDim(X, Y, "DotProd(X, Y)", "dot(X, Y)");
 #endif
 
-    complex<float> dotu;
+    // not using cblas_cdotu_sub because of a bug in mkl function
+    /*complex<float> dotu;
     cblas_cdotu_sub(Y.GetLength(),
 		    reinterpret_cast<const void*>(X.GetData()), 1,
 		    reinterpret_cast<const void*>(Y.GetData()), 1,
-		    reinterpret_cast<void*>(&dotu));
+		    reinterpret_cast<void*>(&dotu));*/
+    complex<float> dotu;
+    int n = Y.GetLength(), inc = 1;
+    cdotusub_(&n, 
+              reinterpret_cast<const void*>(X.GetData()), &inc,
+              reinterpret_cast<const void*>(Y.GetData()), &inc,
+              reinterpret_cast<void*>(&dotu));
     return dotu;
   }
 
@@ -488,12 +495,20 @@ namespace Seldon
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(X, Y, "DotProd(X, Y)", "dot(X, Y)");
 #endif
-
-    complex<double> dotu;
+    
+    // not using cblas_zdotu_sub because of a bug in mkl function
+    /*complex<double> dotu;
     cblas_zdotu_sub(Y.GetLength(),
 		    reinterpret_cast<const void*>(X.GetData()), 1,
 		    reinterpret_cast<const void*>(Y.GetData()), 1,
-		    reinterpret_cast<void*>(&dotu));
+		    reinterpret_cast<void*>(&dotu));*/
+    
+    complex<double> dotu;
+    int n = Y.GetLength(), inc = 1;
+    zdotusub_(&n, 
+              reinterpret_cast<const void*>(X.GetData()), &inc,
+              reinterpret_cast<const void*>(Y.GetData()), &inc,
+              reinterpret_cast<void*>(&dotu));
     return dotu;
   }
 
@@ -542,11 +557,18 @@ namespace Seldon
     CheckDim(X, Y, "DotProdConj(X, Y)", "dot(X, Y)");
 #endif
 
-    complex<float> dotc;
+    // not using cblas_cdotc_sub because of a bug in mkl function
+    /*complex<float> dotc;
     cblas_cdotc_sub(Y.GetLength(),
 		    reinterpret_cast<const void*>(X.GetData()), 1,
 		    reinterpret_cast<const void*>(Y.GetData()), 1,
-		    reinterpret_cast<void*>(&dotc));
+		    reinterpret_cast<void*>(&dotc));*/
+    complex<double> dotc;
+    int n = Y.GetLength(), inc = 1;
+    cdotcsub_(&n, 
+              reinterpret_cast<const void*>(X.GetData()), &inc,
+              reinterpret_cast<const void*>(Y.GetData()), &inc,
+              reinterpret_cast<void*>(&dotc));
     return dotc;
   }
 
@@ -561,11 +583,18 @@ namespace Seldon
     CheckDim(X, Y, "DotProdConj(X, Y)", "dot(X, Y)");
 #endif
 
-    complex<double> dotc;
+    // not using cblas_zdotc_sub because of a bug in mkl function
+    /*complex<double> dotc;
     cblas_zdotc_sub(Y.GetLength(),
 		    reinterpret_cast<const void*>(X.GetData()), 1,
 		    reinterpret_cast<const void*>(Y.GetData()), 1,
-		    reinterpret_cast<void*>(&dotc));
+		    reinterpret_cast<void*>(&dotc));*/
+    complex<double> dotc;
+    int n = Y.GetLength(), inc = 1;
+    zdotcsub_(&n, 
+              reinterpret_cast<const void*>(X.GetData()), &inc,
+              reinterpret_cast<const void*>(Y.GetData()), &inc,
+              reinterpret_cast<void*>(&dotc));
     return dotc;
   }
 
