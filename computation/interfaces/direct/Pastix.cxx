@@ -51,6 +51,9 @@ namespace Seldon
       iparm[IPARM_FREE_CSCPASTIX] = API_CSC_PRESERVE;
     else
       iparm[IPARM_FREE_CSCPASTIX] = API_CSC_FREE;
+    
+    threshold_pivot = 0.0;
+    adjust_threshold_pivot = false;
   }
 
 
@@ -163,7 +166,16 @@ namespace Seldon
       }
   }
 
-
+  
+  //! you can change the threshold used for static pivoting
+  template<class T>
+  void MatrixPastix<T>::SetPivotThreshold(double eps)
+  {
+    adjust_threshold_pivot = true;
+    threshold_pivot = eps;
+  }
+  
+  
   //! You can require that solution is refined after LU resolution.
   template<class T>
   void MatrixPastix<T>::RefineSolution()
@@ -282,7 +294,8 @@ namespace Seldon
       }
 
     // pivot threshold
-    //dparm[DPARM_EPSILON_MAGN_CTRL] = 1e-4;
+    if (adjust_threshold_pivot)
+      dparm[DPARM_EPSILON_MAGN_CTRL] = threshold_pivot;
     
     iparm[IPARM_SYM] = API_SYM_NO;
     iparm[IPARM_FACTORIZATION] = API_FACT_LU;
@@ -364,6 +377,9 @@ namespace Seldon
 
     perm.Reallocate(n); invp.Reallocate(n);
     perm.Fill(); invp.Fill();
+
+    if (adjust_threshold_pivot)
+      dparm[DPARM_EPSILON_MAGN_CTRL] = threshold_pivot;
 
     // ordering and analysis
     iparm[IPARM_START_TASK] = API_TASK_ORDERING;
@@ -473,6 +489,9 @@ namespace Seldon
     perm.Fill(); invp.Fill();
     for (int i = 0; i < n; i++)
       col_num(i) = glob_number(i)+1;
+
+    if (adjust_threshold_pivot)
+      dparm[DPARM_EPSILON_MAGN_CTRL] = threshold_pivot;
 
     // factorization only
     iparm[IPARM_START_TASK] = API_TASK_ORDERING;

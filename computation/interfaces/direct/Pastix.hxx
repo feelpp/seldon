@@ -51,7 +51,11 @@ namespace Seldon
     int print_level;
     //! if true, solution is refined
     bool refine_solution;
-
+    //! threshold for static pivoting
+    double threshold_pivot;
+    //! adjust threshold for static pivoting ?
+    bool adjust_threshold_pivot;
+    
   public :
 
     MatrixPastix();
@@ -69,6 +73,7 @@ namespace Seldon
     void SelectOrdering(int type);
     void SetPermutation(const IVect& permut);
 
+    void SetPivotThreshold(double eps);
     void RefineSolution();
     void DoNotRefineSolution();
 
