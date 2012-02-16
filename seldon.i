@@ -113,6 +113,7 @@ namespace std
 %include "share/Storage.hxx"
 %include "share/Properties.hxx"
 %include "vector/Vector.hxx"
+%include "vector/VectorCollection.hxx"
 %include "vector/SparseVector.hxx"
 %include "matrix/Matrix_Base.hxx"
 %include "matrix/Matrix_Pointers.hxx"
@@ -134,6 +135,31 @@ namespace Seldon
     }
   }
   %extend Vector<double, VectFull, MallocAlloc<double> >
+  {
+    double __getitem__(int index) {
+      return (*self)(index);
+    }
+    void __setitem__(int index, double value) {
+      (*self)(index) = value;
+    }
+    unsigned long __len__() {
+      return self->GetM();
+    }
+  }
+
+  %extend Vector<Vector<int, VectFull, MallocAlloc<int> >, Collection, MallocAlloc<Vector<int, VectFull, MallocAlloc<int> > > >
+  {
+    int __getitem__(int index) {
+      return (*self)(index);
+    }
+    void __setitem__(int index, int value) {
+      (*self)(index) = value;
+    }
+    unsigned long __len__() {
+      return self->GetM();
+    }
+  }
+  %extend Vector<Vector<double, VectFull, MallocAlloc<double> >, Collection, MallocAlloc<Vector<double, VectFull, MallocAlloc<double> > > >
   {
     double __getitem__(int index) {
       return (*self)(index);

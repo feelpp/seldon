@@ -26,9 +26,13 @@ namespace Seldon
   template class MallocAlloc<int>;
   template class Vector_Base<int, MallocAlloc<int> >;
   template class Vector<int, VectFull, MallocAlloc<int> >;
+  template class Vector<Vector<int, VectFull, MallocAlloc<int> >, Collection,
+                MallocAlloc<Vector<int, VectFull, MallocAlloc<int> > > >;
   template class MallocAlloc<double>;
   template class Vector_Base<double, MallocAlloc<double> >;
   template class Vector<double, VectFull, MallocAlloc<double> >;
+  template class Vector<Vector<double, VectFull, MallocAlloc<double> >,
+            Collection, MallocAlloc<Vector<double, VectFull, MallocAlloc<double> > > >;
 
   template class Matrix_Base<int, MallocAlloc<int> >;
   template class Matrix_Pointers<int, General, RowMajor, MallocAlloc<int> >;
