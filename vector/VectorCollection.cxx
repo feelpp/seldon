@@ -116,6 +116,23 @@ namespace Seldon
   }
 
 
+  //! Reallocates the vector collection.
+  /*! This method first clears the collection. Then it allocates a new vector
+    of size \a i, and puts this vector in the collection. On exit, the
+    collection is only composed of this vector of size \a i.
+    \param[in] i new size.
+  */
+  template <class T, class Allocator >
+  inline void Vector<T, Collection, Allocator>::Reallocate(int i)
+  {
+    Clear();
+    vector_type v;
+    v.Reallocate(i);
+    AddVector(v);
+    v.Nullify();
+  }
+
+
   //! Clears the vector collection.
   /*! The inner vectors are cleared and the memory
     blocks are deallocated.

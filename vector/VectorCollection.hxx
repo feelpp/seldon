@@ -85,6 +85,7 @@ namespace Seldon
     // Destructor.
     ~Vector();
     void Clear();
+    void Reallocate(int i);
     void Deallocate();
 
    // Management of the vectors.
