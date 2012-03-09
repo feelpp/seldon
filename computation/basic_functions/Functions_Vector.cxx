@@ -106,6 +106,51 @@ namespace Seldon
 
 
   template <class T0,
+            class T1, class Allocator1,
+            class T2, class Allocator2>
+  void Add(const T0 alpha,
+           const Vector<T1, PETScSeq, Allocator1>& X,
+           Vector<T2, PETScSeq, Allocator2>& Y)
+  {
+    if (alpha != T0(0))
+      {
+        T1 alpha_ = alpha;
+
+        int ma = X.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+        CheckDim(X, Y, "Add(alpha, X, Y)");
+#endif
+
+        VecAXPY(Y.GetPetscVector(), alpha_, X.GetPetscVector());
+      }
+  }
+
+
+  template <class T0,
+            class T1, class Allocator1,
+            class T2, class Allocator2>
+  void Add(const T0 alpha,
+           const Vector<T1, PETScPar, Allocator1>& X,
+           Vector<T2, PETScPar, Allocator2>& Y)
+  {
+    if (alpha != T0(0))
+      {
+        T1 alpha_ = alpha;
+
+        int ma = X.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+        CheckDim(X, Y, "Add(alpha, X, Y)");
+#endif
+
+        VecAXPY(Y.GetPetscVector(), alpha_, X.GetPetscVector());
+      }
+  }
+
+
+
+  template <class T0,
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
   void Add(const T0 alpha,

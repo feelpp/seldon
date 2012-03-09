@@ -134,6 +134,30 @@ namespace Seldon
 	      Matrix<T4, Prop4, Storage4, Allocator4>& C);
 
   template <class T0,
+	    class T1, class Prop1, class Storage1, class Allocator1,
+	    class T2, class Prop2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Prop4, class Storage4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const SeldonTranspose& TransA,
+	      const Matrix<T1, Prop1, Storage1, Allocator1>& A,
+	      const SeldonTranspose& TransB,
+	      const Matrix<T2, Prop2, Storage2, Allocator2>& B,
+	      const T3 beta,
+	      Matrix<T4, Prop4, Storage4, Allocator4>& C);
+
+  template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Prop4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const Matrix<T1, Prop1, PETScMPIDense, Allocator1>& A,
+              const Matrix<T2, General, RowMajor, Allocator2>& B,
+              const T3 beta,
+              Matrix<T4, Prop4, PETScMPIDense, Allocator4>& C);
+
+  template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Prop2, class Allocator2,
 	    class T3,

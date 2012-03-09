@@ -760,6 +760,63 @@ namespace Seldon
     alpha, plus \a beta times \a C.
   */
   template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Prop4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const Matrix<T1, Prop1, PETScMPIDense, Allocator1>& A,
+              const Matrix<T2, General, RowMajor, Allocator2>& B,
+              const T3 beta,
+              Matrix<T4, Prop4, PETScMPIDense, Allocator4>& C)
+  {
+    int na = A.GetN();
+    int mc = C.GetM();
+    int nc = C.GetN();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
+#endif
+    T1 *local_a;
+    MatGetArray(A.GetPetscMatrix(), &local_a);
+    int nlocal_A;
+    int mlocal_A;
+    MatGetLocalSize(A.GetPetscMatrix(), &mlocal_A, &nlocal_A);
+    Matrix<T1, Prop1, ColMajor, Allocator1> local_A;
+    local_A.SetData(mlocal_A, na, local_a);
+
+    T4 *local_c;
+    MatGetArray(C.GetPetscMatrix(), &local_c);
+    int nlocal_C;
+    int mlocal_C;
+    MatGetLocalSize(C.GetPetscMatrix(), &mlocal_C, &nlocal_C);
+    Matrix<T4, Prop4, ColMajor, Allocator4> local_C;
+    local_C.SetData(mlocal_C, nc, local_c);
+
+    MltAdd(alpha, local_A, B, beta, local_C);
+
+    local_A.Nullify();
+    MatRestoreArray(A.GetPetscMatrix(), &local_a);
+    A.Flush();
+
+    local_C.Nullify();
+    MatRestoreArray(C.GetPetscMatrix(), &local_c);
+    C.Flush();
+  }
+
+
+   //! Multiplies two matrices, and adds the result to a third matrix.
+  /*! It performs the operation \f$ C = \alpha A B + \beta C \f$ where \f$
+    \alpha \f$ and \f$ \beta \f$ are scalars, and \f$ A \f$, \f$ B \f$ and \f$
+    C \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] A matrix.
+    \param[in] B matrix.
+    \param[in] beta scalar.
+    \param[in,out] C matrix, result of the product of \a A with \a B, times \a
+    alpha, plus \a beta times \a C.
+  */
+  template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Prop2, class Allocator2,
 	    class T3,
