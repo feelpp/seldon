@@ -86,6 +86,21 @@ namespace Seldon
   };
 
 
+  class PETScSeqDense
+  {
+  };
+
+
+  class PETScMPIDense
+  {
+  };
+
+
+  class PETScMPIAIJ
+  {
+  };
+
+
   ////////////
   // SPARSE //
   ////////////
