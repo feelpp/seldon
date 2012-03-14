@@ -1,4 +1,32 @@
-Version 5.1 (RC1 released on 2010-09-05)
+Version 5.1.2 (2011-06-14)
+-------------
+
+* Bug fixes and improvements
+
+- Fixed a bug: the methods 'Read' and 'Write' did not work properly under MS
+  Windows because the streams were not opened with the option 'binary'.
+- Fixed a bug: 'MallocObject' could fail to deallocate or reallocate memory
+  under MS Windows because of alignment problems.
+- The method 'Fill(const T0& x)' for matrices was called instead of the
+  assignment operator which is not inherited in C++. This led to a compilation
+  error.
+- Set 'data_' to 'NULL' in 'Matrix_Base' copy constructor, so that the copy
+  constructors of all derived classes will be safe, even if they call the copy
+  constructor of 'Matrix_Base'.
+- Fixed a few error messages related to input/output operations.
+- The copy constructor of 'Matrix_Sparse' now calls that of 'Matrix_Base' in
+  order to avoid a compilation warning.
+- Added the prefix 'std::' to 'cout' and 'endl' in the preprocessor directives
+  ERR, DISP, DISPLAY and END.
+- 'Matrix_Pointers::Resize' does not perform a useless copy anymore when the
+  dimensions do not change.
+
+
+Version 5.1.1 (2011-05-11)
+-------------
+
+
+Version 5.1 (2011-03-03)
 -----------
 
 * Improvements
@@ -90,7 +118,7 @@ Version 5.1 (RC1 released on 2010-09-05)
 - Added 'ApplyPermutation' and 'ApplyInversePermutation' for row-major and
   column-major dense matrices.
 
-* Bug Fixes
+* Bug fixes
 
 - The constructor 'Matrix_ArrayComplexSparse(int i, int j)' swapped the number
   of rows and the number of columns, in the case of a column-major matrix.
@@ -104,6 +132,8 @@ Version 5.1 (RC1 released on 2010-09-05)
   not declared in "clapack.h". For 'RowMajor' matrices, the memory was not
   allocated for the output matrices U and V^T.
 - 'MergeSort' did nothing!
+- 'Mlt(SeldonNoTrans, A, x, b)' was computing 'b = 111 * A * x' when Blas was
+  not called.
 - In matrix conversions, there could be free/delete mismatches when the
   allocators were badly mixed.
 - Bad calls to 'SetData' led to compilation errors in
@@ -114,6 +144,9 @@ Version 5.1 (RC1 released on 2010-09-05)
 - A sparse matrix with 0 row can now be created.
 - Several constructors in the form 'Matrix(int, int)' were declared but not
   defined.
+- 'MltAdd' for 'ArrayRowSymSparse' did not accept complex vectors with a real
+  matrix.
+- Some compilation errors with Microsoft Visual C++.
 
 * Miscellaneous
 
