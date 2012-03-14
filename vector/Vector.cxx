@@ -584,6 +584,20 @@ namespace Seldon
   }
 
 
+  //! Duplicates a vector.
+  /*!
+    \return A copy of the vector.
+    \note Memory is duplicated: the returned vector is therefore independent
+    from the current instance after the copy.
+  */
+  template <class T, class Allocator>
+  inline Vector<T, VectFull, Allocator>
+  Vector<T, VectFull, Allocator>::Copy() const
+  {
+    return Vector<T, VectFull, Allocator>(*this);
+  }
+
+
   //! Multiplies a vector by a scalar.
   /*!
     \param alpha scalar.

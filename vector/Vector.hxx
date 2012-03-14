@@ -133,6 +133,7 @@ namespace Seldon
 					       Allocator>& X);
 #endif
     void Copy(const Vector<T, VectFull, Allocator>& X);
+    Vector<T, VectFull, Allocator> Copy() const;
     void Append(const T& x);
     template<class T0>
     void PushBack(const T0& x);
