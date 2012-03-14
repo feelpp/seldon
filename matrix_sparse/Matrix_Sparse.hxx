@@ -127,9 +127,18 @@ namespace Seldon
     template <class T0>
     void Fill(const T0& x);
     void FillRand();
+    void FillRand(int Nelement);
+    void FillRand(int Nelement, const T& x);
+
     void Print() const;
+    void Write(string FileName) const;
+    void Write(ostream& FileStream) const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
+    void Read(string FileName);
+    void Read(istream& FileStream);
+    void ReadText(string FileName);
+    void ReadText(istream& FileStream);
   };
 
 
@@ -183,9 +192,17 @@ namespace Seldon
 	   Vector<int, Storage1, Allocator1>& ptr,
 	   Vector<int, Storage2, Allocator2>& ind);
 
-    void FillRand(int Nelement);
-    void FillRand(int Nelement, const T& x);
   };
+
+  template<class Tint, class AllocInt, class T, class Allocator>
+  void ReadCoordinateMatrix(istream& FileStream,
+                            Vector<Tint, VectFull, AllocInt>& row_numbers,
+                            Vector<Tint, VectFull, AllocInt>& col_numbers,
+                            Vector<T, VectFull, Allocator>& values);
+
+  template<class Matrix1, class T>
+  void ReadCoordinateMatrix(Matrix1& A, istream& FileStream, T& zero,
+                            int index = 1, int nnz = -1);
 
 
 } // namespace Seldon.

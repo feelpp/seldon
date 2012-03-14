@@ -1309,6 +1309,80 @@ namespace Seldon
    ************************/
 
 
+  //! Resets all non-zero entries to 0-value.
+  /*! The sparsity pattern remains unchanged. */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::Zero()
+  {
+    this->allocator_.memoryset(this->data_, char(0),
+			       this->nz_ * sizeof(value_type));
+  }
+
+
+  //! Sets the matrix to identity.
+  /*! This method fills the diagonal of the matrix with ones.
+   */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::SetIdentity()
+  {
+    int m = this->m_;
+    int nz = this->m_;
+
+    if (nz == 0)
+      return;
+
+    Clear();
+
+    Vector<T, VectFull, Allocator> values(nz);
+    Vector<int, VectFull, CallocAlloc<int> > ptr(m + 1);
+    Vector<int, VectFull, CallocAlloc<int> > ind(nz);
+
+    values.Fill(T(1));
+    ind.Fill();
+    ptr.Fill();
+
+    SetData(m, m, values, ptr, ind);
+  }
+
+
+  //! Fills the non-zero entries with 0, 1, 2, ...
+  /*! On exit, the non-zero entries are 0, 1, 2, 3, ... The order of the
+    numbers depends on the storage.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::Fill()
+  {
+    for (int i = 0; i < this->GetDataSize(); i++)
+      this->data_[i] = i;
+  }
+
+
+  //! Fills the non-zero entries with a given value.
+  /*!
+    \param x the value to set the non-zero entries to.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  template <class T0>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::Fill(const T0& x)
+  {
+    for (int i = 0; i < this->GetDataSize(); i++)
+      this->data_[i] = x;
+  }
+
+
+  //! Fills the non-zero entries randomly.
+  /*!
+    \note The random generator is very basic.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::FillRand()
+  {
+    srand(time(NULL));
+    for (int i = 0; i < this->GetDataSize(); i++)
+      this->data_[i] = rand();
+  }
+
+
   //! Displays the matrix on the standard output.
   /*!
     Displays elements on the standard output, in text format.
@@ -1324,6 +1398,63 @@ namespace Seldon
 	  cout << (*this)(i, j) << "\t";
 	cout << endl;
       }
+  }
+
+
+  //! Writes the matrix in a file.
+  /*!
+    Stores the matrix in a file in binary format.
+    \param FileName output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::Write(string FileName) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_SymSparse::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Write(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Writes the matrix to an output stream.
+  /*!
+    Stores the matrix in an output stream in binary format.
+    \param FileStream output stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::Write(ostream& FileStream) const
+  {
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_SymSparse::Write(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->nz_)),
+		     sizeof(int));
+
+    FileStream.write(reinterpret_cast<char*>(this->ptr_),
+		     sizeof(int)*(this->m_+1));
+    FileStream.write(reinterpret_cast<char*>(this->ind_),
+		     sizeof(int)*this->nz_);
+    FileStream.write(reinterpret_cast<char*>(this->data_),
+		     sizeof(T)*this->nz_);
   }
 
 
@@ -1382,6 +1513,114 @@ namespace Seldon
 
     for (int i = 0; i < IndRow.GetM(); i++)
       FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
+  }
+
+
+  //! Reads the matrix from a file.
+  /*!
+    Reads a matrix stored in binary format in a file.
+    \param FileName input file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::Read(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_SymSparse::Read(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Read(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix in binary format from an input stream.
+    \param FileStream input stream
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::
+  Read(istream& FileStream)
+  {
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_SymSparse::Read(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+
+    int m, n, nz;
+    FileStream.read(reinterpret_cast<char*>(&m), sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(&n), sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(&nz), sizeof(int));
+
+    Reallocate(m, m, nz);
+
+    FileStream.read(reinterpret_cast<char*>(ptr_),
+                    sizeof(int)*(m+1));
+    FileStream.read(reinterpret_cast<char*>(ind_), sizeof(int)*nz);
+    FileStream.read(reinterpret_cast<char*>(this->data_), sizeof(T)*nz);
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was read.
+    if (!FileStream.good())
+      throw IOError("Matrix_SymSparse::Read(istream& FileStream)",
+                    string("Input operation failed.")
+		    + string(" The input file may have been removed")
+		    + " or may not contain enough data.");
+#endif
+
+  }
+
+
+  //! Reads the matrix from a file.
+  /*!
+    Reads the matrix from a file in text format.
+    \param FileName input file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::
+  ReadText(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_SymSparse::ReadText(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->ReadText(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix from a stream in text format.
+    \param FileStream input stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::
+  ReadText(istream& FileStream)
+  {
+    Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
+
+    T zero; int index = 1;
+    ReadCoordinateMatrix(leaf_class, FileStream, zero, index);
   }
 
 

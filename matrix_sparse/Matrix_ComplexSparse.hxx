@@ -152,7 +152,21 @@ namespace Seldon
     operator= (const Matrix_ComplexSparse<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.
+    void Zero();
+    void SetIdentity();
+    void Fill();
+    void Fill(const complex<T>& x);
+    void FillRand();
+
     void Print() const;
+    void Write(string FileName) const;
+    void Write(ostream& FileStream) const;
+    void WriteText(string FileName) const;
+    void WriteText(ostream& FileStream) const;
+    void Read(string FileName);
+    void Read(istream& FileStream);
+    void ReadText(string FileName);
+    void ReadText(istream& FileStream);
   };
 
 

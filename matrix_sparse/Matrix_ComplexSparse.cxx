@@ -2517,6 +2517,103 @@ namespace Seldon
    ************************/
 
 
+  //! Resets all non-zero entries to 0-value.
+  /*! The sparsity pattern remains unchanged. */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>::Zero()
+  {
+    this->allocator_.memoryset(this->real_data_, char(0),
+			       this->real_nz_ * sizeof(value_type));
+
+    this->allocator_.memoryset(this->imag_data_, char(0),
+			       this->imag_nz_ * sizeof(value_type));
+  }
+
+
+  //! Sets the matrix to identity.
+  /*! This method fills the diagonal of the matrix with ones. It can be
+    applied to non square matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>::SetIdentity()
+  {
+    int m = this->m_;
+    int n = this->n_;
+    int nz = min(m, n);
+
+    if (nz == 0)
+      return;
+
+    Clear();
+
+    Vector<T, VectFull, Allocator> real_values(nz), imag_values;
+    Vector<int, VectFull, CallocAlloc<int> >
+      real_ptr(Storage::GetFirst(m, n) + 1);
+    Vector<int, VectFull, CallocAlloc<int> > real_ind(nz);
+    Vector<int, VectFull, CallocAlloc<int> > imag_ptr(real_ptr);
+    Vector<int, VectFull, CallocAlloc<int> > imag_ind;
+
+    real_values.Fill(T(1));
+    real_ind.Fill();
+    imag_ind.Zero();
+    int i;
+    for (i = 0; i < nz + 1; i++)
+      real_ptr(i) = i;
+    for (i = nz + 1; i < real_ptr.GetLength(); i++)
+      real_ptr(i) = nz;
+
+    SetData(m, n, real_values, real_ptr, real_ind,
+            imag_values, imag_ptr, imag_ind);
+  }
+
+
+  //! Fills the non-zero entries with 0, 1, 2, ...
+  /*! On exit, the non-zero entries are 0, 1, 2, 3, ... The order of the
+    numbers depends on the storage.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>::Fill()
+  {
+    for (int i = 0; i < this->real_nz_; i++)
+      this->real_data_[i] = i;
+
+    for (int i = 0; i < this->imag_nz_; i++)
+      this->imag_data_[i] = T(0);
+  }
+
+
+  //! Fills the non-zero entries with a given value.
+  /*!
+    \param x the value to set the non-zero entries to.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+  ::Fill(const complex<T>& x)
+  {
+    for (int i = 0; i < this->real_nz_; i++)
+      this->real_data_[i] = real(x);
+
+    for (int i = 0; i < this->imag_nz_; i++)
+      this->imag_data_[i] = imag(x);
+  }
+
+
+  //! Fills the non-zero entries randomly.
+  /*!
+    \note The random generator is very basic.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>::FillRand()
+  {
+    srand(time(NULL));
+    for (int i = 0; i < this->real_nz_; i++)
+      this->real_data_[i] = rand();
+
+    for (int i = 0; i < this->imag_nz_; i++)
+      this->imag_data_[i] = rand();
+  }
+
+
   //! Displays the matrix on the standard output.
   /*!
     Displays elements on the standard output, in text format.
@@ -2534,6 +2631,245 @@ namespace Seldon
       }
   }
 
+
+  //! Writes the matrix in a file.
+  /*!
+    Stores the matrix in a file in binary format.
+    \param FileName output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+  ::Write(string FileName) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_ComplexSparse::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Write(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Writes the matrix to an output stream.
+  /*!
+    Stores the matrix in an output stream in binary format.
+    \param FileStream output stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+  ::Write(ostream& FileStream) const
+  {
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_ComplexSparse::Write(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->real_nz_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->imag_nz_)),
+		     sizeof(int));
+
+    FileStream.write(reinterpret_cast<char*>(this->real_ptr_),
+		     sizeof(int)*(Storage::GetFirst(this->m_, this->n_)+1));
+    FileStream.write(reinterpret_cast<char*>(this->real_ind_),
+		     sizeof(int)*this->real_nz_);
+    FileStream.write(reinterpret_cast<char*>(this->real_data_),
+		     sizeof(T)*this->real_nz_);
+
+    FileStream.write(reinterpret_cast<char*>(this->imag_ptr_),
+		     sizeof(int)*(Storage::GetFirst(this->m_, this->n_)+1));
+    FileStream.write(reinterpret_cast<char*>(this->imag_ind_),
+		     sizeof(int)*this->imag_nz_);
+    FileStream.write(reinterpret_cast<char*>(this->imag_data_),
+		     sizeof(T)*this->imag_nz_);
+  }
+
+
+  //! Writes the matrix in a file.
+  /*!
+    Stores the matrix in a file in ascii format.
+    The entries are written in coordinate format (row column value)
+    1-index convention is used
+    \param FileName output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>::
+  WriteText(string FileName) const
+  {
+    ofstream FileStream; FileStream.precision(14);
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_ComplexSparse::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->WriteText(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Writes the matrix to an output stream.
+  /*!
+    Stores the matrix in a file in ascii format.
+    The entries are written in coordinate format (row column value)
+    1-index convention is used
+    \param FileStream output stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>::
+  WriteText(ostream& FileStream) const
+  {
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_ComplexSparse::Write(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+
+    // conversion in coordinate format (1-index convention)
+    IVect IndRow, IndCol; Vector<complex<T> > Value;
+    const Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this);
+
+    ConvertMatrix_to_Coordinates(leaf_class, IndRow, IndCol,
+				 Value, 1);
+
+    for (int i = 0; i < IndRow.GetM(); i++)
+      FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
+
+  }
+
+
+  //! Reads the matrix from a file.
+  /*!
+    Reads a matrix stored in binary format in a file.
+    \param FileName input file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>::
+  Read(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_ComplexSparse::Read(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Read(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix in binary format from an input stream.
+    \param FileStream input stream
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+  ::Read(istream& FileStream)
+  {
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_ComplexSparse::Read(istream& FileStream)",
+		    "Stream is not ready.");
+#endif
+
+    int m, n, real_nz, imag_nz;
+    FileStream.read(reinterpret_cast<char*>(&m), sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(&n), sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(&real_nz), sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(&imag_nz), sizeof(int));
+
+    Reallocate(m, n, real_nz, imag_nz);
+
+    FileStream.read(reinterpret_cast<char*>(real_ptr_),
+                    sizeof(int)*(Storage::GetFirst(m, n)+1));
+    FileStream.read(reinterpret_cast<char*>(real_ind_), sizeof(int)*real_nz);
+    FileStream.read(reinterpret_cast<char*>(this->real_data_), sizeof(T)*real_nz);
+
+    FileStream.read(reinterpret_cast<char*>(imag_ptr_),
+                    sizeof(int)*(Storage::GetFirst(m, n)+1));
+    FileStream.read(reinterpret_cast<char*>(imag_ind_), sizeof(int)*imag_nz);
+    FileStream.read(reinterpret_cast<char*>(this->imag_data_), sizeof(T)*imag_nz);
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was read.
+    if (!FileStream.good())
+      throw IOError("Matrix_ComplexSparse::Read(istream& FileStream)",
+                    string("Input operation failed.")
+		    + string(" The input file may have been removed")
+		    + " or may not contain enough data.");
+#endif
+
+  }
+
+
+  //! Reads the matrix from a file.
+  /*!
+    Reads the matrix from a file in text format.
+    \param FileName input file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+  ::ReadText(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_ComplexSparse::ReadText(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->ReadText(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix from a stream in text format.
+    \param FileStream input stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+  ::ReadText(istream& FileStream)
+  {
+    Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
+
+    complex<T> zero; int index = 1;
+    ReadCoordinateMatrix(leaf_class, FileStream, zero, index);
+  }
 
 
   //////////////////////////////

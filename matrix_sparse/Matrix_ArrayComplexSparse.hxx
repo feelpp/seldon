@@ -129,8 +129,15 @@ namespace Seldon
 
     // Convenient functions.
     void Print() const;
+    void Write(string FileName) const;
+    void Write(ostream& FileStream) const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
+    void Read(string FileName);
+    void Read(istream& FileStream);
+    void ReadText(string FileName);
+    void ReadText(istream& FileStream);
+
     void Assemble();
     template<class T0>
     void RemoveSmallEntry(const T0& epsilon);

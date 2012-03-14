@@ -1348,7 +1348,8 @@ namespace Seldon
     Vector<int, VectFull, CallocAlloc<int> > ptr(Storage::GetFirst(m, n) + 1);
     Vector<int, VectFull, CallocAlloc<int> > ind(nz);
 
-    values.Fill(T(1));
+    T one; SetComplexOne(one);
+    values.Fill(one);
     ind.Fill();
     int i;
     for (i = 0; i < nz + 1; i++)
@@ -1398,6 +1399,84 @@ namespace Seldon
   }
 
 
+  //! Fills the matrix with random elements.
+  /*! The matrix is cleared and then filled with \a n random elements. Both
+    the position of the elements and their values are randomly generated. On
+    exit, the matrix may not have \a n non-zero elements: it is possible that
+    the randomly-generated positions of two elements are the same.
+    \param[in] Nelement the number of random elements to be inserted in the
+    matrix.
+    \note The random generator is very basic.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::FillRand(int Nelement)
+  {
+    if (this->m_ == 0 || this->n_ == 0)
+      return;
+
+    Vector<int> i(Nelement), j(Nelement);
+    Vector<T> value(Nelement);
+
+    set<pair<int, int> > skeleton;
+    set<pair<int, int> >::iterator it;
+
+    srand(time(NULL));
+
+    // generation of triplet (i, j, value)
+    while (static_cast<int>(skeleton.size()) != Nelement)
+      skeleton.insert(make_pair(rand() % this->m_, rand() % this->n_));
+
+    int l = 0;
+    for (it = skeleton.begin(); it != skeleton.end(); it++)
+      {
+	i(l) = it->first;
+	j(l) = it->second;
+	value(l) = double(rand());
+	l++;
+      }
+
+    // then conversion to current sparse matrix
+    Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
+
+    ConvertMatrix_from_Coordinates(i, j, value, leaf_class, 0);
+  }
+
+
+  //! Fills the matrix with one value inserted at random positions.
+  /*! The matrix is cleared and then filled with \a n random elements. Only
+    the position of the elements is randomly generated. Their value will
+    always be \a x. On exit, the matrix may not have \a n non-zero elements:
+    it is possible that the randomly-generated positions of two elements are
+    the same.
+    \param[in] Nelement the number of random elements to be inserted in the
+    matrix.
+    \param[in] x the value to be inserted.
+    \note The random generator is very basic.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::FillRand(int Nelement, const T& x)
+  {
+    if (this->m_ == 0 || this->n_ == 0)
+      return;
+
+    Vector<int> i(Nelement), j(Nelement);
+    Vector<T> value(Nelement);
+    value.Fill(x);
+
+    srand(time(NULL));
+    for (int l = 0; l < Nelement; l++)
+      {
+        i(l) = rand() % this->m_;
+        j(l) = rand() % this->n_;
+      }
+
+    ConvertMatrix_from_Coordinates(i, j, value, *this);
+  }
+
+
   //! Displays the matrix on the standard output.
   /*!
     Displays elements on the standard output, in text format.
@@ -1413,6 +1492,63 @@ namespace Seldon
 	  cout << (*this)(i, j) << "\t";
 	cout << endl;
       }
+  }
+
+
+  //! Writes the matrix in a file.
+  /*!
+    Stores the matrix in a file in binary format.
+    \param FileName output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::Write(string FileName) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_Sparse::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Write(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Writes the matrix to an output stream.
+  /*!
+    Stores the matrix in an output stream in binary format.
+    \param FileStream output stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::Write(ostream& FileStream) const
+  {
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_Sparse::Write(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->nz_)),
+		     sizeof(int));
+
+    FileStream.write(reinterpret_cast<char*>(this->ptr_),
+		     sizeof(int)*(Storage::GetFirst(this->m_, this->n_)+1));
+    FileStream.write(reinterpret_cast<char*>(this->ind_),
+		     sizeof(int)*this->nz_);
+    FileStream.write(reinterpret_cast<char*>(this->data_),
+		     sizeof(T)*this->nz_);
   }
 
 
@@ -1448,7 +1584,7 @@ namespace Seldon
     Stores the matrix in a file in ascii format.
     The entries are written in coordinate format (row column value)
     1-index convention is used
-    \param FileStream output file name.
+    \param FileStream output stream.
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::
@@ -1473,6 +1609,114 @@ namespace Seldon
     for (int i = 0; i < IndRow.GetM(); i++)
       FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
 
+  }
+
+
+  //! Reads the matrix from a file.
+  /*!
+    Reads a matrix stored in binary format in a file.
+    \param FileName input file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::
+  Read(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_Sparse::Read(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Read(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix in binary format from an input stream.
+    \param FileStream input stream
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::
+  Read(istream& FileStream)
+  {
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_Sparse::Read(istream& FileStream)",
+		    "Stream is not ready.");
+#endif
+
+    int m, n, nz;
+    FileStream.read(reinterpret_cast<char*>(&m), sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(&n), sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(&nz), sizeof(int));
+
+    Reallocate(m, n, nz);
+
+    FileStream.read(reinterpret_cast<char*>(ptr_),
+                    sizeof(int)*(Storage::GetFirst(m, n)+1));
+    FileStream.read(reinterpret_cast<char*>(ind_), sizeof(int)*nz);
+    FileStream.read(reinterpret_cast<char*>(this->data_), sizeof(T)*nz);
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was read.
+    if (!FileStream.good())
+      throw IOError("Matrix_Sparse::Read(istream& FileStream)",
+                    string("Input operation failed.")
+		    + string(" The input file may have been removed")
+		    + " or may not contain enough data.");
+#endif
+
+  }
+
+
+  //! Reads the matrix from a file.
+  /*!
+    Reads the matrix from a file in text format.
+    \param FileName input file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::
+  ReadText(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_Sparse::ReadText(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->ReadText(FileStream);
+
+    FileStream.close();
+  }
+
+
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix from a stream in text format.
+    \param FileStream input stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::
+  ReadText(istream& FileStream)
+  {
+    Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
+
+    T zero; int index = 1;
+    ReadCoordinateMatrix(leaf_class, FileStream, zero, index);
   }
 
 
@@ -1621,77 +1865,113 @@ namespace Seldon
   }
 
 
-  //! Fills the matrix with random elements.
-  /*! The matrix is cleared and then filled with \a n random elements. Both
-    the position of the elements and their values are randomly generated. On
-    exit, the matrix may not have \a n non-zero elements: it is possible that
-    the randomly-generated positions of two elements are the same.
-    \param[in] Nelement the number of random elements to be inserted in the
-    matrix.
-    \note The random generator is very basic.
+  //////////////////////////
+  // ReadCoordinateMatrix //
+  //////////////////////////
+
+
+  //! Reading of matrix in coordinate format
+  /*!
+    \param FileStream stream where the matrix is read
+    \param row_numbers row indices
+    \param col_numbers column indices
+    \param values
   */
-  template <class T, class Prop, class Allocator>
-  void Matrix<T, Prop, RowSparse, Allocator>::FillRand(int Nelement)
+  template<class Tint, class AllocInt, class T, class Allocator>
+  void ReadCoordinateMatrix(istream& FileStream,
+                            Vector<Tint, VectFull, AllocInt>& row_numbers,
+                            Vector<Tint, VectFull, AllocInt>& col_numbers,
+                            Vector<T, VectFull, Allocator>& values)
   {
-    if (this->m_ == 0 || this->n_ == 0)
-      return;
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("ReadCoordinateMatrix", "Stream is not ready.");
+#endif
 
-    Vector<int> i(Nelement), j(Nelement);
-    Vector<T> value(Nelement);
+    T entry; int row = 0, col = 0;
+    int nb_elt = 0;
+    SetComplexZero(entry);
 
-    set<pair<int, int> > skeleton;
-    set<pair<int, int> >::iterator it;
-
-    srand(time(NULL));
-
-    while (static_cast<int>(skeleton.size()) != Nelement)
-      skeleton.insert(make_pair(rand() % this->m_, rand() % this->n_));
-
-    int l = 0;
-    for (it = skeleton.begin(); it != skeleton.end(); it++)
+    while (!FileStream.eof())
       {
-	i(l) = it->first;
-	j(l) = it->second;
-	value(l) = double(rand());
-	l++;
+	// new entry is read (1-index)
+	FileStream >> row >> col >> entry;
+
+	if (FileStream.fail())
+	  break;
+	else
+	  {
+#ifdef SELDON_CHECK_IO
+	    if (row < 1)
+	      throw IOError(string("ReadCoordinateMatrix"),
+			    string("Error : Row number should be greater ")
+			    + "than 0 but is equal to " + to_str(row));
+
+	    if (col < 1)
+	      throw IOError(string("ReadCoordinateMatrix"),
+			    string("Error : Column number should be greater")
+			    + " than 0 but is equal to " + to_str(col));
+#endif
+
+	    nb_elt++;
+
+	    // inserting new element
+	    if (nb_elt > values.GetM())
+	      {
+		values.Resize(2*nb_elt);
+		row_numbers.Resize(2*nb_elt);
+		col_numbers.Resize(2*nb_elt);
+	      }
+
+	    values(nb_elt-1) = entry;
+	    row_numbers(nb_elt-1) = row;
+	    col_numbers(nb_elt-1) = col;
+	  }
       }
 
-    ConvertMatrix_from_Coordinates(i, j, value, *this);
+    if (nb_elt > 0)
+      {
+	row_numbers.Resize(nb_elt);
+	col_numbers.Resize(nb_elt);
+	values.Resize(nb_elt);
+      }
   }
 
 
-  //! Fills the matrix with one value inserted at random positions.
-  /*! The matrix is cleared and then filled with \a n random elements. Only
-    the position of the elements is randomly generated. Their value will
-    always be \a x. On exit, the matrix may not have \a n non-zero elements:
-    it is possible that the randomly-generated positions of two elements are
-    the same.
-    \param[in] Nelement the number of random elements to be inserted in the
-    matrix.
-    \param[in] x the value to be inserted.
-    \note The random generator is very basic.
+  //! Reading of matrix in coordinate format
+  /*!
+    \param A output matrix
+    \param FileStream stream where the matrix is read
+    \param zero type of value to read (double or complex<double>)
+    \param index starting index (usually 0 or 1)
+    \param nnz number of non-zero entries
+    If nnz is equal to -1, we consider that the number of non-zero entries
+    is unknown and is deduced from the number of lines present in the stream
   */
-  template <class T, class Prop, class Allocator>
-  void Matrix<T, Prop, RowSparse, Allocator>
-  ::FillRand(int Nelement, const T& x)
+  template<class Matrix1, class T>
+  void ReadCoordinateMatrix(Matrix1& A, istream& FileStream, T& zero,
+                            int index, int nnz)
   {
-    if (this->m_ == 0 || this->n_ == 0)
-      return;
+    // previous elements are removed
+    A.Clear();
 
-    Vector<int> i(Nelement), j(Nelement);
-    Vector<T> value(Nelement);
-    value.Fill(x);
-
-    srand(time(NULL));
-    for (int l = 0; l < Nelement; l++)
+    Vector<int> row_numbers, col_numbers;
+    Vector<T> values;
+    if (nnz >= 0)
       {
-        i(l) = rand() % this->m_;
-        j(l) = rand() % this->n_;
+        values.Reallocate(nnz);
+        row_numbers.Reallocate(nnz);
+        col_numbers.Reallocate(nnz);
       }
 
-    ConvertMatrix_from_Coordinates(i, j, value, *this);
-  }
+    ReadCoordinateMatrix(FileStream, row_numbers, col_numbers, values);
 
+    if (row_numbers.GetM() > 0)
+      ConvertMatrix_from_Coordinates(row_numbers, col_numbers, values,
+                                     A, index);
+
+  }
 
 } // namespace Seldon.
 
