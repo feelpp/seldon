@@ -81,8 +81,10 @@ namespace Seldon
 
     value_type operator() (int i) const;
     reference Get(int i);
+    reference Val(int i);
 #ifndef SWIG
     const_reference Get(int i) const;
+    const_reference Val(int i) const;
     Vector<T, VectSparse, Allocator>& operator= (const Vector<T, VectSparse,
 						 Allocator>& X);
 #endif

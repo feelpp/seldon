@@ -486,6 +486,57 @@ namespace Seldon
   }
 
 
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the vector).
+  */
+  template <class T, class Allocator>
+  inline typename Vector<T, VectSparse, Allocator>::reference
+  Vector<T, VectSparse, Allocator>::Val(int i)
+  {
+    int k = 0;
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      throw WrongArgument("Vector<VectSparse>::Val(int)",
+                          "the entry " + to_str(i) +
+                          " does not belong to the sparsity pattern.");
+
+
+    return this->data_[k];
+  }
+
+
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the vector).
+  */
+  template <class T, class Allocator>
+  inline typename Vector<T, VectSparse, Allocator>::const_reference
+  Vector<T, VectSparse, Allocator>::Val(int i) const
+  {
+    int k = 0;
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      throw WrongArgument("Vector<VectSparse>::Val(int)",
+                          "the entry " + to_str(i) +
+                          " does not belong to the sparsity pattern.");
+
+    return this->data_[k];
+  }
+
+
   //! Duplicates a vector (assignment operator).
   /*!
     \param X vector to be copied.
