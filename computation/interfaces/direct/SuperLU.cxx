@@ -347,7 +347,7 @@ namespace Seldon
 	cout << "Number of nonzeros in factor L = " << Lstore->nnz << endl;
 	cout << "Number of nonzeros in factor U = " << Ustore->nnz << endl;
 	cout << "Number of nonzeros in L+U     = "
-             << Lstore->nnz + Ustore->nnz < <endl;
+             << Lstore->nnz + Ustore->nnz << endl;
 	dQuerySpace(&L, &U, &mem_usage);
 	cout << "Memory used for factorization in MB: "
              << mem_usage.total_needed / (1024. * 1024.) << endl;
