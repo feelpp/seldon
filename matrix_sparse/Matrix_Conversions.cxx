@@ -1053,7 +1053,7 @@ namespace Seldon
       }
 
     // Sorts the array 'IndRow'.
-    Sort(IndRow, IndCol, Val);
+    Sort(IndCol, IndRow, Val);
 
     // Construction of array 'Ptr'.
     Vector<int, VectFull, CallocAlloc<int> > Ptr(m);
@@ -1062,7 +1062,7 @@ namespace Seldon
       {
 	IndRow(i) -= index;
 	IndCol(i) -= index;
-	Ptr(IndRow(i))++;
+	Ptr(IndCol(i))++;
       }
 
     // Fills matrix 'A'.
@@ -1074,13 +1074,13 @@ namespace Seldon
 	  A.ReallocateColumn(i, Ptr(i));
 	  for (int j = 0; j < Ptr(i); j++)
 	    {
-	      A.Index(i, j) = IndCol(offset + j);
+	      A.Index(i, j) = IndRow(offset + j);
 	      A.Value(i, j) = Val(offset + j);
 	    }
 	  offset += Ptr(i);
 	}
 
-    // Assembles 'A' to sort column numbers.
+    // Assembles 'A' to sort row numbers.
     A.Assemble();
   }
 
