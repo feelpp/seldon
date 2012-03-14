@@ -138,8 +138,8 @@ void TestSymmetricMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   A.Fill(); A.Resize(4, 4);
   // but new elements need to be initialized
   // symmetric matrices -> only the last column need to be changed
-  A(0, 3) = -2.5; A(1, 3) = 1.0;
-  A(2, 3) = 3.0; A(3, 3) = -0.5;
+  A.Get(0, 3) = -2.5; A.Get(1, 3) = 1.0;
+  A.Get(2, 3) = 3.0; A.Get(3, 3) = -0.5;
   cout << " A = " << A << endl;
 
   // you can clear a matrix
@@ -207,8 +207,8 @@ void TestHermitianMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   // but new elements need to be initialized
   // hermitian matrices -> only the last column need to be changed
   // be careful, we don't check if the diagonal is real
-  A(0, 3) = T(-2.5, 1.0); A(1, 3) = T(1.0, -1.5);
-  A(2, 3) = T(3.0, 2.0); A(3, 3) = T(-0.5, 0.0);
+  A.Get(0, 3) = T(-2.5, 1.0); A.Get(1, 3) = T(1.0, -1.5);
+  A.Get(2, 3) = T(3.0, 2.0); A.Get(3, 3) = T(-0.5, 0.0);
   cout << " A = " << A << endl;
 
   // you can clear a matrix
@@ -276,8 +276,8 @@ void TestUpperTriangularMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   A.Fill(); A.Resize(4, 4);
   // but new elements need to be initialized
   // upper triangular matrices -> only the last column need to be changed
-  A(0, 3) = -2.5; A(1, 3) = 1.0;
-  A(2, 3) = 3.2; A(3, 3) = -0.5;
+  A.Get(0, 3) = -2.5; A.Get(1, 3) = 1.0;
+  A.Get(2, 3) = 3.2; A.Get(3, 3) = -0.5;
   cout << " A = " << A << endl;
 
   // you can clear a matrix
@@ -344,8 +344,8 @@ void TestLowerTriangularMatrix(Matrix<T, Prop, Storage, Allocator>& mat_test)
   A.Fill(); A.Resize(4, 4);
   // but new elements need to be initialized
   // lower triangular matrices -> only the last row need to be changed
-  A(3, 0) = -2.5; A(3, 1) = 1.0;
-  A(3, 2) = 3.2; A(3, 3) = -0.5;
+  A.Val(3, 0) = -2.5; A.Val(3, 1) = 1.0;
+  A.Val(3, 2) = 3.2; A.Val(3, 3) = -0.5;
   cout << " A = " << A << endl;
 
   // you can clear a matrix
