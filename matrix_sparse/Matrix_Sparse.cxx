@@ -1473,7 +1473,11 @@ namespace Seldon
         j(l) = rand() % this->n_;
       }
 
-    ConvertMatrix_from_Coordinates(i, j, value, *this);
+    // then conversion to current sparse matrix
+    Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
+
+    ConvertMatrix_from_Coordinates(i, j, value, leaf_class, 0);
   }
 
 
