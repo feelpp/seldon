@@ -247,7 +247,7 @@ namespace Seldon
       }
   }
 
-  
+
   //! Conversion from RowComplexSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
@@ -283,7 +283,7 @@ namespace Seldon
             col.Reallocate(size_row);
             value.Reallocate(size_row);
           }
-        
+
         int nb = 0;
         for (int j = real_ptr[i]; j < real_ptr[i+1]; j++)
           {
@@ -298,7 +298,7 @@ namespace Seldon
             value(nb) = complex<T>(0, imag_data[j]);
             nb++;
           }
-        
+
         Assemble(nb, col, value);
         for (int j = 0; j < nb; j++)
           {
@@ -306,16 +306,16 @@ namespace Seldon
             IndCol(nnz + j) = col(j);
             Val(nnz + j) = value(j);
           }
-        
+
         nnz += nb;
       }
-    
+
     IndRow.Resize(nnz);
     IndCol.Resize(nnz);
     Val.Resize(nnz);
   }
 
-  
+
   //! Conversion from ColComplexSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
@@ -351,7 +351,7 @@ namespace Seldon
             col.Reallocate(size_col);
             value.Reallocate(size_col);
           }
-        
+
         int nb = 0;
         for (int j = real_ptr[i]; j < real_ptr[i+1]; j++)
           {
@@ -366,7 +366,7 @@ namespace Seldon
             value(nb) = complex<T>(0, imag_data[j]);
             nb++;
           }
-        
+
         Assemble(nb, col, value);
         for (int j = 0; j < nb; j++)
           {
@@ -374,16 +374,16 @@ namespace Seldon
             IndCol(nnz + j) = index + i;
             Val(nnz + j) = value(j);
           }
-        
+
         nnz += nb;
       }
-    
+
     IndRow.Resize(nnz);
     IndCol.Resize(nnz);
     Val.Resize(nnz);
   }
 
-  
+
     //! Conversion from ArrayRowSymComplexSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
@@ -403,7 +403,7 @@ namespace Seldon
     int* imag_ind = A.GetImagInd();
     T* real_data = A.GetRealData();
     T* imag_data = A.GetImagData();
-    
+
     if (sym)
       {
 	nnz *= 2;
@@ -424,7 +424,7 @@ namespace Seldon
                 col.Reallocate(size_row);
                 value.Reallocate(size_row);
               }
-            
+
             int nb = 0;
             for (int j = real_ptr[i]; j < real_ptr[i+1]; j++)
               {
@@ -432,14 +432,14 @@ namespace Seldon
                 value(nb) = complex<T>(real_data[j], 0);
                 nb++;
               }
-            
+
             for (int j = imag_ptr[i]; j < imag_ptr[i+1]; j++)
               {
                 col(nb) = imag_ind[j];
                 value(nb) = complex<T>(0, imag_data[j]);
                 nb++;
               }
-            
+
             Assemble(nb, col, value);
             for (int j = 0; j < nb; j++)
               {
@@ -448,7 +448,7 @@ namespace Seldon
                 Val(nnz) = value(j);
                 Ptr(i)++;
                 nnz++;
-                
+
                 if (col(j) != i)
                   {
                     IndRow(nnz) = col(j) + index;
@@ -459,11 +459,11 @@ namespace Seldon
                   }
               }
           }
-        
+
         IndRow.Resize(nnz);
         IndCol.Resize(nnz);
         Val.Resize(nnz);
-        
+
         // Sorting the row numbers...
 	Sort(IndRow, IndCol, Val);
 
@@ -493,7 +493,7 @@ namespace Seldon
                 col.Reallocate(size_row);
                 value.Reallocate(size_row);
               }
-            
+
             int nb = 0;
             for (int j = real_ptr[i]; j < real_ptr[i+1]; j++)
               {
@@ -501,14 +501,14 @@ namespace Seldon
                 value(nb) = complex<T>(real_data[j], 0);
                 nb++;
               }
-            
+
             for (int j = real_ptr[i]; j < real_ptr[i+1]; j++)
               {
                 col(nb) = imag_ind[j] + index;
                 value(nb) = complex<T>(0, imag_ind[j]);
                 nb++;
               }
-            
+
             Assemble(nb, col, value);
             for (int j = 0; j < nb; j++)
               {
@@ -516,17 +516,17 @@ namespace Seldon
                 IndCol(nnz + j) = col(j);
                 Val(nnz + j) = value(j);
               }
-            
+
             nnz += nb;
           }
-        
+
         IndRow.Resize(nnz);
         IndCol.Resize(nnz);
         Val.Resize(nnz);
       }
   }
 
-  
+
   //! Conversion from ColSymComplexSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
@@ -546,7 +546,7 @@ namespace Seldon
     int* imag_ind = A.GetImagInd();
     T* real_data = A.GetRealData();
     T* imag_data = A.GetImagData();
-    
+
     if (sym)
       {
 	nnz *= 2;
@@ -567,7 +567,7 @@ namespace Seldon
                 row.Reallocate(size_col);
                 value.Reallocate(size_col);
               }
-            
+
             int nb = 0;
             for (int j = real_ptr[i]; j < real_ptr[i+1]; j++)
               {
@@ -575,14 +575,14 @@ namespace Seldon
                 value(nb) = complex<T>(real_data[j], 0);
                 nb++;
               }
-            
+
             for (int j = imag_ptr[i]; j < imag_ptr[i+1]; j++)
               {
                 row(nb) = imag_ind[j];
                 value(nb) = complex<T>(0, imag_data[j]);
                 nb++;
               }
-            
+
             Assemble(nb, row, value);
             for (int j = 0; j < nb; j++)
               {
@@ -591,7 +591,7 @@ namespace Seldon
                 Val(nnz) = value(j);
                 Ptr(i)++;
                 nnz++;
-                
+
                 if (row(j) != i)
                   {
                     IndRow(nnz) = row(j) + index;
@@ -602,11 +602,11 @@ namespace Seldon
                   }
               }
           }
-        
+
         IndRow.Resize(nnz);
         IndCol.Resize(nnz);
         Val.Resize(nnz);
-        
+
         // Sorting the column numbers...
 	Sort(IndCol, IndRow, Val);
 
@@ -636,7 +636,7 @@ namespace Seldon
                 row.Reallocate(size_col);
                 value.Reallocate(size_col);
               }
-            
+
             int nb = 0;
             for (int j = real_ptr[i]; j < real_ptr[i+1]; j++)
               {
@@ -644,14 +644,14 @@ namespace Seldon
                 value(nb) = complex<T>(real_data[j], 0);
                 nb++;
               }
-            
+
             for (int j = imag_ptr[i]; j < imag_ptr[i+1]; j++)
               {
                 row(nb) = imag_ind[j] + index;
                 value(nb) = complex<T>(0, imag_data[j]);
                 nb++;
               }
-            
+
             Assemble(nb, row, value);
             for (int j = 0; j < nb; j++)
               {
@@ -659,17 +659,17 @@ namespace Seldon
                 IndRow(nnz + j) = row(j);
                 Val(nnz + j) = value(j);
               }
-            
+
             nnz += nb;
           }
-        
+
         IndRow.Resize(nnz);
         IndCol.Resize(nnz);
         Val.Resize(nnz);
       }
   }
 
-  
+
   /*
     From Sparse Array formats to "Matlab" coordinate format.
   */
@@ -762,7 +762,7 @@ namespace Seldon
             col.Reallocate(size_row);
             value.Reallocate(size_row);
           }
-        
+
         int nb = 0;
         for (int j = 0; j < A.GetRealRowSize(i); j++)
           {
@@ -777,7 +777,7 @@ namespace Seldon
             value(nb) = complex<T>(0, A.ValueImag(i, j));
             nb++;
           }
-        
+
         Assemble(nb, col, value);
         for (int j = 0; j < nb; j++)
           {
@@ -785,16 +785,16 @@ namespace Seldon
             IndCol(nnz + j) = col(j);
             Val(nnz + j) = value(j);
           }
-        
+
         nnz += nb;
       }
-    
+
     IndRow.Resize(nnz);
     IndCol.Resize(nnz);
     Val.Resize(nnz);
   }
 
-  
+
   //! Conversion from ArrayColComplexSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
@@ -821,7 +821,7 @@ namespace Seldon
             row.Reallocate(size_col);
             value.Reallocate(size_col);
           }
-        
+
         int nb = 0;
         for (int j = 0; j < A.GetRealColumnSize(i); j++)
           {
@@ -836,7 +836,7 @@ namespace Seldon
             value(nb) = complex<T>(0, A.ValueImag(i, j));
             nb++;
           }
-        
+
         Assemble(nb, row, value);
         for (int j = 0; j < nb; j++)
           {
@@ -844,16 +844,16 @@ namespace Seldon
             IndCol(nnz + j) = index + i;
             Val(nnz + j) = value(j);
           }
-        
+
         nnz += nb;
       }
-    
+
     IndRow.Resize(nnz);
     IndCol.Resize(nnz);
     Val.Resize(nnz);
   }
 
-  
+
   //! Conversion from ArrayRowSymSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
@@ -1006,7 +1006,7 @@ namespace Seldon
       }
   }
 
-  
+
   //! Conversion from ArrayRowSymComplexSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
@@ -1038,7 +1038,7 @@ namespace Seldon
                 col.Reallocate(size_row);
                 value.Reallocate(size_row);
               }
-            
+
             int nb = 0;
             for (int j = 0; j < A.GetRealRowSize(i); j++)
               {
@@ -1046,14 +1046,14 @@ namespace Seldon
                 value(nb) = complex<T>(A.ValueReal(i, j), 0);
                 nb++;
               }
-            
+
             for (int j = 0; j < A.GetImagRowSize(i); j++)
               {
                 col(nb) = A.IndexImag(i, j);
                 value(nb) = complex<T>(0, A.ValueImag(i, j));
                 nb++;
               }
-            
+
             Assemble(nb, col, value);
             for (int j = 0; j < nb; j++)
               {
@@ -1062,7 +1062,7 @@ namespace Seldon
                 Val(nnz) = value(j);
                 Ptr(i)++;
                 nnz++;
-                
+
                 if (col(j) != i)
                   {
                     IndRow(nnz) = col(j) + index;
@@ -1073,11 +1073,11 @@ namespace Seldon
                   }
               }
           }
-        
+
         IndRow.Resize(nnz);
         IndCol.Resize(nnz);
         Val.Resize(nnz);
-        
+
         // Sorting the row numbers...
 	Sort(IndRow, IndCol, Val);
 
@@ -1105,7 +1105,7 @@ namespace Seldon
                 col.Reallocate(size_row);
                 value.Reallocate(size_row);
               }
-            
+
             int nb = 0;
             for (int j = 0; j < A.GetRealRowSize(i); j++)
               {
@@ -1113,14 +1113,14 @@ namespace Seldon
                 value(nb) = complex<T>(A.ValueReal(i, j), 0);
                 nb++;
               }
-            
+
             for (int j = 0; j < A.GetImagRowSize(i); j++)
               {
                 col(nb) = A.IndexImag(i, j) + index;
                 value(nb) = complex<T>(0, A.ValueImag(i, j));
                 nb++;
               }
-            
+
             Assemble(nb, col, value);
             for (int j = 0; j < nb; j++)
               {
@@ -1128,17 +1128,17 @@ namespace Seldon
                 IndCol(nnz + j) = col(j);
                 Val(nnz + j) = value(j);
               }
-            
+
             nnz += nb;
           }
-        
+
         IndRow.Resize(nnz);
         IndCol.Resize(nnz);
         Val.Resize(nnz);
       }
   }
-  
-  
+
+
   //! Conversion from ArrayColSymComplexSparse to coordinate format.
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
@@ -1170,7 +1170,7 @@ namespace Seldon
                 row.Reallocate(size_col);
                 value.Reallocate(size_col);
               }
-            
+
             int nb = 0;
             for (int j = 0; j < A.GetRealColumnSize(i); j++)
               {
@@ -1178,14 +1178,14 @@ namespace Seldon
                 value(nb) = complex<T>(A.ValueReal(i, j), 0);
                 nb++;
               }
-            
+
             for (int j = 0; j < A.GetImagColumnSize(i); j++)
               {
                 row(nb) = A.IndexImag(i, j);
                 value(nb) = complex<T>(0, A.ValueImag(i, j));
                 nb++;
               }
-            
+
             Assemble(nb, row, value);
             for (int j = 0; j < nb; j++)
               {
@@ -1194,7 +1194,7 @@ namespace Seldon
                 Val(nnz) = value(j);
                 Ptr(i)++;
                 nnz++;
-                
+
                 if (row(j) != i)
                   {
                     IndRow(nnz) = row(j) + index;
@@ -1205,11 +1205,11 @@ namespace Seldon
                   }
               }
           }
-        
+
         IndRow.Resize(nnz);
         IndCol.Resize(nnz);
         Val.Resize(nnz);
-        
+
         // Sorting the column numbers...
 	Sort(IndCol, IndRow, Val);
 
@@ -1237,7 +1237,7 @@ namespace Seldon
                 row.Reallocate(size_col);
                 value.Reallocate(size_col);
               }
-            
+
             int nb = 0;
             for (int j = 0; j < A.GetRealColumnSize(i); j++)
               {
@@ -1245,14 +1245,14 @@ namespace Seldon
                 value(nb) = complex<T>(A.ValueReal(i, j), 0);
                 nb++;
               }
-            
+
             for (int j = 0; j < A.GetImagColumnSize(i); j++)
               {
                 row(nb) = A.IndexImag(i, j) + index;
                 value(nb) = complex<T>(0, A.ValueImag(i, j));
                 nb++;
               }
-            
+
             Assemble(nb, row, value);
             for (int j = 0; j < nb; j++)
               {
@@ -1260,17 +1260,17 @@ namespace Seldon
                 IndRow(nnz + j) = row(j);
                 Val(nnz + j) = value(j);
               }
-            
+
             nnz += nb;
           }
-        
+
         IndRow.Resize(nnz);
         IndCol.Resize(nnz);
         Val.Resize(nnz);
       }
   }
 
-  
+
   /*
     From "Matlab" coordinate format to CSR formats.
   */
@@ -1304,33 +1304,33 @@ namespace Seldon
 	IndRow(i) = IndRow_(i) - index;
 	IndCol(i) = IndCol_(i) - index;
       }
-    
+
     IndRow_.Clear();
     IndCol_.Clear();
-    
+
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
-    
+
     int m = row_max + 1;
     int n = col_max + 1;
     m = max(m, A.GetM());
     n = max(n, A.GetN());
-    
+
     Sort(IndRow, IndCol, Val);
-    
+
     // Construction of array 'Ptr'.
     Vector<int, VectFull, CallocAlloc<int> > Ptr(m + 1);
     Ptr.Zero();
     for (int i = 0; i < Nelement; i++)
       Ptr(IndRow(i)+1)++;
-    
+
     for (int i = 0; i < m; i++)
       Ptr(i + 1) += Ptr(i);
 
     // Sorts 'IndCol'
     for (int i = 0; i < m; i++)
       Sort(Ptr(i), Ptr(i + 1) - 1, IndCol, Val);
-    
+
     A.SetData(m, n, Val, Ptr, IndCol);
   }
 
@@ -1488,7 +1488,7 @@ namespace Seldon
 	IndRow(i) = IndRow_(i);
 	IndCol(i) = IndCol_(i);
       }
-    
+
     IndRow_.Clear();
     IndCol_.Clear();
 
@@ -1544,7 +1544,7 @@ namespace Seldon
     A.SetData(m, n, Val, Ptr, IndRow);
   }
 
-  
+
   //! Conversion from coordinate format to RowComplexSparse.
   template<class T, class Prop, class Allocator1,
 	   class Allocator2, class Allocator3, class Allocator4>
@@ -1561,16 +1561,16 @@ namespace Seldon
         A.Clear();
         return;
       }
-    
+
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
-    
+
     // Sorts the array 'IndRow'.
     Sort(IndRow, IndCol, Val);
-    
+
     // Number of elements per row.
     Vector<int, VectFull, CallocAlloc<int> > PtrReal(m+1), PtrImag(m+1), Ptr(m);
     PtrReal.Zero(); PtrImag.Zero(); Ptr.Zero();
@@ -1581,7 +1581,7 @@ namespace Seldon
         Ptr(IndRow(i))++;
 	if (real(Val(i)) != zero)
           PtrReal(IndRow(i)+1)++;
-        
+
 	if (imag(Val(i)) != zero)
           PtrImag(IndRow(i)+1)++;
       }
@@ -1592,7 +1592,7 @@ namespace Seldon
         PtrImag(i+1) += PtrImag(i);
       }
     int real_nz = PtrReal(m), imag_nz = PtrImag(m);
-    
+
     // Fills matrix 'A'.
     Vector<int, VectFull, CallocAlloc<int> > IndReal(real_nz), IndImag(imag_nz);
     Vector<T, VectFull, Allocator4> ValReal(real_nz), ValImag(imag_nz);
@@ -1607,7 +1607,7 @@ namespace Seldon
               ValReal(nb) = real(Val(offset + j));
               nb++;
             }
-        
+
         nb = PtrImag(i);
         for (int j = 0; j < Ptr(i); j++)
           if (imag(Val(offset + j)) != zero)
@@ -1616,19 +1616,19 @@ namespace Seldon
               ValImag(nb) = imag(Val(offset + j));
               nb++;
             }
-        
+
         // sorting column numbers
         Sort(PtrReal(i), PtrReal(i+1)-1, IndReal, ValReal);
         Sort(PtrImag(i), PtrImag(i+1)-1, IndImag, ValImag);
-        
+
         offset += Ptr(i);
       }
-    
+
     // providing pointers to A
     A.SetData(m, n, ValReal, PtrReal, IndReal, ValImag, PtrImag, IndImag);
   }
-  
-  
+
+
   //! Conversion from coordinate format to ColComplexSparse.
   template<class T, class Prop, class Allocator1,
 	   class Allocator2, class Allocator3, class Allocator4>
@@ -1645,16 +1645,16 @@ namespace Seldon
         A.Clear();
         return;
       }
-    
+
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
-    
+
     // Sorts the array 'IndCol'.
     Sort(IndCol, IndRow, Val);
-    
+
     // Number of elements per column.
     Vector<int, VectFull, CallocAlloc<int> > PtrReal(n+1), PtrImag(n+1), Ptr(n);
     PtrReal.Zero(); PtrImag.Zero(); Ptr.Zero();
@@ -1665,7 +1665,7 @@ namespace Seldon
         Ptr(IndCol(i))++;
 	if (real(Val(i)) != zero)
           PtrReal(IndCol(i)+1)++;
-        
+
 	if (imag(Val(i)) != zero)
           PtrImag(IndCol(i)+1)++;
       }
@@ -1676,7 +1676,7 @@ namespace Seldon
         PtrImag(i+1) += PtrImag(i);
       }
     int real_nz = PtrReal(n), imag_nz = PtrImag(n);
-    
+
     // Fills matrix 'A'.
     Vector<int, VectFull, CallocAlloc<int> > IndReal(real_nz), IndImag(imag_nz);
     Vector<T, VectFull, Allocator4> ValReal(real_nz), ValImag(imag_nz);
@@ -1691,7 +1691,7 @@ namespace Seldon
               ValReal(nb) = real(Val(offset + j));
               nb++;
             }
-        
+
         nb = PtrImag(i);
         for (int j = 0; j < Ptr(i); j++)
           if (imag(Val(offset + j)) != zero)
@@ -1700,19 +1700,19 @@ namespace Seldon
               ValImag(nb) = imag(Val(offset + j));
               nb++;
             }
-        
+
         // sorting column numbers
         Sort(PtrReal(i), PtrReal(i+1)-1, IndReal, ValReal);
         Sort(PtrImag(i), PtrImag(i+1)-1, IndImag, ValImag);
-        
+
         offset += Ptr(i);
       }
-    
+
     // providing pointers to A
     A.SetData(m, n, ValReal, PtrReal, IndReal, ValImag, PtrImag, IndImag);
   }
 
-  
+
   //! Conversion from coordinate format to RowSymComplexSparse.
   template<class T, class Prop, class Allocator1,
 	   class Allocator2, class Allocator3, class Allocator4>
@@ -1729,16 +1729,16 @@ namespace Seldon
         A.Clear();
         return;
       }
-    
+
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
-    
+
     // Sorts the array 'IndRow'.
     Sort(IndRow, IndCol, Val);
-    
+
     // Number of elements per row.
     Vector<int, VectFull, CallocAlloc<int> > PtrReal(m+1), PtrImag(m+1), Ptr(m);
     PtrReal.Zero(); PtrImag.Zero(); Ptr.Zero();
@@ -1751,7 +1751,7 @@ namespace Seldon
           {
             if (real(Val(i)) != zero)
               PtrReal(IndRow(i)+1)++;
-            
+
             if (imag(Val(i)) != zero)
               PtrImag(IndRow(i)+1)++;
           }
@@ -1762,9 +1762,9 @@ namespace Seldon
         PtrReal(i+1) += PtrReal(i);
         PtrImag(i+1) += PtrImag(i);
       }
-    
+
     int real_nz = PtrReal(m), imag_nz = PtrImag(m);
-    
+
     // Fills matrix 'A'.
     Vector<int, VectFull, CallocAlloc<int> > IndReal(real_nz), IndImag(imag_nz);
     Vector<T, VectFull, Allocator4> ValReal(real_nz), ValImag(imag_nz);
@@ -1780,7 +1780,7 @@ namespace Seldon
                 ValReal(nb) = real(Val(offset + j));
                 nb++;
               }
-        
+
         nb = PtrImag(i);
         for (int j = 0; j < Ptr(i); j++)
           if (i <= IndCol(offset+j))
@@ -1790,19 +1790,19 @@ namespace Seldon
                 ValImag(nb) = imag(Val(offset + j));
                 nb++;
             }
-        
+
         // sorting column numbers
         Sort(PtrReal(i), PtrReal(i+1)-1, IndReal, ValReal);
         Sort(PtrImag(i), PtrImag(i+1)-1, IndImag, ValImag);
-        
+
         offset += Ptr(i);
       }
-    
+
     // providing pointers to A
     A.SetData(m, n, ValReal, PtrReal, IndReal, ValImag, PtrImag, IndImag);
   }
 
-  
+
   //! Conversion from coordinate format to ColSymComplexSparse.
   template<class T, class Prop, class Allocator1,
 	   class Allocator2, class Allocator3, class Allocator4>
@@ -1819,16 +1819,16 @@ namespace Seldon
         A.Clear();
         return;
       }
-    
+
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
-    
+
     // Sorts the array 'IndCol'.
     Sort(IndCol, IndRow, Val);
-    
+
     // Number of elements per column.
     Vector<int, VectFull, CallocAlloc<int> > PtrReal(n+1), PtrImag(n+1), Ptr(n);
     PtrReal.Zero(); PtrImag.Zero(); Ptr.Zero();
@@ -1841,7 +1841,7 @@ namespace Seldon
           {
             if (real(Val(i)) != zero)
               PtrReal(IndCol(i)+1)++;
-            
+
             if (imag(Val(i)) != zero)
               PtrImag(IndCol(i)+1)++;
           }
@@ -1852,9 +1852,9 @@ namespace Seldon
         PtrReal(i+1) += PtrReal(i);
         PtrImag(i+1) += PtrImag(i);
       }
-    
+
     int real_nz = PtrReal(n), imag_nz = PtrImag(n);
-    
+
     // Fills matrix 'A'.
     Vector<int, VectFull, CallocAlloc<int> > IndReal(real_nz), IndImag(imag_nz);
     Vector<T, VectFull, Allocator4> ValReal(real_nz), ValImag(imag_nz);
@@ -1870,7 +1870,7 @@ namespace Seldon
                 ValReal(nb) = real(Val(offset + j));
                 nb++;
               }
-        
+
         nb = PtrImag(i);
         for (int j = 0; j < Ptr(i); j++)
           if (IndRow(offset+j) <= i)
@@ -1880,19 +1880,19 @@ namespace Seldon
                 ValImag(nb) = imag(Val(offset + j));
                 nb++;
               }
-        
+
         // sorting column numbers
         Sort(PtrReal(i), PtrReal(i+1)-1, IndReal, ValReal);
         Sort(PtrImag(i), PtrImag(i+1)-1, IndImag, ValImag);
-        
+
         offset += Ptr(i);
       }
-    
+
     // providing pointers to A
     A.SetData(m, n, ValReal, PtrReal, IndReal, ValImag, PtrImag, IndImag);
   }
 
-  
+
   /*
     From Sparse Array formats to "Matlab" coordinate format.
   */
@@ -2199,7 +2199,7 @@ namespace Seldon
     A.Assemble();
   }
 
-  
+
   //! Conversion from coordinate format to ArrayRowComplexSparse.
   template<class T, class Prop, class Allocator1,
 	   class Allocator2, class Allocator3, class Allocator4>
@@ -2216,7 +2216,7 @@ namespace Seldon
         A.Clear();
         return;
       }
-    
+
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
@@ -2225,7 +2225,7 @@ namespace Seldon
 
     // Sorts the array 'IndRow'.
     Sort(IndRow, IndCol, Val);
-    
+
     // Number of elements per row.
     Vector<int> PtrReal(m), PtrImag(m), Ptr(m);
     PtrReal.Zero(); PtrImag.Zero(); Ptr.Zero();
@@ -2236,7 +2236,7 @@ namespace Seldon
         Ptr(IndRow(i))++;
 	if (real(Val(i)) != zero)
           PtrReal(IndRow(i))++;
-        
+
 	if (imag(Val(i)) != zero)
           PtrImag(IndRow(i))++;
       }
@@ -2258,7 +2258,7 @@ namespace Seldon
                   nb++;
                 }
           }
-        
+
         if (PtrImag(i) > 0)
           {
             A.ReallocateImagRow(i, PtrImag(i));
@@ -2271,7 +2271,7 @@ namespace Seldon
                   nb++;
                 }
           }
-        
+
         offset += Ptr(i);
       }
 
@@ -2279,7 +2279,7 @@ namespace Seldon
     A.Assemble();
   }
 
-  
+
   //! Conversion from coordinate format to ArrayColComplexSparse.
   template<class T, class Prop, class Allocator1,
 	   class Allocator2, class Allocator3, class Allocator4>
@@ -2296,7 +2296,7 @@ namespace Seldon
         A.Clear();
         return;
       }
-    
+
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
@@ -2305,7 +2305,7 @@ namespace Seldon
 
     // Sorts the array 'IndRow'.
     Sort(IndCol, IndRow, Val);
-    
+
     // Number of elements per row.
     Vector<int> PtrReal(n), PtrImag(n), Ptr(n);
     PtrReal.Zero(); PtrImag.Zero(); Ptr.Zero();
@@ -2316,7 +2316,7 @@ namespace Seldon
         Ptr(IndCol(i))++;
 	if (real(Val(i)) != zero)
           PtrReal(IndCol(i))++;
-        
+
 	if (imag(Val(i)) != zero)
           PtrImag(IndCol(i))++;
       }
@@ -2338,7 +2338,7 @@ namespace Seldon
                   nb++;
                 }
           }
-        
+
         if (PtrImag(i) > 0)
           {
             A.ReallocateImagColumn(i, PtrImag(i));
@@ -2351,7 +2351,7 @@ namespace Seldon
                   nb++;
                 }
           }
-        
+
         offset += Ptr(i);
       }
 
@@ -2359,7 +2359,7 @@ namespace Seldon
     A.Assemble();
   }
 
-  
+
   //! Conversion from coordinate format to ArrayRowSymComplexSparse.
   template<class T, class Prop, class Allocator1,
 	   class Allocator2, class Allocator3, class Allocator4>
@@ -2375,16 +2375,16 @@ namespace Seldon
         A.Clear();
         return;
       }
-    
+
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
-    
+
     // Sorts the array 'IndRow'.
     Sort(IndRow, IndCol, Val);
-    
+
     // Number of elements per row.
     Vector<int> PtrReal(m), PtrImag(m), Ptr(m);
     PtrReal.Zero(); PtrImag.Zero(); Ptr.Zero();
@@ -2397,7 +2397,7 @@ namespace Seldon
           {
             if (real(Val(i)) != zero)
               PtrReal(IndRow(i))++;
-            
+
             if (imag(Val(i)) != zero)
               PtrImag(IndRow(i))++;
           }
@@ -2423,7 +2423,7 @@ namespace Seldon
                     }
                 }
           }
-        
+
         if (PtrImag(i) > 0)
           {
             A.ReallocateImagRow(i, PtrImag(i));
@@ -2439,7 +2439,7 @@ namespace Seldon
                     }
                 }
           }
-        
+
         offset += Ptr(i);
       }
 
@@ -2447,7 +2447,7 @@ namespace Seldon
     A.Assemble();
   }
 
-  
+
   //! Conversion from coordinate format to ArrayRowSymComplexSparse.
   template<class T, class Prop, class Allocator1,
 	   class Allocator2, class Allocator3, class Allocator4>
@@ -2463,16 +2463,16 @@ namespace Seldon
         A.Clear();
         return;
       }
-    
+
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
     int n = col_max - index + 1;
-    
+
     // Sorts the array 'IndRow'.
     Sort(IndCol, IndRow, Val);
-    
+
     // Number of elements per row.
     Vector<int> PtrReal(m), PtrImag(m), Ptr(m);
     PtrReal.Zero(); PtrImag.Zero(); Ptr.Zero();
@@ -2485,7 +2485,7 @@ namespace Seldon
           {
             if (real(Val(i)) != zero)
               PtrReal(IndCol(i))++;
-            
+
             if (imag(Val(i)) != zero)
               PtrImag(IndCol(i))++;
           }
@@ -2511,7 +2511,7 @@ namespace Seldon
                     }
                 }
           }
-        
+
         if (PtrImag(i) > 0)
           {
             A.ReallocateImagColumn(i, PtrImag(i));
@@ -2527,7 +2527,7 @@ namespace Seldon
                     }
                 }
           }
-        
+
         offset += Ptr(i);
       }
 
@@ -2535,7 +2535,7 @@ namespace Seldon
     A.Assemble();
   }
 
-  
+
   /*
     From Sparse formats to CSC format
   */
