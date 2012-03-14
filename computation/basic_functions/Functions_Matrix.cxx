@@ -661,6 +661,94 @@ namespace Seldon
 
 
   //! Multiplies two matrices, and adds the result to a third matrix.
+  /*! It performs the operation \f$ C = \alpha A B + \beta C \f$
+    or \f$C = \alpha A B^T + \beta C \f$, where \f$
+    \alpha \f$ and \f$ \beta \f$ are scalars, and \f$ A \f$, \f$ B \f$ and \f$
+    C \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] TransA status of A: it must be SeldonNoTrans. This argument
+    is required for consistency with the interface for full matrices.
+    \param[in] A matrix.
+    \param[in] TransB status of B: SeldonNoTrans or SeldonTrans.
+    \param[in] B matrix.
+    \param[in] beta scalar.
+    \param[in,out] C matrix, result of the product of \a A with \a B or \a
+    B^T, times \a alpha, plus \a beta times \a C.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Storage1, class Allocator1,
+	    class T2, class Prop2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Prop4, class Storage4, class Allocator4>
+  void MltAdd(const T0 alpha,
+	      const SeldonTranspose& TransA,
+	      const Matrix<T1, Prop1, Storage1, Allocator1>& A,
+	      const SeldonTranspose& TransB,
+	      const Matrix<T2, Prop2, Storage2, Allocator2>& B,
+	      const T3 beta,
+	      Matrix<T4, Prop4, Storage4, Allocator4>& C)
+  {
+    if (!TransA.NoTrans())
+      throw WrongArgument("MltAdd(const T0 alpha, SeldonTranspose TransA, "
+                          "const Matrix<T1, Prop1, Storage1, Allocator1>& A"
+                          "SeldonTranspose TransB,"
+                          "const Matrix<T2, Prop2, Storage2, Allocator2>& B,"
+                          "const T3 beta,"
+                          "Matrix<T4, Prop4, Storage4, Allocator4>& C)",
+                          "'TransA' must be equal to 'SeldonNoTrans'.");
+    if (!TransB.NoTrans() && !TransB.Trans())
+      throw WrongArgument("MltAdd(const T0 alpha, SeldonTranspose TransA, "
+                          "const Matrix<T1, Prop1, Storage1, Allocator1>& A"
+                          "SeldonTranspose TransB,"
+                          "const Matrix<T2, Prop2, Storage2, Allocator2>& B,"
+                          "const T3 beta,"
+                          "Matrix<T4, Prop4, Storage4, Allocator4>& C)",
+                          "'TransB' must be equal to 'SeldonNoTrans' or "
+                          "'SeldonTrans'.");
+
+    if (!TransB.Trans())
+      MltAdd(alpha, A, B, beta, C);
+    else
+      {
+
+        int na = A.GetN();
+        int mc = C.GetM();
+        int nc = C.GetN();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+        CheckDim(SeldonNoTrans, A, SeldonTrans, B, C,
+                 "MltAdd(alpha, TransA, A, TransB, B, beta, C)");
+#endif
+
+        T4 temp;
+        T4 alpha_(alpha);
+        T4 beta_(beta);
+
+        if (beta_ != T4(0))
+          for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
+            for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
+              C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+                *= beta_;
+        else
+          for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
+            for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
+              C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j)) = T4(0);
+
+        for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
+          for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
+            {
+              temp = T4(0);
+              for (int k = 0; k < na; k++)
+                temp += A(Storage4::GetFirst(i, j), k)
+                  * B(Storage4::GetSecond(i, j), k);
+              C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+                += alpha_ * temp;
+            }
+      }
+  }
+
+
+  //! Multiplies two matrices, and adds the result to a third matrix.
   /*! It performs the operation \f$ C = \alpha A B + \beta C \f$ where \f$
     \alpha \f$ and \f$ \beta \f$ are scalars, and \f$ A \f$, \f$ B \f$ and \f$
     C \f$ are matrices.
