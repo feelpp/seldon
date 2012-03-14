@@ -115,6 +115,10 @@ namespace Seldon
 		 int imag_nz, pointer imag_values, int* imag_ptr,
 		 int* imag_ind);
     void Nullify();
+    void Reallocate(int i, int j);
+    void Reallocate(int i, int j, int real_nz, int imag_nz);
+    void Resize(int i, int j);
+    void Resize(int i, int j, int real_nz, int imag_nz);
     void Copy(const Matrix_SymComplexSparse<T, Prop, Storage, Allocator>& A);
 
     // Basic methods.
@@ -127,13 +131,23 @@ namespace Seldon
     int GetImagPtrSize() const;
     int GetRealIndSize() const;
     int GetImagIndSize() const;
+    int GetRealDataSize() const;
+    int GetImagDataSize() const;
     T* GetRealData() const;
     T* GetImagData() const;
 
     // Element acess and affectation.
     complex<value_type> operator() (int i, int j) const;
-    complex<value_type>& Val(int i, int j);
-    const complex<value_type>& Val(int i, int j) const;
+    value_type& ValReal(int i, int j);
+    const value_type& ValReal(int i, int j) const;
+    value_type& ValImag(int i, int j);
+    const value_type& ValImag(int i, int j) const;
+    value_type& GetReal(int i, int j);
+    const value_type& GetReal(int i, int j) const;
+    value_type& GetImag(int i, int j);
+    const value_type& GetImag(int i, int j) const;
+    void Set(int i, int j, const complex<T>& x);
+    void AddInteraction(int i, int j, const complex<T>& x);
     Matrix_SymComplexSparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_SymComplexSparse<T, Prop, Storage, Allocator>& A);
 

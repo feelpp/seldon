@@ -59,11 +59,13 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_Sparse<T, Prop, Storage, Allocator>::Matrix_Sparse(int i,
 								   int j):
-    Matrix_Base<T, Allocator>(i, j)
+    Matrix_Base<T, Allocator>()
   {
     nz_ = 0;
     ptr_ = NULL;
     ind_ = NULL;
+
+    Reallocate(i, j);
   }
 
 
@@ -78,149 +80,13 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_Sparse<T, Prop, Storage, Allocator>::
   Matrix_Sparse(int i, int j, int nz):
-    Matrix_Base<T, Allocator>(i, j)
+    Matrix_Base<T, Allocator>()
   {
+    this->nz_ = 0;
+    ind_ = NULL;
+    ptr_ = NULL;
 
-    this->nz_ = nz;
-
-#ifdef SELDON_CHECK_DIMENSIONS
-    if (nz_ < 0)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-	throw WrongDim("Matrix_Sparse::Matrix_Sparse(int, int, int)",
-		       "Invalid number of non-zero elements: " + to_str(nz)
-                       + ".");
-      }
-    if (nz_ > 0
-        && (j == 0
-            || static_cast<long int>(nz_-1) / static_cast<long int>(j)
-            >= static_cast<long int>(i)))
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-	throw WrongDim("Matrix_Sparse::Matrix_Sparse(int, int, int)",
-		       string("There are more values (") + to_str(nz)
-		       + " values) than elements in the matrix ("
-		       + to_str(i) + " by " + to_str(j) + ").");
-      }
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
-					      sizeof(int)) );
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-      }
-    if (ptr_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ind_ = NULL;
-	this->data_ = NULL;
-      }
-    if (ptr_ == NULL && i != 0 && j != 0)
-      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
-		     string("Unable to allocate ")
-		     + to_str(sizeof(int) * (Storage::GetFirst(i, j)+1) )
-		     + " bytes to store " + to_str(Storage::GetFirst(i, j)+1)
-		     + " row or column start indices, for a "
-		     + to_str(i) + " by " + to_str(j) + " matrix.");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	free(ptr_);
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-      }
-    if (ind_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	free(ptr_);
-	ptr_ = NULL;
-	this->data_ = NULL;
-      }
-    if (ind_ == NULL && i != 0 && j != 0)
-      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
-		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
-		     + " bytes to store " + to_str(nz)
-		     + " row or column indices, for a "
-		     + to_str(i) + " by " + to_str(j) + " matrix.");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	this->data_ = this->allocator_.allocate(nz_, this);
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	free(ptr_);
-	ptr_ = NULL;
-	free(ind_);
-	ind_ = NULL;
-	this->data_ = NULL;
-      }
-    if (this->data_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	free(ptr_);
-	ptr_ = NULL;
-	free(ind_);
-	ind_ = NULL;
-      }
-    if (this->data_ == NULL && i != 0 && j != 0)
-      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
-		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
-		     + " bytes to store " + to_str(nz) + " values, for a "
-		     + to_str(i) + " by " + to_str(j) + " matrix.");
-#endif
-
+    Reallocate(i, j, nz);
   }
 
 
@@ -560,6 +426,379 @@ namespace Seldon
     nz_ = 0;
     ptr_ = NULL;
     ind_ = NULL;
+  }
+
+
+  //! Initialization of an empty sparse matrix with i rows and j columns
+  /*!
+    \param i number of rows
+    \param j number of columns
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::Reallocate(int i, int j)
+  {
+    // clearing previous entries
+    Clear();
+
+    this->m_ = i;
+    this->n_ = j;
+
+    // we try to allocate ptr_
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
+					      sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL && i != 0 && j != 0)
+      throw NoMemory("Matrix_Sparse::Reallocate(int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * (Storage::GetFirst(i, j)+1) )
+		     + " bytes to store " + to_str(Storage::GetFirst(i, j)+1)
+		     + " row or column start indices, for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+    // then filing ptr_ with 0
+    for (int k = 0; k <= Storage::GetFirst(i, j); k++)
+      ptr_[k] = 0;
+
+  }
+
+
+  //! Initialization of a sparse matrix with i rows and j columns
+  /*!
+    \param i number of rows
+    \param j number of columns
+    \param nz number of non-zero entries
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::Reallocate(int i, int j, int nz)
+  {
+    // clearing previous entries
+    Clear();
+
+    this->nz_ = nz;
+    this->m_ = i;
+    this->n_ = j;
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (nz_ < 0)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		       "Invalid number of non-zero elements: " + to_str(nz)
+                       + ".");
+      }
+    if (nz_ > 0
+        && (j == 0
+            || static_cast<long int>(nz_-1) / static_cast<long int>(j)
+            >= static_cast<long int>(i)))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		       string("There are more values (") + to_str(nz)
+		       + " values) than elements in the matrix ("
+		       + to_str(i) + " by " + to_str(j) + ").");
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
+					      sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL && i != 0 && j != 0)
+      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * (Storage::GetFirst(i, j)+1) )
+		     + " bytes to store " + to_str(Storage::GetFirst(i, j)+1)
+		     + " row or column start indices, for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ind_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ind_ == NULL && i != 0 && j != 0)
+      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
+		     + " bytes to store " + to_str(nz)
+		     + " row or column indices, for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	this->data_ = this->allocator_.allocate(nz_, this);
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	free(ind_);
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (this->data_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	free(ind_);
+	ind_ = NULL;
+      }
+    if (this->data_ == NULL && i != 0 && j != 0)
+      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
+		     + " bytes to store " + to_str(nz) + " values, for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+  }
+
+
+  //! Reallocates memory to resize the matrix and keeps previous entries.
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::Resize(int i, int j)
+  {
+    if (Storage::GetFirst(i, j) < Storage::GetFirst(this->m_, this->n_))
+      Resize(i, j, ptr_[Storage::GetFirst(i, j)]);
+    else
+      Resize(i, j, nz_);
+  }
+
+
+  //! Reallocates memory to resize the matrix and keeps previous entries.
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+    \param nz number of non-zero elements.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::Resize(int i, int j, int nz)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (nz < 0)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim("Matrix_Sparse::Resize(int, int, int)",
+		       "Invalid number of non-zero elements: " + to_str(nz)
+                       + ".");
+      }
+    if (nz > 0
+        && (j == 0
+            || static_cast<long int>(nz_-1) / static_cast<long int>(j)
+            >= static_cast<long int>(i)))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim("Matrix_Sparse::Resize(int, int, int)",
+		       string("There are more values (") + to_str(nz)
+		       + " values) than elements in the matrix ("
+		       + to_str(i) + " by " + to_str(j) + ").");
+      }
+#endif
+
+    if (nz != nz_)
+      {
+        // trying to resize ind_ and data_
+#ifdef SELDON_CHECK_MEMORY
+        try
+          {
+#endif
+
+            ind_
+              = reinterpret_cast<int*>(realloc(reinterpret_cast<void*>(ind_),
+                                               nz*sizeof(int)));
+
+#ifdef SELDON_CHECK_MEMORY
+          }
+        catch (...)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            nz_ = 0;
+            free(ptr_);
+            ptr_ = NULL;
+            ind_ = NULL;
+            this->data_ = NULL;
+          }
+        if (ind_ == NULL)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            nz_ = 0;
+            free(ptr_);
+            ptr_ = NULL;
+            this->data_ = NULL;
+          }
+        if (ind_ == NULL && i != 0 && j != 0)
+          throw NoMemory("Matrix_Sparse::Resize(int, int, int)",
+                         string("Unable to allocate ") + to_str(sizeof(int) * nz)
+                         + " bytes to store " + to_str(nz)
+                         + " row or column indices, for a "
+                         + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+        Vector<T, VectFull, Allocator> val;
+        val.SetData(nz_, this->data_);
+        val.Resize(nz);
+
+        this->data_ = val.GetData();
+        nz_ = nz;
+        val.Nullify();
+      }
+
+
+    if (Storage::GetFirst(this->m_, this->n_) != Storage::GetFirst(i, j))
+      {
+#ifdef SELDON_CHECK_MEMORY
+        try
+          {
+#endif
+            // trying to resize ptr_
+            ptr_ = reinterpret_cast<int*>( realloc(ptr_, (Storage::GetFirst(i, j)+1)*
+                                                   sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+          }
+        catch (...)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            nz_ = 0;
+            ptr_ = NULL;
+            ind_ = NULL;
+            this->data_ = NULL;
+          }
+        if (ptr_ == NULL)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            nz_ = 0;
+            ind_ = NULL;
+            this->data_ = NULL;
+          }
+        if (ptr_ == NULL && i != 0 && j != 0)
+          throw NoMemory("Matrix_Sparse::Resize(int, int)",
+                         string("Unable to allocate ")
+                         + to_str(sizeof(int) * (Storage::GetFirst(i, j)+1) )
+                         + " bytes to store " + to_str(Storage::GetFirst(i, j)+1)
+                         + " row or column start indices, for a "
+                         + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+        // then filing last values of ptr_ with nz_
+        for (int k = Storage::GetFirst(this->m_, this->n_);
+             k <= Storage::GetFirst(i, j); k++)
+          ptr_[k] = this->nz_;
+      }
+
+    this->m_ = i;
+    this->n_ = j;
   }
 
 
@@ -949,9 +1188,88 @@ namespace Seldon
   }
 
 
+  //! Access method.
+  /*! Returns reference to element (\a i, \a j)
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+    If the element does not belong to sparsity pattern of the matrix,
+    the matrix is resized.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type&
+  Matrix_Sparse<T, Prop, Storage, Allocator>::Get(int i, int j)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_Sparse::Get(int, int)",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_Sparse::Get(int, int)",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int k, l;
+    int a, b;
+
+    a = ptr_[Storage::GetFirst(i, j)];
+    b = ptr_[Storage::GetFirst(i, j) + 1];
+
+    if (a < b)
+      {
+        l = Storage::GetSecond(i, j);
+
+        for (k = a; (k < b) && (ind_[k] < l); k++);
+
+        if ( (k < b) && (ind_[k] == l))
+          return this->data_[k];
+      }
+    else
+      k = a;
+
+    // adding a non-zero entry
+    Resize(this->m_, this->n_, nz_+1);
+
+    for (int m = Storage::GetFirst(i, j)+1;
+         m <= Storage::GetFirst(this->m_, this->n_); m++)
+      ptr_[m]++;
+
+    for (int m = nz_-1; m >= k+1; m--)
+      {
+        ind_[m] = ind_[m-1];
+        this->data_[m] = this->data_[m-1];
+      }
+
+    ind_[k] = Storage::GetSecond(i, j);
+
+    // value of new non-zero entry is set to 0
+    SetComplexZero(this->data_[k]);
+
+    return this->data_[k];
+  }
+
+
+  //! Access method.
+  /*! Returns reference to element (\a i, \a j)
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type&
+  Matrix_Sparse<T, Prop, Storage, Allocator>::Get(int i, int j) const
+  {
+    return Val(i, j);
+  }
+
+
   //! Add a value to a non-zero entry.
-  /*! This function adds \a val to the element (\a i, \a j), providing that
-    this element is already a non-zero entry.
+  /*! This function adds \a val to the element (\a i, \a j), provided that
+    this element is already a non-zero entry. Otherwise
+    a non-zero entry is inserted equal to \a val.
     \param[in] i row index.
     \param[in] j column index.
     \param[in] val value to be added to the element (\a i, \a j).
@@ -960,7 +1278,21 @@ namespace Seldon
   inline void Matrix_Sparse<T, Prop, Storage, Allocator>
   ::AddInteraction(int i, int j, const T& val)
   {
-    Val(i, j) += val;
+    Get(i, j) += val;
+  }
+
+
+  //! Sets an element (i, j) to a value
+  /*! This function sets \a val to the element (\a i, \a j)
+    \param[in] i row index.
+    \param[in] j column index.
+    \param[in] val A(i, j) = val
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const T& val)
+  {
+    Get(i, j) = val;
   }
 
 

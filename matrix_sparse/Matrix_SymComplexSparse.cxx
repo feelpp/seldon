@@ -59,7 +59,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
-  ::Matrix_SymComplexSparse(int i, int j): Matrix_Base<T, Allocator>(i, i)
+  ::Matrix_SymComplexSparse(int i, int j): Matrix_Base<T, Allocator>()
   {
     real_nz_ = 0;
     imag_nz_ = 0;
@@ -69,6 +69,8 @@ namespace Seldon
     imag_ind_ = NULL;
     real_data_ = NULL;
     imag_data_ = NULL;
+
+    Reallocate(i, i);
   }
 
 
@@ -88,320 +90,18 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
   ::Matrix_SymComplexSparse(int i, int j, int real_nz, int imag_nz):
-    Matrix_Base<T, Allocator>(i, i)
+    Matrix_Base<T, Allocator>()
   {
-    this->real_nz_ = real_nz;
-    this->imag_nz_ = imag_nz;
+    real_nz_ = 0;
+    imag_nz_ = 0;
+    real_ptr_ = NULL;
+    imag_ptr_ = NULL;
+    real_ind_ = NULL;
+    imag_ind_ = NULL;
+    real_data_ = NULL;
+    imag_data_ = NULL;
 
-#ifdef SELDON_CHECK_DIMENSIONS
-    if ( (static_cast<long int>(2 * real_nz_ - 2) / static_cast<long int>(i+1)
-	  >= static_cast<long int>(i)) ||
-	 (static_cast<long int>(2 * imag_nz_ - 2) / static_cast<long int>(i+1)
-	  >= static_cast<long int>(i)) )
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	real_nz_ = 0;
-	imag_nz_ = 0;
-	real_ptr_ = NULL;
-	imag_ptr_ = NULL;
-	real_ind_ = NULL;
-	imag_ind_ = NULL;
-	this->real_data_ = NULL;
-	this->imag_data_ = NULL;
-	throw WrongDim(string("Matrix_SymComplexSparse::")
-		       + "Matrix_SymComplexSparse(int, int, int, int)",
-		       string("There are more values to be stored (")
-		       + to_str(real_nz) + " values for the real part and "
-		       + to_str(imag_nz) + string(" values for the imaginary")
-		       + " part) than elements in the matrix ("
-		       + to_str(i) + " by " + to_str(j) + ").");
-      }
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	real_ptr_ = reinterpret_cast<int*>( calloc(i + 1, sizeof(int)) );
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	real_nz_ = 0;
-	imag_nz_ = 0;
-	real_ptr_ = NULL;
-	imag_ptr_ = NULL;
-	real_ind_ = NULL;
-	imag_ind_ = NULL;
-	this->real_data_ = NULL;
-	this->imag_data_ = NULL;
-      }
-    if (real_ptr_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	real_nz_ = 0;
-	imag_nz_ = 0;
-	imag_ptr_ = 0;
-	real_ind_ = NULL;
-	imag_ind_ = NULL;
-	this->real_data_ = NULL;
-	this->imag_data_ = NULL;
-      }
-    if (real_ptr_ == NULL && i != 0)
-      throw NoMemory(string("Matrix_SymComplexSparse::")
-		     + "Matrix_SymComplexSparse(int, int, int, int)",
-		     string("Unable to allocate ")
-		     + to_str(sizeof(int) * (i + 1)) + " bytes to store "
-		     + to_str(i + 1) + string(" row or column")
-		     + " start indices (for the real part), for a "
-		     + to_str(i) + " by " + to_str(i) + " matrix.");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	imag_ptr_ = reinterpret_cast<int*>( calloc(i + 1, sizeof(int)) );
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	real_nz_ = 0;
-	imag_nz_ = 0;
-	free(real_ptr_);
-	real_ptr_ = NULL;
-	imag_ptr_ = NULL;
-	real_ind_ = NULL;
-	imag_ind_ = NULL;
-	this->real_data_ = NULL;
-	this->imag_data_ = NULL;
-      }
-    if (imag_ptr_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	real_nz_ = 0;
-	imag_nz_ = 0;
-	free(real_ptr_);
-	real_ptr_ = 0;
-	real_ind_ = NULL;
-	imag_ind_ = NULL;
-	this->real_data_ = NULL;
-	this->imag_data_ = NULL;
-      }
-    if (imag_ptr_ == NULL && i != 0)
-      throw NoMemory(string("Matrix_SymComplexSparse::")
-		     + "Matrix_SymComplexSparse(int, int, int, int)",
-		     string("Unable to allocate ")
-		     + to_str(sizeof(int) * (i + 1) ) + " bytes to store "
-		     + to_str(i + 1) + string(" row or column")
-		     + " start indices (for the imaginary part), for a "
-		     + to_str(i) + " by " + to_str(i) + " matrix.");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	real_ind_ = reinterpret_cast<int*>( calloc(real_nz_, sizeof(int)) );
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	real_nz_ = 0;
-	imag_nz_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
-	real_ptr_ = NULL;
-	imag_ptr_ = NULL;
-	real_ind_ = NULL;
-	imag_ind_ = NULL;
-	this->real_data_ = NULL;
-	this->imag_data_ = NULL;
-      }
-    if (real_ind_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	real_nz_ = 0;
-	imag_nz_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
-	real_ptr_ = NULL;
-	imag_ptr_ = NULL;
-	this->real_data_ = NULL;
-	this->imag_data_ = NULL;
-      }
-    if (real_ind_ == NULL && i != 0)
-      throw NoMemory(string("Matrix_SymComplexSparse::")
-		     + "Matrix_SymComplexSparse(int, int, int, int)",
-		     string("Unable to allocate ")
-		     + to_str(sizeof(int) * real_nz) + " bytes to store "
-		     + to_str(real_nz)
-		     + " row or column indices (real part), for a "
-		     + to_str(i) + " by " + to_str(i) + " matrix.");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	imag_ind_ = reinterpret_cast<int*>( calloc(imag_nz_, sizeof(int)) );
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	real_nz_ = 0;
-	imag_nz_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
-	real_ptr_ = NULL;
-	imag_ptr_ = NULL;
-	free(imag_ind_);
-	real_ind_ = NULL;
-	imag_ind_ = NULL;
-	this->real_data_ = NULL;
-	this->imag_data_ = NULL;
-      }
-    if (real_ind_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	real_nz_ = 0;
-	imag_nz_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
-	real_ptr_ = NULL;
-	imag_ptr_ = NULL;
-	free(imag_ind_);
-	imag_ind_ = NULL;
-	this->real_data_ = NULL;
-	this->imag_data_ = NULL;
-      }
-    if (imag_ind_ == NULL && i != 0)
-      throw NoMemory(string("Matrix_SymComplexSparse::")
-		     + "Matrix_SymComplexSparse(int, int, int, int)",
-		     string("Unable to allocate ")
-		     + to_str(sizeof(int) * imag_nz) + " bytes to store "
-		     + to_str(imag_nz)
-		     + " row or column indices (imaginary part), for a "
-		     + to_str(i) + " by " + to_str(i) + " matrix.");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	this->real_data_ = this->allocator_.allocate(real_nz_, this);
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
-	real_ptr_ = NULL;
-	imag_ptr_ = NULL;
-	free(real_ind_);
-	free(imag_ind_);
-	real_ind_ = NULL;
-	imag_ind_ = NULL;
-	this->real_data_ = NULL;
-	this->imag_data_ = NULL;
-      }
-    if (real_data_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
-	real_ptr_ = NULL;
-	imag_ptr_ = NULL;
-	free(real_ind_);
-	free(imag_ind_);
-	real_ind_ = NULL;
-	imag_ind_ = NULL;
-	imag_data_ = NULL;
-      }
-    if (real_data_ == NULL && i != 0)
-      throw NoMemory(string("Matrix_SymComplexSparse::")
-		     + "Matrix_SymComplexSparse(int, int, int, int)",
-		     string("Unable to allocate ")
-		     + to_str(sizeof(int) * real_nz) + " bytes to store "
-		     + to_str(real_nz) + " values (real part), for a "
-		     + to_str(i) + " by " + to_str(i) + " matrix.");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	this->imag_data_ = this->allocator_.allocate(imag_nz_, this);
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
-	real_ptr_ = NULL;
-	imag_ptr_ = NULL;
-	free(real_ind_);
-	free(imag_ind_);
-	real_ind_ = NULL;
-	imag_ind_ = NULL;
-	this->allocator_.deallocate(this->real_data_, real_nz_);
-	this->real_data_ = NULL;
-	this->imag_data_ = NULL;
-      }
-    if (real_data_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
-	real_ptr_ = NULL;
-	imag_ptr_ = NULL;
-	free(real_ind_);
-	free(imag_ind_);
-	real_ind_ = NULL;
-	imag_ind_ = NULL;
-	this->allocator_.deallocate(this->real_data_, real_nz_);
-	real_data_ = NULL;
-      }
-    if (imag_data_ == NULL && i != 0)
-      throw NoMemory(string("Matrix_SymComplexSparse::")
-		     + "Matrix_SymComplexSparse(int, int, int, int)",
-		     string("Unable to allocate ")
-		     + to_str(sizeof(int) * imag_nz) + " bytes to store "
-		     + to_str(imag_nz) + " values (imaginary part), for a "
-		     + to_str(i) + " by " + to_str(i) + " matrix.");
-#endif
-
+    Reallocate(i, i, real_nz, imag_nz);
   }
 
 
@@ -999,6 +699,715 @@ namespace Seldon
   }
 
 
+  //! Initialization of an empty matrix i x j
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::Reallocate(int i, int j)
+  {
+    // previous entries are removed
+    Clear();
+
+    this->m_ = i;
+    this->n_ = i;
+
+    // we try to allocate real_ptr_ and imag_ptr_
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	real_ptr_ = reinterpret_cast<int*>(calloc(i+1, sizeof(int)));
+
+	imag_ptr_ = reinterpret_cast<int*>(calloc(i+1, sizeof(int)));
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+        real_nz_ = 0;
+        real_ptr_ = NULL;
+        real_ind_ = NULL;
+        imag_nz_ = 0;
+        imag_ptr_ = NULL;
+        imag_ind_ = NULL;
+        real_data_ = NULL;
+        imag_data_ = NULL;
+      }
+    if ((real_ptr_ == NULL) || (imag_ptr_ == NULL))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+        real_nz_ = 0;
+        real_ptr_ = NULL;
+        real_ind_ = NULL;
+        imag_nz_ = 0;
+        imag_ptr_ = NULL;
+        imag_ind_ = NULL;
+        real_data_ = NULL;
+        imag_data_ = NULL;
+      }
+    if (((real_ptr_ == NULL) || (imag_ptr_ == NULL)) && i != 0 && j != 0)
+      throw NoMemory("Matrix_SymComplexSparse::Reallocate(int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * (i+1) )
+		     + " bytes to store " + to_str(i+1)
+		     + " row or column start indices, for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+    // then filing real_ptr_ with 0
+    for (int k = 0; k <= i; k++)
+      {
+        real_ptr_[k] = 0;
+        imag_ptr_[k] = 0;
+      }
+  }
+
+
+  //! Initialization of a matrix i x j with n non-zero entries
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::Reallocate(int i, int j, int real_nz, int imag_nz)
+  {
+    // previous entries are removed
+    Clear();
+
+    this->m_ = i;
+    this->n_ = j;
+    this->real_nz_ = real_nz;
+    this->imag_nz_ = imag_nz;
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if ( (static_cast<long int>(2 * real_nz_ - 2) / static_cast<long int>(i+1)
+	  >= static_cast<long int>(i)) ||
+	 (static_cast<long int>(2 * imag_nz_ - 2) / static_cast<long int>(i+1)
+	  >= static_cast<long int>(i)) )
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+	throw WrongDim(string("Matrix_SymComplexSparse::")
+		       + "Matrix_SymComplexSparse(int, int, int, int)",
+		       string("There are more values to be stored (")
+		       + to_str(real_nz) + " values for the real part and "
+		       + to_str(imag_nz) + string(" values for the imaginary")
+		       + " part) than elements in the matrix ("
+		       + to_str(i) + " by " + to_str(j) + ").");
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	real_ptr_ = reinterpret_cast<int*>(calloc(i + 1, sizeof(int)));
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_ptr_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	imag_ptr_ = 0;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_ptr_ == NULL && i != 0)
+      throw NoMemory(string("Matrix_SymComplexSparse::")
+		     + "Matrix_SymComplexSparse(int, int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * (i + 1)) + " bytes to store "
+		     + to_str(i + 1) + string(" row or column")
+		     + " start indices (for the real part), for a "
+		     + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	imag_ptr_ = reinterpret_cast<int*>(calloc(i + 1, sizeof(int)));
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	free(real_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (imag_ptr_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	free(real_ptr_);
+	real_ptr_ = 0;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (imag_ptr_ == NULL && i != 0)
+      throw NoMemory(string("Matrix_SymComplexSparse::")
+		     + "Matrix_SymComplexSparse(int, int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * (i + 1) ) + " bytes to store "
+		     + to_str(i + 1) + string(" row or column")
+		     + " start indices (for the imaginary part), for a "
+		     + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	real_ind_ = reinterpret_cast<int*>(calloc(real_nz_, sizeof(int)));
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_ind_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_ind_ == NULL && i != 0)
+      throw NoMemory(string("Matrix_SymComplexSparse::")
+		     + "Matrix_SymComplexSparse(int, int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * real_nz) + " bytes to store "
+		     + to_str(real_nz)
+		     + " row or column indices (real part), for a "
+		     + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	imag_ind_ = reinterpret_cast<int*>( calloc(imag_nz_, sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	free(imag_ind_);
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_ind_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	free(imag_ind_);
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (imag_ind_ == NULL && i != 0)
+      throw NoMemory(string("Matrix_SymComplexSparse::")
+		     + "Matrix_SymComplexSparse(int, int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * imag_nz) + " bytes to store "
+		     + to_str(imag_nz)
+		     + " row or column indices (imaginary part), for a "
+		     + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	this->real_data_ = this->allocator_.allocate(real_nz_, this);
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	free(real_ind_);
+	free(imag_ind_);
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_data_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	free(real_ind_);
+	free(imag_ind_);
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	imag_data_ = NULL;
+      }
+    if (real_data_ == NULL && i != 0)
+      throw NoMemory(string("Matrix_SymComplexSparse::")
+		     + "Matrix_SymComplexSparse(int, int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * real_nz) + " bytes to store "
+		     + to_str(real_nz) + " values (real part), for a "
+		     + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	this->imag_data_ = this->allocator_.allocate(imag_nz_, this);
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	free(real_ind_);
+	free(imag_ind_);
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->allocator_.deallocate(this->real_data_, real_nz_);
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+      }
+    if (real_data_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(real_ptr_);
+	free(imag_ptr_);
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	free(real_ind_);
+	free(imag_ind_);
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->allocator_.deallocate(this->real_data_, real_nz_);
+	real_data_ = NULL;
+      }
+    if (imag_data_ == NULL && i != 0)
+      throw NoMemory(string("Matrix_SymComplexSparse::")
+		     + "Matrix_SymComplexSparse(int, int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * imag_nz) + " bytes to store "
+		     + to_str(imag_nz) + " values (imaginary part), for a "
+		     + to_str(i) + " by " + to_str(i) + " matrix.");
+#endif
+  }
+
+
+  //! Reallocates memory to resize the matrix and keeps previous entries.
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::Resize(int i, int j)
+  {
+    if (i < this->m_)
+      Resize(i, i, real_ptr_[i], imag_ptr_[i]);
+    else
+      Resize(i, i, real_nz_, imag_nz_);
+  }
+
+
+  //! Reallocates memory to resize the matrix and keeps previous entries.
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+    \param real_nz number of non-zero elements in the real part.
+    \param imag_nz number of non-zero elements in the imaginary part.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::Resize(int i, int j, int real_nz, int imag_nz)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (real_nz < 0 || imag_nz < 0)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+	throw WrongDim(string("Matrix_SymComplexSparse::")
+		       + "Resize(int, int, int, int)",
+		       "Invalid number of non-zero elements: "
+                       + to_str(real_nz) + " in the real part and "
+                       + to_str(imag_nz) + " in the imaginary part.");
+      }
+    if ((real_nz > 0
+         && (j == 0
+             || static_cast<long int>(real_nz-1) / static_cast<long int>(j)
+             >= static_cast<long int>(i)))
+        ||
+        (imag_nz > 0
+         && (j == 0
+             || static_cast<long int>(imag_nz-1) / static_cast<long int>(j)
+             >= static_cast<long int>(i))))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+	throw WrongDim(string("Matrix_SymComplexSparse::")
+		       + "Resize(int, int, int, int)",
+		       string("There are more values (") + to_str(real_nz)
+		       + " values for the real part and " + to_str(imag_nz)
+		       + string(" values for the imaginary part) than")
+		       + " elements in the matrix (" + to_str(i) + " by "
+		       + to_str(j) + ").");
+      }
+#endif
+
+    if (this->m_ != i)
+      {
+#ifdef SELDON_CHECK_MEMORY
+        try
+          {
+#endif
+
+            real_ptr_
+              = reinterpret_cast<int*>( realloc(real_ptr_,
+                                                (i+1)*sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+          }
+        catch (...)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            real_nz_ = 0;
+            imag_nz_ = 0;
+            real_ptr_ = NULL;
+            imag_ptr_ = NULL;
+            real_ind_ = NULL;
+            imag_ind_ = NULL;
+            this->real_data_ = NULL;
+            this->imag_data_ = NULL;
+          }
+        if (real_ptr_ == NULL)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            real_nz_ = 0;
+            imag_nz_ = 0;
+            imag_ptr_ = 0;
+            real_ind_ = NULL;
+            imag_ind_ = NULL;
+            this->real_data_ = NULL;
+            this->imag_data_ = NULL;
+          }
+        if (real_ptr_ == NULL && i != 0 && j != 0)
+          throw NoMemory(string("Matrix_SymComplexSparse::")
+		     + "Resize(int, int, int, int)",
+                         string("Unable to allocate ")
+                         + to_str(sizeof(int) * (i+1))
+                         + " bytes to store " + to_str(i+1)
+                         + string(" row or column start indices (for the real")
+                         + " part), for a "
+                         + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+        try
+          {
+#endif
+
+            imag_ptr_
+              = reinterpret_cast<int*>( realloc(imag_ptr_,
+                                                (i+1)*sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+          }
+        catch (...)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            real_nz_ = 0;
+            imag_nz_ = 0;
+            free(real_ptr_);
+            real_ptr_ = NULL;
+            imag_ptr_ = NULL;
+            real_ind_ = NULL;
+            imag_ind_ = NULL;
+            this->real_data_ = NULL;
+            this->imag_data_ = NULL;
+          }
+        if (imag_ptr_ == NULL)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            real_nz_ = 0;
+            imag_nz_ = 0;
+            free(real_ptr_);
+            real_ptr_ = 0;
+            real_ind_ = NULL;
+            imag_ind_ = NULL;
+            this->real_data_ = NULL;
+            this->imag_data_ = NULL;
+          }
+        if (imag_ptr_ == NULL && i != 0 && j != 0)
+          throw NoMemory(string("Matrix_SymComplexSparse::")
+                         + "Resize(int, int, int, int)",
+                         string("Unable to allocate ")
+                         + to_str(sizeof(int) * (i+1))
+                         + " bytes to store " + to_str(i+1)
+                         + string(" row or column start indices (for the")
+                         + string(" imaginary part), for a ")
+                         + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+      }
+
+    if (real_nz != real_nz_)
+      {
+#ifdef SELDON_CHECK_MEMORY
+        try
+          {
+#endif
+
+            real_ind_
+              = reinterpret_cast<int*>( realloc(real_ind_,
+                                                real_nz*sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+          }
+        catch (...)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            real_nz_ = 0;
+            imag_nz_ = 0;
+            free(real_ptr_);
+            free(imag_ptr_);
+            real_ptr_ = NULL;
+            imag_ptr_ = NULL;
+            real_ind_ = NULL;
+            imag_ind_ = NULL;
+            this->real_data_ = NULL;
+            this->imag_data_ = NULL;
+          }
+        if (real_ind_ == NULL)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            real_nz_ = 0;
+            imag_nz_ = 0;
+            free(real_ptr_);
+            free(imag_ptr_);
+            real_ptr_ = NULL;
+            imag_ptr_ = NULL;
+            this->real_data_ = NULL;
+            this->imag_data_ = NULL;
+          }
+        if (real_ind_ == NULL && i != 0 && j != 0)
+          throw NoMemory(string("Matrix_SymComplexSparse::")
+                         + "Resize(int, int, int, int)",
+                         string("Unable to allocate ")
+                         + to_str(sizeof(int) * real_nz)
+                         + " bytes to store " + to_str(real_nz)
+                         + " row or column indices (real part), for a "
+                         + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+      }
+
+    if (imag_nz != imag_nz_)
+      {
+#ifdef SELDON_CHECK_MEMORY
+        try
+          {
+#endif
+
+            imag_ind_
+              = reinterpret_cast<int*>( realloc(imag_ind_,
+                                                imag_nz*sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+          }
+        catch (...)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            real_nz_ = 0;
+            imag_nz_ = 0;
+            free(real_ptr_);
+            free(imag_ptr_);
+            real_ptr_ = NULL;
+            imag_ptr_ = NULL;
+            free(imag_ind_);
+            real_ind_ = NULL;
+            imag_ind_ = NULL;
+            this->real_data_ = NULL;
+            this->imag_data_ = NULL;
+          }
+        if (real_ind_ == NULL)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            real_nz_ = 0;
+            imag_nz_ = 0;
+            free(real_ptr_);
+            free(imag_ptr_);
+            real_ptr_ = NULL;
+            imag_ptr_ = NULL;
+            free(imag_ind_);
+            imag_ind_ = NULL;
+            this->real_data_ = NULL;
+            this->imag_data_ = NULL;
+          }
+        if (imag_ind_ == NULL && i != 0 && j != 0)
+          throw NoMemory(string("Matrix_SymComplexSparse::")
+                         + "Resize(int, int, int, int)",
+                         string("Unable to allocate ")
+                         + to_str(sizeof(int) * imag_nz)
+                         + " bytes to store " + to_str(imag_nz)
+                         + " row or column indices (imaginary part), for a "
+                         + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+      }
+
+    if (real_nz != real_nz_)
+      {
+        Vector<T, VectFull, Allocator> val;
+        val.SetData(real_nz_, real_data_);
+        val.Resize(real_nz);
+
+        real_data_ = val.GetData();
+        val.Nullify();
+      }
+
+    if (imag_nz != imag_nz_)
+      {
+        Vector<T, VectFull, Allocator> val;
+        val.SetData(imag_nz_, imag_data_);
+        val.Resize(imag_nz);
+
+        imag_data_ = val.GetData();
+        val.Nullify();
+      }
+
+    // then filing last values of ptr_ with nz_
+    for (int k = this->m_; k <= i; k++)
+      {
+        real_ptr_[k] = real_nz_;
+        imag_ptr_[k] = imag_nz_;
+      }
+
+    this->m_ = i;
+    this->n_ = i;
+    real_nz_ = real_nz;
+    imag_nz_ = imag_nz;
+  }
+
+
   //! Copies a matrix
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::
@@ -1481,6 +1890,46 @@ namespace Seldon
   }
 
 
+  //! Returns the length of the array of (column or row) indices for
+  //! the real part.
+  /*!
+    Returns the length of the array ('ind_') of (row or column) indices
+    of non-zero entries (that are stored) for the real part. This array
+    defines non-zero entries indices if coupled with (column or row)
+    start indices.
+    \return The length of the array of (column or row) indices for
+    the real part.
+    \note The length of the array of (column or row) indices is the
+    number of non-zero entries that are stored.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  int Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::GetRealDataSize() const
+  {
+    return real_nz_;
+  }
+
+
+  //! Returns the length of the array of (column or row) indices
+  //! for the imaginary part.
+  /*!
+    Returns the length of the array ('ind_') of (row or column) indices
+    of non-zero entries (that are stored) for the imaginary part. This array
+    defines non-zero entries indices if coupled with (column or row)
+    start indices.
+    \return The length of the array of (column or row) indices
+    for the imaginary part.
+    \note The length of the array of (column or row) indices is the
+    number of non-zero entries that are stored.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  int Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::GetImagDataSize() const
+  {
+    return imag_nz_;
+  }
+
+
   //! Returns the array of values of the real part.
   /*!
     \return The array 'real_data_' of values of the real part..
@@ -1602,38 +2051,461 @@ namespace Seldon
   }
 
 
-  //! Unavailable access method.
-  /*! This method is declared for consistency with other classes, but it is
-    not defined because no reference can possiblity be returned.
+  //! Access method
+  /*! Returns the real value of element (\a i, \a j)
+    if it can be returned as a reference.
     \param[in] i row index.
     \param[in] j column index.
-    \return Raises an exception.
+    \return Element (\a i, \a j) of the matrix.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the matrix).
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline complex<typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
-		 ::value_type>&
-  Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
-  ::Val(int i, int j)
+  inline typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::value_type&
+  Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::ValReal(int i, int j)
   {
-    throw Undefined("Matrix_SymComplexSparse::Val(int i, int j)");
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_SymComplexSparse::ValReal(int, int)",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_SymComplexSparse::ValReal(int, int)",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int k, l;
+    int a, b;
+
+    // Only the upper part is stored.
+    if (i > j)
+      {
+	l = i;
+	i = j;
+	j = l;
+      }
+
+    a = real_ptr_[Storage::GetFirst(i, j)];
+    b = real_ptr_[Storage::GetFirst(i, j) + 1];
+
+    if (a == b)
+      throw WrongArgument("Matrix_SymComplexSparse::ValReal(int, int)",
+                          "No reference to element (" + to_str(i) + ", "
+                          + to_str(j)
+                          + ") can be returned: it is a zero entry.");
+
+    l = Storage::GetSecond(i, j);
+
+    for (k = a; (k < b-1) && (real_ind_[k] < l); k++);
+
+    if (real_ind_[k] == l)
+      return this->real_data_[k];
+    else
+      throw WrongArgument("Matrix_SymComplexSparse::ValReal(int, int)",
+                          "No reference to element (" + to_str(i) + ", "
+                          + to_str(j)
+                          + ") can be returned: it is a zero entry.");
   }
 
 
-  //! Unavailable access method.
-  /*! This method is declared for consistency with other classes, but it is
-    not defined because no reference can possiblity be returned.
+  //! Access method
+  /*! Returns the real value of element (\a i, \a j)
+    if it can be returned as a reference.
     \param[in] i row index.
     \param[in] j column index.
-    \return Raises an exception.
+    \return Element (\a i, \a j) of the matrix.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the matrix).
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline
-  const complex<typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
-		::value_type>&
-  Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
-  ::Val(int i, int j) const
+  inline const typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::value_type&
+  Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::ValReal(int i, int j) const
   {
-    throw Undefined("Matrix_SymComplexSparse::Val(int i, int j)");
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_SymComplexSparse::ValReal(int, int)",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_SymComplexSparse::ValReal(int, int)",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int k, l;
+    int a, b;
+
+    // Only the upper part is stored.
+    if (i > j)
+      {
+	l = i;
+	i = j;
+	j = l;
+      }
+
+    a = real_ptr_[Storage::GetFirst(i, j)];
+    b = real_ptr_[Storage::GetFirst(i, j) + 1];
+
+    if (a == b)
+      throw WrongArgument("Matrix_SymComplexSparse::ValReal(int, int)",
+                          "No reference to element (" + to_str(i) + ", "
+                          + to_str(j)
+                          + ") can be returned: it is a zero entry.");
+
+    l = Storage::GetSecond(i, j);
+
+    for (k = a; (k < b-1) && (real_ind_[k] < l); k++);
+
+    if (real_ind_[k] == l)
+      return this->real_data_[k];
+    else
+      throw WrongArgument("Matrix_SymComplexSparse::ValReal(int, int)",
+                          "No reference to element (" + to_str(i) + ", "
+                          + to_str(j)
+                          + ") can be returned: it is a zero entry.");
+  }
+
+
+  //! Access method
+  /*! Returns the imaginary part of element (\a i, \a j)
+    if it can be returned as a reference.
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the matrix).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::value_type&
+  Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::ValImag(int i, int j)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_SymComplexSparse::ValImag(int, int)",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_SymComplexSparse::ValImag(int, int)",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int k, l;
+    int a, b;
+
+    // Only the upper part is stored.
+    if (i > j)
+      {
+	l = i;
+	i = j;
+	j = l;
+      }
+
+    a = imag_ptr_[Storage::GetFirst(i, j)];
+    b = imag_ptr_[Storage::GetFirst(i, j) + 1];
+
+    if (a == b)
+      throw WrongArgument("Matrix_SymComplexSparse::ValImag(int, int)",
+                          "No reference to element (" + to_str(i) + ", "
+                          + to_str(j)
+                          + ") can be returned: it is a zero entry.");
+
+    l = Storage::GetSecond(i, j);
+
+    for (k = a; (k < b-1) && (imag_ind_[k] < l); k++);
+
+    if (imag_ind_[k] == l)
+      return this->imag_data_[k];
+    else
+      throw WrongArgument("Matrix_SymComplexSparse::ValImag(int, int)",
+                          "No reference to element (" + to_str(i) + ", "
+                          + to_str(j)
+                          + ") can be returned: it is a zero entry.");
+  }
+
+
+  //! Access method
+  /*! Returns the imaginary part of element (\a i, \a j)
+    if it can be returned as a reference.
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the matrix).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::value_type&
+  Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::ValImag(int i, int j) const
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_SymComplexSparse::ValImag(int, int)",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_SymComplexSparse::ValImag(int, int)",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int k, l;
+    int a, b;
+
+    // Only the upper part is stored.
+    if (i > j)
+      {
+	l = i;
+	i = j;
+	j = l;
+      }
+
+    a = imag_ptr_[Storage::GetFirst(i, j)];
+    b = imag_ptr_[Storage::GetFirst(i, j) + 1];
+
+    if (a == b)
+      throw WrongArgument("Matrix_SymComplexSparse::ValImag(int, int)",
+                          "No reference to element (" + to_str(i) + ", "
+                          + to_str(j)
+                          + ") can be returned: it is a zero entry.");
+
+    l = Storage::GetSecond(i, j);
+
+    for (k = a; (k < b-1) && (imag_ind_[k] < l); k++);
+
+    if (imag_ind_[k] == l)
+      return this->imag_data_[k];
+    else
+      throw WrongArgument("Matrix_SymComplexSparse::ValImag(int, int)",
+                          "No reference to element (" + to_str(i) + ", "
+                          + to_str(j)
+                          + ") can be returned: it is a zero entry.");
+  }
+
+
+  //! Access method
+  /*! Returns the real part of element (\a i, \a j)
+    if it can be returned as a reference. If the non-zero entry
+    does not exit, it is created
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::value_type&
+  Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::GetReal(int i, int j)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_SymComplexSparse::GetReal(int, int)",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_SymComplexSparse::GetReal(int, int)",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int k, l;
+    int a, b;
+
+    // Only the upper part is stored.
+    if (i > j)
+      {
+	l = i;
+	i = j;
+	j = l;
+      }
+
+    a = real_ptr_[Storage::GetFirst(i, j)];
+    b = real_ptr_[Storage::GetFirst(i, j) + 1];
+
+    if (a < b)
+      {
+        l = Storage::GetSecond(i, j);
+
+        for (k = a; (k < b) && (real_ind_[k] < l); k++);
+
+        if ( (k < b) && (real_ind_[k] == l))
+          return this->real_data_[k];
+      }
+    else
+      k = a;
+
+    // adding a non-zero entry
+    Resize(this->m_, this->n_, real_nz_+1, imag_nz_);
+
+    for (int m = Storage::GetFirst(i, j)+1;
+         m <= Storage::GetFirst(this->m_, this->n_); m++)
+      real_ptr_[m]++;
+
+    for (int m = real_nz_-1; m >= k+1; m--)
+      {
+        real_ind_[m] = real_ind_[m-1];
+        this->real_data_[m] = this->real_data_[m-1];
+      }
+
+    real_ind_[k] = Storage::GetSecond(i, j);
+
+    // value of new non-zero entry is set to 0
+    SetComplexZero(this->real_data_[k]);
+
+    return this->real_data_[k];
+  }
+
+
+  //! Access method
+  /*! Returns the real part of element (\a i, \a j)
+    if it can be returned as a reference. If the non-zero entry
+    does not exit, it is created
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::value_type&
+  Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::GetReal(int i, int j) const
+  {
+    return ValReal(i, j);
+  }
+
+
+  //! Access method
+  /*! Returns the imaginary part of element (\a i, \a j)
+    if it can be returned as a reference. If the non-zero entry
+    does not exit, it is created
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::value_type&
+  Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::GetImag(int i, int j)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_SymComplexSparse::GetImag(int, int)",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_SymComplexSparse::GetImag(int, int)",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int k, l;
+    int a, b;
+
+    // Only the upper part is stored.
+    if (i > j)
+      {
+	l = i;
+	i = j;
+	j = l;
+      }
+
+    a = imag_ptr_[Storage::GetFirst(i, j)];
+    b = imag_ptr_[Storage::GetFirst(i, j) + 1];
+
+    if (a < b)
+      {
+        l = Storage::GetSecond(i, j);
+
+        for (k = a; (k < b) && (imag_ind_[k] < l); k++);
+
+        if ( (k < b) && (imag_ind_[k] == l))
+          return this->imag_data_[k];
+      }
+    else
+      k = a;
+
+    // adding a non-zero entry
+    Resize(this->m_, this->n_, real_nz_, imag_nz_+1);
+
+    for (int m = Storage::GetFirst(i, j)+1;
+         m <= Storage::GetFirst(this->m_, this->n_); m++)
+      imag_ptr_[m]++;
+
+    for (int m = imag_nz_-1; m >= k+1; m--)
+      {
+        imag_ind_[m] = imag_ind_[m-1];
+        this->imag_data_[m] = this->imag_data_[m-1];
+      }
+
+    imag_ind_[k] = Storage::GetSecond(i, j);
+
+    // value of new non-zero entry is set to 0
+    SetComplexZero(this->imag_data_[k]);
+
+    return this->imag_data_[k];
+  }
+
+
+  //! Access method
+  /*! Returns the imaginary part of element (\a i, \a j)
+    if it can be returned as a reference. If the non-zero entry
+    does not exit, it is created
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const typename Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::value_type&
+  Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::GetImag(int i, int j) const
+  {
+    return ValImag(i, j);
+  }
+
+
+  //! Add a value to a non-zero entry.
+  /*! This function adds \a val to the element (\a i, \a j), provided that
+    this element is already a non-zero entry. Otherwise
+    a non-zero entry is inserted equal to \a val.
+    \param[in] i row index.
+    \param[in] j column index.
+    \param[in] val value to be added to the element (\a i, \a j).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::AddInteraction(int i, int j, const complex<T>& val)
+  {
+    if (i <= j)
+      {
+        if (real(val) != T(0))
+          GetReal(i, j) += real(val);
+
+        if (imag(val) != T(0))
+          GetImag(i, j) += imag(val);
+      }
+  }
+
+
+  //! Sets an element (i, j) to a value
+  /*! This function sets \a val to the element (\a i, \a j)
+    \param[in] i row index.
+    \param[in] j column index.
+    \param[in] val A(i, j) = val
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const complex<T>& val)
+  {
+    GetReal(i, j) = real(val);
+    GetImag(i, j) = imag(val);
   }
 
 

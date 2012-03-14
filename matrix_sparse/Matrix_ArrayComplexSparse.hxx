@@ -95,6 +95,20 @@ namespace Seldon
     complex<T> operator() (int i, int j) const;
     complex<T>& Val(int i, int j);
     const complex<T>& Val(int i, int j) const;
+    complex<T>& Get(int i, int j);
+    const complex<T>& Get(int i, int j) const;
+
+    T& ValReal(int i, int j);
+    const T& ValReal(int i, int j) const;
+    T& ValImag(int i, int j);
+    const T& ValImag(int i, int j) const;
+    T& GetReal(int i, int j);
+    const T& GetReal(int i, int j) const;
+    T& GetImag(int i, int j);
+    const T& GetImag(int i, int j) const;
+
+    void Set(int i, int j, const complex<T>& x);
+
     const T& ValueReal(int num_row,int i) const;
     T& ValueReal(int num_row,int i);
     int IndexReal(int num_row,int i) const;
@@ -246,6 +260,17 @@ namespace Seldon
 
     complex<T> operator() (int i, int j) const;
 
+    T& ValReal(int i, int j);
+    const T& ValReal(int i, int j) const;
+    T& ValImag(int i, int j);
+    const T& ValImag(int i, int j) const;
+    T& GetReal(int i, int j);
+    const T& GetReal(int i, int j) const;
+    T& GetImag(int i, int j);
+    const T& GetImag(int i, int j) const;
+
+    void Set(int i, int j, const complex<T>& x);
+
     // Memory management.
     void ClearRealColumn(int i);
     void ClearImagColumn(int i);
@@ -294,6 +319,17 @@ namespace Seldon
     Matrix(int i, int j);
 
     complex<T> operator() (int i, int j) const;
+
+    T& ValReal(int i, int j);
+    const T& ValReal(int i, int j) const;
+    T& ValImag(int i, int j);
+    const T& ValImag(int i, int j) const;
+    T& GetReal(int i, int j);
+    const T& GetReal(int i, int j) const;
+    T& GetImag(int i, int j);
+    const T& GetImag(int i, int j) const;
+
+    void Set(int i, int j, const complex<T>& x);
 
     // Memory management.
     void ClearRealRow(int i);
