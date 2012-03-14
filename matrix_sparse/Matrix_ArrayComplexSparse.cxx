@@ -1037,8 +1037,8 @@ namespace Seldon
     \param FileName output file name.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
-  WriteText(string FileName) const
+  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::WriteText(string FileName) const
   {
     ofstream FileStream; FileStream.precision(14);
     FileStream.open(FileName.c_str());
@@ -1062,8 +1062,8 @@ namespace Seldon
     \param FileStream output file name.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
-  WriteText(ostream& FileStream) const
+  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::WriteText(ostream& FileStream) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -1359,7 +1359,8 @@ namespace Seldon
 
   //! Clears column i.
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::ClearRealColumn(int i)
+  inline void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::ClearRealColumn(int i)
   {
     this->val_real_(i).Clear();
   }
@@ -1367,7 +1368,8 @@ namespace Seldon
 
   //! Clears column i.
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::ClearImagColumn(int i)
+  inline void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::ClearImagColumn(int i)
   {
     this->val_imag_(i).Clear();
   }
@@ -1379,7 +1381,8 @@ namespace Seldon
     \param[in] j new number of non-zero entries in the column.
   */
   template <class T, class Prop, class Alloc> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Alloc>::ReallocateRealColumn(int i,int j)
+  void Matrix<T, Prop, ArrayColComplexSparse, Alloc>
+  ::ReallocateRealColumn(int i, int j)
   {
     this->val_real_(i).Reallocate(j);
   }
@@ -1391,7 +1394,8 @@ namespace Seldon
     \param[in] j new number of non-zero entries in the column.
   */
   template <class T, class Prop, class Alloc> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Alloc>::ReallocateImagColumn(int i,int j)
+  void Matrix<T, Prop, ArrayColComplexSparse, Alloc>
+  ::ReallocateImagColumn(int i, int j)
   {
     this->val_imag_(i).Reallocate(j);
   }
@@ -1403,7 +1407,8 @@ namespace Seldon
     \param[in] j new number of non-zero entries in the column.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::ResizeRealColumn(int i,int j)
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::ResizeRealColumn(int i, int j)
   {
     this->val_real_(i).Resize(j);
   }
@@ -1415,7 +1420,8 @@ namespace Seldon
     \param[in] j new number of non-zero entries in the column.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::ResizeImagColumn(int i,int j)
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::ResizeImagColumn(int i, int j)
   {
     this->val_imag_(i).Resize(j);
   }
@@ -1427,7 +1433,8 @@ namespace Seldon
     \param[in] j second column number.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::SwapRealColumn(int i,int j)
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::SwapRealColumn(int i, int j)
   {
     Swap(this->val_real_(i), this->val_real_(j));
   }
@@ -1439,7 +1446,8 @@ namespace Seldon
     \param[in] j second column number.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::SwapImagColumn(int i,int j)
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::SwapImagColumn(int i, int j)
   {
     Swap(this->val_imag_(i), this->val_imag_(j));
   }
@@ -1501,7 +1509,8 @@ namespace Seldon
 
   //! Displays non-zero values of a column.
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::PrintRealColumn(int i) const
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::PrintRealColumn(int i) const
   {
     this->val_real_(i).Print();
   }
@@ -1509,7 +1518,8 @@ namespace Seldon
 
   //! Displays non-zero values of a column.
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::PrintImagColumn(int i) const
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::PrintImagColumn(int i) const
   {
     this->val_imag_(i).Print();
   }
@@ -1522,7 +1532,8 @@ namespace Seldon
     you don't need to call that method.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::AssembleRealColumn(int i)
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::AssembleRealColumn(int i)
   {
     this->val_real_(i).Assemble();
   }
@@ -1535,7 +1546,8 @@ namespace Seldon
     you don't need to call that method.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::AssembleImagColumn(int i)
+  void Matrix<T, Prop, ArrayColComplexSparse, Allocator>
+  ::AssembleImagColumn(int i)
   {
     this->val_imag_(i).Assemble();
   }
@@ -1637,7 +1649,8 @@ namespace Seldon
     \note Matrix values are not initialized.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::Matrix(int i, int j):
+  inline Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::Matrix(int i, int j):
     Matrix_ArrayComplexSparse<T, Prop, ArrayRowComplexSparse, Allocator>(i, j)
   {
   }
@@ -1645,7 +1658,8 @@ namespace Seldon
 
   //! Clears a row
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::ClearRealRow(int i)
+  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::ClearRealRow(int i)
   {
     this->val_real_(i).Clear();
   }
@@ -1653,7 +1667,8 @@ namespace Seldon
 
   //! Clears a row
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::ClearImagRow(int i)
+  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::ClearImagRow(int i)
   {
     this->val_imag_(i).Clear();
   }
@@ -1694,7 +1709,8 @@ namespace Seldon
     \note Data is kept.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::ResizeRealRow(int i, int j)
+  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::ResizeRealRow(int i, int j)
   {
     this->val_real_(i).Resize(j);
   }
@@ -1707,7 +1723,8 @@ namespace Seldon
     \note Data is kept.
   */
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::ResizeImagRow(int i, int j)
+  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::ResizeImagRow(int i, int j)
   {
     this->val_imag_(i).Resize(j);
   }
@@ -1719,7 +1736,8 @@ namespace Seldon
     \param[in] j second row number.
   */
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::SwapRealRow(int i,int j)
+  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::SwapRealRow(int i,int j)
   {
     Swap(this->val_real_(i), this->val_real_(j));
   }
@@ -1731,7 +1749,8 @@ namespace Seldon
     \param[in] j second row number.
   */
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::SwapImagRow(int i,int j)
+  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::SwapImagRow(int i, int j)
   {
     Swap(this->val_imag_(i), this->val_imag_(j));
   }
@@ -1771,7 +1790,8 @@ namespace Seldon
     \return The number of non-zero entries of the row i.
   */
   template <class T, class Prop, class Allocator> inline
-  int Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::GetRealRowSize(int i) const
+  int Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::GetRealRowSize(int i) const
   {
     return this->val_real_(i).GetSize();
   }
@@ -1783,7 +1803,8 @@ namespace Seldon
     \return The number of non-zero entries of the row i.
   */
   template <class T, class Prop, class Allocator> inline
-  int Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::GetImagRowSize(int i) const
+  int Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::GetImagRowSize(int i) const
   {
     return this->val_imag_(i).GetSize();
   }
@@ -1791,7 +1812,8 @@ namespace Seldon
 
   //! Displays non-zero values of a row.
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::PrintRealRow(int i) const
+  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::PrintRealRow(int i) const
   {
     this->val_real_(i).Print();
   }
@@ -1799,7 +1821,8 @@ namespace Seldon
 
   //! Displays non-zero values of a row.
   template <class T, class Prop, class Allocator> inline
-  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::PrintImagRow(int i) const
+  void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::PrintImagRow(int i) const
   {
     this->val_imag_(i).Print();
   }
@@ -1812,7 +1835,8 @@ namespace Seldon
     you don't need to call that method.
   */
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::AssembleRealRow(int i)
+  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::AssembleRealRow(int i)
   {
     this->val_real_(i).Assemble();
   }
@@ -1825,7 +1849,8 @@ namespace Seldon
     you don't need to call that method.
   */
   template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::AssembleImagRow(int i)
+  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::AssembleImagRow(int i)
   {
     this->val_imag_(i).Assemble();
   }
@@ -1953,7 +1978,6 @@ namespace Seldon
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::operator() (int i, int j)
     const
   {
-
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix::operator()", "Index should be in [0, "

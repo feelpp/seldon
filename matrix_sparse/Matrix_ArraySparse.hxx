@@ -84,13 +84,13 @@ namespace Seldon
     Vector<T, VectSparse, Allocator>* GetData() const;
 
     // Element acess and affectation.
-    T operator() (int i, int j) const;    
+    T operator() (int i, int j) const;
     T& Get(int i, int j);
     const T& Get(int i, int j) const;
     T& Val(int i, int j);
     const T& Val(int i, int j) const;
     void Set(int i, int j, const T& x);
-    
+
     const T& Value(int num_row, int i) const;
     T& Value(int num_row, int i);
     int Index(int num_row, int i) const;
@@ -232,7 +232,7 @@ namespace Seldon
     T& Val(int i, int j);
     const T& Val(int i, int j) const;
     void Set(int i, int j, const T& x);
-    
+
     // Memory management.
     void ClearColumn(int i);
     void ReallocateColumn(int i, int j);
@@ -280,7 +280,7 @@ namespace Seldon
     T& Val(int i, int j);
     const T& Val(int i, int j) const;
     void Set(int i, int j, const T& x);
-    
+
     // Memory management.
     void ClearRow(int i);
     void ReallocateRow(int i, int j);
