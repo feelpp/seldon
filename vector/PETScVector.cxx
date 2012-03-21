@@ -147,7 +147,7 @@ namespace Seldon
     if (petsc_vector_deallocated_)
       return;
     int ierr;
-    ierr = VecDestroy(petsc_vector_);
+    ierr = VecDestroy(&petsc_vector_);
     CHKERRABORT(mpi_communicator_, ierr);
     petsc_vector_deallocated_ = true;
   }

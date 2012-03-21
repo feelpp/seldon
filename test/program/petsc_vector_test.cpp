@@ -65,10 +65,9 @@ int main(int argc, char** args)
 
     ierr = VecAXPY(y, -1.0, x); CHKERRQ(ierr);
 
-    ierr = VecDestroy(x); CHKERRQ(ierr);
-    ierr = VecDestroy(y); CHKERRQ(ierr);
-    ierr = VecDestroy(z); CHKERRQ(ierr);
-
+    ierr = VecDestroy(&x); CHKERRQ(ierr);
+    ierr = VecDestroy(&y); CHKERRQ(ierr);
+    ierr = VecDestroy(&z); CHKERRQ(ierr);
   }
 
   // Simple example with sequential PETSc Vector.
@@ -143,7 +142,7 @@ int main(int argc, char** args)
 
     x.Print();
 
-    ierr = VecDestroy(z); CHKERRQ(ierr);
+    ierr = VecDestroy(&z); CHKERRQ(ierr);
   }
 
   ierr = PetscFinalize(); CHKERRQ(ierr);

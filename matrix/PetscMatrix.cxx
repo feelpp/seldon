@@ -99,7 +99,7 @@ namespace Seldon
     if (petsc_matrix_deallocated_)
       return;
     int ierr;
-    ierr = MatDestroy(petsc_matrix_);
+    ierr = MatDestroy(&petsc_matrix_);
     CHKERRABORT(mpi_communicator_, ierr);
     petsc_matrix_deallocated_ = true;
   }
