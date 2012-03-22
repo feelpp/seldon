@@ -29,7 +29,7 @@ static char help[] = "Tests solving linear system on 0 by 0 matrix.\n\n";
 
 using namespace Seldon;
 
-#include "vector/PETScVector.cxx"
+#include "vector/PetscVector.cxx"
 
 #include <stdlib.h>
 #include <petscmat.h>

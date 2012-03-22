@@ -21,7 +21,7 @@
 #ifndef SELDON_FILE_VECTOR_PETSCVECTOR_CXX
 
 
-#include "PETScVector.hxx"
+#include "PetscVector.hxx"
 
 
 namespace Seldon
