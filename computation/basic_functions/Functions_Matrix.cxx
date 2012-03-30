@@ -2235,8 +2235,8 @@ namespace Seldon
 	  for (int j = 0; j < i; j++)
 	    {
 	      tmp = A(i,j);
-	      A(i,j) = A(j,i);
-	      A(j,i) = tmp;
+	      A.Get(i,j) = A(j,i);
+	      A.Get(j,i) = tmp;
 	    }
       }
     else
@@ -2246,7 +2246,7 @@ namespace Seldon
 	A.Reallocate(n,m);
 	for (int i = 0; i < m; i++)
 	  for (int j = 0; j < n; j++)
-	    A(j,i) = B(i,j);
+	    A.Get(j,i) = B(i,j);
       }
   }
 

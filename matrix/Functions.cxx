@@ -473,7 +473,7 @@ namespace Seldon
 	  {
 	    // Collision.
 	  case 0:
-	    working_vector(j) = X(ind_x);
+	    working_vector.Get(j) = X(ind_x);
 	    for (int k = 0; k < Nworking_vector; k++)
 	      new_ind_vector.GetData()[k + new_ptr_vector(ind_x)] =
 		working_vector.GetIndex()[k];
