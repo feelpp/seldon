@@ -102,11 +102,10 @@ namespace Seldon
     Vector<int, VectFull, CallocAlloc<int> > new_ind(nnz);
     Vector<T, VectFull, Allocator> new_data(nnz);
 
-    int ptr_count = 0, length, source_position;
+    int ptr_count = 0, length;
     for (i = 0; i < m; i++)
       {
         length = ptr[prev_row_index(i) + 1] - ptr[prev_row_index(i)];
-        source_position = ptr[prev_row_index(i)];
         for (j = 0; j < length; j++)
           {
             new_data(ptr_count + j) = data[ptr[prev_row_index(i)] + j];
@@ -189,11 +188,10 @@ namespace Seldon
     Vector<int, VectFull, CallocAlloc<int> > new_ind(nnz);
     Vector<T, VectFull, Allocator> new_data(nnz);
 
-    int ptr_count = 0, length, source_position;
+    int ptr_count = 0, length;
     for (i = 0; i < n; i++)
       {
         length = ptr[prev_col_index(i) + 1] - ptr[prev_col_index(i)];
-        source_position = ptr[prev_col_index(i)];
         for (j = 0; j < length; j++)
           {
             new_data(ptr_count + j) = data[ptr[prev_col_index(i)] + j];
