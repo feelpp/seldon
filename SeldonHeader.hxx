@@ -377,6 +377,9 @@ extern "C"
 #define SELDON_CHECK_INFO(f, lf)
 #endif
 #endif
+#include "computation/interfaces/Lapack_LinearEquations.hxx"
+#include "computation/interfaces/Lapack_LeastSquares.hxx"
+#include "computation/interfaces/Lapack_Eigenvalues.hxx"
 #endif // SELDON_WITH_LAPACK.
 
 namespace Seldon
