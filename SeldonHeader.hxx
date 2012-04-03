@@ -339,6 +339,13 @@ namespace Seldon
 #include "matrix/SubMatrix_Base.hxx"
 #include "matrix/SubMatrix.hxx"
 
+// Blas interface.
+#ifdef SELDON_WITH_BLAS
+#include "computation/interfaces/Blas_1.hxx"
+#include "computation/interfaces/Blas_2.hxx"
+#include "computation/interfaces/Blas_3.hxx"
+#endif
+
 // Lapack interface.
 #ifdef SELDON_WITH_LAPACK
 #undef LAPACK_INTEGER

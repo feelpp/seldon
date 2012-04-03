@@ -19,31 +19,9 @@
 
 #ifndef SELDON_FILE_BLAS_2_CXX
 
-/*
-  Functions included in this file:
 
-  xTRMV   (Mlt)
-  xTPMV   (Mlt)
-  xGEMV   (MltAdd)
-  xHEMV   (MltAdd)
-  xHPMV   (MltAdd)
-  xSYMV   (MltAdd)
-  xSPMV   (MltAdd)
-  xGER    (Rank1Update)
-  xGERU   (Rank1Update)
-  xGERC   (Rank1Update)
-  xSPR    (Rank1Update)
-  xHPR    (Rank1Update)
-  xSPR2   (Rank2Update)
-  xHPR2   (Rank2Update)
-  xTRSV   (Solve)
-  xTPSV   (Solve)
-*/
+#include "Blas_2.hxx"
 
-extern "C"
-{
-#include "cblas.h"
-}
 
 namespace Seldon
 {

@@ -19,20 +19,9 @@
 
 #ifndef SELDON_FILE_BLAS_3_CXX
 
-/*
-  Functions included in this file:
 
-  xGEMM   (MltAdd)
-  xSYMM   (MltAdd)
-  xHEMM   (MltAdd)
-  xTRMM   (Mlt)
-  xTRSM   (Solve)
-*/
+#include "Blas_3.hxx"
 
-extern "C"
-{
-#include "cblas.h"
-}
 
 namespace Seldon
 {
