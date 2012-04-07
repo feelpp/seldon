@@ -113,9 +113,9 @@ namespace Seldon
 
     void Fill(const T& x);
 
-#ifndef SWIG
     Vector<Vector<T, VectFull, Allocator0>, VectFull, Allocator1>&
     GetVector();
+#ifndef SWIG
     const Vector<Vector<T, VectFull, Allocator0>, VectFull,
                  Allocator1> GetVector() const;
 #endif
