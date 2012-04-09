@@ -126,6 +126,7 @@ namespace Seldon
 #endif
 
     void Copy(const Vector2<T, Allocator0, Allocator1>& V);
+    Vector2<T, Allocator0, Allocator1> Copy() const;
 
     /*** Element access and assignment ***/
 

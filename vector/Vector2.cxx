@@ -508,6 +508,21 @@ namespace Seldon
   }
 
 
+  //! Copies a Vector2 instance.
+  /*!
+    \return A copy of the current Vector2 instance.
+    \note The current instance and the copy do not share memory on exit.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  Vector2<T, Allocator0, Allocator1>
+  Vector2<T, Allocator0, Allocator1>::Copy() const
+  {
+    Vector2<T, Allocator0, Allocator1> output;
+    output.Copy(*this);
+    return output;
+  }
+
+
   /*********************************
    * ELEMENT ACCESS AND ASSIGNMENT *
    *********************************/
