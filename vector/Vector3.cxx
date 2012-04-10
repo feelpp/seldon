@@ -1,5 +1,5 @@
-// Copyright (C) 2010, INRIA
-// Author(s): Marc Fragu
+// Copyright (C) 2010-2012, INRIA
+// Author(s): Marc Fragu, Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -248,6 +248,63 @@ namespace Seldon
   }
 
 
+  //! Returns the total number of elements in a range of inner vectors.
+  /*! Returns the total number of elements in the range [\a beg0, \a end0[ of
+    inner vectors of vectors, in which only the vectors in [\a beg1, \a end1[
+    are selected.
+    \param[in] beg0 inclusive lower-bound for the indexes of inner vectors of
+    vectors.
+    \param[in] end0 exclusive upper-bound for the indexes of inner vectors of
+    vectors.
+    \param[in] beg1 inclusive lower-bound for the indexes of vectors to be
+    selected in the inner vectors of vectors.
+    \param[in] end1 exclusive upper-bound for the indexes of vectors to be
+    selected in the inner vectors of vectors.
+    \return The sum of the lengths of the inner vectors of vectors with
+    index \a beg to \a end-1.
+  */
+  template <class T, class Allocator0, class Allocator1, class Allocator2>
+  int Vector3<T, Allocator0, Allocator1, Allocator2>
+  ::GetNelement(int beg0, int end0, int beg1, int end1) const
+  {
+    if (beg0 > end0)
+      throw WrongArgument("Vector3:::GetNelement(int beg0, int end0, "
+                          "int beg1, int end1)",
+                          "The lower bound of the range of inner vectors "
+			  "of vectors, [" + to_str(beg0) + ", " + to_str(end0)
+                          + "[, is strictly greater than its upper bound.");
+    if (beg1 > end1)
+      throw WrongArgument("Vector3:::GetNelement(int beg0, int end0, "
+                          "int beg1, int end1)",
+                          "The lower bound of the range of "
+			  "of vectors, [" + to_str(beg1) + ", " + to_str(end1)
+                          + "[, is strictly greater than its upper bound.");
+    if (beg0 < 0 || end0 > GetLength())
+      throw WrongArgument("Vector3:::GetNelement(int beg0, int end0, "
+                          "int beg1, int end1)",
+        		  "The inner-vector of vectors indexes should be in "
+			  "[0," + to_str(GetLength()) + "] but ["
+			  + to_str(beg0)
+                          + ", " + to_str(end0) + "[ was provided.");
+
+    int total = 0;
+    for (int i = beg0; i < end0; i++)
+      {
+        if (beg1 < 0 || end1 > GetLength(i))
+          throw WrongArgument("Vector3:::GetNelement(int beg0, int end0, "
+                              "int beg1, int end1)",
+                              "For the inner vector of vectors "
+                              + to_str(i) + ", the vectors indexes should be "
+                              "in [0," + to_str(GetLength(i)) + "] but ["
+                              + to_str(beg1)
+                              + ", " + to_str(end1) + "[ was provided.");
+        for (int j = beg1; j < end1; j++)
+          total += GetLength(i, j);
+      }
+    return total;
+  }
+
+
   //! Returns the shape of a vector of vectors.
   /*!
     \param[in] i index of the vector of vectors.
@@ -364,12 +421,74 @@ namespace Seldon
 			  + to_str(beg)
                           + ", " + to_str(end) + "[ was provided.");
 
-    data.Reallocate(GetNelement());
+    data.Reallocate(GetNelement(beg, end));
     int i, j, k, n(0);
     for (i = beg; i < end; i++)
       for (j = 0; j < GetLength(i); j++)
         for (k = 0; k < GetLength(i, j); k++)
 	  data(n++) = data_(i)(j)(k);
+  }
+
+
+  /*! \brief Returns in a vector all values from a range of inner vectors and
+    of inner vectors of vectors. */
+  /*! The output vector \a data contains part of the inner vectors of vectors,
+    in the index range [\a beg0, \a end0[, concatenated in the same order as
+    they appear in the current Vector3 instance. For each inner vector of
+    vectors, the range [\a beg1, \a end1[ of vectors is selected.
+    \param[in] beg0 inclusive lower-bound for the indexes of inner vectors of
+    vectors.
+    \param[in] end0 exclusive upper-bound for the indexes of inner vectors of
+    vectors.
+    \param[in] beg1 inclusive lower-bound for the indexes of vectors to be
+    selected in the inner vectors of vectors.
+    \param[in] end1 exclusive upper-bound for the indexes of vectors to be
+    selected in the inner vectors of vectors.
+    \param[out] data the values contained in the inner vectors of vectors [\a
+    beg0, \a end0[, in which the vectors [\a beg1, \a end1[ were selected.
+  */
+  template <class T, class Allocator0, class Allocator1, class Allocator2>
+  template <class Td, class Allocatord>
+  void Vector3<T, Allocator0, Allocator1, Allocator2>
+  ::Flatten(int beg0, int end0, int beg1, int end1,
+            Vector<Td, VectFull, Allocatord>& data) const
+  {
+    if (beg0 > end0)
+      throw WrongArgument("Vector3:::Flatten(int beg0, int end0, int beg1, "
+                          "int end1, Vector& data)",
+                          "The lower bound of the range of inner vectors "
+			  "of vectors, [" + to_str(beg0) + ", " + to_str(end0)
+                          + "[, is strictly greater than its upper bound.");
+    if (beg1 > end1)
+      throw WrongArgument("Vector3:::Flatten(int beg0, int end0, int beg1, "
+                          "int end1, Vector& data)",
+                          "The lower bound of the range of "
+			  "of vectors, [" + to_str(beg1) + ", " + to_str(end1)
+                          + "[, is strictly greater than its upper bound.");
+    if (beg0 < 0 || end0 > GetLength())
+      throw WrongArgument("Vector3:::Flatten(int beg0, int end0, int beg1, "
+                          "int end1, Vector& data)",
+        		  "The inner-vector of vectors indexes should be in "
+			  "[0," + to_str(GetLength()) + "] but ["
+			  + to_str(beg0)
+                          + ", " + to_str(end0) + "[ was provided.");
+
+    data.Reallocate(GetNelement(beg0, end0, beg1, end1));
+    int i, j, k, n(0);
+    for (i = beg0; i < end0; i++)
+      {
+        if (beg1 < 0 || end1 > GetLength(i))
+          throw WrongArgument("Vector3:::Flatten(int beg0, int end0, int beg1, "
+                              "int end1, Vector& data)",
+                              "For the inner vector of vectors "
+                              + to_str(i) + ", the vectors indexes should be "
+                              "in [0," + to_str(GetLength(i)) + "] but ["
+                              + to_str(beg1)
+                              + ", " + to_str(end1) + "[ was provided.");
+        for (j = beg1; j < end1; j++)
+          for (k = 0; k < GetLength(i, j); k++)
+            data(n++) = data_(i)(j)(k);
+      }
   }
 
 
