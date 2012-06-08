@@ -291,6 +291,7 @@ namespace Seldon
 #endif
 
     Vector<T4, PETScPar, Allocator4> X_Petsc;
+    X_Petsc.SetCommunicator(M.GetCommunicator());
     X_Petsc.Reallocate(X.GetM());
     for (int i = 0; i < X.GetM(); i++)
       X_Petsc.SetBuffer(i, X(i));
@@ -342,6 +343,7 @@ namespace Seldon
 #endif
 
     Vector<T4, PETScPar, Allocator4> X_Petsc;
+     X_Petsc.SetCommunicator(M.GetCommunicator());
     X_Petsc.Reallocate(X.GetM());
     for (int i = 0; i < X.GetM(); i++)
       X_Petsc.SetBuffer(i, X(i));
@@ -371,6 +373,7 @@ namespace Seldon
       }
     Vector<T2, PETScPar, Allocator2> tmp;
     tmp.Copy(Y);
+    tmp.SetCommunicator(M.GetCommunicator());
     MatMult(M.GetPetscMatrix(), X_Petsc.GetPetscVector(),
             tmp.GetPetscVector());
     VecAXPBY(Y.GetPetscVector(), alpha, beta, tmp.GetPetscVector());

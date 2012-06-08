@@ -934,6 +934,7 @@ namespace Seldon
   ::Copy(const Vector<T, PETScPar, Allocator>& X)
   {
     Copy(X.GetPetscVector());
+    this->mpi_communicator_ = X.mpi_communicator_;
   }
 
 
