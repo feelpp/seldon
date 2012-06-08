@@ -85,8 +85,8 @@ namespace Seldon
     void Append(const T& x);
 
     // Basic functions.
-    int GetDataSize();
-    int GetLocalM();
+    int GetDataSize() const;
+    int GetLocalM() const;
 
     // Convenient functions.
     void Zero();

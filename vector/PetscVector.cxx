@@ -348,7 +348,7 @@ namespace Seldon
     \return The number of elements stored in memory.
   */
   template <class T, class Allocator>
-  int PETScVector<T, Allocator>::GetDataSize()
+  int PETScVector<T, Allocator>::GetDataSize() const
   {
     return this->m_;
   }
@@ -359,7 +359,7 @@ namespace Seldon
     \return The number of elements stored in memory.
   */
   template <class T, class Allocator>
-  int PETScVector<T, Allocator>::GetLocalM()
+  int PETScVector<T, Allocator>::GetLocalM() const
   {
     int size;
     VecGetLocalSize(petsc_vector_, &size);
