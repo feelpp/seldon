@@ -257,6 +257,32 @@ namespace Seldon
   }
 
 
+  template<class T, class Alloc1, class Alloc2>
+  void Copy(const Vector<T, PETScPar, Alloc1>& A,
+            Vector<T, VectFull, Alloc2>& B)
+  {
+    B.Reallocate(A.GetLocalM());
+    T *local_data;
+    VecGetArray(A.GetPetscVector(), &local_data);
+    for (int i = 0; i < A.GetLocalM(); i++)
+      B(i) = local_data[i];
+    VecRestoreArray(A.GetPetscVector(), &local_data);
+  }
+
+
+  template<class T, class Alloc1, class Alloc2>
+  void Copy(const Vector<T, VectFull, Alloc1>& A,
+            Vector<T, PETScPar, Alloc2>& B)
+  {
+    T *local_data;
+    VecGetArray(B.GetPetscVector(), &local_data);
+    for (int i = 0; i < A.GetM(); i++)
+      local_data[i] = A(i);
+    VecRestoreArray(B.GetPetscVector(), &local_data);
+  }
+
+
+
   // COPY //
   //////////
 

@@ -521,6 +521,14 @@ namespace Seldon
   void Copy(const Matrix<T, Prop1, ArrayColSymSparse, Alloc1>& A,
 	    Matrix<T, Prop2, ColSparse, Alloc2>& B);
 
+  template<class T, class Prop1, class Prop2, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop1, PETScMPIDense, Alloc1>& A,
+            Matrix<T, Prop2, RowMajor, Alloc2>& B);
+
+  template<class T, class Prop1, class Prop2, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop1, RowMajor, Alloc1>& A,
+            Matrix<T, Prop2, PETScMPIDense, Alloc2>& B);
+
 
   /*
     From Sparse formats to CSR format

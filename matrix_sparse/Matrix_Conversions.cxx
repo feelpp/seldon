@@ -4577,6 +4577,41 @@ namespace Seldon
   }
 
 
+  template<class T, class Prop1, class Prop2, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop1, PETScMPIDense, Alloc1>& A,
+            Matrix<T, Prop2, RowMajor, Alloc2>& B)
+  {
+    int m, n;
+    MatGetLocalSize(A.GetPetscMatrix(), &m, &n);
+    n = A.GetN();
+    B.Reallocate(m, n);
+    T *local_a;
+    MatGetArray(A.GetPetscMatrix(), &local_a);
+    for (int i = 0; i < m; i++)
+      for(int j = 0; j < n; j++)
+        B(i, j) = local_a[i + j * m];
+    MatRestoreArray(A.GetPetscMatrix(), &local_a);
+  }
+
+
+  template<class T, class Prop1, class Prop2, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop1, RowMajor, Alloc1>& A,
+            Matrix<T, Prop2, PETScMPIDense, Alloc2>& B)
+  {
+    T *local_data;
+    MatGetArray(B.GetPetscMatrix(), &local_data);
+    int mlocal, nlocal;
+    MatGetLocalSize(B.GetPetscMatrix(), &mlocal, &nlocal);
+    Matrix<T, Prop1, ColMajor, Alloc1> local_D;
+    local_D.SetData(mlocal, B.GetN(), local_data);
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetN(); j++)
+        local_D(i, j) = A(i, j);
+    local_D.Nullify();
+    MatRestoreArray(B.GetPetscMatrix(), &local_data);
+  }
+
+
   /*****************************************************
    * Conversion from dense matrices to sparse matrices *
    *****************************************************/
