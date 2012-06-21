@@ -78,6 +78,18 @@ namespace Seldon
   }
 
 
+  //! Returns the MPI communicator of the current PETSc matrix.
+  /*!
+   \return The MPI communicator of the current PETSc matrix.
+   */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline MPI_Comm PetscMatrix<T, Prop, Storage, Allocator>
+  ::GetCommunicator() const
+  {
+    return mpi_communicator_;
+  }
+
+
   //! Destructor.
   template <class T, class Prop, class Storage, class Allocator>
   inline PetscMatrix<T, Prop, Storage, Allocator>
@@ -1210,6 +1222,36 @@ namespace Seldon
     CHKERRABORT(this->mpi_communicator_, ierr);
     ierr = MatAssemblyEnd(this->petsc_matrix_,MAT_FINAL_ASSEMBLY);
     CHKERRABORT(this->mpi_communicator_, ierr);
+  }
+
+
+  //! Returns the number of local rows of the inner PETSc matrix.
+  /*!
+    \return The number of local rows of the inner PETSc matrix.
+   */
+  template <class T, class Prop, class Allocator>
+  int Matrix<T, Prop, PETScMPIAIJ, Allocator>::GetLocalM() const
+  {
+    int ierr;
+    int m;
+    ierr = MatGetLocalSize(this->petsc_matrix_, &m, PETSC_NULL);
+    CHKERRABORT(this->mpi_communicator_, ierr);
+    return m;
+  }
+
+
+  //! Gets the number of local columns of the inner PETSc matrix.
+  /*!
+    \return The number of local columns of the inner PETSc matrix.
+   */
+  template <class T, class Prop, class Allocator>
+  int Matrix<T, Prop, PETScMPIAIJ, Allocator>::GetLocalN() const
+  {
+    int ierr;
+    int n;
+    ierr = MatGetLocalSize(this->petsc_matrix_, PETSC_NULL, &n);
+    CHKERRABORT(this->mpi_communicator_, ierr);
+    return n;
   }
 
 

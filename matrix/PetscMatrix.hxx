@@ -67,6 +67,7 @@ namespace Seldon
     PetscMatrix(Mat& A);
 
     void SetCommunicator(MPI_Comm mpi_communicator);
+    MPI_Comm GetCommunicator() const;
 
     // Destructor.
     ~PetscMatrix();
@@ -213,6 +214,9 @@ namespace Seldon
 
     template <class T0,  class Allocator0>
     void Copy(const Matrix<T0, General, RowSparse, Allocator0>& A);
+
+    int GetLocalM() const;
+    int GetLocalN() const;
 
     void Print() const;
   };
