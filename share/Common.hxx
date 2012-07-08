@@ -1,4 +1,4 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2001-2012 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -30,6 +30,34 @@ namespace Seldon
 
 
   using namespace std;
+
+
+  //! This class helps formatting C++ strings on the fly.
+  /*!
+    It should may be used like that:
+    string output = Str() + "There are " + 3 + " laws of robotics.";
+  */
+  class Str
+  {
+  private:
+    //! Buffer.
+    std::ostringstream output_;
+
+  public:
+    Str();
+    Str(const Str& s);
+    operator std::string() const;
+    template <class T>
+    Str& operator << (const T& input);
+  };
+
+  template <class T>
+  Str operator + (const Str&, const T& input);
+
+#ifndef SWIG
+  ostream& operator << (ostream& out, Str& in);
+  ostream& operator << (ostream& out, Str in);
+#endif
 
 
   template<typename T>
