@@ -469,7 +469,7 @@ namespace Seldon
       }
 
     iparm[IPARM_GRAPHDIST] = API_YES;
-    iparm[IPARM_FREE_CSCUSER] = API_CSC_PRESERVE;
+    //iparm[IPARM_FREE_CSCUSER] = API_CSC_PRESERVE;
     
     pastix_int_t* ptr_ = Ptr.GetData();
     pastix_int_t nrhs = 1;
@@ -502,7 +502,7 @@ namespace Seldon
     //CallPastix(comm_facto, ptr_, ind_, values_, rhs_, nrhs);    
     CallPastix(comm_facto, ptr_, ind_, values_, NULL, nrhs);    
 
-    iparm[IPARM_FREE_CSCUSER] = API_CSC_FREE;
+    //iparm[IPARM_FREE_CSCUSER] = API_CSC_FREE;
     //Ptr.Nullify();
     //IndRow.Nullify();
     //Val.Nullify();

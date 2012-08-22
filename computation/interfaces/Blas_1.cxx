@@ -509,6 +509,7 @@ namespace Seldon
               reinterpret_cast<const void*>(X.GetData()), &inc,
               reinterpret_cast<const void*>(Y.GetData()), &inc,
               reinterpret_cast<void*>(&dotu));
+    
     return dotu;
   }
 

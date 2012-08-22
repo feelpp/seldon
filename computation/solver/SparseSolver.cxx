@@ -205,15 +205,15 @@ namespace Seldon
   
   
   //! LU factorisation with pivot of unsymmetric matrix
-  template<class T, class Allocator>
+  template<class T, class Treal, class Allocator>
   void GetLU(Matrix<T, General, ArrayRowSparse, Allocator>& A,
 	     IVect& iperm, IVect& rperm, 
-	     double permtol, int print_level)
+	     const Treal& permtol, int print_level)
   {
     int n = A.GetN();
     
     T fact, s, t;
-    double tnorm, zero = 0.0;
+    Treal tnorm, zero = 0.0;
     int length_lower, length_upper, jpos, jrow, i_row, j_col;
     int i, j, k, length, size_row, index_lu;
     
@@ -571,9 +571,9 @@ namespace Seldon
   {
     int size_row;
     int n = A.GetN();
-    double zero = 0.0;
+    typename ClassComplexType<T>::Treal zero(0), tnorm;
     
-    T fact, s, t; double tnorm;
+    T fact, s, t;
     int length_lower, length_upper, jpos, jrow;
     int i_row, j_col, index_lu, length;
     int i, j, k;

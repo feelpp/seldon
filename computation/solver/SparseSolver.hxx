@@ -35,7 +35,7 @@ namespace Seldon
     //! Verbosity level
     int print_level;
     //! Threshold for pivoting
-    double permtol;
+    typename ClassComplexType<T>::Treal permtol;
     //! Symmetric matrix.
     Matrix<T, Symmetric, ArrayRowSymSparse, Allocator> mat_sym;
     //! Unsymmetric matrix.
@@ -77,10 +77,10 @@ namespace Seldon
     
   };
 
-  template<class T, class Allocator>
+  template<class T, class Treal, class Allocator>
   void GetLU(Matrix<T, General, ArrayRowSparse, Allocator>& A,
 	     IVect& iperm, IVect& rperm, 
-	     double permtol, int print_level);
+	     const Treal& permtol, int print_level);
 
   template<class cplx,
 	   class Allocator, class Storage2, class Allocator2>
