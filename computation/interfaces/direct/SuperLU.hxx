@@ -106,6 +106,13 @@ namespace Seldon
     template<class TransStatus, class Allocator2>
     void Solve(const TransStatus& TransA,
                Vector<double, VectFull, Allocator2>& x);
+
+    template<class Allocator2>
+    void Solve(Matrix<double, General, ColMajor, Allocator2>& x);
+
+    template<class TransStatus, class Allocator2>
+    void Solve(const TransStatus& TransA,
+               Matrix<double, General, ColMajor, Allocator2>& x);
   };
 
 
@@ -138,6 +145,13 @@ namespace Seldon
     template<class TransStatus, class Allocator2>
     void Solve(const TransStatus& TransA,
                Vector<complex<double>, VectFull, Allocator2>& x);
+
+    template<class Allocator2>
+    void Solve(Matrix<complex<double>, General, ColMajor, Allocator2>& x);
+
+    template<class TransStatus, class Allocator2>
+    void Solve(const TransStatus& TransA,
+               Matrix<complex<double>, General, ColMajor, Allocator2>& x);
 
   };
 

@@ -96,6 +96,10 @@ namespace Seldon
     void Solve(const Transpose_status& TransA,
 	       Vector<T, VectFull, Allocator2>& x);
 
+    template<class Allocator2, class Transpose_status>
+    void Solve(const Transpose_status& TransA,
+	       Matrix<T, General, ColMajor, Allocator2>& x);
+
     void SetNbThreadPerNode(int);
 
     template<class Alloc1, class Alloc2, class Alloc3, class Tint>

@@ -78,9 +78,6 @@ namespace Seldon
     // Rows of matrix are permuted.
     ApplyInversePermutation(mat_unsym, perm, perm);
     
-    // Temporary vector used for solving.
-    xtmp.Reallocate(n);
-
     // Factorization is performed.
     // Columns are permuted during the factorization.
     symmetric_matrix = false;
@@ -141,9 +138,6 @@ namespace Seldon
     // Matrix is permuted.
     ApplyInversePermutation(mat_sym, perm, perm);
 
-    // Temporary vector used for solving.
-    xtmp.Reallocate(n);
-
     // Factorization is performed.
     symmetric_matrix = true;
     GetLU(mat_sym, print_level);
@@ -153,6 +147,7 @@ namespace Seldon
   template<class T, class Allocator> template<class Vector1>
   void SparseSeldonSolver<T, Allocator>::Solve(Vector1& z)
   {
+    Vector1 xtmp(z);
     if (symmetric_matrix)
       {
 	for (int i = 0; i < z.GetM(); i++)
@@ -183,6 +178,7 @@ namespace Seldon
       Solve(z);
     else
       {
+	Vector1 xtmp(z);
 	if (TransA.Trans())
 	  {
 	    for (int i = 0; i < z.GetM(); i++)
@@ -477,9 +473,9 @@ namespace Seldon
   }
   
   
-  template<class cplx,
+  template<class real, class cplx,
 	   class Allocator, class Storage2, class Allocator2>
-  void SolveLU(const Matrix<cplx, General, ArrayRowSparse, Allocator>& A,
+  void SolveLU(const Matrix<real, General, ArrayRowSparse, Allocator>& A,
                Vector<cplx, Storage2, Allocator2>& x)
   {
     SolveLU(SeldonNoTrans, A, x);
@@ -490,14 +486,14 @@ namespace Seldon
   /*!  L and U are assumed to be stored in A. The diagonal of A contains the
     inverse of the diagonal of U.
   */
-  template<class cplx, class TransStatus,
+  template<class real, class cplx, class TransStatus,
 	   class Allocator, class Storage2, class Allocator2>
   void SolveLU(const TransStatus& transA,
-               const Matrix<cplx, General, ArrayRowSparse, Allocator>& A,
+               const Matrix<real, General, ArrayRowSparse, Allocator>& A,
                Vector<cplx, Storage2, Allocator2>& x)
   {
     int i, k, n, k_;
-    cplx inv_diag;
+    real inv_diag;
     n = A.GetM();
 
     if (transA.Trans())
@@ -874,18 +870,18 @@ namespace Seldon
   }
   
 
-  template<class T, class Alloc2, class Allocator>
+  template<class T, class Alloc2, class T1, class Allocator>
   void SolveLU(SparseSeldonSolver<T, Alloc2>& mat_lu,
-	       Vector<T, VectFull, Allocator>& x)
+	       Vector<T1, VectFull, Allocator>& x)
   {
     mat_lu.Solve(x);
   }
 
 
-  template<class T, class Alloc2, class Allocator, class Transpose_status>
+  template<class T, class Alloc2, class T1, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       SparseSeldonSolver<T, Alloc2>& mat_lu,
-	       Vector<T, VectFull, Allocator>& x)
+	       Vector<T1, VectFull, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
   }

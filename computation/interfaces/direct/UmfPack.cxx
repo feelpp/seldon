@@ -486,6 +486,89 @@ namespace Seldon
     mat_lu.Solve(TransA, x);
   }
 
+
+  template<class T, class Prop, class Allocator>
+  void SolveLU(MatrixUmfPack<T>& mat_lu,
+               Matrix<T, Prop, ColMajor, Allocator>& x)
+  {
+    Vector<T> v;
+    for (int i = 0; i < x.GetN(); i++)
+      {
+	v.SetData(x.GetM(), &x(0, i));
+	mat_lu.Solve(v);
+	v.Nullify();
+      }
+  }
+
+
+  template<class T, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixUmfPack<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x)
+  {
+    Vector<T> v;
+    for (int i = 0; i < x.GetN(); i++)
+      {
+	v.SetData(x.GetM(), &x(0, i));
+	mat_lu.Solve(TransA, v);
+	v.Nullify();
+      }
+  }
+
+
+  template<class Allocator>
+  void SolveLU(MatrixUmfPack<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x)
+  {
+    Matrix<double, General, ColMajor> y(x.GetM(), 2);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      {
+	y(i, 0) = real(x(i));
+	y(i, 1) = imag(x(i));
+      }
+    
+    SolveLU(mat_lu, y);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      x(i) = complex<double>(y(i, 0), y(i, 1));
+  }
+  
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixUmfPack<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x)
+  {
+    Matrix<double, General, ColMajor> y(x.GetM(), 2);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      {
+	y(i, 0) = real(x(i));
+	y(i, 1) = imag(x(i));
+      }
+    
+    SolveLU(TransA, mat_lu, y);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      x(i) = complex<double>(y(i, 0), y(i, 1));
+
+  }
+
+
+  template<class Allocator>
+  void SolveLU(MatrixUmfPack<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
+			"The result should be a complex vector");
+  }
+
+  
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixUmfPack<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
+			"The result should be a complex vector");
+  }
+
 }
 
 #define SELDON_FILE_UMFPACK_CXX

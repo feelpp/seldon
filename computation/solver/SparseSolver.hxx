@@ -42,8 +42,6 @@ namespace Seldon
     Matrix<T, General, ArrayRowSparse, Allocator> mat_unsym;
     //! Permutation arrays.
     IVect permutation_row, permutation_col;
-    //! Temporary vector.
-    Vector<T, VectFull, Allocator> xtmp;
     //! if true the factorisation is contained in mat_sym
     bool symmetric_matrix;
     
@@ -82,15 +80,15 @@ namespace Seldon
 	     IVect& iperm, IVect& rperm, 
 	     const Treal& permtol, int print_level);
 
-  template<class cplx,
+  template<class real, class cplx,
 	   class Allocator, class Storage2, class Allocator2>
-  void SolveLU(const Matrix<cplx, General, ArrayRowSparse, Allocator>& A,
+  void SolveLU(const Matrix<real, General, ArrayRowSparse, Allocator>& A,
                Vector<cplx, Storage2, Allocator2>& x);
 
-  template<class cplx, class TransStatus,
+  template<class real, class cplx, class TransStatus,
 	   class Allocator, class Storage2, class Allocator2>
   void SolveLU(const TransStatus& transA,
-               const Matrix<cplx, General, ArrayRowSparse, Allocator>& A,
+               const Matrix<real, General, ArrayRowSparse, Allocator>& A,
                Vector<cplx, Storage2, Allocator2>& x);
 
   template<class T, class Allocator>
@@ -111,14 +109,14 @@ namespace Seldon
 	     SparseSeldonSolver<T, Alloc2>& mat_lu,
 	     bool keep_matrix = false);
 
-  template<class T, class Alloc2, class Allocator>
+  template<class T, class Alloc2, class T1, class Allocator>
   void SolveLU(SparseSeldonSolver<T, Alloc2>& mat_lu,
-	       Vector<T, VectFull, Allocator>& x);
+	       Vector<T1, VectFull, Allocator>& x);
 
-  template<class T, class Alloc2, class Allocator, class Transpose_status>
+  template<class T, class Alloc2, class T1, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       SparseSeldonSolver<T, Alloc2>& mat_lu,
-	       Vector<T, VectFull, Allocator>& x);
+	       Vector<T1, VectFull, Allocator>& x);
   
   //! basic class grouping different ordering strategies
   class SparseMatrixOrdering

@@ -157,11 +157,11 @@ namespace Seldon
   };
 
   template<class T, class Storage, class Allocator>
-  void GetLU(Matrix<T,Symmetric,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
+  void GetLU(Matrix<T, Symmetric, Storage, Allocator>& A, MatrixMumps<T>& mat_lu,
 	     bool keep_matrix = false);
 
   template<class T, class Storage, class Allocator>
-  void GetLU(Matrix<T,General,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
+  void GetLU(Matrix<T, General, Storage, Allocator>& A, MatrixMumps<T>& mat_lu,
 	     bool keep_matrix = false);
 
   template<class T, class Storage, class Allocator, class MatrixFull>
@@ -188,6 +188,20 @@ namespace Seldon
   template<class T, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixMumps<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x);
+
+  template<class Allocator>
+  void SolveLU(MatrixMumps<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixMumps<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+
+  template<class Allocator>
+  void SolveLU(MatrixMumps<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixMumps<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
   
 }
 

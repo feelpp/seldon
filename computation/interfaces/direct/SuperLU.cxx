@@ -142,7 +142,8 @@ namespace Seldon
     return perm_c;
   }
 
-
+  
+  //! sets the ordering algorithm that will be used later for fatorisation
   template<class T>
   void MatrixSuperLU_Base<T>::SelectOrdering(colperm_t type)
   {
@@ -150,6 +151,7 @@ namespace Seldon
   }
 
 
+  //! sets the permutation array directly
   template<class T>
   void MatrixSuperLU_Base<T>::SetPermutation(const IVect& permut)
   {
@@ -193,7 +195,8 @@ namespace Seldon
     display_info = true;
   }
 
-
+  
+  //! returns status of factorisation
   template<class T>
   int MatrixSuperLU_Base<T>::GetInfoFactorization() const
   {
@@ -383,7 +386,7 @@ namespace Seldon
   }
 
 
-  //! resolution of linear system A x = b
+  //! resolution of linear system A x = b or A^T x = b
   template<class TransStatus, class Allocator2>
   void MatrixSuperLU<double>::Solve(const TransStatus& TransA,
                                     Vector<double, VectFull, Allocator2>& x)
@@ -406,6 +409,45 @@ namespace Seldon
   }
 
 
+  //! resolution of linear system A x = b
+  template<class Allocator2>
+  void MatrixSuperLU<double>::Solve(Matrix<double, General, ColMajor, Allocator2>& x)
+  {
+    trans_t trans = NOTRANS;
+    int nb_rhs = x.GetN(), info;
+    dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
+			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
+
+    dgstrs(trans, &L, &U, perm_c.GetData(),
+	   perm_r.GetData(), &B, &stat, &info);
+
+    Destroy_SuperMatrix_Store(&B);
+  }
+
+
+  //! resolution of linear system A x = b or A^T x = b
+  template<class TransStatus, class Allocator2>
+  void MatrixSuperLU<double>::Solve(const TransStatus& TransA,
+                                    Matrix<double, General, ColMajor, Allocator2>& x)
+  {
+    if (TransA.NoTrans())
+      {
+        Solve(x);
+        return;
+      }
+
+    trans_t trans = TRANS;
+    int nb_rhs = x.GetN(), info;
+    dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
+			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
+
+    dgstrs(trans, &L, &U, perm_c.GetData(),
+	   perm_r.GetData(), &B, &stat, &info);
+
+    Destroy_SuperMatrix_Store(&B);
+  }
+
+  
   //! Returns the LU factorization.
   /*!
     \param[out] Lmat matrix L in the LU factorization.
@@ -589,7 +631,7 @@ namespace Seldon
   }
 
 
-  //! resolution of linear system A x = b
+  //! resolution of linear system A x = b or A^T x = b
   template<class TransStatus, class Allocator2>
   void MatrixSuperLU<complex<double> >::
   Solve(const TransStatus& TransA,
@@ -614,6 +656,49 @@ namespace Seldon
   }
 
 
+  //! resolution of linear system A x = b
+  template<class Allocator2>
+  void MatrixSuperLU<complex<double> >::
+  Solve(Matrix<complex<double>, General, ColMajor, Allocator2>& x)
+  {
+    trans_t trans = NOTRANS;
+    int nb_rhs = x.GetN(), info;
+    zCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
+			 reinterpret_cast<doublecomplex*>(x.GetData()),
+			 x.GetM(), SLU_DN, SLU_Z, SLU_GE);
+
+    zgstrs(trans, &L, &U, perm_c.GetData(),
+	   perm_r.GetData(), &B, &stat, &info);
+
+    Destroy_SuperMatrix_Store(&B);
+  }
+
+
+  //! resolution of linear system A x = b or A^T x = b
+  template<class TransStatus, class Allocator2>
+  void MatrixSuperLU<complex<double> >::
+  Solve(const TransStatus& TransA,
+        Matrix<complex<double>, General, ColMajor, Allocator2>& x)
+  {
+    if (TransA.NoTrans())
+      {
+        Solve(x);
+        return;
+      }
+
+    trans_t trans = TRANS;
+    int nb_rhs = x.GetN(), info;
+    zCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
+			 reinterpret_cast<doublecomplex*>(x.GetData()),
+			 x.GetM(), SLU_DN, SLU_Z, SLU_GE);
+
+    zgstrs(trans, &L, &U, perm_c.GetData(),
+	   perm_r.GetData(), &B, &stat, &info);
+
+    Destroy_SuperMatrix_Store(&B);
+  }
+
+  
   template<class T, class Prop, class Storage, class Allocator>
   void GetLU(Matrix<T, Prop, Storage, Allocator>& A, MatrixSuperLU<T>& mat_lu,
 	     bool keep_matrix)
@@ -634,6 +719,77 @@ namespace Seldon
 	       MatrixSuperLU<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
+  }
+
+
+  template<class T, class Prop, class Allocator>
+  void SolveLU(MatrixSuperLU<T>& mat_lu,
+               Matrix<T, Prop, ColMajor, Allocator>& x)
+  {
+    mat_lu.Solve(SeldonNoTrans, x);
+  }
+
+
+  template<class T, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixSuperLU<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x)
+  {
+    mat_lu.Solve(TransA, x);
+  }
+
+
+  template<class Allocator>
+  void SolveLU(MatrixSuperLU<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x)
+  {
+    Matrix<double, General, ColMajor> y(x.GetM(), 2);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      {
+	y(i, 0) = real(x(i));
+	y(i, 1) = imag(x(i));
+      }
+    
+    SolveLU(mat_lu, y);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      x(i) = complex<double>(y(i, 0), y(i, 1));
+  }
+  
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixSuperLU<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x)
+  {
+    Matrix<double, General, ColMajor> y(x.GetM(), 2);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      {
+	y(i, 0) = real(x(i));
+	y(i, 1) = imag(x(i));
+      }
+    
+    SolveLU(TransA, mat_lu, y);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      x(i) = complex<double>(y(i, 0), y(i, 1));
+
+  }
+
+
+  template<class Allocator>
+  void SolveLU(MatrixSuperLU<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
+			"The result should be a complex vector");
+  }
+
+  
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixSuperLU<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
+			"The result should be a complex vector");
   }
 
 }

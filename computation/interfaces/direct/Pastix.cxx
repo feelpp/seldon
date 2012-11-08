@@ -308,7 +308,7 @@ namespace Seldon
     // factorization only
     IVect proc_num(iparm[IPARM_THREAD_NBR]);
     proc_num.Fill(MPI::COMM_WORLD.Get_rank());
-    pastix_setBind(pastix_data, iparm[IPARM_THREAD_NBR], proc_num.GetData());
+    pastix_bindThreads(pastix_data, iparm[IPARM_THREAD_NBR], proc_num.GetData());
 
     iparm[IPARM_START_TASK] = API_TASK_NUMFACT;
     iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
@@ -389,8 +389,8 @@ namespace Seldon
 
     IVect proc_num(iparm[IPARM_THREAD_NBR]);
     proc_num.Fill(MPI::COMM_WORLD.Get_rank());
-    pastix_setBind(pastix_data, iparm[IPARM_THREAD_NBR], proc_num.GetData());
-
+    pastix_bindThreads(pastix_data, iparm[IPARM_THREAD_NBR], proc_num.GetData());
+    
     // factorization only
     iparm[IPARM_START_TASK] = API_TASK_NUMFACT;
     iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
@@ -425,6 +425,24 @@ namespace Seldon
     else
       iparm[IPARM_END_TASK] = API_TASK_SOLVE;
 
+    CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
+  }
+
+
+  //! solving A x = b or A^T x = b (A is already factorized)
+  template<class T> template<class Allocator2, class Transpose_status>
+  void MatrixPastix<T>::Solve(const Transpose_status& TransA,
+                              Matrix<T, General, ColMajor, Allocator2>& x)
+  {
+    pastix_int_t nrhs = x.GetN();
+    T* rhs_ = x.GetData();
+
+    iparm[IPARM_START_TASK] = API_TASK_SOLVE;
+    if (refine_solution)
+      iparm[IPARM_END_TASK] = API_TASK_REFINE;
+    else
+      iparm[IPARM_END_TASK] = API_TASK_SOLVE;
+    
     CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
   }
 
@@ -558,6 +576,77 @@ namespace Seldon
 	       MatrixPastix<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
+  }
+
+
+  template<class T, class Prop, class Allocator>
+  void SolveLU(MatrixPastix<T>& mat_lu,
+               Matrix<T, Prop, ColMajor, Allocator>& x)
+  {
+    mat_lu.Solve(SeldonNoTrans, x);
+  }
+
+
+  template<class T, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixPastix<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x)
+  {
+    mat_lu.Solve(TransA, x);
+  }
+
+
+  template<class Allocator>
+  void SolveLU(MatrixPastix<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x)
+  {
+    Matrix<double, General, ColMajor> y(x.GetM(), 2);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      {
+	y(i, 0) = real(x(i));
+	y(i, 1) = imag(x(i));
+      }
+    
+    SolveLU(mat_lu, y);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      x(i) = complex<double>(y(i, 0), y(i, 1));
+  }
+  
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixPastix<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x)
+  {
+    Matrix<double, General, ColMajor> y(x.GetM(), 2);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      {
+	y(i, 0) = real(x(i));
+	y(i, 1) = imag(x(i));
+      }
+    
+    SolveLU(TransA, mat_lu, y);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      x(i) = complex<double>(y(i, 0), y(i, 1));
+
+  }
+
+
+  template<class Allocator>
+  void SolveLU(MatrixPastix<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
+			"The result should be a complex vector");
+  }
+
+  
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixPastix<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
+			"The result should be a complex vector");
   }
 
 } // end namespace

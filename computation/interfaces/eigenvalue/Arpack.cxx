@@ -515,17 +515,16 @@ namespace Seldon
                       {
                         for (int i = 0; i < n; i++)
                           Zh(i) = workd(ipntr(0)+i-1);
-								 
-                        var.MltMass(Zh, Xh);
-                      }
+			
+			var.MltMass(Zh, Xh);
+		      }
                     else
                       for (int i = 0; i < n; i++)
                         Xh(i) = workd(ipntr(2)+i-1);
                     
                     var.ComputeSolution(Xh, Yh);
                     var.IncrementProdMatVect();
-                    
-                    for (int i = 0; i < n; i++)
+		    for (int i = 0; i < n; i++)
                       workd(ipntr(1)+i-1) = Yh(i);
                     
                   }
@@ -534,15 +533,15 @@ namespace Seldon
                     // computation of M X
                     for (int i = 0; i < n; i++)
                       Xh(i) = workd(ipntr(0)+i-1);
-                    
-                    var.MltMass(Xh, Yh);
-                                        
+		    
+		    var.MltMass(Xh, Yh);
+		    
                     for (int i = 0; i < n; i++)
                       workd(ipntr(1)+i-1) = Yh(i);
                   }
                 else
                   test_loop = false;
-                
+		
               }
 					 
           }
