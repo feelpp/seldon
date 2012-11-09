@@ -49,12 +49,12 @@ namespace Seldon
   template void ConvertMatrix_to_Coordinates(const Matrix<double, General, RowSparse, MallocAlloc<double> >& A,
                                              Vector<int>& IndRow, Vector<int>& IndCol,
                                              Vector<double, VectFull>& Val,
-                                             int index = 0, bool sym = false);
+                                             int index, bool sym);
 
   template void ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
                                                Vector<double, VectFull>& Val,
                                                Matrix<double, General, RowSparse, MallocAlloc<double> >& A,
-                                               int index = 0);
+                                               int index);
 
   // Skips one vector in an input stream.
   void skip_vector_double(istream& input_stream)
