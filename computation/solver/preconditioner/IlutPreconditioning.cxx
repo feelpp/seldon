@@ -45,7 +45,6 @@ namespace Seldon
     permutation_row.Clear();
     mat_sym.Clear();
     mat_unsym.Clear();
-    xtmp.Clear();
   }
 
 
@@ -255,9 +254,6 @@ namespace Seldon
     // Matrix is permuted.
     ApplyInversePermutation(mat_sym, perm, perm);
 
-    // Temporary vector used for solving.
-    xtmp.Reallocate(n);
-
     // Factorization is performed.
     GetIlut(*this, mat_sym);
   }
@@ -309,9 +305,6 @@ namespace Seldon
     // Rows of matrix are permuted.
     ApplyInversePermutation(mat_unsym, perm, perm);
 
-    // Temporary vector used for solving.
-    xtmp.Reallocate(n);
-
     // Factorization is performed.
     // Columns are permuted during the factorization.
     inv_permutation.Fill();
@@ -333,6 +326,7 @@ namespace Seldon
   {
     if (symmetric_algorithm)
       {
+	Vector1 xtmp(z);
         for (int i = 0; i < r.GetM(); i++)
           xtmp(permutation_row(i)) = r(i);
 	
@@ -343,6 +337,7 @@ namespace Seldon
       }
     else
       {
+	Vector1 xtmp(z);
         for (int i = 0; i < r.GetM(); i++)
           xtmp(permutation_row(i)) = r(i);
 
@@ -363,6 +358,7 @@ namespace Seldon
       Solve(A, r, z);
     else
       {
+	Vector1 xtmp(z);
         for (int i = 0; i < r.GetM(); i++)
           xtmp(i) = r(permutation_col(i));
 
@@ -380,6 +376,7 @@ namespace Seldon
   {
     if (symmetric_algorithm)
       {
+	Vector1 xtmp(z);
         for (int i = 0; i < z.GetM(); i++)
           xtmp(permutation_row(i)) = z(i);
 
@@ -390,6 +387,7 @@ namespace Seldon
       }
     else
       {
+	Vector1 xtmp(z);
         for (int i = 0; i < z.GetM(); i++)
           xtmp(permutation_row(i)) = z(i);
 
@@ -409,6 +407,7 @@ namespace Seldon
       Solve(z);
     else
       {
+	Vector1 xtmp(z);
         for (int i = 0; i < z.GetM(); i++)
           xtmp(i) = z(permutation_col(i));
 
@@ -1238,6 +1237,43 @@ namespace Seldon
 	for (int i = 0; i < A.GetRowSize(i_row); i++)
 	  Index(A.Index(i_row, i)) = -1;
       }
+  }
+  
+  
+  template<class MatrixSparse, class Treal, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, IlutPreconditioning<Treal, T, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix, T& x)
+  {
+    mat_lu.FactorizeMatrix(permut, A, keep_matrix);
+  }
+  
+  
+  template<class MatrixSparse, class Treal, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, IlutPreconditioning<Treal, T, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix, complex<T>& x)
+  {
+    throw WrongArgument("GetLU(Matrix<complex<T> >& A, IlutPreconditioning<T>& mat_lu, bool)",
+			"The LU matrix must be complex");
+  }
+  
+  
+  template<class MatrixSparse, class Treal, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, IlutPreconditioning<Treal, complex<T>, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix, T& x)
+  {
+    throw WrongArgument("GetLU(Matrix<T>& A, IlutPreconditioning<complex<T> >& mat_lu, bool)",
+			"The sparse matrix must be complex");
+  }
+  
+  
+  template<class T0, class Prop, class Storage, class Allocator,
+	   class Treal, class T, class Alloc2>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A,
+	     IlutPreconditioning<Treal, T, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix)
+  {
+    typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;
+    GetLU(A, mat_lu, permut, keep_matrix, x);
   }
   
 }

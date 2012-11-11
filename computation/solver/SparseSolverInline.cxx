@@ -743,7 +743,7 @@ namespace Seldon
     if (type_solver == UMFPACK)
       {
 #ifdef SELDON_WITH_UMFPACK
-	mat_umf.FactorizeMatrix(A, keep_matrix);
+	GetLU(A, mat_umf, keep_matrix);
 #else
 	cout<<"Recompile with Umfpack"<<endl;
 	abort();
@@ -752,7 +752,7 @@ namespace Seldon
     else if (type_solver == SUPERLU)
       {
 #ifdef SELDON_WITH_SUPERLU
-	mat_superlu.FactorizeMatrix(A, keep_matrix);
+	GetLU(A, mat_superlu, keep_matrix);
 #else
 	cout<<"Recompile with SuperLU"<<endl;
 	abort();
@@ -761,7 +761,7 @@ namespace Seldon
     else if (type_solver == MUMPS)
       {
 #ifdef SELDON_WITH_MUMPS
-	mat_mumps.FactorizeMatrix(A, keep_matrix);
+	GetLU(A, mat_mumps, keep_matrix);
 #else
 	cout<<"Recompile with Mumps"<<endl;
 	abort();
@@ -771,7 +771,7 @@ namespace Seldon
       {
 #ifdef SELDON_WITH_PASTIX
         mat_pastix.SetNbThreadPerNode(nb_threads_per_node);
-	mat_pastix.FactorizeMatrix(A, keep_matrix);
+	GetLU(A, mat_pastix, keep_matrix);
 #else
 	cout<<"Recompile with Pastix"<<endl;
 	abort();
@@ -787,7 +787,7 @@ namespace Seldon
           mat_ilut.SetSymmetricAlgorithm();
         
         // then performing factorization
-        mat_ilut.FactorizeMatrix(permut, A, keep_matrix);
+	GetLU(A, mat_ilut, permut, keep_matrix);
 #else
 	cout<<"Recompile with preconditioners"<<endl;
 	abort();
@@ -795,7 +795,7 @@ namespace Seldon
       }
     else
       {
-	mat_seldon.FactorizeMatrix(permut, A);
+	GetLU(A, mat_seldon, permut, keep_matrix);
       }
 
   }

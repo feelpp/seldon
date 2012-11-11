@@ -99,15 +99,17 @@ namespace Seldon
   void SolveLU(const Matrix<real, Symmetric, ArrayRowSymSparse, Allocator>& A,
                Vector<cplx, Storage2, Allocator2>& x);
 
-  template<class T, class Storage, class Allocator, class Alloc2>
-  void GetLU(Matrix<T, Symmetric, Storage, Allocator>& A,
+  template<class T0, class Prop, class Storage, class Allocator,
+	   class T, class Alloc2>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A,
 	     SparseSeldonSolver<T, Alloc2>& mat_lu,
 	     bool keep_matrix = false);
 
-  template<class T, class Storage, class Allocator, class Alloc2>
-  void GetLU(Matrix<T, General, Storage, Allocator>& A,
+  template<class T0, class Prop, class Storage, class Allocator,
+	   class T, class Alloc2>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A,
 	     SparseSeldonSolver<T, Alloc2>& mat_lu,
-	     bool keep_matrix = false);
+	     IVect& permut, bool keep_matrix = false);
 
   template<class T, class Alloc2, class T1, class Allocator>
   void SolveLU(SparseSeldonSolver<T, Alloc2>& mat_lu,

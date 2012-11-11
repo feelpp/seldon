@@ -462,14 +462,37 @@ namespace Seldon
   }
 
 
-  //! LU factorization
-  template<class T, class Prop, class Storage, class Allocator>
-  void GetLU(Matrix<T, Prop, Storage, Allocator>& A, MatrixUmfPack<T>& mat_lu,
-	     bool keep_matrix)
+  template<class MatrixSparse, class T>
+  void GetLU(MatrixSparse& A, MatrixUmfPack<T>& mat_lu, bool keep_matrix, T& x)
   {
     mat_lu.FactorizeMatrix(A, keep_matrix);
   }
+  
 
+  template<class MatrixSparse, class T>
+  void GetLU(MatrixSparse& A, MatrixUmfPack<T>& mat_lu, bool keep_matrix, complex<T>& x)
+  {
+    throw WrongArgument("GetLU(Matrix<complex<T> >& A, MatrixUmfPack<T>& mat_lu, bool)",
+			"The LU matrix must be complex");
+  }
+
+
+  template<class MatrixSparse, class T>
+  void GetLU(MatrixSparse& A, MatrixUmfPack<complex<T> >& mat_lu, bool keep_matrix, T& x)
+  {
+    throw WrongArgument("GetLU(Matrix<T>& A, MatrixUmfPack<complex<T> >& mat_lu, bool)",
+			"The sparse matrix must be complex");
+  }
+  
+
+  template<class T0, class Prop, class Storage, class Allocator, class T>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A, MatrixUmfPack<T>& mat_lu,
+	     bool keep_matrix)
+  {
+    typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;
+    GetLU(A, mat_lu, keep_matrix, x);
+  }
+  
 
   //! LU resolution
   template<class T, class Allocator>

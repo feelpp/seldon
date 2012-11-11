@@ -842,10 +842,10 @@ namespace Seldon
    ********************************************/
   
   
-  template<class T, class Storage, class Allocator, class Alloc2>
-  void GetLU(Matrix<T, Symmetric, Storage, Allocator>& A,
-	     SparseSeldonSolver<T, Alloc2>& mat_lu,
-	     bool keep_matrix)
+  //! LU factorisation with natural ordering
+  template<class MatrixSparse, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, SparseSeldonSolver<T, Alloc2>& mat_lu,
+	     bool keep_matrix, T& x)
   {
     // identity ordering
     IVect perm(A.GetM());
@@ -855,21 +855,79 @@ namespace Seldon
     mat_lu.FactorizeMatrix(perm, A, keep_matrix);
   }
 
-
-  template<class T, class Storage, class Allocator, class Alloc2>
-  void GetLU(Matrix<T, General, Storage, Allocator>& A,
-	     SparseSeldonSolver<T, Alloc2>& mat_lu,
-	     bool keep_matrix)
+  
+  //! forbidden case
+  template<class MatrixSparse, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, SparseSeldonSolver<T, Alloc2>& mat_lu,
+	     bool keep_matrix, complex<T>& x)
   {
-    // identity ordering
-    IVect perm(A.GetM());
-    perm.Fill();
+    throw WrongArgument("GetLU(Matrix<complex<T> >& A, SparseSeldonSolver<T>& mat_lu, bool)", 
+			"The LU matrix must be complex");
+  }
+
+
+  //! forbidden case
+  template<class MatrixSparse, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, SparseSeldonSolver<complex<T>, Alloc2>& mat_lu,
+	     bool keep_matrix, T& x)
+  {
+    throw WrongArgument("GetLU(Matrix<T>& A, SparseSeldonSolver<complex<T> >& mat_lu, bool)", 
+			"The sparse matrix must be complex");
+  }
+
+
+  //! LU factorisation with natural ordering
+  template<class T0, class Prop, class Storage, class Allocator,
+	   class T, class Alloc2>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A,
+	     SparseSeldonSolver<T, Alloc2>& mat_lu, bool keep_matrix)
+  {
+    typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;
+    GetLU(A, mat_lu, keep_matrix, x);
+  }
     
-    // factorisation
-    mat_lu.FactorizeMatrix(perm, A, keep_matrix);
+  
+  //! LU factorisation with a given ordering
+  template<class MatrixSparse, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, SparseSeldonSolver<T, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix, T& x)
+  {
+    mat_lu.FactorizeMatrix(permut, A, keep_matrix);
+  }
+
+  
+  //! forbidden case
+  template<class MatrixSparse, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, SparseSeldonSolver<T, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix, complex<T>& x)
+  {
+    throw WrongArgument("GetLU(Matrix<complex<T> >& A, SparseSeldonSolver<T>& mat_lu, bool)", 
+			"The LU matrix must be complex");
+  }
+
+
+  //! forbidden case
+  template<class MatrixSparse, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, SparseSeldonSolver<complex<T>, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix, T& x)
+  {
+    throw WrongArgument("GetLU(Matrix<T>& A, SparseSeldonSolver<complex<T> >& mat_lu, bool)", 
+			"The sparse matrix must be complex");
   }
   
 
+  //! LU factorisation with a given ordering
+  template<class T0, class Prop, class Storage, class Allocator,
+	   class T, class Alloc2>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A,
+	     SparseSeldonSolver<T, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix = false)
+  {
+    typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;
+    GetLU(A, mat_lu, permut, keep_matrix, x);
+  }
+  
+  
   template<class T, class Alloc2, class T1, class Allocator>
   void SolveLU(SparseSeldonSolver<T, Alloc2>& mat_lu,
 	       Vector<T1, VectFull, Allocator>& x)

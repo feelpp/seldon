@@ -55,8 +55,6 @@ namespace Seldon
     Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator> mat_sym;
     //! Unsymmetric matrix.
     Matrix<cplx, General, ArrayRowSparse, Allocator> mat_unsym;
-    //! Temporary vector.
-    Vector<cplx, VectFull, Allocator> xtmp;
 
   public :
 
@@ -155,6 +153,11 @@ namespace Seldon
   
   template<class cplx, class Allocator>
   void GetMilu0(Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator>& A);
+  
+  template<class T0, class Prop, class Storage, class Allocator, class Treal, class T, class Alloc2>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A,
+	     IlutPreconditioning<Treal, T, Alloc2>& mat_lu, IVect& permut,
+	     bool keep_matrix = false);
 
 }
 

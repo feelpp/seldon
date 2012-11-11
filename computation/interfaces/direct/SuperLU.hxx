@@ -155,8 +155,8 @@ namespace Seldon
 
   };
 
-  template<class T, class Prop, class Storage, class Allocator>
-  void GetLU(Matrix<T, Prop, Storage, Allocator>& A, MatrixSuperLU<T>& mat_lu,
+  template<class T0, class Prop, class Storage, class Allocator, class T>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A, MatrixSuperLU<T>& mat_lu,
 	     bool keep_matrix = false);
 
   template<class T, class Allocator>

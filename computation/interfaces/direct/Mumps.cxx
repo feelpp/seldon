@@ -723,22 +723,38 @@ namespace Seldon
   }
 #endif
 
-
-  template<class T, class Storage, class Allocator>
-  void GetLU(Matrix<T,Symmetric,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
-	     bool keep_matrix)
+  
+  template<class MatrixSparse, class T>
+  void GetLU(MatrixSparse& A, MatrixMumps<T>& mat_lu, bool keep_matrix, T& x)
   {
     mat_lu.FactorizeMatrix(A, keep_matrix);
   }
+  
 
-
-  template<class T, class Storage, class Allocator>
-  void GetLU(Matrix<T,General,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
-	     bool keep_matrix)
+  template<class MatrixSparse, class T>
+  void GetLU(MatrixSparse& A, MatrixMumps<T>& mat_lu, bool keep_matrix, complex<T>& x)
   {
-    mat_lu.FactorizeMatrix(A, keep_matrix);
+    throw WrongArgument("GetLU(Matrix<complex<T> >& A, MatrixMumps<T>& mat_lu, bool)",
+			"The LU matrix must be complex");
   }
 
+
+  template<class MatrixSparse, class T>
+  void GetLU(MatrixSparse& A, MatrixMumps<complex<T> >& mat_lu, bool keep_matrix, T& x)
+  {
+    throw WrongArgument("GetLU(Matrix<T>& A, MatrixMumps<complex<T> >& mat_lu, bool)",
+			"The sparse matrix must be complex");
+  }
+  
+
+  template<class T0, class Prop, class Storage, class Allocator, class T>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A, MatrixMumps<T>& mat_lu,
+	     bool keep_matrix)
+  {
+    typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;
+    GetLU(A, mat_lu, keep_matrix, x);
+  }
+  
 
   template<class T, class Storage, class Allocator, class MatrixFull>
   void GetSchurMatrix(Matrix<T, Symmetric, Storage, Allocator>& A,
@@ -781,9 +797,9 @@ namespace Seldon
   }
 
 
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Allocator, class Prop, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
-	       MatrixMumps<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x)
+	       MatrixMumps<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
   }
