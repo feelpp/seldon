@@ -932,6 +932,91 @@ namespace Seldon
   }
 
 
+#ifdef SELDON_WITH_HDF5
+  //! Writes the vector in a HDF5 file.
+  /*!
+    All elements of the vector are stored in HDF5 format.
+    \param FileName file name.
+    \param group_name name of the group the vector must be stored in.
+    \param dataset_name name of the dataset the vector must be stored in.
+  */
+  template <class T, class Allocator>
+  void Vector<T, VectFull, Allocator>::WriteHDF5(string FileName,
+                                                 string group_name,
+                                                 string dataset_name) const
+  {
+    hid_t file_id = H5Fopen(FileName.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!file_id)
+      throw IOError("Vector<VectFull>::WriteHDF5(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    hid_t dataset_id, dataspace_id, group_id;
+    herr_t status;
+
+    T x(0);
+    hid_t datatype = GetH5Type(x);
+
+    if (!H5Lexists(file_id, group_name.c_str(), H5P_DEFAULT))
+      group_id = H5Gcreate(file_id, group_name.c_str(), 0);
+    group_id = H5Gopen(file_id, group_name.c_str());
+
+    if (!H5Lexists(group_id, dataset_name.c_str(), H5P_DEFAULT))
+      {
+        // Create the initial dataspace.
+        hsize_t dim[1] = {0};
+        hsize_t maxdims[1] = {H5S_UNLIMITED};
+        dataspace_id = H5Screate_simple(1, dim, maxdims);
+
+        // Define chunking parameters to allow extension of the dataspace.
+        hid_t cparms = H5Pcreate(H5P_DATASET_CREATE);
+        hsize_t chunk_dims[1] = {this->GetLength()};
+        status = H5Pset_chunk(cparms, 1, chunk_dims);
+
+        // Create the dataset.
+        hid_t filetype = H5Tvlen_create(datatype);
+        dataset_id = H5Dcreate(group_id, dataset_name.c_str(),
+                               filetype, dataspace_id, cparms);
+      }
+
+    // Opens the dataset, and extend it to store a new vector.
+    dataset_id = H5Dopen(group_id, dataset_name.c_str());
+    dataspace_id = H5Dget_space(dataset_id);
+    hsize_t dims_out[1];
+    status  = H5Sget_simple_extent_dims(dataspace_id, dims_out, NULL);
+    hsize_t new_dim[1]= {dims_out[0] + 1};
+    status = H5Dextend(dataset_id, new_dim);
+
+    // Selects the last memory part of the dataset, to store the vector.
+    hsize_t offset[1] = {dims_out[0]};
+    hsize_t dim2[1] = {1};
+    dataspace_id = H5Dget_space(dataset_id);
+    status = H5Sselect_hyperslab(dataspace_id, H5S_SELECT_SET,
+                                 offset, NULL,
+                                 dim2, NULL);
+
+    // Defines memory space.
+    hid_t dataspace = H5Screate_simple(1, dim2, NULL);
+
+    // Writes the data to the memory hyperslab selected.
+    hid_t memtype = H5Tvlen_create(datatype);
+    hvl_t wdata[1];
+    wdata[0].len = this->GetLength();
+    wdata[0].p = this->GetDataVoid();
+    status = H5Dwrite(dataset_id, memtype, dataspace,
+                      dataspace_id, H5P_DEFAULT, wdata);
+
+    // Closes the dataset, group and file.
+    status = H5Dclose(dataset_id);
+    status = H5Gclose(group_id);
+    status = H5Fclose(file_id);
+  }
+#endif
+
+
   //! Sets the vector from a file.
   /*!
     Sets the vector according to a binary file that stores the length of the

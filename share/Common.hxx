@@ -21,6 +21,11 @@
 
 #include <complex>
 #include <iostream>
+#include <typeinfo>
+
+#ifdef SELDON_WITH_HDF5
+#include <hdf5.h>
+#endif
 
 template <class T>
 void PrintArray(T* v, int lgth);
@@ -80,6 +85,11 @@ namespace Seldon
 
   template <class T>
   void SetComplexOne(complex<T>& number);
+
+#ifdef SELDON_WITH_HDF5
+  template <class T>
+  hid_t GetH5Type(T& input);
+#endif
 
 
 }  // namespace Seldon.

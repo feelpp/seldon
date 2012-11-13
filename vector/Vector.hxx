@@ -166,6 +166,10 @@ namespace Seldon
     void Write(ostream& FileStream, bool with_size = true) const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
+#ifdef SELDON_WITH_HDF5
+    void WriteHDF5(string FileName, string group_name,
+                   string dataset_name) const;
+#endif
     void Read(string FileName, bool with_size = true);
     void Read(istream& FileStream, bool with_size = true);
     void ReadText(string FileName);

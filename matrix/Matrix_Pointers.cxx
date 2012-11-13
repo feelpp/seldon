@@ -859,6 +859,24 @@ namespace Seldon
    * INPUT/OUTPUT FUNCTIONS *
    **************************/
 
+#ifdef SELDON_WITH_HDF5
+  //! Writes the matrix in a HDF5 file.
+  /*!
+    All elements of the matrix are stored in HDF5 format.
+    \param FileName file name.
+    \param group_name name of the group the matrix must be stored in.
+    \param dataset_name name of the dataset the matrix must be stored in.
+    \warning This method is not defined yet!
+  */
+ template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Pointers<T, Prop, Storage, Allocator>
+ ::WriteHDF5(string FileName, string group_name, string dataset_name) const
+  {
+    throw IOError("Matrix_Pointers::WriteHDF5(string FileName)",
+                  string("Unable to write matrix in \"") + FileName + "\".");
+  }
+#endif
+
 
   //! Writes the matrix in a file.
   /*!

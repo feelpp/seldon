@@ -110,6 +110,10 @@ namespace Seldon
 
     // Input/output functions.
     void Write(string FileName, bool with_size = true) const;
+#ifdef SELDON_WITH_HDF5
+    void WriteHDF5(string FileName, string group_name, string dataset_name)
+      const;
+#endif
     void Write(ostream& FileStream, bool with_size = true) const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;

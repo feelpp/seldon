@@ -185,6 +185,56 @@ namespace Seldon
   }
 
 
+#ifdef SELDON_WITH_HDF5
+  //! Gives for most C types the corresponding HDF5 memory datatype.
+  /*!
+    \param[in] input variable to analyze.
+    \return HDF5 memory type of \a input.
+  */
+  template <class T>
+  hid_t GetH5Type(T& input)
+  {
+    double d;
+    float f;
+    int i;
+    long l;
+    char c;
+    unsigned char uc;
+    long long ll;
+    unsigned int ui;
+    unsigned short us;
+    unsigned long ul;
+    unsigned long long ull;
+
+    if (typeid(input) == typeid(d))
+      return H5T_NATIVE_DOUBLE;
+    if (typeid(input) == typeid(f))
+      return H5T_NATIVE_FLOAT;
+    if (typeid(input) == typeid(i))
+      return H5T_NATIVE_INT;
+    if (typeid(input) == typeid(l))
+      return H5T_NATIVE_LONG;
+    if (typeid(input) == typeid(c))
+      return H5T_NATIVE_CHAR;
+    if (typeid(input) == typeid(uc))
+      return H5T_NATIVE_UCHAR;
+    if (typeid(input) == typeid(ll))
+      return H5T_NATIVE_LLONG;
+    if (typeid(input) == typeid(ui))
+      return H5T_NATIVE_UINT;
+    if (typeid(input) == typeid(us))
+      return H5T_NATIVE_USHORT;
+    if (typeid(input) == typeid(ul))
+      return H5T_NATIVE_ULONG;
+    if (typeid(input) == typeid(ull))
+      return H5T_NATIVE_ULLONG;
+    else
+      throw Error("hid_t GetH5Type(T& input)",
+                  "Type has no corresponding native HDF5 datatype.");
+  }
+#endif
+
+
 }  // namespace Seldon.
 
 #define SELDON_FILE_COMMON_CXX
