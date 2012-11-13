@@ -114,6 +114,7 @@ namespace Seldon
     return output.str();
   }
 
+
   //! Converts string to most types, specially numbers.
   /*!
     \param[in] s string to be converted.
@@ -125,6 +126,7 @@ namespace Seldon
     std::istringstream str(s);
     str >> num;
   }
+
 
   //! Converts string to most types, specially numbers.
   /*!
