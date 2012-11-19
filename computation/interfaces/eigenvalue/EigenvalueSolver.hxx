@@ -59,6 +59,12 @@ namespace Seldon
     //! number of eigenvalues to be computed
     int nb_eigenvalues_wanted; 
     
+    //! additional number of eigenvalues
+    /*! Sometimes Arpack finds more converged eigenvalues than asked
+      it is needed to store these eigenvalues and eigenvalues
+      to avoid segmentation fault */
+    int nb_add_eigenvalues;
+
     //! which spectrum ? Near from Zero ? Near from Infinity ? or near from a value ?
     int type_spectrum_wanted;
     
@@ -142,11 +148,17 @@ namespace Seldon
     
     int GetNbAskedEigenvalues() const;
     void SetNbAskedEigenvalues(int n);
+
+    int GetNbAdditionalEigenvalues() const;
+    void SetNbAdditionalEigenvalues(int n);
     
     int GetTypeSpectrum() const;
     int GetTypeSorting() const;
     T GetShiftValue() const;
     T GetImagShiftValue() const;
+    void SetShiftValue(const T&);
+    void SetImagShiftValue(const T&);
+
     void SetTypeSpectrum(int type, const T& val,
                          int type_sort = SORTED_MODULUS);
     

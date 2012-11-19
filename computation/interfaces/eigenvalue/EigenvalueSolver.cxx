@@ -16,6 +16,7 @@ namespace Seldon
   {
     eigenvalue_computation_mode = 1;
     nb_eigenvalues_wanted = 0;
+    nb_add_eigenvalues = 0;
     // default => we want largest eigenvalues by magnitude
     type_spectrum_wanted = LARGE_EIGENVALUES;
     type_sort_eigenvalues = SORTED_MODULUS;
@@ -144,6 +145,14 @@ namespace Seldon
   {
     return nb_eigenvalues_wanted;
   }
+
+
+  //! returns the additional number of eigenvalues
+  template<class T, class MatStiff, class MatMass>
+  int EigenProblem_Base<T, MatStiff, MatMass>::GetNbAdditionalEigenvalues() const
+  {
+    return nb_add_eigenvalues;
+  }
   
 
 #ifdef SELDON_WITH_MPI
@@ -165,6 +174,14 @@ namespace Seldon
   void EigenProblem_Base<T, MatStiff, MatMass>::SetNbAskedEigenvalues(int n)
   {
     nb_eigenvalues_wanted = n;
+  }
+
+
+  //! sets the number of additional eigenvalues
+  template<class T, class MatStiff, class MatMass>
+  void EigenProblem_Base<T, MatStiff, MatMass>::SetNbAdditionalEigenvalues(int n)
+  {
+    nb_add_eigenvalues = n;
   }
   
   
@@ -210,6 +227,22 @@ namespace Seldon
     return shift_imag;
   }
   
+  
+  //! Sets the real part of shift value
+  template<class T, class MatStiff, class MatMass>
+  void EigenProblem_Base<T, MatStiff, MatMass>::SetShiftValue(const T& val)
+  {
+    shift = val;
+  }
+
+  
+  //! Sets the imaginary part of shift value
+  template<class T, class MatStiff, class MatMass>
+  void EigenProblem_Base<T, MatStiff, MatMass>::SetImagShiftValue(const T& val)
+  {
+    shift_imag = val;
+  }
+
   
   //! sets which eigenvalues are searched
   /*!
@@ -736,7 +769,7 @@ namespace Seldon
                 if (lambda_imag(j) == T0(0))
                   {
                     // real eigenvalue
-                    // lambda is retrieve by computing Rayleigh quotient
+                    // lambda is retrieved by computing Rayleigh quotient
                     for (int i = 0; i < eigen_vectors.GetM(); i++)
                       X(i) = eigen_vectors(i,j);
                     
@@ -749,6 +782,14 @@ namespace Seldon
                   }
                 else
                   {
+                    if (j == eigen_values.GetM() - 1)
+                      {
+                        eigen_values(j) = 0.0;
+                        lambda_imag(j) = 0.0;
+                          
+                        break;
+                      }
+                    
                     // conjugate pair of eigenvalues
                     for (int i = 0; i < eigen_vectors.GetM(); i++)
                       {

@@ -225,6 +225,12 @@ namespace Seldon
             Xh.Fill(zero);
             Yh.Fill(zero);
             
+            if (print_level >= 2)
+#ifdef SELDON_WITH_MPI
+              if (comm.Get_rank() == 0)
+#endif
+                cout << "Starting Arpack iterations..." << endl;
+            
             bool test_loop = true;
             while (test_loop)
               {
@@ -286,12 +292,18 @@ namespace Seldon
             Xh.Fill(zero);
             Yh.Fill(zero);
 		
+            if (print_level >= 2)
+#ifdef SELDON_WITH_MPI
+              if (comm.Get_rank() == 0)
+#endif
+                cout << "Starting Arpack iterations..." << endl;
+            
             bool test_loop = true;			 
             while (test_loop)
               {
                 CallArpack(comm_f, ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
                            iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
-		
+                
                 if ((ido == -1)||(ido == 1))
                   {
                     // matrix vector product M^1/2 (K - sigma M)^-1 M^1/2  X
@@ -306,7 +318,7 @@ namespace Seldon
                     
                     var.ComputeSolution(Xh, Yh);
                     var.IncrementProdMatVect();
-					
+                    
                     if(var.DiagonalMass())
                       var.MltSqrtDiagonalMass(Yh);
                     else
@@ -361,6 +373,12 @@ namespace Seldon
             Yh.Fill(zero);
             Zh.Fill(zero);
             
+            if (print_level >= 2)
+#ifdef SELDON_WITH_MPI
+              if (comm.Get_rank() == 0)
+#endif
+                cout << "Starting Arpack iterations..." << endl;
+
             bool test_loop = true;		
             sym_mode = false;
             while (test_loop)
@@ -416,6 +434,12 @@ namespace Seldon
             Xh.Fill(zero);
             Yh.Fill(zero);
             Zh.Fill(zero);
+
+            if (print_level >= 2)
+#ifdef SELDON_WITH_MPI
+              if (comm.Get_rank() == 0)
+#endif
+                cout << "Starting Arpack iterations..." << endl;
 
             bool test_loop = true;
             while (test_loop)
@@ -500,6 +524,12 @@ namespace Seldon
             Yh.Fill(zero);
             Zh.Fill(zero);
 		
+            if (print_level >= 2)
+#ifdef SELDON_WITH_MPI
+              if (comm.Get_rank() == 0)
+#endif
+                cout << "Starting Arpack iterations..." << endl;
+
             bool test_loop = true;
             while (test_loop)
               {
@@ -574,6 +604,12 @@ namespace Seldon
             Yh.Fill(zero);
             Zh.Fill(zero);
             
+            if (print_level >= 2)
+#ifdef SELDON_WITH_MPI
+              if (comm.Get_rank() == 0)
+#endif
+                cout << "Starting Arpack iterations..." << endl;
+
             bool test_loop = true;			 
             while (test_loop)
               {
@@ -647,6 +683,12 @@ namespace Seldon
             Yh.Fill(zero);
             Zh.Fill(zero);
             
+            if (print_level >= 2)
+#ifdef SELDON_WITH_MPI
+              if (comm.Get_rank() == 0)
+#endif
+                cout << "Starting Arpack iterations..." << endl;
+
             bool test_loop = true;			 
             while (test_loop)
               {
@@ -707,11 +749,12 @@ namespace Seldon
     Zh.Clear();
     
     // we recover eigenvalues and eigenvectors
-    eigen_values.Reallocate(nev+1);
-    eigen_vectors.Reallocate(n, nev+1);
+    int nconv = nev+1+var.GetNbAdditionalEigenvalues();
+    eigen_values.Reallocate(nconv);
+    eigen_vectors.Reallocate(n, nconv);
     eigen_values.Fill(zero);
     eigen_vectors.Fill(zero);
-    lambda_imag.Reallocate(nev+1);
+    lambda_imag.Reallocate(nconv);
     lambda_imag.Fill(zero);
     
     char howmny = 'A';

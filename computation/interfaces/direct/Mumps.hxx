@@ -65,6 +65,7 @@ namespace Seldon
     //! double* or complex<double>*
     typedef typename TypeMumps<T>::pointer pointer;
     int print_level;
+    int info_facto;
     bool out_of_core;
     IVect num_row_glob, num_col_glob;
     IVect perm;

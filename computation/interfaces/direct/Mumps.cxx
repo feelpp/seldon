@@ -64,10 +64,11 @@ namespace Seldon
     struct_mumps.n = 0;
     type_ordering = 7; // default : we let Mumps choose the ordering
     print_level = -1;
+    info_facto = 0;
     out_of_core = false;
     coef_overestimate = 1.3;
     coef_increase_memory = 1.5;
-    coef_max_overestimate = 10.0;
+    coef_max_overestimate = 50.0;
   }
 
 
@@ -75,10 +76,12 @@ namespace Seldon
   template<class T>
   void MatrixMumps<T>::IterateFacto()
   {
-    // if error -9 occured, retrying with larger size
+    // if error -9 occurs, retrying with larger size
     int init_percentage = struct_mumps.icntl[13];
     int new_percentage = init_percentage;
-    while (((struct_mumps.info[0] == -9) || (struct_mumps.info[0] == -8)) && (new_percentage < coef_max_overestimate*100.0))
+    while (((struct_mumps.info[0] == -9) || (struct_mumps.info[0] == -8)
+            || (struct_mumps.info[0] == -17) || (struct_mumps.info[0] == -20))
+           && (new_percentage < coef_max_overestimate*100.0))
       {
         new_percentage *= coef_increase_memory;
         struct_mumps.icntl[13] = new_percentage;
@@ -87,6 +90,7 @@ namespace Seldon
       }
     
     struct_mumps.icntl[13] = init_percentage;
+    info_facto = struct_mumps.info[0];
   }
   
   
@@ -121,7 +125,7 @@ namespace Seldon
 
     // mumps is called
     CallMumps();
-
+    
     struct_mumps.icntl[13] = int(100.0*(coef_overestimate-1.0));
     struct_mumps.icntl[6] = type_ordering;
     if (type_ordering == 1)
@@ -291,6 +295,8 @@ namespace Seldon
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
 
+    info_facto = struct_mumps.info[0];
+
     numbers.Reallocate(n);
     for (int i = 0; i < n; i++)
       numbers(i) = struct_mumps.sym_perm[i]-1;
@@ -348,6 +354,8 @@ namespace Seldon
     // Call the MUMPS package.
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
+
+    info_facto = struct_mumps.info[0];
   }
 
 
@@ -378,7 +386,7 @@ namespace Seldon
   template<class T>
   int MatrixMumps<T>::GetInfoFactorization() const
   {
-    return struct_mumps.info[0];
+    return info_facto;
   }
 
 
@@ -610,15 +618,34 @@ namespace Seldon
     int info = 0;
     comm_facto.Allreduce(&struct_mumps.info[0], &info, 1, MPI::INTEGER, MPI::MIN);
     
-    while (((info == -9)||(info==-8)) && (coef < coef_max_overestimate))
+    bool test_loop = true;
+    int init_percentage = struct_mumps.icntl[13];
+    int new_percentage = init_percentage;
+    // loop in order to complete factorisation
+    while (test_loop)
       {
-        coef *= coef_increase_memory;
-        // increasing icntl(23) if error -9 occured
-        struct_mumps.icntl[22] = coef*struct_mumps.infog[25];
-        CallMumps();
+        if (((info == -9)||(info==-8)||(info==-17)||(info==-20))
+             && (coef < coef_max_overestimate))
+          {
+            coef *= coef_increase_memory;
+            // increasing icntl(23) if error -9 occured
+            struct_mumps.icntl[22] = coef*struct_mumps.infog[25];
+            new_percentage *= coef_increase_memory;
+            struct_mumps.icntl[13] = new_percentage;        
+          }
+        else
+          test_loop = false;
         
-        comm_facto.Allreduce(&struct_mumps.info[0], &info, 1, MPI::INTEGER, MPI::MIN);
+        if (test_loop)
+          {
+            CallMumps();
+            
+            comm_facto.Allreduce(&struct_mumps.info[0], &info, 1, MPI::INTEGER, MPI::MIN);
+          }
       }
+
+    struct_mumps.icntl[13] = init_percentage;
+    info_facto = info;
     
     if ((comm_facto.Get_rank() == 0) && (print_level >= 0))
       cout<<"Factorization completed"<<endl;
