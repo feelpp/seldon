@@ -402,11 +402,12 @@ namespace Seldon
   }
 
 
-  //! Changes the length of the vector and sets its data array
-  //! (low level method).
+  /*! \brief Changes the length of the vector and sets its data array (low
+    level method). */
   /*!
-    Reallocates a vector and sets the new data array. It is useful to create
-    a vector from pre-existing data.
+    Deallocates memory allocated for the current data array, changes the
+    vector size and sets the new data array. It is useful to create a vector
+    from pre-existing data.
     \param i new length of the vector.
     \param data the new data array. 'data' contains the new elements of the
     vector and must therefore contain 'i' elements.
@@ -429,8 +430,9 @@ namespace Seldon
 
 
   //! Lets the current vector point to the data of another vector.
-  /*! Sets the length and the data of the current vector to that of \a V. On
-    exit, the current vector shares it data array with \a V.
+  /*! Deallocates memory allocated for the current data array. Then sets the
+    length and the data of the current vector to that of \a V. On exit, the
+    current vector shares it data array with \a V.
     \param V vector whose data should be shared with current instance.
     \warning On exit, \a V and the current instance share the same data array,
     and they are likely to free it. As a consequence, before the vectors are
