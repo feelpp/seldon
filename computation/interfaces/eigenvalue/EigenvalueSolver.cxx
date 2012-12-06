@@ -735,7 +735,12 @@ namespace Seldon
     
     if (var.GetComputationalMode() != var.REGULAR_MODE)
       {
-        if ((var.DiagonalMass())|| (var.UseCholeskyFactoForMass())
+        if ( (var.eigenvalue_computation_mode == var.INVERT_MODE)
+             && (var.GetTypeSpectrum() == var.LARGE_EIGENVALUES))
+          {
+            // nothing to change
+          }
+        else if ((var.DiagonalMass())|| (var.UseCholeskyFactoForMass())
             || (var.eigenvalue_computation_mode == var.INVERT_MODE))
           {
             // shift-invert mode, we have to modify eigenvalues
@@ -867,6 +872,11 @@ namespace Seldon
     
     if (var.GetComputationalMode() != var.REGULAR_MODE)
       {
+        if ( (var.eigenvalue_computation_mode == var.INVERT_MODE)
+             && (var.GetTypeSpectrum() == var.LARGE_EIGENVALUES))
+          {
+            // nothing to change
+          }
         if ((var.DiagonalMass())|| (var.UseCholeskyFactoForMass())
             || (var.eigenvalue_computation_mode == var.INVERT_MODE))
           {

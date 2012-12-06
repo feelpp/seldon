@@ -113,7 +113,7 @@ namespace Seldon
       }
     else
       {
-        if (var.GetTypeSpectrum() != var.CENTERED_EIGENVALUES)
+        if ((var.GetTypeSpectrum() != var.CENTERED_EIGENVALUES) && (var.GetComputationalMode() != var.INVERT_MODE))
           {
             cout << "To find large or small eigenvalues, use a regular mode" << endl;
             abort();
@@ -345,15 +345,29 @@ namespace Seldon
             // drawback : the matrix is non-symmetric even if K and M are symmetric            
             bmat = 'I';
             
-            // => regular mode for matrix (M^-1 K - sigma I)^-1
-            // = (K - sigma M)^-1 M
-            iparam(6) = 1;
-            
-            // computation and factorization of (K - sigma M)
-            var.ComputeAndFactorizeStiffnessMatrix(-shiftr, one);
-            
-            // computation of M
-            var.ComputeMassMatrix();
+            if (var.GetTypeSpectrum() == var.LARGE_EIGENVALUES)
+              {
+                // => regular mode for matrix M^-1 K
+                iparam(6) = 1;
+                
+                // computation and factorisation of mass matrix
+                var.ComputeAndFactorizeStiffnessMatrix(one, zero);
+                
+                // computation of stiffness matrix
+                var.ComputeStiffnessMatrix();
+              }
+            else
+              {
+                // => regular mode for matrix (M^-1 K - sigma I)^-1
+                // = (K - sigma M)^-1 M
+                iparam(6) = 1;
+                
+                // computation and factorization of (K - sigma M)
+                var.ComputeAndFactorizeStiffnessMatrix(-shiftr, one);
+
+                // computation of M
+                var.ComputeMassMatrix();
+              }
 					 
             // Initialization of variables
             v.Reallocate(n, ncv);
@@ -391,11 +405,20 @@ namespace Seldon
                     // computation of (K - sigma M)^-1 M X
                     for (int i = 0; i < n; i++)
                       Xh(i) = workd(ipntr(0)+i-1);
-							 
-                    var.MltMass(Xh, Zh);
-                    var.ComputeSolution(Zh, Yh);
-                    var.IncrementProdMatVect();
-							 
+                    
+                    if (var.GetTypeSpectrum() == var.LARGE_EIGENVALUES)
+                      {
+                        var.MltStiffness(Xh, Zh);
+                        var.ComputeSolution(Zh, Yh);
+                        var.IncrementProdMatVect();
+                      }
+                    else
+                      {
+                        var.MltMass(Xh, Zh);
+                        var.ComputeSolution(Zh, Yh);
+                        var.IncrementProdMatVect();
+                      }
+			
                     for (int i = 0; i < n; i++)
                       workd(ipntr(1)+i-1) = Yh(i);
                   }
@@ -776,7 +799,7 @@ namespace Seldon
       if (comm.Get_rank() == 0)
 #endif
         cout << "end recover " << endl;
-    
+
     eigen_values.Resize(nev);
     lambda_imag.Resize(nev);
     eigen_vectors.Resize(n, nev);
