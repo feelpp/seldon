@@ -52,6 +52,8 @@ namespace Seldon
     else
       iparm[IPARM_FREE_CSCPASTIX] = API_CSC_FREE;
     
+    //iparm[IPARM_BINDTHRD] = API_BIND_NO;
+    
     threshold_pivot = 0.0;
     adjust_threshold_pivot = false;
   }
@@ -88,15 +90,13 @@ namespace Seldon
              complex<double>* val, complex<double>* b, pastix_int_t nrhs)
   {
     if (distributed)
-      z_dpastix(&pastix_data, comm, n, colptr, row,
-                reinterpret_cast<DCOMPLEX*>(val),
+      z_dpastix(&pastix_data, comm, n, colptr, row, val,
                 col_num.GetData(), perm.GetData(), invp.GetData(),
-                reinterpret_cast<DCOMPLEX*>(b), nrhs, iparm, dparm);
+                b, nrhs, iparm, dparm);
     else
-      z_pastix(&pastix_data, comm, n, colptr, row,
-               reinterpret_cast<DCOMPLEX*>(val),
+      z_pastix(&pastix_data, comm, n, colptr, row, val,               
                perm.GetData(), invp.GetData(),
-               reinterpret_cast<DCOMPLEX*>(b), nrhs, iparm, dparm);
+               b, nrhs, iparm, dparm);
   }
 
 

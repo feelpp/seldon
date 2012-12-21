@@ -133,7 +133,29 @@ namespace Seldon
   template<class T, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixPastix<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
+
+  template<class T, class Prop, class Allocator>
+  void SolveLU(MatrixPastix<T>& mat_lu,
+               Matrix<T, Prop, ColMajor, Allocator>& x);
+
+  template<class T, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixPastix<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x);
+
+  template<class Allocator>
+  void SolveLU(MatrixPastix<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
   
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixPastix<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+
+  template<class Allocator>
+  void SolveLU(MatrixPastix<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixPastix<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+
 }
 
 #define SELDON_FILE_PASTIX_HXX
