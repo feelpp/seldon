@@ -145,7 +145,7 @@ if cpp_compiler is not None:
 # In case of GNU compilers, a few options may be added.
 if len(env["CXX"]) >= 3 and env["CXX"][:3] == "g++" \
        and ARGUMENTS["mode_cpp"] == "strict":
-    compilation_option += " -Wall -ansi -pedantic"
+    compilation_option += " -Wall -ansi -pedantic -Wno-parentheses"
 if len(env["CXX"]) >= 3 and env["CXX"][:3] == "g++" \
         and ARGUMENTS["lib"] == "yes":
     # In order to use the compiled library, the compiler must be aware of
