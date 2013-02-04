@@ -124,7 +124,7 @@ env = Environment(ENV = os.environ)
 # User-defined paths.
 env.Append(CPPPATH = seldon_path)
 library_path = create_variable("library_path", [])
-env.Append(CPPPATH = to_string_list("library_path"))
+env.Append(LIBPATH = to_string_list("library_path"))
 include_path = create_variable("include_path", [])
 env.Append(CPPPATH = to_string_list("include_path"))
 
