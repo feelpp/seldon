@@ -873,8 +873,8 @@ namespace Seldon
     \param[in] mpi_communicator MPI communicator to use.
   */
   template <class T, class Allocator>
-  Vector<T, PETScPar, Allocator>::Vector(int i, int Nlocal, MPI_Comm
-                                         mpi_communicator = MPI_COMM_WORLD):
+  Vector<T, PETScPar, Allocator>::Vector(int i, int Nlocal,
+                                         MPI_Comm mpi_communicator):
     PETScVector<T, Allocator>(i)
   {
     int ierr;
