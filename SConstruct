@@ -7,9 +7,8 @@ env.Append(CPPFLAGS = "-DSELDON_DEBUG_LEVEL_4")
 
 conf = Configure(env)
 # Link to the appropriate version of Python.
-for python_version in ["2.7", "2.6", "2.5", ""]:
-    if conf.CheckLib("python" + python_version):
-        break
+python_version = distutils.sysconfig.get_python_version()
+conf.CheckLib("python" + python_version)
 
 if env['PLATFORM'] == 'win32':
 	env.Replace(SHLIBSUFFIX = ".pyd")
