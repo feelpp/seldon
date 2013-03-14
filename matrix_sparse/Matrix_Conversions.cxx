@@ -2713,6 +2713,50 @@ namespace Seldon
     mat_csr.SetData(m, n, Val, IndRow, IndCol);
   }
 
+
+  //! Conversion from ArrayRowSparse to RowSymSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& mat_array,
+	    Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
+  {
+    cout << "Types not compatible " << endl;
+    abort();
+  }
+
+
+  //! Conversion from ArrayColSparse to RowSymSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayColSparse,Allocator0>& mat_array,
+	    Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
+  {
+    cout << "Types not compatible " << endl;
+    abort();
+  }
+
+
+  //! Conversion from ArrayRowSparse to ColSymSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& mat_array,
+	    Matrix<T1, Prop1, ColSymSparse, Allocator1>& mat_csr)
+  {
+    cout << "Types not compatible " << endl;
+    abort();
+  }
+
+
+  //! Conversion from ArrayColSparse to ColSymSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayColSparse,Allocator0>& mat_array,
+	    Matrix<T1, Prop1, ColSymSparse, Allocator1>& mat_csr)
+  {
+    cout << "Types not compatible " << endl;
+    abort();
+  }
+  
   
   //! Conversion from ColSymSparse to RowSymSparse
   template<class T, class Prop, class Alloc1, class Alloc2>
