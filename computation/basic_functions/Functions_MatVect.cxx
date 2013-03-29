@@ -211,6 +211,260 @@ namespace Seldon
   // MLTADD //
 
 
+  /*** PETSc matrices ***/
+
+
+  template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
+              const Vector<T2, PETScSeq, Allocator2>& X,
+              const T3 beta, Vector<T4, PETScSeq, Allocator4>& Y)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
+#endif
+    if (beta == T3(0))
+      {
+	if (alpha == T0(0))
+	  {
+	    Y.Fill(T4(0));
+	    return;
+	  }
+	else
+	  {
+	    MatMult(M.GetPetscMatrix(), X.GetPetscVector(), Y.GetPetscVector());
+	    if (alpha != T0(1))
+	      VecScale(Y.GetPetscVector(), alpha);
+	    return;
+	  }
+      }
+    if (alpha == T0(1))
+      {
+        if (beta != T3(1))
+          VecScale(Y.GetPetscVector(), beta);
+        MatMultAdd(M.GetPetscMatrix(), X.GetPetscVector(),
+                   Y.GetPetscVector(),Y.GetPetscVector());
+        return;
+      }
+    Vector<T2, PETScSeq, Allocator2> tmp;
+    tmp.Copy(Y);
+    MatMult(M.GetPetscMatrix(), X.GetPetscVector(), tmp.GetPetscVector());
+    VecAXPBY(Y.GetPetscVector(), alpha, beta, tmp.GetPetscVector());
+    return;
+  }
+
+
+  template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
+              const Vector<T2, PETScPar, Allocator2>& X,
+              const T3 beta, Vector<T4, PETScPar, Allocator4>& Y)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
+#endif
+    if (beta == T3(0))
+      {
+	if (alpha == T0(0))
+	  {
+	    Y.Fill(T4(0));
+	    return;
+	  }
+	else
+	  {
+	    MatMult(M.GetPetscMatrix(), X.GetPetscVector(), Y.GetPetscVector());
+	    if (alpha != T0(1))
+	      VecScale(Y.GetPetscVector(), alpha);
+	    return;
+	  }
+      }
+    if (alpha == T0(1))
+      {
+        if (beta != T3(1))
+          VecScale(Y.GetPetscVector(), beta);
+        MatMultAdd(M.GetPetscMatrix(), X.GetPetscVector(),
+                   Y.GetPetscVector(),Y.GetPetscVector());
+        return;
+      }
+    Vector<T2, PETScPar, Allocator2> tmp;
+    tmp.Copy(Y);
+    MatMult(M.GetPetscMatrix(), X.GetPetscVector(), tmp.GetPetscVector());
+    VecAXPBY(Y.GetPetscVector(), alpha, beta, tmp.GetPetscVector());
+    return;
+  }
+
+
+  template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
+              const Vector<T2, VectFull, Allocator2>& X,
+              const T3 beta, Vector<T4, PETScSeq, Allocator4>& Y)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
+#endif
+
+    Vector<T4, PETScSeq, Allocator4> X_Petsc;
+    X_Petsc.Reallocate(X.GetM());
+    for (int i = 0; i < X.GetM(); i++)
+      X_Petsc.SetBuffer(i, X(i));
+    X_Petsc.Flush();
+
+    if (beta == T3(0))
+      {
+	if (alpha == T0(0))
+	  {
+	    Y.Fill(T4(0));
+	    return;
+	  }
+	else
+	  {
+	    MatMult(M.GetPetscMatrix(), X_Petsc.GetPetscVector(),
+		    Y.GetPetscVector());
+	    if (alpha != T0(1))
+	      VecScale(Y.GetPetscVector(), alpha);
+	    return;
+	  }
+      }
+    if (alpha == T0(1))
+      {
+        if (beta != T3(1))
+          VecScale(Y.GetPetscVector(), beta);
+        MatMultAdd(M.GetPetscMatrix(), X_Petsc.GetPetscVector(),
+                   Y.GetPetscVector(),Y.GetPetscVector());
+        return;
+      }
+    Vector<T2, PETScSeq, Allocator2> tmp;
+    tmp.Copy(Y);
+    MatMult(M.GetPetscMatrix(), X_Petsc.GetPetscVector(),
+            tmp.GetPetscVector());
+    VecAXPBY(Y.GetPetscVector(), alpha, beta, tmp.GetPetscVector());
+    return;
+  }
+
+
+  template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
+              const Vector<T2, VectFull, Allocator2>& X,
+              const T3 beta, Vector<T4, PETScPar, Allocator4>& Y)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
+#endif
+
+    Vector<T4, PETScPar, Allocator4> X_Petsc;
+    X_Petsc.SetCommunicator(M.GetCommunicator());
+    X_Petsc.Reallocate(X.GetM());
+    for (int i = 0; i < X.GetM(); i++)
+      X_Petsc.SetBuffer(i, X(i));
+    X_Petsc.Flush();
+
+    if (beta == T3(0))
+      {
+	if (alpha == T0(0))
+	  {
+	    Y.Fill(T4(0));
+	    return;
+	  }
+	else
+	  {
+	    MatMult(M.GetPetscMatrix(), X_Petsc.GetPetscVector(),
+		    Y.GetPetscVector());
+	    if (alpha != T0(1))
+	      VecScale(Y.GetPetscVector(), alpha);
+	    return;
+	  }
+      }
+    if (alpha == T0(1))
+      {
+        if (beta != T3(1))
+          VecScale(Y.GetPetscVector(), beta);
+        MatMultAdd(M.GetPetscMatrix(), X_Petsc.GetPetscVector(),
+                   Y.GetPetscVector(),Y.GetPetscVector());
+        return;
+      }
+    Vector<T2, PETScPar, Allocator2> tmp;
+    tmp.Copy(Y);
+    MatMult(M.GetPetscMatrix(), X_Petsc.GetPetscVector(),
+            tmp.GetPetscVector());
+    VecAXPBY(Y.GetPetscVector(), alpha, beta, tmp.GetPetscVector());
+    return;
+  }
+
+
+  template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const Matrix<T1, Prop1, PETScMPIDense, Allocator1>& M,
+              const Vector<T2, VectFull, Allocator2>& X,
+              const T3 beta, Vector<T4, PETScPar, Allocator4>& Y)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
+#endif
+
+    Vector<T4, PETScPar, Allocator4> X_Petsc;
+     X_Petsc.SetCommunicator(M.GetCommunicator());
+    X_Petsc.Reallocate(X.GetM());
+    for (int i = 0; i < X.GetM(); i++)
+      X_Petsc.SetBuffer(i, X(i));
+    X_Petsc.Flush();
+
+    if (beta == T3(0))
+      {
+	if (alpha == T0(0))
+	  {
+	    Y.Fill(T4(0));
+	    return;
+	  }
+	else
+	  {
+	    MatMult(M.GetPetscMatrix(), X_Petsc.GetPetscVector(),
+		    Y.GetPetscVector());
+	    if (alpha != T0(1))
+	      VecScale(Y.GetPetscVector(), alpha);
+	    return;
+	  }
+      }
+    if (alpha == T0(1))
+      {
+        if (beta != T3(1))
+          VecScale(Y.GetPetscVector(), beta);
+        MatMultAdd(M.GetPetscMatrix(), X_Petsc.GetPetscVector(),
+                   Y.GetPetscVector(),Y.GetPetscVector());
+        return;
+      }
+    Vector<T2, PETScPar, Allocator2> tmp;
+    tmp.Copy(Y);
+    tmp.SetCommunicator(M.GetCommunicator());
+    MatMult(M.GetPetscMatrix(), X_Petsc.GetPetscVector(),
+            tmp.GetPetscVector());
+    VecAXPBY(Y.GetPetscVector(), alpha, beta, tmp.GetPetscVector());
+    return;
+  }
+
+
+
   /*** Sparse matrices ***/
 
 

@@ -75,7 +75,7 @@ namespace Seldon
     nz_ = 0;
     ptr_ = NULL;
     ind_ = NULL;
-    
+
     Reallocate(i, j);
   }
 
@@ -96,7 +96,7 @@ namespace Seldon
     this->nz_ = 0;
     ind_ = NULL;
     ptr_ = NULL;
-    
+
     Reallocate(i, j, nz);
   }
 
@@ -439,12 +439,12 @@ namespace Seldon
     ind_ = NULL;
   }
 
-  
+
   //! Initialization of an empty sparse matrix with i rows and j columns
   /*!
     \param i number of rows
-    \param j number of columns    
-   */
+    \param j number of columns
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::Reallocate(int i, int j)
   {
@@ -453,7 +453,7 @@ namespace Seldon
 
     this->m_ = i;
     this->n_ = j;
-    
+
     // we try to allocate ptr_
 #ifdef SELDON_CHECK_MEMORY
     try
@@ -490,20 +490,20 @@ namespace Seldon
 		     + " row or column start indices, for a "
 		     + to_str(i) + " by " + to_str(j) + " matrix.");
 #endif
-    
+
     // then filing ptr_ with 0
     for (int k = 0; k <= Storage::GetFirst(i, j); k++)
       ptr_[k] = 0;
-    
+
   }
-  
-  
+
+
   //! Initialization of a sparse matrix with i rows and j columns
   /*!
     \param i number of rows
     \param j number of columns
     \param nz number of non-zero entries
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::Reallocate(int i, int j, int nz)
   {
@@ -652,13 +652,14 @@ namespace Seldon
 		     + to_str(i) + " by " + to_str(j) + " matrix.");
 #endif
   }
-  
-  
-  //! Changing the number of rows and columns
+
+
+  //! Reallocates memory to resize the matrix and keeps previous entries.
   /*!
-    \param i number of rows
-    \param j number of columns    
-   */
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::Resize(int i, int j)
   {
@@ -668,17 +669,18 @@ namespace Seldon
       Resize(i, j, nz_);
   }
    
-  
-  //! Changing the number of rows, columns and non-zero entries
+
+  //! Reallocates memory to resize the matrix and keeps previous entries.
   /*!
-    \param i number of rows
-    \param j number of columns
-    Previous entries are kept during the operation
-   */
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+    \param nz number of non-zero elements.
+  */
   template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Sparse<T, Prop, Storage, Allocator>::Resize(int i, int j, int nz)
-  {  
-    
+  void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::Resize(int i, int j, int nz)
+  {
 #ifdef SELDON_CHECK_DIMENSIONS
     if (nz < 0)
       {
@@ -709,7 +711,7 @@ namespace Seldon
 		       + to_str(i) + " by " + to_str(j) + ").");
       }
 #endif
-    
+
     if (nz != nz_)
       {
         // trying to resize ind_ and data_
@@ -717,10 +719,10 @@ namespace Seldon
         try
           {
 #endif
-            
-            ind_ = reinterpret_cast<int*>( realloc(reinterpret_cast<void*>(ind_),
-                                                   nz*sizeof(int)) );
-            
+            ind_
+              = reinterpret_cast<int*>(realloc(reinterpret_cast<void*>(ind_),
+                                               nz*sizeof(int)));
+
 #ifdef SELDON_CHECK_MEMORY
           }
         catch (...)
@@ -749,16 +751,15 @@ namespace Seldon
                          + " row or column indices, for a "
                          + to_str(i) + " by " + to_str(j) + " matrix.");
 #endif
-        
+
         Vector<T, VectFull, Allocator> val;
         val.SetData(nz_, this->data_);
         val.Resize(nz);
-        
+
         this->data_ = val.GetData();
         nz_ = nz;
         val.Nullify();
       }
-    
 
     if (Storage::GetFirst(this->m_, this->n_) != Storage::GetFirst(i, j))
       {
@@ -769,7 +770,7 @@ namespace Seldon
             // trying to resize ptr_
             ptr_ = reinterpret_cast<int*>( realloc(ptr_, (Storage::GetFirst(i, j)+1)*
                                                    sizeof(int)) );
-            
+
 #ifdef SELDON_CHECK_MEMORY
           }
         catch (...)
@@ -797,18 +798,18 @@ namespace Seldon
                          + " row or column start indices, for a "
                          + to_str(i) + " by " + to_str(j) + " matrix.");
 #endif
-        
+
         // then filing last values of ptr_ with nz_
         for (int k = Storage::GetFirst(this->m_, this->n_);
              k <= Storage::GetFirst(i, j); k++)
           ptr_[k] = this->nz_;
       }
-    
+
     this->m_ = i;
     this->n_ = j;
   }
 
-  
+
   //! Copies a matrix
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_Sparse<T, Prop, Storage, Allocator>::
@@ -1487,7 +1488,10 @@ namespace Seldon
         j(l) = rand() % this->n_;
       }
 
-    ConvertMatrix_from_Coordinates(i, j, value, *this);
+    Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
+
+    ConvertMatrix_from_Coordinates(i, j, value, leaf_class, 0);
   }
   
   
@@ -1532,13 +1536,13 @@ namespace Seldon
 
     FileStream.close();
   }
-  
+
 
   //! Writes the matrix to an output stream.
   /*!
     Stores the matrix in an output stream in binary format.
     \param FileStream output stream.
-  */  
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>
   ::Write(ostream& FileStream) const
@@ -1549,14 +1553,14 @@ namespace Seldon
       throw IOError("Matrix_Sparse::Write(ofstream& FileStream)",
 		    "Stream is not ready.");
 #endif
-    
+
     FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
 		     sizeof(int));
     FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
 		     sizeof(int));
     FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->nz_)),
 		     sizeof(int));
-    
+
     FileStream.write(reinterpret_cast<char*>(this->ptr_),
 		     sizeof(int)*(Storage::GetFirst(this->m_, this->n_)+1));
     FileStream.write(reinterpret_cast<char*>(this->ind_),
@@ -1564,8 +1568,8 @@ namespace Seldon
     FileStream.write(reinterpret_cast<char*>(this->data_),
 		     sizeof(T)*this->nz_);
   }
-  
-  
+
+
   //! Writes the matrix in a file.
   /*!
     Stores the matrix in a file in ascii format.
@@ -1752,7 +1756,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColSparse, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, ColSparse, Allocator>::Matrix():
     Matrix_Sparse<T, Prop, ColSparse, Allocator>()
   {
   }
@@ -1825,7 +1829,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowSparse, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, RowSparse, Allocator>::Matrix():
     Matrix_Sparse<T, Prop, RowSparse, Allocator>()
   {
   }

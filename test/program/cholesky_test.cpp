@@ -36,6 +36,8 @@ bool CheckVector(Vector<T>& x)
 
 int main()
 {
+  TRY;
+
   cout.precision(16);
 
   // symmetric matrix is read in a file
@@ -47,7 +49,7 @@ int main()
   x.Fill();
   Mlt(A, x, b);
 
-  // Cholesky factorisation using Seldon function
+  // Cholesky factorization using Seldon function
   GetCholesky(A);
 
   x = b;
@@ -67,7 +69,7 @@ int main()
   bool test_mlt_seldon = CheckVector(x);
 
 #ifdef SELDON_WITH_CHOLMOD
-  // Cholesky factorisation using Cholmod
+  // Cholesky factorization using Cholmod.
   MatrixCholmod mat_chol;
 
   A.ReadText("matrix/MhSparse.dat");
@@ -103,21 +105,22 @@ int main()
 #endif
 
   A.ReadText("matrix/MatFente.dat");
-    
+
   // creation of a right hand side b = A*[0;1;...;n-1]
   x.Reallocate(A.GetM());
   b.Reallocate(A.GetM());
   y.Reallocate(A.GetM());
-  x.FillRand(); Mlt(1e-9, x);
+  x.FillRand();
+  Mlt(1e-9, x);
   Vector<double> xsol = x;
   Mlt(A, x, b);
 
-  // Cholesky factorisation using Seldon function
+  // Cholesky factorization using Seldon function.
   SparseCholeskySolver<double> solver;
   solver.ShowMessages();
-  solver.SetTypeOrdering(SparseMatrixOrdering::METIS);
-  //solver.SelectDirectSolver(solver.SELDON_SOLVER);
-  solver.SelectDirectSolver(solver.CHOLMOD);
+  solver.SelectOrdering(SparseMatrixOrdering::METIS);
+  solver.SelectDirectSolver(solver.SELDON_SOLVER);
+  // solver.SelectDirectSolver(solver.CHOLMOD);
   solver.Factorize(A);
 
   x = b;
@@ -127,7 +130,7 @@ int main()
   for (int i = 0; i < x.GetM(); i++)
     if (abs(x(i) - xsol(i)) > 1e-12)
       {
-        cout << "Solve incorrect " << endl;
+        cout << "Solver failed." << endl;
         abort();
       }
 
@@ -137,7 +140,7 @@ int main()
   for (int i = 0; i < x.GetM(); i++)
     if (abs(x(i) - b(i)) > 1e-12)
       {
-        cout << "Mlt incorrect " << endl;
+        cout << "Mlt failed." << endl;
         abort();
       }
 
@@ -146,6 +149,8 @@ int main()
     cout << "All tests passed successfully" << endl;
   else
     return -1;
+
+  END;
 
   return 0;
 }

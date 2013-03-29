@@ -23,42 +23,6 @@
 
 #include "Matrix_Conversions.hxx"
 
-/*
-  Functions defined in this file:
-  
-  conversion of a sparse matrix into coordinate format
-  (i, j, val) = A  
-  ConvertMatrix_to_Coordinates(A, index_row, index_col, val, index, sym)
-  
-  conversion from coordinate from to other sparse format
-  A = (i, j, val)
-  ConvertMatrix_from_Coordinates(index_row, index_col, val, A, index)
-  
-  conversion from sparse matrices to Compressed Sparse Column
-  (Ptr, Ind, Val) = A
-  ConvertToCSC(A, Ptr, Ind, Val, sym_pat)
-  
-  conversion from sparse matrices to Compressed Sparse Row
-  (Ptr, Ind, Val) = A
-  ConvertToCSR(A, Ptr, Ind, Val, sym_pat)
-  
-  conversion between sparse matrices
-  B = A
-  Copy(A, B)
-  
-  pattern of A + A' in CSR format
-  (Ptr, Ind) = A
-  GetSymmetricPattern
-  
-  conversion from a sparse matrix to a dense matrix
-  B = A
-  Copy(A, B)
-  
-  conversion from a dense matrix to a sparse matrix
-  B = sparse(A.*(abs(A) > threshold))
-  ConvertToSparse(A, B, threshold)
-  
-*/
 
 namespace Seldon
 {
@@ -2698,7 +2662,7 @@ namespace Seldon
   //! Conversion from ArrayRowSparse to RowSparse.
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
-  void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& mat_array,
+  void Copy(const Matrix<T0, Prop0, ArrayRowSparse, Allocator0>& mat_array,
 	    Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
   {
     Vector<T1, VectFull, Allocator1> Val;
@@ -2713,50 +2677,6 @@ namespace Seldon
     mat_csr.SetData(m, n, Val, IndRow, IndCol);
   }
 
-
-  //! Conversion from ArrayRowSparse to RowSymSparse.
-  template<class T0, class Prop0, class Allocator0,
-	   class T1, class Prop1, class Allocator1>
-  void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& mat_array,
-	    Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
-  {
-    cout << "Types not compatible " << endl;
-    abort();
-  }
-
-
-  //! Conversion from ArrayColSparse to RowSymSparse.
-  template<class T0, class Prop0, class Allocator0,
-	   class T1, class Prop1, class Allocator1>
-  void Copy(const Matrix<T0, Prop0, ArrayColSparse,Allocator0>& mat_array,
-	    Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
-  {
-    cout << "Types not compatible " << endl;
-    abort();
-  }
-
-
-  //! Conversion from ArrayRowSparse to ColSymSparse.
-  template<class T0, class Prop0, class Allocator0,
-	   class T1, class Prop1, class Allocator1>
-  void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& mat_array,
-	    Matrix<T1, Prop1, ColSymSparse, Allocator1>& mat_csr)
-  {
-    cout << "Types not compatible " << endl;
-    abort();
-  }
-
-
-  //! Conversion from ArrayColSparse to ColSymSparse.
-  template<class T0, class Prop0, class Allocator0,
-	   class T1, class Prop1, class Allocator1>
-  void Copy(const Matrix<T0, Prop0, ArrayColSparse,Allocator0>& mat_array,
-	    Matrix<T1, Prop1, ColSymSparse, Allocator1>& mat_csr)
-  {
-    cout << "Types not compatible " << endl;
-    abort();
-  }
-  
   
   //! Conversion from ColSymSparse to RowSymSparse
   template<class T, class Prop, class Alloc1, class Alloc2>
@@ -3552,6 +3472,41 @@ namespace Seldon
     
   }
   
+
+  template<class T, class Prop1, class Prop2, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop1, PETScMPIDense, Alloc1>& A,
+            Matrix<T, Prop2, RowMajor, Alloc2>& B)
+  {
+    int m, n;
+    MatGetLocalSize(A.GetPetscMatrix(), &m, &n);
+    n = A.GetN();
+    B.Reallocate(m, n);
+    T *local_a;
+    MatGetArray(A.GetPetscMatrix(), &local_a);
+    for (int i = 0; i < m; i++)
+      for(int j = 0; j < n; j++)
+        B(i, j) = local_a[i + j * m];
+    MatRestoreArray(A.GetPetscMatrix(), &local_a);
+  }
+
+
+  template<class T, class Prop1, class Prop2, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop1, RowMajor, Alloc1>& A,
+            Matrix<T, Prop2, PETScMPIDense, Alloc2>& B)
+  {
+    T *local_data;
+    MatGetArray(B.GetPetscMatrix(), &local_data);
+    int mlocal, nlocal;
+    MatGetLocalSize(B.GetPetscMatrix(), &mlocal, &nlocal);
+    Matrix<T, Prop1, ColMajor, Alloc1> local_D;
+    local_D.SetData(mlocal, B.GetN(), local_data);
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetN(); j++)
+        local_D(i, j) = A(i, j);
+    local_D.Nullify();
+    MatRestoreArray(B.GetPetscMatrix(), &local_data);
+  }
+
   
   /*****************************************************
    * Conversion from dense matrices to sparse matrices *

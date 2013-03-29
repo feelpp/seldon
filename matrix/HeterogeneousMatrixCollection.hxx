@@ -181,6 +181,11 @@ namespace Seldon
     public HeterogeneousMatrixCollection<General, RowMajor, General,
 					 RowSparse, Allocator >
   {
+    // typedef declaration.
+  public:
+    typedef General property;
+    typedef DenseSparseCollection storage;
+    typedef Allocator<double> allocator;
 
   public:
     Matrix();

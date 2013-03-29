@@ -1,4 +1,4 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2001-2012 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -21,6 +21,11 @@
 
 #include <complex>
 #include <iostream>
+#include <typeinfo>
+
+#ifdef SELDON_WITH_HDF5
+#include <hdf5.h>
+#endif
 
 
 template <class T>
@@ -41,6 +46,35 @@ namespace Seldon
     return x;
   }
   
+
+  //! This class helps formatting C++ strings on the fly.
+  /*!
+    It should may be used like that:
+    string output = Str() + "There are " + 3 + " laws of robotics.";
+  */
+  class Str
+  {
+  private:
+    //! Buffer.
+    std::ostringstream output_;
+
+  public:
+    Str();
+    Str(const Str& s);
+    operator std::string() const;
+    template <class T>
+    Str& operator << (const T& input);
+  };
+
+  template <class T>
+  Str operator + (const Str&, const T& input);
+
+#ifndef SWIG
+  ostream& operator << (ostream& out, Str& in);
+  ostream& operator << (ostream& out, Str in);
+#endif
+
+
   template<typename T>
   std::string to_str(const T& input);
 
@@ -94,6 +128,12 @@ namespace Seldon
   template<class T>
   T ComplexAbs(const complex<T>& val);
   
+#ifdef SELDON_WITH_HDF5
+  template <class T>
+  hid_t GetH5Type(T& input);
+#endif
+
+
 }  // namespace Seldon.
 
 #define SELDON_FILE_COMMON_HXX

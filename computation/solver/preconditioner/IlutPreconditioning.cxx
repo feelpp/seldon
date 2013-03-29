@@ -421,16 +421,16 @@ namespace Seldon
   
   template<class real, class cplx, class Allocator>
   template<class TransStatus, class Vector1>
-  void IlutPreconditioning<real, cplx, Allocator>::
-  Solve(const TransStatus& transA, Vector1& z)
+  void IlutPreconditioning<real, cplx, Allocator>
+  ::Solve(const TransStatus& transA, Vector1& z)
   {
     if (transA.Trans())
       TransSolve(z);
     else
       Solve(z);
   }
-  
-  
+
+
   template<class real, class cplx, class Storage, class Allocator>
   void qsplit_ilut(Vector<cplx, Storage, Allocator>& a, IVect& ind, int first,
                    int n, int ncut, const real& abs_ncut)
@@ -505,7 +505,7 @@ namespace Seldon
   {
     int size_row;
     int n = A.GetN();
-    int type_factorisation = param.GetFactorisationType();
+    int type_factorization = param.GetFactorisationType();
     int lfil = param.GetFillLevel();
     real zero(0);
     real droptol = param.GetDroppingThreshold();
@@ -517,26 +517,26 @@ namespace Seldon
     real permtol = param.GetPivotThreshold();
     int print_level = param.GetPrintLevel();
 
-    if (type_factorisation == param.ILUT)
+    if (type_factorization == param.ILUT)
       standard_dropping = false;
-    else if (type_factorisation == param.ILU_D)
+    else if (type_factorization == param.ILU_D)
       standard_dropping = true;
-    else if (type_factorisation == param.ILUT_K)
+    else if (type_factorization == param.ILUT_K)
       {
 	variable_fill = true;   // We use a variable lfil
 	standard_dropping = false;
       }
-    else if (type_factorisation == param.ILU_0)
+    else if (type_factorization == param.ILU_0)
       {
 	GetIlu0(A);
         return;
       }
-    else if (type_factorisation == param.MILU_0)
+    else if (type_factorization == param.MILU_0)
       {
 	GetMilu0(A);
         return;
       }
-    else if (type_factorisation == param.ILU_K)
+    else if (type_factorization == param.ILU_K)
       {
 	GetIluk(lfil, A);
         return;

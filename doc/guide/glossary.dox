@@ -1074,7 +1074,7 @@
 <td class="category-table-td"> <a href="eigenvalue.php#SetNbMaximumIterations"> SetNbMaximumIterations </a>(eigenvalue problem)</td>
 <td class="category-table-td"> Sets the maximum number of iterations allowed for the iterative process </td> </tr>
 <tr class="category-table-tr-1">
-<td class="category-table-td"> <a href="direct.php#SetNbThreadPerNode"> SetNbThreadPerNode </a></td>
+<td class="category-table-td"> <a href="direct.php#SetNumberOfThreadPerNode"> SetNumberOfThreadPerNode </a></td>
 <td class="category-table-td"> Sets the number of threads per node (relevant for Pastix only) </td> </tr>
 <tr class="category-table-tr-1">
 <td class="category-table-td"> <a href="iterative.php#SetNumberIterations"> SetNumberIterations </a></td>

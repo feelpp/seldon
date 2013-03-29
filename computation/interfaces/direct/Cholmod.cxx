@@ -240,7 +240,7 @@ namespace Seldon
   template<class T, class Allocator, class Transpose_status>
   void
   MltCholesky(const Transpose_status& TransA,
-                MatrixCholmod& mat_chol, Vector<T, VectFull, Allocator>& x)
+              MatrixCholmod& mat_chol, Vector<T, VectFull, Allocator>& x)
   {
     mat_chol.Mlt(TransA, x);
   }

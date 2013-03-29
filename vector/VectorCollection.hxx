@@ -78,13 +78,14 @@ namespace Seldon
     //! Methods.
   public:
     // Constructor.
-    explicit Vector()  throw();
+    explicit Vector();
     explicit Vector(int i);
     Vector(const Vector<T, Collection, Allocator>& A);
 
     // Destructor.
     ~Vector();
     void Clear();
+    void Reallocate(int i);
     void Deallocate();
 
    // Management of the vectors.
@@ -145,8 +146,8 @@ namespace Seldon
     void Print() const;
 
     // Input/output functions.
-    void Write(string FileName, bool with_size) const;
-    void Write(ostream& FileStream, bool with_size) const;
+    void Write(string FileName, bool with_size = true) const;
+    void Write(ostream& FileStream, bool with_size = true) const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
 

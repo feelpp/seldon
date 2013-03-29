@@ -449,9 +449,9 @@ namespace Seldon
 
   //! Modifies the number of threads per node.
   template<class T>
-  void MatrixPastix<T>::SetNbThreadPerNode(int nb_thread)
+  void MatrixPastix<T>::SetNumberOfThreadPerNode(int num_thread)
   {
-    iparm[IPARM_THREAD_NBR] = nb_thread;
+    iparm[IPARM_THREAD_NBR] = num_thread;
   }
 
 

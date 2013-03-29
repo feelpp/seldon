@@ -114,7 +114,7 @@ namespace Seldon
     const complex<T>& Val(int i, int j) const;
     complex<T>& Get(int i, int j);
     const complex<T>& Get(int i, int j) const;
-    
+
     T& ValReal(int i, int j);
     const T& ValReal(int i, int j) const;
     T& ValImag(int i, int j);
@@ -185,7 +185,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     // Memory management.
@@ -232,7 +232,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     // Memory management.
@@ -279,7 +279,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     const complex<T> operator() (int i, int j) const;
@@ -339,7 +339,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     const complex<T> operator() (int i, int j) const;

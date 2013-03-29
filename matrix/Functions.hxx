@@ -59,6 +59,16 @@ namespace Seldon
   void GetCol(const Matrix<T0, Symmetric, RowSymSparse, Allocator0>& M,
 	      int j, Vector<T1, VectSparse, Allocator1>& X);
 
+  template <class T0, class Prop0, class Allocator0,
+  class T1, class Allocator1>
+  void GetCol(const Matrix<T0, Prop0, PETScSeqDense, Allocator0>& M,
+              int j, Vector<T1, PETScSeq, Allocator1>& X);
+
+  template <class T0, class Prop0, class Allocator0,
+  class T1, class Allocator1>
+  void GetCol(const Matrix<T0, Prop0, PETScMPIDense, Allocator0>& M,
+              int j, Vector<T1, PETScPar, Allocator1>& X);
+
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void GetCol(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
@@ -74,6 +84,16 @@ namespace Seldon
 	    class T1, class Storage1, class Allocator1>
   void SetRow(const Vector<T1, Storage1, Allocator1>& X,
 	      int i, Matrix<T0, Prop0, Storage0, Allocator0>& M);
+
+  template <class T0, class Prop0, class Allocator0,
+  class T1, class Allocator1>
+  void SetRow(const Vector<T1, PETScSeq, Allocator1>& X,
+              int i, Matrix<T0, Prop0, PETScSeqDense, Allocator0>& M);
+
+  template <class T0, class Prop0, class Allocator0,
+  class T1, class Allocator1>
+  void SetRow(const Vector<T1, PETScPar, Allocator1>& X,
+              int i, Matrix<T0, Prop0, PETScMPIDense, Allocator0>& M);
 
   template <class T0, class Allocator0, class T1, class Allocator1>
   void SetRow(const Vector<T1, VectSparse, Allocator1>& X,
@@ -135,6 +155,16 @@ namespace Seldon
 	    class T1, class Storage1, class Allocator1>
   void SetCol(const Vector<T1, Storage1, Allocator1>& X,
 	      int j, Matrix<T0, Prop0, Storage0, Allocator0>& M);
+
+  template <class T0, class Prop0, class Allocator0,
+  class T1, class Allocator1>
+  void SetCol(const Vector<T1, PETScSeq, Allocator1>& X,
+              int j, Matrix<T0, Prop0, PETScSeqDense, Allocator0>& M);
+
+  template <class T0, class Prop0, class Allocator0,
+  class T1, class Allocator1>
+  void SetCol(const Vector<T1, PETScPar, Allocator1>& X,
+              int j, Matrix<T0, Prop0, PETScMPIDense, Allocator0>& M);
 
   template <class T0, class Allocator0,
 	    class T1, class Allocator1>

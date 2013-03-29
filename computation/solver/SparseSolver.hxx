@@ -24,6 +24,8 @@
 #include "computation/solver/preconditioner/IlutPreconditioning.hxx"
 #endif
 
+#include "Ordering.hxx"
+
 namespace Seldon
 {
   
@@ -120,25 +122,6 @@ namespace Seldon
 	       SparseSeldonSolver<T, Alloc2>& mat_lu,
 	       Vector<T1, VectFull, Allocator>& x);
   
-  //! basic class grouping different ordering strategies
-  class SparseMatrixOrdering
-  {
-  public :
-    // supported orderings
-    enum {IDENTITY, REVERSE_CUTHILL_MCKEE, PORD,
-	  SCOTCH, METIS, AMD, COLAMD, QAMD, USER, AUTO};    
-  };
-
-  template<class T, class Prop, class Storage, class Allocator,
-	   class Tint, class Alloc>
-  void FindReverseCuthillMcKeeOrdering(const Matrix<T, Prop,
-				       Storage, Allocator>& A,
-				       Vector<Tint, VectFull, Alloc>& num);  
-  
-  template<class T, class Prop, class Storage, class Allocator,
-	   class Tint, class Alloc>
-  void FindSparseOrdering(Matrix<T, Prop, Storage, Allocator>& A,
-			  Vector<Tint, VectFull, Alloc>& num, int type);
   
   //! Class grouping different direct solvers
   template<class T>
@@ -206,7 +189,7 @@ namespace Seldon
     void SetPermutation(const IVect&);
     void SelectOrdering(int);
     
-    void SetNbThreadPerNode(int m);
+    void SetNumberOfThreadPerNode(int m);
     
     template<class MatrixSparse>
     void ComputeOrdering(MatrixSparse& A);
@@ -256,7 +239,6 @@ namespace Seldon
     
   };
 
-  
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void SparseSolve(Matrix<T0, Prop0, Storage0, Allocator0>& M,
@@ -271,8 +253,8 @@ namespace Seldon
   template <class T, class Prop0, class Allocator0, class Allocator1>
   void GetAndSolveLU(Matrix<T, Prop0, RowSparse, Allocator0>& M,
 		     Vector<T, VectFull, Allocator1>& Y);
-
-
+  
+  
 }  // namespace Seldon.
 
 

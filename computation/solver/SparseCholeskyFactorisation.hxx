@@ -16,60 +16,62 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Seldon. If not, see http://www.gnu.org/licenses/.
 
+
 #ifndef SELDON_FILE_SPARSE_CHOLESKY_FACTORISATION_HXX
+
 
 namespace Seldon
 {
-  
-  //! Class grouping different Cholesky solvers
+
+  //! Class grouping different Cholesky solvers.
   template<class T>
   class SparseCholeskySolver
   {
   protected :
-    //! Verbose level
+    //! Verbosity level.
     int print_level;
-    //! ordering to use
+    //! Ordering to use.
     int type_ordering;
-    //! permutation array
+    //! Permutation array.
     IVect permutation;
-    //! solver to use
+    //! Solver to use.
     int type_solver;
-    //! size of factorized linear system 
+    //! Size of factorized linear system.
     int n;
-    //! Cholesky factors
+    //! Cholesky factors.
     Matrix<T, Symmetric, ArrayRowSymSparse> mat_sym;
-    //! temporary vector
+    //! Temporary vector.
     Vector<T> xtmp;
-    
+
 #ifdef SELDON_WITH_CHOLMOD
     MatrixCholmod mat_chol;
 #endif
-        
+
   public :
-    // available solvers
+    // Available solvers.
     enum {SELDON_SOLVER, CHOLMOD};
-    
+
     SparseCholeskySolver();
-    
+
     void HideMessages();
     void ShowMessages();
     void ShowFullHistory();
-    
+
     void Clear();
-    
+
     int GetM() const;
     int GetN() const;
-    
+
     int GetTypeOrdering() const;
     void SetOrdering(const IVect&);
     void SetTypeOrdering(int);
-    
+
     void SelectDirectSolver(int);
     int GetDirectSolver();
-    
+
     template<class MatrixSparse>
     void Factorize(MatrixSparse& A, bool keep_matrix = false);
-    
+
     template<class TransStatus, class Vector1>
     void Solve(const TransStatus& TransA, Vector1& x);
 
@@ -110,7 +112,8 @@ namespace Seldon
                    const Matrix<T0, Prop, RowSymSparse, Allocator1>& A,
                    Vector<T1, Storage, Allocator2>& x);
   
-}
+} // namespace Seldon.
+
 
 #define SELDON_FILE_SPARSE_CHOLESKY_FACTORISATION_HXX
 #endif

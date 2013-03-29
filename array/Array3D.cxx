@@ -695,6 +695,7 @@ namespace Seldon
 
   }
 
+
   //! operator<< overloaded for a 3D array.
   /*!
     \param out output stream.
@@ -722,7 +723,11 @@ namespace Seldon
   }
 
 
-  //! Multiplication of elements of 3D array by a scalar
+  //! Multiplication of all elements of a 3D array by a scalar.
+  /*!
+    \param[in] alpha scalar by which \a A should be multiplied.
+    \param[in,out] A the array to be multiplied by \a alpha.
+  */
   template <class T0, class T, class Allocator>
   void Mlt(const T0& alpha, Array3D<T, Allocator>& A)
   {
@@ -730,7 +735,7 @@ namespace Seldon
     for (int i = 0; i < A.GetDataSize(); i++)
       data[i] *= alpha;
   }
-
+  
 } // namespace Seldon.
 
 #define SELDON_FILE_ARRAY3D_CXX

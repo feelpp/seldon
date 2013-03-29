@@ -113,23 +113,23 @@ namespace Seldon
   inline typename MallocObject<T>::pointer
   MallocObject<T>::allocate(int num, void* h)
   {
-    /*the shifting of the memory adress will be at worst of size
-      sizeof(T)/(sizeof(int) + sizeof(char*)) */
-
-    int additional_T = (sizeof(T)/(sizeof(int) + sizeof(char*)))?
-      sizeof(T)/(sizeof(int) + sizeof(char*)):1;
+    // The cast from char* to T* may lead to a memory shift (because of
+    // alignment issues) under MS Windows. It requires that one allocates more
+    // memory than necessary for memory_block.
 
     void* memory_block = malloc(sizeof(int) + sizeof(char*) +
-                                (num + additional_T)* sizeof(T));
+                                (num + 2) * sizeof(T));
     memcpy(memory_block, &num, sizeof(int));
     char* data = static_cast<char*>(memory_block)
-                 + sizeof(int) + sizeof(char*);
+      + sizeof(int) + sizeof(char*) + sizeof(T);
 
-    pointer P = reinterpret_cast<pointer>(new(data) T[num]);
-    memcpy(reinterpret_cast<char *>(P) - sizeof(char*),
+    // The memory shift can occur here.
+    pointer data_P = reinterpret_cast<pointer>(new(data) T[num]);
+
+    memcpy(reinterpret_cast<char *>(data_P) - sizeof(char*),
            &memory_block, sizeof(char*));
 
-    return P;
+    return data_P;
   }
 
 
@@ -137,9 +137,8 @@ namespace Seldon
   inline void MallocObject<T>::deallocate(pointer data, int num, void* h)
   {
     void * memory_block;
-    memcpy(&memory_block, reinterpret_cast<char *>(data)
-           - sizeof(char*), sizeof(char*));
-    
+    memcpy(&memory_block,
+           reinterpret_cast<char *>(data) - sizeof(char*), sizeof(char*));
     for (int i = 0; i < num; i++)
       data[i].~T();
     free(memory_block);
@@ -153,40 +152,39 @@ namespace Seldon
       return allocate(num, h);
 
     void * memory_block;
-    memcpy(&memory_block, reinterpret_cast<char *>(data)
-           - sizeof(char*), sizeof(char*));
+    memcpy(&memory_block,
+           reinterpret_cast<char *>(data) - sizeof(char*), sizeof(char*));
     int initial_num = *reinterpret_cast<int*>(memory_block);
-
-    /*the shifting of the memory adress will be at worst of size
-      sizeof(T)/(sizeof(int) + sizeof(char*)) */
-    int additional_T = (sizeof(T)/(sizeof(int) + sizeof(char*)))?
-      sizeof(T)/(sizeof(int) + sizeof(char*)):1;
 
     if (initial_num < num)
       {
-	memory_block = realloc(memory_block,
-			       sizeof(int) + sizeof(char*) +
-                               (num+additional_T) * sizeof(T));
-	new(reinterpret_cast<char *>(data)
-            + initial_num * sizeof(T)) T[num - initial_num];
+	memory_block = realloc(memory_block, sizeof(int) + sizeof(char*) +
+                               (num + 2) * sizeof(T));
+
+	new(static_cast<char *>(memory_block) + sizeof(int) + sizeof(T) +
+            sizeof(char*) + initial_num * sizeof(T)) T[num - initial_num];
       }
     else if (initial_num > num)
       {
 	for (int i = num; i < initial_num; i++)
 	  data[i].~T();
-	memory_block = realloc(memory_block,
-			       sizeof(int) + sizeof(char*)
-                               + (num+additional_T) * sizeof(T));
+
+	memory_block = realloc(memory_block, sizeof(int) + sizeof(char*) +
+                               (num + 2) * sizeof(T));
+
       }
     else
       return data;
 
     memcpy(memory_block, &num, sizeof(int));
-    pointer P = reinterpret_cast<pointer>(data);
-    memcpy(reinterpret_cast<char *>(P) - sizeof(char*),
+
+    pointer data_P =
+      reinterpret_cast<pointer>(static_cast<char*>(memory_block) +
+                                sizeof(int) + sizeof(char*) + sizeof(T));
+    memcpy(reinterpret_cast<char *>(data_P) - sizeof(char*),
            &memory_block, sizeof(char*));
 
-    return P;
+    return data_P;
   }
 
 

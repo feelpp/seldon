@@ -1,4 +1,5 @@
-// Copyright (C) 2010 Vivien Mallet
+// Copyright (C) 2011 Marc Duruflé
+// Copyright (C) 2010-2011 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -19,7 +20,6 @@
 
 #ifndef SELDON_FILE_COMPUTATION_SPARSESOLVER_CXX
 
-
 #include "SparseSolverInline.cxx"
 
 namespace Seldon
@@ -38,7 +38,7 @@ namespace Seldon
 		  bool keep_matrix)
   {
     IVect inv_permutation;
-    
+
     // We convert matrix to unsymmetric format.
     Copy(mat, mat_unsym);
 
@@ -49,12 +49,13 @@ namespace Seldon
     // We keep permutation array in memory, and check it.
     int n = mat_unsym.GetM();
     if (perm.GetM() != n)
-      {
-        cout << "Numbering array should have the same size as matrix.";
-        cout << endl;
-        abort();
-      }
-    
+      throw WrongArgument("FactorizeMatrix(IVect&, Matrix&, bool)",
+                          "Numbering array is of size "
+                          + to_str(perm.GetM())
+                          + " while the matrix is of size "
+                          + to_str(mat.GetM()) + " x "
+                          + to_str(mat.GetN()) + ".");
+
     permutation_row.Reallocate(n);
     permutation_col.Reallocate(n);
     inv_permutation.Reallocate(n);
@@ -65,19 +66,17 @@ namespace Seldon
         permutation_col(i) = i;
         inv_permutation(perm(i)) = i;
       }
-    
+
     for (int i = 0; i < n; i++)
       if (inv_permutation(i) == -1)
-        {
-          cout << "Error in the numbering array." << endl;
-          abort();
-        }
-    
+        throw WrongArgument("FactorizeMatrix(IVect&, Matrix&, bool)",
+                            "The numbering array is invalid.");
+
     IVect iperm = inv_permutation;
-    
+
     // Rows of matrix are permuted.
     ApplyInversePermutation(mat_unsym, perm, perm);
-    
+
     // Factorization is performed.
     // Columns are permuted during the factorization.
     symmetric_matrix = false;
@@ -92,9 +91,9 @@ namespace Seldon
     permutation_row = perm;
 
   }
-  
-  
-  template<class T, class Allocator> 
+
+
+  template<class T, class Allocator>
   template<class T0, class Storage0, class Allocator0>
   void SparseSeldonSolver<T, Allocator>::
   FactorizeMatrix(const IVect& perm,
@@ -113,11 +112,12 @@ namespace Seldon
     // We keep permutation array in memory, and check it.
     int n = mat_sym.GetM();
     if (perm.GetM() != n)
-      {
-        cout << "Numbering array should have the same size as matrix.";
-        cout << endl;
-        abort();
-      }
+      throw WrongArgument("FactorizeMatrix(IVect&, Matrix&, bool)",
+                          "Numbering array is of size "
+                          + to_str(perm.GetM())
+                          + " while the matrix is of size "
+                          + to_str(mat.GetM()) + " x "
+                          + to_str(mat.GetN()) + ".");
 
     permutation_row.Reallocate(n);
     inv_permutation.Reallocate(n);
@@ -130,10 +130,8 @@ namespace Seldon
 
     for (int i = 0; i < n; i++)
       if (inv_permutation(i) == -1)
-        {
-          cout << "Error in the numbering array." << endl;
-          abort();
-        }
+        throw WrongArgument("FactorizeMatrix(IVect&, Matrix&, bool)",
+                            "The numbering array is invalid.");
 
     // Matrix is permuted.
     ApplyInversePermutation(mat_sym, perm, perm);
@@ -148,6 +146,7 @@ namespace Seldon
   void SparseSeldonSolver<T, Allocator>::Solve(Vector1& z)
   {
     Vector1 xtmp(z);
+
     if (symmetric_matrix)
       {
 	for (int i = 0; i < z.GetM(); i++)
@@ -171,8 +170,10 @@ namespace Seldon
   }
   
   
-  template<class T, class Allocator> template<class TransStatus, class Vector1>
-  void SparseSeldonSolver<T, Allocator>::Solve(const TransStatus& TransA, Vector1& z)
+  template<class T, class Allocator>
+  template<class TransStatus, class Vector1>
+  void SparseSeldonSolver<T, Allocator>
+  ::Solve(const TransStatus& TransA, Vector1& z)
   {
     if (symmetric_matrix)
       Solve(z);
@@ -230,10 +231,11 @@ namespace Seldon
         // Progress bar if print level is high enough.
         if (print_level > 0)
           {
-            new_percent = int(double(i_row)/(n-1)*80);
+            new_percent = int(double(i_row) / double(n-1) * 78.);
             for (int percent = old_percent; percent < new_percent; percent++)
               {
-                cout << "#"; cout.flush();
+                cout << "#";
+                cout.flush();
               }
 
             old_percent = new_percent;
@@ -241,18 +243,18 @@ namespace Seldon
 
 	size_row = A.GetRowSize(i_row);
 	tnorm = zero;
-	
+
 	// tnorm is the sum of absolute value of coefficients of row i_row.
 	for (k = 0 ; k < size_row; k++)
           if (A.Value(i_row, k) != czero)
             tnorm += abs(A.Value(i_row, k));
 
 	if (tnorm == zero)
-	  {
-            cout << "Structurally singular matrix." << endl;
-            cout << "Norm of row " << i_row << " is equal to 0." << endl;
-            abort();
-          }
+          throw WrongArgument("GetLU(Matrix<ArrayRowSparse>&, IVect&, "
+                              "IVect&, double, int)",
+                              "The matrix is structurally singular. "
+                              "The norm of row " + to_str(i_row)
+                              + " is equal to 0.");
 
         // Unpack L-part and U-part of row of A.
 	length_upper = 1;
@@ -300,13 +302,11 @@ namespace Seldon
 
 	    // Determine smallest column index.
 	    for (j = j_col + 1; j < length_lower; j++)
-	      {
-		if (Row_Ind(j) < jrow)
-		  {
-		    jrow = Row_Ind(j);
-		    k = j;
-		  }
-              }
+              if (Row_Ind(j) < jrow)
+                {
+                  jrow = Row_Ind(j);
+                  k = j;
+                }
 
 	    if (k != j_col)
 	      {
@@ -335,59 +335,50 @@ namespace Seldon
 	      {
 		s = fact * A.Value(jrow,k);
 		j = rperm(A.Index(jrow,k));
-		
+
 		jpos = Index(j);
-		
+
 		if (j >= i_row)
-		  {
-		    
-		    // Dealing with upper part.
-		    if (jpos == -1)
-		      {
-			// This is a fill-in element.
-			i = i_row + length_upper;
-			Row_Ind(i) = j;
-			Index(j) = i;
-			Row_Val(i) = -s;
-			++length_upper;
-		      }
-		    else
-		      {
-			// This is not a fill-in element.
-			Row_Val(jpos) -= s;
-		      }
-		  }
+                  // Dealing with upper part.
+                  if (jpos == -1)
+                    {
+                      // This is a fill-in element.
+                      i = i_row + length_upper;
+                      Row_Ind(i) = j;
+                      Index(j) = i;
+                      Row_Val(i) = -s;
+                      ++length_upper;
+                    }
+                  else
+                    // This is not a fill-in element.
+                    Row_Val(jpos) -= s;
 		else
-		  {
-		    // Dealing  with lower part.
-		    if (jpos == -1)
-		      {
-			// this is a fill-in element
-			Row_Ind(length_lower) = j;
-			Index(j) = length_lower;
-			Row_Val(length_lower) = -s;
-			++length_lower;
-		      }
-		    else
-		      {
-			// This is not a fill-in element.
-			Row_Val(jpos) -= s;
-		      }
-		  }
+                  // Dealing  with lower part.
+                  if (jpos == -1)
+                    {
+                      // this is a fill-in element
+                      Row_Ind(length_lower) = j;
+                      Index(j) = length_lower;
+                      Row_Val(length_lower) = -s;
+                      ++length_lower;
+                    }
+                  else
+                    // This is not a fill-in element.
+                    Row_Val(jpos) -= s;
 	      }
-	    
+
 	    // Stores this pivot element from left to right -- no danger
 	    // of overlap with the working elements in L (pivots).
 	    Row_Val(length) = fact;
 	    Row_Ind(length) = jrow;
-	    ++length;	    
+	    ++length;
 	    j_col++;
 	  }
-	
+
 	// Resets double-pointer to zero (U-part).
 	for (k = 0; k < length_upper; k++)
-          Index(Row_Ind(i_row+k )) = -1;
-	
+          Index(Row_Ind(i_row + k)) = -1;
+
 	size_row = length;
 	A.ReallocateRow(i_row,size_row);
 
@@ -418,16 +409,16 @@ namespace Seldon
         int imax = i_row;
         double xmax = abs(Row_Val(imax));
         double xmax0 = xmax;
-        for ( k = i_row + 1; k <= i_row + length - 1; k++)
+        for (k = i_row + 1; k <= i_row + length - 1; k++)
           {
             tnorm = abs(Row_Val(k));
-            if ((tnorm > xmax) && (tnorm*permtol > xmax0))
+            if (tnorm > xmax && tnorm * permtol > xmax0)
               {
                 imax = k;
                 xmax = tnorm;
               }
           }
-	
+
         // Exchanges Row_Val.
         s = Row_Val(i_row);
         Row_Val(i_row) = Row_Val(imax);
@@ -464,7 +455,8 @@ namespace Seldon
 
     if (print_level > 0)
       cout << "The matrix takes " <<
-        int((A.GetDataSize()*(sizeof(T)+4))/(1024*1024)) << " MB" << endl;
+        int((A.GetDataSize() * (sizeof(T) + 4)) / (1024. * 1024.))
+           << " MB" << endl;
 
     for (i = 0; i < n; i++ )
       for (j = 0; j < A.GetRowSize(i); j++)
@@ -483,7 +475,7 @@ namespace Seldon
   
   
   //! Resolution of LU y = x (x is overwritten with y)
-  /*!  L and U are assumed to be stored in A. The diagonal of A contains the
+  /*! L and U are assumed to be stored in A. The diagonal of A contains the
     inverse of the diagonal of U.
   */
   template<class real, class cplx, class TransStatus,
@@ -502,28 +494,26 @@ namespace Seldon
 	for (i = 0 ; i < n ; i++)
 	  {
 	    k_ = 0; k = A.Index(i,k_);
-	    while ( k < i)
+	    while (k < i)
 	      {
 		k_++;
 		k = A.Index(i,k_);
 	      }
 	    
 	    x(i) *= A.Value(i,k_);
-	    for ( k = (k_+1); k < A.GetRowSize(i) ; k++)
-	      {
-		x(A.Index(i,k)) -= A.Value(i,k) * x(i);
-	      }
+	    for (k = k_ + 1; k < A.GetRowSize(i) ; k++)
+	      x(A.Index(i,k)) -= A.Value(i,k) * x(i);	    
 	  }
 	
 	// Backward solve (with L^T).
 	for (i = n-1 ; i>=0  ; i--)
 	  {
-	    k_ = 0; k = A.Index(i,k_);
-	    while ( k < i)
+	    k_ = 0; k = A.Index(i, k_);
+	    while (k < i)
 	      {
-		x(k) -= A.Value(i,k_)*x(i);
+		x(k) -= A.Value(i, k_)*x(i);
 		k_++;
-		k = A.Index(i,k_);
+		k = A.Index(i, k_);
 	      }
 	  }
       }
@@ -532,29 +522,31 @@ namespace Seldon
 	// Forward solve.
 	for (i = 0; i < n; i++)
 	  {
-	    k_ = 0; k = A.Index(i,k_);
-	    while ( k < i)
+	    k_ = 0;
+            k = A.Index(i, k_);
+	    while (k < i)
 	      {
-		x(i) -= A.Value(i,k_)*x(k);
+		x(i) -= A.Value(i, k_) * x(k);
 		k_++;
-		k = A.Index(i,k_);
+		k = A.Index(i, k_);
 	      }
 	  }
-	
+
 	// Backward solve.
 	for (i = n-1; i >= 0; i--)
 	  {
-	    k_ = 0; k = A.Index(i,k_);
-	    while ( k < i)
+	    k_ = 0;
+            k = A.Index(i, k_);
+	    while (k < i)
 	      {
 		k_++;
-		k = A.Index(i,k_);
+		k = A.Index(i, k_);
 	      }
-	    
-	    inv_diag = A.Value(i,k_);
-	    for ( k = (k_+1); k < A.GetRowSize(i) ; k++)
-	      x(i) -= A.Value(i,k) * x(A.Index(i,k));
-	    
+
+	    inv_diag = A.Value(i, k_);
+	    for (k = k_ + 1; k < A.GetRowSize(i); k++)
+	      x(i) -= A.Value(i, k) * x(A.Index(i, k));
+
 	    x(i) *= inv_diag;
 	  }
       }
@@ -563,7 +555,8 @@ namespace Seldon
   
   //! LDLt factorisation without pivot for symmetric matrix.
   template<class T, class Allocator>
-  void GetLU(Matrix<T, Symmetric, ArrayRowSymSparse, Allocator>& A, int print_level)
+  void GetLU(Matrix<T, Symmetric, ArrayRowSymSparse, Allocator>& A,
+	     int print_level)
   {
     int size_row;
     int n = A.GetN();
@@ -574,11 +567,10 @@ namespace Seldon
     int i_row, j_col, index_lu, length;
     int i, j, k;
 
-
     Vector<T, VectFull, Allocator> Row_Val(n);
     IVect Index(n), Row_Ind(n);
-    Row_Val.Zero(); Row_Ind.Fill(-1);
-
+    Row_Val.Zero();
+    Row_Ind.Fill(-1);
     Index.Fill(-1);
 
     // We convert A into an unsymmetric matrix.
@@ -595,12 +587,12 @@ namespace Seldon
         // Progress bar if print level is high enough.
         if (print_level > 0)
           {
-            new_percent = int(double(i_row)/(n-1)*80);
+            new_percent = int(double(i_row) / double(n-1) * 78.);
             for (int percent = old_percent; percent < new_percent; percent++)
               {
-                cout << "#"; cout.flush();
+                cout << "#";
+                cout.flush();
               }
-
             old_percent = new_percent;
           }
 
@@ -611,11 +603,10 @@ namespace Seldon
           tnorm += abs(B.Value(i_row, k));
 
 	if (tnorm == zero)
-	  {
-            cout << "Structurally singular matrix." << endl;
-            cout << "Norm of row " << i_row << " is equal to 0." << endl;
-            abort();
-          }
+          throw WrongArgument("GetLU(Matrix<ArrayRowSymSparse>&, int)",
+                              "The matrix is structurally singular. "
+                              "The norm of row " + to_str(i_row)
+                              + " is equal to 0.");
 
         // Separating lower part from upper part for this row.
 	length_upper = 1;
@@ -654,7 +645,6 @@ namespace Seldon
 
 	j_col = 0;
 	length = 0;
-
 
         // We eliminate previous rows.
 	while (j_col <length_lower)
@@ -700,17 +690,16 @@ namespace Seldon
 	    // Combines current row and row jrow.
 	    for (k = 1; k < A.GetRowSize(jrow); k++)
 	      {
-		s = fact * A.Value(jrow,k);
-		j = A.Index(jrow,k);
-		
+		s = fact * A.Value(jrow, k);
+		j = A.Index(jrow, k);
+
 		jpos = Index(j);
 		if (j >= i_row)
 		  {
-		    
+
 		    // Dealing with upper part.
 		    if (jpos == -1)
 		      {
-			
 			// This is a fill-in element.
 			i = i_row + length_upper;
 			Row_Ind(i) = j;
@@ -753,15 +742,15 @@ namespace Seldon
 
 	// Resets double-pointer to zero (U-part).
 	for (k = 0; k < length_upper; k++)
-          Index(Row_Ind(i_row+k )) = -1;
+          Index(Row_Ind(i_row + k)) = -1;
 
 	// Updating U-matrix
 	length = 0;
-	for (k = 1; k <= (length_upper-1); k++)
+	for (k = 1; k <= length_upper - 1; k++)
 	  {
 	    ++length;
-	    Row_Val(i_row+length) = Row_Val(i_row+k);
-	    Row_Ind(i_row+length) = Row_Ind(i_row+k);
+	    Row_Val(i_row + length) = Row_Val(i_row + k);
+	    Row_Ind(i_row + length) = Row_Ind(i_row + k);
 	  }
 
 	length++;
@@ -769,33 +758,34 @@ namespace Seldon
 	// Copies U-part in matrix A.
 	A.ReallocateRow(i_row, length);
 	index_lu = 1;
-	for (k = (i_row+1) ; k <= (i_row+length-1) ; k++)
+	for (k = i_row + 1 ; k <= i_row + length - 1 ; k++)
 	  {
-	    A.Index(i_row,index_lu) = Row_Ind(k);
-	    A.Value(i_row,index_lu) = Row_Val(k);
+	    A.Index(i_row, index_lu) = Row_Ind(k);
+	    A.Value(i_row, index_lu) = Row_Val(k);
 	    ++index_lu;
 	  }
-		
+
 	// Stores the inverse of the diagonal element of u.
 	A.Value(i_row,0) = 1.0 / Row_Val(i_row);
-	
+
       } // end main loop.
 
     if (print_level > 0)
-      cout<<endl;
+      cout << endl;
 
     // for each row of A, we divide by diagonal value
     for (int i = 0; i < n; i++)
       for (int j = 1; j < A.GetRowSize(i); j++)
-	A.Value(i,j) *= A.Value(i,0);
+	A.Value(i, j) *= A.Value(i, 0);
 
     if (print_level > 0)
       cout << "The matrix takes " <<
-        int((A.GetDataSize()*(sizeof(T)+4))/(1024*1024)) << " MB" << endl;
+        int((A.GetDataSize() * (sizeof(T) + 4)) / (1024. * 1024.))
+           << " MB" << endl;
 
   }
-  
-  
+
+
   //! Resolution of L D L^t y = x (result is overwritten in x)
   /*! The factor L^t is assumed to be stored in matrix A. The diagonal of A is
     equal to the inverse of diagonal D.
@@ -820,7 +810,7 @@ namespace Seldon
 
     // Inverting by diagonal D.
     for (int i_col = 0; i_col < n ; i_col++)
-      x(i_col) *= A.Value(i_col,0);
+      x(i_col) *= A.Value(i_col, 0);
 
     // Then we solve L^t x = y.
     for (int i_col = n-1; i_col >=0 ; i_col--)
@@ -828,8 +818,8 @@ namespace Seldon
 	tmp = x(i_col);
 	for (int k = 1; k < A.GetRowSize(i_col) ; k++)
 	  {
-	    j_row = A.Index(i_col,k);
-	    tmp -= A.Value(i_col,k)*x(j_row);
+	    j_row = A.Index(i_col, k);
+	    tmp -= A.Value(i_col, k)*x(j_row);
 	  }
 	
 	x(i_col) = tmp;
@@ -944,110 +934,6 @@ namespace Seldon
     mat_lu.Solve(TransA, x);
   }
   
-  
-  /******************
-   * Ordering stuff *
-   ******************/
-  
-  
-  //! Construct reverse Cuthill-McKee ordering from a given matrix
-  template<class T, class Prop, class Storage, class Allocator,
-	   class Tint, class Alloc>
-  void FindReverseCuthillMcKeeOrdering(const Matrix<T, Prop,
-				       Storage, Allocator>& A,
-				       Vector<Tint, VectFull, Alloc>& num)
-  {
-    int n = A.GetM();
-    if (n <= 0)
-      {
-	num.Clear();
-	return;
-      }
-    
-    // pattern of A+A' is retrieved in CSC format
-    Vector<Tint, VectFull, Alloc> Ptr, Ind;
-    Vector<T, VectFull, Allocator> Value;
-    General sym;
-    ConvertToCSC(A, sym, Ptr, Ind, Value, true);
-    Value.Clear();
-    
-    // allocation of arrays
-    Vector<Tint, VectFull, Alloc> vertex(n), neighbor(n);
-    Vector<bool> RowUsed(n);
-    IVect nb_neighbor(n);
-    
-    num.Reallocate(n);
-    num.Fill(0);
-    RowUsed.Fill(false);
-    vertex.Fill(0);
-    neighbor.Fill(0);
-    nb_neighbor.Fill(0);
-    
-    // beginning with first row
-    int nb_row = 1;
-    int nb_active_row = 1;
-    vertex(0) = 0;
-    num(0) = 0;
-    RowUsed(0) = true;
-    int first_free_row = 1;
-    
-    // loop until all rows are found
-    while (nb_row < n)
-      {
-	// searching all neighboring rows
-	int nb = 0;
-	for (int i = 0; i < nb_active_row; i++)
-	  {
-	    int irow = vertex(i);
-	    for (int j = Ptr(irow); j < Ptr(irow+1); j++)
-	      {
-		int icol = Ind(j);
-		if (!RowUsed(icol))
-		  {
-		    RowUsed(icol) = true;
-		    neighbor(nb) = icol;
-		    nb_neighbor(nb) = Ptr(icol+1) - Ptr(icol);
-		    nb++;
-		  }
-	      }
-	  }
-	
-	if (nb == 0)
-	  {
-	    // no row has been found, therefore there are independent
-	    // blocks in the matrix, searching next free row
-	    while (RowUsed(first_free_row))
-	      first_free_row++;
-	    
-	    RowUsed(first_free_row) = true;
-	    num(nb_row) = first_free_row;
-	    nb_active_row = 1;
-	    vertex(0) = first_free_row;
-	    nb_row++;
-	  }
-	else
-	  {
-	    // sorting neighboring vertices by the number of adjacent vertices
-	    Sort(nb, nb_neighbor, neighbor);
-	    
-	    // then adding those rows
-	    nb_active_row = nb;
-	    for (int i = 0; i < nb; i++)
-	      {
-		vertex(i) = neighbor(i);
-		num(nb_row) = neighbor(i);
-		nb_row++;
-	      }
-	  }
-      }
-    
-    // reverting final result
-    for (int i = 0; i < n; i++)
-      vertex(i) = num(i);
-    
-    for (int i = 0; i < n; i++)
-      num(n-1-i) = vertex(i); 
-  }
   
 }  // namespace Seldon.
 

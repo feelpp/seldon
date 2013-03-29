@@ -125,7 +125,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     template <class T0>
@@ -151,7 +151,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     template <class T0>
@@ -177,7 +177,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     template <class T0>
@@ -203,7 +203,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     template <class T0>

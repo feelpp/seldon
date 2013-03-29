@@ -308,8 +308,8 @@ namespace Seldon
   //! Access to element (i, j).
   /*!
     Returns the value of element (i, j).
-    \param[in] i row index.
-    \param[in] j column index.
+    \param i row index.
+    \param j column index.
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
@@ -333,7 +333,7 @@ namespace Seldon
   }
 
   
-    //! Access to element (i, j).
+  //! Access to element (i, j).
   /*!
     Returns the value of element (i, j).
     \param[in] i row index.
@@ -389,11 +389,12 @@ namespace Seldon
   }
 
 
-  //! Access method.
-  /*! Returns the value of element (\a i, \a j).
-    \param[in] i row index.
-    \param[in] j column index.
-    \return Element (\a i, \a j) of the matrix.
+  //! Access operator.
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline const T&
@@ -416,12 +417,12 @@ namespace Seldon
       this->val_(Storage::GetFirst(i, j)).Val(Storage::GetSecond(i, j));
   }
 
-  
-  //! Sets an element of matrix
-  /*! Sets the value of element (\a i, \a j).
-    \param[in] i row index.
-    \param[in] j column index.
-    \param[in] x a(i, j) = x
+
+  //! Sets an element of the matrix.
+  /*!
+    \param i row index.
+    \param j column index.
+    \param x new value for the matrix element (\a i, \a j).
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>
@@ -429,8 +430,8 @@ namespace Seldon
   {
     this->Get(i, j) = x;
   }
-  
-  
+
+
   //! Returns j-th non-zero value of row/column i.
   /*!
     \param[in] i row/column number.
@@ -950,7 +951,7 @@ namespace Seldon
     Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayColSparse, Allocator>::Matrix()  throw():
+  inline Matrix<T, Prop, ArrayColSparse, Allocator>::Matrix():
     Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>()
   {
   }
@@ -1162,7 +1163,7 @@ namespace Seldon
     Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayRowSparse, Allocator>::Matrix()  throw():
+  inline Matrix<T, Prop, ArrayRowSparse, Allocator>::Matrix():
     Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>()
   {
   }
@@ -1375,7 +1376,7 @@ namespace Seldon
     Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayColSymSparse, Allocator>::Matrix()  throw():
+  inline Matrix<T, Prop, ArrayColSymSparse, Allocator>::Matrix():
     Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>()
   {
   }
@@ -1432,7 +1433,7 @@ namespace Seldon
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
-    
+
     if (i < j)
       return this->val_(j)(i);
 
@@ -1788,7 +1789,7 @@ namespace Seldon
     Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Matrix()  throw():
+  inline Matrix<T, Prop, ArrayRowSymSparse, Allocator>::Matrix():
     Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>()
   {
   }

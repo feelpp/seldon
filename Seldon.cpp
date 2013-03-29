@@ -27,12 +27,19 @@ namespace Seldon
 
   template class Vector_Base<int, MallocAlloc<int> >;
   template class Vector<int, VectFull, MallocAlloc<int> >;
+  
   template class MallocAlloc<float>;
   template class Vector_Base<float, MallocAlloc<float> >;
   template class Vector<float, VectFull, MallocAlloc<float> >;
+  
+  template class Vector<Vector<int, VectFull, MallocAlloc<int> >, Collection,
+                MallocAlloc<Vector<int, VectFull, MallocAlloc<int> > > >;
+  
   template class MallocAlloc<double>;
   template class Vector_Base<double, MallocAlloc<double> >;
   template class Vector<double, VectFull, MallocAlloc<double> >;
+  template class Vector<Vector<double, VectFull, MallocAlloc<double> >,
+            Collection, MallocAlloc<Vector<double, VectFull, MallocAlloc<double> > > >;
 
   template class Matrix_Base<int, MallocAlloc<int> >;
   template class Matrix_Pointers<int, General, RowMajor, MallocAlloc<int> >;
@@ -59,7 +66,7 @@ namespace Seldon
   template void ConvertMatrix_to_Coordinates(const Matrix<double, General, RowSparse, MallocAlloc<double> >& A,
                                              Vector<int>& IndRow, Vector<int>& IndCol,
                                              Vector<double, VectFull>& Val,
-                                             int index = 0, bool sym = false);
+                                             int index, bool sym);
 
 #ifndef SWIG
   template void ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
@@ -68,6 +75,23 @@ namespace Seldon
                                                int index = 0);
 #endif
 
+  // Skips one vector in an input stream.
+  void skip_vector_double(istream& input_stream)
+  {
+    int size;
+    input_stream.read(reinterpret_cast<char*>(&size), sizeof(int));
+    input_stream.seekg(size * sizeof(double), istream::cur);
+  }
+
+  // Skips one matrix in an input stream.
+  void skip_matrix_double(istream& input_stream)
+  {
+    int m, n;
+    input_stream.read(reinterpret_cast<char*>(&m), sizeof(int));
+    input_stream.read(reinterpret_cast<char*>(&n), sizeof(int));
+    input_stream.seekg(m * n * sizeof(double), istream::cur);
+  }
+  
 }
 
 

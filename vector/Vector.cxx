@@ -209,7 +209,7 @@ namespace Seldon
     On exit, the vector is empty.
   */
   template <class T, class Allocator>
-  Vector<T, VectFull, Allocator>::Vector()  throw():
+  Vector<T, VectFull, Allocator>::Vector():
     Vector_Base<T, Allocator>()
   {
   }
@@ -402,11 +402,12 @@ namespace Seldon
   }
 
 
-  //! Changes the length of the vector and sets its data array
-  //! (low level method).
+  /*! \brief Changes the length of the vector and sets its data array (low
+    level method). */
   /*!
-    Reallocates a vector and sets the new data array. It is useful to create
-    a vector from pre-existing data.
+    Deallocates memory allocated for the current data array, changes the
+    vector size and sets the new data array. It is useful to create a vector
+    from pre-existing data.
     \param i new length of the vector.
     \param data the new data array. 'data' contains the new elements of the
     vector and must therefore contain 'i' elements.
@@ -429,8 +430,9 @@ namespace Seldon
 
 
   //! Lets the current vector point to the data of another vector.
-  /*! Sets the length and the data of the current vector to that of \a V. On
-    exit, the current vector shares it data array with \a V.
+  /*! Deallocates memory allocated for the current data array. Then sets the
+    length and the data of the current vector to that of \a V. On exit, the
+    current vector shares it data array with \a V.
     \param V vector whose data should be shared with current instance.
     \warning On exit, \a V and the current instance share the same data array,
     and they are likely to free it. As a consequence, before the vectors are
@@ -489,10 +491,10 @@ namespace Seldon
   }
 
 
-  //! Access to an element i
+  //! Access to element \a i.
   /*!
     \param i index.
-    \return The value of the vector at 'i'.
+    \return The value of the vector at \a i.
   */
   template <class T, class Allocator>
   inline typename Vector<T, VectFull, Allocator>::reference
@@ -501,16 +503,15 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<VectFull>::Get(i)",
+      throw WrongIndex("Vector<VectFull>::Get(int)",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
 
     return this->data_[i];
-    
   }
-  
-  
+
+
   //! Access operator.
   /*!
     \param i index.
@@ -523,7 +524,7 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<VectFull>::operator()",
+      throw WrongIndex("Vector<VectFull>::operator() const",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
@@ -532,10 +533,10 @@ namespace Seldon
   }
 
 
-  //! Access to an element i
+  //! Access to element \a i.
   /*!
     \param i index.
-    \return The value of the vector at 'i'.
+    \return The value of the vector at \a i.
   */
   template <class T, class Allocator>
   inline typename Vector<T, VectFull, Allocator>::const_reference
@@ -544,16 +545,15 @@ namespace Seldon
 
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<VectFull>::Get(i)",
+      throw WrongIndex("Vector<VectFull>::Get(int) const",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
 
     return this->data_[i];
-    
   }
 
-  
+
   //! Duplicates a vector (assignment operator).
   /*!
     \param X vector to be copied.
@@ -583,6 +583,20 @@ namespace Seldon
     this->Reallocate(X.GetLength());
 
     this->vect_allocator_.memorycpy(this->data_, X.GetData(), this->m_);
+  }
+
+
+  //! Duplicates a vector.
+  /*!
+    \return A copy of the vector.
+    \note Memory is duplicated: the returned vector is therefore independent
+    from the current instance after the copy.
+  */
+  template <class T, class Allocator>
+  inline Vector<T, VectFull, Allocator>
+  Vector<T, VectFull, Allocator>::Copy() const
+  {
+    return Vector<T, VectFull, Allocator>(*this);
   }
 
 
@@ -831,7 +845,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Vector<VectFull>::Write(string FileName)",
+      throw IOError("Vector<VectFull>::Write(string FileName, "
+                    "bool with_size)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
@@ -856,7 +871,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Vector<VectFull>::Write(ostream& FileStream)",
+      throw IOError("Vector<VectFull>::Write(ostream& FileStream, "
+                    "bool with_size)",
                     "The stream is not ready.");
 #endif
 
@@ -870,7 +886,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!FileStream.good())
-      throw IOError("Vector<VectFull>::Write(ostream& FileStream)",
+      throw IOError("Vector<VectFull>::Write(ostream& FileStream, "
+                    "bool with_size)",
                     "Output operation failed.");
 #endif
 
@@ -937,6 +954,91 @@ namespace Seldon
   }
 
 
+#ifdef SELDON_WITH_HDF5
+  //! Writes the vector in a HDF5 file.
+  /*!
+    All elements of the vector are stored in HDF5 format.
+    \param FileName file name.
+    \param group_name name of the group the vector must be stored in.
+    \param dataset_name name of the dataset the vector must be stored in.
+  */
+  template <class T, class Allocator>
+  void Vector<T, VectFull, Allocator>::WriteHDF5(string FileName,
+                                                 string group_name,
+                                                 string dataset_name) const
+  {
+    hid_t file_id = H5Fopen(FileName.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!file_id)
+      throw IOError("Vector<VectFull>::WriteHDF5(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    hid_t dataset_id, dataspace_id, group_id;
+    herr_t status;
+
+    T x(0);
+    hid_t datatype = GetH5Type(x);
+
+    if (!H5Lexists(file_id, group_name.c_str(), H5P_DEFAULT))
+      group_id = H5Gcreate(file_id, group_name.c_str(), 0);
+    group_id = H5Gopen(file_id, group_name.c_str());
+
+    if (!H5Lexists(group_id, dataset_name.c_str(), H5P_DEFAULT))
+      {
+        // Create the initial dataspace.
+        hsize_t dim[1] = {0};
+        hsize_t maxdims[1] = {H5S_UNLIMITED};
+        dataspace_id = H5Screate_simple(1, dim, maxdims);
+
+        // Define chunking parameters to allow extension of the dataspace.
+        hid_t cparms = H5Pcreate(H5P_DATASET_CREATE);
+        hsize_t chunk_dims[1] = {this->GetLength()};
+        status = H5Pset_chunk(cparms, 1, chunk_dims);
+
+        // Create the dataset.
+        hid_t filetype = H5Tvlen_create(datatype);
+        dataset_id = H5Dcreate(group_id, dataset_name.c_str(),
+                               filetype, dataspace_id, cparms);
+      }
+
+    // Opens the dataset, and extend it to store a new vector.
+    dataset_id = H5Dopen(group_id, dataset_name.c_str());
+    dataspace_id = H5Dget_space(dataset_id);
+    hsize_t dims_out[1];
+    status  = H5Sget_simple_extent_dims(dataspace_id, dims_out, NULL);
+    hsize_t new_dim[1]= {dims_out[0] + 1};
+    status = H5Dextend(dataset_id, new_dim);
+
+    // Selects the last memory part of the dataset, to store the vector.
+    hsize_t offset[1] = {dims_out[0]};
+    hsize_t dim2[1] = {1};
+    dataspace_id = H5Dget_space(dataset_id);
+    status = H5Sselect_hyperslab(dataspace_id, H5S_SELECT_SET,
+                                 offset, NULL,
+                                 dim2, NULL);
+
+    // Defines memory space.
+    hid_t dataspace = H5Screate_simple(1, dim2, NULL);
+
+    // Writes the data to the memory hyperslab selected.
+    hid_t memtype = H5Tvlen_create(datatype);
+    hvl_t wdata[1];
+    wdata[0].len = this->GetLength();
+    wdata[0].p = this->GetDataVoid();
+    status = H5Dwrite(dataset_id, memtype, dataspace,
+                      dataspace_id, H5P_DEFAULT, wdata);
+
+    // Closes the dataset, group and file.
+    status = H5Dclose(dataset_id);
+    status = H5Gclose(group_id);
+    status = H5Fclose(file_id);
+  }
+#endif
+
+
   //! Sets the vector from a file.
   /*!
     Sets the vector according to a binary file that stores the length of the
@@ -956,7 +1058,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Vector<VectFull>::Read(string FileName)",
+      throw IOError("Vector<VectFull>::Read(string FileName, bool with_size)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
@@ -983,7 +1085,8 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Vector<VectFull>::Read(istream& FileStream)",
+      throw IOError("Vector<VectFull>::Read(istream& FileStream, "
+                    "bool with_size)",
                     "The stream is not ready.");
 #endif
 
@@ -1000,8 +1103,9 @@ namespace Seldon
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.
     if (!FileStream.good())
-      throw IOError("Vector<VectFull>::Read(istream& FileStream)",
-                    "Input operation failed.");
+      throw IOError("Vector<VectFull>::Read(istream& FileStream, "
+                    "bool with_size)",
+                    "Output operation failed.");
 #endif
 
   }

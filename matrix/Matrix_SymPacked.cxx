@@ -401,8 +401,8 @@ namespace Seldon
 					   (i * (i + 1)) / 2 + j)];
   }
 
-  
-  //! Returns access to an element (i, j)
+
+  //! Returns the element (\a i, \a j)
   /*!
     Returns the value of element (i, j).
     \param i row index.
@@ -416,9 +416,9 @@ namespace Seldon
   {
     return this->Val(i, j);
   }
-  
-  
-  //! Returns access to an element (i, j)
+
+
+  //! Returns the element (\a i, \a j)
   /*!
     Returns the value of element (i, j).
     \param i row index.
@@ -431,8 +431,8 @@ namespace Seldon
   {
     return this->Val(i, j);
   }
-  
-  
+
+
   //! Access to elements of the data array.
   /*!
     Provides a direct access to the data array.

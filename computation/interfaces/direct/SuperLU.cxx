@@ -115,52 +115,6 @@ namespace Seldon
   }
 
 
-  //! Returns the permutation of rows.
-  /*! In order to retain the sparsity as much as possible, SuperLU permutes
-    rows and columns before the factorization. This method returns the row
-    permutation that was employed in the factorization. This method is
-    obviously to be called after the factorization has been performed.
-    \return The permutation of the rows.
-  */
-  template<class T>
-  const Vector<int>& MatrixSuperLU_Base<T>::GetRowPermutation() const
-  {
-    return perm_r;
-  }
-
-
-  //! Returns the permutation of columns.
-  /*! In order to retain the sparsity as much as possible, SuperLU permutes
-    rows and columns before the factorization. This method returns the column
-    permutation that was employed in the factorization. This method is
-    obviously to be called after the factorization has been performed.
-    \return The permutation of the columns.
-  */
-  template<class T>
-  const Vector<int>& MatrixSuperLU_Base<T>::GetColPermutation() const
-  {
-    return perm_c;
-  }
-
-  
-  //! sets the ordering algorithm that will be used later for fatorisation
-  template<class T>
-  void MatrixSuperLU_Base<T>::SelectOrdering(colperm_t type)
-  {
-    permc_spec = type;
-  }
-
-
-  //! sets the permutation array directly
-  template<class T>
-  void MatrixSuperLU_Base<T>::SetPermutation(const IVect& permut)
-  {
-    permc_spec = MY_PERMC;
-    perm_c = permut;
-    perm_r = permut;
-  }
-
-
   //! same effect as a call to the destructor
   template<class T>
   void MatrixSuperLU_Base<T>::Clear()
@@ -296,6 +250,50 @@ namespace Seldon
   }
 
 
+  //! Returns the permutation of rows.
+  /*! In order to retain the sparsity as much as possible, SuperLU permutes
+    rows and columns before the factorization. This method returns the row
+    permutation that was employed in the factorization. This method is
+    obviously to be called after the factorization has been performed.
+    \return The permutation of the rows.
+  */
+  template<class T>
+  const Vector<int>& MatrixSuperLU_Base<T>::GetRowPermutation() const
+  {
+    return perm_r;
+  }
+
+
+  //! Returns the permutation of columns.
+  /*! In order to retain the sparsity as much as possible, SuperLU permutes
+    rows and columns before the factorization. This method returns the column
+    permutation that was employed in the factorization. This method is
+    obviously to be called after the factorization has been performed.
+    \return The permutation of the columns.
+  */
+  template<class T>
+  const Vector<int>& MatrixSuperLU_Base<T>::GetColPermutation() const
+  {
+    return perm_c;
+  }
+
+
+  template<class T>
+  void MatrixSuperLU_Base<T>::SelectOrdering(colperm_t type)
+  {
+    permc_spec = type;
+  }
+
+
+  template<class T>
+  void MatrixSuperLU_Base<T>::SetPermutation(const IVect& permut)
+  {
+    permc_spec = MY_PERMC;
+    perm_c = permut;
+    perm_r = permut;
+  }
+
+
   //! factorization of matrix in double precision using SuperLU
   template<class Prop, class Storage, class Allocator>
   void MatrixSuperLU<double>::
@@ -316,8 +314,8 @@ namespace Seldon
     options.ColPerm = permc_spec;
     if (permc_spec != MY_PERMC)
       {
-	perm_r.Reallocate(n);
-	perm_c.Reallocate(n);
+        perm_r.Reallocate(n);
+        perm_c.Reallocate(n);
       }
 
     SuperMatrix A, AA;
@@ -358,12 +356,13 @@ namespace Seldon
 	mem_usage_t mem_usage;
 	Lstore = (SCformat *) L.Store;
 	Ustore = (NCformat *) U.Store;
-	cout<<"No of nonzeros in factor L = "<<Lstore->nnz<<endl;
-	cout<<"No of nonzeros in factor U = "<<Ustore->nnz<<endl;
-	cout<<"No of nonzeros in L+U     = "<<(Lstore->nnz+Ustore->nnz)<<endl;
+	cout << "Number of nonzeros in factor L = " << Lstore->nnz << endl;
+	cout << "Number of nonzeros in factor U = " << Ustore->nnz << endl;
+	cout << "Number of nonzeros in L+U     = "
+             << Lstore->nnz + Ustore->nnz << endl;
 	dQuerySpace(&L, &U, &mem_usage);
-	cout<<"Memory used for factorisation in Mo "
-	    <<mem_usage.total_needed/(1024*1024)<<endl;
+	cout << "Memory used for factorization in MB: "
+             << mem_usage.total_needed / (1024. * 1024.) << endl;
       }
     
     Acsr.Nullify();
@@ -376,6 +375,7 @@ namespace Seldon
   {
     trans_t trans = NOTRANS;
     int nb_rhs = 1, info;
+    // Putting right hand side on SuperLU structure.
     dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
 
@@ -399,6 +399,7 @@ namespace Seldon
 
     trans_t trans = TRANS;
     int nb_rhs = 1, info;
+    // Putting right hand side on SuperLU structure.
     dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
 
@@ -560,15 +561,14 @@ namespace Seldon
     if (!keep_matrix)
       mat.Clear();
 
-    // we get renumbering vectors perm_r and perm_c
     SuperMatrix AA, A;
     int nnz = Acsr.GetDataSize();
     zCreate_CompCol_Matrix(&AA, n, n, nnz,
 			   reinterpret_cast<doublecomplex*>(Acsr.GetData()),
 			   Acsr.GetInd(), Acsr.GetPtr(),
 			   SLU_NC, SLU_Z, SLU_GE);
-    
-    // we get renumbering vectors perm_r and perm_c
+
+    // We get renumbering vectors perm_r and perm_c.
     options.ColPerm = permc_spec;
     if (permc_spec != MY_PERMC)
       {
@@ -601,12 +601,13 @@ namespace Seldon
 	mem_usage_t mem_usage;
 	Lstore = (SCformat *) L.Store;
 	Ustore = (NCformat *) U.Store;
-	cout<<"No of nonzeros in factor L = "<<Lstore->nnz<<endl;
-	cout<<"No of nonzeros in factor U = "<<Ustore->nnz<<endl;
-	cout<<"No of nonzeros in L+U     = "<<(Lstore->nnz+Ustore->nnz)<<endl;
+	cout << "Number of nonzeros in factor L = " << Lstore->nnz<<endl;
+	cout << "Number of nonzeros in factor U = " << Ustore->nnz<<endl;
+	cout << "Number of nonzeros in L+U     = "
+             << Lstore->nnz + Ustore->nnz<<endl;
 	zQuerySpace(&L, &U, &mem_usage);
-	cout<<"Memory used for factorisation in Mo "
-	    <<mem_usage.total_needed/1e6<<endl;
+	cout << "Memory used for factorization in MB: "
+	     << mem_usage.total_needed / (1024. * 1024.) << endl;
       }
     
     Acsr.Nullify();

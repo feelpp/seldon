@@ -1,5 +1,6 @@
 // Copyright (C) 2010, INRIA
 // Author(s): Marc Fragu, Vivien Mallet
+// Copyright (C) 2011, Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -507,6 +508,21 @@ namespace Seldon
   }
 
 
+  //! Copies a Vector2 instance.
+  /*!
+    \return A copy of the current Vector2 instance.
+    \note The current instance and the copy do not share memory on exit.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  Vector2<T, Allocator0, Allocator1>
+  Vector2<T, Allocator0, Allocator1>::Copy() const
+  {
+    Vector2<T, Allocator0, Allocator1> output;
+    output.Copy(*this);
+    return output;
+  }
+
+
   /*********************************
    * ELEMENT ACCESS AND ASSIGNMENT *
    *********************************/
@@ -602,6 +618,155 @@ namespace Seldon
         cout << "Vector " << i << ": ";
         data_(i).Print();
       }
+  }
+
+
+  /**************************
+   * INPUT/OUTPUT FUNCTIONS *
+   **************************/
+
+
+  //! Writes the instance in a binary file.
+  /*!
+    The number of inner vectors (integer) is written first. Then for each
+    vector, the length of the vector (integer) and all elements of the vector
+    are written.
+    \param[in] file_name file name.
+    \param[in] with_size if set to 'false', the number of vectors and the
+    lengths of the inner vectors are not saved.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  void Vector2<T, Allocator0, Allocator1>
+  ::Write(string file_name, bool with_size) const
+  {
+    ofstream file_stream;
+    file_stream.open(file_name.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!file_stream.is_open())
+      throw IOError("Vector2::Write(string file_name, bool with_size)",
+		    string("Unable to open file \"") + file_name + "\".");
+#endif
+
+    this->Write(file_stream, with_size);
+
+    file_stream.close();
+  }
+
+
+  //! Writes the instance in a stream in a binary format.
+  /*!
+    The number of inner vectors (integer) is written first. Then for each
+    vector, the length of the vector (integer) and all elements of the vector
+    are written.
+    \param[in,out] stream output stream.
+    \param[in] with_size if set to 'false', the number of vectors and the
+    lengths of the inner vectors are not saved.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  void Vector2<T, Allocator0, Allocator1>
+  ::Write(ostream& stream, bool with_size) const
+  {
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!stream.good())
+      throw IOError("Vector2::Write(ostream& stream, bool with_size)",
+                    "The stream is not ready.");
+#endif
+
+    if (with_size)
+      {
+        int m = GetLength();
+        stream.write(reinterpret_cast<char*>(const_cast<int*>(&m)),
+                     sizeof(int));
+      }
+
+    for (int i = 0; i < GetLength(); i++)
+      data_(i).Write(stream, with_size);
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was written.
+    if (!stream.good())
+      throw IOError("Vector2::Write(ostream& stream, bool with_size)",
+                    "Output operation failed.");
+#endif
+
+  }
+
+
+  //! Reads the Vector2 from a file.
+  /*!
+    Sets the current Vector2 instance according to a binary file that stores
+    the total number of inner vectors, and, for each inner vector, the length
+    of the vector (integer) and its elements.
+    \param[in] file_name file name.
+    \param[in] with_size if set to 'false', the total number of inner vectors
+    and the lengths of the vectors are not available in the file. In this
+    case, the shape of the current instance is unchanged and the values of the
+    elements are directly read in the file.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  void Vector2<T, Allocator0, Allocator1>
+  ::Read(string file_name, bool with_size)
+  {
+    ifstream file_stream;
+    file_stream.open(file_name.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!file_stream.is_open())
+      throw IOError("Vector2::Read(string file_name, bool with_size)",
+		    string("Unable to open file \"") + file_name + "\".");
+#endif
+
+    this->Read(file_stream, with_size);
+
+    file_stream.close();
+  }
+
+
+  //! Reads the Vector2 from a file.
+  /*!
+    Sets the current Vector2 instance according to a binary stream that stores
+    the total number of inner vectors, and, for each inner vector, the length
+    of the vector (integer) and its elements.
+    \param[in,out] stream input stream.
+    \param[in] with_size if set to 'false', the total number of inner vectors
+    and the lengths of the vectors are not available in the stream. In this
+    case, the shape of the current instance is unchanged and the values of the
+    elements are directly read in the file.
+  */
+  template <class T, class Allocator0, class Allocator1>
+  void Vector2<T, Allocator0, Allocator1>
+  ::Read(istream& stream, bool with_size)
+  {
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!stream.good())
+      throw IOError("Vector2::Read(istream& stream, bool with_size)",
+                    "The stream is not ready.");
+#endif
+
+    if (with_size)
+      {
+        int new_size;
+        stream.read(reinterpret_cast<char*>(&new_size), sizeof(int));
+        this->Reallocate(new_size);
+      }
+
+    for (int i = 0; i < GetLength(); i++)
+      data_(i).Read(stream, with_size);
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was read.
+    if (!stream.good())
+      throw IOError("Vector2::Read(istream& stream, bool with_size)",
+                    "Output operation failed.");
+#endif
+
   }
 
 

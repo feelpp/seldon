@@ -656,8 +656,8 @@ namespace Seldon
   //! solves linear system with parallel execution
   /*!
     \param[in] TransA we solve A x = b or A^T x = b
-    \param[inout] x right-hand-side then solution
-    \param[inout] glob_num global row numbers
+    \param[in,out] x right-hand-side then solution
+    \param[in,out] glob_num global row numbers
   */
   template<class T> template<class Allocator2, class Transpose_status>
   void MatrixMumps<T>::SolveDistributed(MPI::Comm& comm_facto,

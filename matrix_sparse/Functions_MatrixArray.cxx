@@ -1482,7 +1482,7 @@ namespace Seldon
 	    ind_row(j+n1) = B.Index(i, j);
 	    val_row(j+n1) = alpha * complex<T3>(0, B.Value(i, j));
 	  }
-        
+
 	C.AddInteractionRow(i, size_row, ind_row, val_row);
       }
   }

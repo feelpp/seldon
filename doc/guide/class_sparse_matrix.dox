@@ -5,7 +5,7 @@
 /*!
 \page class_sparse_matrix Sparse Matrices
 
-<p> First, methods and functions related to sparse matrices stored as a vector of sparse rows are detailed.  This type of matrix is interesting because it allows fast insertion of elements in the matrix. Then the matrices using Harwell-Boeing format are detailed. Functions related to sparse matrices are explained. We advise the user to use always storage of matrix by rows, since this last storage is more efficient for the matrix-vector product, and some methods are not implemented for column-wise storages. Row and column indices start at 0, as for dense matrices. </p>
+<p> First, methods and functions related to sparse matrices stored as a vector of sparse rows are detailed.  This type of matrix is interesting because it allows fast insertion of elements in the matrix.  Then the matrices using Harwell-Boeing format are detailed. Functions related to sparse matrices are explained. We advise the user to use always storage of matrix by rows, since this last storage is more efficient for the matrix-vector product. Row and column indices start at 0, as for dense matrices. </p>
 
 
 <h2>Basic declaration of easily modifiable sparse matrices:</h2>
@@ -500,13 +500,16 @@ Matrix_SymSparse.cxx</p>
 </pre>
 
 
-<p>The operator () cannot be used to insert or modify elements of matrix. Use rather the methods <a href="#Get">Get</a> or <a href="#Val">Val</a>. </p>
+<p>The operator () cannot be used to insert or modify elements of matrix, unless the flag SELDON_WITH_MODIFIABLE_PARENTHESIS_OPERATOR is set during the compilation. Use rather the methods <a href="#Get">Get</a> or <a href="#Val">Val</a>. </p>
 
 
 <h4>Example : </h4>
 \precode
 Matrix<double, General, ArrayRowSparse> V(3, 3);
 // use of operator () to know the value of A(i, j);
+cout << V(2, 0) << endl;
+
+// this command will add a non-zero entry v_20
 cout << V(2, 0) << endl;
 
 // set all elements to a given value
@@ -1992,12 +1995,16 @@ Matrix_ArraySparse.hxx
 </pre>
 
 
+<<<<<<< HEAD
 <p>This methods adds/inserts a value in the matrix. This is "almost" equivalent to use the method Get() in conjunction with operator +=.
  Indeed, this is truly equivalent for unsymmetric matrices. However, it is different for symmetric matrices, since in that case AddInteraction
  ignores values given on the lower part of the matrix, whereas Get() will modify the corresponding non-zero entry located in the upper part. 
 The advantage here is that if you fill a matrix with AddInteraction/AddInteractionRow, you don't have to change your function if the matrix is symmetric or not.
  If you are using the methods Get or Set, you will have to be careful to not add twice the same value because A.Get(j, i) and A.Get(i, j) will point 
 to the same address for symmetric matrices. </p>
+=======
+<p>This methods adds/inserts a value in the matrix. This is equivalent to use the access operator () in conjunction with operator +=.</p>
+>>>>>>> mallet/master
 
 
 <h4>Example : </h4>

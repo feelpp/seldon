@@ -18,12 +18,14 @@
 
 #ifndef SELDON_FILE_SPARSE_CHOLESKY_FACTORISATION_CXX
 
+
+#include "Ordering.cxx"
 #include "SparseCholeskyFactorisation.hxx"
 
 namespace Seldon
 {
-  
-  //! implementation of Cholesky factorisation for sparse symmetric matrix
+
+  //! Implementation of Cholesky factorization for sparse symmetric matrix
   /*!
     This method may be slow for large matrices. For large matrices,
     it is more efficient to use an external library (Cholmod for example).
@@ -50,18 +52,19 @@ namespace Seldon
     // A is cleared
     A.Clear();
     A.Reallocate(n, n);
-    
-    // main loop over rows
+
+    // Main loop over rows.
     int new_percent = 0, old_percent = 0;
-    for (int i_row = 0; i_row < n; i_row++) 
+    for (int i_row = 0; i_row < n; i_row++)
       {
         // Progress bar if print level is high enough.
         if (print_level > 0)
           {
-            new_percent = int(double(i_row)/(n-1)*80);
+            new_percent = int(double(i_row) / double(n-1) * 78.);
             for (int percent = old_percent; percent < new_percent; percent++)
               {
-                cout << "#"; cout.flush();
+                cout << "#";
+                cout.flush();
               }
 
             old_percent = new_percent;
@@ -198,8 +201,8 @@ namespace Seldon
 	// now we can store the uppert part of row
 	size_row = length_upper;
 	A.ReallocateRow(i_row, length_upper);
-	
-	// we store square root of diagonal element of u
+
+	// We store inverse of square root of diagonal element of u.
         if (Row_Val(i_row) <= 0)
           {
             cout << "Error during Cholesky factorization " << endl;
@@ -230,29 +233,29 @@ namespace Seldon
       {
         cout << endl;
         cout << "The matrix takes " <<
-          int((A.GetDataSize()*(sizeof(T)+4))/(1024*1024)) << " MB" << endl;
+          int((A.GetDataSize() * (sizeof(T)+4)) / (1024*1024)) << " MB" << endl;
       }
 
-    // diagonal of A is replaced by its square root
+    // Diagonal of A is replaced by its square root.
     for (int i = 0; i < n; i++)
       {
         A.Value(i, 0) = sqrt(A.Value(i,0));
         // and other elements multiplied by this value
         for (int k = 1; k < A.GetRowSize(i); k++)
-          A.Value(i, k) *= A.Value(i, 0);        
-
+          A.Value(i, k) *= A.Value(i, 0);
+	
 	A.Value(i, 0) = 1.0 / A.Value(i, 0);
       }
   }
   
-  
-  //! resolution of L x = y or L^T x = y
+
+  //! Resolution of L x = y or L^T x = y.
   /*!
-    \param[in] TransA SeldonTrans or SeldonNoTrans
-    \param[in] A Cholesky factorization obtained after calling GetCholesky
-    \param[inout] x overwritten by the solution
+    \param[in] TransA SeldonTrans or SeldonNoTrans.
+    \param[in] A Cholesky factorization obtained after calling "GetCholesky".
+    \param[in,out] x on exit, it is overwritten by the solution.
    */
-  template<class classTrans, 
+  template<class classTrans,
            class T0, class T1, class Prop, class Storage,
            class Allocator1, class Allocator2>
   void SolveCholesky(const classTrans& TransA,
@@ -275,8 +278,8 @@ namespace Seldon
                 j = A.Index(i, k);
                 val -= A.Value(i, k)*x(j);
               }
-            
-            x(i) = val/A.Value(i, 0);
+
+            x(i) = val / A.Value(i, 0);
           }
       }
     else
@@ -296,11 +299,11 @@ namespace Seldon
   }
 
   
-  //! resolution of L x = y or L^T x = y
+  //! Resolution of L x = y or L^T x = y.
   /*!
-    \param[in] TransA SeldonTrans or SeldonNoTrans
-    \param[in] A Cholesky factorization obtained after calling GetCholesky
-    \param[inout] x overwritten by the solution
+    \param[in] TransA SeldonTrans or SeldonNoTrans.
+    \param[in] A Cholesky factorization obtained after calling "GetCholesky".
+    \param[in,out] x on exit, it is overwritten by the solution.
    */
   template<class classTrans,
 	   class T0, class T1, class Prop, class Allocator>
@@ -319,34 +322,34 @@ namespace Seldon
     
     if (TransA.Trans())
       {
-	// resolution of L^T x = x
-	for (int i = n-1; i >= 0; i--)
+	// Resolution of L^T x = x.
+	for (int i = n - 1; i >= 0; i--)
 	  {
 	    val = X(i);
-	    for (int j = ptr[i]+1; j < ptr[i+1]; j++)
-	      val -= data[j]*X(ind[j]);
+	    for (int j = ptr[i] + 1; j < ptr[i+1]; j++)
+	      val -= data[j] * X(ind[j]);
 	    
-	    X(i) = val/data[ptr[i]];
+	    X(i) = val / data[ptr[i]];
 	  }
       }
     else
       {
-	// resolution of L x = x
+	// Resolution of L x = x.
 	for (int i = 0; i < n; i++)
 	  {
 	    X(i) /= data[ptr[i]];
-	    for (int j = ptr[i]+1; j < ptr[i+1]; j++)
-	      X(ind[j]) -= data[j]*X(i);
+	    for (int j = ptr[i] + 1; j < ptr[i+1]; j++)
+	      X(ind[j]) -= data[j] * X(i);
 	  }
       }
   }
 
 
-  //! computation of y = L x or y = L^T x
+  //! Computation of y = L x or y = L^T x.
   /*!
-    \param[in] TransA SeldonTrans or SeldonNoTrans
-    \param[in] A Cholesky factorization obtained after calling GetCholesky
-    \param[inout] x overwritten by the value of y
+    \param[in] TransA SeldonTrans or SeldonNoTrans.
+    \param[in] A Cholesky factorization obtained after calling "GetCholesky".
+    \param[in,out] x on exit, it is overwritten by the value of y.
    */
   template<class classTrans, 
            class T0, class T1, class Prop, class Storage,
@@ -365,7 +368,7 @@ namespace Seldon
         int j;
         for (int i = 0; i < n; i++) 
           {
-            T1 val = x(i)*A.Value(i, 0);
+            T1 val = x(i) * A.Value(i, 0);
             for (int k = 1; k < A.GetRowSize(i) ; k++)
               {
                 j = A.Index(i, k);
@@ -386,18 +389,18 @@ namespace Seldon
                 j = A.Index(i, k);
                 x(j) += A.Value(i, k)*x(i);
               }
-            
+	    
             x(i) *= A.Value(i, 0);
           }
       }
   }
   
   
-  //! computation of y = L x or y = L^T x
+  //! Computation of y = L x or y = L^T x.
   /*!
-    \param[in] TransA SeldonTrans or SeldonNoTrans
-    \param[in] A Cholesky factorization obtained after calling GetCholesky
-    \param[inout] x overwritten by the value of y
+    \param[in] TransA SeldonTrans or SeldonNoTrans.
+    \param[in] A Cholesky factorization obtained after calling "GetCholesky".
+    \param[in,out] x on exit, it is overwritten by the value of y.
    */
   template<class classTrans, 
            class T0, class T1, class Prop, class Storage,
@@ -417,23 +420,23 @@ namespace Seldon
     
     if (TransA.Trans())
       {
-        // we overwrite x by L^T x
+        // We overwrite x by L^T x
         for (int i = 0; i < n; i++) 
           {
-            val = x(i)*data[ptr[i]];
-            for (int k = ptr[i]+1; k < ptr[i+1]; k++)
-              val += data[k]*x(ind[k]);
+            val = x(i) * data[ptr[i]];
+            for (int k = ptr[i] + 1; k < ptr[i+1]; k++)
+              val += data[k] * x(ind[k]);
 	    
             x(i) = val;
           }
       }
     else
       {
-        // we overwrite x by L x
+        // We overwrite x by L x.
 	for (int i = n-1; i >= 0; i--) 
           {
-            for (int k = ptr[i]+1; k < ptr[i+1]; k++)
-	      x(ind[k]) += data[k]*x(i);
+            for (int k = ptr[i] + 1; k < ptr[i+1]; k++)
+	      x(ind[k]) += data[k] * x(i);
 	    
             x(i) *= data[ptr[i]];
           }
@@ -441,7 +444,7 @@ namespace Seldon
   }
 
   
-  //! Default constructor
+  //! Default constructor.
   template<class T>
   SparseCholeskySolver<T>::SparseCholeskySolver()
   {
@@ -456,7 +459,7 @@ namespace Seldon
   }
   
   
-  //! Displays no messages
+  //! Displays no messages.
   template<class T>
   void SparseCholeskySolver<T>::HideMessages()
   {
@@ -469,7 +472,7 @@ namespace Seldon
   }
   
   
-  //! displaying brief messages
+  //! Displays only brief messages.
   template<class T>
   void SparseCholeskySolver<T>::ShowMessages()
   {
@@ -482,7 +485,7 @@ namespace Seldon
   }
   
   
-  //! displaying a lot of messages
+  //! Displays a lot of messages.
   template<class T>
   void SparseCholeskySolver<T>::ShowFullHistory()
   {
@@ -495,7 +498,7 @@ namespace Seldon
   }
     
   
-  //! clearing cholesky factors
+  //! Clears Cholesky factors.
   template<class T>
   void SparseCholeskySolver<T>::Clear()
   {
@@ -512,7 +515,7 @@ namespace Seldon
   }
     
   
-  //! returns the number of rows
+  //! Returns the number of rows.
   template<class T>
   int SparseCholeskySolver<T>::GetM() const
   {
@@ -520,7 +523,7 @@ namespace Seldon
   }
   
   
-  //! returns the number of rows
+  //! Returns the number of rows.
   template<class T>
   int SparseCholeskySolver<T>::GetN() const
   {
@@ -528,7 +531,7 @@ namespace Seldon
   }
   
     
-  //! returns the type of ordering used
+  //! Returns the type of ordering used.
   template<class T>
   int SparseCholeskySolver<T>::GetTypeOrdering() const
   {
@@ -536,7 +539,7 @@ namespace Seldon
   }
   
   
-  //! modifies the ordering used
+  //! Modifies the ordering used.
   template<class T>
   void SparseCholeskySolver<T>::SetOrdering(const IVect& num)
   {
@@ -545,7 +548,7 @@ namespace Seldon
   }
   
   
-  //! modifies the ordering used
+  //! Modifies the type of ordering used.
   template<class T>
   void SparseCholeskySolver<T>::SetTypeOrdering(int type)
   {
@@ -553,7 +556,7 @@ namespace Seldon
   }
   
   
-  //! modifies the direct solver used
+  //! Modifies the direct solver used.
   template<class T>
   void SparseCholeskySolver<T>::SelectDirectSolver(int type)
   {
@@ -569,7 +572,7 @@ namespace Seldon
   }
     
   
-  //! performs cholesky factorisation
+  //! Performs Cholesky factorization.
   template<class T> template<class MatrixSparse>
   void SparseCholeskySolver<T>::Factorize(MatrixSparse& A, bool keep_matrix)
   {    
@@ -579,8 +582,8 @@ namespace Seldon
 #ifdef SELDON_WITH_CHOLMOD
 	mat_chol.FactorizeMatrix(A, keep_matrix);
 #else
-	cout<<"Recompile with Cholmod"<<endl;
-	abort();
+	throw Error("SparseCholeskySolver::Factorize",
+                    "Recompile with Cholmod or change solver type.");
 #endif
       }
     else
@@ -595,21 +598,21 @@ namespace Seldon
 	GetCholesky(mat_sym, print_level);
         xtmp.Reallocate(n);
       }
-
   }
    
   
-  //! solves L x = b or L^T x = b
+  //! Solves L x = b or L^T x = b.
   template<class T> template<class TransStatus, class Vector1>
-  void SparseCholeskySolver<T>::Solve(const TransStatus& TransA, Vector1& x_solution)
+  void SparseCholeskySolver<T>
+  ::Solve(const TransStatus& TransA, Vector1& x_solution)
   {
     if (type_solver == CHOLMOD)
       {
 #ifdef SELDON_WITH_CHOLMOD
 	mat_chol.Solve(TransA, x_solution);
 #else
-	cout << "Recompile with Cholmod" << endl;
-	abort();
+	throw Error("SparseCholeskySolver::Factorize",
+                    "Recompile with Cholmod or change solver type.");
 #endif
       }
     else
@@ -634,17 +637,18 @@ namespace Seldon
   }
   
   
-  //! computes L x or L^T
+  //! Computes L x or L^T.
   template<class T> template<class TransStatus, class Vector1>
-  void SparseCholeskySolver<T>::Mlt(const TransStatus& TransA, Vector1& x_solution)
+  void SparseCholeskySolver<T>
+  ::Mlt(const TransStatus& TransA, Vector1& x_solution)
   {
     if (type_solver == CHOLMOD)
       {
 #ifdef SELDON_WITH_CHOLMOD
 	mat_chol.Mlt(TransA, x_solution);
 #else
-	cout << "Recompile with Cholmod" << endl;
-	abort();
+	throw Error("SparseCholeskySolver::Factorize",
+                    "Recompile with Cholmod or change solver type.");
 #endif
       }
     else
@@ -667,7 +671,9 @@ namespace Seldon
           }
       }
   }
-}
+
+} // namespace Seldon.
+
 
 #define SELDON_FILE_SPARSE_CHOLESKY_FACTORISATION_CXX
 #endif

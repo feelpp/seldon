@@ -43,7 +43,7 @@ namespace Seldon
     Nothing is allocated. The vector length is set to zero.
   */
   template <class T, class Allocator>
-  inline Vector<T, Collection, Allocator>::Vector() throw():
+  inline Vector<T, Collection, Allocator>::Vector():
     Vector_Base<T, Allocator>(), label_map_(), label_vector_()
   {
     Nvector_ = 0;
@@ -113,6 +113,23 @@ namespace Seldon
     this->m_ = 0;
     label_map_.clear();
     label_vector_.clear();
+  }
+
+
+  //! Reallocates the vector collection.
+  /*! This method first clears the collection. Then it allocates a new vector
+    of size \a i, and puts this vector in the collection. On exit, the
+    collection is only composed of this vector of size \a i.
+    \param[in] i new size.
+  */
+  template <class T, class Allocator >
+  inline void Vector<T, Collection, Allocator>::Reallocate(int i)
+  {
+    Clear();
+    vector_type v;
+    v.Reallocate(i);
+    AddVector(v);
+    v.Nullify();
   }
 
 
@@ -659,7 +676,7 @@ namespace Seldon
   */
   template <class T, class Allocator >
   void Vector<T, Collection, Allocator>
-  ::Write(string FileName, bool with_size = true) const
+  ::Write(string FileName, bool with_size) const
   {
     ofstream FileStream;
     FileStream.open(FileName.c_str(), ofstream::binary);
@@ -686,7 +703,7 @@ namespace Seldon
   */
   template <class T, class Allocator >
   void Vector<T, Collection, Allocator>
-  ::Write(ostream& FileStream, bool with_size = true) const
+  ::Write(ostream& FileStream, bool with_size) const
   {
 
 #ifdef SELDON_CHECK_IO

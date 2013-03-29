@@ -358,6 +358,44 @@ namespace Seldon
   }
   
   
+  //! Extracts a column from a matrix.
+  /*!
+    \param[in] M matrix.
+    \param[in] j column index.
+    \param[out] X extracted column.
+  */
+  template <class T0, class Prop0, class Allocator0,
+            class T1, class Allocator1>
+  void GetCol(const Matrix<T0, Prop0, PETScSeqDense, Allocator0>& M,
+              int j, Vector<T1, PETScSeq, Allocator1>& X)
+  {
+    int a, b;
+    M.GetProcessorRowRange(a, b);
+    for (int i = a; i < b; i++)
+      X.SetBuffer(i, M(i, j));
+    X.Flush();
+  }
+
+
+  //! Extracts a column from a matrix.
+  /*!
+    \param[in] M matrix.
+    \param[in] j column index.
+    \param[out] X extracted column.
+  */
+  template <class T0, class Prop0, class Allocator0,
+            class T1, class Allocator1>
+  void GetCol(const Matrix<T0, Prop0, PETScMPIDense, Allocator0>& M,
+              int j, Vector<T1, PETScPar, Allocator1>& X)
+  {
+    int a, b;
+    M.GetProcessorRowRange(a, b);
+    for (int i = a; i < b; i++)
+      X.SetBuffer(i, M(i, j));
+    X.Flush();
+  }
+
+
   //! Extracts a column from a matrix
   /*!
     \param M matrix
@@ -390,7 +428,8 @@ namespace Seldon
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
   void GetCol(const Matrix<T0, Prop0, Storage0, Allocator0>& M_in,
-	      int begin, int end, Matrix<T1, Prop1, Storage1, Allocator1>& M_out)
+	      int begin, int end,
+              Matrix<T1, Prop1, Storage1, Allocator1>& M_out)
   {
     M_out.Reallocate(M_in.GetM(), end - begin);
     for (int i = 0; i < M_in.GetM(); i++)
@@ -417,8 +456,42 @@ namespace Seldon
     for (int j = 0; j < M.GetN(); j++)
       M.Set(i, j, X(j));
   }
-
   
+  
+  //! Sets a row of a matrix.
+  /*!
+    \param[in] X new row \a i of \a M.
+    \param[in] i row index.
+    \param[out] M matrix.
+  */
+  template <class T0, class Prop0, class Allocator0,
+            class T1, class Allocator1>
+  void SetRow(const Vector<T1, PETScSeq, Allocator1>& X,
+              int i, Matrix<T0, Prop0, PETScSeqDense, Allocator0>& M)
+  {
+    for (int j = 0; j < M.GetN(); j++)
+      M.SetBuffer(i, j, X(j));
+    M.Flush();
+  }
+
+
+  //! Sets a row of a matrix.
+  /*!
+    \param[in] X new row \a i of \a M.
+    \param[in] i row index.
+    \param[out] M matrix.
+  */
+  template <class T0, class Prop0, class Allocator0,
+            class T1, class Allocator1>
+  void SetRow(const Vector<T1, PETScPar, Allocator1>& X,
+              int i, Matrix<T0, Prop0, PETScMPIDense, Allocator0>& M)
+  {
+    for (int j = 0; j < M.GetN(); j++)
+      M.SetBuffer(i, j, X(j));
+    M.Flush();
+  }
+
+
   //! Sets a row of a matrix
   /*!
     \param M matrix
@@ -1046,9 +1119,9 @@ namespace Seldon
   
   //! Sets a column of a matrix
   /*!
-    \param M matrix
+    \param[in] X new column \a j of \a M.
     \param j column index
-    \param X new column of M
+    \param M matrix
     M(:, j) = X
   */
   template <class T0, class Prop0, class Storage0, class Allocator0,
@@ -1063,12 +1136,50 @@ namespace Seldon
       M.Set(i, j, X(i));
   }
 
-  
-  //! Sets a column of a matrix
+
+  //! Sets a column of a matrix.
   /*!
-    \param M matrix
-    \param j column index
-    \param X new column of M
+    \param[in] X new column \a j of \a M.
+    \param[in] j column index.
+    \param[out] M matrix.
+  */
+  template <class T0, class Prop0, class Allocator0,
+            class T1, class Allocator1>
+  void SetCol(const Vector<T1, PETScSeq, Allocator1>& X,
+              int j, Matrix<T0, Prop0, PETScSeqDense, Allocator0>& M)
+  {
+    int a, b;
+    M.GetProcessorRowRange(a, b);
+    for (int i = a; i < b; i++)
+      M.SetBuffer(i, j, X(i));
+    M.Flush();
+  }
+
+
+  //! Sets a column of a matrix.
+  /*!
+    \param[in] X new column \a j of \a M.
+    \param[in] j column index.
+    \param[out] M matrix.
+  */
+  template <class T0, class Prop0, class Allocator0,
+            class T1, class Allocator1>
+  void SetCol(const Vector<T1, PETScPar, Allocator1>& X,
+              int j, Matrix<T0, Prop0, PETScMPIDense, Allocator0>& M)
+  {
+    int a, b;
+    M.GetProcessorRowRange(a, b);
+    for (int i = a; i < b; i++)
+      M.SetBuffer(i, j, X(i));
+    M.Flush();
+  }
+
+
+  //! Sets a column of a matrix.
+  /*!
+    \param[in] X new column \a j of \a M.
+    \param[in] j column index.
+    \param[out] M matrix.
     M(:, j) = X
   */
   template <class T0, class Allocator0,
@@ -1088,11 +1199,11 @@ namespace Seldon
   }
 
 
-  //! Sets a column of a matrix
+  //! Sets a column of a matrix.
   /*!
-    \param M matrix
-    \param j column index
-    \param X new column of M
+    \param[in] X new column \a j of \a M.
+    \param[in] j column index.
+    \param[out] M matrix.
     M(:, j) = X
   */
   template <class T0, class Allocator0, class T1, class Allocator1>

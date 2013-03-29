@@ -143,6 +143,13 @@ namespace Seldon
   class Matrix<T, Prop, ColMajorCollection, Allocator>:
     public MatrixCollection<T, Prop, ColMajor, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef T value_type;
+    typedef Prop property;
+    typedef ColMajorCollection storage;
+    typedef Allocator allocator;
+
   public:
     Matrix();
     Matrix(int i, int j);
@@ -154,6 +161,13 @@ namespace Seldon
   class Matrix<T, Prop, RowMajorCollection, Allocator>:
     public MatrixCollection<T, Prop, RowMajor, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef T value_type;
+    typedef Prop property;
+    typedef RowMajorCollection storage;
+    typedef Allocator allocator;
+
   public:
     Matrix();
     Matrix(int i, int j);
@@ -165,6 +179,13 @@ namespace Seldon
   class Matrix<T, Prop, ColSymPackedCollection, Allocator>:
     public MatrixCollection<T, Prop, ColSymPacked, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef T value_type;
+    typedef Prop property;
+    typedef ColSymPackedCollection storage;
+    typedef Allocator allocator;
+
   public:
     Matrix();
     Matrix(int i, int j);
@@ -176,6 +197,13 @@ namespace Seldon
   class Matrix<T, Prop, RowSymPackedCollection, Allocator>:
     public MatrixCollection<T, Prop, RowSymPacked, Allocator>
   {
+    // typedef declaration.
+  public:
+    typedef T value_type;
+    typedef Prop property;
+    typedef RowSymPackedCollection storage;
+    typedef Allocator allocator;
+
   public:
     Matrix();
     Matrix(int i, int j);

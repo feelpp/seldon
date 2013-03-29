@@ -106,7 +106,7 @@ namespace Seldon
     // Methods.
   public:
     // Constructor.
-    explicit Vector()  throw();
+    explicit Vector();
     explicit Vector(int i);
     Vector(int i, pointer data);
     Vector(const Vector<T, VectFull, Allocator>& A);
@@ -133,6 +133,7 @@ namespace Seldon
 					       Allocator>& X);
 #endif
     void Copy(const Vector<T, VectFull, Allocator>& X);
+    Vector<T, VectFull, Allocator> Copy() const;
     void Append(const T& x);
     template<class T0>
     void PushBack(const T0& x);
@@ -167,6 +168,10 @@ namespace Seldon
     void Write(ostream& FileStream, bool with_size = true) const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
+#ifdef SELDON_WITH_HDF5
+    void WriteHDF5(string FileName, string group_name,
+                   string dataset_name) const;
+#endif
     void Read(string FileName, bool with_size = true);
     void Read(istream& FileStream, bool with_size = true);
     void ReadText(string FileName);

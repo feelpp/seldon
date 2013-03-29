@@ -156,7 +156,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
     Matrix(int i, int j, int nz);
     template <class Storage0, class Allocator0,
@@ -182,7 +182,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
     Matrix(int i, int j, int nz);
     template <class Storage0, class Allocator0,
@@ -217,7 +217,7 @@ namespace Seldon
   void WriteCoordinateMatrix(const Matrix<T0, Prop0, Storage0, Alloc0>& A,
                              ostream& FileStream, T& zero,
                              int index = 1, bool cplx = false);
-
+  
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_SPARSE_HXX

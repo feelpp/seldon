@@ -1,4 +1,4 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2001-2012 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -33,6 +33,74 @@ namespace Seldon
 {
 
 
+  //! Default constructor.
+  Str::Str()
+  {
+  }
+
+
+  //! Copy constructor.
+  /*!
+    \param[in] s 'Str' instance to be copied.
+  */
+  Str::Str(const Str& s)
+  {
+    output_ << s;
+  }
+
+
+  //! Conversion to string.
+  Str::operator std::string() const
+  {
+    return output_.str();
+  }
+
+
+  //! Adds an element to the string.
+  /*!
+    \param[in] input element added at the end of the string.
+  */
+  template <class T>
+  Str& Str::operator << (const T& input)
+  {
+    output_ << input;
+    return *this;
+  }
+
+
+  //! Adds an element to an instance of 'Str'.
+  /*!
+    \param[in] s 'Str' instance.
+    \param[in] input element added at the end of the string.
+  */
+  template <class T>
+  Str operator + (const Str& s, const T& input)
+  {
+    string s_input = s;
+    Str output;
+    output << s_input << input;
+    return output;
+  }
+
+
+  //! Converts a 'str' instance to an 'ostream' instance.
+  ostream& operator << (ostream& out, Str& in)
+  {
+    string output = in;
+    out << output;
+    return out;
+  }
+
+
+  //! Converts a 'str' instance to an 'ostream' instance.
+  ostream& operator << (ostream& out, Str in)
+  {
+    string output = in;
+    out << output;
+    return out;
+  }
+
+
   //! Converts most types to string.
   /*!
     \param input variable to be converted.
@@ -46,6 +114,7 @@ namespace Seldon
     return output.str();
   }
 
+
   //! Converts string to most types, specially numbers.
   /*!
     \param[in] s string to be converted.
@@ -57,6 +126,7 @@ namespace Seldon
     std::istringstream str(s);
     str >> num;
   }
+
 
   //! Converts string to most types, specially numbers.
   /*!
@@ -154,6 +224,56 @@ namespace Seldon
 #endif
   }
   
+#ifdef SELDON_WITH_HDF5
+  //! Gives for most C types the corresponding HDF5 memory datatype.
+  /*!
+    \param[in] input variable to analyze.
+    \return HDF5 memory type of \a input.
+  */
+  template <class T>
+  hid_t GetH5Type(T& input)
+  {
+    double d;
+    float f;
+    int i;
+    long l;
+    char c;
+    unsigned char uc;
+    long long ll;
+    unsigned int ui;
+    unsigned short us;
+    unsigned long ul;
+    unsigned long long ull;
+
+    if (typeid(input) == typeid(d))
+      return H5T_NATIVE_DOUBLE;
+    if (typeid(input) == typeid(f))
+      return H5T_NATIVE_FLOAT;
+    if (typeid(input) == typeid(i))
+      return H5T_NATIVE_INT;
+    if (typeid(input) == typeid(l))
+      return H5T_NATIVE_LONG;
+    if (typeid(input) == typeid(c))
+      return H5T_NATIVE_CHAR;
+    if (typeid(input) == typeid(uc))
+      return H5T_NATIVE_UCHAR;
+    if (typeid(input) == typeid(ll))
+      return H5T_NATIVE_LLONG;
+    if (typeid(input) == typeid(ui))
+      return H5T_NATIVE_UINT;
+    if (typeid(input) == typeid(us))
+      return H5T_NATIVE_USHORT;
+    if (typeid(input) == typeid(ul))
+      return H5T_NATIVE_ULONG;
+    if (typeid(input) == typeid(ull))
+      return H5T_NATIVE_ULLONG;
+    else
+      throw Error("hid_t GetH5Type(T& input)",
+                  "Type has no corresponding native HDF5 datatype.");
+  }
+#endif
+
+
 }  // namespace Seldon.
 
 #define SELDON_FILE_COMMON_CXX

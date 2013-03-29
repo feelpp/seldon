@@ -607,7 +607,7 @@ namespace Seldon
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
   }
 
-  
+
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -622,8 +622,8 @@ namespace Seldon
   {
     return Val(i, j);
   }
-  
-  
+
+
   //! Access to elements of the data array.
   /*!
     Provides a direct access to the data array.
@@ -670,21 +670,21 @@ namespace Seldon
     return this->data_[i];
   }
 
-  
-  //! Sets an element of the matrix
+
+  //! Sets an element of the matrix.
   /*!
     \param i row index.
     \param j column index.
-    \param val sets A(i, j) = val
-   */  
+    \param x new value for the matrix element (\a i, \a j).
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_Pointers<T, Prop, Storage, Allocator>
   ::Set(int i, int j, const T& val)
   {
     this->Val(i, j) = val;
   }
-  
-  
+
+
   //! Duplicates a matrix (assignment operator).
   /*!
     \param A matrix to be copied.
@@ -876,6 +876,24 @@ namespace Seldon
   /**************************
    * INPUT/OUTPUT FUNCTIONS *
    **************************/
+
+#ifdef SELDON_WITH_HDF5
+  //! Writes the matrix in a HDF5 file.
+  /*!
+    All elements of the matrix are stored in HDF5 format.
+    \param FileName file name.
+    \param group_name name of the group the matrix must be stored in.
+    \param dataset_name name of the dataset the matrix must be stored in.
+    \warning This method is not defined yet!
+  */
+ template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Pointers<T, Prop, Storage, Allocator>
+ ::WriteHDF5(string FileName, string group_name, string dataset_name) const
+  {
+    throw IOError("Matrix_Pointers::WriteHDF5(string FileName)",
+                  string("Unable to write matrix in \"") + FileName + "\".");
+  }
+#endif
 
 
   //! Appends the matrix in a file.
@@ -1217,7 +1235,7 @@ namespace Seldon
     Builds a empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColMajor, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, ColMajor, Allocator>::Matrix():
     Matrix_Pointers<T, Prop, ColMajor, Allocator>()
   {
   }
@@ -1377,7 +1395,7 @@ namespace Seldon
     Builds a empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowMajor, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, RowMajor, Allocator>::Matrix():
     Matrix_Pointers<T, Prop, RowMajor, Allocator>()
   {
   }

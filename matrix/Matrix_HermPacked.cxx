@@ -328,7 +328,7 @@ namespace Seldon
 		     string("Attempted to access to element (")
 		     + to_str(i) + ", " + to_str(j)
 		     + ") but row index should not be strictly"
-		     + " more than column index.");
+		     + " greater than column index.");
 #endif
 
     return this->data_[Storage::GetFirst(i * this->n_ - (i*(i+1)) / 2 + j,
@@ -364,14 +364,14 @@ namespace Seldon
 		     string("Attempted to access to element (")
 		     + to_str(i) + ", " + to_str(j)
 		     + string(") but row index should not be strictly")
-		     + " more than column index.");
+		     + " greater than column index.");
 #endif
 
     return this->data_[Storage::GetFirst(i * this->n_ - (i*(i+1)) / 2 + j,
 					 (j*(j+1)) / 2 + i)];
   }
 
-  
+
   //! Returns access to an element (i, j)
   /*!
     \param i row index.
@@ -384,8 +384,8 @@ namespace Seldon
   {
     return this->Val(i, j);
   }
-  
-  
+
+
   //! Returns access to an element (i, j)
   /*!
     \param i row index.
@@ -399,8 +399,8 @@ namespace Seldon
   {
     return this->Val(i, j);
   }
-  
-  
+
+
   //! Access to elements of the data array.
   /*!
     Provides a direct access to the data array.
@@ -464,13 +464,13 @@ namespace Seldon
     return *this;
   }
 
-  
-  //! Sets an element of the matrix
+
+  //! Sets an element of the matrix.
   /*!
-    \param i row index
-    \param j column index
-    \param x sets a(i, j) = x
-   */
+    \param i row index.
+    \param j column index.
+    \param x new value for the matrix element (\a i, \a j).
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_HermPacked<T, Prop, Storage, Allocator>
   ::Set(int i, int j, const T& x)
@@ -480,8 +480,8 @@ namespace Seldon
     else
       this->Val(i, j) = x;
   }
-  
-  
+
+
   //! Duplicates a matrix.
   /*!
     \param A matrix to be copied.
@@ -545,8 +545,8 @@ namespace Seldon
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
-    \warning If the imaginary part of x is non-null, the upper 
-    part will contain x, whereas lower part will contain conj(x)
+    \note If the imaginary part of x is non-null, the upper part will
+    contain x, whereas lower part will contain conj(x).
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
@@ -560,8 +560,8 @@ namespace Seldon
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
-    \warning If the imaginary part of x is non-null, the upper 
-    part will contain x, whereas lower part will contain conj(x)
+    \note If the imaginary part of x is non-null, the upper part will
+    contain x, whereas lower part will contain conj(x).
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>

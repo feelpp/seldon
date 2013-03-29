@@ -20,6 +20,11 @@
 %module seldon
 %{
 #include "SeldonHeader.hxx"
+namespace Seldon
+{
+  void skip_vector_double(istream& input_stream);
+  void skip_matrix_double(istream& input_stream);
+}
   %}
 
 %include "std_iostream.i"
@@ -110,6 +115,7 @@ namespace std
 %include "array/Array3D.hxx"
 %include "array/Array4D.hxx"
 %include "vector/Vector.hxx"
+%include "vector/VectorCollection.hxx"
 %include "vector/SparseVector.hxx"
 %include "matrix/Matrix_Base.hxx"
 %include "matrix/Matrix_Pointers.hxx"
@@ -143,6 +149,31 @@ namespace Seldon
     }
   }
   %extend Vector<double, VectFull, MallocAlloc<double> >
+  {
+    double __getitem__(int index) {
+      return (*self)(index);
+    }
+    void __setitem__(int index, double value) {
+      (*self)(index) = value;
+    }
+    unsigned long __len__() {
+      return self->GetM();
+    }
+  }
+
+  %extend Vector<Vector<int, VectFull, MallocAlloc<int> >, Collection, MallocAlloc<Vector<int, VectFull, MallocAlloc<int> > > >
+  {
+    int __getitem__(int index) {
+      return (*self)(index);
+    }
+    void __setitem__(int index, int value) {
+      (*self)(index) = value;
+    }
+    unsigned long __len__() {
+      return self->GetM();
+    }
+  }
+  %extend Vector<Vector<double, VectFull, MallocAlloc<double> >, Collection, MallocAlloc<Vector<double, VectFull, MallocAlloc<double> > > >
   {
     double __getitem__(int index) {
       return (*self)(index);
@@ -544,4 +575,155 @@ namespace Seldon
 
   %template(BaseMatrixSparseDouble) Matrix_Sparse<double, General, RowSparse, MallocAlloc<double> >;
   %template(MatrixSparseDouble) Matrix<double, General, RowSparse, MallocAlloc<double> >;
+
+  void skip_vector_double(istream& input_stream);
+  void skip_matrix_double(istream& input_stream);
 }
+
+
+// For conversions from Seldon to Numpy, and from Numpy to Seldon.
+%pythoncode %{
+def load_vector(filename, array = False):
+    """
+    Loads a Seldon vector (in double precision) from a file. If 'array' is set
+    to True, the vector is converted to a numpy array.
+    """
+    import seldon
+    if isinstance(filename, str):
+        stream = seldon.ifstream(filename)
+    else: # assuming 'filename' is already a stream.
+        stream = filename
+
+    vector = seldon.VectorDouble()
+    vector.Read(stream, True)
+
+    if array:
+        import numpy
+        vector = numpy.array(vector)
+
+    if isinstance(filename, str):
+        stream.close()
+
+    return vector
+
+
+def load_vector_list(filename, array = False, begin = 0, N = 0):
+    """
+    Loads a list of Seldon vectors (in double precision) from a file, skipping
+    the first 'begin' vectors. If 'array' is set to True, the vectors are
+    converted to numpy arrays. 'N' is the number of vectors to read; all
+    vectors are read if 'N' is 0 or negative.
+    """
+    import seldon
+    if isinstance(filename, str):
+        stream = seldon.ifstream(filename)
+    else: # assuming 'filename' is already a stream.
+        stream = filename
+
+    begin = max(begin, 0)
+    count = 0
+    while stream.peek() != -1 and count != begin:
+        skip_vector_double(stream)
+        count += 1
+
+    vector_list = []
+    count = 0
+    while stream.peek() != -1 and (N <= 0 or count < N):
+        vector = seldon.VectorDouble()
+        vector.Read(stream, True)
+        vector_list.append(vector)
+        count += 1
+
+    if array:
+        import numpy
+        vector_list = [numpy.array(x) for x in vector_list]
+
+    if isinstance(filename, str):
+        stream.close()
+
+    return vector_list
+
+
+def to_vector(v):
+    """
+    Converts a list or a numpy array to a Seldon vector (in double precision).
+    """
+    import seldon
+    out = seldon.VectorDouble(len(v))
+    for i in range(len(v)):
+        out[i] = v[i]
+    return out
+
+
+def load_matrix(filename, array = False):
+    """
+    Loads a Seldon matrix (in double precision) from a file. If 'array' is set
+    to True, the matrix is converted to a numpy array.
+    """
+    import seldon
+    if isinstance(filename, str):
+        stream = seldon.ifstream(filename)
+    else: # assuming 'filename' is already a stream.
+        stream = filename
+
+    matrix = seldon.MatrixDouble()
+    matrix.Read(stream, True)
+
+    if array:
+        import numpy
+        matrix = numpy.array(matrix)
+
+    if isinstance(filename, str):
+        stream.close()
+
+    return matrix
+
+
+def load_matrix_list(filename, array = False, begin = 0, N = 0):
+    """
+    Loads a list of Seldon matrices (in double precision) from a file,
+    skipping the first 'begin' matrices.. If 'array' is set to True, the
+    matrices are converted to numpy arrays. 'N' is the number of matrices to
+    read; all matrices are read if 'N' is 0 or negative.
+    """
+    import seldon
+    if isinstance(filename, str):
+        stream = seldon.ifstream(filename)
+    else: # assuming 'filename' is already a stream.
+        stream = filename
+
+    begin = max(begin, 0)
+    count = 0
+    while stream.peek() != -1 and count != begin:
+        skip_matrix_double(stream)
+        count += 1
+
+    matrix_list = []
+    count = 0
+    while stream.peek() != -1 and (N <= 0 or count < N):
+        matrix = seldon.MatrixDouble()
+        matrix.Read(stream, True)
+        matrix_list.append(matrix)
+        count += 1
+
+    if array:
+        import numpy
+        matrix_list = [numpy.array(x) for x in matrix_list]
+
+    if isinstance(filename, str):
+        stream.close()
+
+    return matrix_list
+
+
+def to_matrix(m):
+    """
+    Converts a numpy array to a Seldon matrix (in double precision).
+    """
+    import seldon
+    out = seldon.MatrixDouble(m.shape[0], m.shape[1])
+    for i in range(m.shape[0]):
+        for j in range(m.shape[1]):
+            out[i, j] = m[i, j]
+    return out
+%}

@@ -122,6 +122,58 @@ namespace Seldon
   // MLTADD //
 
 
+  /*** PETSc matrices ***/
+
+  template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
+              const Vector<T2, PETScSeq, Allocator2>& X,
+              const T3 beta, Vector<T4, PETScSeq, Allocator4>& Y);
+
+  template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
+              const Vector<T2, PETScPar, Allocator2>& X,
+              const T3 beta, Vector<T4, PETScPar, Allocator4>& Y);
+
+  template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
+              const Vector<T2, VectFull, Allocator2>& X,
+              const T3 beta, Vector<T4, PETScSeq, Allocator4>& Y);
+
+  template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
+              const Vector<T2, VectFull, Allocator2>& X,
+              const T3 beta, Vector<T4, PETScPar, Allocator4>& Y);
+
+  template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Allocator4>
+  void MltAdd(const T0 alpha,
+              const Matrix<T1, Prop1, PETScMPIDense, Allocator1>& M,
+              const Vector<T2, VectFull, Allocator2>& X,
+              const T3 beta, Vector<T4, PETScPar, Allocator4>& Y);
+
   /*** Sparse matrices ***/
 
 

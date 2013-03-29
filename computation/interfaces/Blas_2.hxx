@@ -1,5 +1,4 @@
-// Copyright (C) 2001-2011 Vivien Mallet
-// Copyright (C) 2001-2011 Marc Duruflé
+// Copyright (C) 2012 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -20,8 +19,42 @@
 
 #ifndef SELDON_FILE_BLAS_2_HXX
 
+/*
+  Functions included in this file:
+
+  xTRMV   (Mlt)
+  xTPMV   (Mlt)
+  xGEMV   (MltAdd)
+  xHEMV   (MltAdd)
+  xHPMV   (MltAdd)
+  xSYMV   (MltAdd)
+  xSPMV   (MltAdd)
+  xGER    (Rank1Update)
+  xGERU   (Rank1Update)
+  xGERC   (Rank1Update)
+  xSPR    (Rank1Update)
+  xHPR    (Rank1Update)
+  xSPR2   (Rank2Update)
+  xHPR2   (Rank2Update)
+  xTRSV   (Solve)
+  xTPSV   (Solve)
+*/
+
+extern "C"
+{
+#include "cblas.h"
+}
+
 namespace Seldon
 {
+
+
+  /////////
+  // MLT //
+
+
+  /*** ColUpTriang, NoTrans and NonUnit ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -44,6 +77,10 @@ namespace Seldon
   void
   Mlt(const Matrix<complex<double>, Prop0, ColUpTriang, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
+  
+  
+  /*** ColUpTriang ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -74,6 +111,10 @@ namespace Seldon
       const SeldonDiag& DiagA,
       const Matrix<complex<double>, Prop0, ColUpTriang, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
+  
+  
+  /*** ColLoTriang, NoTrans and NonUnit ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -96,6 +137,10 @@ namespace Seldon
   void
   Mlt(const Matrix<complex<double>, Prop0, ColLoTriang, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
+
+  
+  /*** ColLoTriang ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -126,7 +171,11 @@ namespace Seldon
       const SeldonDiag& DiagA,
       const Matrix<complex<double>, Prop0, ColLoTriang, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
+  
+  
+  /*** RowUpTriang, NoTrans and NonUnit ***/
 
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, RowUpTriang, Allocator0>& A,
@@ -148,6 +197,10 @@ namespace Seldon
   void
   Mlt(const Matrix<complex<double>, Prop0, RowUpTriang, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
+  
+  
+  /*** RowUpTriang ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -179,6 +232,10 @@ namespace Seldon
       const Matrix<complex<double>, Prop0, RowUpTriang, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
 
+  
+  /*** RowLoTriang, NoTrans and NonUnit ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, RowLoTriang, Allocator0>& A,
@@ -200,6 +257,10 @@ namespace Seldon
   void
   Mlt(const Matrix<complex<double>, Prop0, RowLoTriang, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
+
+  
+  /*** RowLoTriang ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -231,6 +292,10 @@ namespace Seldon
       const Matrix<complex<double>, Prop0, RowLoTriang, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
 
+  
+  /*** ColUpTriangPacked, NoTrans and NonUnit ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, ColUpTriangPacked, Allocator0>& A,
@@ -252,6 +317,10 @@ namespace Seldon
   void
   Mlt(const Matrix<complex<double>, Prop0, ColUpTriangPacked, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
+
+  
+  /*** ColUpTriangPacked ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -283,6 +352,10 @@ namespace Seldon
       const Matrix<complex<double>, Prop0, ColUpTriangPacked, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
 
+
+  /*** ColLoTriangPacked, NoTrans and NonUnit ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, ColLoTriangPacked, Allocator0>& A,
@@ -304,6 +377,10 @@ namespace Seldon
   void
   Mlt(const Matrix<complex<double>, Prop0, ColLoTriangPacked, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
+
+
+  /*** ColLoTriangPacked ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -335,6 +412,10 @@ namespace Seldon
       const Matrix<complex<double>, Prop0, ColLoTriangPacked, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
 
+
+  /*** RowUpTriangPacked, NoTrans and NonUnit ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, RowUpTriangPacked, Allocator0>& A,
@@ -356,6 +437,10 @@ namespace Seldon
   void
   Mlt(const Matrix<complex<double>, Prop0, RowUpTriangPacked, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
+
+
+  /*** RowUpTriangPacked ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -387,6 +472,10 @@ namespace Seldon
       const Matrix<complex<double>, Prop0, RowUpTriangPacked, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
 
+
+  /*** RowLoTriangPacked, NoTrans and NonUnit ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Mlt(const Matrix<float, Prop0, RowLoTriangPacked, Allocator0>& A,
@@ -408,6 +497,10 @@ namespace Seldon
   void
   Mlt(const Matrix<complex<double>, Prop0, RowLoTriangPacked, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
+
+
+  /*** RowLoTriangPacked ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -439,6 +532,21 @@ namespace Seldon
       const Matrix<complex<double>, Prop0, RowLoTriangPacked, Allocator0>& A,
       Vector<complex<double>, VectFull, Allocator1>& X);
 
+
+  // MLT //
+  /////////
+
+
+
+  ////////////
+  // MLTADD //
+
+
+  // General //
+
+  /*** ColMajor and NoTrans ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const float& alpha,
@@ -470,6 +578,10 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y);
+  
+  
+  /*** ColMajor and TransA ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
@@ -497,7 +609,7 @@ namespace Seldon
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y);
-
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<double>& alpha,
@@ -507,6 +619,10 @@ namespace Seldon
 	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y);
 
+  
+  /*** RowMajor and NoTrans ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const float& alpha,
@@ -538,6 +654,10 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y);
+  
+  
+  /*** RowMajor and TransA ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
@@ -574,7 +694,13 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y);
+  
+  
+  // Hermitian //
 
+  /*** ColHerm and Upper ***/
+
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<float>& alpha,
@@ -591,6 +717,10 @@ namespace Seldon
 	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y);
 
+  
+  /*** ColHerm and Uplo ***/
+
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<float>& alpha,
@@ -609,6 +739,10 @@ namespace Seldon
 	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y);
 
+
+  /*** RowHerm and Upper ***/
+
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<float>& alpha,
@@ -624,7 +758,11 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y);
-
+  
+  
+  /*** RowHerm and Uplo ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<float>& alpha,
@@ -642,7 +780,13 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y);
+  
+  
+  // HermPacked //
 
+  /*** ColHermPacked and Upper ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<float>& alpha,
@@ -661,6 +805,10 @@ namespace Seldon
 	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y);
 
+  
+  /*** ColHermPacked and Uplo ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<float>& alpha,
@@ -680,6 +828,10 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y);
+  
+  
+  /*** RowHermPacked and Upper ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
@@ -699,6 +851,10 @@ namespace Seldon
 	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y);
 
+
+  /*** RowHermPacked and Uplo ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<float>& alpha,
@@ -718,7 +874,13 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y);
+  
+  
+  // Symmetric //
 
+  /*** ColSym and Upper ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const float& alpha,
@@ -735,6 +897,10 @@ namespace Seldon
 	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y);
 
+  
+  /*** ColSym and Uplo ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const float& alpha,
@@ -753,6 +919,10 @@ namespace Seldon
 	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y);
 
+  
+  /*** RowSym and Upper ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const float& alpha,
@@ -768,7 +938,11 @@ namespace Seldon
 	      const Vector<double, VectFull, Allocator1>& X,
 	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y);
-
+  
+  
+  /*** RowSym and Uplo ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const float& alpha,
@@ -786,7 +960,13 @@ namespace Seldon
 	      const Vector<double, VectFull, Allocator1>& X,
 	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y);
+  
+  
+  // SymPacked //
 
+  /*** ColSymPacked and Upper ***/
+
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const float& alpha,
@@ -803,6 +983,10 @@ namespace Seldon
 	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y);
 
+
+  /*** ColSymPacked and Uplo ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const float& alpha,
@@ -821,6 +1005,10 @@ namespace Seldon
 	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y);
 
+
+  /*** RowSymPacked and Upper ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const float& alpha,
@@ -836,7 +1024,11 @@ namespace Seldon
 	      const Vector<double, VectFull, Allocator1>& X,
 	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y);
-
+  
+  
+  /*** RowSymPacked and Uplo ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const float& alpha,
@@ -854,6 +1046,20 @@ namespace Seldon
 	      const Vector<double, VectFull, Allocator1>& X,
 	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y);
+
+
+
+  // MLTADD //
+  ////////////
+
+
+
+  /////////////////
+  // RANK1UPDATE //
+
+
+  /*** ColMajor ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
@@ -882,7 +1088,11 @@ namespace Seldon
 		   const Vector<complex<double>, VectFull, Allocator1>& X,
 		   const Vector<complex<double>, VectFull, Allocator2>& Y,
 		   Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A);
+  
+  
+  /*** ColMajor and ConjY ***/
 
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const complex<float>& alpha,
@@ -898,7 +1108,11 @@ namespace Seldon
 		   const SeldonConjugate& ConjY,
 		   const Vector<complex<double>, VectFull, Allocator2>& Y,
 		   Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A);
-
+  
+  
+  /*** RowMajor ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const float& alpha,
@@ -926,7 +1140,11 @@ namespace Seldon
 		   const Vector<complex<double>, VectFull, Allocator1>& X,
 		   const Vector<complex<double>, VectFull, Allocator2>& Y,
 		   Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A);
-
+  
+  
+  /*** RowMajor and ConjY ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void Rank1Update(const complex<float>& alpha,
@@ -942,7 +1160,11 @@ namespace Seldon
 		   const SeldonConjugate& ConjY,
 		   const Vector<complex<double>, VectFull, Allocator2>& Y,
 		   Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A);
-
+  
+  
+  /*** ColSymPacked and Upper ***/
+  
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const float& alpha,
@@ -994,7 +1216,11 @@ namespace Seldon
   Rank1Update(const double& alpha,
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A);
-
+  
+  
+  /*** ColSymPacked and Uplo ***/
+  
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const float& alpha,
@@ -1054,7 +1280,11 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A);
-
+  
+  
+  /*** RowSymPacked and Upper ***/
+  
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const float& alpha,
@@ -1106,7 +1336,11 @@ namespace Seldon
   Rank1Update(const double& alpha,
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A);
-
+  
+  
+  /*** RowSymPacked and Uplo ***/
+  
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void Rank1Update(const float& alpha,
@@ -1166,7 +1400,20 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A);
+  
+  
+  // RANK1UPDATE //
+  /////////////////
 
+
+
+  /////////////////
+  // RANK2UPDATE //
+
+
+  /*** ColSymPacked and Upper ***/
+
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
@@ -1234,7 +1481,11 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      const Vector<complex<double>, VectFull, Allocator2>& Y,
 	      Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A);
-
+  
+  
+  /*** ColSymPacked and Uplo ***/
+  
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
@@ -1310,7 +1561,11 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator2>& Y,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A);
+  
+  
+  /*** RowSymPacked and Upper ***/
 
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
@@ -1378,7 +1633,11 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      const Vector<complex<double>, VectFull, Allocator2>& Y,
 	      Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A);
+  
+  
+  /*** RowSymPacked and Uplo ***/
 
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
@@ -1455,6 +1714,19 @@ namespace Seldon
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A);
 
+
+  // RANK2UPDATE //
+  /////////////////
+
+
+
+  ///////////
+  // SOLVE //
+
+
+  /*** ColUpTriang, NoTrans and NonUnit ***/
+
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, ColUpTriang, Allocator0>& A,
@@ -1477,6 +1749,10 @@ namespace Seldon
   Solve(const Matrix<complex<double>, Prop0,
 	ColUpTriang, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
+
+  
+  /*** ColUpTriang ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -1509,6 +1785,10 @@ namespace Seldon
 	ColUpTriang, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
 
+  
+  /*** ColLoTriang, NoTrans and NonUnit ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, ColLoTriang, Allocator0>& A,
@@ -1531,6 +1811,10 @@ namespace Seldon
   Solve(const Matrix<complex<double>, Prop0,
 	ColLoTriang, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
+  
+  
+  /*** ColLoTriang ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -1563,6 +1847,10 @@ namespace Seldon
 	ColLoTriang, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
 
+
+  /*** RowUpTriang, NoTrans and NonUnit ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, RowUpTriang, Allocator0>& A,
@@ -1585,6 +1873,10 @@ namespace Seldon
   Solve(const Matrix<complex<double>, Prop0,
 	RowUpTriang, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
+
+
+  /*** RowUpTriang ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -1617,6 +1909,10 @@ namespace Seldon
 	RowUpTriang, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
 
+
+  /*** RowLoTriang, NoTrans and NonUnit ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, RowLoTriang, Allocator0>& A,
@@ -1639,6 +1935,10 @@ namespace Seldon
   Solve(const Matrix<complex<double>, Prop0,
 	RowLoTriang, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
+
+
+  /*** RowLoTriang ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -1671,6 +1971,10 @@ namespace Seldon
 	RowLoTriang, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
 
+
+  /*** ColUpTriangPacked, NoTrans and NonUnit ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, ColUpTriangPacked, Allocator0>& A,
@@ -1693,6 +1997,10 @@ namespace Seldon
   Solve(const Matrix<complex<double>, Prop0,
 	ColUpTriangPacked, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
+
+
+  /*** ColUpTriangPacked ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -1725,6 +2033,10 @@ namespace Seldon
 	ColUpTriangPacked, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
 
+
+  /*** ColLoTriangPacked, NoTrans and NonUnit ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, ColLoTriangPacked, Allocator0>& A,
@@ -1747,6 +2059,10 @@ namespace Seldon
   Solve(const Matrix<complex<double>, Prop0,
 	ColLoTriangPacked, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
+
+
+  /*** ColLoTriangPacked ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -1779,6 +2095,10 @@ namespace Seldon
 	ColLoTriangPacked, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
 
+
+  /*** RowUpTriangPacked, NoTrans and NonUnit ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, RowUpTriangPacked, Allocator0>& A,
@@ -1801,6 +2121,10 @@ namespace Seldon
   Solve(const Matrix<complex<double>, Prop0,
 	RowUpTriangPacked, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
+
+  
+  /*** RowUpTriangPacked ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -1833,6 +2157,10 @@ namespace Seldon
 	RowUpTriangPacked, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
 
+
+  /*** RowLoTriangPacked, NoTrans and NonUnit ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Allocator1>
   void Solve(const Matrix<float, Prop0, RowLoTriangPacked, Allocator0>& A,
@@ -1855,6 +2183,10 @@ namespace Seldon
   Solve(const Matrix<complex<double>, Prop0,
 	RowLoTriangPacked, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
+
+
+  /*** RowLoTriangPacked ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Allocator1>
@@ -1887,6 +2219,11 @@ namespace Seldon
 	RowLoTriangPacked, Allocator0>& A,
 	Vector<complex<double>, VectFull, Allocator1>& X);
 
+
+  // SOLVE //
+  ///////////
+
+  
 } // namespace Seldon.
 
 #define SELDON_FILE_BLAS_2_HXX

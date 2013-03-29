@@ -614,7 +614,7 @@ namespace Seldon
     file_out << setw(72) << title;
     file_out << setw(8) << key;
     file_out << endl;
-    
+
     // Compute column pointer format
     int ptr_len = int(ceil( log10(0.1 + nnz + 1) )) + 1;
     int ptr_nperline = min(80 / ptr_len, n+1);
@@ -628,7 +628,7 @@ namespace Seldon
     int indcrd = (nnz-1) / ind_nperline + 1;
     string indfmt = string("(") + to_str(ind_nperline)
       + 'I' + to_str(ind_len) + ')';
-    
+
     // compute value format
     string valfmt("(3D23.15)");
     int valcrd = (nnz-1) / 3 + 1;
@@ -645,7 +645,7 @@ namespace Seldon
     file_out << setw(14) << valcrd;
     file_out << setw(14) << rhscrd;
     file_out << endl;
-    
+
     // Third line
     int neltvl = 0;
     char mxtype[4];
@@ -673,21 +673,21 @@ namespace Seldon
     file_out << setw(14) << nnz;
     file_out << setw(14) << neltvl;
     file_out << endl;
-    
+
     // Fourth line
     file_out << setw(16) << ptrfmt;
     file_out << setw(16) << indfmt;
     file_out << setw(20) << valfmt;
     file_out << setw(20) << valfmt;
     file_out << endl;
-    
+
     // printing ptr values
     file_out.setf(ios::left);
     for (int i = 0; i <= n; i += ptr_nperline)
       {
         for (int j = i; j < min(i+ptr_nperline, n+1); j++)
           file_out << setw(ptr_len) << Ptr(j)+1;
-        
+
         file_out << '\n';
       }
 

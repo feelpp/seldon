@@ -1308,7 +1308,7 @@ namespace Seldon
     Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayColComplexSparse, Allocator>::Matrix()  throw():
+  inline Matrix<T, Prop, ArrayColComplexSparse, Allocator>::Matrix()  :
     Matrix_ArrayComplexSparse<T, Prop, ArrayColComplexSparse, Allocator>()
   {
   }
@@ -1607,7 +1607,7 @@ namespace Seldon
     Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::Matrix()  throw():
+  inline Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::Matrix()  :
     Matrix_ArrayComplexSparse<T, Prop, ArrayRowComplexSparse, Allocator>()
   {
   }
@@ -1913,7 +1913,7 @@ namespace Seldon
     Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::Matrix()  throw():
+  inline Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::Matrix()  :
     Matrix_ArrayComplexSparse<T, Prop, ArrayColSymComplexSparse, Allocator>()
   {
   }
@@ -2530,8 +2530,7 @@ namespace Seldon
     Builds an empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::Matrix()
-  throw() :
+  inline Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::Matrix() :
     Matrix_ArrayComplexSparse<T, Prop, ArrayRowSymComplexSparse, Allocator>()
   {
   }

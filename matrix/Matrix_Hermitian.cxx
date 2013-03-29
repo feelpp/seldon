@@ -528,7 +528,7 @@ namespace Seldon
 		     string("Attempted to access to element (")
 		     + to_str(i) + ", " + to_str(j)
 		     + ") but row index should not be strictly"
-		     + " more than column index.");
+		     + " greater than column index.");
 #endif
 
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
@@ -561,7 +561,7 @@ namespace Seldon
 		     string("Attempted to access to element (")
 		     + to_str(i) + ", " + to_str(j)
 		     + ") but row index should not be strictly"
-		     + " more than column index.");
+		     + " greater than column index.");
 #endif
 
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
@@ -589,20 +589,20 @@ namespace Seldon
     if (j < 0 || j >= this->n_)
       throw WrongCol("Matrix_Hermitian::Val(int, int) const",
 		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");    
+		     + "], but is equal to " + to_str(j) + ".");
     if (i > j)
       throw WrongRow("Matrix_Hermitian::Get(int, int)",
 		     string("Attempted to access to element (")
 		     + to_str(i) + ", " + to_str(j)
 		     + ") but row index should not be strictly"
-		     + " more than column index.");
+		     + " greater than column index.");
 #endif
 
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
   }
 
 
-  //! Returns access to an element (i, j)
+  //! Returns the element (i, j).
   /*!
     Returns the value of element (i, j).
     \param i row index.
@@ -628,7 +628,7 @@ namespace Seldon
 		     string("Attempted to access to element (")
 		     + to_str(i) + ", " + to_str(j)
 		     + ") but row index should not be strictly"
-		     + " more than column index.");
+		     + " greater than column index.");
 #endif
     
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
@@ -783,8 +783,8 @@ namespace Seldon
   //! Fills a matrix with a given value.
   /*!
     \param x the value to fill the matrix with.
-    \warning If the imaginary part of x is non-null, the upper 
-    part will contain x, whereas lower part will contain conj(x)
+    \note If the imaginary part of x is non-null, the upper part will
+    contain x, whereas lower part will contain conj(x).
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
@@ -798,8 +798,8 @@ namespace Seldon
   //! Fills a matrix with a given value.
   /*!
     \param x the value to fill the matrix with.
-    \warning If the imaginary part of x is non-null, the upper 
-    part will contain x, whereas lower part will contain conj(x)
+    \note If the imaginary part of x is non-null, the upper part will
+    contain x, whereas lower part will contain conj(x).
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
@@ -1202,7 +1202,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColHerm, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, ColHerm, Allocator>::Matrix():
     Matrix_Hermitian<T, Prop, ColHerm, Allocator>()
   {
   }
@@ -1259,7 +1259,8 @@ namespace Seldon
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
-    \warning imaginary part of x should be null to keep an hermitian matrix
+    \warning The imaginary part of x should be null to keep an Hermitian
+    matrix.
   */
   template <class T, class Prop, class Allocator>
   template <class T0>
@@ -1289,7 +1290,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowHerm, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, RowHerm, Allocator>::Matrix():
     Matrix_Hermitian<T, Prop, RowHerm, Allocator>()
   {
   }

@@ -195,7 +195,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
     Matrix(int i, int j, int real_nz, int imag_nz);
     template <class Storage0, class Allocator0,
@@ -224,7 +224,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
     Matrix(int i, int j, int real_nz, int imag_nz);
     template <class Storage0, class Allocator0,

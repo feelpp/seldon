@@ -72,6 +72,7 @@ namespace Seldon
 #include "matrix/Matrix_HermPacked.cxx"
 #include "matrix/Matrix_TriangPacked.cxx"
 #include "vector/Vector.cxx"
+#include "vector/VectorCollection.cxx"
 #include "vector/Functions_Arrays.cxx"
 #include "vector/SparseVector.cxx"
 #include "matrix/Functions.cxx"

@@ -81,14 +81,29 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2>
   void Add(const T0& alpha,
 	   const Vector<T1, Storage1, Allocator1>& X,
-	   Vector<T2, Storage2, Allocator2>& Y)  throw(WrongDim, NoMemory);
+	   Vector<T2, Storage2, Allocator2>& Y);
+  
+  
+  template <class T0,
+            class T1, class Allocator1,
+            class T2, class Allocator2>
+  void Add(const T0 alpha,
+           const Vector<T1, PETScSeq, Allocator1>& X,
+           Vector<T2, PETScSeq, Allocator2>& Y);
 
+  template <class T0,
+            class T1, class Allocator1,
+            class T2, class Allocator2>
+  void Add(const T0 alpha,
+           const Vector<T1, PETScPar, Allocator1>& X,
+           Vector<T2, PETScPar, Allocator2>& Y);
+  
   template <class T0,
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
   void Add(const T0& alpha,
 	   const Vector<T1, VectSparse, Allocator1>& X,
-	   Vector<T2, VectSparse, Allocator2>& Y)  throw(WrongDim, NoMemory);
+	   Vector<T2, VectSparse, Allocator2>& Y);
 
   template <class T0,
 	    class T1, class Allocator1,
@@ -111,7 +126,7 @@ namespace Seldon
   void Add(const T0& alpha,
 	   const
            Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
-	   Vector<T2, Storage2, Allocator2>& Y)  throw(WrongDim, NoMemory);
+	   Vector<T2, Storage2, Allocator2>& Y);
   
   // ADD //
   /////////

@@ -40,7 +40,7 @@ namespace Seldon
     \param function function with which the error is associated.
     \param comment comment associated with the error.
   */
-  Error::Error(string function, string comment)  throw():
+  Error::Error(string function, string comment):
     description_("ERROR!\nAn undefined error occurred"),
     function_(function), comment_(comment)
   {
@@ -57,7 +57,7 @@ namespace Seldon
     \param function function with which the error is associated.
     \param comment comment associated with the error.
   */
-  Error::Error(string description, string function, string comment)  throw():
+  Error::Error(string description, string function, string comment):
     description_("ERROR!\n" + description),
     function_(function), comment_(comment)
   {
@@ -73,7 +73,7 @@ namespace Seldon
   /*!
     \note Empty.
   */
-  Error::~Error()  throw()
+  Error::~Error()
   {
   }
 
@@ -130,8 +130,8 @@ namespace Seldon
     \param[in] function function with which the error is associated.
     \param[in] comment comment associated with the error.
   */
-  Undefined::Undefined(string function, string comment)
-    throw(): Error("", function, comment)
+  Undefined::Undefined(string function, string comment):
+  Error("", function, comment)
   {
 #ifdef SELDON_WITH_ABORT
     this->CoutWhat();
@@ -170,8 +170,8 @@ namespace Seldon
     \param function function with which the error is associated.
     \param comment comment associated with the error.
   */
-  WrongArgument::WrongArgument(string function, string comment)
-    throw(): Error("Wrong argument given to ", function, comment)
+  WrongArgument::WrongArgument(string function, string comment):
+  Error("Wrong argument given to ", function, comment)
   {
 #ifdef SELDON_WITH_ABORT
     this->CoutWhat();
@@ -206,7 +206,7 @@ namespace Seldon
     \param function function with which the error is associated.
     \param comment comment associated with the error.
   */
-  NoMemory::NoMemory(string function, string comment)  throw():
+  NoMemory::NoMemory(string function, string comment):
     Error("Out of memory", function, comment)
   {
 #ifdef SELDON_WITH_ABORT
@@ -227,7 +227,7 @@ namespace Seldon
     \param function function with which the error is associated.
     \param comment comment associated with the error.
   */
-  WrongDim::WrongDim(string function, string comment)  throw():
+  WrongDim::WrongDim(string function, string comment):
     Error("Wrong dimensions involved", function, comment)
   {
 #ifdef SELDON_WITH_ABORT
@@ -248,7 +248,7 @@ namespace Seldon
     \param function function with which the error is associated.
     \param comment comment associated with the error.
   */
-  WrongIndex::WrongIndex(string function, string comment)  throw():
+  WrongIndex::WrongIndex(string function, string comment):
     Error("Index out of range", function, comment)
   {
 #ifdef SELDON_WITH_ABORT
@@ -269,7 +269,7 @@ namespace Seldon
     \param function function with which the error is associated.
     \param comment comment associated with the error.
   */
-  WrongRow::WrongRow(string function, string comment)  throw():
+  WrongRow::WrongRow(string function, string comment):
     Error("Row index out of range", function, comment)
   {
 #ifdef SELDON_WITH_ABORT
@@ -290,7 +290,7 @@ namespace Seldon
     \param function function with which the error is associated.
     \param comment comment associated with the error.
   */
-  WrongCol::WrongCol(string function, string comment)  throw():
+  WrongCol::WrongCol(string function, string comment):
     Error("Column index out of range", function, comment)
   {
 #ifdef SELDON_WITH_ABORT
@@ -311,7 +311,7 @@ namespace Seldon
     \param function function with which the error is associated.
     \param comment comment associated with the error.
   */
-  IOError::IOError(string function, string comment)  throw():
+  IOError::IOError(string function, string comment):
     Error("Error while performing an I/O operation", function, comment)
   {
 #ifdef SELDON_WITH_ABORT
@@ -333,8 +333,8 @@ namespace Seldon
     \param function function with which the error is associated.
     \param comment comment associated with the error.
   */
-  LapackError::LapackError(int info, string function, string comment)
-    throw(): Error("Error returned by Lapack", function, comment), info_(info)
+  LapackError::LapackError(int info, string function, string comment):
+  Error("Error returned by Lapack", function, comment), info_(info)
   {
 #ifdef SELDON_WITH_ABORT
     this->CoutWhat();

@@ -20,29 +20,9 @@
 
 #ifndef SELDON_FILE_LAPACK_LEAST_SQUARES_CXX
 
-/*
-  Functions included in this file:
-  
-  xGEQRF   (GetQR, GetLQ)
-  xGELQF   (GetQR, GetLQ)
-  xGEQP3   (GetQR_Pivot)
-  xORGQR   (GetQ_FromQR)
-  xUNGQR   (GetQ_FromQR)
-  xUNMQR   (MltQ_FromQR)
-  xORMQR   (MltQ_FromQR)
-  xORMQR + xTRSM   (SolveQR)
-  ZUNMQR + ZTRSM   (SolveQR)
-  xORMLQ + xTRSM   (SolveQR)
-  ZUNMLQ + ZTRSM   (SolveQR)
-  xTRSM + xORMLQ   (SolveLQ)
-  ZTRSM + ZUNMLQ   (SolveLQ)
-  xTRSM + xORMQR   (SolveLQ)
-  ZTRSM + ZUNMQR   (SolveLQ)
 
-  GetLowerTriangular
-  GetUpperTriangular
-  
-*/
+#include "Lapack_LeastSquares.hxx"
+
 
 namespace Seldon
 {
@@ -2629,4 +2609,3 @@ namespace Seldon
 
 #define SELDON_FILE_LAPACK_LEAST_SQUARES_CXX
 #endif
-

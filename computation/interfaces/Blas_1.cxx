@@ -19,30 +19,9 @@
 
 #ifndef SELDON_FILE_BLAS_1_CXX
 
-/*
-  Functions included in this file:
 
-  xROTG   (GenRot)
-  xROTMG  (GenModifRot)
-  xROT    (ApplyRot)
-  xROTM   (ApplyModifRot)
-  xSWAP   (Swap)
-  xSCAL   (Mlt)
-  xCOPY   (Copy)
-  xAXPY   (Add)
-  xDOT    (DotProd)
-  xDOTU   (DotProd)
-  SDSDOT  (ScaledDotProd)
-  xDOTC   (DotProdConj)
-  xASUM   (Norm1)
-  xNRM2   (Norm2)
-  IxAMAX  (GetMaxAbsIndex)
-*/
+#include "Blas_1.hxx"
 
-extern "C"
-{
-#include "cblas.h"
-}
 
 namespace Seldon
 {

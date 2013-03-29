@@ -80,176 +80,6 @@ namespace Seldon
   }
   
   
-  /******************
-   * Ordering stuff *
-   ******************/
-  
-  
-  //! Construct an ordering for the factorisation of a sparse matrix
-  template<class T, class Prop, class Storage, class Allocator,
-	   class Tint, class Alloc>
-  inline void FindSparseOrdering(Matrix<T, Prop, Storage, Allocator>& A,
-				 Vector<Tint, VectFull, Alloc>& num, int type)
-  {
-    int n = A.GetM();
-    if (n <= 0)
-      {
-	num.Clear();
-	return;
-      }
-    
-    if (type == SparseMatrixOrdering::AUTO)
-      {
-#if defined(SELDON_WITH_MUMPS) || defined(SELDON_WITH_PASTIX)
-	type = SparseMatrixOrdering::SCOTCH;
-#elif defined(SELDON_WITH_MUMPS) || defined(SELDON_WITH_PASTIX)
-	type = SparseMatrixOrdering::COLAMD;
-#else
-	type = SparseMatrixOrdering::IDENTITY;
-#endif
-      }
-    
-    switch (type)
-      {
-      case SparseMatrixOrdering::IDENTITY :
-	{
-	  // no permutation
-	  num.Reallocate(n);
-	  num.Fill();
-	}
-	break;
-      case SparseMatrixOrdering::REVERSE_CUTHILL_MCKEE :
-	{
-	  // Reverse Cuthill-McKee 
-	  FindReverseCuthillMcKeeOrdering(A, num);
-	}
-	break;
-      case SparseMatrixOrdering::PORD :
-	{
-	  // Pord package provided by Mumps
-#ifdef SELDON_WITH_MUMPS
-	  MatrixMumps<T> mat_lu;
-	  mat_lu.SelectOrdering(4);
-	  mat_lu.FindOrdering(A, num, true);
-#else
-	  cout << "Recompile Seldon with Mumps" << endl;
-	  abort();
-#endif
-	}
-	break;
-      case SparseMatrixOrdering::SCOTCH :
-	{
-	  // Scotch interface provided by Pastix
-#ifdef SELDON_WITH_PASTIX
-	  MatrixPastix<T> mat_lu;
-	  mat_lu.FindOrdering(A, num, true);
-#elif defined(SELDON_WITH_MUMPS)
-	  MatrixMumps<T> mat_lu;
-	  mat_lu.SelectOrdering(3);
-	  mat_lu.FindOrdering(A, num, true);
-#else
-	  cout << "Recompile Seldon with Pastix/Mumps" << endl;
-	  abort();
-#endif
-	}
-	break;
-      case SparseMatrixOrdering::METIS :
-	{
-	  // Metis ordering provided by Mumps
-#ifdef SELDON_WITH_MUMPS
-	  MatrixMumps<T> mat_lu;
-	  mat_lu.SelectOrdering(5);
-	  mat_lu.FindOrdering(A, num, true);
-#else
-	  cout << "Recompile Seldon with Mumps" << endl;
-	  abort();
-#endif
-	}
-	break;
-      case SparseMatrixOrdering::AMD :
-	{
-	  // Camd package in SuiteSparse (containing UmfPack)
-#ifdef SELDON_WITH_UMFPACK
-	  
-	  num.Reallocate(n);
-	  
-	  // pattern of A+A' is retrieved in CSC format
-	  Vector<Tint, VectFull, Alloc> Ptr, Ind;
-	  Vector<T, VectFull, Allocator> Value;
-	  General sym;
-	  ConvertToCSC(A, sym, Ptr, Ind, Value, true);
-	  Value.Clear();
-	  
-	  // then calling camd
-	  Vector<Tint, VectFull, Alloc> C(n);
-	  C.Fill(0);
-	  double Control[CAMD_CONTROL], Info[CAMD_INFO];
-	  camd_defaults(Control);
-	  camd_order(n, Ptr.GetData(), Ind.GetData(),
-		     num.GetData(), Control, Info, C.GetData());
-	  
-#else
-	  cout << "Recompile Seldon with UmfPack" << endl;
-	  abort();
-#endif
-	}
-	break;
-      case SparseMatrixOrdering::COLAMD :
-	{
-	  // Colamd package in SuiteSparse (containing UmfPack)
-#ifdef SELDON_WITH_UMFPACK
-	  
-	  num.Reallocate(n);
-	  
-	  // pattern of A+A' is retrieved in CSC format
-	  Vector<Tint, VectFull, Alloc> Ptr, Ind;
-	  Vector<T, VectFull, Allocator> Value;
-	  General sym;
-	  ConvertToCSC(A, sym, Ptr, Ind, Value, true);
-	  Value.Clear();
-	  
-	  int nnz = Ind.GetM();
-	  Ind.Resize(2*nnz + 12*n);
-	  
-	  // then calling colamd
-	  int Stats[COLAMD_STATS];
-	  int ok = colamd(n, n, Ind.GetM(), Ind.GetData(), Ptr.GetData(), NULL, Stats);
-	  if (ok != 1)
-	    {
-	      colamd_report(Stats);
-	      abort();
-	    }
-	  
-	  for (int i = 0; i < n; i++)
-	    num(i) = Ptr(i);
-	  
-#else
-	  cout << "Recompile Seldon with UmfPack" << endl;
-	  abort();
-#endif
-	}
-
-	break;
-      case SparseMatrixOrdering::QAMD :
-	{
-	  // Qamd ordering provided by Mumps
-#ifdef SELDON_WITH_MUMPS
-	  MatrixMumps<T> mat_lu;
-	  mat_lu.SelectOrdering(6);
-	  mat_lu.FindOrdering(A, num, true);
-#else
-	  cout << "Recompile Seldon with Mumps" << endl;
-	  abort();
-#endif
-	}
-	break;
-      case SparseMatrixOrdering::USER :
-	// nothing to do
-	break;
-      }
-  }
-  
-  
   /*************************
    * Choice of best solver *
    *************************/
@@ -448,7 +278,7 @@ namespace Seldon
   
   //! modifies the number of threads per node (for Pastix only)
   template<class T>
-  inline void SparseDirectSolver<T>::SetNbThreadPerNode(int p)
+  inline void SparseDirectSolver<T>::SetNumberOfThreadPerNode(int p)
   {
     nb_threads_per_node = p;
   }
@@ -745,8 +575,8 @@ namespace Seldon
 #ifdef SELDON_WITH_UMFPACK
 	GetLU(A, mat_umf, keep_matrix);
 #else
-	cout<<"Recompile with Umfpack"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Factorize(MatrixSparse&, bool)",
+                        "Seldon was not compiled with UmfPack support.");
 #endif
       }
     else if (type_solver == SUPERLU)
@@ -754,8 +584,8 @@ namespace Seldon
 #ifdef SELDON_WITH_SUPERLU
 	GetLU(A, mat_superlu, keep_matrix);
 #else
-	cout<<"Recompile with SuperLU"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Factorize(MatrixSparse&, bool)",
+                        "Seldon was not compiled with SuperLU support.");
 #endif
       }
     else if (type_solver == MUMPS)
@@ -763,18 +593,18 @@ namespace Seldon
 #ifdef SELDON_WITH_MUMPS
 	GetLU(A, mat_mumps, keep_matrix);
 #else
-	cout<<"Recompile with Mumps"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Factorize(MatrixSparse&, bool)",
+                        "Seldon was not compiled with Mumps support.");
 #endif
       }
     else if (type_solver == PASTIX)
       {
 #ifdef SELDON_WITH_PASTIX
-        mat_pastix.SetNbThreadPerNode(nb_threads_per_node);
+        mat_pastix.SetNumberOfThreadPerNode(nb_threads_per_node);
 	GetLU(A, mat_pastix, keep_matrix);
 #else
-	cout<<"Recompile with Pastix"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Factorize(MatrixSparse&, bool)",
+                        "Seldon was not compiled with Pastix support.");
 #endif
       }
     else if (type_solver == ILUT)
@@ -789,8 +619,8 @@ namespace Seldon
         // then performing factorization
 	GetLU(A, mat_ilut, permut, keep_matrix);
 #else
-	cout<<"Recompile with preconditioners"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Factorize(MatrixSparse&, bool)",
+                        "Seldon was not compiled with the preconditioners.");
 #endif
       }
     else
@@ -907,8 +737,8 @@ namespace Seldon
 #ifdef SELDON_WITH_UMFPACK
 	Seldon::SolveLU(mat_umf, x_solution);
 #else
-	cout<<"Recompile with Umfpack"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Solve(Vector&)",
+                        "Seldon was not compiled with UmfPack support.");
 #endif
       }
     else if (type_solver == SUPERLU)
@@ -916,8 +746,8 @@ namespace Seldon
 #ifdef SELDON_WITH_SUPERLU
 	Seldon::SolveLU(mat_superlu, x_solution);
 #else
-	cout<<"Recompile with SuperLU"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Solve(Vector&)",
+                        "Seldon was not compiled with SuperLU support.");
 #endif
       } 
     else if (type_solver == MUMPS)
@@ -925,8 +755,8 @@ namespace Seldon
 #ifdef SELDON_WITH_MUMPS
 	Seldon::SolveLU(mat_mumps, x_solution);
 #else
-	cout<<"Recompile with Mumps"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Solve(Vector&)",
+                        "Seldon was not compiled with Mumps support.");
 #endif
       }
     else if (type_solver == PASTIX)
@@ -934,8 +764,8 @@ namespace Seldon
 #ifdef SELDON_WITH_PASTIX
 	Seldon::SolveLU(mat_pastix, x_solution);
 #else
-	cout<<"Recompile with Pastix"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Solve(Vector&)",
+                        "Seldon was not compiled with Pastix support.");
 #endif
       }
     else if (type_solver == ILUT)
@@ -943,8 +773,8 @@ namespace Seldon
 #ifdef SELDON_WITH_PRECONDITIONING
 	mat_ilut.Solve(x_solution);
 #else
-	cout<<"Recompile with preconditioning"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Solve(Vector&)",
+                        "Seldon was not compiled with the preconditioners.");
 #endif
       }
     else
@@ -956,15 +786,16 @@ namespace Seldon
   
   //! x_solution is overwritten with solution of A x = b or A^T x = b
   template<class T> template<class TransStatus, class Vector1>
-  inline void SparseDirectSolver<T>::Solve(const TransStatus& TransA, Vector1& x_solution)
+  inline void SparseDirectSolver<T>
+  ::Solve(const TransStatus& TransA, Vector1& x_solution)
   {
     if (type_solver == UMFPACK)
       {
 #ifdef SELDON_WITH_UMFPACK
 	Seldon::SolveLU(TransA, mat_umf, x_solution);
 #else
-	cout<<"Recompile with Umfpack"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Solve(TransStatus, Vector&)",
+                        "Seldon was not compiled with UmpfPack support.");
 #endif
       }
     else if (type_solver == SUPERLU)
@@ -972,8 +803,8 @@ namespace Seldon
 #ifdef SELDON_WITH_SUPERLU
 	Seldon::SolveLU(TransA, mat_superlu, x_solution);
 #else
-	cout<<"Recompile with SuperLU"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Solve(TransStatus, Vector&)",
+                        "Seldon was not compiled with SuperLU support.");
 #endif
       } 
     else if (type_solver == MUMPS)
@@ -981,8 +812,8 @@ namespace Seldon
 #ifdef SELDON_WITH_MUMPS
 	Seldon::SolveLU(TransA, mat_mumps, x_solution);
 #else
-	cout<<"Recompile with Mumps"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Solve(TransStatus, Vector&)",
+                        "Seldon was not compiled with Mumps support.");
 #endif
       }
     else if (type_solver == PASTIX)
@@ -990,8 +821,8 @@ namespace Seldon
 #ifdef SELDON_WITH_PASTIX
 	Seldon::SolveLU(TransA, mat_pastix, x_solution);
 #else
-	cout<<"Recompile with Pastix"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Solve(TransStatus, Vector&)",
+                        "Seldon was not compiled with Pastix support.");
 #endif
       }
     else if (type_solver == ILUT)
@@ -999,8 +830,8 @@ namespace Seldon
 #ifdef SELDON_WITH_PRECONDITIONING
 	mat_ilut.Solve(TransA, x_solution);
 #else
-	cout<<"Recompile with preconditioning"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::Solve(TransStatus, Vector&)",
+                        "Seldon was not compiled with the preconditioners.");
 #endif
       }
     else
@@ -1013,14 +844,16 @@ namespace Seldon
 #ifdef SELDON_WITH_MPI
   //! Factorization of a matrix
   /*!
-    The matrix is given on each processor of the communicator in CSC format.
-    If the matrix is assumed to be symmetric, you provide only the lower part of the matrix.
-    \param[in] comm_facto communicator grouping processors involved in the factorisation
+    The matrix is given on each processor of the communicator in CSC
+    format. If the matrix is assumed to be symmetric, you provide only
+    the lower part of the matrix.
+    \param[in] comm_facto communicator grouping processors involved in the
+    factorisation.
     \param[inout] Ptr start indices
     \param[inout] Row column indices
     \param[inout] Val values of non-zero entries
-    \param[in] glob_num global column numbers, each column of the global matrix
-                      is associated with one processor and only one
+    \param[in] glob_num global column numbers, each column of the global
+    matrix is associated with one processor and only one
     \param[in] sym if true, the matrix is assumed to be symmetric
     \param[in] keep_matrix if false the input matrix is erased
    */
@@ -1036,8 +869,9 @@ namespace Seldon
 #ifdef SELDON_WITH_MUMPS
 	mat_mumps.FactorizeDistributedMatrix(comm_facto, Ptr, Row, Val, glob_num, sym, keep_matrix);
 #else
-	cout<<"Recompile with Mumps"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::FactorizeDistributed(MPI::Comm&,"
+                        " IVect&, IVect&, Vector<T>&, IVect&, bool, bool)",
+                        "Seldon was not compiled with Mumps support.");
 #endif
       }
     else if (type_solver == PASTIX)
@@ -1045,14 +879,16 @@ namespace Seldon
 #ifdef SELDON_WITH_PASTIX
         mat_pastix.FactorizeDistributedMatrix(comm_facto, Ptr, Row, Val, glob_num, sym, keep_matrix);
 #else
-	cout<<"Recompile with Pastix"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::FactorizeDistributed(MPI::Comm&,"
+                        " IVect&, IVect&, Vector<T>&, IVect&, bool, bool)",
+                        "Seldon was not compiled with Pastix support.");
 #endif
       }
     else
       {
-	cout<<"Other solvers not implemented "<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::FactorizeDistributed(MPI::Comm&,"
+                        " IVect&, IVect&, Vector<T>&, IVect&, bool, bool)",
+                        "The method is defined for Mumps and Pastix only.");
       }
 
 
@@ -1065,15 +901,17 @@ namespace Seldon
    */
   template<class T> template<class Vector1>
   inline void SparseDirectSolver<T>::
-  SolveDistributed(MPI::Comm& comm_facto, Vector1& x_solution, const IVect& glob_number)
+  SolveDistributed(MPI::Comm& comm_facto, Vector1& x_solution,
+		   const IVect& glob_number)
   {
     if (type_solver == MUMPS)
       {
 #ifdef SELDON_WITH_MUMPS
 	mat_mumps.SolveDistributed(comm_facto, x_solution, glob_number);
 #else
-	cout<<"Recompile with Mumps"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::SolveDistributed(MPI::Comm&,"
+                        " Vector&, IVect&)",
+                        "Seldon was not compiled with Mumps support.");
 #endif
       }
     else if (type_solver == PASTIX)
@@ -1081,14 +919,16 @@ namespace Seldon
 #ifdef SELDON_WITH_PASTIX
         mat_pastix.SolveDistributed(comm_facto, x_solution, glob_number);
 #else
-	cout<<"Recompile with Pastix"<<endl;
-	abort();	
+        throw Undefined("SparseDirectSolver::SolveDistributed(MPI::Comm&,"
+                        " Vector&, IVect&)",
+                        "Seldon was not compiled with Pastix support.");
 #endif
       }
     else
       {
-	cout<<"Other solvers not implemented "<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::SolveDistributed(MPI::Comm&,"
+                        " Vector&, IVect&)",
+                        "The method is defined for Mumps and Pastix only.");
       }
 
   }
@@ -1108,8 +948,9 @@ namespace Seldon
 #ifdef SELDON_WITH_MUMPS
 	mat_mumps.SolveDistributed(comm_facto, TransA, x_solution, glob_number);
 #else
-	cout<<"Recompile with Mumps"<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::SolveDistributed(TransStatus, "
+                        "MPI::Comm&, Vector&, IVect&)",
+                        "Seldon was not compiled with Mumps support.");
 #endif
       }
     else if (type_solver == PASTIX)
@@ -1117,14 +958,16 @@ namespace Seldon
 #ifdef SELDON_WITH_PASTIX
 	mat_pastix.SolveDistributed(comm_facto, TransA, x_solution, glob_number);
 #else
-	cout<<"Recompile with Pastix"<<endl;
-	abort();	
+        throw Undefined("SparseDirectSolver::SolveDistributed(TransStatus, "
+                        "MPI::Comm&, Vector&, IVect&)",
+                        "Seldon was not compiled with Pastix support.");
 #endif
       }
     else
       {
-	cout<<"Other solvers not implemented "<<endl;
-	abort();
+        throw Undefined("SparseDirectSolver::SolveDistributed(TransStatus, "
+                        "MPI::Comm&, Vector&, IVect&)",
+                        "The method is defined for Mumps and Pastix only.");
       }
   }
 #endif

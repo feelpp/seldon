@@ -21,6 +21,43 @@
 #ifndef SELDON_FILE_MATRIX_CONVERSIONS_HXX
 
 
+/*
+  Functions defined in this file:
+  
+  conversion of a sparse matrix into coordinate format
+  (i, j, val) = A  
+  ConvertMatrix_to_Coordinates(A, index_row, index_col, val, index, sym)
+  
+  conversion from coordinate from to other sparse format
+  A = (i, j, val)
+  ConvertMatrix_from_Coordinates(index_row, index_col, val, A, index)
+  
+  conversion from sparse matrices to Compressed Sparse Column
+  (Ptr, Ind, Val) = A
+  ConvertToCSC(A, Ptr, Ind, Val, sym_pat)
+  
+  conversion from sparse matrices to Compressed Sparse Row
+  (Ptr, Ind, Val) = A
+  ConvertToCSR(A, Ptr, Ind, Val, sym_pat)
+  
+  conversion between sparse matrices
+  B = A
+  Copy(A, B)
+  
+  pattern of A + A' in CSR format
+  (Ptr, Ind) = A
+  GetSymmetricPattern
+  
+  conversion from a sparse matrix to a dense matrix
+  B = A
+  Copy(A, B)
+  
+  conversion from a dense matrix to a sparse matrix
+  B = sparse(A.*(abs(A) > threshold))
+  ConvertToSparse(A, B, threshold)
+  
+*/
+
 namespace Seldon
 {
 
@@ -89,6 +126,7 @@ namespace Seldon
 			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
+
   template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
   void
@@ -99,7 +137,7 @@ namespace Seldon
 			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
-  
+
     template<class T, class Prop, class Allocator1, class Allocator2,
 	   class Tint, class Allocator3, class Allocator4>
   void
@@ -224,7 +262,7 @@ namespace Seldon
     From Sparse formats to CSC format
   */
 
-  
+
   template<class T, class Prop, class Alloc1,
            class Tint, class Alloc2, class Alloc3, class Alloc4>
   void ConvertToCSC(const Matrix<T, Prop, RowSparse, Alloc1>& A,
@@ -232,7 +270,7 @@ namespace Seldon
                     Vector<Tint, VectFull, Alloc3>& IndRow,
                     Vector<T, VectFull, Alloc4>& Val, bool sym_pat = false);
   
-  
+    
   template<class T, class Prop, class Alloc1,
            class Tint, class Alloc2, class Alloc3, class Alloc4>
   void ConvertToCSC(const Matrix<T, Prop, ArrayRowSparse, Alloc1>& A,
@@ -240,7 +278,7 @@ namespace Seldon
                     Vector<Tint, VectFull, Alloc3>& IndRow,
                     Vector<T, VectFull, Alloc4>& Val, bool sym_pat = false);
   
-  
+      
   template<class T, class Prop, class Alloc1,
            class Tint, class Alloc2, class Alloc3, class Alloc4>
   void ConvertToCSC(const Matrix<T, Prop, ColSparse, Alloc1>& A,
@@ -319,12 +357,6 @@ namespace Seldon
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& Ind,
                     Vector<T, VectFull, Alloc4>& AllVal, bool sym_pat = false);
-  
-  
-  template<class T0, class Prop0, class Allocator0,
-	   class T1, class Prop1, class Allocator1>
-  void Copy(const Matrix<T0, Prop0, ArrayColSparse, Allocator0>& mat_array,
-	    Matrix<T1, Prop1, ColSparse, Allocator1>& mat_csc);
   
   
   template<class T, class Prop, class Allocator>
@@ -413,7 +445,7 @@ namespace Seldon
   void Copy(const Matrix<T, Prop, RowSymSparse, Alloc1>& A,
 	    Matrix<T, Prop, ColSymSparse, Alloc2>& B);
   
-
+  
   template<class T, class Prop, class Alloc1, class Alloc2>
   void Copy(const Matrix<T, Prop, ArrayRowSymSparse, Alloc1>& A,
 	    Matrix<T, Prop, ColSymSparse, Alloc2>& B);
@@ -505,7 +537,7 @@ namespace Seldon
                     Vector<Tint, VectFull, Alloc3>& IndCol,
                     Vector<T, VectFull, Alloc4>& Value);
   
-
+  
   template<class T, class Prop, class Alloc1,
            class Tint, class Alloc2, class Alloc3, class Alloc4>
   void ConvertToCSR(const Matrix<T, Prop, ArrayColSymSparse, Alloc1>& A,
@@ -725,6 +757,16 @@ namespace Seldon
   void Copy(Matrix<T, Prop, ArrayRowSymSparse, Allocator1>& A,
             Matrix<T, Prop, ColSym, Allocator2>& B);
   
+
+  template<class T, class Prop1, class Prop2, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop1, PETScMPIDense, Alloc1>& A,
+            Matrix<T, Prop2, RowMajor, Alloc2>& B);
+
+
+  template<class T, class Prop1, class Prop2, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop1, RowMajor, Alloc1>& A,
+            Matrix<T, Prop2, PETScMPIDense, Alloc2>& B);
+
   
   /*****************************************************
    * Conversion from dense matrices to sparse matrices *
@@ -735,19 +777,19 @@ namespace Seldon
   void ConvertToSparse(const Matrix<T, Symmetric, RowSymPacked>& A,
                        Matrix<T, Symmetric, RowSymSparse>& B,
 		       const T& threshold);
-  
-  
+
+
   template<class T>
   void ConvertToSparse(const Matrix<T, General, RowMajor>& A,
                        Matrix<T, General, ArrayRowSparse>& B,
 		       const T& threshold);
-  
-  
+
+
   template<class T>
   void ConvertToSparse(const Matrix<T, General, RowMajor>& A,
                        Matrix<T, General, RowSparse>& B,
 		       const T& threshold);
-  
+
 } // namespace Seldon.
 
 

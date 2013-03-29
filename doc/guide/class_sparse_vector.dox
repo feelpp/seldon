@@ -241,7 +241,7 @@ SparseVector.cxx</p>
 <h4>Example : </h4>
 \precode
 Vector<double, VectSparse> V;
-// use of Get to insert non-zero entry
+// use of Get to insert non-zero entry.
 V.Get(2) = 1.5;
 V.Get(5) = -1.0;
 // you can display value of V at row i
@@ -250,7 +250,7 @@ cout << "V(4) = " << V(4) << endl;
 // but V(2) should return 1.5
 cout << "V(2) = " << V(2) << endl;
 
-// everything ok, val is equal to 0
+// everything is fine, and 'val' is equal to 0.
 double val = V(20);
 
 Vector<double, VectSparse> W;
@@ -264,6 +264,51 @@ W *= 1.5;
 
 <h4>Related topics : </h4>
 <p><a href="#Copy">Copy</a></p>
+
+
+<h4>Location :</h4>
+<p>Class Vector&lt;T, VectSparse&gt;<br/>
+SparseVector.hxx<br/>
+SparseVector.cxx</p>
+
+
+
+<div class="separator"><a name="Get"></a></div>
+
+
+
+<h3>Get</h3>
+
+<h4>Syntax : </h4>
+ <pre class="syntax-box">
+  T& Get(int i);
+</pre>
+
+
+<p> This function can be used to modify (or insert) a non-zero entry in the sparse vector. This function
+ should be used in replacement of operator () when the user wants to modify the sparse vector. </p>
+
+
+<h4>Example : </h4>
+\precode
+Vector<double, VectSparse> V;
+// use of Get to insert non-zero entry
+V.Get(2) = 1.5;
+V.Get(5) = -1.0;
+// you can display value of V at row i
+// V(4) should return 0 (zero entry)
+cout << "V(4) = " << V(4) << endl;
+// but V(2) should return 1.5
+cout << "V(2) = " << V(2) << endl;
+
+// warning: a non-zero entry V(20) will be created here:
+double val = V.Get(20);
+ 
+\endprecode
+
+
+<h4>Related topics : </h4>
+<p><a href="#operator">Operators</a></p>
 
 
 <h4>Location :</h4>

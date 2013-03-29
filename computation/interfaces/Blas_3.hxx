@@ -1,4 +1,4 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2012 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -19,9 +19,32 @@
 
 #ifndef SELDON_FILE_BLAS_3_HXX
 
+/*
+  Functions included in this file:
+
+  xGEMM   (MltAdd)
+  xSYMM   (MltAdd)
+  xHEMM   (MltAdd)
+  xTRMM   (Mlt)
+  xTRSM   (Solve)
+*/
+
+extern "C"
+{
+#include "cblas.h"
+}
+
 namespace Seldon
 {
 
+
+  ////////////
+  // MltAdd //
+
+
+  /*** ColMajor and NoTrans ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
@@ -58,6 +81,10 @@ namespace Seldon
 	      const complex<double>& beta,
 	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C);
 
+
+  /*** ColMajor and TransA, TransB ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
@@ -102,6 +129,10 @@ namespace Seldon
 	      const complex<double>& beta,
 	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C);
 
+
+  /*** RowMajor and NoTrans ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
@@ -138,6 +169,10 @@ namespace Seldon
 	      const complex<double>& beta,
 	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C);
 
+
+  /*** RowMajor and TransA, TransB ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
@@ -181,7 +216,20 @@ namespace Seldon
 	      const Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B,
 	      const complex<double>& beta,
 	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C);
+  
+  
+  // MltAdd //
+  ////////////
 
+
+
+  ////////////
+  // MltAdd //
+
+
+  /*** ColSym and Upper ***/
+
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
@@ -221,6 +269,10 @@ namespace Seldon
 	      const Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B,
 	      const complex<double>& beta,
 	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C);
+  
+
+  /*** ColSym and UpLo ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
@@ -265,6 +317,10 @@ namespace Seldon
 	      const Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B,
 	      const complex<double>& beta,
 	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C);
+  
+
+  /*** RowSym and Upper ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
@@ -305,6 +361,10 @@ namespace Seldon
 	      const Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B,
 	      const complex<double>& beta,
 	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C);
+  
+  
+  /*** RowSym and UpLo ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
@@ -349,7 +409,20 @@ namespace Seldon
 	      const Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B,
 	      const complex<double>& beta,
 	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C);
+  
+  
+  // MltAdd //
+  ////////////
 
+
+
+  ////////////
+  // MltAdd //
+
+
+  /*** ColHerm and Upper ***/
+
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
@@ -369,6 +442,10 @@ namespace Seldon
 	      const Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B,
 	      const complex<double>& beta,
 	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C);
+  
+
+  /*** ColHerm and UpLo ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
@@ -391,6 +468,10 @@ namespace Seldon
 	      const Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B,
 	      const complex<double>& beta,
 	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C);
+
+
+  /*** RowHerm and Upper ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
@@ -411,6 +492,10 @@ namespace Seldon
 	      const Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B,
 	      const complex<double>& beta,
 	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C);
+  
+
+  /*** RowHerm and UpLo ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
@@ -433,7 +518,20 @@ namespace Seldon
 	      const Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B,
 	      const complex<double>& beta,
 	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C);
+  
+  
+  // MltAdd //
+  ////////////
 
+
+
+  /////////
+  // Mlt //
+
+
+  /*** ColUpTriang, NoTrans and NonUnit ***/
+
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
   void Mlt(const SeldonSide& Side,
@@ -462,6 +560,10 @@ namespace Seldon
 	   const Matrix<complex<double>, Prop0, ColUpTriang, Allocator0>& A,
 	   Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B);
 
+
+  /*** ColUpTriang ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
   void Mlt(const SeldonSide& Side,
@@ -498,6 +600,10 @@ namespace Seldon
 	   const Matrix<complex<double>, Prop0, ColUpTriang, Allocator0>& A,
 	   Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B);
 
+
+  /*** ColLoTriang, NoTrans and NonUnit ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
   void Mlt(const SeldonSide& Side,
@@ -525,6 +631,10 @@ namespace Seldon
 	   const complex<double>& alpha,
 	   const Matrix<complex<double>, Prop0, ColLoTriang, Allocator0>& A,
 	   Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B);
+  
+  
+  /*** ColLoTriang ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
@@ -561,6 +671,10 @@ namespace Seldon
 	   const SeldonDiag& DiagA,
 	   const Matrix<complex<double>, Prop0, ColLoTriang, Allocator0>& A,
 	   Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B);
+  
+  
+  /*** RowUpTriang, NoTrans and NonUnit ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
@@ -590,6 +704,10 @@ namespace Seldon
 	   const Matrix<complex<double>, Prop0, RowUpTriang, Allocator0>& A,
 	   Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B);
 
+
+  /*** RowUpTriang ***/
+
+
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
   void Mlt(const SeldonSide& Side,
@@ -626,6 +744,10 @@ namespace Seldon
 	   const Matrix<complex<double>, Prop0, RowUpTriang, Allocator0>& A,
 	   Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B);
 
+
+  /*** RowLoTriang, NoTrans and NonUnit ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
   void Mlt(const SeldonSide& Side,
@@ -654,6 +776,10 @@ namespace Seldon
 	   const Matrix<complex<double>, Prop0, RowLoTriang, Allocator0>& A,
 	   Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B);
 
+
+  /*** RowLoTriang ***/
+
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
   void Mlt(const SeldonSide& Side,
@@ -689,6 +815,19 @@ namespace Seldon
 	   const SeldonDiag& DiagA,
 	   const Matrix<complex<double>, Prop0, RowLoTriang, Allocator0>& A,
 	   Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B);
+
+
+  // Mlt //
+  /////////
+
+
+
+  ///////////
+  // Solve //
+
+
+  /*** ColUpTriang, NoTrans and NonUnit ***/
+
 
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
@@ -718,6 +857,10 @@ namespace Seldon
 	     const Matrix<complex<double>, Prop0, ColUpTriang, Allocator0>& A,
 	     Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B);
 
+  
+  /*** ColUpTriang ***/
+
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
   void Solve(const SeldonSide& Side,
@@ -753,7 +896,11 @@ namespace Seldon
 	     const SeldonDiag& DiagA,
 	     const Matrix<complex<double>, Prop0, ColUpTriang, Allocator0>& A,
 	     Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B);
-
+  
+  
+  /*** ColLoTriang, NoTrans and NonUnit ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
   void Solve(const SeldonSide& Side,
@@ -782,6 +929,10 @@ namespace Seldon
 	     const Matrix<complex<double>, Prop0, ColLoTriang, Allocator0>& A,
 	     Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B);
 
+
+  /*** ColLoTriang ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
   void Solve(const SeldonSide& Side,
@@ -818,6 +969,10 @@ namespace Seldon
 	     const Matrix<complex<double>, Prop0, ColLoTriang, Allocator0>& A,
 	     Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B);
 
+  
+  /*** RowUpTriang, NoTrans and NonUnit ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
   void Solve(const SeldonSide& Side,
@@ -846,6 +1001,10 @@ namespace Seldon
 	     const Matrix<complex<double>, Prop0, RowUpTriang, Allocator0>& A,
 	     Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B);
 
+
+  /*** RowUpTriang ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
   void Solve(const SeldonSide& Side,
@@ -881,7 +1040,11 @@ namespace Seldon
 	     const SeldonDiag& DiagA,
 	     const Matrix<complex<double>, Prop0, RowUpTriang, Allocator0>& A,
 	     Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B);
-
+  
+  
+  /*** RowLoTriang, NoTrans and NonUnit ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
   void Solve(const SeldonSide& Side,
@@ -910,6 +1073,10 @@ namespace Seldon
 	     const Matrix<complex<double>, Prop0, RowLoTriang, Allocator0>& A,
 	     Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B);
 
+
+  /*** RowLoTriang ***/
+  
+  
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1>
   void Solve(const SeldonSide& Side,
@@ -946,6 +1113,11 @@ namespace Seldon
 	     const Matrix<complex<double>, Prop0, RowLoTriang, Allocator0>& A,
 	     Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B);
 
+  
+  // Solve //
+  ///////////
+
+  
 } // namespace Seldon.
 
 #define SELDON_FILE_BLAS_3_HXX

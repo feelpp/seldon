@@ -90,7 +90,7 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2>
   void Add(const T0& alpha,
 	   const Vector<T1, Storage1, Allocator1>& X,
-	   Vector<T2, Storage2, Allocator2>& Y)  throw(WrongDim, NoMemory)
+	   Vector<T2, Storage2, Allocator2>& Y)
   {
     if (alpha != T0(0))
       {
@@ -110,11 +110,56 @@ namespace Seldon
 
   //! Adds two vectors Y = Y + alpha X
   template <class T0,
+            class T1, class Allocator1,
+            class T2, class Allocator2>
+  void Add(const T0 alpha,
+           const Vector<T1, PETScSeq, Allocator1>& X,
+           Vector<T2, PETScSeq, Allocator2>& Y)
+  {
+    if (alpha != T0(0))
+      {
+        T1 alpha_ = alpha;
+
+        int ma = X.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+        CheckDim(X, Y, "Add(alpha, X, Y)");
+#endif
+
+        VecAXPY(Y.GetPetscVector(), alpha_, X.GetPetscVector());
+      }
+  }
+
+
+  template <class T0,
+            class T1, class Allocator1,
+            class T2, class Allocator2>
+  void Add(const T0 alpha,
+           const Vector<T1, PETScPar, Allocator1>& X,
+           Vector<T2, PETScPar, Allocator2>& Y)
+  {
+    if (alpha != T0(0))
+      {
+        T1 alpha_ = alpha;
+
+        int ma = X.GetM();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+        CheckDim(X, Y, "Add(alpha, X, Y)");
+#endif
+
+        VecAXPY(Y.GetPetscVector(), alpha_, X.GetPetscVector());
+      }
+  }
+
+
+
+  template <class T0,
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
   void Add(const T0& alpha,
 	   const Vector<T1, VectSparse, Allocator1>& X,
-	   Vector<T2, VectSparse, Allocator2>& Y)  throw(WrongDim, NoMemory)
+	   Vector<T2, VectSparse, Allocator2>& Y)
   {
     if (alpha != T0(0))
       {
@@ -171,7 +216,7 @@ namespace Seldon
   void Add(const T0& alpha,
 	   const
            Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
-	   Vector<T2, Storage2, Allocator2>& Y)  throw(WrongDim, NoMemory)
+	   Vector<T2, Storage2, Allocator2>& Y)
   {
     if (alpha != T0(0))
       {
@@ -218,6 +263,32 @@ namespace Seldon
     for (int i = 0; i < X.GetNvector(); i++)
       Y.PushBack(X.GetVector(i));
   }
+
+
+  template<class T, class Alloc1, class Alloc2>
+  void Copy(const Vector<T, PETScPar, Alloc1>& A,
+            Vector<T, VectFull, Alloc2>& B)
+  {
+    B.Reallocate(A.GetLocalM());
+    T *local_data;
+    VecGetArray(A.GetPetscVector(), &local_data);
+    for (int i = 0; i < A.GetLocalM(); i++)
+      B(i) = local_data[i];
+    VecRestoreArray(A.GetPetscVector(), &local_data);
+  }
+
+
+  template<class T, class Alloc1, class Alloc2>
+  void Copy(const Vector<T, VectFull, Alloc1>& A,
+            Vector<T, PETScPar, Alloc2>& B)
+  {
+    T *local_data;
+    VecGetArray(B.GetPetscVector(), &local_data);
+    for (int i = 0; i < A.GetM(); i++)
+      local_data[i] = A(i);
+    VecRestoreArray(B.GetPetscVector(), &local_data);
+  }
+
 
 
   // COPY //

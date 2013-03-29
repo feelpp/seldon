@@ -8,8 +8,8 @@
 <h2>The compiler</h2>
 
 <p> %Seldon is supposed to be fully compliant with the <b>C++
-standard</b>. Therefore, it can be compiled by GNU GCC (>=3.0; tested
-with version 3.2, 3.3, 3.4, 4.0, 4.1, 4.2, 4.3 and 4.4) and by the
+standard</b>. Therefore, it can be compiled by GNU GCC (>=3.0; all released x.y versions were tested
+from version 3.2 to version 4.5) and by the
 Intel C++ compiler icc (tested with icc 7.1, 8.0 and 12.0). No tests were conducted with proprietary compilers under Unix, but the compliance with the C++ standard should ensure portability. </p>
 
 <h2>Installation</h2>

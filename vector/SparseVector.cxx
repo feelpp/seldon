@@ -36,7 +36,7 @@ namespace Seldon
     On exit, the vector is empty.
   */
   template <class T, class Allocator>
-  Vector<T, VectSparse, Allocator>::Vector()  throw():
+  Vector<T, VectSparse, Allocator>::Vector():
     Vector<T, VectFull, Allocator>()
   {
     index_ = NULL;
@@ -438,10 +438,12 @@ namespace Seldon
   }
 
 
-  //! Access operator.
-  /*!
-    \param i index.
-    \return The value of the vector at \a i.
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the vector).
   */
   template <class T, class Allocator>
   inline typename Vector<T, VectSparse, Allocator>::value_type
@@ -455,7 +457,7 @@ namespace Seldon
     if (k >= this->m_ || index_[k] != i)
       // The entry does not exist, a zero is returned.
       return T(0);
-
+    
     return this->data_[k];
   }
   
@@ -464,6 +466,8 @@ namespace Seldon
   /*! Returns the value of element \a i.
     \param[in] i index.
     \return Element \a i of the vector.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the vector).
   */
   template <class T, class Allocator>
   inline typename Vector<T, VectSparse, Allocator>::reference
@@ -499,7 +503,6 @@ namespace Seldon
       k++;
 
     if (k >= this->m_ || index_[k] != i)
-      // The entry does not exist, no reference can be returned.
       throw WrongArgument("Vector<VectSparse>::Val(int)",
                           "No reference to element " + to_str(i)
                           + " can be returned: it is a zero entry.");

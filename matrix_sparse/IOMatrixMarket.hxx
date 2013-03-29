@@ -44,30 +44,73 @@ namespace Seldon
                          Matrix<complex<T>, Prop, RowSymSparse, Allocator>& A);
 
 
+  template <class T, class T2, class Storage, class Allocator>
+  void ReadHarwellBoeing(string filename, const T2& val, 
+                         Matrix<T, Symmetric, Storage, Allocator>& A);
+
+
+  template <class T, class T2, class Storage, class Allocator>
+  void ReadHarwellBoeing(string filename, const T2& val, 
+                         Matrix<T, General, Storage, Allocator>& A);
+
+
+  template <class T, class T2, class Storage, class Allocator>
+  void ReadHarwellBoeing(string filename, const complex<T2>& val, 
+                         Matrix<T, Symmetric, Storage, Allocator>& A);
+
+
+  template <class T, class T2, class Storage, class Allocator>
+  void ReadHarwellBoeing(string filename, const complex<T2>& val, 
+                         Matrix<T, General, Storage, Allocator>& A);
+
+
   template <class T, class Prop, class Storage, class Allocator>
   void ReadHarwellBoeing(string filename,
                          Matrix<T, Prop, Storage, Allocator>& A);
+
+
+  template<class T>
+  void ReadComplexValuesHarwell(int Nnonzero, int Nline_val, int line_width_val,
+                                int element_width_val,
+                                istream& input_stream, T* A_data);
+  
+  
+  template<class T>
+  void ReadComplexValuesHarwell(int Nnonzero, int Nline_val, int line_width_val,
+                                int element_width_val,
+                                istream& input_stream, complex<T>* A_data);
   
   
   template <class T, class Prop, class Storage, class Allocator>
   void ReadHarwellBoeing(string filename,
                          string value_type, string matrix_type,
                          Matrix<T, Prop, Storage, Allocator> & A);
-
   
+  
+  template<class T>
+  void PrintComplexValuesHarwell(int nnz, const Vector<complex<T> >& Val,
+                                 ofstream& file_out);
+
+
+  template<class T>
+  void PrintComplexValuesHarwell(int nnz, const Vector<T>& Val,
+                                 ofstream& file_out);
+
+
   template<class T, class Prop, class Storage, class Allocator>
   void WriteHarwellBoeing(const Matrix<T, Prop, Storage, Allocator>& A,
                           const string& file_name);
   
-  
+
   template <class T, class Prop, class Storage, class Allocator>
   void ReadMatrixMarket(string filename,
                         Matrix<T, Prop, Storage, Allocator>& A);
   
-  
+
   template<class T, class Prop, class Storage, class Allocator>
   void WriteMatrixMarket(const Matrix<T, Prop, Storage, Allocator>& A,
                          const string& file_name);
+  
   
 }
 

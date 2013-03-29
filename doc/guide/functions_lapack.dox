@@ -22,28 +22,28 @@
  <td class="category-table-td"><a href="#RefineSolutionLU">RefineSolutionLU</a></td> 
  <td class="category-table-td"> improves solution computed by SolveLU</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#GetCholesky">GetCholesky </a></td>
+ <td class="category-table-td"><a href="#getcholesky">GetCholesky </a></td>
  <td class="category-table-td"> performs a Cholesky (A =  LL<sup>T</sup>) factorization for symmetric positive definite matrices </td>
  </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#GetCholesky">SolveCholesky </a></td>
+ <td class="category-table-td"><a href="#getcholesky">SolveCholesky </a></td>
  <td class="category-table-td"> solves linear system by using Cholesky factorization</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#GetCholesky">MltCholesky </a></td>
+ <td class="category-table-td"><a href="#getcholesky">MltCholesky </a></td>
  <td class="category-table-td"> performs matrix vector product by using Cholesky factorization</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#ReciprocalConditionNumber">ReciprocalConditionNumber </a></td> 
+ <td class="category-table-td"><a href="#reciprocalconditionnumber">ReciprocalConditionNumber </a></td> 
  <td class="category-table-td"> computes the inverse of matrix
  condition number</td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#GetScalingFactors">GetScalingFactors </a></td> 
+ <td class="category-table-td"><a href="#getscalingfactors">GetScalingFactors </a></td> 
  <td class="category-table-td"> computes row and column scalings to
  equilibrate a matrix</td> </tr>
 <tr class="category-table-tr-2">
- <td class="category-table-td"><a href="#GetInverse">GetInverse </a></td> 
+ <td class="category-table-td"><a href="#getinverse">GetInverse </a></td> 
  <td class="category-table-td"> computes the matrix inverse </td> </tr>
 <tr class="category-table-tr-1">
- <td class="category-table-td"><a href="#GetQR">GetQR </a></td> 
+ <td class="category-table-td"><a href="#getqr">GetQR </a></td> 
  <td class="category-table-td"> QR factorization of matrix </td> </tr>
 <tr class="category-table-tr-2">
  <td class="category-table-td"><a href="#GetQR_Pivot">GetQR_Pivot </a></td> 
@@ -544,6 +544,10 @@ Vector<double> tau;
 Vector<int> pivot;
 GetQR_Pivot(A, tau, pivot);
 
+// Solving Least squares problem QR X = B  (m >= n)
+Vector<double> X, B(m);
+B.Fill();
+SolveQR(A, tau, X);
 \endprecode
 
 

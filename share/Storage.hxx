@@ -59,6 +59,11 @@ namespace Seldon
   class VectSparse;
   class Collection;
   class DenseSparseCollection;
+  class PETScSeq;
+  class PETScPar;
+  class PETScSeqDense;
+  class PETScMPIDense;
+  class PETScMPIAIJ;
 
 
   ////////////

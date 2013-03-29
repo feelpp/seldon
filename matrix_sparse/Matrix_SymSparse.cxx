@@ -59,7 +59,7 @@ namespace Seldon
     nz_ = 0;
     ptr_ = NULL;
     ind_ = NULL;
-    
+
     Reallocate(i, j);
   }
 
@@ -82,7 +82,7 @@ namespace Seldon
     this->nz_ = 0;
     ind_ = NULL;
     ptr_ = NULL;
-    
+
     Reallocate(i, j, nz);
   }
 
@@ -426,8 +426,8 @@ namespace Seldon
   //! Initialization of an empty sparse matrix with i rows and j columns
   /*!
     \param i number of rows
-    \param j number of columns    
-   */
+    \param j number of columns
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymSparse<T, Prop, Storage, Allocator>::Reallocate(int i, int j)
   {
@@ -436,7 +436,7 @@ namespace Seldon
 
     this->m_ = i;
     this->n_ = i;
-    
+
     // we try to allocate ptr_
 #ifdef SELDON_CHECK_MEMORY
     try
@@ -472,26 +472,26 @@ namespace Seldon
 		     + " row or column start indices, for a "
 		     + to_str(i) + " by " + to_str(i) + " matrix.");
 #endif
-    
+
     // then filing ptr_ with 0
     for (int k = 0; k <= i; k++)
-      ptr_[k] = 0;    
+      ptr_[k] = 0;
   }
-  
+
 
   //! Initialization of a sparse matrix with i rows and j columns
   /*!
     \param i number of rows
     \param j number of columns
     \param nz number of non-zero entries
-   */  
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymSparse<T, Prop, Storage, Allocator>
   ::Reallocate(int i, int j, int nz)
   {
     // clearing previous entries
     Clear();
-    
+
     this->nz_ = nz;
     this->m_ = i;
     this->n_ = i;
@@ -620,12 +620,12 @@ namespace Seldon
 #endif
   }
 
-  
+
   //! Changing the number of rows and columns
   /*!
     \param i number of rows
-    \param j number of columns    
-   */
+    \param j number of columns
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymSparse<T, Prop, Storage, Allocator>::Resize(int i, int j)
   {
@@ -634,19 +634,19 @@ namespace Seldon
     else
       Resize(i, i, nz_);
   }
-   
-  
+
+
   //! Changing the number of rows, columns and non-zero entries
   /*!
     \param i number of rows
     \param j number of columns
     Previous entries are kept during the operation
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymSparse<T, Prop, Storage, Allocator>
   ::Resize(int i, int j, int nz)
-  {  
-    
+  {
+
 #ifdef SELDON_CHECK_DIMENSIONS
     if (static_cast<long int>(2 * nz - 2) / static_cast<long int>(i + 1)
 	>= static_cast<long int>(i))
@@ -664,7 +664,7 @@ namespace Seldon
 		       + to_str(i) + " by " + to_str(i) + ").");
       }
 #endif
-    
+
     if (nz != nz_)
       {
         // trying to resize ind_ and data_
@@ -672,10 +672,10 @@ namespace Seldon
         try
           {
 #endif
-            
+
             ind_ = reinterpret_cast<int*>( realloc(reinterpret_cast<void*>(ind_),
                                                    nz*sizeof(int)) );
-            
+
 #ifdef SELDON_CHECK_MEMORY
           }
         catch (...)
@@ -704,16 +704,16 @@ namespace Seldon
                          + " row or column indices, for a "
                          + to_str(i) + " by " + to_str(j) + " matrix.");
 #endif
-        
+
         Vector<T, VectFull, Allocator> val;
         val.SetData(nz_, this->data_);
         val.Resize(nz);
-        
+
         this->data_ = val.GetData();
         nz_ = nz;
         val.Nullify();
       }
-    
+
 
     if (this->m_ != i)
       {
@@ -724,7 +724,7 @@ namespace Seldon
             // trying to resize ptr_
             ptr_ = reinterpret_cast<int*>( realloc(ptr_, (i+1)*
                                                    sizeof(int)) );
-            
+
 #ifdef SELDON_CHECK_MEMORY
           }
         catch (...)
@@ -752,17 +752,17 @@ namespace Seldon
                          + " row or column start indices, for a "
                          + to_str(i) + " by " + to_str(i) + " matrix.");
 #endif
-        
+
         // then filing last values of ptr_ with nz_
         for (int k = this->m_; k <= i; k++)
           ptr_[k] = this->nz_;
       }
-    
+
     this->m_ = i;
     this->n_ = i;
   }
-  
-  
+
+
   //! Copies a matrix
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_SymSparse<T, Prop, Storage, Allocator>::
@@ -1273,13 +1273,13 @@ namespace Seldon
       Get(i, j) += val;
   }
 
-  
+
   //! Sets an element (i, j) to a value
   /*! This function sets \a val to the element (\a i, \a j)
     \param[in] i row index.
     \param[in] j column index.
     \param[in] val A(i, j) = val
-  */  
+  */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_SymSparse<T, Prop, Storage, Allocator>
   ::Set(int i, int j, const T& val)
@@ -1287,7 +1287,7 @@ namespace Seldon
     Get(i, j) = val;
   }
 
-  
+
   //! Duplicates a matrix (assignment operator).
   /*!
     \param A matrix to be copied.
@@ -1561,19 +1561,19 @@ namespace Seldon
       throw IOError("Matrix_SymSparse::Read(ofstream& FileStream)",
 		    "Stream is not ready.");
 #endif
-    
+
     int m, n, nz;
     FileStream.read(reinterpret_cast<char*>(&m), sizeof(int));
     FileStream.read(reinterpret_cast<char*>(&n), sizeof(int));
     FileStream.read(reinterpret_cast<char*>(&nz), sizeof(int));
-    
+
     Reallocate(m, m, nz);
 
     FileStream.read(reinterpret_cast<char*>(ptr_),
                     sizeof(int)*(m+1));
     FileStream.read(reinterpret_cast<char*>(ind_), sizeof(int)*nz);
     FileStream.read(reinterpret_cast<char*>(this->data_), sizeof(T)*nz);
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.
     if (!FileStream.good())
@@ -1585,7 +1585,7 @@ namespace Seldon
 
   }
 
-  
+
   //! Reads the matrix from a file.
   /*!
     Reads the matrix from a file in text format.
@@ -1595,8 +1595,8 @@ namespace Seldon
           are written (a,b)
   */
   template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_SymSparse<T, Prop, Storage, Allocator>::
-  ReadText(string FileName, bool cplx)
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::ReadText(string FileName, bool cplx)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str());
@@ -1609,7 +1609,7 @@ namespace Seldon
 #endif
 
     this->ReadText(FileStream, cplx);
-
+    
     FileStream.close();
   }
 
@@ -1648,7 +1648,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColSymSparse, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, ColSymSparse, Allocator>::Matrix():
     Matrix_SymSparse<T, Prop, ColSymSparse, Allocator>()
   {
   }
@@ -1724,7 +1724,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowSymSparse, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, RowSymSparse, Allocator>::Matrix():
     Matrix_SymSparse<T, Prop, RowSymSparse, Allocator>()
   {
   }
