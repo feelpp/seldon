@@ -788,6 +788,34 @@ namespace Seldon
 
 
   //! Sets the vector from a file.
+  /*! Sets the vector according to a binary file that stores the length of the
+    collection (number of inner vectors), followed by the inner vectors (i.e.,
+    an integer followed by data).
+    \param FileName file name.
+  */
+  template <class T, class Allocator >
+  void Vector<T, Collection, Allocator>::Read(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str(), ifstream::binary);
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Vector<Collection>::Read(string FileName)",
+                    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    Vector<int> length;
+    length.Read(FileStream);
+
+    this->Read(FileStream, length);
+
+    FileStream.close();
+  }
+
+
+  //! Sets the vector from a file.
   /*!
     Sets the vector according to a binary file that stores the length of the
     vector (integer) and all elements.
