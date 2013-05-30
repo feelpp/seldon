@@ -486,7 +486,8 @@ namespace Seldon
 
     Mlt(beta, Y);
 
-    T4 zero(0);
+    T4 zero;
+    SetComplexZero(zero);
     T4 temp;
 
     int* ptr = M.GetPtr();
@@ -522,7 +523,8 @@ namespace Seldon
 
     Mlt(beta, Y);
 
-    typename T4::value_type zero(0);
+    typename T4::value_type zero;
+    SetComplexZero(zero);
     typename T4::value_type temp;
 
     int* ptr = M.GetPtr();
@@ -591,7 +593,8 @@ namespace Seldon
     Mlt(beta, Y);
 
     int i, j;
-    T4 zero(0);
+    T4 zero;
+    SetComplexZero(zero);
     T4 temp;
 
     int* ptr = M.GetPtr();
@@ -632,7 +635,8 @@ namespace Seldon
     Mlt(beta, Y);
 
     int i, j;
-    T4 zero(0);
+    T4 zero;
+    SetComplexZero(zero);
     T4 temp;
 
     int* ptr = M.GetPtr();
@@ -674,7 +678,8 @@ namespace Seldon
     Mlt(beta, Y);
 
     int i, j;
-    typename T4::value_type zero(0);
+    typename T4::value_type zero;
+    SetComplexZero(zero);
     typename T4::value_type temp;
 
     int* ptr = M.GetPtr();
@@ -718,7 +723,8 @@ namespace Seldon
     Mlt(beta, Y);
 
     int i, j;
-    typename T4::value_type zero(0);
+    typename T4::value_type zero;
+    SetComplexZero(zero);
     typename T4::value_type temp;
 
     int* ptr = M.GetPtr();
@@ -975,7 +981,8 @@ namespace Seldon
     Mlt(beta, Y);
 
     int i, j;
-    complex<T1> zero(0);
+    complex<T1> zero;
+    SetComplexZero(zero);
     complex<T1> temp;
 
     int* ptr = M.GetPtr();
@@ -1051,7 +1058,8 @@ namespace Seldon
     Mlt(beta, Y);
 
     int i, j;
-    complex<T1> zero(0);
+    complex<T1> zero;
+    SetComplexZero(zero);
     complex<T1> temp;
 
     int* ptr = M.GetPtr();
@@ -1121,7 +1129,8 @@ namespace Seldon
     
     Mlt(beta, Y);
     
-    T4 zero(0);
+    T4 zero;
+    SetComplexZero(zero);
     T4 temp;
     T4 alpha_(alpha);
 
@@ -1173,7 +1182,8 @@ namespace Seldon
     
     Mlt(beta, Y);
 
-    typename T4::value_type zero(0);
+    typename T4::value_type zero;
+    SetComplexZero(zero);
     typename T4::value_type temp;
     typename T4::value_type alpha_(alpha);
 
@@ -1336,7 +1346,8 @@ namespace Seldon
     else
       Mlt(beta, Y);
 
-    T4 zero(0);
+    T4 zero;
+    SetComplexZero(zero);
     T4 temp;
     T4 alpha_(alpha);
 
@@ -1382,7 +1393,8 @@ namespace Seldon
     else
       Mlt(beta, Y);
 
-    T4 zero(0);
+    T4 zero;
+    SetComplexZero(zero);
     T4 temp;
     T4 alpha_(alpha);
 
