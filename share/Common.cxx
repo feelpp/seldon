@@ -223,7 +223,25 @@ namespace Seldon
     return abs(val);
 #endif
   }
+
+
+  //! returns the square modulus of z
+  template<class T>
+  inline T absSquare(const complex<T>& z)
+  {
+    // more optimal than real(z * conj(z))
+    return real(z)*real(z) + imag(z)*imag(z);
+  }
+
   
+  //! returns the square modulus of z
+  template<class T>
+  inline T absSquare(const T& z)
+  {
+    return z*z;
+  }
+
+    
 #ifdef SELDON_WITH_HDF5
   //! Gives for most C types the corresponding HDF5 memory datatype.
   /*!

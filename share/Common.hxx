@@ -127,6 +127,12 @@ namespace Seldon
 
   template<class T>
   T ComplexAbs(const complex<T>& val);
+
+  template<class T>
+  T absSquare(const T& x);
+
+  template<class T>
+  T absSquare(const complex<T>& x);
   
 #ifdef SELDON_WITH_HDF5
   template <class T>

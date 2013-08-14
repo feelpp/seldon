@@ -579,7 +579,7 @@ namespace Seldon
     T1 value(0);
 
     for (int i = 0; i < X.GetM(); i++)
-      value += real(X(i) * conj(X(i)));
+      value += absSquare(X(i));
 
     return sqrt(value);
   }
@@ -605,8 +605,8 @@ namespace Seldon
     T1 value(0);
 
     for (int i = 0; i < X.GetSize(); i++)
-      value += real(X.Value(i) * conj(X.Value(i)));
-
+      value += absSquare(X.Value(i));
+    
     return sqrt(value);
   }
 
