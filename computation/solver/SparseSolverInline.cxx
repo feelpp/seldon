@@ -95,12 +95,15 @@ namespace Seldon
     type_solver = SELDON_SOLVER;
     
     // we try to use an other available solver
-    // The order of preference is Pastix, Mumps, UmfPack and SuperLU
+    // The order of preference is Pastix, Mumps, Pardiso, UmfPack and SuperLU
 #ifdef SELDON_WITH_SUPERLU
     type_solver = SUPERLU;
 #endif
 #ifdef SELDON_WITH_UMFPACK
     type_solver = UMFPACK;
+#endif
+#ifdef SELDON_WITH_PARDISO
+    type_solver = PARDISO;
 #endif
 #ifdef SELDON_WITH_MUMPS
     type_solver = MUMPS;
@@ -123,6 +126,10 @@ namespace Seldon
     
 #ifdef SELDON_WITH_MUMPS
     mat_mumps.HideMessages();
+#endif
+
+#ifdef SELDON_WITH_PARDISO
+    mat_pardiso.HideMessages();
 #endif
 
 #ifdef SELDON_WITH_SUPERLU
@@ -154,6 +161,10 @@ namespace Seldon
     mat_mumps.ShowMessages();
 #endif
 
+#ifdef SELDON_WITH_PARDISO
+    mat_pardiso.ShowMessages();
+#endif
+
 #ifdef SELDON_WITH_SUPERLU
     mat_superlu.ShowMessages();
 #endif
@@ -181,6 +192,10 @@ namespace Seldon
     
 #ifdef SELDON_WITH_MUMPS
     mat_mumps.ShowMessages();
+#endif
+
+#ifdef SELDON_WITH_PARDISO
+    mat_pardiso.ShowMessages();
 #endif
 
 #ifdef SELDON_WITH_SUPERLU
@@ -213,6 +228,10 @@ namespace Seldon
 	
 #ifdef SELDON_WITH_MUMPS
 	mat_mumps.Clear();
+#endif
+
+#ifdef SELDON_WITH_PARDISO
+	mat_pardiso.Clear();
 #endif
 	
 #ifdef SELDON_WITH_SUPERLU
@@ -389,6 +408,12 @@ namespace Seldon
 	      mat_pastix.SelectOrdering(API_ORDER_SCOTCH);
 #endif
 	    }
+	  else if (type_solver == PARDISO)
+	    {
+#ifdef SELDON_WITH_PARDISO
+	      mat_pardiso.SelectOrdering(2);
+#endif
+	    }
 	  else if (type_solver == UMFPACK)
 	    {
 #ifdef SELDON_WITH_UMFPACK
@@ -411,6 +436,10 @@ namespace Seldon
 #endif
 
 #ifdef SELDON_WITH_MUMPS
+              type_ordering = SparseMatrixOrdering::METIS;
+#endif
+
+#ifdef SELDON_WITH_PARDISO
               type_ordering = SparseMatrixOrdering::METIS;
 #endif
 
@@ -539,6 +568,12 @@ namespace Seldon
 	    mat_pastix.SetPermutation(permut);
 #endif
 	  }
+        else if (type_solver == PARDISO)
+	  {
+#ifdef SELDON_WITH_PARDISO
+	    mat_pardiso.SetPermutation(permut);
+#endif
+	  }
 	else if (type_solver == UMFPACK)
 	  {
 #ifdef SELDON_WITH_UMFPACK
@@ -588,6 +623,15 @@ namespace Seldon
                         "Seldon was not compiled with SuperLU support.");
 #endif
       }
+    else if (type_solver == PARDISO)
+      {
+#ifdef SELDON_WITH_PARDISO
+	GetLU(A, mat_pardiso, keep_matrix);
+#else
+        throw Undefined("SparseDirectSolver::Factorize(MatrixSparse&, bool)",
+                        "Seldon was not compiled with Pardiso support.");
+#endif
+      }
     else if (type_solver == MUMPS)
       {
 #ifdef SELDON_WITH_MUMPS
@@ -631,7 +675,7 @@ namespace Seldon
   }
    
 
-  //! Returns error code of the direct solver (for Mumps only)
+  //! Returns error code of the direct solver
   template <class T>
   inline int SparseDirectSolver<T>::GetInfoFactorization(int& ierr) const
   {
@@ -720,6 +764,34 @@ namespace Seldon
           }
 #endif
       }
+    else if (type_solver == PARDISO)
+      {
+#ifdef SELDON_WITH_PARDISO
+        ierr = mat_pardiso.GetInfoFactorization();
+        switch (ierr)
+          {
+          case -1 :
+            return INVALID_ARGUMENT;
+          case -2 :
+          case -9 :
+            return OUT_OF_MEMORY;
+          case -3 :
+            return INVALID_PERMUTATION;
+          case -4 :
+            return NUMERICALLY_SINGULAR_MATRIX;
+          case -6 :
+            return ORDERING_FAILED;
+          case -7 :
+            return STRUCTURALLY_SINGULAR_MATRIX;
+          case -8 :
+            return OVERFLOW_32BIT;            
+	  case 0 :
+	    return FACTO_OK;
+          default :
+            return INTERNAL_ERROR;
+          }
+#endif
+      }
     
     return FACTO_OK;
   }
@@ -748,6 +820,15 @@ namespace Seldon
 #else
         throw Undefined("SparseDirectSolver::Solve(Vector&)",
                         "Seldon was not compiled with SuperLU support.");
+#endif
+      }
+    else if (type_solver == PARDISO)
+      {
+#ifdef SELDON_WITH_PARDISO
+	Seldon::SolveLU(mat_pardiso, x_solution);
+#else
+        throw Undefined("SparseDirectSolver::Solve(Vector&)",
+                        "Seldon was not compiled with Pardiso support.");
 #endif
       } 
     else if (type_solver == MUMPS)
@@ -807,6 +888,15 @@ namespace Seldon
                         "Seldon was not compiled with SuperLU support.");
 #endif
       } 
+    else if (type_solver == PARDISO)
+      {
+#ifdef SELDON_WITH_PARDISO
+	Seldon::SolveLU(TransA, mat_pardiso, x_solution);
+#else
+        throw Undefined("SparseDirectSolver::Solve(TransStatus, Vector&)",
+                        "Seldon was not compiled with Pardiso support.");
+#endif
+      }
     else if (type_solver == MUMPS)
       {
 #ifdef SELDON_WITH_MUMPS

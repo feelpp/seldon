@@ -145,6 +145,9 @@ namespace Seldon
 #ifdef SELDON_WITH_SUPERLU
     MatrixSuperLU<T> mat_superlu; //!< SuperLU solver
 #endif
+#ifdef SELDON_WITH_PARDISO
+    MatrixPardiso<T> mat_pardiso; //!< Pardiso solver
+#endif
 #ifdef SELDON_WITH_MUMPS
     MatrixMumps<T> mat_mumps; //!< Mumps solver
 #endif
@@ -167,12 +170,13 @@ namespace Seldon
         
   public :
     // available solvers
-    enum {SELDON_SOLVER, UMFPACK, SUPERLU, MUMPS, PASTIX, ILUT};
+    enum {SELDON_SOLVER, UMFPACK, SUPERLU, MUMPS, PASTIX, ILUT, PARDISO};
     // error codes
     enum {FACTO_OK, STRUCTURALLY_SINGULAR_MATRIX,
           NUMERICALLY_SINGULAR_MATRIX, OUT_OF_MEMORY, INVALID_ARGUMENT,
           INCORRECT_NUMBER_OF_ROWS, MATRIX_INDICES_INCORRECT,
-          INVALID_PERMUTATION, ORDERING_FAILED, INTERNAL_ERROR};
+          INVALID_PERMUTATION, ORDERING_FAILED, INTERNAL_ERROR,
+          OVERFLOW_32BIT};
     
     SparseDirectSolver();
     

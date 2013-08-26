@@ -45,6 +45,10 @@
 #include "computation/interfaces/direct/Pastix.hxx"
 #endif
 
+#ifdef SELDON_WITH_PARDISO
+#include "computation/interfaces/direct/Pardiso.hxx"
+#endif
+
 #ifdef SELDON_WITH_PRECONDITIONING
 #include "computation/solver/preconditioner/IlutPreconditioning.hxx"
 #endif
