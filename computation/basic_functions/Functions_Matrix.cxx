@@ -3029,6 +3029,10 @@ namespace Seldon
 	  ind_T(k) = i;
     	}
 
+    // sorting numbers
+    for (int i = 0; i < n; i++)
+      Sort(ptr_T(i), ptr_T(i+1)-1, ind_T, data_T);
+    
     B.SetData(n, m, data_T, ptr_T, ind_T);
 
     data.Nullify();
@@ -3087,6 +3091,10 @@ namespace Seldon
 	  data_T(k) = data(jp);
 	  ind_T(k) = i;
     	}
+
+    // sorting numbers
+    for (int i = 0; i < m; i++)
+      Sort(ptr_T(i), ptr_T(i+1)-1, ind_T, data_T);
 
     B.SetData(n, m, data_T, ptr_T, ind_T);
 

@@ -271,17 +271,18 @@ namespace Seldon
     \param[out] numbers new row numbers
     \param[in] keep_matrix if false, the given matrix is cleared
   */
-  template<class T> template<class Prop,class Storage,class Allocator>
-  void MatrixMumps<T>::FindOrdering(Matrix<T, Prop, Storage, Allocator> & mat,
+  template<class T> template<class T0, class Prop,class Storage,class Allocator>
+  void MatrixMumps<T>::FindOrdering(Matrix<T0, Prop, Storage, Allocator> & mat,
 				    IVect& numbers, bool keep_matrix)
   {
     InitMatrix(mat);
 
-    int n = mat.GetM(), nnz = mat.GetNonZeros();
+    int n = mat.GetM();
     // conversion in coordinate format
-    IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
+    IVect num_row, num_col; Vector<T, VectFull, CallocAlloc<T> > values;
     ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
-
+    
+    int nnz = num_col.GetM();
     // no values needed to renumber
     values.Clear();
     if (!keep_matrix)
@@ -308,19 +309,20 @@ namespace Seldon
     \param[in,out] mat matrix to factorize
     \param[in] keep_matrix if false, the given matrix is cleared
   */
-  template<class T> template<class Prop, class Storage, class Allocator>
-  void MatrixMumps<T>::FactorizeMatrix(Matrix<T,Prop,Storage,Allocator> & mat,
+  template<class T> template<class T0, class Prop, class Storage, class Allocator>
+  void MatrixMumps<T>::FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 				       bool keep_matrix)
   {
     InitMatrix(mat);
 
-    int n = mat.GetM(), nnz = mat.GetNonZeros();
+    int n = mat.GetM();
     // conversion in coordinate format with fortran convention (1-index)
-    IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
+    IVect num_row, num_col; Vector<T, VectFull, CallocAlloc<T> > values;
     ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
     if (!keep_matrix)
       mat.Clear();
 
+    int nnz = values.GetM();
     struct_mumps.n = n; struct_mumps.nz = nnz;
     struct_mumps.irn = num_row.GetData();
     struct_mumps.jcn = num_col.GetData();
@@ -750,7 +752,8 @@ namespace Seldon
   }
 #endif
 
-  
+
+  //! Factorization of a matrix of same type T as for the Mumps object   
   template<class MatrixSparse, class T>
   void GetLU(MatrixSparse& A, MatrixMumps<T>& mat_lu, bool keep_matrix, T& x)
   {
@@ -758,6 +761,7 @@ namespace Seldon
   }
   
 
+  //! Factorization of a complex matrix with a real Mumps object
   template<class MatrixSparse, class T>
   void GetLU(MatrixSparse& A, MatrixMumps<T>& mat_lu, bool keep_matrix, complex<T>& x)
   {
@@ -766,6 +770,7 @@ namespace Seldon
   }
 
 
+  //! Factorization of a real matrix with a complex Mumps object
   template<class MatrixSparse, class T>
   void GetLU(MatrixSparse& A, MatrixMumps<complex<T> >& mat_lu, bool keep_matrix, T& x)
   {
@@ -774,15 +779,22 @@ namespace Seldon
   }
   
 
+  //! Factorization of a general matrix with Mumps
   template<class T0, class Prop, class Storage, class Allocator, class T>
   void GetLU(Matrix<T0, Prop, Storage, Allocator>& A, MatrixMumps<T>& mat_lu,
 	     bool keep_matrix)
   {
+    // we check if the type of non-zero entries of matrix A
+    // and of the Mumps object (T) are different
+    // we call one of the GetLUs written above
+    // such a protection avoids to compile the factorisation of a complex
+    // matrix with a real Mumps object
     typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;
     GetLU(A, mat_lu, keep_matrix, x);
   }
   
-
+  
+  //! computes Schur complement of a symmetric matrix
   template<class T, class Storage, class Allocator, class MatrixFull>
   void GetSchurMatrix(Matrix<T, Symmetric, Storage, Allocator>& A,
                       MatrixMumps<T>& mat_lu, const IVect& num,
@@ -792,6 +804,7 @@ namespace Seldon
   }
 
 
+  //! computes Schur complement of an unsymmetric matrix
   template<class T, class Storage, class Allocator, class MatrixFull>
   void GetSchurMatrix(Matrix<T, General, Storage, Allocator>& A,
                       MatrixMumps<T>& mat_lu, const IVect& num,
@@ -801,6 +814,7 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a vector whose type is the same as for Mumps object
   template<class T, class Allocator>
   void SolveLU(MatrixMumps<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
@@ -808,6 +822,8 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a vector whose type is the same as for Mumps object
+  //! Solves transpose system A^T x = b or A x = b depending on TransA
   template<class T, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixMumps<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
@@ -816,6 +832,7 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a matrix whose type is the same as for Mumps object
   template<class T, class Prop, class Allocator>
   void SolveLU(MatrixMumps<T>& mat_lu,
                Matrix<T, Prop, ColMajor, Allocator>& x)
@@ -824,6 +841,8 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a matrix whose type is the same as for Mumps object
+  //! Solves transpose system A^T x = b or A x = b depending on TransA
   template<class T, class Allocator, class Prop, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixMumps<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
@@ -832,8 +851,10 @@ namespace Seldon
   }
 
 
+  //! Solves A x = b, where A is real and x is complex
   template<class Allocator>
-  void SolveLU(MatrixMumps<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x)
+  void SolveLU(MatrixMumps<double>& mat_lu,
+               Vector<complex<double>, VectFull, Allocator>& x)
   {
     Matrix<double, General, ColMajor> y(x.GetM(), 2);
     
@@ -850,9 +871,11 @@ namespace Seldon
   }
   
 
+  //! Solves A x = b or A^T x = b, where A is real and x is complex
   template<class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
-	       MatrixMumps<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x)
+	       MatrixMumps<double>& mat_lu,
+               Vector<complex<double>, VectFull, Allocator>& x)
   {
     Matrix<double, General, ColMajor> y(x.GetM(), 2);
     
@@ -870,17 +893,21 @@ namespace Seldon
   }
 
 
+  //! Solves A x = b, where A is complex and x is real => Forbidden
   template<class Allocator>
-  void SolveLU(MatrixMumps<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x)
+  void SolveLU(MatrixMumps<complex<double> >& mat_lu,
+               Vector<double, VectFull, Allocator>& x)
   {
     throw WrongArgument("SolveLU(MatrixMumps<complex<double> >, Vector<double>)", 
 			"The result should be a complex vector");
   }
 
   
+  //! Solves A x = b or A^T x = b, where A is complex and x is real => Forbidden  
   template<class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
-	       MatrixMumps<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x)
+	       MatrixMumps<complex<double> >& mat_lu,
+               Vector<double, VectFull, Allocator>& x)
   {
     throw WrongArgument("SolveLU(MatrixMumps<complex<double> >, Vector<double>)", 
 			"The result should be a complex vector");

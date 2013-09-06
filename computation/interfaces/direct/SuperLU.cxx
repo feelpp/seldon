@@ -295,9 +295,9 @@ namespace Seldon
 
 
   //! factorization of matrix in double precision using SuperLU
-  template<class Prop, class Storage, class Allocator>
+  template<class T0, class Prop, class Storage, class Allocator>
   void MatrixSuperLU<double>::
-  FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
+  FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 		  bool keep_matrix)
   {
     // clearing previous factorization
@@ -545,9 +545,9 @@ namespace Seldon
 
   
   //! factorization of matrix in complex double precision using SuperLU
-  template<class Prop, class Storage, class Allocator>
+  template<class T0, class Prop, class Storage, class Allocator>
   void MatrixSuperLU<complex<double> >::
-  FactorizeMatrix(Matrix<complex<double>, Prop, Storage, Allocator> & mat,
+  FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 		  bool keep_matrix)
   {
     // clearing previous factorization
@@ -700,6 +700,7 @@ namespace Seldon
   }
 
   
+  //! Factorization of a matrix of same type T as for the SuperLU object 
   template<class MatrixSparse, class T>
   void GetLU(MatrixSparse& A, MatrixSuperLU<T>& mat_lu, bool keep_matrix, T& x)
   {
@@ -707,14 +708,17 @@ namespace Seldon
   }
   
 
+  //! Factorization of a complex matrix with a real SuperLU object
   template<class MatrixSparse, class T>
-  void GetLU(MatrixSparse& A, MatrixSuperLU<T>& mat_lu, bool keep_matrix, complex<T>& x)
+  void GetLU(MatrixSparse& A, MatrixSuperLU<T>& mat_lu,
+             bool keep_matrix, complex<T>& x)
   {
     throw WrongArgument("GetLU(Matrix<complex<T> >& A, MatrixSuperLU<T>& mat_lu, bool)",
 			"The LU matrix must be complex");
   }
 
 
+  //! Factorization of a real matrix with a complex SuperLU object
   template<class MatrixSparse, class T>
   void GetLU(MatrixSparse& A, MatrixSuperLU<complex<T> >& mat_lu, bool keep_matrix, T& x)
   {
@@ -723,15 +727,22 @@ namespace Seldon
   }
   
 
+  //! Factorization of a general matrix with SuperLU
   template<class T0, class Prop, class Storage, class Allocator, class T>
   void GetLU(Matrix<T0, Prop, Storage, Allocator>& A, MatrixSuperLU<T>& mat_lu,
 	     bool keep_matrix)
   {
+    // we check if the type of non-zero entries of matrix A
+    // and of the SuperLU object (T) are different
+    // we call one of the GetLUs written above
+    // such a protection avoids to compile the factorisation of a complex
+    // matrix with a real SuperLU object
     typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;
     GetLU(A, mat_lu, keep_matrix, x);
   }
   
 
+  //! LU resolution with a vector whose type is the same as for SuperLU object
   template<class T, class Allocator>
   void SolveLU(MatrixSuperLU<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
@@ -739,6 +750,8 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a vector whose type is the same as for SuperLU object
+  //! Solves transpose system A^T x = b or A x = b depending on TransA
   template<class T, class Allocator>
   void SolveLU(const SeldonTranspose& TransA,
 	       MatrixSuperLU<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
@@ -747,6 +760,7 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a matrix whose type is the same as for SuperLU object
   template<class T, class Prop, class Allocator>
   void SolveLU(MatrixSuperLU<T>& mat_lu,
                Matrix<T, Prop, ColMajor, Allocator>& x)
@@ -755,6 +769,8 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a matrix whose type is the same as for SuperLU object
+  //! Solves transpose system A^T x = b or A x = b depending on TransA
   template<class T, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixSuperLU<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x)
@@ -763,8 +779,10 @@ namespace Seldon
   }
 
 
+  //! Solves A x = b, where A is real and x is complex
   template<class Allocator>
-  void SolveLU(MatrixSuperLU<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x)
+  void SolveLU(MatrixSuperLU<double>& mat_lu,
+               Vector<complex<double>, VectFull, Allocator>& x)
   {
     Matrix<double, General, ColMajor> y(x.GetM(), 2);
     
@@ -781,9 +799,11 @@ namespace Seldon
   }
   
 
+  //! Solves A x = b or A^T x = b, where A is real and x is complex
   template<class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
-	       MatrixSuperLU<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x)
+	       MatrixSuperLU<double>& mat_lu,
+               Vector<complex<double>, VectFull, Allocator>& x)
   {
     Matrix<double, General, ColMajor> y(x.GetM(), 2);
     
@@ -801,22 +821,26 @@ namespace Seldon
   }
 
 
+  //! Solves A x = b, where A is complex and x is real => Forbidden
   template<class Allocator>
-  void SolveLU(MatrixSuperLU<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x)
+  void SolveLU(MatrixSuperLU<complex<double> >& mat_lu,
+               Vector<double, VectFull, Allocator>& x)
   {
     throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
 			"The result should be a complex vector");
   }
 
-  
+
+  //! Solves A x = b or A^T x = b, where A is complex and x is real => Forbidden  
   template<class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
-	       MatrixSuperLU<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x)
+	       MatrixSuperLU<complex<double> >& mat_lu,
+               Vector<double, VectFull, Allocator>& x)
   {
     throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
 			"The result should be a complex vector");
   }
-
+  
 }
 
 #define SELDON_FILE_SUPERLU_CXX

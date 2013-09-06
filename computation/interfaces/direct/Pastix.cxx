@@ -250,9 +250,9 @@ namespace Seldon
 
 
   //! Factorization of unsymmetric matrix
-  template<class T> template<class Storage, class Allocator>
+  template<class T> template<class T0, class Storage, class Allocator>
   void MatrixPastix<T>
-  ::FactorizeMatrix(Matrix<T, General, Storage, Allocator> & mat,
+  ::FactorizeMatrix(Matrix<T0, General, Storage, Allocator> & mat,
                     bool keep_matrix)
   {
     // we clear previous factorization if present
@@ -334,9 +334,9 @@ namespace Seldon
 
 
   //! Factorization of symmetric matrix.
-  template<class T> template<class Storage, class Allocator>
+  template<class T> template<class T0, class Storage, class Allocator>
   void MatrixPastix<T>::
-  FactorizeMatrix(Matrix<T, Symmetric, Storage, Allocator> & mat,
+  FactorizeMatrix(Matrix<T0, Symmetric, Storage, Allocator> & mat,
                   bool keep_matrix)
   {
     // we clear previous factorization if present
@@ -419,6 +419,11 @@ namespace Seldon
     pastix_int_t nrhs = 1;
     T* rhs_ = x.GetData();
 
+    if (TransA.Trans())
+      iparm[IPARM_TRANSPOSE_SOLVE] = API_YES;
+    else
+      iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
+    
     iparm[IPARM_START_TASK] = API_TASK_SOLVE;
     if (refine_solution)
       iparm[IPARM_END_TASK] = API_TASK_REFINE;
@@ -437,13 +442,28 @@ namespace Seldon
     pastix_int_t nrhs = x.GetN();
     T* rhs_ = x.GetData();
 
+    if (TransA.Trans())
+      iparm[IPARM_TRANSPOSE_SOLVE] = API_YES;
+    else
+      iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
+    
     iparm[IPARM_START_TASK] = API_TASK_SOLVE;
     if (refine_solution)
-      iparm[IPARM_END_TASK] = API_TASK_REFINE;
+      {        
+        for (int k = 0; k < nrhs; k++)
+          {
+            iparm[IPARM_START_TASK] = API_TASK_SOLVE;
+            iparm[IPARM_END_TASK] = API_TASK_REFINE;
+            CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, &x(0, k), 1);
+          }
+        //iparm[IPARM_END_TASK] = API_TASK_REFINE;
+        //CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
+      }
     else
-      iparm[IPARM_END_TASK] = API_TASK_SOLVE;
-    
-    CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
+      {
+        iparm[IPARM_END_TASK] = API_TASK_SOLVE;
+        CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
+      }    
   }
 
 
@@ -526,7 +546,8 @@ namespace Seldon
     //Val.Nullify();
   }
 
-
+  
+  //! solves A x = b in parallel
   template<class T> template<class Allocator2, class Tint>
   void MatrixPastix<T>::SolveDistributed(MPI::Comm& comm_facto,
                                          Vector<T, Vect_Full, Allocator2>& x,
@@ -536,6 +557,7 @@ namespace Seldon
   }
 
 
+  //! solves A x = b or A^T x = b in parallel
   template<class T>
   template<class Allocator2, class Transpose_status, class Tint>
   void MatrixPastix<T>::SolveDistributed(MPI::Comm& comm_facto,
@@ -546,6 +568,11 @@ namespace Seldon
     pastix_int_t nrhs = 1;
     T* rhs_ = x.GetData();
 
+    if (TransA.Trans())
+      iparm[IPARM_TRANSPOSE_SOLVE] = API_YES;
+    else
+      iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
+    
     iparm[IPARM_START_TASK] = API_TASK_SOLVE;
     if (refine_solution)
       iparm[IPARM_END_TASK] = API_TASK_REFINE;
@@ -555,7 +582,8 @@ namespace Seldon
     CallPastix(comm_facto, NULL, NULL, NULL, rhs_, nrhs);
   }
 
-
+  
+  //! Factorization of a matrix of same type T as the Pastix object 
   template<class MatrixSparse, class T>
   void GetLU(MatrixSparse& A, MatrixPastix<T>& mat_lu, bool keep_matrix, T& x)
   {
@@ -563,6 +591,7 @@ namespace Seldon
   }
   
 
+  //! Factorization of a complex matrix with a real Pastix object
   template<class MatrixSparse, class T>
   void GetLU(MatrixSparse& A, MatrixPastix<T>& mat_lu, bool keep_matrix, complex<T>& x)
   {
@@ -570,7 +599,8 @@ namespace Seldon
 			"The LU matrix must be complex");
   }
 
-
+  
+  //! Factorization of a real matrix with a complex Pastix object
   template<class MatrixSparse, class T>
   void GetLU(MatrixSparse& A, MatrixPastix<complex<T> >& mat_lu, bool keep_matrix, T& x)
   {
@@ -578,16 +608,23 @@ namespace Seldon
 			"The sparse matrix must be complex");
   }
   
-
+  
+  //! Factorization of a general matrix with Pastix
   template<class T0, class Prop, class Storage, class Allocator, class T>
   void GetLU(Matrix<T0, Prop, Storage, Allocator>& A, MatrixPastix<T>& mat_lu,
 	     bool keep_matrix)
   {
+    // we check if the type of non-zero entries of matrix A
+    // and of the Pastix object (T) are different
+    // we call one of the GetLUs written above
+    // such a protection avoids to compile the factorisation of a complex
+    // matrix with a real Pastix object
     typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;
     GetLU(A, mat_lu, keep_matrix, x);
   }
   
 
+  //! LU resolution with a vector whose type is the same as Pastix object
   template<class T, class Allocator>
   void SolveLU(MatrixPastix<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
@@ -595,6 +632,8 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a vector whose type is the same as Pastix object
+  //! Solves transpose system A^T x = b or A x = b depending on TransA
   template<class T, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixPastix<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
@@ -603,6 +642,7 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a matrix whose type is the same as Pastix object
   template<class T, class Prop, class Allocator>
   void SolveLU(MatrixPastix<T>& mat_lu,
                Matrix<T, Prop, ColMajor, Allocator>& x)
@@ -611,6 +651,8 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a matrix whose type is the same as UmfPack object
+  //! Solves transpose system A^T x = b or A x = b depending on TransA
   template<class T, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixPastix<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x)
@@ -619,8 +661,10 @@ namespace Seldon
   }
 
 
+  //! Solves A x = b, where A is real and x is complex
   template<class Allocator>
-  void SolveLU(MatrixPastix<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x)
+  void SolveLU(MatrixPastix<double>& mat_lu,
+               Vector<complex<double>, VectFull, Allocator>& x)
   {
     Matrix<double, General, ColMajor> y(x.GetM(), 2);
     
@@ -637,6 +681,7 @@ namespace Seldon
   }
   
 
+  //! Solves A x = b or A^T x = b, where A is real and x is complex
   template<class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixPastix<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x)
@@ -657,6 +702,7 @@ namespace Seldon
   }
 
 
+  //! Solves A x = b, where A is complex and x is real => Forbidden
   template<class Allocator>
   void SolveLU(MatrixPastix<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x)
   {
@@ -665,9 +711,11 @@ namespace Seldon
   }
 
   
+  //! Solves A x = b or A^T x = b, where A is complex and x is real => Forbidden  
   template<class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
-	       MatrixPastix<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x)
+	       MatrixPastix<complex<double> >& mat_lu,
+               Vector<double, VectFull, Allocator>& x)
   {
     throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
 			"The result should be a complex vector");

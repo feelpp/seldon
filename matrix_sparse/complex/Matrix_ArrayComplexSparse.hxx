@@ -156,6 +156,7 @@ namespace Seldon
     void ReadText(istream& FileStream, bool cplx = false);
     
     void Assemble();
+    
     template<class T0>
     void RemoveSmallEntry(const T0& epsilon);
 

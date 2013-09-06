@@ -23,56 +23,94 @@
 namespace Seldon
 {
     
-  template<class T0, class T1, class T2, class Allocator1, class Allocator2>
+  template<class T0, class T1, class Allocator1, class T2, class Allocator2>
   void Add(const T0& alpha,
 	   const Matrix<T1, Symmetric,
-	   ArrayRowSymComplexSparse, Allocator1>& A,
+           ArrayRowSymComplexSparse, Allocator1>& A,
 	   Matrix<T2, Symmetric, ArrayRowSymComplexSparse, Allocator2>& B);
   
-  template<class T0, class T1, class T2, class Allocator1, class Allocator2>
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2>
   void Add(const T0& alpha, const Matrix<T1, Symmetric,
 	   ArrayRowSymComplexSparse, Allocator1>& A,
 	   Matrix<T2, Symmetric, ArrayRowSymSparse, Allocator2>& B);
 
-  template<class T0, class T1, class T2, class Allocator1, class Allocator2>
+  template<class T0, class T1, class Allocator1,
+           class T2, class Allocator2>
   void Add(const T0& alpha, const Matrix<T1, General,
 	   ArrayRowComplexSparse, Allocator1>& A,
 	   Matrix<T2, General, ArrayRowSparse, Allocator2>& B);
 
-  template<class T0, class T1, class T2, class Allocator1,class Allocator2>
+  template<class T0, class T1, class Allocator1,
+           class T2, class Allocator2>
   void Add(const T0& alpha, const Matrix<T1, General,
 	   ArrayRowComplexSparse, Allocator1>& A,
 	   Matrix<T2, General, ArrayRowComplexSparse, Allocator2>& B);
 
-  template<class T0, class T1, class T2, class T3,
-	   class Allocator1, class Allocator2, class Allocator3>
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2,
+           class T3, class Prop3, class Allocator3>
   void Add(const T0& alpha,
-	   const Matrix<T1, Symmetric, ArrayRowSymSparse, Allocator1>& A,
-	   const Matrix<T2, Symmetric, ArrayRowSymSparse, Allocator2>& B,
-	   Matrix<T3, Symmetric, ArrayRowSymComplexSparse, Allocator3>& C);
+	   const Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& A,
+	   const Matrix<T2, Prop2, ArrayRowSymSparse, Allocator2>& B,
+	   Matrix<T3, Prop3, ArrayRowSymComplexSparse, Allocator3>& C);
 
-  template<class T0, class T1, class T2, class T3,
-	   class Allocator1, class Allocator2, class Allocator3>
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2,
+           class T3, class Prop3, class Allocator3>
   void Add(const T0& alpha,
-	   const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
-	   const Matrix<T2, General, ArrayRowSparse, Allocator2>& B,
-	   Matrix<T3, General, ArrayRowComplexSparse, Allocator3>& C);
+	   const Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& A,
+	   const Matrix<T2, Prop2, ArrayRowSparse, Allocator2>& B,
+	   Matrix<T3, Prop3, ArrayRowComplexSparse, Allocator3>& C);
+
+  template<class T0, class T1, class Allocator1, class T2, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, Symmetric, RowSymComplexSparse, Allocator1>& A,
+	   Matrix<T2, Symmetric, RowSymComplexSparse, Allocator2>& B);
+
+  template<class T0, class T1, class Allocator1,
+           class T2, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, General, RowComplexSparse, Allocator1>& A,
+	   Matrix<T2, General, RowComplexSparse, Allocator2>& B);
+
+  template<class T0, class T1, class Allocator1, class T2, class Allocator2>
+  void Add(const complex<T0>& alpha,
+	   const Matrix<T1, Symmetric, RowSymComplexSparse, Allocator1>& A,
+	   Matrix<T2, Symmetric, RowSymComplexSparse, Allocator2>& B);
+
+  template<class T0, class T1, class Allocator1,
+           class T2, class Allocator2>
+  void Add(const complex<T0>& alpha,
+	   const Matrix<T1, General, RowComplexSparse, Allocator1>& A,
+	   Matrix<T2, General, RowComplexSparse, Allocator2>& B);
   
-  template<class T0, class T, class Allocator>
+  template<class T0, class T, class Prop, class Allocator>
   void Mlt(const T0& alpha,
-	   Matrix<T, General, ArrayRowComplexSparse, Allocator>& A);
+	   Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A);
 
-  template<class T0, class T, class Allocator>
+  template<class T0, class T, class Prop, class Allocator>
   void Mlt(const complex<T0>& alpha,
-	   Matrix<T, General, ArrayRowComplexSparse, Allocator>& A);
+	   Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A);
 
-  template<class T0, class T, class Allocator>
-  void Mlt(const T0& alpha, Matrix<T, Symmetric,
-				   ArrayRowSymComplexSparse, Allocator>& A);
+  template<class T0, class T, class Prop, class Allocator>
+  void Mlt(const T0& alpha,
+           Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A);
   
-  template<class T0, class T, class Allocator>
-  void Mlt(const complex<T0>& alpha, Matrix<T, Symmetric,
-					    ArrayRowSymComplexSparse, Allocator>& A);
+  template<class T0, class T, class Prop, class Allocator>
+  void Mlt(const complex<T0>& alpha,
+           Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A);
+
+  template<class T0, class T, class Prop, class Allocator>
+  void Mlt(const T0& alpha,
+	   Matrix<T, Prop, RowComplexSparse, Allocator>& A);
+
+  template<class T0, class T, class Prop, class Allocator>
+  void Mlt(const complex<T0>& alpha,
+	   Matrix<T, Prop, RowComplexSparse, Allocator>& A);
+
+  template<class T0, class T, class Prop, class Allocator>
+  void Mlt(const T0& alpha, Matrix<T, Prop, RowSymComplexSparse, Allocator>& A);
 
   template<class T, class Prop, class Allocator>
   void ApplyInversePermutation(Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A,
@@ -119,39 +157,81 @@ namespace Seldon
   void Transpose(const Matrix<T, General, ArrayRowComplexSparse, Allocator>& A,
                  Matrix<T, General, ArrayRowComplexSparse, Allocator>& B);
 
+  template<class T, class Allocator>
+  void Transpose(const Matrix<T, General, RowComplexSparse, Allocator>& A,
+                 Matrix<T, General, RowComplexSparse, Allocator>& B);
+
   template <class T, class Prop, class Allocator>
   T MaxAbs(const Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A);
+
+  template <class T, class Prop, class Allocator>
+  T MaxAbs(const Matrix<T, Prop, RowComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
   T Norm1(const Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
+  T Norm1(const Matrix<T, Prop, RowComplexSparse, Allocator>& A);
+
+  template <class T, class Prop, class Allocator>
   T NormInf(const Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A);
+
+  template <class T, class Prop, class Allocator>
+  T NormInf(const Matrix<T, Prop, RowComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
   T MaxAbs(const Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
+  T MaxAbs(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A);
+
+  template <class T, class Prop, class Allocator>
   T Norm1(const Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A);
+
+  template <class T, class Prop, class Allocator>
+  T Norm1(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
   T NormInf(const Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A);
 
-  template<class T, class Allocator>
-  void Conjugate(Matrix<T, General, ArrayRowComplexSparse, Allocator>& A);
+  template <class T, class Prop, class Allocator>
+  T NormInf(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A);
+
+  template<class T, class Prop, class Allocator>
+  void Conjugate(Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A);
+
+  template<class T, class Prop, class Allocator>
+  void Conjugate(Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A);
+
+  template<class T, class Prop, class Allocator>
+  void Conjugate(Matrix<T, Prop, RowComplexSparse, Allocator>& A);
+
+  template<class T, class Prop, class Allocator>
+  void Conjugate(Matrix<T, Prop, RowSymComplexSparse, Allocator>& A);
 
   template<class T, class Allocator>
-  void Conjugate(Matrix<T, Symmetric, ArrayRowSymComplexSparse, Allocator>& A);
-
-  template<class T, class Allocator>
-  void Transpose(const Matrix<T, General, ArrayRowSymComplexSparse, Allocator>& A,
+  void Transpose(const Matrix<T, Symmetric,
+                 ArrayRowSymComplexSparse, Allocator>& A,
                  Matrix<T, Symmetric, ArrayRowSymComplexSparse, Allocator>& B);
 
   template<class T, class Allocator>
   void Transpose(Matrix<T, General, ArrayRowComplexSparse, Allocator>& A);
 
   template<class T, class Allocator>
-  void Transpose(Matrix<T, Symmetric, ArrayRowSymComplexSparse, Allocator>& A);
+  void Transpose(Matrix<T, Symmetric,
+                 ArrayRowSymComplexSparse, Allocator>& A);
+
+  template<class T, class Allocator>
+  void Transpose(const Matrix<T, Symmetric,
+                 RowSymComplexSparse, Allocator>& A,
+                 Matrix<T, Symmetric, RowSymComplexSparse, Allocator>& B);
+
+  template<class T, class Allocator>
+  void Transpose(Matrix<T, General, RowComplexSparse, Allocator>& A);
+
+  template<class T, class Allocator>
+  void Transpose(Matrix<T, Symmetric,
+                 RowSymComplexSparse, Allocator>& A);
 
   template<class T, class Prop, class Allocator>
   bool IsComplexMatrix(const Matrix<T, Prop, RowComplexSparse, Allocator>& A);

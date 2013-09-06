@@ -28,7 +28,7 @@
   (i, j, val) = A  
   ConvertMatrix_to_Coordinates(A, index_row, index_col, val, index, sym)
   
-  conversion from coordinate from to other sparse format
+  conversion from coordinate format to other sparse format
   A = (i, j, val)
   ConvertMatrix_from_Coordinates(index_row, index_col, val, A, index)
   
@@ -594,11 +594,32 @@ namespace Seldon
 	   class T1, class Prop1, class Allocator1>
   void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& mat_array,
 	    Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
-  
-  
+
+
   template<class T, class Prop, class Alloc1, class Alloc2>
   void Copy(const Matrix<T, Prop, ColSymSparse, Alloc1>& A,
 	    Matrix<T, Prop, RowSymSparse, Alloc2>& B);
+
+
+  template<class T, class Prop1, class Prop2, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop1, ColSymSparse, Alloc1>& A,
+	    Matrix<T, Prop2, RowSparse, Alloc2>& B);
+  
+  
+  template<class T, class Prop, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop, ArrayColSymSparse, Alloc1>& A,
+	    Matrix<T, Prop, RowSymSparse, Alloc2>& B);
+
+
+  template<class T, class Prop1, class Prop2, class Alloc1, class Alloc2>
+  void Copy(const Matrix<T, Prop1, ArrayColSymSparse, Alloc1>& A,
+	    Matrix<T, Prop2, RowSparse, Alloc2>& B);
+
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+	    Matrix<T1, Prop1, RowSparse, Allocator1>& B);
   
   
   template<class T0, class Prop0, class Allocator0,
@@ -607,9 +628,10 @@ namespace Seldon
 	    Matrix<T1, Prop1, RowSymSparse, Allocator1>& B);
 
 
-  template<class T, class Prop, class Alloc1, class Alloc2>
-  void Copy(const Matrix<T, Prop, ArrayColSymSparse, Alloc1>& A,
-	    Matrix<T, Prop, RowSymSparse, Alloc2>& B);
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
+	    Matrix<T1, Prop1, RowSparse, Allocator1>& B);
   
   
   /***********************************
@@ -622,6 +644,10 @@ namespace Seldon
   void Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
 	    Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& B);
   
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+	    Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& B);
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>

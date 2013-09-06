@@ -1024,7 +1024,7 @@ namespace Seldon
 	this->real_data_ = NULL;
 	this->imag_data_ = NULL;
       }
-    if (real_ind_ == NULL)
+    if (imag_ind_ == NULL)
       {
 	this->m_ = 0;
 	this->n_ = 0;
@@ -1388,7 +1388,6 @@ namespace Seldon
             imag_ind_
               = reinterpret_cast<int*>( realloc(imag_ind_,
                                                 imag_nz*sizeof(int)) );
-            
 #ifdef SELDON_CHECK_MEMORY
           }
         catch (...)
@@ -1407,7 +1406,7 @@ namespace Seldon
             this->real_data_ = NULL;
             this->imag_data_ = NULL;
           }
-        if (real_ind_ == NULL)
+        if (imag_ind_ == NULL)
           {
             this->m_ = 0;
             this->n_ = 0;
@@ -2444,7 +2443,6 @@ namespace Seldon
     
     // adding a non-zero entry
     Resize(this->m_, this->n_, real_nz_, imag_nz_+1);
-    
     for (int m = Storage::GetFirst(i, j)+1;
          m <= Storage::GetFirst(this->m_, this->n_); m++)
       imag_ptr_[m]++;

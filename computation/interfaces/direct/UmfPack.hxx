@@ -76,8 +76,8 @@ namespace Seldon
 
     void Clear();
 
-    template<class Prop, class Storage, class Allocator>
-    void FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
+    template<class T0, class Prop, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
     template<class Prop, class Allocator>
@@ -115,9 +115,9 @@ namespace Seldon
 
     void Clear();
 
-    template<class Prop, class Storage, class Allocator>
+    template<class T0, class Prop, class Storage, class Allocator>
     void
-    FactorizeMatrix(Matrix<complex<double>, Prop, Storage, Allocator> & mat,
+    FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
                     bool keep_matrix = false);
 
     template<class Allocator2>
@@ -139,6 +139,32 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA,
                MatrixUmfPack<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
   
+  template<class T, class Prop, class Allocator>
+  void SolveLU(MatrixUmfPack<T>& mat_lu,
+               Matrix<T, Prop, ColMajor, Allocator>& x);
+
+  template<class T, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixUmfPack<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x);
+  
+  template<class Allocator>
+  void SolveLU(MatrixUmfPack<double>& mat_lu,
+               Vector<complex<double>, VectFull, Allocator>& x);
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixUmfPack<double>& mat_lu,
+               Vector<complex<double>, VectFull, Allocator>& x);
+
+  template<class Allocator>
+  void SolveLU(MatrixUmfPack<complex<double> >& mat_lu,
+               Vector<double, VectFull, Allocator>& x);
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixUmfPack<complex<double> >& mat_lu,
+               Vector<double, VectFull, Allocator>& x);
+
 }
 
 #define SELDON_FILE_UMFPACK_HXX

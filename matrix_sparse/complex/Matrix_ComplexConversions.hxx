@@ -220,11 +220,27 @@ namespace Seldon
                     Vector<Tint, VectFull, Alloc3>& IndRow,
                     Vector<complex<T>, VectFull, Alloc4>& Val);
 
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val);
+
   
   template<class T, class Prop, class Alloc1,
            class Tint, class Alloc2, class Alloc3, class Alloc4>
   void ConvertToCSR(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val);
+
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
                     Vector<complex<T>, VectFull, Alloc4>& Val);
 
@@ -255,8 +271,24 @@ namespace Seldon
   
   template<class T, class Prop, class Alloc1,
            class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<complex<T>, VectFull, Alloc4>& Value);
+
+  
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
   void ConvertToCSR(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val);
+
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
                     Vector<complex<T>, VectFull, Alloc4>& Val);
 
@@ -287,11 +319,29 @@ namespace Seldon
                     Vector<complex<T>, VectFull, Alloc4>& Val,
                     bool sym_pat = false);
 
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val,
+                    bool sym_pat = false);
+  
   
   template<class T, class Prop, class Alloc1,
            class Tint, class Alloc2, class Alloc3, class Alloc4>
   void ConvertToCSC(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    bool sym_pat = false);
+
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
                     Vector<complex<T>, VectFull, Alloc4>& Value,
                     bool sym_pat = false);
@@ -326,6 +376,14 @@ namespace Seldon
   
   template<class T, class Prop, class Alloc1,
            class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val,
+                    bool sym_pat = false);
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
   void ConvertToCSC(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
@@ -333,12 +391,163 @@ namespace Seldon
                     bool sym_pat = false);
 
 
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    bool sym_pat = false);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr);
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B);
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSymSparse, Allocator1>& B);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B);
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSymSparse, Allocator1>& B);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSymSparse, Allocator1>& B);;
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSymSparse, Allocator1>& B);;
+      
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
   Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
        Matrix<T1, Prop1, RowComplexSparse, Allocator1>& B);
-  
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
@@ -442,6 +651,42 @@ namespace Seldon
   void
   Copy(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& A,
        Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& B);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& mat_csr);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& B);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& B);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& mat_csr);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& B);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& B);  
   
 } 
 

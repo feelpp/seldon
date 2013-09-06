@@ -96,8 +96,8 @@ namespace Seldon
                Matrix<double, Prop, RowSparse, Allocator>& Umat,
                bool permuted = true);
 
-    template<class Prop, class Storage, class Allocator>
-    void FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
+    template<class T0, class Prop, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
     template<class Allocator2>
@@ -134,8 +134,8 @@ namespace Seldon
                Matrix<complex<double>, Prop, RowSparse, Allocator>& Umat,
                bool permuted = true);
 
-    template<class Prop, class Storage, class Allocator>
-    void FactorizeMatrix(Matrix<complex<double>, Prop,
+    template<class T0, class Prop, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<T0, Prop,
 			 Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 

@@ -1210,7 +1210,20 @@ namespace Seldon
       }
   }
 
+  
+  //! removes small entries
+  template <class T, class Prop, class Storage, class Allocator> template<class T0>
+  void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::RemoveSmallEntry(const T0& epsilon)
+  {
+    for (int i = 0; i < val_real_.GetM(); i++)
+      val_real_(i).RemoveSmallEntry(epsilon);
 
+    for (int i = 0; i < val_imag_.GetM(); i++)
+      val_imag_(i).RemoveSmallEntry(epsilon);
+  }
+  
+  
   //! Matrix is initialized to the identity matrix.
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
@@ -1219,6 +1232,7 @@ namespace Seldon
     this->n_ = this->m_;
     for (int i = 0; i < this->m_; i++)
       {
+        val_imag_(i).Clear();
 	val_real_(i).Reallocate(1);
 	val_real_(i).Index(0) = i;
 	val_real_(i).Value(0) = T(1);

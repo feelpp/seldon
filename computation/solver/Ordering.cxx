@@ -44,8 +44,9 @@ namespace Seldon
       }
 
     // Pattern of A + A' is retrieved in CSC format.
+    typedef typename Matrix<T, Prop, Storage, Allocator>::entry_type T0;
     Vector<Tint, VectFull, Alloc> Ptr, Ind;
-    Vector<T, VectFull, Allocator> Value;
+    Vector<T0, VectFull, CallocAlloc<T0> > Value;
     General sym;
     ConvertToCSC(A, sym, Ptr, Ind, Value, true);
     Value.Clear();
@@ -136,6 +137,7 @@ namespace Seldon
   void FindSparseOrdering(Matrix<T, Prop, Storage, Allocator>& A,
 			  Vector<Tint, VectFull, Alloc>& num, int type)
   {
+    typedef typename Matrix<T, Prop, Storage, Allocator>::entry_type T0;
     int n = A.GetM();
     if (n <= 0)
       {
@@ -175,7 +177,7 @@ namespace Seldon
 	{
 	  // Pord package provided by Mumps.
 #ifdef SELDON_WITH_MUMPS
-	  MatrixMumps<T> mat_lu;
+	  MatrixMumps<T0> mat_lu;
 	  mat_lu.SelectOrdering(4);
 	  mat_lu.FindOrdering(A, num, true);
 #else
@@ -189,10 +191,10 @@ namespace Seldon
 	{
 	  // Scotch interface provided by Pastix.
 #ifdef SELDON_WITH_PASTIX
-	  MatrixPastix<T> mat_lu;
+	  MatrixPastix<T0> mat_lu;
 	  mat_lu.FindOrdering(A, num, true);
 #elif defined(SELDON_WITH_MUMPS)
-	  MatrixMumps<T> mat_lu;
+	  MatrixMumps<T0> mat_lu;
 	  mat_lu.SelectOrdering(3);
 	  mat_lu.FindOrdering(A, num, true);
 #else
@@ -206,7 +208,7 @@ namespace Seldon
 	{
 	  // Metis ordering provided by Mumps.
 #ifdef SELDON_WITH_MUMPS
-	  MatrixMumps<T> mat_lu;
+	  MatrixMumps<T0> mat_lu;
 	  mat_lu.SelectOrdering(5);
 	  mat_lu.FindOrdering(A, num, true);
 #else
@@ -225,7 +227,7 @@ namespace Seldon
 
 	  // pattern of A+A' is retrieved in CSC format
 	  Vector<Tint, VectFull, Alloc> Ptr, Ind;
-	  Vector<T, VectFull, Allocator> Value;
+	  Vector<T0> Value;
 	  General sym;
 	  ConvertToCSC(A, sym, Ptr, Ind, Value, true);
 	  Value.Clear();
@@ -254,7 +256,7 @@ namespace Seldon
 
 	  // Pattern of A + A' is retrieved in CSC format.
 	  Vector<Tint, VectFull, Alloc> Ptr, Ind;
-	  Vector<T, VectFull, Allocator> Value;
+	  Vector<T0> Value;
 	  General sym;
 	  ConvertToCSC(A, sym, Ptr, Ind, Value, true);
 	  Value.Clear();
@@ -285,7 +287,7 @@ namespace Seldon
 	{
 	  // Qamd ordering provided by Mumps
 #ifdef SELDON_WITH_MUMPS
-	  MatrixMumps<T> mat_lu;
+	  MatrixMumps<T0> mat_lu;
 	  mat_lu.SelectOrdering(6);
 	  mat_lu.FindOrdering(A, num, true);
 #else

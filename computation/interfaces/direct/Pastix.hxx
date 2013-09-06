@@ -24,6 +24,11 @@ extern "C"
 #define _COMPLEX_H
 
 #include "pastix.h"
+
+#undef FLOAT
+#undef INT
+#undef UINT
+
 }
 
 namespace Seldon
@@ -81,12 +86,12 @@ namespace Seldon
     void FindOrdering(Matrix<T0, Prop, Storage, Allocator> & mat,
 		      Vector<Tint>& numbers, bool keep_matrix = false);
 
-    template<class Storage, class Allocator>
-    void FactorizeMatrix(Matrix<T, General, Storage, Allocator> & mat,
+    template<class T0, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<T0, General, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
-    template<class Storage, class Allocator>
-    void FactorizeMatrix(Matrix<T, Symmetric, Storage, Allocator> & mat,
+    template<class T0, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<T0, Symmetric, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
     template<class Allocator2>

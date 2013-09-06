@@ -114,8 +114,8 @@ namespace Seldon
   
   
   //! performs analysis and factorization of matrix mat
-  template<class T> template<class Prop, class Storage, class Allocator>
-  void MatrixPardiso<T>::FactorizeMatrix(Matrix<T, Prop, Storage, Allocator>& mat,
+  template<class T> template<class T0, class Prop, class Storage, class Allocator>
+  void MatrixPardiso<T>::FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator>& mat,
                                          bool keep_matrix)
   {
     // previous factorization is cleared if present
@@ -292,6 +292,7 @@ namespace Seldon
   }
 
 
+  //! Factorization of a matrix of same type T as for the Pardiso object 
   template<class MatrixSparse, class T>
   void GetLU(MatrixSparse& A, MatrixPardiso<T>& mat_lu, bool keep_matrix, T& x)
   {
@@ -299,6 +300,7 @@ namespace Seldon
   }
   
 
+  //! Factorization of a complex matrix with a real Pardiso object
   template<class MatrixSparse, class T>
   void GetLU(MatrixSparse& A, MatrixPardiso<T>& mat_lu,
              bool keep_matrix, complex<T>& x)
@@ -308,6 +310,7 @@ namespace Seldon
   }
 
 
+  //! Factorization of a real matrix with a complex Pardiso object
   template<class MatrixSparse, class T>
   void GetLU(MatrixSparse& A, MatrixPardiso<complex<T> >& mat_lu,
              bool keep_matrix, T& x)
@@ -317,15 +320,22 @@ namespace Seldon
   }
   
 
+  //! Factorization of a general matrix with Pardiso
   template<class T0, class Prop, class Storage, class Allocator, class T>
   void GetLU(Matrix<T0, Prop, Storage, Allocator>& A, MatrixPardiso<T>& mat_lu,
 	     bool keep_matrix)
   {
+    // we check if the type of non-zero entries of matrix A
+    // and of the Pardiso object (T) are different
+    // we call one of the GetLUs written above
+    // such a protection avoids to compile the factorisation of a complex
+    // matrix with a real Pardiso object
     typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;
     GetLU(A, mat_lu, keep_matrix, x);
   }
 
 
+  //! LU resolution with a vector whose type is the same as for Pardiso object
   template<class T, class Allocator>
   void SolveLU(MatrixPardiso<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
@@ -333,6 +343,8 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a vector whose type is the same as for Pardiso object
+  //! Solves transpose system A^T x = b or A x = b depending on TransA
   template<class T, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixPardiso<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
@@ -341,6 +353,7 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a matrix whose type is the same as for Pardiso object
   template<class T, class Prop, class Allocator>
   void SolveLU(MatrixPardiso<T>& mat_lu,
                Matrix<T, Prop, ColMajor, Allocator>& x)
@@ -349,6 +362,8 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a matrix whose type is the same as for Pardiso object
+  //! Solves transpose system A^T x = b or A x = b depending on TransA
   template<class T, class Allocator, class Prop, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixPardiso<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
@@ -357,6 +372,7 @@ namespace Seldon
   }
 
   
+  //! Solves A x = b, where A is real and x is complex
   template<class Allocator>
   void SolveLU(MatrixPardiso<double>& mat_lu,
                Vector<complex<double>, VectFull, Allocator>& x)
@@ -376,6 +392,7 @@ namespace Seldon
   }
   
 
+  //! Solves A x = b or A^T x = b, where A is real and x is complex
   template<class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixPardiso<double>& mat_lu,
@@ -395,7 +412,8 @@ namespace Seldon
       x(i) = complex<double>(y(i, 0), y(i, 1));    
   }
   
-  
+
+  //! Solves A x = b, where A is complex and x is real => Forbidden  
   template<class Allocator>
   void SolveLU(MatrixPardiso<complex<double> >& mat_lu,
                Vector<double, VectFull, Allocator>& x)
@@ -405,6 +423,7 @@ namespace Seldon
   }
 
   
+  //! Solves A x = b or A^T x = b, where A is complex and x is real => Forbidden  
   template<class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixPardiso<complex<double> >& mat_lu,

@@ -846,12 +846,6 @@ namespace Seldon
 				 Allocator4>& A,
 				 int index)
   {
-    if (IndRow.GetM() <= 0)
-      {
-        A.Clear();
-        return;
-      }
-    
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
@@ -883,6 +877,7 @@ namespace Seldon
         PtrReal(i+1) += PtrReal(i);
         PtrImag(i+1) += PtrImag(i);
       }
+    
     int real_nz = PtrReal(m), imag_nz = PtrImag(m);
     
     // Fills matrix 'A'.
@@ -932,12 +927,6 @@ namespace Seldon
 				 Allocator4>& A,
 				 int index)
   {
-    if (IndRow.GetM() <= 0)
-      {
-        A.Clear();
-        return;
-      }
-    
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
@@ -969,6 +958,7 @@ namespace Seldon
         PtrReal(i+1) += PtrReal(i);
         PtrImag(i+1) += PtrImag(i);
       }
+    
     int real_nz = PtrReal(n), imag_nz = PtrImag(n);
     
     // Fills matrix 'A'.
@@ -1018,12 +1008,6 @@ namespace Seldon
 				 Allocator4>& A,
 				 int index)
   {
-    if (IndRow.GetM() <= 0)
-      {
-        A.Clear();
-        return;
-      }
-    
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
@@ -1110,12 +1094,6 @@ namespace Seldon
 				 Allocator4>& A,
 				 int index)
   {
-    if (IndRow.GetM() <= 0)
-      {
-        A.Clear();
-        return;
-      }
-    
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
@@ -1202,12 +1180,6 @@ namespace Seldon
 				 Allocator4>& A,
 				 int index)
   {
-    if (IndRow.GetM() <= 0)
-      {
-        A.Clear();
-        return;
-      }
-    
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
@@ -1284,12 +1256,6 @@ namespace Seldon
 				 Allocator4>& A,
 				 int index)
   {
-    if (IndRow.GetM() <= 0)
-      {
-        A.Clear();
-        return;
-      }
-    
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
@@ -1365,12 +1331,6 @@ namespace Seldon
 				 Matrix<T, Prop, ArrayRowSymComplexSparse,
 				 Allocator4>& A, int index)
   {
-    if (IndRow.GetM() <= 0)
-      {
-        A.Clear();
-        return;
-      }
-    
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
@@ -1455,12 +1415,6 @@ namespace Seldon
 				 Matrix<T, Prop, ArrayColSymComplexSparse,
 				 Allocator4>& A, int index)
   {
-    if (IndRow.GetM() <= 0)
-      {
-        A.Clear();
-        return;
-      }
-    
     T zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
@@ -1726,6 +1680,39 @@ namespace Seldon
     Value.Resize(nnz);
   }
 
+
+  //! Conversion from RowSymComplexSparse to CSR format
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<complex<T>, VectFull, Alloc4>& Val)
+  {
+    // Matrix (m,n) with nnz entries.
+    int m = A.GetN();
+    
+    // Conversion in coordinate format.
+    Vector<Tint, VectFull, CallocAlloc<Tint> > IndRow;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val, 0, true);
+    
+    // Sorting with respect to row numbers.
+    Sort(IndRow, IndCol, Val);
+    
+    // Constructing pointer array 'Ptr'.
+    Ptr.Reallocate(m + 1);
+    Ptr.Fill(0);
+    
+    // Counting non-zero entries per row.
+    for (int i = 0; i < IndRow.GetM(); i++)
+      Ptr(IndRow(i) + 1)++;
+
+    // Accumulation to get pointer array.
+    Ptr(0) = 0;
+    for (int i = 0; i < m; i++)
+      Ptr(i + 1) += Ptr(i);    
+  }
+
   
   //! Conversion from ColSymComplexSparse to CSR format
   template<class T, class Prop, class Alloc1,
@@ -1758,6 +1745,39 @@ namespace Seldon
     for (int i = 0; i < m; i++)
       Ptr(i + 1) += Ptr(i);
     
+  }
+
+
+  //! Conversion from ColSymComplexSparse to CSR format
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<complex<T>, VectFull, Alloc4>& Val)
+  {
+    // Matrix (m,n) with nnz entries.
+    int m = A.GetN();
+    
+    // Conversion in coordinate format.
+    Vector<Tint, VectFull, CallocAlloc<Tint> > IndRow;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val, 0, true);
+    
+    // Sorting with respect to row numbers.
+    Sort(IndRow, IndCol, Val);
+    
+    // Constructing pointer array 'Ptr'.
+    Ptr.Reallocate(m + 1);
+    Ptr.Fill(0);
+    
+    // Counting non-zero entries per row.
+    for (int i = 0; i < IndRow.GetM(); i++)
+      Ptr(IndRow(i) + 1)++;
+
+    // Accumulation to get pointer array.
+    Ptr(0) = 0;
+    for (int i = 0; i < m; i++)
+      Ptr(i + 1) += Ptr(i);    
   }
 
   
@@ -1933,7 +1953,35 @@ namespace Seldon
     Value.Resize(nnz);
   }
 
+
+  //! Conversion from ArrayRowSymComplexSparse to CSR
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<complex<T>, VectFull, Alloc4>& Value)
+  {
+    Vector<Tint, VectFull, Alloc3> IndRow;
+    
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Value, 0, true);
+    
+    // sorting by rows
+    Sort(IndRow, IndCol, Value);
+    
+    int m = A.GetM();
+    Ptr.Reallocate(m+1);
+    Ptr.Zero();
+
+    for (int i = 0; i < IndCol.GetM(); i++)
+      Ptr(IndRow(i) + 1)++;
+    
+    // incrementing Ptr
+    for (int i = 2; i <= m; i++)
+      Ptr(i) += Ptr(i-1);    
+  }
   
+    
   //! Conversion from ArrayColSymComplexSparse to CSR format
   template<class T, class Prop, class Alloc1,
            class Tint, class Alloc2, class Alloc3, class Alloc4>
@@ -1968,6 +2016,40 @@ namespace Seldon
   }
 
   
+  //! Conversion from ArrayColSymComplexSparse to CSR format
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<complex<T>, VectFull, Alloc4>& Val)
+  {
+    // Matrix (m,n) with nnz entries.
+    int m = A.GetN();
+    
+    // Conversion in coordinate format.
+    Vector<Tint, VectFull, CallocAlloc<Tint> > IndRow;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val, 0, true);
+    
+    // Sorting with respect to row numbers.
+    Sort(IndRow, IndCol, Val);
+    
+    // Constructing pointer array 'Ptr'.
+    Ptr.Reallocate(m + 1);
+    Ptr.Fill(0);
+    
+    // Counting non-zero entries per row.
+    for (int i = 0; i < IndRow.GetM(); i++)
+      Ptr(IndRow(i) + 1)++;
+
+    // Accumulation to get pointer array.
+    Ptr(0) = 0;
+    for (int i = 0; i < m; i++)
+      Ptr(i + 1) += Ptr(i);
+    
+  }
+
+  
   //! Conversion from RowComplexSparse to CSC format
   /*!
     if sym_pat is equal to true, the pattern is symmetrized
@@ -1982,7 +2064,7 @@ namespace Seldon
   {
     if (sym_pat)
       throw Undefined("ConvertToCSC", "Symmetrization of pattern not"
-                      "implemented for RowComplexSparse storage");
+                      " implemented for RowComplexSparse storage");
     
     // Matrix (m,n) with nnz entries.
     int n = A.GetN();
@@ -2021,7 +2103,7 @@ namespace Seldon
   {
     if (sym_pat)
       throw Undefined("ConvertToCSC", "Symmetrization of pattern not"
-                      "implemented for ColComplexSparse storage");
+                      " implemented for ColComplexSparse storage");
     
     int n = A.GetN();
     if (n <= 0)
@@ -2127,6 +2209,40 @@ namespace Seldon
     
   }
   
+
+  //! Conversion from RowSymComplexSparse to CSC format
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val, bool sym_pat)
+  {
+    // Matrix (m,n) with nnz entries.
+    int n = A.GetN();
+    
+    // Conversion in coordinate format.
+    Vector<Tint, VectFull, CallocAlloc<Tint> > IndCol;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val, 0, true);
+    
+    // Sorting with respect to column numbers.
+    Sort(IndCol, IndRow, Val);
+    
+    // Constructing pointer array 'Ptr'.
+    Ptr.Reallocate(n + 1);
+    Ptr.Fill(0);
+    
+    // Counting non-zero entries per column.
+    for (int i = 0; i < IndCol.GetM(); i++)
+      Ptr(IndCol(i) + 1)++;
+
+    // Accumulation to get pointer array.
+    Ptr(0) = 0;
+    for (int i = 0; i < n; i++)
+      Ptr(i + 1) += Ptr(i);
+    
+  }
+
   
   //! Conversion from ColSymComplexSparse to CSC
   template<class T, class Prop, class Alloc1,
@@ -2205,6 +2321,40 @@ namespace Seldon
 
     IndCol.Resize(nnz);
     Value.Resize(nnz);
+  }
+
+  
+  //! Conversion from ColSymComplexSparse to CSC format
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val, bool sym_pat)
+  {
+    // Matrix (m,n) with nnz entries.
+    int n = A.GetN();
+    
+    // Conversion in coordinate format.
+    Vector<Tint, VectFull, CallocAlloc<Tint> > IndCol;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val, 0, true);
+    
+    // Sorting with respect to column numbers.
+    Sort(IndCol, IndRow, Val);
+    
+    // Constructing pointer array 'Ptr'.
+    Ptr.Reallocate(n + 1);
+    Ptr.Fill(0);
+    
+    // Counting non-zero entries per column.
+    for (int i = 0; i < IndCol.GetM(); i++)
+      Ptr(IndCol(i) + 1)++;
+
+    // Accumulation to get pointer array.
+    Ptr(0) = 0;
+    for (int i = 0; i < n; i++)
+      Ptr(i + 1) += Ptr(i);
+    
   }
 
   
@@ -2360,6 +2510,40 @@ namespace Seldon
     
   }
   
+
+  //! Conversion from ArrayRowSymComplexSparse to CSC format
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val, bool sym_pat)
+  {
+    // Matrix (m,n) with nnz entries.
+    int n = A.GetN();
+    
+    // Conversion in coordinate format.
+    Vector<Tint, VectFull, CallocAlloc<Tint> > IndCol;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val, 0, true);
+    
+    // Sorting with respect to column numbers.
+    Sort(IndCol, IndRow, Val);
+    
+    // Constructing pointer array 'Ptr'.
+    Ptr.Reallocate(n + 1);
+    Ptr.Fill(0);
+    
+    // Counting non-zero entries per column.
+    for (int i = 0; i < IndCol.GetM(); i++)
+      Ptr(IndCol(i) + 1)++;
+
+    // Accumulation to get pointer array.
+    Ptr(0) = 0;
+    for (int i = 0; i < n; i++)
+      Ptr(i + 1) += Ptr(i);
+    
+  }
+
   
   //! Conversion from ArrayColSymComplexSparse to CSC
   template<class T, class Prop, class Alloc1,
@@ -2432,6 +2616,496 @@ namespace Seldon
     IndCol.Resize(nnz);
     Value.Resize(nnz);
   }
+
+
+  //! Conversion from ArrayColSymComplexSparse to CSC format
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSC(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
+                    General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndRow,
+                    Vector<complex<T>, VectFull, Alloc4>& Val, bool sym_pat)
+  {
+    // Matrix (m,n) with nnz entries.
+    int n = A.GetN();
+    
+    // Conversion in coordinate format.
+    Vector<Tint, VectFull, CallocAlloc<Tint> > IndCol;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val, 0, true);
+    
+    // Sorting with respect to column numbers.
+    Sort(IndCol, IndRow, Val);
+    
+    // Constructing pointer array 'Ptr'.
+    Ptr.Reallocate(n + 1);
+    Ptr.Fill(0);
+    
+    // Counting non-zero entries per column.
+    for (int i = 0; i < IndCol.GetM(); i++)
+      Ptr(IndCol(i) + 1)++;
+
+    // Accumulation to get pointer array.
+    Ptr(0) = 0;
+    for (int i = 0; i < n; i++)
+      Ptr(i + 1) += Ptr(i);
+    
+  }
+
+
+  //! Conversion from ArrayRowSymComplexSparse to RowSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSR(mat_array, prop, Ptr, IndCol, Value);
+    
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    mat_csr.SetData(m, n, Value, Ptr, IndCol);
+  }
+
+
+  //! Conversion from ArrayRowSymComplexSparse to RowSymSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    Symmetric prop;
+    ConvertToCSR(mat_array, prop, Ptr, IndCol, Value);
+    
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    mat_csr.SetData(m, n, Value, Ptr, IndCol);
+  }
+
+
+  //! Conversion from ArrayRowComplexSparse to RowSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSR(mat_array, prop, Ptr, IndCol, Value);
+    
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    mat_csr.SetData(m, n, Value, Ptr, IndCol);
+  }
+
+
+  //! Conversion from ArrayColSymComplexSparse to RowSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSR(mat_array, prop, Ptr, IndCol, Value);
+    
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    mat_csr.SetData(m, n, Value, Ptr, IndCol);
+  }
+
+
+  //! Conversion from ArrayColSymComplexSparse to RowSymSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    Symmetric prop;
+    ConvertToCSR(mat_array, prop, Ptr, IndCol, Value);
+    
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    mat_csr.SetData(m, n, Value, Ptr, IndCol);
+  }
+
+
+  //! Conversion from ArrayColComplexSparse to RowSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSR(mat_array, prop, Ptr, IndCol, Value);
+    
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    mat_csr.SetData(m, n, Value, Ptr, IndCol);
+  }
+
+
+  //! Conversion from RowSymComplexSparse to RowSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSR(mat_array, prop, Ptr, IndCol, Value);
+    
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    mat_csr.SetData(m, n, Value, Ptr, IndCol);
+  }
+
+
+  //! Conversion from RowSymComplexSparse to RowSymSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    Symmetric prop;
+    ConvertToCSR(mat_array, prop, Ptr, IndCol, Value);
+    
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    mat_csr.SetData(m, n, Value, Ptr, IndCol);
+  }
+
+
+  //! Conversion from RowComplexSparse to RowSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSR(mat_array, prop, Ptr, IndCol, Value);
+    
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    mat_csr.SetData(m, n, Value, Ptr, IndCol);
+  }
+
+
+  //! Conversion from ColSymComplexSparse to RowSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSR(mat_array, prop, Ptr, IndCol, Value);
+    
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    mat_csr.SetData(m, n, Value, Ptr, IndCol);
+  }
+
+
+  //! Conversion from ColSymComplexSparse to RowSymSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    Symmetric prop;
+    ConvertToCSR(mat_array, prop, Ptr, IndCol, Value);
+    
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    mat_csr.SetData(m, n, Value, Ptr, IndCol);
+  }
+
+
+  //! Conversion from ColComplexSparse to RowSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSR(mat_array, prop, Ptr, IndCol, Value);
+    
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    mat_csr.SetData(m, n, Value, Ptr, IndCol);
+  }
+
+
+  //! Conversion from ArrayRowComplexSparse to ColSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSC(A, prop, Ptr, IndRow, Value);
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, IndRow);
+  }
+
+
+  //! Conversion from ArrayRowSymComplexSparse to ColSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSC(A, prop, Ptr, IndRow, Value);
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, IndRow);
+  }
+
+
+  //! Conversion from ArrayRowSymComplexSparse to ColSymSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSymSparse, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    Symmetric prop;
+    ConvertToCSC(A, prop, Ptr, IndRow, Value);
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, IndRow);
+  }
+
+
+  //! Conversion from ArrayColComplexSparse to ColSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSC(A, prop, Ptr, IndRow, Value);
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, IndRow);
+  }
+
+
+  //! Conversion from ArrayColSymComplexSparse to ColSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSC(A, prop, Ptr, IndRow, Value);
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, IndRow);
+  }
+
+
+  //! Conversion from ArrayColSymComplexSparse to ColSymSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSymSparse, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    Symmetric prop;
+    ConvertToCSC(A, prop, Ptr, IndRow, Value);
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, IndRow);
+  }
+
+
+  //! Conversion from RowComplexSparse to ColSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSC(A, prop, Ptr, IndRow, Value);
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, IndRow);
+  }
+
+
+  //! Conversion from RowSymComplexSparse to ColSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSC(A, prop, Ptr, IndRow, Value);
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, IndRow);
+  }  
+  
+
+  //! Conversion from RowSymComplexSparse to ColSymSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSymSparse, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    Symmetric prop;
+    ConvertToCSC(A, prop, Ptr, IndRow, Value);
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, IndRow);
+  }  
+
+
+  //! Conversion from ColComplexSparse to ColSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSC(A, prop, Ptr, IndRow, Value);
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, IndRow);
+  }
+  
+  
+  //! Conversion from ColSymComplexSparse to ColSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSparse, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    General prop;
+    ConvertToCSC(A, prop, Ptr, IndRow, Value);
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, IndRow);
+  }  
+  
+
+  //! Conversion from ColSymComplexSparse to ColSymSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ColSymSparse, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<T1, VectFull, Allocator1> Value;
+
+    Symmetric prop;
+    ConvertToCSC(A, prop, Ptr, IndRow, Value);
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    B.SetData(m, n, Value, Ptr, IndRow);
+  }  
 
   
   //! B = A.
@@ -3063,6 +3737,345 @@ namespace Seldon
 
     mat_csr.SetData(m, m, Val_real, IndRow_real, IndCol_real,
 		    Val_imag, IndRow_imag, IndCol_imag);
+  }
+  
+  
+  //! Conversion from ArrayRowSymComplexSparse to ArrayRowSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > IndRow, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+    
+    ConvertMatrix_to_Coordinates(mat_array, IndRow, IndCol, Value, 0, true);
+    
+    // sorting by rows
+    Sort(IndRow, IndCol, Value);
+
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();    
+    mat_csr.Reallocate(m, n);
+    int k = 0;
+    for (int i = 0; i < m; i++)
+      {
+        int k0 = k;
+        while ((k < IndRow.GetM()) && (IndRow(k) <= i))
+          k++;
+
+        int size_row = k - k0;
+        if (size_row > 0)
+          {
+            mat_csr.ReallocateRow(i, size_row);
+            for (int j = 0; j < size_row; j++)
+              {
+                mat_csr.Index(i, j) = IndCol(k0 + j);
+                mat_csr.Value(i, j) = Value(k0 + j);
+              }
+          }
+        else
+          mat_csr.ClearRow(i);
+      }
+  }
+
+
+
+  //! Conversion from ArrayRowSymComplexSparse to ArrayRowSymSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& B)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    B.Reallocate(m, n);
+    Vector<complex<T0> > value(n);
+    Vector<int> col_num(n);
+    for (int i = 0; i < m; i++)
+      {
+        int size_real = A.GetRealRowSize(i);
+        int size_imag = A.GetImagRowSize(i);
+        int jr = 0, ji = 0;
+        int size_row = 0;
+        while (jr < size_real)
+          {
+            int col = A.IndexReal(i, jr);
+            while ((ji < size_imag) && (A.IndexImag(i, ji) < col))
+              {
+                col_num(size_row) = A.IndexImag(i, ji);
+                value(size_row) = complex<T0>(0, A.ValueImag(i, ji));
+                ji++; size_row++;
+              }
+            
+            if ((ji < size_imag) && (A.IndexImag(i, ji) == col))
+              {
+                col_num(size_row) = col;
+                value(size_row) = complex<T0>(A.ValueReal(i, jr),
+                                              A.ValueImag(i, ji));
+                ji++; size_row++;
+              }
+            else
+              {
+                col_num(size_row) = col;
+                value(size_row) = complex<T0>(A.ValueReal(i, jr), 0);
+                size_row++;
+              }
+            
+            jr++;
+          }
+
+        while (ji < size_imag)
+          {
+            col_num(size_row) = A.IndexImag(i, ji);
+            value(size_row) = complex<T0>(0, A.ValueImag(i, ji));
+            ji++; size_row++;
+          }
+        
+        B.ReallocateRow(i, size_row);
+        for (int j = 0; j < size_row; j++)
+          {
+            B.Index(i, j) = col_num(j);
+            B.Value(i, j) = value(j);
+          }
+      }
+  }
+
+
+  //! Conversion from ArrayRowComplexSparse to ArrayRowSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& B)
+  {
+    int m = A.GetM();
+    int n = A.GetN();
+    B.Reallocate(m, n);
+    Vector<complex<T0> > value(n);
+    Vector<int> col_num(n);
+    for (int i = 0; i < m; i++)
+      {
+        int size_real = A.GetRealRowSize(i);
+        int size_imag = A.GetImagRowSize(i);
+        int jr = 0, ji = 0;
+        int size_row = 0;
+        while (jr < size_real)
+          {
+            int col = A.IndexReal(i, jr);
+            while ((ji < size_imag) && (A.IndexImag(i, ji) < col))
+              {
+                col_num(size_row) = A.IndexImag(i, ji);
+                value(size_row) = complex<T0>(0, A.ValueImag(i, ji));
+                ji++; size_row++;
+              }
+            
+            if ((ji < size_imag) && (A.IndexImag(i, ji) == col))
+              {
+                col_num(size_row) = col;
+                value(size_row) = complex<T0>(A.ValueReal(i, jr),
+                                              A.ValueImag(i, ji));
+                ji++; size_row++;
+              }
+            else
+              {
+                col_num(size_row) = col;
+                value(size_row) = complex<T0>(A.ValueReal(i, jr), 0);
+                size_row++;
+              }
+            
+            jr++;
+          }
+        
+        while (ji < size_imag)
+          {
+            col_num(size_row) = A.IndexImag(i, ji);
+            value(size_row) = complex<T0>(0, A.ValueImag(i, ji));
+            ji++; size_row++;
+          }
+        
+        B.ReallocateRow(i, size_row);
+        for (int j = 0; j < size_row; j++)
+          {
+            B.Index(i, j) = col_num(j);
+            B.Value(i, j) = value(j);
+          }
+      }
+  }
+
+
+  //! Conversion from RowSymComplexSparse to ArrayRowSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
+       Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& mat_csr)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > IndRow, IndCol;
+    Vector<T1, VectFull, Allocator1> Value;
+    
+    ConvertMatrix_to_Coordinates(mat_array, IndRow, IndCol, Value, 0, true);
+    
+    // sorting by rows
+    Sort(IndRow, IndCol, Value);
+
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();    
+    mat_csr.Reallocate(m, n);
+    int k = 0;
+    for (int i = 0; i < m; i++)
+      {
+        int k0 = k;
+        while ((k < IndRow.GetM()) && (IndRow(k) <= i))
+          k++;
+
+        int size_row = k - k0;
+        if (size_row > 0)
+          {
+            mat_csr.ReallocateRow(i, size_row);
+            for (int j = 0; j < size_row; j++)
+              {
+                mat_csr.Index(i, j) = IndCol(k0 + j);
+                mat_csr.Value(i, j) = Value(k0 + j);
+              }
+          }
+        else
+          mat_csr.ClearRow(i);
+      }
+  }
+
+
+  //! Conversion from RowComplexSparse to ArrayRowSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& B)
+  {    
+    int m = A.GetM();
+    int n = A.GetN();
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T0* data_real = A.GetRealData();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T0* data_imag = A.GetImagData();
+    B.Reallocate(m, n);
+    Vector<complex<T0> > value(n);
+    Vector<int> col_num(n);
+    for (int i = 0; i < m; i++)
+      {
+        int jr = ptr_real[i], ji = ptr_imag[i];
+        int size_row = 0;
+        while (jr < ptr_real[i+1])
+          {
+            int col = ind_real[jr];
+            while ((ji < ptr_imag[i+1]) && (ind_imag[ji] < col))
+              {
+                col_num(size_row) = ind_imag[ji];
+                value(size_row) = complex<T0>(0, data_imag[ji]);
+                ji++; size_row++;
+              }
+            
+            if ((ji < ptr_imag[i+1]) && (ind_imag[ji] == col))
+              {
+                col_num(size_row) = col;
+                value(size_row) = complex<T0>(data_real[jr],
+                                              data_imag[ji]);
+                ji++; size_row++;
+              }
+            else
+              {
+                col_num(size_row) = col;
+                value(size_row) = complex<T0>(data_real[jr], 0);
+                size_row++;
+              }
+            
+            jr++;
+          }
+        
+        while (ji < ptr_imag[i+1])
+          {
+            col_num(size_row) = ind_imag[ji];
+            value(size_row) = complex<T0>(0, data_imag[ji]);
+            ji++; size_row++;
+          }
+        
+        B.ReallocateRow(i, size_row);
+        for (int j = 0; j < size_row; j++)
+          {
+            B.Index(i, j) = col_num(j);
+            B.Value(i, j) = value(j);
+          }
+      }
+  }
+
+
+  //! Conversion from RowSymComplexSparse to ArrayRowSymSparse
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void
+  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+       Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& B)
+  {    
+    int m = A.GetM();
+    int n = A.GetN();
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T0* data_real = A.GetRealData();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T0* data_imag = A.GetImagData();
+    B.Reallocate(m, n);
+    Vector<complex<T0> > value(n);
+    Vector<int> col_num(n);
+    for (int i = 0; i < m; i++)
+      {
+        int jr = ptr_real[i], ji = ptr_imag[i];
+        int size_row = 0;
+        while (jr < ptr_real[i+1])
+          {
+            int col = ind_real[jr];
+            while ((ji < ptr_imag[i+1]) && (ind_imag[ji] < col))
+              {
+                col_num(size_row) = ind_imag[ji];
+                value(size_row) = complex<T0>(0, data_imag[ji]);
+                ji++; size_row++;
+              }
+            
+            if ((ji < ptr_imag[i+1]) && (ind_imag[ji] == col))
+              {
+                col_num(size_row) = col;
+                value(size_row) = complex<T0>(data_real[jr],
+                                              data_imag[ji]);
+                ji++; size_row++;
+              }
+            else
+              {
+                col_num(size_row) = col;
+                value(size_row) = complex<T0>(data_real[jr], 0);
+                size_row++;
+              }
+            
+            jr++;
+          }
+        
+        while (ji < ptr_imag[i+1])
+          {
+            col_num(size_row) = ind_imag[ji];
+            value(size_row) = complex<T0>(0, data_imag[ji]);
+            ji++; size_row++;
+          }
+        
+        B.ReallocateRow(i, size_row);
+        for (int j = 0; j < size_row; j++)
+          {
+            B.Index(i, j) = col_num(j);
+            B.Value(i, j) = value(j);
+          }
+      }
   }
 
 }

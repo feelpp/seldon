@@ -1379,15 +1379,13 @@ namespace Seldon
 	   Matrix<T2, General, ArrayRowSparse, Allocator2>& B)
   {
     int m = B.GetM(), n;
-    Vector<T2, VectFull, Allocator2> value;
+    Vector<T2, VectFull, Allocator2> value(B.GetN());
     for (int i = 0 ; i < m ; i++)
       {
 	n = A.GetRowSize(i);
-	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
-	  value(j) = A.Value(i, j);
+	  value(j) = alpha*A.Value(i, j);
 
-	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetIndex(i), value.GetData());
       }
   }
@@ -1419,15 +1417,13 @@ namespace Seldon
 	   Matrix<T2, Symmetric, ArrayRowSymSparse, Allocator2>& B)
   {
     int m = B.GetM(),n;
-    Vector<T2, VectFull, Allocator2> value;
+    Vector<T2, VectFull, Allocator2> value(B.GetN());
     for (int i = 0 ; i < m ; i++)
       {
 	n = A.GetRowSize(i);
-	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
-	  value(j) = A.Value(i, j);
+	  value(j) = alpha*A.Value(i, j);
 
-	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetIndex(i), value.GetData());
       }
   }
@@ -1911,6 +1907,8 @@ namespace Seldon
           B.Value(j, k) = A.Value(i, jp);
           B.Index(j, k) = i;
     	}
+    
+    B.Assemble();
   }
 
 
@@ -1957,6 +1955,8 @@ namespace Seldon
           B.Value(j, k) = A.Value(i, jp);
           B.Index(j, k) = i;
     	}
+    
+    B.Assemble();
   }
 
 
@@ -2590,9 +2590,9 @@ namespace Seldon
           Index(IndCol(j)) = -1;
       }
   }
-
   
-    // C = beta * C + alpha * A^H * B^H
+  
+  //! C = beta * C + alpha * A^H * B^H
   template<class T0, class T1, class Prop1, class Allocator1,
            class T2, class Prop2, class Allocator2, class T3,
            class T4, class Prop4, class Allocator4>

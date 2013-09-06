@@ -2075,7 +2075,7 @@ namespace Seldon
 
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    T3 coef = (one - omega) / omega;
+    T3 coef = (T3(1) - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -2220,7 +2220,7 @@ namespace Seldon
 
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    T3 coef = (one - omega) / omega;
+    T3 coef = (T3(1) - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -2373,7 +2373,7 @@ namespace Seldon
 
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    T3 coef = (one - omega) / omega;
+    T3 coef = (T3(1) - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -2518,7 +2518,7 @@ namespace Seldon
 
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    T3 coef = (one - omega) / omega;
+    T3 coef = (T3(1) - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -2865,7 +2865,7 @@ namespace Seldon
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
     complex<T0> ajj;
-    T3 coef = (one - omega) / omega;
+    T3 coef = (T3(1) - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -3056,7 +3056,7 @@ namespace Seldon
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
     complex<T0> ajj;
-    T3 coef = (one - omega) / omega;
+    T3 coef = (T3(1) - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{

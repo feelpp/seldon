@@ -1365,7 +1365,7 @@ namespace Seldon
             this->real_data_ = NULL;
             this->imag_data_ = NULL;
           }
-        if (real_ind_ == NULL)
+        if (imag_ind_ == NULL)
           {
             this->m_ = 0;
             this->n_ = 0;

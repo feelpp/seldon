@@ -1085,7 +1085,8 @@ namespace Seldon
     CheckDim(M, Y, "SolveLU(M, Y)");
 #endif
     
-    SparseDirectSolver<T0> matrix_lu;
+    typedef typename Matrix<T0, Prop0, Storage0, Allocator0>::entry_type Tmat;
+    SparseDirectSolver<Tmat> matrix_lu;
     
     matrix_lu.Factorize(M);
     matrix_lu.Solve(Y);

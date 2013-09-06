@@ -51,197 +51,422 @@
 namespace Seldon
 {
   
-  
-  template<class T0, class T1, class T2, class Allocator1, class Allocator2>
+  //! B = B + alpha A
+  template<class T0, class T1, class Allocator1, class T2, class Allocator2>
   void Add(const T0& alpha,
 	   const Matrix<T1, Symmetric,
-	   ArrayRowSymComplexSparse, Allocator1>& A,
+           ArrayRowSymComplexSparse, Allocator1>& A,
 	   Matrix<T2, Symmetric, ArrayRowSymComplexSparse, Allocator2>& B)
   {
     int m = B.GetM(), n, ni;
-    Vector<complex<T2> > value;
-    IVect index;
+    Vector<complex<T2> > value(2*B.GetN());
+    IVect index(2*B.GetN());
     for (int i = 0 ; i < m ; i++)
       {
 	n = A.GetRealRowSize(i);
 	ni = A.GetImagRowSize(i);
-	value.Reallocate(n + ni);
-	index.Reallocate(n + ni);
-	for (int j = 0; j < n; j++)
+        for (int j = 0; j < n; j++)
 	  {
-	    value(j) = A.ValueReal(i, j);
+	    value(j) = alpha*A.ValueReal(i, j);
 	    index(j) = A.IndexReal(i, j);
 	  }
 
 	for (int j = 0; j < ni; j++)
 	  {
-	    value(j+n) = complex<T2>(0, 1) * A.ValueImag(i, j);
+	    value(j+n) = alpha*complex<T2>(0, 1) * A.ValueImag(i, j);
 	    index(j+n) = A.IndexImag(i, j);
 	  }
-
-	Mlt(alpha, value);
+	
 	B.AddInteractionRow(i, n+ni, index, value);
       }
   }
   
-  
-  template<class T0, class T1, class T2, class Allocator1, class Allocator2>
+
+  //! B = B + alpha A  
+  template<class T0, class T1, class Allocator1,
+           class T2, class Allocator2>
   void Add(const T0& alpha, const Matrix<T1, Symmetric,
 	   ArrayRowSymComplexSparse, Allocator1>& A,
 	   Matrix<T2, Symmetric, ArrayRowSymSparse, Allocator2>& B)
   {
     int m = B.GetM(), n;
-    Vector<T2, VectFull, Allocator2> value;
+    Vector<T2, VectFull, Allocator2> value(B.GetN());
     for (int i = 0 ; i < m ; i++)
       {
 	n = A.GetRealRowSize(i);
-	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
-	  value(j) = A.ValueReal(i, j);
+	  value(j) = alpha*A.ValueReal(i, j);
 
-	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetRealInd(i), value.GetData());
-	n = A.GetImagRowSize(i);
-	value.Reallocate(n);
-	for (int j = 0; j < n; j++)
-	  value(j) = complex<T1>(0, 1) * A.ValueImag(i, j);
+	
+        n = A.GetImagRowSize(i);
+        for (int j = 0; j < n; j++)
+	  value(j) = alpha*complex<T1>(0, 1) * A.ValueImag(i, j);
 
-	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetImagInd(i), value.GetData());
       }
   }
 
 
-  template<class T0, class T1, class T2, class Allocator1, class Allocator2>
+  //! B = B + alpha A
+  template<class T0, class T1, class Allocator1,
+           class T2, class Allocator2>
   void Add(const T0& alpha, const Matrix<T1, General,
 	   ArrayRowComplexSparse, Allocator1>& A,
 	   Matrix<T2, General, ArrayRowSparse, Allocator2>& B)
   {
-    int m = B.GetM(),n;
-    Vector<T2, VectFull, Allocator2> value;
+    int m = B.GetM(), n;
+    Vector<T2, VectFull, Allocator2> value(B.GetN());
     for (int i = 0; i < m; i++)
       {
 	n = A.GetRealRowSize(i);
-	value.Reallocate(n);
-	for (int j = 0; j < n; j++)
-	  value(j) = A.ValueReal(i, j);
-
-	Mlt(alpha, value);
-	B.AddInteractionRow(i, n, A.GetRealInd(i), value.GetData());
-	n = A.GetImagRowSize(i);
-	value.Reallocate(n);
-	for (int j = 0; j < n; j++)
-	  value(j) = complex<T1>(0, 1) * A.ValueImag(i, j);
-
-	Mlt(alpha, value);
-	B.AddInteractionRow(i, n, A.GetImagInd(i), value.GetData());
+        for (int j = 0; j < n; j++)
+          value(j) = alpha*A.ValueReal(i, j);
+        
+        B.AddInteractionRow(i, n, A.GetRealInd(i), value.GetData());
+              
+        n = A.GetImagRowSize(i);
+        for (int j = 0; j < n; j++)
+          value(j) = alpha*complex<T1>(0, 1) * A.ValueImag(i, j);
+            
+        B.AddInteractionRow(i, n, A.GetImagInd(i), value.GetData());
       }
   }
 
 
-  template<class T0, class T1, class T2, class Allocator1,class Allocator2>
+  //! B = B + alpha A
+  template<class T0, class T1, class Allocator1,
+           class T2, class Allocator2>
   void Add(const T0& alpha, const Matrix<T1, General,
 	   ArrayRowComplexSparse, Allocator1>& A,
 	   Matrix<T2, General, ArrayRowComplexSparse, Allocator2>& B)
   {
     int m = B.GetM(), n, ni;
-    Vector<complex<T2> > value; IVect index;
+    Vector<complex<T2> > value(2*B.GetN()); IVect index(2*B.GetN());
     for (int i = 0 ; i < m ; i++)
       {
 	n = A.GetRealRowSize(i);
 	ni = A.GetImagRowSize(i);
-	value.Reallocate(n + ni);
-	index.Reallocate(n + ni);
-	for (int j = 0; j < n; j++)
-	  {
-	    value(j) = A.ValueReal(i, j);
-	    index(j) = A.IndexReal(i, j);
-	  }
-
-	for (int j = 0; j < ni; j++)
-	  {
-	    value(n+j) = complex<T2>(0, 1) * A.ValueImag(i, j);
-	    index(n+j) = A.IndexImag(i, j);
-	  }
-
-	Mlt(alpha, value);
-	B.AddInteractionRow(i, n+ni, index, value);
+        for (int j = 0; j < n; j++)
+          {
+            value(j) = alpha*A.ValueReal(i, j);
+            index(j) = A.IndexReal(i, j);
+          }
+        
+        for (int j = 0; j < ni; j++)
+          {
+            value(n+j) = alpha*complex<T2>(0, 1) * A.ValueImag(i, j);
+            index(n+j) = A.IndexImag(i, j);
+          }
+            
+        B.AddInteractionRow(i, n+ni, index, value);
       }
   }
   
   
-  // C = C + complex(A,B)
-  template<class T0, class T1, class T2, class T3,
-	   class Allocator1, class Allocator2, class Allocator3>
+  //! C = C + complex(A,B)
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2,
+           class T3, class Prop3, class Allocator3>
   void Add(const T0& alpha,
-	   const Matrix<T1, Symmetric, ArrayRowSymSparse, Allocator1>& A,
-	   const Matrix<T2, Symmetric, ArrayRowSymSparse, Allocator2>& B,
-	   Matrix<T3, Symmetric, ArrayRowSymComplexSparse, Allocator3>& C)
+	   const Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& A,
+	   const Matrix<T2, Prop2, ArrayRowSymSparse, Allocator2>& B,
+	   Matrix<T3, Prop3, ArrayRowSymComplexSparse, Allocator3>& C)
   {
     int m = B.GetM(), n, ni;
-    Vector<complex<T3> > value; IVect index;
+    Vector<complex<T3> > value(2*B.GetN()); IVect index(2*B.GetN());
     for (int i = 0 ; i < m ; i++)
       {
 	n = A.GetRowSize(i);
 	ni = B.GetRowSize(i);
-	value.Reallocate(n+ni);
-	index.Reallocate(n+ni);
 	for (int j = 0; j < n; j++)
 	  {
-	    value(j) = A.Value(i, j);
+	    value(j) = alpha*A.Value(i, j);
 	    index(j) = A.Index(i, j);
 	  }
 
 	for (int j = 0; j < ni; j++)
 	  {
-	    value(n+j) = complex<T3>(0, 1) * B.Value(i, j);
+	    value(n+j) = alpha*complex<T3>(0, 1) * B.Value(i, j);
 	    index(n+j) = B.Index(i, j);
 	  }
 
-	Mlt(alpha, value);
 	C.AddInteractionRow(i, n+ni, index, value);
       }
   }
 
 
-  // C = C + complex(A,B)
-  template<class T0, class T1, class T2, class T3,
-	   class Allocator1, class Allocator2, class Allocator3>
+  //! C = C + complex(A,B)
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2,
+           class T3, class Prop3, class Allocator3>
   void Add(const T0& alpha,
-	   const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
-	   const Matrix<T2, General, ArrayRowSparse, Allocator2>& B,
-	   Matrix<T3, General, ArrayRowComplexSparse, Allocator3>& C)
+	   const Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& A,
+	   const Matrix<T2, Prop2, ArrayRowSparse, Allocator2>& B,
+	   Matrix<T3, Prop3, ArrayRowComplexSparse, Allocator3>& C)
   {
     int m = B.GetM(), n, ni;
-    Vector<complex<T3> > value;
-    IVect index;
+    Vector<complex<T3> > value(2*B.GetN());
+    IVect index(2*B.GetN());
     for (int i = 0 ; i < m ; i++)
       {
 	n = A.GetRowSize(i);
 	ni = B.GetRowSize(i);
-	value.Reallocate(n + ni);
-	index.Reallocate(n + ni);
 	for (int j = 0; j < n; j++)
 	  {
-	    value(j) = A.Value(i, j);
+	    value(j) = alpha*A.Value(i, j);
 	    index(j) = A.Index(i, j);
 	  }
 
 	for (int j = 0; j < ni; j++)
 	  {
-	    value(n+j) = complex<T3>(0, 1) * B.Value(i, j);
+	    value(n+j) = alpha*complex<T3>(0, 1) * B.Value(i, j);
 	    index(n+j) = B.Index(i, j);
 	  }
 
-	Mlt(alpha, value);
 	C.AddInteractionRow(i, n+ni, index, value);
       }
   }
   
+
+  template<class T, class Allocator>
+  void Add_csr_ptr(const T& alpha, int* ptr_A, int* ind_A, T* data_A,
+                   int* ptr_B, int* ind_B, T* data_B, int m,
+                   Vector<int, VectFull, CallocAlloc<int> >& Ptr,
+                   Vector<int, VectFull, CallocAlloc<int> >& Ind,
+                   Vector<T, VectFull, Allocator>& Val)
+  {
+    int i = 0;
+    int j = 0;
+    int k;
+    
+    // A and B might have the same structure
+    // Loop over all non-zeros. If the structures of A and B differ at any
+    // time, the loop is broken and a different strategy is undertaken.
+    for (i = 0; i < m; i++)
+      if (ptr_A[i + 1] == ptr_B[i + 1])
+        {
+          for (j = ptr_A[i]; j < ptr_A[i + 1]; j++)
+            if (ind_A[j] == ind_B[j])
+              data_B[j] += alpha * data_A[j];
+            else
+              break;
+          if (j != ptr_A[i + 1])
+            break;
+        }
+      else
+        break;
+    
+    // Success: A and B have the same structure.
+    if (i == m)
+      return;
+    
+    // The addition is performed row by row in the following lines. Thus the
+    // additions already performed in the current line, if started, should be
+    // canceled.
+    for (k = ptr_A[i]; k < j; k++)
+      if (ind_A[k] == ind_B[k])
+        data_B[k] -= alpha * data_A[k];
+
+    // Number of non zero entries currently found.
+    int Nnonzero = ptr_A[i];
+    
+    // counting the number of non-zero entries
+    int kb, jb(0), ka, ja(0);
+    for (int i2 = i; i2 < m; i2++)
+      {
+        kb = ptr_B[i2];
+        
+        for (ka = ptr_A[i2]; ka < ptr_A[i2 + 1]; ka++)
+          {
+            ja = ind_A[ka];
+            while (kb < ptr_B[i2 + 1] && ind_B[kb] < ja)
+              {
+                kb++;
+                Nnonzero++;
+              }
+            
+            if (kb < ptr_B[i2 + 1] && ja == ind_B[kb])
+              kb++;
+            
+            Nnonzero++;
+          }
+
+        while (kb < ptr_B[i2 + 1])
+          {
+            kb++;
+            Nnonzero++;
+          }
+      }
+    
+    // A and B do not have the same structure. An intermediate matrix will be
+    // needed. The first i rows have already been added. These computations
+    // are preserved in arrays Ptr, Ind Val.
+    Ptr.Reallocate(m+1); Ind.Reallocate(Nnonzero);
+    Val.Reallocate(Nnonzero);
+    for (int i2 = 0; i2 <= i; i2++)
+      Ptr(i2) = ptr_B[i2];
+    
+    for (j = 0; j < ptr_B[i]; j++)
+      {
+        Ind(j) = ind_B[j];
+        Val(j) = data_B[j];
+      }
+
+    // Now deals with the remaining lines.
+    Nnonzero = ptr_A[i];
+    for (; i < m; i++)
+      {
+        kb = ptr_B[i];
+        if (kb < ptr_B[i + 1])
+          jb = ind_B[kb];
+        for (ka = ptr_A[i]; ka < ptr_A[i + 1]; ka++)
+          {
+            ja = ind_A[ka];
+            while (kb < ptr_B[i + 1] && jb < ja)
+              // For all elements in B that are before the ka-th element of A.
+              {
+                Ind(Nnonzero) = jb;
+                Val(Nnonzero) = data_B[kb];
+                kb++;
+                if (kb < ptr_B[i + 1])
+                  jb = ind_B[kb];
+                Nnonzero++;
+              }
+
+            if (kb < ptr_B[i + 1] && ja == jb)
+              // The element in A is also in B.
+              {
+                Ind(Nnonzero) = jb;
+                Val(Nnonzero) = data_B[kb] + alpha * data_A[ka];
+                kb++;
+                if (kb < ptr_B[i + 1])
+                  jb = ind_B[kb];
+              }
+            else
+              {
+                Ind(Nnonzero) = ja;
+                Val(Nnonzero) = alpha * data_A[ka];
+              }
+            Nnonzero++;
+          }
+
+        // The remaining elements from B.
+        while (kb < ptr_B[i + 1])
+          {
+            Ind(Nnonzero) = jb;
+            Val(Nnonzero) = data_B[kb];
+            kb++;
+            if (kb < ptr_B[i + 1])
+              jb = ind_B[kb];
+            Nnonzero++;
+          }
+
+        Ptr(i + 1) = Nnonzero;
+      }    
+  }
   
-  template<class T0, class T, class Allocator>
+  
+  //! B = B + alpha A
+  template<class T0, class T1, class Allocator1,
+           class T2, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, Symmetric, RowSymComplexSparse, Allocator1>& A,
+	   Matrix<T2, Symmetric, RowSymComplexSparse, Allocator2>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > PtrReal, IndReal, PtrImag, IndImag;
+    Vector<T2, VectFull, Allocator2> DataReal, DataImag;
+    Add_csr_ptr(alpha, A.GetRealPtr(), A.GetRealInd(), A.GetRealData(),
+                B.GetRealPtr(), B.GetRealInd(), B.GetRealData(), B.GetM(),
+                PtrReal, IndReal, DataReal);
+
+    Add_csr_ptr(alpha, A.GetImagPtr(), A.GetImagInd(), A.GetImagData(),
+                B.GetImagPtr(), B.GetImagInd(), B.GetImagData(), B.GetM(),
+                PtrImag, IndImag, DataImag);
+
+    B.SetData(B.GetM(), B.GetN(), DataReal, PtrReal, IndReal,
+              DataImag, PtrImag, IndImag);
+  }
+
+
+  //! B = B + alpha A
+  template<class T0, class T1, class Allocator1,
+           class T2, class Allocator2>
+  void Add(const T0& alpha,
+	   const Matrix<T1, General, RowComplexSparse, Allocator1>& A,
+	   Matrix<T2, General, RowComplexSparse, Allocator2>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > PtrReal, IndReal, PtrImag, IndImag;
+    Vector<T2, VectFull, Allocator2> DataReal, DataImag;
+    Add_csr_ptr(alpha, A.GetRealPtr(), A.GetRealInd(), A.GetRealData(),
+                B.GetRealPtr(), B.GetRealInd(), B.GetRealData(), B.GetM(),
+                PtrReal, IndReal, DataReal);
+
+    Add_csr_ptr(alpha, A.GetImagPtr(), A.GetImagInd(), A.GetImagData(),
+                B.GetImagPtr(), B.GetImagInd(), B.GetImagData(), B.GetM(),
+                PtrImag, IndImag, DataImag);
+
+    B.SetData(B.GetM(), B.GetN(), DataReal, PtrReal, IndReal,
+              DataImag, PtrImag, IndImag);
+  }
+
+
+  //! B = B + alpha A
+  template<class T0, class T1, class Allocator1,
+           class T2, class Allocator2>
+  void Add(const complex<T0>& alpha,
+	   const Matrix<T1, Symmetric, RowSymComplexSparse, Allocator1>& A,
+	   Matrix<T2, Symmetric, RowSymComplexSparse, Allocator2>& B)
+  {
+    if (imag(alpha) != T0(0))
+      throw Undefined("Add(Matrix<RowSymComplexSparse>)",
+                      "Function not implemented for complex scalars");
+
+    Vector<int, VectFull, CallocAlloc<int> > PtrReal, IndReal, PtrImag, IndImag;
+    Vector<T2, VectFull, Allocator2> DataReal, DataImag;
+    Add_csr_ptr(real(alpha), A.GetRealPtr(), A.GetRealInd(), A.GetRealData(),
+                B.GetRealPtr(), B.GetRealInd(), B.GetRealData(), B.GetM(),
+                PtrReal, IndReal, DataReal);
+
+    Add_csr_ptr(real(alpha), A.GetImagPtr(), A.GetImagInd(), A.GetImagData(),
+                B.GetImagPtr(), B.GetImagInd(), B.GetImagData(), B.GetM(),
+                PtrImag, IndImag, DataImag);
+
+    B.SetData(B.GetM(), B.GetN(), DataReal, PtrReal, IndReal,
+              DataImag, PtrImag, IndImag);
+  }
+
+
+  //! B = B + alpha A
+  template<class T0, class T1, class Allocator1,
+           class T2, class Allocator2>
+  void Add(const complex<T0>& alpha,
+	   const Matrix<T1, General, RowComplexSparse, Allocator1>& A,
+	   Matrix<T2, General, RowComplexSparse, Allocator2>& B)
+  {
+    if (imag(alpha) != T0(0))
+      throw Undefined("Add(Matrix<RowComplexSparse>)",
+                      "Function not implemented for complex scalars");
+
+    Vector<int, VectFull, CallocAlloc<int> > PtrReal, IndReal, PtrImag, IndImag;
+    Vector<T2, VectFull, Allocator2> DataReal, DataImag;
+    Add_csr_ptr(real(alpha), A.GetRealPtr(), A.GetRealInd(), A.GetRealData(),
+                B.GetRealPtr(), B.GetRealInd(), B.GetRealData(), B.GetM(),
+                PtrReal, IndReal, DataReal);
+
+    Add_csr_ptr(real(alpha), A.GetImagPtr(), A.GetImagInd(), A.GetImagData(),
+                B.GetImagPtr(), B.GetImagInd(), B.GetImagData(), B.GetM(),
+                PtrImag, IndImag, DataImag);
+
+    B.SetData(B.GetM(), B.GetN(), DataReal, PtrReal, IndReal,
+              DataImag, PtrImag, IndImag);
+  }
+  
+
+  //! multiplication by a scalar
+  template<class T0, class T, class Prop, class Allocator>
   void Mlt(const T0& alpha,
-	   Matrix<T, General, ArrayRowComplexSparse, Allocator>& A)
+	   Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A)
   {
     for (int i = 0; i < A.GetM(); i++)
       {
@@ -255,9 +480,10 @@ namespace Seldon
   }
 
 
-  template<class T0, class T, class Allocator>
+  //! multiplication by a scalar
+  template<class T0, class T, class Prop, class Allocator>
   void Mlt(const complex<T0>& alpha,
-	   Matrix<T, General, ArrayRowComplexSparse, Allocator>& A)
+	   Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A)
   {
     if (imag(alpha) != T0(0))
       throw Undefined("Mlt(Matrix<ArrayRowComplexSparse>)",
@@ -274,9 +500,10 @@ namespace Seldon
   }
 
 
-  template<class T0, class T, class Allocator>
-  void Mlt(const T0& alpha, Matrix<T, Symmetric,
-	   ArrayRowSymComplexSparse, Allocator>& A)
+  //! multiplication by a scalar
+  template<class T0, class T, class Prop, class Allocator>
+  void Mlt(const T0& alpha,
+           Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A)
   {
     for (int i = 0; i < A.GetM(); i++)
       {
@@ -288,10 +515,11 @@ namespace Seldon
       }
   }
   
-  
-  template<class T0, class T, class Allocator>
-  void Mlt(const complex<T0>& alpha, Matrix<T, Symmetric,
-	   ArrayRowSymComplexSparse, Allocator>& A)
+
+  //! multiplication by a scalar  
+  template<class T0, class T, class Prop, class Allocator>
+  void Mlt(const complex<T0>& alpha,
+           Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A)
   {
     if (imag(alpha) != T0(0))
       throw Undefined("Mlt(Matrix<ArrayRowComplexSparse>)",
@@ -305,6 +533,75 @@ namespace Seldon
 	for (int j = 0; j < A.GetImagRowSize(i); j++)
 	  A.ValueImag(i,j) *= real(alpha);
       }
+  }
+
+
+  //! multiplication by a scalar
+  template<class T0, class T, class Prop, class Allocator>
+  void Mlt(const T0& alpha,
+	   Matrix<T, Prop, RowComplexSparse, Allocator>& A)
+  {
+    T* data_A = A.GetRealData();
+    for (int i = 0; i < A.GetRealDataSize(); i++)
+      data_A[i] *= alpha;
+
+    data_A = A.GetImagData();
+    for (int i = 0; i < A.GetImagDataSize(); i++)
+      data_A[i] *= alpha;
+  }
+  
+
+  //! multiplication by a scalar
+  template<class T0, class T, class Prop, class Allocator>
+  void Mlt(const complex<T0>& alpha,
+	   Matrix<T, Prop, RowComplexSparse, Allocator>& A)
+  {
+    if (imag(alpha) != T0(0))
+      throw Undefined("Mlt(Matrix<RowComplexSparse>)",
+                      "Function not implemented for complex scalars");
+    
+    T* data_A = A.GetRealData();
+    T0 alpha_r = real(alpha);
+    for (int i = 0; i < A.GetRealDataSize(); i++)
+      data_A[i] *= alpha_r;
+
+    data_A = A.GetImagData();
+    for (int i = 0; i < A.GetImagDataSize(); i++)
+      data_A[i] *= alpha_r;
+  }
+
+
+  //! multiplication by a scalar
+  template<class T0, class T, class Prop, class Allocator>
+  void Mlt(const T0& alpha, Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
+  {
+    T* data_A = A.GetRealData();
+    for (int i = 0; i < A.GetRealDataSize(); i++)
+      data_A[i] *= alpha;
+
+    data_A = A.GetImagData();
+    for (int i = 0; i < A.GetImagDataSize(); i++)
+      data_A[i] *= alpha;
+  }
+  
+
+  //! multiplication by a scalar  
+  template<class T0, class T, class Prop, class Allocator>
+  void Mlt(const complex<T0>& alpha,
+           Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
+  {
+    if (imag(alpha) != T0(0))
+      throw Undefined("Mlt(Matrix<RowSymComplexSparse>)",
+                      "Function not implemented for complex scalars");
+    
+    T* data_A = A.GetRealData();
+    T0 alpha_r = real(alpha);
+    for (int i = 0; i < A.GetRealDataSize(); i++)
+      data_A[i] *= alpha_r;
+
+    data_A = A.GetImagData();
+    for (int i = 0; i < A.GetImagDataSize(); i++)
+      data_A[i] *= alpha_r;
   }
 
   
@@ -623,6 +920,114 @@ namespace Seldon
   }
 
   
+  //! Each row and column are scaled.
+  /*!
+    We compute diag(scale_left)*A*diag(scale_right).
+  */
+  template<class Prop, class T1, class Allocator1,
+	   class T2, class Allocator2, class T3, class Allocator3>
+  void ScaleMatrix(Matrix<T1, Prop, RowSymComplexSparse, Allocator1>& A,
+		   const Vector<T2, VectFull, Allocator2>& scale_left,
+		   const Vector<T3, VectFull, Allocator3>& scale_right)
+  {
+    int m = A.GetM();
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T1* data_real = A.GetRealData();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T1* data_imag = A.GetImagData();
+    for (int i = 0; i < m; i++ )
+      {
+	for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+	  data_real[j] *= scale_left(i) * scale_right(ind_real[j]);
+
+	for (int j = ptr_imag[i]; j < ptr_imag[i+1]; j++)
+	  data_imag[j] *= scale_left(i) * scale_right(ind_imag[j]);
+      }
+  }
+
+
+  //! Each row and column are scaled.
+  /*!
+    We compute diag(scale_left)*A*diag(scale_right).
+  */
+  template<class Prop, class T1, class Allocator1,
+	   class T2, class Allocator2, class T3, class Allocator3>
+  void ScaleMatrix(Matrix<T1, Prop, RowComplexSparse, Allocator1>& A,
+		   const Vector<T2, VectFull, Allocator2>& scale_left,
+		   const Vector<T3, VectFull, Allocator3>& scale_right)
+  {
+    int m = A.GetM();
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T1* data_real = A.GetRealData();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T1* data_imag = A.GetImagData();
+    for (int i = 0; i < m; i++ )
+      {
+	for (int j = ptr_real[i]; j < ptr_real[i+1]; j++ )
+	  data_real[j] *= scale_left(i) * scale_right(ind_real[j]);
+
+	for (int j = ptr_imag[i]; j < ptr_imag[i+1]; j++ )
+	  data_imag[j] *= scale_left(i) * scale_right(ind_imag[j]);
+      }
+  }
+
+  
+  //! Each row is scaled.
+  /*!
+    We compute diag(S)*A where S = scale.
+  */
+  template<class T1, class Allocator1,
+	   class Prop, class T2, class Allocator2>
+  void ScaleLeftMatrix(Matrix<T1, Prop, RowComplexSparse, Allocator1>& A,
+		       const Vector<T2, VectFull, Allocator2>& scale)
+  {
+    int m = A.GetM();
+    int* ptr_real = A.GetRealPtr();
+    T1* data_real = A.GetRealData();
+    int* ptr_imag = A.GetImagPtr();
+    T1* data_imag = A.GetImagData();
+    for (int i = 0; i < m; i++ )
+      {
+	for (int j = ptr_real[i]; j < ptr_real[i+1]; j++ )
+	  data_real[j] *= scale(i);
+
+	for (int j = ptr_imag[i]; j < ptr_imag[i+1]; j++ )
+	  data_imag[j] *= scale(i);
+      }
+  }
+  
+  
+  //! Each column is scaled.
+  /*!
+    We compute A*diag(S) where S = scale.
+  */
+  template<class T1, class Allocator1,
+	   class Prop, class T2, class Allocator2>
+  void ScaleRightMatrix(Matrix<T1, Prop, RowComplexSparse, Allocator1>& A,
+		       const Vector<T2, VectFull, Allocator2>& scale)
+  {
+    int m = A.GetM();
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T1* data_real = A.GetRealData();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T1* data_imag = A.GetImagData();
+    for (int i = 0; i < m; i++ )
+      {
+	for (int j = ptr_real[i]; j < ptr_real[i+1]; j++ )
+	  data_real[j] *= scale(ind_real[j]);
+
+	for (int j = ptr_imag[i]; j < ptr_imag[i+1]; j++ )
+	  data_imag[j] *= scale(ind_imag[j]);
+      }
+  }
+
+  
   //! Matrix transposition.
   template<class T, class Allocator>
   void Transpose(const Matrix<T, General, ArrayRowComplexSparse, Allocator>& A,
@@ -677,6 +1082,85 @@ namespace Seldon
             B.IndexImag(j, k) = i;
           }
       }
+    
+    // sorting numbers 
+    B.Assemble();
+  }
+
+
+  //! Matrix transposition.
+  template<class T, class Allocator>
+  void Transpose(const Matrix<T, General, RowComplexSparse, Allocator>& A,
+                 Matrix<T, General, RowComplexSparse, Allocator>& B)
+  {
+    B.Clear();
+    
+    int m = A.GetM();
+    int n = A.GetN();
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T* data_real = A.GetRealData();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T* data_imag = A.GetImagData();
+    Vector<int, VectFull, CallocAlloc<int> > ptr_r(n), ptr_i(n);
+    
+    // For each column j, computes number of its non-zeroes and stores it in
+    // ptr_T[j].
+    ptr_r.Zero();
+    for (int i = 0; i < m; i++)
+      for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+        ptr_r(ind_real[j])++;
+
+    ptr_i.Zero();
+    for (int i = 0; i < m; i++)
+      for (int j = ptr_imag[i]; j < ptr_imag[i+1]; j++)
+        ptr_i(ind_imag[j])++;
+    
+    Vector<T, VectFull, Allocator> ValReal(A.GetRealDataSize());
+    Vector<T, VectFull, Allocator> ValImag(A.GetImagDataSize());
+    Vector<int, VectFull, CallocAlloc<int> > PtrReal(n+1), PtrImag(n+1),
+      IndReal(A.GetRealDataSize()), IndImag(A.GetImagDataSize());
+    
+    PtrReal(0) = 0; PtrImag(0) = 0;
+    for (int i = 0; i < n; i++)
+      {
+        PtrReal(i+1) = PtrReal(i) + ptr_r(i);
+        PtrImag(i+1) = PtrImag(i) + ptr_i(i);
+      }
+
+    // filling matrix B
+    ptr_r.Zero();
+    ptr_i.Zero();
+    for (int i = 0; i < m; i++)
+      {
+        for (int jp = ptr_real[i]; jp < ptr_real[i+1]; jp++)
+          {
+            int j = ind_real[jp];
+            int k = ptr_r(j);
+            ValReal(PtrReal(j) + k) = data_real[jp];
+            IndReal(PtrReal(j) + k) = i;
+            ++ptr_r(j);
+          }
+
+        for (int jp = ptr_imag[i]; jp < ptr_imag[i+1]; jp++)
+          {
+            int j = ind_imag[jp];
+            int k = ptr_i(j);
+            ValImag(PtrImag(j) + k) = data_imag[jp];
+            IndImag(PtrImag(j) + k) = i;
+            ++ptr_i(j);
+          }
+      }
+    
+    // sorting numbers
+    for (int i = 0; i < n; i++)
+      {
+        Sort(PtrReal(i), PtrReal(i+1)-1, IndReal, ValReal);
+        Sort(PtrImag(i), PtrImag(i+1)-1, IndImag, ValImag);
+      }
+    
+    B.SetData(n, m, ValReal, PtrReal, IndReal, ValImag, PtrImag, IndImag);
   }
 
   
@@ -723,6 +1207,54 @@ namespace Seldon
   }
 
 
+  //! Returns the maximum (in absolute value) of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return The maximum (in absolute value) of all elements of \a A.
+  */
+  template <class T, class Prop, class Allocator>
+  T MaxAbs(const Matrix<T, Prop, RowComplexSparse, Allocator>& A)
+  {
+    T res(0);
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T* data_real = A.GetRealData();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T* data_imag = A.GetImagData();
+    for (int i = 0; i < A.GetM(); i++)
+      {
+        int ji = ptr_imag[i];
+        for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+          {
+            int k = ind_real[j];
+            while ( ji < ptr_imag[i+1] && ind_imag[ji] < k)
+              {
+                res = max(res, abs(data_imag[ji]));
+                ji++;
+              }
+            
+            if ( ji < ptr_imag[i+1] && (ind_imag[ji] == k))              
+              {
+                res = max(res, ComplexAbs(complex<T>(data_real[j], 
+						     data_imag[ji])));
+                ji++;
+              }
+            else
+              res = max(res, abs(data_real[j]));
+          }
+        
+        while (ji < ptr_imag[i+1])
+          {
+            res = max(res, abs(data_imag[ji]));
+            ji++;
+          }
+      }
+    
+    return res;
+  }
+
+
   //! Returns the 1-norm of a matrix.
   /*!
     \param[in] A matrix.
@@ -759,6 +1291,55 @@ namespace Seldon
         while (ji < size_imag)
           {
             sum(A.IndexImag(i, ji)) += abs(A.ValueImag(i, ji));
+            ji++;
+          }
+      }
+    
+    return sum.GetNormInf();
+  }
+
+
+  //! Returns the 1-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_j \sum_i |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  T Norm1(const Matrix<T, Prop, RowComplexSparse, Allocator>& A)
+  {
+    Vector<T> sum(A.GetN());
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T* data_real = A.GetRealData();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T* data_imag = A.GetImagData();
+    sum.Fill(T(0));
+    for (int i = 0; i < A.GetM(); i++)
+      {
+        int ji = ptr_imag[i];
+        for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+          {
+            int k = ind_real[j];
+            while ( ji < ptr_imag[i+1] && ind_imag[ji] < k)
+              {
+                sum(ind_imag[ji]) += abs(data_imag[ji]);
+                ji++;
+              }
+            
+            if ( ji < ptr_imag[i+1] && (ind_imag[ji] == k))              
+              {
+                sum(k) += ComplexAbs(complex<T>(data_real[j], 
+						data_imag[ji]));
+                ji++;
+              }
+            else
+              sum(k) += abs(data_real[j]);
+          }
+        
+        while (ji < ptr_imag[i+1])
+          {
+            sum(ind_imag[ji]) += abs(data_imag[ji]);
             ji++;
           }
       }
@@ -812,6 +1393,57 @@ namespace Seldon
     return res;
   }
 
+
+  //! Returns the infinity-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_i \sum_j |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  T NormInf(const Matrix<T, Prop, RowComplexSparse, Allocator>& A)
+  {
+    T res(0), sum;
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T* data_real = A.GetRealData();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T* data_imag = A.GetImagData();
+    for (int i = 0; i < A.GetM(); i++)
+      {
+        sum = T(0);
+        int ji = ptr_imag[i];
+        for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+          {
+            int k = ind_real[j];
+            while ( ji < ptr_imag[i+1] && ind_imag[ji] < k)
+              {
+                sum += abs(data_imag[ji]);
+                ji++;
+              }
+            
+            if ( ji < ptr_imag[i+1] && (ind_imag[ji] == k))              
+              {
+                sum += ComplexAbs(complex<T>(data_real[j], 
+					     data_imag[ji]));
+                ji++;
+              }
+            else
+              sum += abs(data_real[j]);
+          }
+        
+        while (ji < ptr_imag[i+1])
+          {
+            sum += abs(data_imag[ji]);
+            ji++;
+          }
+        
+        res = max(res, sum);
+      }
+    
+    return res;
+  }
+
   
   //! Returns the maximum (in absolute value) of a matrix.
   /*!
@@ -856,6 +1488,54 @@ namespace Seldon
   }
 
 
+  //! Returns the maximum (in absolute value) of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return The maximum (in absolute value) of all elements of \a A.
+  */
+  template <class T, class Prop, class Allocator>
+  T MaxAbs(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
+  {
+    T res(0);
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T* data_real = A.GetRealData();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T* data_imag = A.GetImagData();
+    for (int i = 0; i < A.GetM(); i++)
+      {
+        int ji = ptr_imag[i];
+        for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+          {
+            int k = ind_real[j];
+            while ( ji < ptr_imag[i+1] && ind_imag[ji] < k)
+              {
+                res = max(res, abs(data_imag[ji]));
+                ji++;
+              }
+            
+            if ( ji < ptr_imag[i+1] && (ind_imag[ji] == k))              
+              {
+                res = max(res, ComplexAbs(complex<T>(data_real[j], 
+						     data_imag[ji])));
+                ji++;
+              }
+            else
+              res = max(res, abs(data_real[j]));
+          }
+        
+        while (ji < ptr_imag[i+1])
+          {
+            res = max(res, abs(data_imag[ji]));
+            ji++;
+          }
+      }
+    
+    return res;
+  }
+
+
   //! Returns the 1-norm of a matrix.
   /*!
     \param[in] A matrix.
@@ -876,17 +1556,18 @@ namespace Seldon
             int k = A.IndexReal(i, j);
             while ( ji < size_imag && A.IndexImag(i, ji) < k)
               {
-                sum(A.IndexImag(i, ji)) += abs(A.ValueImag(i, ji));
+                val = abs(A.ValueImag(i, ji));
+                sum(A.IndexImag(i, ji)) += val;
                 if (A.IndexImag(i, ji) != i)
-                  sum(i) += abs(A.ValueImag(i, ji));
+                  sum(i) += val;
                 
                 ji++;
               }
             
             if ( ji < size_imag && (A.IndexImag(i, ji) == k))              
               {
-                T val = ComplexAbs(complex<T>(A.ValueReal(i, j), 
-					      A.ValueImag(i, ji)));
+                val = ComplexAbs(complex<T>(A.ValueReal(i, j), 
+                                            A.ValueImag(i, ji)));
                 sum(k) += val;
                 if (k != i)
                   sum(i) += val;
@@ -917,6 +1598,73 @@ namespace Seldon
   }
 
 
+  //! Returns the 1-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_j \sum_i |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  T Norm1(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
+  {
+    Vector<T> sum(A.GetN());
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T* data_real = A.GetRealData();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T* data_imag = A.GetImagData();
+    sum.Fill(T(0));
+    T val;
+    for (int i = 0; i < A.GetM(); i++)
+      {
+        int ji = ptr_imag[i];
+        for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+          {
+            int k = ind_real[j];
+            while ( ji < ptr_imag[i+1] && ind_imag[ji] < k)
+              {
+                val = abs(data_imag[ji]);
+                sum(ind_imag[ji]) += val;
+                if (ind_imag[ji] != i)
+                  sum(i) += val;
+                
+                ji++;
+              }
+            
+            if ( ji < ptr_imag[i+1] && (ind_imag[ji] == k))              
+              {
+                val = ComplexAbs(complex<T>(data_real[j], 
+                                            data_imag[ji]));
+                sum(k) += val;
+                if (k != i)
+                  sum(i) += val;
+                
+                ji++;
+              }
+            else
+              {
+                val = abs(data_real[j]);
+                sum(k) += val;
+                if (k != i)
+                  sum(i) += val;
+              }
+          }
+        
+        while (ji < ptr_imag[i+1])
+          {
+            val = abs(data_imag[ji]);
+            sum(ind_imag[ji]) += val;
+            if (ind_imag[ji] != i)
+              sum(i) += val;
+            
+            ji++;
+          }
+      }
+    
+    return sum.GetNormInf();
+  }
+
+
   //! Returns the infinity-norm of a matrix.
   /*!
     \param[in] A matrix.
@@ -927,11 +1675,23 @@ namespace Seldon
   {
     return Norm1(A);
   }
+
+
+  //! Returns the infinity-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_i \sum_j |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  T NormInf(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
+  {
+    return Norm1(A);
+  }
   
   
   //! A is replaced by its conjugate
-  template<class T, class Allocator>
-  void Conjugate(Matrix<T, General, ArrayRowComplexSparse, Allocator>& A)
+  template<class T, class Prop, class Allocator>
+  void Conjugate(Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A)
   {
     for (int i = 0; i < A.GetM(); i++)
       for (int j = 0; j < A.GetImagRowSize(i); j++)
@@ -940,19 +1700,41 @@ namespace Seldon
 
 
   //! A is replaced by its conjugate
-  template<class T, class Allocator>
-  void Conjugate(Matrix<T, Symmetric, ArrayRowSymComplexSparse, Allocator>& A)
+  template<class T, class Prop, class Allocator>
+  void Conjugate(Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A)
   {
     for (int i = 0; i < A.GetM(); i++)
       for (int j = 0; j < A.GetImagRowSize(i); j++)
         A.ValueImag(i, j) = -A.ValueImag(i, j); 
   }
 
+
+  //! A is replaced by its conjugate
+  template<class T, class Prop, class Allocator>
+  void Conjugate(Matrix<T, Prop, RowComplexSparse, Allocator>& A)
+  {
+    T* data = A.GetImagData();
+    for (int i = 0; i < A.GetImagDataSize(); i++)
+      data[i] = -data[i];
+  }
+
+
+  //! A is replaced by its conjugate
+  template<class T, class Prop, class Allocator>
+  void Conjugate(Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
+  {
+    T* data = A.GetImagData();
+    for (int i = 0; i < A.GetImagDataSize(); i++)
+      data[i] = -data[i];
+  }
+
   
   //! Matrix transposition.
   template<class T, class Allocator>
-  void Transpose(const Matrix<T, General, ArrayRowSymComplexSparse, Allocator>& A,
-                 Matrix<T, Symmetric, ArrayRowSymComplexSparse, Allocator>& B)
+  void Transpose(const Matrix<T, Symmetric,
+                 ArrayRowSymComplexSparse, Allocator>& A,
+                 Matrix<T, Symmetric,
+                 ArrayRowSymComplexSparse, Allocator>& B)
   {
     B = A;
   }
@@ -970,6 +1752,33 @@ namespace Seldon
   //! Matrix transposition.
   template<class T, class Allocator>
   void Transpose(Matrix<T, Symmetric, ArrayRowSymComplexSparse, Allocator>& A)
+  {
+  }
+
+
+  //! Matrix transposition.
+  template<class T, class Allocator>
+  void Transpose(const Matrix<T, Symmetric,
+                 RowSymComplexSparse, Allocator>& A,
+                 Matrix<T, Symmetric,
+                 RowSymComplexSparse, Allocator>& B)
+  {
+    B = A;
+  }
+
+  
+  //! Matrix transposition.
+  template<class T, class Allocator>
+  void Transpose(Matrix<T, General, RowComplexSparse, Allocator>& A)
+  {
+    Matrix<T, General, RowComplexSparse, Allocator> B(A);
+    Transpose(B, A);
+  }
+
+
+  //! Matrix transposition.
+  template<class T, class Allocator>
+  void Transpose(Matrix<T, Symmetric, RowSymComplexSparse, Allocator>& A)
   {
   }
   
