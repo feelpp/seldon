@@ -407,66 +407,6 @@ namespace Seldon
 	   const Matrix<T1, Prop1, ColMajor, Allocator1>& A,
 	   Matrix<T2, Prop2, RowSparse, Allocator2>& B);
 
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Storage2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Symmetric, Storage2, Allocator2>& B);
-  
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Storage2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Hermitian, Storage2, Allocator2>& B);
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, RowUpTriang, Allocator2>& B);
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, RowLoTriang, Allocator2>& B);
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, RowUpTriangPacked, Allocator2>& B);
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, RowLoTriangPacked, Allocator2>& B);
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, ColUpTriang, Allocator2>& B);
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, ColLoTriang, Allocator2>& B);
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, ColUpTriangPacked, Allocator2>& B);
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, ColLoTriangPacked, Allocator2>& B);
-  
   template<class T0, class T1, class Prop1, class Allocator1,
            class T2, class Prop2, class Storage, class Allocator2>
   void Add_csr(const T0& alpha,
@@ -485,17 +425,17 @@ namespace Seldon
            const Matrix<T1, Prop1, ColSparse, Allocator1>& A,
            Matrix<T2, Prop2, ColSparse, Allocator2>& B);
   
-  template<class T0, class T1, class Allocator1,
-           class T2, class Allocator2>
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2>
   void Add(const T0& alpha,
-           const Matrix<T1, Symmetric, RowSymSparse, Allocator1>& A,
-           Matrix<T2, Symmetric, RowSymSparse, Allocator2>& B);
+           const Matrix<T1, Prop1, RowSymSparse, Allocator1>& A,
+           Matrix<T2, Prop2, RowSymSparse, Allocator2>& B);
   
-  template<class T0, class T1, class Allocator1,
-           class T2, class Allocator2>
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2>
   void Add(const T0& alpha,
-           const Matrix<T1, Symmetric, ColSymSparse, Allocator1>& A,
-           Matrix<T2, Symmetric, ColSymSparse, Allocator2>& B);
+           const Matrix<T1, Prop1, ColSymSparse, Allocator1>& A,
+           Matrix<T2, Prop2, ColSymSparse, Allocator2>& B);
   
   
   // ADD //

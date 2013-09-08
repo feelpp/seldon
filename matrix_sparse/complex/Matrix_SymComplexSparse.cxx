@@ -34,6 +34,10 @@ namespace Seldon
   {
     return i;
   }
+  inline int ColSymComplexSparse::GetBeginLoop(int i)
+  {
+    return i;
+  }
 
 
   inline int RowSymComplexSparse::GetFirst(int i, int j)
@@ -44,7 +48,11 @@ namespace Seldon
   {
     return j;
   }
-
+  inline int RowSymComplexSparse::GetBeginLoop(int i)
+  {
+    return i;
+  }
+  
   
   /****************
    * CONSTRUCTORS *

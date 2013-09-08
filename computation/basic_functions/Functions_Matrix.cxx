@@ -671,22 +671,25 @@ namespace Seldon
 
     if (beta_ != T4(0))
       for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-	for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
-	  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+	for (int j = Storage4::GetBeginLoop(i);
+             j < Storage4::GetEndLoop(mc, nc, i); j++)
+	  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 	    *= beta_;
     else
       for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-	for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
-	  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j)) = T4(0);
+	for (int j = Storage4::GetBeginLoop(i);
+             j < Storage4::GetEndLoop(mc, nc, i); j++)
+	  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j)) = T4(0);
 
     for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-      for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
+      for (int j = Storage4::GetBeginLoop(i);
+           j < Storage4::GetEndLoop(mc, nc, i); j++)
 	{
 	  temp = T4(0);
 	  for (int k = 0; k < na; k++)
 	    temp += A(Storage4::GetFirst(i, j), k)
 	      * B(k, Storage4::GetSecond(i, j));
-	  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+	  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 	    += alpha_ * temp;
 	}
   }
@@ -756,14 +759,15 @@ namespace Seldon
 	  {
 	    // C = C + alpha A^T B
 	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-	      for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
 		  temp = T4(0);
 		  for (int k = 0; k < ma; k++)
 		    temp += A(k, Storage4::GetFirst(i, j))
 		      * B(k, Storage4::GetSecond(i, j));
-		  
-		  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+                  
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 		    += alpha_ * temp;
 		}	    
 	  }
@@ -771,14 +775,15 @@ namespace Seldon
 	  {
 	    // C = C + alpha A^H B
 	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-	      for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
 		  temp = T4(0);
 		  for (int k = 0; k < ma; k++)
 		    temp += conj(A(k, Storage4::GetFirst(i, j)))
 		      * B(k, Storage4::GetSecond(i, j));
 		  
-		  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 		    += alpha_ * temp;
 		}	    
 	  }
@@ -789,14 +794,15 @@ namespace Seldon
 	  {
 	    // C = C + alpha A B^H
 	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-	      for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
 		  temp = T4(0);
 		  for (int k = 0; k < na; k++)
 		    temp += A(Storage4::GetFirst(i, j), k)
 		      * conj(B(Storage4::GetSecond(i, j), k));
 		  
-		  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 		    += alpha_ * temp;
 		}
 	  }
@@ -804,14 +810,15 @@ namespace Seldon
 	  {
 	    // C = C + alpha A^T B^H
 	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-	      for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
 		  temp = T4(0);
 		  for (int k = 0; k < ma; k++)
 		    temp += A(k, Storage4::GetFirst(i, j))
 		      * conj(B(Storage4::GetSecond(i, j), k));
 		  
-		  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 		    += alpha_ * temp;
 		}	    
 	  }
@@ -819,14 +826,15 @@ namespace Seldon
 	  {
 	    // C = C + alpha A^H B^H
 	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-	      for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
 		  temp = T4(0);
 		  for (int k = 0; k < ma; k++)
 		    temp += conj(A(k, Storage4::GetFirst(i, j)))
 		      * conj(B(Storage4::GetSecond(i, j), k));
 		  
-		  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 		    += alpha_ * temp;
 		}	    
 	  }
@@ -837,14 +845,15 @@ namespace Seldon
 	  {
 	    // C = C + alpha A B^T
 	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-	      for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
 		  temp = T4(0);
 		  for (int k = 0; k < na; k++)
 		    temp += A(Storage4::GetFirst(i, j), k)
 		      * B(Storage4::GetSecond(i, j), k);
 		  
-		  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 		    += alpha_ * temp;
 		}
 	  }
@@ -852,14 +861,15 @@ namespace Seldon
 	  {
 	    // C = C + alpha A^T B^T
 	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-	      for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
 		  temp = T4(0);
 		  for (int k = 0; k < ma; k++)
 		    temp += A(k, Storage4::GetFirst(i, j))
 		      * B(Storage4::GetSecond(i, j), k);
 		  
-		  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 		    += alpha_ * temp;
 		}	    
 	  }
@@ -867,14 +877,15 @@ namespace Seldon
 	  {
 	    // C = C + alpha A^H B^T
 	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-	      for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
 		  temp = T4(0);
 		  for (int k = 0; k < ma; k++)
 		    temp += conj(A(k, Storage4::GetFirst(i, j)))
 		      * B(Storage4::GetSecond(i, j), k);
 		  
-		  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 		    += alpha_ * temp;
 		}	    
 	  }
@@ -1707,9 +1718,12 @@ namespace Seldon
                           " matrices only and not to sparse matrices");
 
     int i, j;
-    for (i = 0; i < A.GetM(); i++)
-      for (j = 0; j < A.GetN(); j++)
-	B.Get(i, j) += alpha * A(i, j);
+    int mb = B.GetM(), nb = B.GetN();
+    for (i = 0; i < Storage2::GetFirst(mb, nb); i++)
+      for (j = Storage2::GetBeginLoop(i);
+           j < Storage2::GetEndLoop(mb, nb, i); j++)
+	B.Get(Storage2::GetFirst(i, j), Storage2::GetSecond(i, j))
+          += alpha * A(Storage2::GetFirst(i, j), Storage2::GetSecond(i, j));
   }
 
 
@@ -1904,136 +1918,6 @@ namespace Seldon
   }
 
 
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Storage2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Symmetric, Storage2, Allocator2>& B)
-  {
-    if ( (Storage1::Sparse) || (Storage2::Sparse) )
-      throw WrongArgument("Add", "This function is intended to dense"
-                          " matrices only and not to sparse matrices");
-
-    int i, j;
-    for (i = 0; i < A.GetM(); i++)
-      for (j = i; j < A.GetN(); j++)
-	B.Get(i, j) += alpha * A(i, j);
-  }
-
-  
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Storage2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Hermitian, Storage2, Allocator2>& B)
-  {
-    if ( (Storage1::Sparse) || (Storage2::Sparse) )
-      throw WrongArgument("Add", "This function is intended to dense"
-                          " matrices only and not to sparse matrices");
-
-    int i, j;
-    for (i = 0; i < A.GetM(); i++)
-      for (j = i; j < A.GetN(); j++)
-	B.Get(i, j) += alpha * A(i, j);
-  }
-
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, RowUpTriang, Allocator2>& B)
-  {
-    for (int i = 0; i < A.GetM(); i++)
-      for (int j = i; j < A.GetN(); j++)
-	B.Val(i, j) += alpha * A(i, j);
-  }
-
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, RowLoTriang, Allocator2>& B)
-  {
-    for (int i = 0; i < A.GetM(); i++)
-      for (int j = 0; j <= i; j++)
-	B.Val(i, j) += alpha * A(i, j);
-  }
-
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, RowUpTriangPacked, Allocator2>& B)
-  {
-    for (int i = 0; i < A.GetM(); i++)
-      for (int j = i; j < A.GetN(); j++)
-	B.Val(i, j) += alpha * A(i, j);
-  }
-
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, RowLoTriangPacked, Allocator2>& B)
-  {
-    for (int i = 0; i < A.GetM(); i++)
-      for (int j = 0; j <= i; j++)
-	B.Val(i, j) += alpha * A(i, j);
-  }
-
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, ColUpTriang, Allocator2>& B)
-  {
-    for (int i = 0; i < A.GetM(); i++)
-      for (int j = i; j < A.GetN(); j++)
-	B.Val(i, j) += alpha * A(i, j);
-  }
-
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, ColLoTriang, Allocator2>& B)
-  {
-    for (int i = 0; i < A.GetM(); i++)
-      for (int j = 0; j <= i; j++)
-	B.Val(i, j) += alpha * A(i, j);
-  }
-
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, ColUpTriangPacked, Allocator2>& B)
-  {
-    for (int i = 0; i < A.GetM(); i++)
-      for (int j = i; j < A.GetN(); j++)
-	B.Val(i, j) += alpha * A(i, j);
-  }
-
-
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
-	   Matrix<T2, Prop2, ColLoTriangPacked, Allocator2>& B)
-  {
-    for (int i = 0; i < A.GetM(); i++)
-      for (int j = 0; j <= i; j++)
-	B.Val(i, j) += alpha * A(i, j);
-  }
-
-  
   template<class T0, class T1, class Prop1, class Allocator1,
            class T2, class Prop2, class Storage, class Allocator2>
   void Add_csr(const T0& alpha,
@@ -2230,11 +2114,11 @@ namespace Seldon
     \param[in,out] B matrix, result of the addition of \a B (on entry) and \a
     A times \a alpha.
   */
-  template<class T0, class T1, class Allocator1,
-           class T2, class Allocator2>
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2>
   void Add(const T0& alpha,
-           const Matrix<T1, Symmetric, RowSymSparse, Allocator1>& A,
-           Matrix<T2, Symmetric, RowSymSparse, Allocator2>& B)
+           const Matrix<T1, Prop1, RowSymSparse, Allocator1>& A,
+           Matrix<T2, Prop2, RowSymSparse, Allocator2>& B)
   {
     Add_csr(alpha, A, B, B.GetM());
   }
@@ -2248,11 +2132,11 @@ namespace Seldon
     \param[in,out] B matrix, result of the addition of \a B (on entry) and \a
     A times \a alpha.
   */
-  template<class T0, class T1, class Allocator1,
-           class T2, class Allocator2>
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2>
   void Add(const T0& alpha,
-           const Matrix<T1, Symmetric, ColSymSparse, Allocator1>& A,
-           Matrix<T2, Symmetric, ColSymSparse, Allocator2>& B)
+           const Matrix<T1, Prop1, ColSymSparse, Allocator1>& A,
+           Matrix<T2, Prop2, ColSymSparse, Allocator2>& B)
   {
     Add_csr(alpha, A, B, B.GetN());
   }

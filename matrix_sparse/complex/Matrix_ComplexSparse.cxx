@@ -34,6 +34,10 @@ namespace Seldon
   {
     return i;
   }
+  inline int ColComplexSparse::GetBeginLoop(int i)
+  {
+    return 0;
+  }
 
 
   inline int RowComplexSparse::GetFirst(int i, int j)
@@ -43,6 +47,10 @@ namespace Seldon
   inline int RowComplexSparse::GetSecond(int i, int j)
   {
     return j;
+  }
+  inline int RowComplexSparse::GetBeginLoop(int i)
+  {
+    return 0;
   }
 
   
