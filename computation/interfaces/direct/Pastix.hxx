@@ -41,9 +41,9 @@ namespace Seldon
     //! pastix structure
     pastix_data_t* pastix_data;
     //! options (integers)
-    pastix_int_t iparm[64];
+    pastix_int_t iparm[IPARM_SIZE];
     //! options (floats)
-    double dparm[64];
+    double dparm[DPARM_SIZE];
     //! number of columns
     pastix_int_t n;
     //! permutation arrays
@@ -143,9 +143,9 @@ namespace Seldon
   void SolveLU(MatrixPastix<T>& mat_lu,
                Matrix<T, Prop, ColMajor, Allocator>& x);
 
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Prop, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
-	       MatrixPastix<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x);
+	       MatrixPastix<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x);
 
   template<class Allocator>
   void SolveLU(MatrixPastix<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);

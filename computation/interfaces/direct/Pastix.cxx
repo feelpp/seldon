@@ -29,12 +29,12 @@ namespace Seldon
   {
     pastix_data = NULL;
     n = 0;
-    for (int i = 0; i < 64; i++)
-      {
-	iparm[i] = 0;
-	dparm[i] = 0;
-      }
-
+    for (int i = 0; i < IPARM_SIZE; i++)
+      iparm[i] = 0;
+    
+    for (int i = 0; i < DPARM_SIZE; i++)
+      dparm[i] = 0;
+    
     // Factorization of a matrix on a single processor.
     distributed = false;
 
@@ -306,7 +306,7 @@ namespace Seldon
     CallPastix(MPI_COMM_SELF, ptr_, ind_, values_, NULL, nrhs);
 
     // factorization only
-    IVect proc_num(iparm[IPARM_THREAD_NBR]);
+    Vector<pastix_int_t> proc_num(iparm[IPARM_THREAD_NBR]);
     proc_num.Fill(MPI::COMM_WORLD.Get_rank());
     pastix_bindThreads(pastix_data, iparm[IPARM_THREAD_NBR], proc_num.GetData());
 
@@ -387,7 +387,7 @@ namespace Seldon
     
     CallPastix(MPI_COMM_SELF, ptr_, ind_, values_, NULL, nrhs);
 
-    IVect proc_num(iparm[IPARM_THREAD_NBR]);
+    Vector<pastix_int_t> proc_num(iparm[IPARM_THREAD_NBR]);
     proc_num.Fill(MPI::COMM_WORLD.Get_rank());
     pastix_bindThreads(pastix_data, iparm[IPARM_THREAD_NBR], proc_num.GetData());
     
@@ -653,9 +653,9 @@ namespace Seldon
 
   //! LU resolution with a matrix whose type is the same as UmfPack object
   //! Solves transpose system A^T x = b or A x = b depending on TransA
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Prop, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
-	       MatrixPastix<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x)
+	       MatrixPastix<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
   }
