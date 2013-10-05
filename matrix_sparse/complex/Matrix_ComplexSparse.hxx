@@ -137,6 +137,7 @@ namespace Seldon
     // Basic methods.
     int GetNonZeros() const;
     int GetDataSize() const;
+    int64_t GetMemorySize() const;
     int* GetRealPtr() const;
     int* GetImagPtr() const;
     int* GetRealInd() const;
@@ -240,7 +241,6 @@ namespace Seldon
 	   Vector<int, Storage1, Allocator1>& imag_ptr,
 	   Vector<int, Storage2, Allocator2>& imag_ind);
   };
-
 
 } // namespace Seldon.
 

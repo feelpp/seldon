@@ -30,6 +30,22 @@ namespace Seldon
    *************************/
   
   
+  //! returns memory used by the object in bytes
+  template<class T, class Allocator>
+  int64_t SparseSeldonSolver<T, Allocator>::GetMemorySize() const
+  {
+    int64_t taille = mat_sym.GetMemorySize() + mat_unsym.GetMemorySize();
+    taille += sizeof(int)*(permutation_row.GetM() + permutation_col.GetM());
+    return taille;
+  }
+  
+  
+  //! performs LU factorisation of matrix mat
+  /*!
+    \param[in] perm permutation array used to renumber the matrix
+    \param[inout] mat matrix to factorize
+    \param[in] keep_matrix if true the given matrix mat is kept
+   */
   template<class T, class Allocator>
   template<class T0, class Storage0, class Allocator0>
   void SparseSeldonSolver<T, Allocator>::
@@ -93,6 +109,12 @@ namespace Seldon
   }
 
 
+  //! performs LU factorisation of matrix mat
+  /*!
+    \param[in] perm permutation array used to renumber the matrix
+    \param[inout] mat matrix to factorize
+    \param[in] keep_matrix if true the given matrix mat is kept
+   */
   template<class T, class Allocator>
   template<class T0, class Storage0, class Allocator0>
   void SparseSeldonSolver<T, Allocator>::

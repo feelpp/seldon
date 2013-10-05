@@ -193,7 +193,17 @@ namespace Seldon
     iparm[IPARM_FREE_CSCPASTIX] = API_CSC_FREE;
   }
 
-
+  
+  //! Returns the size of memory used by the factorisation in bytes
+  template<class T>
+  int64_t MatrixPastix<T>::GetMemorySize() const
+  {
+    int64_t taille = sizeof(pastix_int_t)*(perm.GetM()+invp.GetM()+col_num.GetM());
+    taille += sizeof(T)*iparm[IPARM_NNZEROS];
+    return taille;
+  }
+  
+  
   //! Returning ordering found by Scotch.
   template<class T>
   template<class T0, class Prop, class Storage, class Allocator, class Tint>
@@ -505,7 +515,7 @@ namespace Seldon
         iparm[IPARM_SYM] = API_SYM_NO;
         iparm[IPARM_FACTORIZATION] = API_FACT_LU;
       }
-
+    
     iparm[IPARM_GRAPHDIST] = API_YES;
     //iparm[IPARM_FREE_CSCUSER] = API_CSC_PRESERVE;
     
@@ -531,8 +541,17 @@ namespace Seldon
     if (adjust_threshold_pivot)
       dparm[DPARM_EPSILON_MAGN_CTRL] = threshold_pivot;
 
-    // factorization only
     iparm[IPARM_START_TASK] = API_TASK_ORDERING;
+    iparm[IPARM_END_TASK] = API_TASK_ANALYSE;
+
+    CallPastix(comm_facto, ptr_, ind_, values_, NULL, nrhs);
+
+    Vector<pastix_int_t> proc_num(iparm[IPARM_THREAD_NBR]);
+    proc_num.Fill(comm_facto.Get_rank());
+    pastix_bindThreads(pastix_data, iparm[IPARM_THREAD_NBR], proc_num.GetData());
+
+    // factorization only
+    iparm[IPARM_START_TASK] = API_TASK_NUMFACT;
     iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
     
     //Vector<T> rhs(n); rhs.Zero();

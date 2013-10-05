@@ -47,6 +47,7 @@ namespace Seldon
     void ShowFullHistory();
 
     int GetInfoFactorization() const;
+    int64_t GetMemorySize() const;
 
     void SelectOrdering(int type);
     void SetPermutation(const IVect&);
@@ -143,9 +144,9 @@ namespace Seldon
   void SolveLU(MatrixUmfPack<T>& mat_lu,
                Matrix<T, Prop, ColMajor, Allocator>& x);
 
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Prop, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
-	       MatrixUmfPack<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x);
+	       MatrixUmfPack<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x);
   
   template<class Allocator>
   void SolveLU(MatrixUmfPack<double>& mat_lu,

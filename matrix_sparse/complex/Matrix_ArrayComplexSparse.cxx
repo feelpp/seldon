@@ -294,6 +294,23 @@ namespace Seldon
   }
 
 
+  //! returns size of matrix in bytes
+  template<class T, class Prop, class Storage, class Allocator>
+  int64_t Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::GetMemorySize() const
+  {
+    int coef = sizeof(T) + sizeof(int); // for each non-zero entry
+    // 1 int (=4bytes) and 2 int* (=16 bytes) per row
+    int64_t taille = 20*(val_real_.GetM() + val_imag_.GetM());
+    for (int i = 0; i < val_real_.GetM(); i++)
+      taille += coef*int64_t(val_real_(i).GetM());
+
+    for (int i = 0; i < val_imag_.GetM(); i++)
+      taille += coef*int64_t(val_imag_(i).GetM());
+    
+    return taille;
+  }
+
+
   //! Returns column indices of non-zero entries in row (real part).
   /*!
     \param[in] i row number.

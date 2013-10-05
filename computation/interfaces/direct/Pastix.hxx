@@ -81,7 +81,8 @@ namespace Seldon
     void SetPivotThreshold(double eps);
     void RefineSolution();
     void DoNotRefineSolution();
-
+    int64_t GetMemorySize() const;
+    
     template<class T0, class Prop, class Storage, class Allocator, class Tint>
     void FindOrdering(Matrix<T0, Prop, Storage, Allocator> & mat,
 		      Vector<Tint>& numbers, bool keep_matrix = false);

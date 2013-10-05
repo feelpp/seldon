@@ -101,6 +101,7 @@ namespace Seldon
     // Basic methods.
     int GetNonZeros() const;
     int GetDataSize() const;
+    int64_t GetMemorySize() const;
     int* GetPtr() const;
     int* GetInd() const;
     int GetPtrSize() const;
@@ -217,7 +218,7 @@ namespace Seldon
   void WriteCoordinateMatrix(const Matrix<T0, Prop0, Storage0, Alloc0>& A,
                              ostream& FileStream, T& zero,
                              int index = 1, bool cplx = false);
-  
+
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_SPARSE_HXX

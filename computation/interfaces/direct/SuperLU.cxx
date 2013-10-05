@@ -292,8 +292,24 @@ namespace Seldon
     perm_c = permut;
     perm_r = permut;
   }
-
-
+  
+  
+  //! Returns the size of memory used by the current object
+  int64_t MatrixSuperLU<double>::GetMemorySize() const
+  {
+    int64_t taille = sizeof(int)*(perm_r.GetM()+perm_c.GetM());
+    if (this->n > 0)
+      {
+        mem_usage_t mem_usage;
+        dQuerySpace(const_cast<SuperMatrix*>(&L),
+                    const_cast<SuperMatrix*>(&U), &mem_usage);
+        taille += mem_usage.total_needed;
+      }
+    
+    return taille;
+  }
+  
+  
   //! factorization of matrix in double precision using SuperLU
   template<class T0, class Prop, class Storage, class Allocator>
   void MatrixSuperLU<double>::
@@ -448,7 +464,23 @@ namespace Seldon
     Destroy_SuperMatrix_Store(&B);
   }
 
+
+  //! Returns the size of memory used by the current object
+  int64_t MatrixSuperLU<complex<double> >::GetMemorySize() const
+  {
+    int64_t taille = sizeof(int)*(perm_r.GetM()+perm_c.GetM());
+    if (this->n > 0)
+      {
+        mem_usage_t mem_usage;
+        zQuerySpace(const_cast<SuperMatrix*>(&L),
+                    const_cast<SuperMatrix*>(&U), &mem_usage);
+        taille += mem_usage.total_needed;
+      }
+    
+    return taille;
+  }
   
+    
   //! Returns the LU factorization.
   /*!
     \param[out] Lmat matrix L in the LU factorization.
@@ -771,9 +803,9 @@ namespace Seldon
 
   //! LU resolution with a matrix whose type is the same as for SuperLU object
   //! Solves transpose system A^T x = b or A x = b depending on TransA
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Prop, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
-	       MatrixSuperLU<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x)
+	       MatrixSuperLU<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
   }

@@ -98,7 +98,8 @@ namespace Seldon
     void SetCoefficientEstimationNeededMemory(double);
     void SetMaximumCoefficientEstimationNeededMemory(double);
     void SetIncreaseCoefficientEstimationNeededMemory(double);
-    
+
+    int64_t GetMemorySize() const;
     int GetInfoFactorization() const;
 
     template<class T0, class Prop, class Storage, class Allocator>

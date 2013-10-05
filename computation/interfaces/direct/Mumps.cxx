@@ -383,6 +383,27 @@ namespace Seldon
     IterateFacto();
   }
 
+  
+  //! returns memory used by the factorisation in bytes
+  template<class T>
+  int64_t MatrixMumps<T>::GetMemorySize() const
+  {
+    int64_t taille = sizeof(int)*(num_row_glob.GetM()
+                                  + num_col_glob.GetM() + perm.GetM());
+    
+    int64_t nnz = struct_mumps.info[8];
+    if (struct_mumps.info[8] < 0)
+      nnz = abs(struct_mumps.info[8])*int64_t(1000000);
+
+    taille += sizeof(T)*nnz ;
+    nnz = struct_mumps.info[9];
+    if (struct_mumps.info[9] < 0)
+      nnz = abs(struct_mumps.info[9])*int64_t(1000000);
+    
+    taille += sizeof(int)*nnz;
+    return taille;
+  }
+  
 
   //! returns information about factorization performed
   template<class T>

@@ -941,6 +941,17 @@ namespace Seldon
   }
 
 
+  //! returns size of matrix in bytes
+  template<class T, class Prop, class Storage, class Allocator>
+  int64_t Matrix_SymSparse<T, Prop, Storage, Allocator>::GetMemorySize() const
+  {
+    int64_t taille = this->GetPtrSize()*sizeof(int);
+    int coef = sizeof(T) + sizeof(int); // for each non-zero entry
+    taille += coef*int64_t(this->nz_);
+    return taille;
+  }
+  
+
   //! Returns (row or column) start indices.
   /*!
     Returns the array ('ptr_') of start indices.
@@ -1782,8 +1793,7 @@ namespace Seldon
     Matrix_SymSparse<T, Prop, RowSymSparse, Allocator>(i, j, values, ptr, ind)
   {
   }
-
-
+    
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_SYMSPARSE_CXX

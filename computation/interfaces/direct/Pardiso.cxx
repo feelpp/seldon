@@ -111,6 +111,19 @@ namespace Seldon
   {
     return info_facto;
   }
+
+  
+  //! returns the size of memory used by numerical factorization in bytes
+  template<class T>
+  int64_t MatrixPardiso<T>::GetMemorySize() const
+  {
+    int64_t taille = sizeof(pardiso_int_t)*ptrA.GetM();
+    taille += sizeof(pardiso_int_t)*indA.GetM();
+    taille += sizeof(T)*valA.GetM();
+    taille += sizeof(pardiso_int_t)*perm.GetM();
+    taille += 1024*int64_t(iparm[15]+iparm[16]);
+    return taille;
+  }
   
   
   //! performs analysis and factorization of matrix mat

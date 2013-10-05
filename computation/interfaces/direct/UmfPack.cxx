@@ -73,7 +73,23 @@ namespace Seldon
     return status_facto;
   }
 
+  
+  template<class T>
+  int64_t MatrixUmfPack_Base<T>::GetMemorySize() const
+  {
+    if (this->n > 0)
+      {
+        int64_t size_mem = (this->Info(UMFPACK_SYMBOLIC_SIZE)
+                            + this->Info(UMFPACK_VARIABLE_PEAK))
+          *int64_t(this->Info(UMFPACK_SIZE_OF_UNIT));
+        
+        return size_mem;
+      }
+    
+    return 0;
+  }
 
+  
   template<class T>
   void MatrixUmfPack_Base<T>::SelectOrdering(int type)
   {
@@ -205,11 +221,11 @@ namespace Seldon
     data_ = Acsc.GetData();
     Acsc.Nullify();
 
-    // factorization with UmfPack
+    // symbolic factorization
     umfpack_di_symbolic(this->n, this->n, ptr_, ind_, data_, &this->Symbolic,
                         this->Control.GetData(), this->Info.GetData());
 
-    // we display informations about the performed operation
+    // numerical factorization
     status_facto =
       umfpack_di_numeric(ptr_, ind_, data_,
                          this->Symbolic, &this->Numeric,
@@ -540,9 +556,9 @@ namespace Seldon
 
   //! LU resolution with a matrix whose type is the same as for UmfPack object
   //! Solves transpose system A^T x = b or A x = b depending on TransA
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Prop, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
-	       MatrixUmfPack<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x)
+	       MatrixUmfPack<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
   {
     Vector<T> v;
     for (int i = 0; i < x.GetN(); i++)

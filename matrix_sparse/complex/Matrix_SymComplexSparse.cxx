@@ -1792,6 +1792,17 @@ namespace Seldon
   }
 
 
+  //! returns size of A in bytes used to store the matrix
+  template<class T, class Prop, class Storage, class Allocator>
+  int64_t Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::GetMemorySize() const
+  {
+    int64_t taille = 2*this->GetRealPtrSize()*sizeof(int);
+    int coef = sizeof(T) + sizeof(int); // for each non-zero entry
+    taille += coef*int64_t(this->real_nz_ + this->imag_nz_);
+    return taille;
+  }
+  
+  
   //! Returns (row or column) start indices for the real part.
   /*!
     Returns the array ('ptr_') of start indices for the real part.
@@ -3102,8 +3113,7 @@ namespace Seldon
 				    imag_ind)
   {
   }
-
-
+  
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_SYMCOMPLEXSPARSE_CXX

@@ -85,7 +85,9 @@ namespace Seldon
   {
   public:
     MatrixSuperLU() : MatrixSuperLU_Base<double>() {}
-
+    
+    int64_t GetMemorySize() const;
+    
     template<class Prop, class Allocator>
     void GetLU(Matrix<double, Prop, ColSparse, Allocator>& Lmat,
                Matrix<double, Prop, ColSparse, Allocator>& Umat,
@@ -124,6 +126,8 @@ namespace Seldon
   public:
     MatrixSuperLU() : MatrixSuperLU_Base<complex<double> >() {}
 
+    int64_t GetMemorySize() const;
+    
     template<class Prop, class Allocator>
     void GetLU(Matrix<complex<double>, Prop, ColSparse, Allocator>& Lmat,
                Matrix<complex<double>, Prop, ColSparse, Allocator>& Umat,
@@ -169,9 +173,9 @@ namespace Seldon
   void SolveLU(MatrixSuperLU<T>& mat_lu,
                Matrix<T, Prop, ColMajor, Allocator>& x);
 
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Prop, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
-	       MatrixSuperLU<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x);
+	       MatrixSuperLU<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x);
 
   template<class Allocator>
   void SolveLU(MatrixSuperLU<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);

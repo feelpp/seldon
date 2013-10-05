@@ -967,6 +967,7 @@ namespace Seldon
     else if (type_solver == PASTIX)
       {
 #ifdef SELDON_WITH_PASTIX
+        mat_pastix.SetNumberOfThreadPerNode(nb_threads_per_node);
         mat_pastix.FactorizeDistributedMatrix(comm_facto, Ptr, Row, Val, glob_num, sym, keep_matrix);
 #else
         throw Undefined("SparseDirectSolver::FactorizeDistributed(MPI::Comm&,"

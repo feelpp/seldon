@@ -56,6 +56,8 @@ namespace Seldon
     void HideMessages();
     void ShowMessages();
     
+    int64_t GetMemorySize() const;
+    
     double GetPivotThreshold() const;
     void SetPivotThreshold(const double&);
     

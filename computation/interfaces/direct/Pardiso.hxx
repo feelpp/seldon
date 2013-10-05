@@ -77,6 +77,7 @@ namespace Seldon
     void ShowMessages();
     
     int GetInfoFactorization() const;
+    int64_t GetMemorySize() const;
     
     template<class T0, class Prop, class Storage, class Allocator>
     void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator>& mat,

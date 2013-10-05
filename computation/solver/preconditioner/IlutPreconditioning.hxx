@@ -70,6 +70,7 @@ namespace Seldon
     int GetAdditionalFillNumber() const;
     int GetPrintLevel() const;
     int GetPivotBlockInteger() const;
+    int64_t GetMemorySize() const;
 
     void SetFactorisationType(int);
     void SetFillLevel(int);

@@ -83,7 +83,16 @@ namespace Seldon
     return mbloc;
   }
 
-
+  
+  template<class real, class cplx, class Allocator>
+  int64_t IlutPreconditioning<real, cplx, Allocator>::GetMemorySize() const
+  {
+    int64_t taille = sizeof(int)*(permutation_row.GetM() + permutation_col.GetM());
+    taille += mat_sym.GetMemorySize() + mat_unsym.GetMemorySize();
+    return taille;
+  }
+  
+  
   template<class real, class cplx, class Allocator>
   void IlutPreconditioning<real, cplx, Allocator>
   ::SetFactorisationType(int type)

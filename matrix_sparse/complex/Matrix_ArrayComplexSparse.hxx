@@ -101,6 +101,7 @@ namespace Seldon
     int GetRealDataSize() const;
     int GetImagDataSize() const;
     int GetDataSize() const;
+    int64_t GetMemorySize() const;
     int* GetRealInd(int i) const;
     int* GetImagInd(int i) const;
     T* GetRealData(int i) const;
@@ -385,8 +386,7 @@ namespace Seldon
 			      const Vector<complex<T>, VectFull,
 			      Alloc1>& val);
   };
-
-
+  
 } // namespace Seldon
 
 #define SELDON_FILE_MATRIX_ARRAY_COMPLEX_SPARSE_HXX
