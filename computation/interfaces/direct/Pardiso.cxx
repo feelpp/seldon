@@ -56,10 +56,17 @@ namespace Seldon
         double ddum;
         pardiso_int_t nrhs = 0;
         pardiso_int_t phase = 0, error;
+        // MKL version :
         call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
                      valA.GetData(), ptrA.GetData(), indA.GetData(),
                      perm.GetData(), &nrhs, iparm, &msglvl,
                      &ddum, &ddum, &error);
+        
+        // recent version :
+        /* call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
+                     valA.GetData(), ptrA.GetData(), indA.GetData(),
+                     perm.GetData(), &nrhs, iparm, &msglvl,
+                     &ddum, &ddum, &error, dparm); */
         
         size_matrix = 0;
         
@@ -161,18 +168,10 @@ namespace Seldon
     // initialization of solver
     
     // recent version of pardiso :
-    // int solver = 0, error = 0;
-    // iparm[0] = 0; iparm[2] = 1;
-    // pardisoinit(pt, &mtype, &solver, iparm, dparm, &error);
-    
-    // MKL version of pardiso :
-    pardiso_int_t error = 0; int mtype_ = mtype;
-    int iparm_[64]; iparm_[0] = 0; iparm_[2] = 1;
-    pardisoinit(pt, &mtype_, iparm_);
-    
-    for (int i = 0; i < 64; i++)
-      iparm[i] = iparm_[i];
-    
+    /* pardiso_int_t solver = 0, error = 0;
+    iparm[0] = 0; iparm[2] = 1;
+    pardisoinit(pt, &mtype, &solver, iparm, dparm, &error);
+
     if (error != 0)
       {
         cout << "Error in the license file of Pardiso" << endl;
@@ -184,7 +183,15 @@ namespace Seldon
           cout << "Wrong username or hostname" << endl;
         
         abort();
-      }
+        } */
+    
+    // MKL version of pardiso :
+    pardiso_int_t error = 0; int mtype_ = mtype;
+    int iparm_[64]; iparm_[0] = 0; iparm_[2] = 1;
+    pardisoinit(pt, &mtype_, iparm_);
+    
+    for (int i = 0; i < 64; i++)
+      iparm[i] = iparm_[i];
     
     // conversion of sparse matrix into CSR form
     Prop prop;
@@ -206,10 +213,17 @@ namespace Seldon
     
     // reordering and symbolic factorization
     pardiso_int_t phase = 11;
+    // MKL version
     call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
                  valA.GetData(), ptrA.GetData(), indA.GetData(), 
                  perm.GetData(), &nrhs, iparm, &msglvl,
                  &ddum, &ddum, &error);
+    
+    // recent version
+    /* call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
+                 valA.GetData(), ptrA.GetData(), indA.GetData(), 
+                 perm.GetData(), &nrhs, iparm, &msglvl,
+                 &ddum, &ddum, &error, dparm); */
     
     if (error != 0)
       {
@@ -226,10 +240,17 @@ namespace Seldon
     
     // numerical factorization
     phase = 22;
+    // MKL version
     call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
                  valA.GetData(), ptrA.GetData(), indA.GetData(), 
                  perm.GetData(), &nrhs, iparm, &msglvl,
                  &ddum, &ddum, &error);
+    
+    // recent version
+    /*call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
+                 valA.GetData(), ptrA.GetData(), indA.GetData(), 
+                 perm.GetData(), &nrhs, iparm, &msglvl,
+                 &ddum, &ddum, &error, dparm); */
     
     if (error != 0)
       {
@@ -270,10 +291,17 @@ namespace Seldon
     else
       iparm[11] = 0;
     
+    // MKL version
     call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
                  valA.GetData(), ptrA.GetData(), indA.GetData(), 
                  perm.GetData(), &nrhs, iparm, &msglvl,
                  b.GetData(), x.GetData(), &error);
+    
+    // recent version
+    /* call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
+                 valA.GetData(), ptrA.GetData(), indA.GetData(), 
+                 perm.GetData(), &nrhs, iparm, &msglvl,
+                 b.GetData(), x.GetData(), &error, dparm); */
   }
   
 
@@ -297,11 +325,17 @@ namespace Seldon
     else
       iparm[11] = 0;
     
+    // MKL version
     call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
                  valA.GetData(), ptrA.GetData(), indA.GetData(), 
                  perm.GetData(), &nrhs, iparm, &msglvl,
                  b.GetData(), x.GetData(), &error);
     
+    // recent version
+    /* call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
+                 valA.GetData(), ptrA.GetData(), indA.GetData(), 
+                 perm.GetData(), &nrhs, iparm, &msglvl,
+                 b.GetData(), x.GetData(), &error, dparm); */    
   }
 
 

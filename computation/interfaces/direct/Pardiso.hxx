@@ -31,6 +31,7 @@
 // including Pardiso headers
 extern "C"
 {
+  // MKL version :
   void pardisoinit(void*, int*, int*);
   void pardiso(void   *, int*, int*, int*,
                int*, int*,
@@ -43,6 +44,12 @@ extern "C"
                   void *, pardiso_int_t*, pardiso_int_t*, pardiso_int_t*,
                   pardiso_int_t*, pardiso_int_t*, pardiso_int_t*,
                   void *, void *, pardiso_int_t*);
+  
+  // recent version :
+  /* void pardisoinit (void   *, int *,   int *, int *, double *, int *);
+  void pardiso     (void   *, int *,   int *, int *,    int *, int *, 
+                    void *, int *,   int *, int *,   int *, int *,
+                    int *, void *, void *, int *, double *); */
 }
 
 namespace Seldon
@@ -54,6 +61,7 @@ namespace Seldon
     void* pt[64]; //!< pointer to Pardiso object
     pardiso_int_t mtype; //!< matrix type 
     pardiso_int_t iparm[64]; //!< integer parameters
+    double dparm[64];
     pardiso_int_t size_matrix;
     pardiso_int_t maxfct; //!< maximum number of factors with identical sparsity structure
     pardiso_int_t mnum; //!< factor number, 1 <= mnum <= maxfct

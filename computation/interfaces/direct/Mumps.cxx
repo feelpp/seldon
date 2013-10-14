@@ -83,7 +83,7 @@ namespace Seldon
             || (struct_mumps.info[0] == -17) || (struct_mumps.info[0] == -20))
            && (new_percentage < coef_max_overestimate*100.0))
       {
-        new_percentage *= coef_increase_memory;
+        new_percentage = int(new_percentage*coef_increase_memory);
         struct_mumps.icntl[13] = new_percentage;
         struct_mumps.job = 2;
         CallMumps();
@@ -634,7 +634,7 @@ namespace Seldon
 
     // overestimating size in order to avoid error -9
     double coef = coef_overestimate;
-    struct_mumps.icntl[22] = coef*struct_mumps.infog[25];
+    struct_mumps.icntl[22] = int(coef*struct_mumps.infog[25]);
     struct_mumps.job = 2; // we factorize the system
     CallMumps();
     
@@ -652,8 +652,8 @@ namespace Seldon
           {
             coef *= coef_increase_memory;
             // increasing icntl(23) if error -9 occured
-            struct_mumps.icntl[22] = coef*struct_mumps.infog[25];
-            new_percentage *= coef_increase_memory;
+            struct_mumps.icntl[22] = int(coef*struct_mumps.infog[25]);
+            new_percentage = int(new_percentage*coef_increase_memory);
             struct_mumps.icntl[13] = new_percentage;        
           }
         else
