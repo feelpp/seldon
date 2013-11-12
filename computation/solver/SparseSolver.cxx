@@ -582,7 +582,7 @@ namespace Seldon
   {
     int size_row;
     int n = A.GetN();
-    typename ClassComplexType<T>::Treal zero(0), tnorm;
+    typename ClassComplexType<T>::Treal zero(0), tnorm, one(1);
     
     T fact, s, t;
     int length_lower, length_upper, jpos, jrow;
@@ -788,7 +788,7 @@ namespace Seldon
 	  }
 
 	// Stores the inverse of the diagonal element of u.
-	A.Value(i_row,0) = 1.0 / Row_Val(i_row);
+	A.Value(i_row,0) = one / Row_Val(i_row);
 
       } // end main loop.
 

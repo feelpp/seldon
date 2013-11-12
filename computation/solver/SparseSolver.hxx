@@ -159,7 +159,7 @@ namespace Seldon
     
 #ifdef SELDON_WITH_PRECONDITIONING
     //! ILUT solver
-    IlutPreconditioning<double, T, NewAlloc<T> > mat_ilut;
+    IlutPreconditioning<typename ClassComplexType<T>::Treal, T, NewAlloc<T> > mat_ilut;
 #endif
     
     //! threshold for ilut solver

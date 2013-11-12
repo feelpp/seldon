@@ -63,7 +63,7 @@ namespace Seldon
         return;
       }
 
-    cplx fact, s, t; real tnorm;
+    cplx fact, s, t; real tnorm, one(1);
     int length_lower, length_upper, jpos, jrow;
     int i_row, j_col, index_lu, length;
     int i, j, k;
@@ -93,7 +93,7 @@ namespace Seldon
         // Progress bar if print level is high enough.
         if (print_level > 0)
           {
-            new_percent = int(real(i_row)/(n-1)*80);
+            new_percent = int(double(i_row)/(n-1)*80);
             for (int percent = old_percent; percent < new_percent; percent++)
               {
                 cout << "#"; cout.flush();
@@ -325,7 +325,7 @@ namespace Seldon
 	if (Row_Val(i_row) == czero)
           Row_Val(i_row) = (droptol + 1e-4) * tnorm;
 
-	A.Value(i_row,0) = 1.0 / Row_Val(i_row);
+	A.Value(i_row,0) = one / Row_Val(i_row);
 
       } // end main loop.
 
@@ -359,7 +359,7 @@ namespace Seldon
     int length_lower, length_upper, jpos, jrow;
     int i_row, j_col, index_lu, length;
     int i, j, k;
-    typename ClassComplexType<cplx>::Treal tnorm;
+    typename ClassComplexType<cplx>::Treal tnorm, one(1);
     
     if (lfil < 0)
       {
@@ -600,7 +600,7 @@ namespace Seldon
 	
 	// diagonal element
 	A.Index(i_row, 0) = i_row;
-	A.Value(i_row, 0) = 1.0 / Row_Val(i_row);
+	A.Value(i_row, 0) = one / Row_Val(i_row);
 	levs(i_row)(0) = -1;
 	
 	// extra-diagonal elements

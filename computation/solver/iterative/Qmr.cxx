@@ -50,7 +50,8 @@ namespace Seldon
     Complexe delta, ep(0), beta;
     Titer  rho, rho_1, xi;
     Complexe theta_1, gamma_1;
-    Complexe theta(0), gamma(1), eta(-1);
+    Complexe theta(0), gamma(1), eta(-1), one;
+    SetComplexOne(one);
 
     Vector1 r(b), y(b), z_tld(b); r.Zero();
     Vector1 v(b), w(b), p_tld(b);
@@ -93,11 +94,11 @@ namespace Seldon
 
 	// v = v / rho
 	// y = y / rho
-	Mlt(Complexe(1./rho), v);
-	Mlt(Complexe(1./rho), y);
+	Mlt(one/rho, v);
+	Mlt(one/rho, y);
 
 	// w = w / xi
-	Mlt(Complexe(1./xi), w);
+	Mlt(one/xi, w);
 
 	delta = DotProd(w, y);
 	if (delta == Complexe(0))
@@ -160,7 +161,7 @@ namespace Seldon
 
 	++iter;
 	theta = rho / (gamma_1 * beta);
-	gamma = Complexe(1) / sqrt(1.0 + theta * theta);
+	gamma = one / sqrt(one + theta * theta);
 
 	if (gamma == Titer(0))
 	  {
