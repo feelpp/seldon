@@ -52,7 +52,12 @@ namespace Seldon
     typedef typename Vector1::value_type Complexe;
     Complexe rho, mu, alpha, beta, tau;
     Vector1 v(b), w(b), s(b), z(b), p(b), a(b);
-    v.Zero(); w.Zero(); s.Zero(); z.Zero();  p.Zero(); a.Zero();
+    Complexe zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    
+    v.Fill(zero); w.Fill(zero); s.Fill(zero);
+    z.Fill(zero);  p.Fill(zero); a.Fill(zero);
 
     // we initialize iter
     int success_init = iter.Init(b);
@@ -62,9 +67,9 @@ namespace Seldon
     // we compute the residual v = b - Ax
     Copy(b, v);
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), v);
+      MltAdd(-one, A, x, one, v);
     else
-      x.Zero();
+      x.Fill(zero);
 
     iter.SetNumberIteration(0);
     // s = M*v   p = s
@@ -80,7 +85,7 @@ namespace Seldon
 	mu = DotProd(w, a);
 
 	// new iterate x = x + alpha*p0  where alpha = (r1,r0)/(p1,p1)
-	if (mu == Complexe(0))
+	if (mu == zero)
 	  {
 	    iter.Fail(1, "Bicgcr breakdown #1");
 	    break;
@@ -96,7 +101,7 @@ namespace Seldon
 	Mlt(A, s, z);
 	tau = DotProd(w, z);
 
-	if (tau == Complexe(0))
+	if (tau == zero)
 	  {
 	    iter.Fail(2, "Bicgcr breakdown #2");
 	    break;
@@ -104,10 +109,10 @@ namespace Seldon
 
 	beta = tau/mu;
 
-	Mlt(Complexe(-beta), p);
-	Add(Complexe(1), s, p);
-	Mlt(Complexe(-beta), a);
-	Add(Complexe(1), z, a);
+	Mlt(-beta, p);
+	Add(one, s, p);
+	Mlt(-beta, a);
+	Add(one, z, a);
 
 	M.Solve(A, a, w);
 

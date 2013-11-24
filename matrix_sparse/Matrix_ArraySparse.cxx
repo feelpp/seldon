@@ -674,12 +674,13 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::SetIdentity()
   {
+    T one; SetComplexOne(one);
     this->n_ = this->m_;
     for (int i = 0; i < this->m_; i++)
       {
 	val_(i).Reallocate(1);
 	val_(i).Index(0) = i;
-	val_(i).Value(0) = T(1);
+	val_(i).Value(0) = one;
       }
   }
 
@@ -700,7 +701,10 @@ namespace Seldon
     int value = 0;
     for (int i = 0; i < val_.GetM(); i++)
       for (int j = 0; j < val_(i).GetM(); j++)
-	val_(i).Value(j) = value++;
+	{
+          SetComplexReal(value, val_(i).Value(j));
+          value++;
+        }
   }
 
 
@@ -805,6 +809,9 @@ namespace Seldon
     ofstream FileStream; FileStream.precision(14);
     FileStream.open(FileName.c_str());
 
+    // changing precision
+    FileStream.precision(cout.precision());
+    
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())

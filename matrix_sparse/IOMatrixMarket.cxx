@@ -173,7 +173,8 @@ namespace Seldon
             if (pos != string::npos)
               value[pos] = 'E';
             
-            istringstream(value) >> A_data[index];
+            istringstream flux(value);
+            flux >> A_data[index];
             index++;
             if (index == Nnonzero)
               // So as not to read more elements than actually available
@@ -207,7 +208,8 @@ namespace Seldon
             if (pos != string::npos)
               value[pos] = 'E';
             
-            istringstream(value) >> b;
+            istringstream flux(value);
+            flux >> b;
             if (index%2 == 1)
               {
                 A_data[nb] = complex<T>(a, b);

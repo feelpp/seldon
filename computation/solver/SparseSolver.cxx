@@ -634,7 +634,7 @@ namespace Seldon
 	length_upper = 1;
 	length_lower = 0;
 	Row_Ind(i_row) = i_row;
-	Row_Val(i_row) = 0.0;
+	SetComplexZero(Row_Val(i_row));
 	Index(i_row) = i_row;
 
 	for (j = 0; j < size_row; j++)

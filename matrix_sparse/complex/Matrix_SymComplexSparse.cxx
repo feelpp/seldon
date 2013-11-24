@@ -2654,10 +2654,10 @@ namespace Seldon
     srand(time(NULL));
 #endif
     for (int i = 0; i < this->real_nz_; i++)
-      this->real_data_[i] = rand();
+      SetComplexReal(rand(), this->real_data_[i]);
 
     for (int i = 0; i < this->imag_nz_; i++)
-      this->imag_data_[i] = rand();    
+      SetComplexReal(rand(), this->imag_data_[i]);
   }
 
   
@@ -2759,6 +2759,9 @@ namespace Seldon
     ofstream FileStream; FileStream.precision(14);
     FileStream.open(FileName.c_str());
 
+    // changing precision
+    FileStream.precision(cout.precision());
+    
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())

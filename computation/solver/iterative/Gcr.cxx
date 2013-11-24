@@ -62,23 +62,26 @@ namespace Seldon
     Vector<Complexe> beta(m+1);
 
     Vector1 r(b), q(b), u(b);
+    Complexe zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
 
     for (int i = 0; i < (m+1); i++)
       {
-	p[i].Zero();
-	w[i].Zero();
+	p[i].Fill(zero);
+	w[i].Fill(zero);
       }
 
     // we compute initial residual
     Copy(b,u);
     if (!outer.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), u);
+      MltAdd(-one, A, x, one, u);
     else
-      x.Zero();
+      x.Fill(zero);
 
     M.Solve(A, u, r);
 
-    Complexe alpha,delta;
+    Complexe alpha, delta;
 
     Titer normr = Norm2(r);
     outer.SetNumberIteration(0);
@@ -103,7 +106,7 @@ namespace Seldon
 	    M.Solve(A, u, w[j]);
 
 	    beta(j) = DotProdConj(w[j], w[j]);
-	    if (beta(j) == Complexe(0))
+	    if (beta(j) == zero)
 	      {
 		outer.Fail(1, "Gcr breakdown #1");
 		break;

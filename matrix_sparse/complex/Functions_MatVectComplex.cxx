@@ -630,12 +630,12 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    T3 zero, one;
+    T4 zero; T0 one;
     SetComplexZero(zero);
     SetComplexOne(one);
 
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
 
@@ -682,7 +682,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * A.ValueReal(i, k);
+		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
 		if (p == i)
 		  C(i) += val_cplx * B(i);
 		else
@@ -744,12 +744,12 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    T3 zero, one;
+    T4 zero; T0 one;
     SetComplexZero(zero);
     SetComplexOne(one);
 
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
     
@@ -797,7 +797,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * A.ValueReal(i, k);
+		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
 		if (p == i)
 		  C(i) += val_cplx * B(i);
 		else
@@ -832,12 +832,12 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    T3 zero, one;
+    T4 zero; T0 one;
     SetComplexZero(zero);
     SetComplexOne(one);
 
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
 
@@ -884,7 +884,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * A.ValueReal(i, k);
+		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
 		if (p == i)
 		  C(i) += val_cplx * B(i);
 		else
@@ -946,12 +946,12 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    T3 zero, one;
+    T4 zero; T0 one;
     SetComplexZero(zero);
     SetComplexOne(one);
 
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
     
@@ -999,7 +999,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * A.ValueReal(i, k);
+		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
 		if (p == i)
 		  C(i) += val_cplx * B(i);
 		else
@@ -1037,12 +1037,12 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    T3 zero, one;
+    T4 zero; T0 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
     
@@ -1078,7 +1078,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * A.ValueReal(i, k);
+		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
 		C(i) += val_cplx * B(p);
 	      }
 	    n = A.GetImagRowSize(i);
@@ -1115,12 +1115,12 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    T3 zero, one;
+    T4 zero; T0 one;
     SetComplexZero(zero);
     SetComplexOne(one);
 
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
     
@@ -1156,7 +1156,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * A.ValueReal(i, k);
+		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
 		C(p) += val_cplx * B(i);
 	      }
 	    n = A.GetImagRowSize(i);
@@ -1180,12 +1180,12 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    T3 zero, one;
+    T4 zero; T0 one;
     SetComplexZero(zero);
     SetComplexOne(one);
 
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
     
@@ -1221,7 +1221,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * A.ValueReal(i, k);
+		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
 		C(p) += val_cplx * B(i);
 	      }
 	    n = A.GetImagRowSize(i);
@@ -1244,12 +1244,12 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    T3 zero, one;
+    T4 zero; T0 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
     
@@ -1285,7 +1285,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * A.ValueReal(i, k);
+		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
 		C(p) += val_cplx * B(i);
 	      }
 	    n = A.GetImagColumnSize(i);
@@ -1322,12 +1322,12 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    T3 zero, one;
+    T4 zero; T0 one;
     SetComplexZero(zero);
     SetComplexOne(one);
 
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
     
@@ -1363,7 +1363,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * A.ValueReal(i, k);
+		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
 		C(i) += val_cplx * B(p);
 	      }
 	    n = A.GetImagColumnSize(i);
@@ -1387,12 +1387,12 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    T3 zero, one;
+    T4 zero; T0 one;
     SetComplexZero(zero);
     SetComplexOne(one);
 
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
     
@@ -1428,7 +1428,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * A.ValueReal(i, k);
+		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
 		C(i) += val_cplx * B(p);
 	      }
 	    n = A.GetImagColumnSize(i);
@@ -1463,7 +1463,7 @@ namespace Seldon
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
 	   const T3& omega, int iter, int type_ssor)
   {
-    complex<T1> temp, zero, one;
+    complex<T1> temp, zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
 
@@ -1499,7 +1499,7 @@ namespace Seldon
                 if (ind_real[k] != j)
                   temp += data_real[k] * X(ind_real[k]);
                 else
-                  ajj = data_real[k];
+                  SetComplexReal(data_real[k], ajj);
               }
 
 	    for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
@@ -1530,7 +1530,7 @@ namespace Seldon
                 if (ind_real[k] != j)
                   temp += data_real[k] * X(ind_real[k]);
                 else
-                  ajj = data_real[k];
+                  SetComplexReal(data_real[k], ajj);
               }
 
 	    for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
@@ -1562,7 +1562,7 @@ namespace Seldon
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
 	   const T3& omega, int iter, int type_ssor)
   {
-    complex<T1> temp, zero, one;
+    complex<T1> temp, zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
 
@@ -1577,7 +1577,7 @@ namespace Seldon
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
 
-    complex<T0> ajj(1);
+    complex<T0> ajj;
 
     if (type_ssor%2 == 0)
       for (int i = 0; i < iter; i++)
@@ -1655,7 +1655,7 @@ namespace Seldon
            const Vector<complex<T1>, Storage1, Allocator1>& B,
            const T3& omega,int iter, int type_ssor)
   {
-    complex<T1> zero, one;
+    complex<T1> zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -1701,7 +1701,7 @@ namespace Seldon
                 }
               
               if ( (kr < ptr_real[j+1]) && (ind_real[kr] == j))
-                ajj = data_real[kr];
+                SetComplexReal(data_real[kr], ajj);
 
               int ki = ptr_imag[j];
               while ( (ki < ptr_imag[j+1]) && (ind_imag[ki] < j))
@@ -1731,7 +1731,7 @@ namespace Seldon
                              
               if ( (kr < ptr_real[j+1]) && (ind_real[kr] == j))
                 {
-                  ajj = data_real[kr];
+                  SetComplexReal(data_real[kr], ajj);
                   kr++;
                 }
 
@@ -1776,7 +1776,7 @@ namespace Seldon
                 }
               
               if ( (kr >= ptr_real[j]) && (ind_real[kr] == j))
-                ajj = data_real[kr];
+                SetComplexReal(data_real[kr], ajj);
               
               int ki = ptr_imag[j+1]-1;
               while ( (ki >= ptr_imag[j]) && (ind_imag[ki] > j) )
@@ -1806,7 +1806,7 @@ namespace Seldon
               
               if ( (kr >= ptr_real[j]) && (ind_real[kr] == j))
                 {
-                  ajj = data_real[kr];
+                  ajj = complex<T0>(data_real[kr], 0);
                   kr--;
                 }
               
@@ -1851,9 +1851,9 @@ namespace Seldon
   void SOR(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& A,
 	   Vector<complex<T2>, Storage2, Allocator2>& X,
            const Vector<complex<T1>, Storage1, Allocator1>& B,
-           const T3& omega,int iter, int type_ssor)
+           const T3& omega, int iter, int type_ssor)
   {
-    complex<T1> zero, one;
+    complex<T1> zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -1891,7 +1891,7 @@ namespace Seldon
                 }
               
               if ( (kr < A.GetRealColumnSize(j)) && (A.IndexReal(j, kr) == j))
-                ajj = A.ValueReal(j, kr);
+                ajj = complex<T0>(A.ValueReal(j, kr), 0);
               
               int ki = 0;
               while ( (ki < A.GetImagColumnSize(j)) && (A.IndexImag(j, ki) < j))
@@ -1921,7 +1921,7 @@ namespace Seldon
                              
               if ( (kr < A.GetRealColumnSize(j)) && (A.IndexReal(j, kr) == j) )
                 {
-                  ajj = A.ValueReal(j, kr);
+                  ajj = complex<T0>(A.ValueReal(j, kr), 0);
                   kr++;
                 }
 
@@ -1966,7 +1966,7 @@ namespace Seldon
                 }
               
               if ( (kr >= 0) && (A.IndexReal(j, kr) == j))
-                ajj = A.ValueReal(j, kr);
+                ajj = complex<T0>(A.ValueReal(j, kr), 0);
               
               int ki = A.GetImagColumnSize(j)-1;
               while ( (ki >= 0) && (A.IndexImag(j, ki) > j) )
@@ -1996,7 +1996,7 @@ namespace Seldon
               
               if ( (kr >= 0) && (A.IndexReal(j, kr) == j))
                 {
-                  ajj = A.ValueReal(j, kr);
+                  ajj = complex<T0>(A.ValueReal(j, kr), 0);
                   kr--;
                 }
               
@@ -2043,7 +2043,7 @@ namespace Seldon
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
 	   const T3& omega, int iter, int type_ssor)
   {
-    complex<T1> temp, zero, one;
+    complex<T1> temp, zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -2086,7 +2086,7 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j];
               if ((kr < ptr_real[j+1]) && (ind_real[kr] == j))
-                ajj = data_real[kr++];
+                ajj = complex<T0>(data_real[kr++], 0);
 
               int ki = ptr_imag[j];
               if ((ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
@@ -2113,7 +2113,7 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j];
               if ((kr < ptr_real[j+1]) && (ind_real[kr] == j))
-                ajj = data_real[kr++];
+                ajj = complex<T0>(data_real[kr++], 0);
 
               int ki = ptr_imag[j];
               if ((ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
@@ -2140,7 +2140,7 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j];
               if ((kr < ptr_real[j+1]) && (ind_real[kr] == j))
-                ajj = data_real[kr++];
+                ajj = complex<T0>(data_real[kr++], 0);
 
               int ki = ptr_imag[j];
               if ((ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
@@ -2162,7 +2162,7 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j];
               if ((kr < ptr_real[j+1]) && (ind_real[kr] == j))
-                ajj = data_real[kr++];
+                ajj = complex<T0>(data_real[kr++], 0);
 
               int ki = ptr_imag[j];
               if ((ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
@@ -2196,7 +2196,7 @@ namespace Seldon
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
 	   const T3& omega, int iter, int type_ssor)
   {
-    complex<T1> temp, zero, one;
+    complex<T1> temp, zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -2220,7 +2220,7 @@ namespace Seldon
 
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    T3 coef = (T3(1) - omega) / omega;
+    T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -2231,11 +2231,11 @@ namespace Seldon
               ajj = zero;
               int kr = 0;
               if ((kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j))
-                ajj = A.ValueReal(j, kr++);
+                ajj = complex<T0>(A.ValueReal(j, kr++), 0);
               
               int ki = 0;
               if ((ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) == j))
-                ajj += complex<T0>(0, A.ValueImag(j, ki));
+                ajj += complex<T0>(0, A.ValueImag(j, ki++));
               
 #ifdef SELDON_CHECK_BOUNDS
               if ( ajj == zero)
@@ -2249,7 +2249,7 @@ namespace Seldon
 	      for (int k = ki; k < A.GetImagRowSize(j); k++)
                 temp += complex<T0>(0, A.ValueImag(j, k)) * X(A.IndexImag(j, k));
               
-	      X(j) = coef * ajj * X(j) + B(j) - temp;
+	      X(j) = coef * ajj * X(j) + B(j) - temp;                            
 	    }
 
           // Then we solve (D/omega - L) X = X
@@ -2258,7 +2258,7 @@ namespace Seldon
               ajj = zero;
               int kr = 0;
               if ((kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j))
-                ajj = A.ValueReal(j, kr++);
+                ajj = complex<T0>(A.ValueReal(j, kr++), 0);
 
               int ki = 0;
               if ((ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) == j))
@@ -2285,7 +2285,7 @@ namespace Seldon
               ajj = zero;
               int kr = 0;
               if ((kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j))
-                ajj = A.ValueReal(j, kr++);
+                ajj = complex<T0>(A.ValueReal(j, kr++), 0);
 
               int ki = 0;
               if ((ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) == j))
@@ -2307,7 +2307,7 @@ namespace Seldon
               ajj = zero;
               int kr = 0;
               if ((kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j))
-                ajj = A.ValueReal(j, kr++);
+                ajj = complex<T0>(A.ValueReal(j, kr++), 0);
 
               int ki = 0;
               if ((ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) == j))
@@ -2341,7 +2341,7 @@ namespace Seldon
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
 	   const T3& omega, int iter, int type_ssor)
   {
-    complex<T1> temp, zero, one;
+    complex<T1> temp, zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -2373,7 +2373,7 @@ namespace Seldon
 
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    T3 coef = (T3(1) - omega) / omega;
+    T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -2383,7 +2383,7 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j+1]-1;
               if ((kr >= ptr_real[j]) && (ind_real[kr] == j))
-                ajj = data_real[kr--];
+                ajj = complex<T0>(data_real[kr--], 0);
               
               int ki = ptr_imag[j+1]-1;
               if ((ki >= ptr_imag[j]) && (ind_imag[ki] == j))
@@ -2410,7 +2410,7 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j+1]-1;
               if ((kr >= ptr_real[j]) && (ind_real[kr] == j))
-                ajj = data_real[kr--];
+                ajj = complex<T0>(data_real[kr--], 0);
 
               int ki = ptr_imag[j+1]-1;
               if ((ki >= ptr_imag[j]) && (ind_imag[ki] == j))
@@ -2439,7 +2439,7 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j+1]-1;
               if ((kr >= ptr_real[j]) && (ind_real[kr] == j))
-                ajj = data_real[kr--];
+                ajj = complex<T0>(data_real[kr--], 0);
 
               int ki = ptr_imag[j+1]-1;
               if ((ki >= ptr_imag[j]) && (ind_imag[ki] == j))
@@ -2461,7 +2461,7 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j+1]-1;
               if ((kr >= ptr_real[j]) && (ind_real[kr] == j))
-                ajj = data_real[kr--];
+                ajj = complex<T0>(data_real[kr--], 0);
 
               int ki = ptr_imag[j+1]-1;
               if ((ki >= ptr_imag[j]) && (ind_imag[ki] == j))
@@ -2494,7 +2494,7 @@ namespace Seldon
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
 	   const T3& omega, int iter, int type_ssor)
   {
-    complex<T1> temp, zero, one;
+    complex<T1> temp, zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -2528,7 +2528,7 @@ namespace Seldon
               ajj = zero;
               int kr = A.GetRealColumnSize(j)-1;
               if ((kr >= 0) && (A.IndexReal(j, kr) == j))
-                ajj = A.ValueReal(j, kr--);
+                ajj = complex<T0>(A.ValueReal(j, kr--), 0);
 
               int ki = A.GetImagColumnSize(j)-1;
               if ((ki >= 0) && (A.IndexImag(j, ki) == j))
@@ -2555,7 +2555,7 @@ namespace Seldon
               ajj = zero;
               int kr = A.GetRealColumnSize(j)-1;
               if ((kr >= 0) && (A.IndexReal(j, kr) == j))
-                ajj = A.ValueReal(j, kr--);
+                ajj = complex<T0>(A.ValueReal(j, kr--), 0);
 
               int ki = A.GetImagColumnSize(j)-1;
               if ((ki >= 0) && (A.IndexImag(j, ki) == j))
@@ -2584,7 +2584,7 @@ namespace Seldon
               ajj = zero;
               int kr = A.GetRealColumnSize(j)-1;
               if ((kr >= 0) && (A.IndexReal(j, kr) == j))
-                ajj = A.ValueReal(j, kr--);
+                ajj = complex<T0>(A.ValueReal(j, kr--), 0);
 
               int ki = A.GetImagColumnSize(j)-1;
               if ((ki >= 0) && (A.IndexImag(j, ki) == j))
@@ -2606,7 +2606,7 @@ namespace Seldon
               ajj = zero;
               int kr = A.GetRealColumnSize(j)-1;
               if ((kr >= 0) && (A.IndexReal(j, kr) == j))
-                ajj = A.ValueReal(j, kr--);
+                ajj = complex<T0>(A.ValueReal(j, kr--), 0);
 
               int ki = A.GetImagColumnSize(j)-1;
               if ((ki >= 0) && (A.IndexImag(j, ki) == j))
@@ -2640,7 +2640,7 @@ namespace Seldon
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
 	   const T3& omega, int iter, int type_ssor)
   {
-    complex<T1> temp, zero, one;
+    complex<T1> temp, zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
 
@@ -2676,7 +2676,7 @@ namespace Seldon
                 if (ind_real[k] != j)
                   temp += data_real[k] * X(ind_real[k]);
                 else
-                  ajj = data_real[k];
+                  ajj = complex<T0>(data_real[k], 0);
               }
 
 	    for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
@@ -2707,7 +2707,7 @@ namespace Seldon
                 if (ind_real[k] != j)
                   temp += data_real[k] * X(ind_real[k]);
                 else
-                  ajj = data_real[k];
+                  ajj = complex<T0>(data_real[k], 0);
               }
 
 	    for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
@@ -2740,7 +2740,7 @@ namespace Seldon
 	   const Vector<complex<T1>, Storage1, Allocator1>& B,
 	   const T3& omega, int iter, int type_ssor)
   {
-    complex<T1> temp, zero, one;
+    complex<T1> temp, zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
 
@@ -2755,7 +2755,7 @@ namespace Seldon
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
 
-    complex<T0> ajj(1);
+    complex<T0> ajj;
 
     if (type_ssor%2 == 0)
       for (int i = 0; i < iter; i++)
@@ -2834,7 +2834,7 @@ namespace Seldon
            const Vector<complex<T1>, Storage1, Allocator1>& B,
            const T3& omega,int iter, int type_ssor)
   {
-    complex<T1> zero, one;
+    complex<T1> zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -2865,7 +2865,7 @@ namespace Seldon
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
     complex<T0> ajj;
-    T3 coef = (T3(1) - omega) / omega;
+    T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -2880,7 +2880,7 @@ namespace Seldon
                 }
               
               if ( (kr < ptr_real[j+1]) && (ind_real[kr] == j))
-                ajj = data_real[kr];
+                ajj = complex<T0>(data_real[kr], 0);
 
               int ki = ptr_imag[j];
               while ( (ki < ptr_imag[j+1]) && (ind_imag[ki] < j))
@@ -2910,7 +2910,7 @@ namespace Seldon
                              
               if ( (kr < ptr_real[j+1]) && (ind_real[kr] == j))
                 {
-                  ajj = data_real[kr];
+                  ajj = complex<T0>(data_real[kr], 0);
                   kr++;
                 }
 
@@ -2955,7 +2955,7 @@ namespace Seldon
                 }
               
               if ( (kr >= ptr_real[j]) && (ind_real[kr] == j))
-                ajj = data_real[kr];
+                ajj = complex<T0>(data_real[kr], 0);
               
               int ki = ptr_imag[j+1]-1;
               while ( (ki >= ptr_imag[j]) && (ind_imag[ki] > j) )
@@ -2985,7 +2985,7 @@ namespace Seldon
               
               if ( (kr >= ptr_real[j]) && (ind_real[kr] == j))
                 {
-                  ajj = data_real[kr];
+                  ajj = complex<T0>(data_real[kr], 0);
                   kr--;
                 }
               
@@ -3033,7 +3033,7 @@ namespace Seldon
            const Vector<complex<T1>, Storage1, Allocator1>& B,
            const T3& omega,int iter, int type_ssor)
   {
-    complex<T1> zero, one;
+    complex<T1> zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -3056,7 +3056,7 @@ namespace Seldon
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
     complex<T0> ajj;
-    T3 coef = (T3(1) - omega) / omega;
+    T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -3071,7 +3071,7 @@ namespace Seldon
                 }
               
               if ( (kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j))
-                ajj = A.ValueReal(j, kr);
+                ajj = complex<T0>(A.ValueReal(j, kr), 0);
               
               int ki = 0;
               while ( (ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) < j))
@@ -3101,7 +3101,7 @@ namespace Seldon
                              
               if ( (kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j) )
                 {
-                  ajj = A.ValueReal(j, kr);
+                  ajj = complex<T0>(A.ValueReal(j, kr), 0);
                   kr++;
                 }
 
@@ -3146,7 +3146,7 @@ namespace Seldon
                 }
               
               if ( (kr >= 0) && (A.IndexReal(j, kr) == j))
-                ajj = A.ValueReal(j, kr);
+                ajj = complex<T0>(A.ValueReal(j, kr), 0);
               
               int ki = A.GetImagRowSize(j)-1;
               while ( (ki >= 0) && (A.IndexImag(j, ki) > j) )
@@ -3176,7 +3176,7 @@ namespace Seldon
               
               if ( (kr >= 0) && (A.IndexReal(j, kr) == j))
                 {
-                  ajj = A.ValueReal(j, kr);
+                  ajj = complex<T0>(A.ValueReal(j, kr), 0);
                   kr--;
                 }
               

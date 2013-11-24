@@ -51,9 +51,13 @@ namespace Seldon
       return 0;
 
     typedef typename Vector1::value_type Complexe;
-    Complexe rho_1, rho_2(0), alpha, beta, delta;
+    Complexe rho_1, rho_2, alpha, beta, delta;
     Vector1 p(b), phat(b), q(b), qhat(b), vhat(b), u(b), uhat(b),
       r(b), rtilde(b);
+    Complexe zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    rho_2 = zero;
 
     // we initialize iter
     int success_init = iter.Init(b);
@@ -63,9 +67,9 @@ namespace Seldon
     // we compute the initial residual r = b - Ax
     Copy(b,r);
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), r);
+      MltAdd(-one, A, x, one, r);
     else
-      x.Zero();
+      x.Fill(zero);
 
     Copy(r, rtilde);
 
@@ -75,7 +79,7 @@ namespace Seldon
       {
 	rho_1 = DotProd(rtilde, r);
 
-	if (rho_1 == Complexe(0))
+	if (rho_1 == zero)
 	  {
 	    iter.Fail(1, "Cgs breakdown #1");
 	    break;
@@ -94,9 +98,9 @@ namespace Seldon
 	    Copy(r, u);
 	    Add(beta, q, u);
 	    Mlt(beta, p);
-	    Add(Complexe(1), q, p);
+	    Add(one, q, p);
 	    Mlt(beta, p);
-	    Add(Complexe(1), u, p);
+	    Add(one, u, p);
 	  }
 
 	// preconditioning phat = M^{-1} p
@@ -105,18 +109,18 @@ namespace Seldon
 	// matrix vector product vhat = A*phat
 	Mlt(A, phat, vhat); ++iter;
 	delta = DotProd(rtilde, vhat);
-	if (delta == Complexe(0))
+	if (delta == zero)
 	  {
 	    iter.Fail(2, "Cgs breakdown #2");
 	    break;
 	  }
 	// q = u-alpha*vhat  where alpha = rho_i/(rtilde,vhat)
 	alpha = rho_1 /delta;
-	Copy(u,q);
+	Copy(u, q);
 	Add(-alpha, vhat, q);
 
 	//  u =u+q
-	Add(Complexe(1), q, u);
+	Add(one, q, u);
 	M.Solve(A, u, uhat);
 
 	Add(alpha, uhat, x);

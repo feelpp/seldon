@@ -1086,12 +1086,14 @@ namespace Seldon
 
     int k,l;
     int a,b;
-
+    T zero;
+    SetComplexZero(zero);
+    
     a = ptr_[Storage::GetFirst(i, j)];
     b = ptr_[Storage::GetFirst(i, j) + 1];
 
     if (a == b)
-      return T(0);
+      return zero;
 
     l = Storage::GetSecond(i, j);
 
@@ -1100,7 +1102,7 @@ namespace Seldon
     if (ind_[k] == l)
       return this->data_[k];
     else
-      return T(0);
+      return zero;
   }
 
 
@@ -1388,7 +1390,7 @@ namespace Seldon
   void Matrix_Sparse<T, Prop, Storage, Allocator>::Fill()
   {
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = i;
+      SetComplexReal(i, this->data_[i]);
   }
 
 
@@ -1400,8 +1402,10 @@ namespace Seldon
   template <class T0>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::Fill(const T0& x)
   {
+    T x_;
+    SetComplexReal(x, x_);
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = x;
+      this->data_[i] = x_;
   }
 
 
@@ -1416,7 +1420,7 @@ namespace Seldon
     srand(time(NULL));
 #endif
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = rand();
+      SetComplexReal(rand(), this->data_[i]);
   }
 
   
@@ -1455,7 +1459,7 @@ namespace Seldon
       {
 	i(l) = it->first;
 	j(l) = it->second;
-	value(l) = double(rand());
+        SetComplexReal(rand(), value(l));
 	l++;
       }
     
@@ -1598,6 +1602,9 @@ namespace Seldon
     ofstream FileStream; FileStream.precision(14);
     FileStream.open(FileName.c_str());
 
+    // changing precision
+    FileStream.precision(cout.precision());
+    
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())

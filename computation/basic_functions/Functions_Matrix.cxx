@@ -90,13 +90,11 @@ namespace Seldon
   void Mlt(const T0& alpha,
 	   Matrix<T1, Prop1, Storage1, Allocator1>& A)  throw()
   {
-    T1 alpha_ = alpha;
-
     typename Matrix<T1, Prop1, Storage1, Allocator1>::pointer
       data = A.GetData();
 
     for (int i = 0; i < A.GetDataSize(); i++)
-      data[i] = alpha_ * data[i];
+      data[i] *= alpha;
   }
 
 
@@ -209,8 +207,10 @@ namespace Seldon
 	   const Matrix<T2, Prop2, Storage2, Allocator2>& B,
 	   Matrix<T3, Prop3, Storage3, Allocator3>& C)
   {
-    C.Fill(T3(0));
-    MltAdd(alpha, A, B, T3(0), C);
+    T3 zero;
+    SetComplexZero(zero);
+    C.Fill(zero);
+    MltAdd(alpha, A, B, zero, C);
   }
 
 
@@ -228,8 +228,11 @@ namespace Seldon
 	   const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 	   Matrix<T2, Prop2, Storage2, Allocator2>& C)
   {
-    C.Fill(T2(0));
-    MltAdd(T0(1), A, B, T2(0), C);
+    T0 one; T2 zero;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    C.Fill(zero);
+    MltAdd(one, A, B, zero, C);
   }
 
 
@@ -412,8 +415,10 @@ namespace Seldon
     int m = A.GetM();
     int n = A.GetN();
 
+    T2 zero;
+    SetComplexZero(zero);
     C.Reallocate(A.GetM(), B.GetN());
-    C.Fill(T2(0));
+    C.Fill(zero);
 
     for (int i = 0; i < m; i++)
       {
@@ -449,10 +454,12 @@ namespace Seldon
              "MltNoTransTrans(const Matrix<RowMajor>& A, const "
              "Matrix<RowSparse>& B, Matrix<RowMajor>& C)");
 #endif
-
+    
+    T2 zero;
+    SetComplexZero(zero);
     int m = A.GetM();
     C.Reallocate(A.GetM(), B.GetM());
-    C.Fill(T2(0));
+    C.Fill(zero);
     for (int i = 0; i < m; i++)
       {
         for (int j = 0; j < B.GetM(); j++)
@@ -505,7 +512,7 @@ namespace Seldon
     // There will be no need for 'Resize': 'Reallocate' will do the job.
     Vector<int, VectFull, MallocAlloc<int> > column_index;
     Vector<T2, VectFull, MallocAlloc<T2> > row_value;
-    T2 value = 0;
+    T2 value;
 
     int m = A.GetM();
     int n = B.GetM();
@@ -539,7 +546,9 @@ namespace Seldon
 
     // Number of non-zero elements in C.
     Nnonzero = 0;
-
+    T2 zero;
+    SetComplexZero(zero);
+    value = zero;
     for (i = 0; i < m; i++)
       {
         c_ptr[i + 1] = c_ptr[i];
@@ -560,11 +569,11 @@ namespace Seldon
                     for (kb = B.GetPtr()[ib]; kb < B.GetPtr()[ib + 1]; kb++)
                       if (col == B.GetInd()[kb])
                         value += A.GetData()[k] * B.GetData()[kb];
-                    if (value != T2(0))
+                    if (value != zero)
                       {
                         row_value.Append(value);
                         column_index.Append(ib);
-                        value = T2(0);
+                        value = zero;
                       }
                   }
               }
@@ -665,32 +674,34 @@ namespace Seldon
       throw WrongArgument("MltAdd", "This function is intended to dense"
                           " matrices only and not to sparse matrices");
     
+    T3 zero_T3;
+    SetComplexZero(zero_T3);
     T4 temp;
-    T4 alpha_(alpha);
-    T4 beta_(beta);
-
-    if (beta_ != T4(0))
+    T4 zero;
+    SetComplexZero(zero);
+    
+    if (beta != zero_T3)
       for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
 	for (int j = Storage4::GetBeginLoop(i);
              j < Storage4::GetEndLoop(mc, nc, i); j++)
 	  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
-	    *= beta_;
+	    *= beta;
     else
       for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
 	for (int j = Storage4::GetBeginLoop(i);
              j < Storage4::GetEndLoop(mc, nc, i); j++)
-	  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j)) = T4(0);
+	  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j)) = zero;
 
     for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
       for (int j = Storage4::GetBeginLoop(i);
            j < Storage4::GetEndLoop(mc, nc, i); j++)
 	{
-	  temp = T4(0);
+	  temp = zero;
 	  for (int k = 0; k < na; k++)
 	    temp += A(Storage4::GetFirst(i, j), k)
 	      * B(k, Storage4::GetSecond(i, j));
 	  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
-	    += alpha_ * temp;
+	    += alpha * temp;
 	}
   }
 
@@ -738,23 +749,27 @@ namespace Seldon
 	     "MltAdd(alpha, TransA, A, TransB, B, beta, C)");
 #endif
     
-    T4 temp;
-    T4 alpha_(alpha);
-    T4 beta_(beta);
+    T3 zero_T3, one_T3;
+    SetComplexZero(zero_T3);
+    SetComplexOne(one_T3);
+    T4 temp;    
+    T4 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
     
     // step C = beta C
-    if (beta_ != T4(0))
+    if (beta != zero_T3)
       {
-	if (beta_ != T4(1))
-	  Mlt(beta_, C);
+	if (beta != one_T3)
+	  Mlt(beta, C);
       }
     else
-      C.Fill(T4(0));
+      C.Fill(zero);
     
     if (TransB.NoTrans())
       {
 	if (TransA.NoTrans())
-	  MltAdd(alpha, A, B, T4(1), C);
+	  MltAdd(alpha, A, B, one, C);
 	else if (TransA.Trans())
 	  {
 	    // C = C + alpha A^T B
@@ -762,13 +777,13 @@ namespace Seldon
 	      for (int j = Storage4::GetBeginLoop(i);
                    j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
-		  temp = T4(0);
+		  temp = zero;
 		  for (int k = 0; k < ma; k++)
 		    temp += A(k, Storage4::GetFirst(i, j))
 		      * B(k, Storage4::GetSecond(i, j));
                   
 		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
-		    += alpha_ * temp;
+		    += alpha * temp;
 		}	    
 	  }
 	else
@@ -778,13 +793,13 @@ namespace Seldon
 	      for (int j = Storage4::GetBeginLoop(i);
                    j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
-		  temp = T4(0);
+		  temp = zero;
 		  for (int k = 0; k < ma; k++)
 		    temp += conj(A(k, Storage4::GetFirst(i, j)))
 		      * B(k, Storage4::GetSecond(i, j));
 		  
 		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
-		    += alpha_ * temp;
+		    += alpha * temp;
 		}	    
 	  }
       }
@@ -797,13 +812,13 @@ namespace Seldon
 	      for (int j = Storage4::GetBeginLoop(i);
                    j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
-		  temp = T4(0);
+		  temp = zero;
 		  for (int k = 0; k < na; k++)
 		    temp += A(Storage4::GetFirst(i, j), k)
 		      * conj(B(Storage4::GetSecond(i, j), k));
 		  
 		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
-		    += alpha_ * temp;
+		    += alpha * temp;
 		}
 	  }
 	else if (TransA.Trans())
@@ -813,13 +828,13 @@ namespace Seldon
 	      for (int j = Storage4::GetBeginLoop(i);
                    j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
-		  temp = T4(0);
+		  temp = zero;
 		  for (int k = 0; k < ma; k++)
 		    temp += A(k, Storage4::GetFirst(i, j))
 		      * conj(B(Storage4::GetSecond(i, j), k));
 		  
 		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
-		    += alpha_ * temp;
+		    += alpha * temp;
 		}	    
 	  }
 	else
@@ -829,13 +844,13 @@ namespace Seldon
 	      for (int j = Storage4::GetBeginLoop(i);
                    j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
-		  temp = T4(0);
+		  temp = zero;
 		  for (int k = 0; k < ma; k++)
 		    temp += conj(A(k, Storage4::GetFirst(i, j)))
 		      * conj(B(Storage4::GetSecond(i, j), k));
 		  
 		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
-		    += alpha_ * temp;
+		    += alpha * temp;
 		}	    
 	  }
       }
@@ -848,13 +863,13 @@ namespace Seldon
 	      for (int j = Storage4::GetBeginLoop(i);
                    j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
-		  temp = T4(0);
+		  temp = zero;
 		  for (int k = 0; k < na; k++)
 		    temp += A(Storage4::GetFirst(i, j), k)
 		      * B(Storage4::GetSecond(i, j), k);
 		  
 		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
-		    += alpha_ * temp;
+		    += alpha * temp;
 		}
 	  }
 	else if (TransA.Trans())
@@ -864,13 +879,13 @@ namespace Seldon
 	      for (int j = Storage4::GetBeginLoop(i);
                    j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
-		  temp = T4(0);
+		  temp = zero;
 		  for (int k = 0; k < ma; k++)
 		    temp += A(k, Storage4::GetFirst(i, j))
 		      * B(Storage4::GetSecond(i, j), k);
 		  
 		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
-		    += alpha_ * temp;
+		    += alpha * temp;
 		}	    
 	  }
 	else
@@ -880,13 +895,13 @@ namespace Seldon
 	      for (int j = Storage4::GetBeginLoop(i);
                    j < Storage4::GetEndLoop(mc, nc, i); j++)
 		{
-		  temp = T4(0);
+		  temp = zero;
 		  for (int k = 0; k < ma; k++)
 		    temp += conj(A(k, Storage4::GetFirst(i, j)))
 		      * B(Storage4::GetSecond(i, j), k);
 		  
 		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
-		    += alpha_ * temp;
+		    += alpha * temp;
 		}	    
 	  }
       }
@@ -1296,26 +1311,29 @@ namespace Seldon
               const T3& beta,
               Matrix<T4, Prop4, RowSparse, Allocator4>& C)
   {
-    if (beta == T3(0))
+    T0 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    if (beta == zero)
       {
-        if (alpha == T0(0))
+        if (alpha == zero)
           Mlt(alpha, C);
         else
           {
             Mlt(A, B, C);
-            if (alpha != T0(1))
+            if (alpha != one)
               Mlt(alpha, C);
           }
       }
     else
       {
-        if (alpha == T0(0))
+        if (alpha == zero)
           Mlt(beta, C);
         else
           {
             Matrix<T4, Prop4, RowSparse, Allocator4> tmp;
             Mlt(A, B, tmp);
-            if (beta != T0(1))
+            if (beta != one)
               Mlt(beta, C);
             Add(alpha, tmp, C);
           }
@@ -1347,26 +1365,30 @@ namespace Seldon
                           const T3& beta,
                           Matrix<T4, Prop4, RowSparse, Allocator4>& C)
   {
-    if (beta == T3(0))
+    T0 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+
+    if (beta == zero)
       {
-        if (alpha == T0(0))
+        if (alpha == zero)
           Mlt(alpha, C);
         else
           {
             MltNoTransTrans(A, B, C);
-            if (alpha != T0(1))
+            if (alpha != one)
               Mlt(alpha, C);
           }
       }
     else
       {
-        if (alpha == T0(0))
+        if (alpha == zero)
           Mlt(beta, C);
         else
           {
             Matrix<T4, Prop4, RowSparse, Allocator4> tmp;
             MltNoTransTrans(A, B, tmp);
-            if (beta != T0(1))
+            if (beta != one)
               Mlt(beta, C);
             Add(alpha, tmp, C);
           }
@@ -1670,12 +1692,14 @@ namespace Seldon
 
     if (TransB.Trans())
       {
+        T2 zero;
+        SetComplexZero(zero);
         int m = A.GetM();
-        if (beta == 0)
-          C.Fill(T2(0));
+        if (beta == zero)
+          C.Fill(zero);
         else
           Mlt(beta, C);
-        if (alpha != 0)
+        if (alpha != zero)
           for (int i = 0; i < m; i++)
             for (int j = 0; j < B.GetM(); j++)
               {
@@ -2165,7 +2189,8 @@ namespace Seldon
   void GetLU(Matrix<T0, Prop0, Storage0, Allocator0>& A)
   {
     int i, p, q, k;
-    T0 temp;
+    T0 temp, zero;
+    SetComplexZero(zero);
 
     int ma = A.GetM();
 
@@ -2183,14 +2208,14 @@ namespace Seldon
       {
 	for (p = i; p < ma; p++)
 	  {
-	    temp = 0;
+	    temp = zero;
 	    for (k = 0; k < i; k++)
 	      temp += A(p, k) * A(k, i);
 	    A(p, i) -= temp;
 	  }
 	for (q = i+1; q < ma; q++)
 	  {
-	    temp = 0;
+	    temp = zero;
 	    for (k = 0; k < i; k++)
 	      temp += A(i, k) * A(k, q);
 	    A(i, q) = (A(i,q ) - temp) / A(i, i);
@@ -2505,7 +2530,7 @@ namespace Seldon
     typename ClassComplexType<T>::Treal res(0), sum;
     for (int j = 0; j < A.GetN(); j++)
       {
-	sum = 0.0;
+	sum = 0;
 	for (int i = 0; i < A.GetM(); i++)
 	  sum += ComplexAbs( A(i, j) );
 
@@ -2532,7 +2557,7 @@ namespace Seldon
     typename ClassComplexType<T>::Treal res(0), sum;
     for (int i = 0; i < A.GetM(); i++)
       {
-	sum = 0.0;
+	sum = 0;
 	for (int j = 0; j < A.GetN(); j++)
 	  sum += ComplexAbs( A(i, j) );
 
@@ -2890,7 +2915,7 @@ namespace Seldon
 
     ptr_T.Zero();
     ind_T.Zero();
-    data_T.Zero();
+    data_T.Fill(0);
 
     // For each column j, computes number of its non-zeroes and stores it in
     // ptr_T[j].
@@ -2953,7 +2978,7 @@ namespace Seldon
 
     ptr_T.Zero();
     ind_T.Zero();
-    data_T.Zero();
+    data_T.Fill(0);
 
     // For each column j, computes number of its non-zeroes and stores it in
     // ptr_T[j].

@@ -52,10 +52,14 @@ namespace Seldon
       return 0;
 
     typedef typename Vector1::value_type Complexe;
-    Complexe rho_1, rho_2(0), alpha, beta, delta;
+    Complexe rho_1, rho_2, alpha, beta, delta;
 
     Vector1 r(b), z(b), p(b), q(b);
     Vector1 r_tilde(b), z_tilde(b), p_tilde(b), q_tilde(b);
+    Complexe one, zero;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    rho_2 = zero;
 
     // we initialize iter
     int success_init = iter.Init(b);
@@ -65,9 +69,9 @@ namespace Seldon
     // we compute the residual r = b - Ax
     Copy(b, r);
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), r);
+      MltAdd(-one, A, x, one, r);
     else
-      x.Zero();
+      x.Fill(zero);
 
     Copy(r, r_tilde);
 
@@ -81,7 +85,7 @@ namespace Seldon
 	// rho_1 = (z,r_tilde)
 	rho_1 = DotProd(z, r_tilde);
 
-	if (rho_1 == Complexe(0))
+	if (rho_1 == zero)
 	  {
 	    iter.Fail(1, "Bicg breakdown #1");
 	    break;
@@ -98,9 +102,9 @@ namespace Seldon
 	    // p_tilde=beta*p_tilde+z_tilde
 	    beta = rho_1 / rho_2;
 	    Mlt(beta, p);
-	    Add(Complexe(1), z, p);
+	    Add(one, z, p);
 	    Mlt(beta, p_tilde);
-	    Add(Complexe(1), z_tilde, p_tilde);
+	    Add(one, z_tilde, p_tilde);
 	  }
 
 	// we do the product matrix vector and transpose matrix vector
@@ -110,7 +114,7 @@ namespace Seldon
 	Mlt(SeldonTrans, A, p_tilde, q_tilde);
 
 	delta = DotProd(p_tilde, q);
-	if (delta == Complexe(0))
+	if (delta == zero)
 	  {
 	    iter.Fail(2, "Bicg breakdown #2");
 	    break;

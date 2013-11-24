@@ -718,7 +718,7 @@ namespace Seldon
   void Vector<T, VectFull, Allocator>::Fill()
   {
     for (int i = 0; i < this->m_; i++)
-      this->data_[i] = i;
+      SetComplexReal(i, this->data_[i]);
   }
 
 
@@ -730,8 +730,10 @@ namespace Seldon
   template <class T0>
   void Vector<T, VectFull, Allocator>::Fill(const T0& x)
   {
+    T x_;
+    SetComplexReal(x, x_);
     for (int i = 0; i < this->m_; i++)
-      this->data_[i] = x;
+      this->data_[i] = x_;
   }
 
 
@@ -761,7 +763,7 @@ namespace Seldon
     srand(time(NULL));
 #endif
     for (int i = 0; i < this->m_; i++)
-      this->data_[i] = rand();
+      SetComplexReal(rand(), this->data_[i]);
   }
 
 
@@ -917,6 +919,9 @@ namespace Seldon
 
     this->WriteText(FileStream);
 
+    // end of line to finish the file
+    FileStream << endl;
+
     FileStream.close();
   }
 
@@ -979,7 +984,8 @@ namespace Seldon
     hid_t dataset_id, dataspace_id, group_id;
     herr_t status;
 
-    T x(0);
+    T x;
+    SetComplexZero(x);
     hid_t datatype = GetH5Type(x);
 
     if (!H5Lexists(file_id, group_name.c_str(), H5P_DEFAULT))
@@ -1161,7 +1167,7 @@ namespace Seldon
       {
 	// Reads a new entry.
 	FileStream >> entry;
-
+        
 	if (FileStream.fail())
 	  break;
 	else

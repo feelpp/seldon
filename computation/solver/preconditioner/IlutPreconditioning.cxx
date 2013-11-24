@@ -865,7 +865,7 @@ namespace Seldon
 	  Row_Val(i_row) += alpha*dropsum;
 
 	if (Row_Val(i_row) == czero)
-          Row_Val(i_row) = (droptol + 1e-4) * tnorm;
+          Row_Val(i_row) = (droptol + real(1e-4)) * tnorm;
 
 	A.Value(i_row, index_diag) = cone / Row_Val(i_row);
 
@@ -888,7 +888,7 @@ namespace Seldon
   void GetIluk(int lfil, Matrix<cplx, General, ArrayRowSparse, Allocator>& A)
   {
     int n = A.GetM();
-    Vector<cplx, VectFull, CallocAlloc<cplx> > w;
+    Vector<cplx, VectFull, NewAlloc<cplx> > w;
     w.Reallocate(n+1);
     IVect jw(3*n), Index_Diag(n);
     Vector<IVect, VectFull, NewAlloc<IVect> > levs(n);
@@ -1212,7 +1212,7 @@ namespace Seldon
 	int jm = ju(i_row)-1;
 	// Exit if diagonal element is reached.
 	// s accumulates fill-in values.
-	cplx s(0);
+	cplx s; SetComplexZero(s);
 	for (int j = 0; j <= jm; j++)
 	  {
 	    jrow = A.Index(i_row, j);

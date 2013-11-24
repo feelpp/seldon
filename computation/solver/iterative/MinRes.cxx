@@ -57,6 +57,9 @@ namespace Seldon
 
     Complexe dp, beta, ibeta, beta_old, alpha, eta, ceta;
     Complexe cold, coold, c, soold, sold, s, rho0, rho1, rho2, rho3;
+    Complexe zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
 
     int success_init = iter.Init(b);
     if (success_init != 0)
@@ -65,21 +68,23 @@ namespace Seldon
     Copy(b,r);
     // r = b - A x
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), r);
+      MltAdd(-one, A, x, one, r);
     else
-      x.Zero();
+      x.Fill(zero);
 
-    u_old.Zero(); v_old.Zero(); w_old.Zero(); w.Zero(); w_oold.Zero();
+    u_old.Fill(zero); v_old.Fill(zero);
+    w_old.Fill(zero); w.Fill(zero); w_oold.Fill(zero);
+    
     // preconditioning
     M.Solve(A, r, z);
     dp = DotProd(r, z);
     dp = sqrt(dp); beta = dp; eta = beta;
     Copy(r, v); Copy(z, u);
 
-    ibeta = 1.0 / beta;
+    ibeta = one / beta;
     Mlt(ibeta, v); Mlt(ibeta, u);
 
-    c = 1.0; s = 0.0; cold = 1.0; sold = 0.0;
+    c = one; s = zero; cold = one; sold = zero;
     Titer np = Norm2(b);
 
     iter.SetNumberIteration(0);
@@ -115,7 +120,7 @@ namespace Seldon
 	rho3 = soold * beta_old;
 
 	// Givens rotation
-	if (rho1 == Complexe(0) )
+	if (rho1 == zero)
 	  {
 	    iter.Fail(1, "Minres breakdown #1");
 	    break;
@@ -129,7 +134,7 @@ namespace Seldon
 
 	Add(-rho2, w_old, w);
 	Add(-rho3, w_oold, w);
-	Mlt(Complexe(1./rho1), w);
+	Mlt(one/rho1, w);
 
 	ceta = c*eta;
 	Add(ceta, w, x);
@@ -137,12 +142,12 @@ namespace Seldon
 
 	Copy(v, v_old); Copy(u, u_old);
 	Copy(r, v); Copy(z, u);
-	if (beta == Complexe(0) )
+	if (beta == zero)
 	  {
 	    iter.Fail(2, "MinRes breakdown #2");
 	    break;
 	  }
-	ibeta = 1.0/beta;
+	ibeta = one/beta;
 	Mlt(ibeta, v); Mlt(ibeta, u);
 
 	// residual norm

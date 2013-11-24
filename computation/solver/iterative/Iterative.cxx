@@ -166,7 +166,7 @@ namespace Seldon
   template<class Titer>
   void Iteration<Titer>::SetMaxNumberIteration(int max_iteration)
   {
-    max_iter=max_iteration;
+    max_iter = max_iteration;
   }
 
 
@@ -206,7 +206,7 @@ namespace Seldon
   template<class Titer> template<class Vector1>
   int Iteration<Titer>::Init(const Vector1& r)
   {
-    Titer norme_rhs = Titer(Norm2(r));
+    Titer norme_rhs = Norm2(r);
     // test of a null right hand side
     if (norme_rhs == Titer(0))
       return -1;

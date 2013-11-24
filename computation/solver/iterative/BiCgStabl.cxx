@@ -51,8 +51,9 @@ namespace Seldon
     typedef typename Vector1::value_type Complexe;
     int m = iter.GetRestart();
     int l = m;
-    Complexe rho_0, rho_1, alpha, beta, omega, sigma, zero, unity;
-    zero = 0.0; unity = 1.0;
+    Complexe rho_0, rho_1, alpha, beta, omega, sigma, zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
 
     // q temporary vector before preconditioning, r0 initial residual
     Vector1 q(b), r0(b);
@@ -62,17 +63,19 @@ namespace Seldon
     std::vector<Vector1> r(l+1, b), u(l+1, b);
     for (int i = 0; i <= l; i++)
       {
-	r[i].Zero();
-	u[i].Zero();
+	r[i].Fill(zero);
+	u[i].Fill(zero);
       }
-    tau.Zero(); gamma.Zero(); gamma_prime.Zero(); gamma_twice.Zero();
+    
+    tau.Fill(zero); gamma.Fill(zero);
+    gamma_prime.Fill(zero); gamma_twice.Fill(zero);
 
     // we compute the residual r = (b - Ax)
     Copy(b, r[0]);
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), r[0]);
+      MltAdd(-one, A, x, one, r[0]);
     else
-      x.Zero();
+      x.Fill(zero);
 
     // we initialize iter
     int success_init = iter.Init(b);
@@ -82,7 +85,8 @@ namespace Seldon
     Copy(r[0], r0); // we keep the first residual
 
     // we initialize constants
-    rho_0 = unity; alpha = zero; omega = unity; tau.Zero();
+    rho_0 = one; alpha = zero; omega = one;
+    tau.Fill(zero);
 
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
@@ -103,7 +107,7 @@ namespace Seldon
 	    rho_0 = rho_1;
 	    for (int i = 0; i <= j; i++)
 	      {
-		Mlt(-beta, u[i]); Add(unity, r[i], u[i]);
+		Mlt(-beta, u[i]); Add(one, r[i], u[i]);
 	      }
 	    M.Solve(A, u[j], q); // preconditioning
 	    Mlt(A, q, u[j+1]); // product Matrix Vector

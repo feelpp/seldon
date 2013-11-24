@@ -47,11 +47,15 @@ namespace Seldon
       return 0;
 
     typedef typename Vector1::value_type Complexe;
-    Complexe delta, ep(0), beta;
+    Complexe delta, ep, beta;
     Titer  rho, rho_1;
     Complexe theta_1, gamma_1;
-    Complexe theta(0), gamma(1), eta(-1);
-
+    Complexe theta, gamma, eta;
+    Complexe zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    theta = zero; gamma = one; eta = -one; ep = zero;
+    
     Vector1 r(b), y(b);
     Vector1 v(b), p_tld(b);
     Vector1 p(b), d(b), s(b);
@@ -64,9 +68,9 @@ namespace Seldon
     // r = b - Ax
     Copy(b, r);
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), r);
+      MltAdd(-one, A, x, one, r);
     else
-      x.Zero();
+      x.Fill(zero);
 
     Copy(r, v);
 
@@ -86,11 +90,11 @@ namespace Seldon
 
 	// v = v / rho
 	// y = y / rho
-	Mlt(Complexe(1./rho), v);
-	Mlt(Complexe(1./rho), y);
+	Mlt(one/rho, v);
+	Mlt(one/rho, y);
 
 	delta = DotProd(v, y);
-	if (delta == Complexe(0))
+	if (delta == zero)
 	  {
 	    iter.Fail(3, "Qmr breakdown #2");
 	    break;
@@ -101,29 +105,29 @@ namespace Seldon
 	else
 	  {
 	    // p = y - (rho delta / ep) p
-	    Mlt(Complexe(-(rho  * delta / ep)), p);
-	    Add(Complexe(1), y, p);
+	    Mlt(-rho  * delta / ep, p);
+	    Add(one, y, p);
 	  }
 
 	// product matrix vector p_tld = A*p
 	Mlt(A, p, p_tld);
 
 	ep = DotProd(p, p_tld);
-	if (ep == Complexe(0))
+	if (ep == zero)
 	  {
 	    iter.Fail(4, "Qmr breakdown #3");
 	    break;
 	  }
 
 	beta = ep / delta;
-	if (beta == Complexe(0))
+	if (beta == zero)
 	  {
 	    iter.Fail(5, "Qmr breakdown #4");
 	    break;
 	  }
 
 	// v = -beta v + p_tld
-	Mlt(Complexe(-beta), v); Add(Complexe(1), p_tld, v);
+	Mlt(-beta, v); Add(one, p_tld, v);
 	M.Solve(A, v, y);
 
 	rho_1 = rho;
@@ -133,7 +137,7 @@ namespace Seldon
 	theta_1 = theta;
 
 	theta = rho / (gamma_1 * beta);
-	gamma = Complexe(1) / sqrt(1.0 + theta * theta);
+	gamma = one / sqrt(one + theta * theta);
 
 	if (gamma == Titer(0))
 	  {
@@ -158,8 +162,8 @@ namespace Seldon
 	    Mlt(tmp, s);
 	    Add(eta, p_tld, s);
 	  }
-	Add(Complexe(1), d, x);
-	Add(-Complexe(1), s, r);
+	Add(one, d, x);
+	Add(-one, s, r);
 
 	++iter;
       }

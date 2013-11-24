@@ -46,7 +46,7 @@ namespace Seldon
 	   const Vector<T1, Storage1, Allocator1>& B,
 	   const T3& omega, int iter, int type_ssor)
   {
-    T1 temp, zero, one;
+    T1 temp, zero; T3 one;
     T0 ajj;
     SetComplexZero(zero);
     SetComplexOne(one);
@@ -140,7 +140,7 @@ namespace Seldon
 	   const T3& omega,
 	   int iter, int type_ssor)
   {
-    T1 temp, zero, one;
+    T1 temp, zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -230,7 +230,7 @@ namespace Seldon
 	   const Vector<T1, Storage1, Allocator1>& B,
 	   const T3& omega, int iter, int type_ssor)
   {
-    T1 temp, zero, one;
+    T1 temp, zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -258,7 +258,7 @@ namespace Seldon
 
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    T3 coef = (1.0 - omega) / omega;
+    T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -279,7 +279,7 @@ namespace Seldon
               
 	      X(j) = coef * ajj * X(j) + B(j) - temp;
 	    }
-
+          
           // Then we solve (D/omega - L) X = X
 	  for (int j = 0; j < ma; j++)
 	    {
@@ -288,8 +288,8 @@ namespace Seldon
                 X(ind[k]) -= data[k]*X(j);
 	    }
 	}
-
-
+    
+    
     // Backward sweep.
     // (D/omega - U) X^{n+1} = (L + (1-omega)/omega D) X^{n+1/2} + B
     if (type_ssor % 3 == 0)
@@ -334,7 +334,7 @@ namespace Seldon
 	   const Vector<T1, Storage1, Allocator1>& B,
 	   const T3& omega, int iter, int type_ssor)
   {
-    T1 temp, zero, one;
+    T1 temp, zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
 
@@ -358,7 +358,7 @@ namespace Seldon
 
     // Forward sweep.
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    T3 coef = (1.0 - omega) / omega;
+    T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -433,9 +433,9 @@ namespace Seldon
   void SOR(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
 	   Vector<T2, Storage2, Allocator2>& X,
 	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega,int iter, int type_ssor)
+	   const T3& omega, int iter, int type_ssor)
   {
-    T1 zero, one;
+    T1 zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -462,7 +462,7 @@ namespace Seldon
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
     T0 ajj;
-    T3 coef = (1.0 - omega) / omega;
+    T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -485,7 +485,7 @@ namespace Seldon
 	      ajj = data[k];
               X(j) = B(j) + coef * ajj * X(j);
 	    }
-
+          
           // Then we solve (D/omega - L) X = X
 	  for (int j = 0; j < ma; j++)
 	    {
@@ -560,9 +560,9 @@ namespace Seldon
   void SOR(const Matrix<T0, Prop0, ArrayColSparse, Allocator0>& A,
 	   Vector<T2, Storage2, Allocator2>& X,
 	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega,int iter, int type_ssor)
+	   const T3& omega, int iter, int type_ssor)
   {
-    T1 zero, one;
+    T1 zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -585,7 +585,7 @@ namespace Seldon
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
     T0 ajj;
-    T3 coef = (1.0 - omega) / omega;
+    T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -680,7 +680,7 @@ namespace Seldon
 	   const Vector<T1, Storage1, Allocator1>& B,
 	   const T3& omega, int iter, int type_ssor)
   {
-    T1 temp, zero, one;
+    T1 temp, zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -707,7 +707,7 @@ namespace Seldon
 
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    T3 coef = (1.0 - omega) / omega;
+    T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -785,7 +785,7 @@ namespace Seldon
 	   const Vector<T1, Storage1, Allocator1>& B,
 	   const T3& omega, int iter, int type_ssor)
   {
-    T1 temp, zero, one;
+    T1 temp, zero; T3 one;
     SetComplexZero(zero);
     SetComplexOne(one);
     
@@ -809,7 +809,7 @@ namespace Seldon
 
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    T3 coef = (1.0 - omega) / omega;
+    T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	{

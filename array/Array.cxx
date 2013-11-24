@@ -2119,7 +2119,7 @@ namespace Seldon
   void Array<T, N, Allocator>::Fill()
   {
     for (int i = 0; i < GetDataSize(); i++)
-      data_[i] = i;
+      SetComplexReal(i, data_[i]);
   }
 
 
@@ -2132,8 +2132,10 @@ namespace Seldon
   template <class T0>
   void Array<T, N, Allocator>::Fill(const T0& x)
   {
+    T x_;
+    SetComplexReal(x, x_);
     for (int i = 0; i < GetDataSize(); i++)
-      data_[i] = x;
+      data_[i] = x_;
   }
 
 
@@ -2144,9 +2146,11 @@ namespace Seldon
   template <class T, int N, class Allocator>
   void Array<T, N, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     for (int i = 0; i < GetDataSize(); i++)
-      data_[i] = rand();
+      SetComplexReal(rand(), this->data_[i]);
   }
 
 

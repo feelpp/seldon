@@ -1059,7 +1059,10 @@ namespace Seldon
   {
     ofstream FileStream; FileStream.precision(14);
     FileStream.open(FileName.c_str());
-
+    
+    // changing precision
+    FileStream.precision(cout.precision());
+    
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
@@ -1277,10 +1280,10 @@ namespace Seldon
     for (int i = 0; i < Storage::GetFirst(this->m_, this->n_); i++)
       {
 	for (int j = 0; j < val_real_(i).GetM(); j++)
-	  val_real_(i).Value(j) = value++;
+	  SetComplexReal(value++, val_real_(i).Value(j));
 
 	for (int j = 0; j < val_imag_(i).GetM(); j++)
-	  val_imag_(i).Value(j) = value++;
+	  SetComplexReal(value++, val_imag_(i).Value(j));
       }
   }
 

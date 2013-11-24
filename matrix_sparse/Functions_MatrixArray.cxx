@@ -801,17 +801,18 @@ namespace Seldon
     if (B.GetM() <= 0)
       return;
 
-    T4 zero;
+    T4 zero; T0 one;
     SetComplexZero(zero);
+    SetComplexOne(one);
 
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
 
     int m = A.GetM(), n, p;
-    T3 val;
-    if (alpha == T0(1))
+    T1 val;
+    if (alpha == one)
       {
 	for (int i = 0 ; i < m ; i++)
 	  {
@@ -821,7 +822,7 @@ namespace Seldon
 		p = A.Index(i, k);
 		val = A.Value(i, k);
 
-		if (p == i)
+                if (p == i)
 		  C(i) += val * B(i);
 		else
 		  {
@@ -840,14 +841,14 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.Index(i, k);
-		val = alpha * A.Value(i, k);
+		val = A.Value(i, k);
 
 		if (p==i)
-		  C(i) += val * B(i);
+		  C(i) += alpha * val * B(i);
 		else
 		  {
-		    C(i) += val * B(p);
-		    C(p) += val * B(i);
+		    C(i) += alpha * val * B(p);
+		    C(p) += alpha * val * B(i);
 		  }
 	      }
 	  }
@@ -893,17 +894,18 @@ namespace Seldon
     if (B.GetM() <= 0)
       return;
 
-    T4 zero;
+    T4 zero; T0 one;
     SetComplexZero(zero);
+    SetComplexOne(one);
 
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
 
     int m = A.GetM(), n, p;
-    T3 val;
-    if (alpha == T0(1))
+    T1 val;
+    if (alpha == one)
       {
 	for (int i = 0 ; i < m ; i++)
 	  {
@@ -932,14 +934,14 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.Index(i, k);
-		val = alpha * conj(A.Value(i, k));
+		val = conj(A.Value(i, k));
 
 		if (p==i)
-		  C(i) += val * B(i);
+		  C(i) += alpha * val * B(i);
 		else
 		  {
-		    C(i) += val * B(p);
-		    C(p) += val * B(i);
+		    C(i) += alpha * val * B(p);
+		    C(p) += alpha * val * B(i);
 		  }
 	      }
 	  }
@@ -961,17 +963,18 @@ namespace Seldon
     if (B.GetM() <= 0)
       return;
 
-    T4 zero;
+    T4 zero; T0 one;
     SetComplexZero(zero);
+    SetComplexOne(one);
 
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
 
     int m = A.GetM(), n, p;
-    T3 val;
-    if (alpha == T0(1))
+    T1 val;
+    if (alpha == one)
       {
 	for (int i = 0 ; i < m ; i++)
 	  {
@@ -1000,14 +1003,14 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.Index(i, k);
-		val = alpha * A.Value(i, k);
+		val = A.Value(i, k);
 
 		if (p==i)
-		  C(i) += val * B(i);
+		  C(i) += alpha * val * B(i);
 		else
 		  {
-		    C(i) += val * B(p);
-		    C(p) += val * B(i);
+		    C(i) += alpha * val * B(p);
+		    C(p) += alpha * val * B(i);
 		  }
 	      }
 	  }
@@ -1053,17 +1056,18 @@ namespace Seldon
     if (B.GetM() <= 0)
       return;
 
-    T4 zero;
+    T4 zero; T0 one;
     SetComplexZero(zero);
+    SetComplexOne(one);
 
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
 
     int m = A.GetM(), n, p;
-    T3 val;
-    if (alpha == T0(1))
+    T1 val;
+    if (alpha == one)
       {
 	for (int i = 0 ; i < m ; i++)
 	  {
@@ -1118,14 +1122,17 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    if (beta == T4(0))
-      C.Fill(T3(0));
+    T4 zero; SetComplexZero(zero);
+    T0 one; SetComplexOne(one);
+    
+    if (beta == zero)
+      C.Fill(0);
     else
       Mlt(beta, C);
-
+    
     int m = A.GetM(), n, p;
     T1 val;
-    if (alpha == T0(1))
+    if (alpha == one)
       {
 	for (int i = 0 ; i < m ; i++)
 	  {
@@ -1176,13 +1183,17 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    if (beta == T4(0))
-      C.Fill(T3(0));
+    T4 zero; SetComplexZero(zero);
+    T0 one; SetComplexOne(one);
+
+    if (beta == zero)
+      C.Fill(0);
     else
       Mlt(beta, C);
+    
     int m = A.GetM(), n, p;
     T1 val;
-    if (alpha == T0(1))
+    if (alpha == one)
       {
 	for (int i = 0 ; i < m ; i++)
 	  {
@@ -1220,14 +1231,17 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    if (beta == T4(0))
-      C.Fill(T3(0));
+    T4 zero; SetComplexZero(zero);
+    T0 one; SetComplexOne(one);
+
+    if (beta == zero)
+      C.Fill(0);
     else
       Mlt(beta, C);
     
     int m = A.GetM(), n, p;
     T1 val;
-    if (alpha == T0(1))
+    if (alpha == one)
       {
 	for (int i = 0 ; i < m ; i++)
 	  {
@@ -1267,14 +1281,16 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    T4 zero;
+    T4 zero; T0 one;
     SetComplexZero(zero);
+    SetComplexOne(one);
+    
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
 
-    if (alpha == T0(1))
+    if (alpha == one)
       {
 	for (int i = 0 ; i < A.GetN(); i++)
           for (int k = 0; k < A.GetColumnSize(i); k++)
@@ -1311,14 +1327,16 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    T4 zero;
+    T4 zero; T0 one;
     SetComplexZero(zero);
+    SetComplexOne(one);
+    
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
 
-    if (alpha == T0(1))
+    if (alpha == one)
       {
 	for (int i = 0 ; i < A.GetN(); i++)
           for (int k = 0; k < A.GetColumnSize(i); k++)
@@ -1342,14 +1360,16 @@ namespace Seldon
 	      const T4& beta,
 	      Vector<T3, VectFull, Allocator3>& C)
   {
-    T4 zero;
+    T4 zero; T0 one;
     SetComplexZero(zero);
+    SetComplexOne(one);
+    
     if (beta == zero)
-      C.Fill(zero);
+      C.Fill(0);
     else
       Mlt(beta, C);
 
-    if (alpha == T0(1))
+    if (alpha == one)
       {
 	for (int i = 0 ; i < A.GetN(); i++)
           for (int k = 0; k < A.GetColumnSize(i); k++)
@@ -1385,7 +1405,7 @@ namespace Seldon
 	n = A.GetRowSize(i);
 	for (int j = 0; j < n; j++)
 	  value(j) = alpha*A.Value(i, j);
-
+        
 	B.AddInteractionRow(i, n, A.GetIndex(i), value.GetData());
       }
   }
@@ -1612,7 +1632,7 @@ namespace Seldon
     for (int i = 0; i < m; i++)
       for (int j = 0; j < n; j++)
 	{
-	  val = T3(0);
+	  SetComplexZero(val);
 	  for (int ind = 0; ind < A.GetRowSize(i); ind++)
 	    {
 	      int k = A.Index(i, ind);

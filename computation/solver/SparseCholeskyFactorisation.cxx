@@ -54,6 +54,9 @@ namespace Seldon
     A.Reallocate(n, n);
 
     // Main loop over rows.
+    T zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
     int new_percent = 0, old_percent = 0;
     for (int i_row = 0; i_row < n; i_row++)
       {
@@ -75,7 +78,7 @@ namespace Seldon
         // we are separating lower from upper part
 	int length_lower = 0, length_upper = 1; 
         Row_Ind(i_row) = i_row;
-	Row_Val(i_row) = 0.0;
+	Row_Val(i_row) = zero;
 	Index(i_row) = i_row;
 	
         for (int j = 0; j < size_row; j++) 
@@ -216,7 +219,7 @@ namespace Seldon
             
           }
         
-	A.Value(i_row, 0) = 1.0 / Row_Val(i_row);
+	A.Value(i_row, 0) = one / Row_Val(i_row);
         A.Index(i_row, 0) = i_row;
         index_lu = 1;
 	
@@ -244,7 +247,7 @@ namespace Seldon
         for (int k = 1; k < A.GetRowSize(i); k++)
           A.Value(i, k) *= A.Value(i, 0);
 	
-	A.Value(i, 0) = 1.0 / A.Value(i, 0);
+	A.Value(i, 0) = one / A.Value(i, 0);
       }
   }
   

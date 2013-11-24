@@ -174,7 +174,7 @@ namespace Seldon
 	try
 	  {
 #endif
-
+            
 	    data_ =
 	      reinterpret_cast<pointer>(array3D_allocator_.reallocate(data_,
 								      i*j*k,
@@ -496,7 +496,7 @@ namespace Seldon
   void Array3D<T, Allocator>::Fill()
   {
     for (int i = 0; i < GetDataSize(); i++)
-      data_[i] = i;
+      SetComplexReal(i, data_[i]);
   }
 
 
@@ -509,8 +509,10 @@ namespace Seldon
   template <class T0>
   void Array3D<T, Allocator>::Fill(const T0& x)
   {
+    T x_;
+    SetComplexReal(x, x_);
     for (int i = 0; i < GetDataSize(); i++)
-      data_[i] = x;
+      data_[i] = x_;
   }
 
 
@@ -521,9 +523,11 @@ namespace Seldon
   template <class T, class Allocator>
   void Array3D<T, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     for (int i = 0; i < GetDataSize(); i++)
-      data_[i] = rand();
+      SetComplexReal(rand(), this->data_[i]);
   }
 
 

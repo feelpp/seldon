@@ -49,9 +49,12 @@ namespace Seldon
       return 0;
 
     typedef typename Vector1::value_type Complexe;
-    Complexe rho(1), rho_1(0), alpha, beta, delta, one;
+    Complexe rho, rho_1, alpha, beta, delta;
     Vector1 p(b), q(b), r(b), z(b);
+    Complexe zero, one;
+    SetComplexZero(zero);
     SetComplexOne(one);
+    rho = one; rho_1 = zero;
 
     // x should be equal to 0
     // see Cg to understand implementation
@@ -61,6 +64,8 @@ namespace Seldon
     // q = A^t (b - A x)
     if (!iter.IsInitGuess_Null())
       MltAdd(-one, A, x, one, r);
+    else
+      x.Fill(zero);
     
     Mlt(SeldonTrans, A, r, q);
     Copy(q, r);
@@ -79,7 +84,7 @@ namespace Seldon
 	M.Solve(A, q, z);
 
 	rho = DotProd(r, z);
-	if (rho == Complexe(0))
+	if (rho == zero)
 	  {
 	    iter.Fail(1, "Cgne breakdown #1");
 	    break;
@@ -91,7 +96,7 @@ namespace Seldon
 	  {
 	    beta = rho / rho_1;
 	    Mlt(beta, p);
-	    Add(Complexe(1), z, p);
+	    Add(one, z, p);
 	  }
 	
 	// instead of q = A*p, we compute q = A^t A *p
@@ -99,7 +104,7 @@ namespace Seldon
 	Mlt(SeldonTrans, A, q, z);
 	
 	delta = DotProd(p, z);
-	if (delta == Complexe(0))
+	if (delta == zero)
 	  {
 	    iter.Fail(2, "Cgne breakdown #2");
 	    break;

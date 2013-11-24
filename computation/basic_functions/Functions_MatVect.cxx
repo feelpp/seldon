@@ -137,10 +137,11 @@ namespace Seldon
 	   const Vector<T2, Storage2, Allocator2>& X,
 	   Vector<T3, Storage3, Allocator3>& Y)
   {
-    T3 zero;
+    T3 zero, alpha_c;
     SetComplexZero(zero);
+    SetComplexReal(alpha, alpha_c);
     Y.Fill(zero);
-    MltAdd(double(alpha), M, X, zero, Y);
+    MltAdd(alpha_c, M, X, zero, Y);
   }
 
   
@@ -1132,14 +1133,13 @@ namespace Seldon
     T4 zero;
     SetComplexZero(zero);
     T4 temp;
-    T4 alpha_(alpha);
 
     for (int i = 0; i < ma; i++)
       {
 	temp = zero;
 	for (int j = 0; j < na; j++)
 	  temp += M(i, j) * X(j);
-	Y(i) += alpha_ * temp;
+	Y(i) += alpha * temp;
       }
   }
 
@@ -1185,14 +1185,13 @@ namespace Seldon
     typename T4::value_type zero;
     SetComplexZero(zero);
     typename T4::value_type temp;
-    typename T4::value_type alpha_(alpha);
 
     for (int i = 0; i < ma; i++)
       {
 	temp = zero;
 	for (int j = 0; j < na; j++)
 	  temp += M(i, j) * X(j);
-	Y(i) += alpha_ * temp;
+	Y(i) += alpha * temp;
       }
   }
 
@@ -1340,23 +1339,25 @@ namespace Seldon
     if (Storage1::Sparse)
       throw WrongArgument("MltAdd", "This function is intended to dense"
                           " matrices only and not to sparse matrices");
+
+    T3 zero3;
+    SetComplexZero(zero3);
+    T4 zero;
+    SetComplexZero(zero);
     
-    if (beta == T3(0))
-      Y.Fill(T4(0));
+    if (beta == zero3)
+      Y.Fill(zero);
     else
       Mlt(beta, Y);
 
-    T4 zero;
-    SetComplexZero(zero);
     T4 temp;
-    T4 alpha_(alpha);
 
     for (int i = 0; i < na; i++)
       {
 	temp = zero;
 	for (int j = 0; j < ma; j++)
 	  temp += M(j, i) * X(j);
-	Y(i) += alpha_ * temp;
+	Y(i) += alpha * temp;
       }
   }
 
@@ -1388,22 +1389,24 @@ namespace Seldon
       throw WrongArgument("MltAdd", "This function is intended to dense"
                           " matrices only and not to sparse matrices");
     
-    if (beta == T3(0))
-      Y.Fill(T4(0));
+    T3 zero3;
+    SetComplexZero(zero3);
+    T4 zero;
+    SetComplexZero(zero);
+    
+    if (beta == zero3)
+      Y.Fill(zero);
     else
       Mlt(beta, Y);
 
-    T4 zero;
-    SetComplexZero(zero);
     T4 temp;
-    T4 alpha_(alpha);
-
+    
     for (int i = 0; i < na; i++)
       {
 	temp = zero;
 	for (int j = 0; j < ma; j++)
 	  temp += conj(M(j, i)) * X(j);
-	Y(i) += alpha_ * temp;
+	Y(i) += alpha * temp;
       }
   }
 
@@ -1510,12 +1513,14 @@ namespace Seldon
     if (Storage0::Sparse)
       throw WrongArgument("GaussSeidel", "This function is intended to dense"
                           " matrices only and not to sparse matrices");
-
+    
+    T1 zero;
+    SetComplexZero(zero);
     if (type_algo%2 == 0)
       for (i = 0; i < iter; i++)
         for (j = 0; j < na; j++)
           {
-            temp = 0;
+            temp = zero;
             for (k = 0; k < j; k++)
               temp -= M(j, k) * Y(k);
             for (k = j + 1; k < na; k++)
@@ -1527,7 +1532,7 @@ namespace Seldon
       for (i = 0; i < iter; i++)
         for (j = na-1; j >= 0; j--)
           {
-            temp = 0;
+            temp = zero;
             for (k = 0; k < j; k++)
               temp -= M(j, k) * Y(k);
             for (k = j + 1; k < na; k++)
@@ -1599,7 +1604,7 @@ namespace Seldon
       for (i = 0; i < iter; i++)
         for (j = na-1; j >= 0; j--)
           {
-            temp = 0;
+            SetComplexZero(temp);
             for (k = 0; k < j; k++)
               temp -= M(j, k) * Y(k);
             for (k = j + 1; k < na; k++)
@@ -1664,7 +1669,7 @@ namespace Seldon
       for (i = 0; i < iter; i++)
         for (j = na-1; j >= 0; j--)
           {
-            temp = 0;
+            SetComplexZero(temp);
             for (k = 0; k < j; k++)
               temp -= M(k, j) * Y(k);
             for (k = j + 1; k < na; k++)
@@ -1723,7 +1728,7 @@ namespace Seldon
     // Forward substitution.
     for (i = 0; i < ma; i++)
       {
-	temp = 0;
+	SetComplexZero(temp);
 	for (k = 0; k < i; k++)
 	  temp += M(i, k) * Y(k);
 	Y(i) = (Y(i) - temp) / M(i, i);
@@ -1731,7 +1736,7 @@ namespace Seldon
     // Back substitution.
     for (i = ma - 2; i > -1; i--)
       {
-	temp = 0;
+	SetComplexZero(temp);
 	for (k = i + 1; k < ma; k++)
 	  temp += M(i, k) * Y(k);
 	Y(i) -= temp;

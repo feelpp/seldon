@@ -28,7 +28,7 @@ namespace Seldon
   protected :
     bool symmetric_precond; //!< true for Symmetric relaxation
     int nb_iter; //!< number of iterations
-    T omega; //!< relaxation parameter
+    typename ClassComplexType<T>::Treal omega; //!< relaxation parameter
 
   public :
     SorPreconditioner();
@@ -36,7 +36,10 @@ namespace Seldon
 
     inline void InitSymmetricPreconditioning() { symmetric_precond = true; }
     inline void InitUnSymmetricPreconditioning() { symmetric_precond = false; }
-    inline void SetParameterRelaxation(const T& param) { omega = param; }
+    inline void 
+    SetParameterRelaxation(const typename ClassComplexType<T>::Treal& param)
+    { omega = param; }
+    
     inline void SetNumberIterations(int nb_iterations) { nb_iter = nb_iterations; }
 
     template<class Vector1, class Matrix1>
@@ -54,7 +57,7 @@ namespace Seldon
   template<class T>
   inline SorPreconditioner<T>::SorPreconditioner()
   {
-    nb_iter = 1; omega = T(1);
+    nb_iter = 1; omega = 1;
     symmetric_precond = true;
   }
 
@@ -65,8 +68,8 @@ namespace Seldon
   Solve(const Matrix1& A, const Vector1& r, Vector1& z, bool init_guess_null)
   {
     if (init_guess_null)
-      z.Zero();
-
+      z.Fill(0);
+    
     if (symmetric_precond)
       SOR(A, z, r, omega, nb_iter, 0);
     else
@@ -81,7 +84,7 @@ namespace Seldon
 	     Vector1& z, bool init_guess_null)
   {
     if (init_guess_null)
-      z.Zero();
+      z.Fill(0);
     
     if (symmetric_precond)
       SOR(SeldonTrans, A, z, r, omega, nb_iter, 0);

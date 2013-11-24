@@ -72,7 +72,7 @@ namespace Seldon
     typedef Vector<cplx, VectFull, Allocator2> VectCplx;
     VectCplx Row_Val(n);
     IVect Index(n), Row_Ind(n);
-    Row_Val.Zero(); Row_Ind.Fill(-1);
+    Row_Val.Fill(0); Row_Ind.Fill(-1);
 
     Index.Fill(-1);
 
@@ -370,7 +370,7 @@ namespace Seldon
     typedef Vector<cplx, VectFull, Allocator> VectCplx;
     VectCplx Row_Val(n);
     IVect Index(n), Row_Ind(n), Row_Level(n);
-    Row_Val.Zero(); Row_Ind.Fill(-1);
+    Row_Val.Fill(0); Row_Ind.Fill(-1);
     Row_Level.Fill(-1);
     Index.Fill(-1);
 

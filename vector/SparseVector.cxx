@@ -426,13 +426,15 @@ namespace Seldon
   Vector<T, VectSparse, Allocator>::operator() (int i) const
   {
     int k = 0;
+    T zero;
+    SetComplexZero(zero);
     // Searching for the entry.
     while (k < this->m_ && index_[k] < i)
       k++;
 
     if (k >= this->m_ || index_[k] != i)
       // The entry does not exist, a zero is returned.
-      return T(0);
+      return zero;
 
     return this->data_[k];
   }
@@ -450,13 +452,15 @@ namespace Seldon
   Vector<T, VectSparse, Allocator>::operator() (int i)
   {
     int k = 0;
+    T zero;
+    SetComplexZero(zero);
     // Searching for the entry.
     while (k < this->m_ && index_[k] < i)
       k++;
 
     if (k >= this->m_ || index_[k] != i)
       // The entry does not exist, a zero is returned.
-      return T(0);
+      return zero;
     
     return this->data_[k];
   }
@@ -474,13 +478,15 @@ namespace Seldon
   Vector<T, VectSparse, Allocator>::Get(int i)
   {
     int k = 0;
+    T zero;
+    SetComplexZero(zero);
     // Searching for the entry.
     while (k < this->m_ && index_[k] < i)
       k++;
 
     if (k >= this->m_ || index_[k] != i)
       // The entry does not exist yet, so a zero entry is introduced.
-      AddInteraction(i, T(0));
+      AddInteraction(i, zero);
     
     return this->data_[k];
   }
@@ -1017,14 +1023,9 @@ namespace Seldon
 #endif
 
     // First entries.
-    for (int i = 0; i < this->m_ - 1; i++)
+    for (int i = 0; i < this->m_; i++)
       stream << (Index(i) + 1) << " " << Value(i) << '\n';
-
-    // Last entry is a special case: there should be no empty line at the end
-    // of the stream.
-    if (this->m_ > 0)
-      stream << (Index(this->m_ - 1) + 1) << " " << Value(this->m_ - 1);
-
+    
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!stream.good())

@@ -1147,6 +1147,7 @@ namespace Seldon
 	IndRow.Reallocate(nnz + nb_new_val);
         Val.Reallocate(nnz + nb_new_val);
         int k = 0, nb = 0;
+        T zero; SetComplexZero(zero);
         for (int i = 0; i <= n; i++)
           {
 	    while (k < IndCol.GetM() && IndCol(k) < i)
@@ -1182,7 +1183,7 @@ namespace Seldon
 		    {
 		      // New entry (null).
 		      IndRow(nb) = irow;
-		      Val(nb) = 0;
+		      Val(nb) = zero;
 		      nb++;
 		    }
 		}
@@ -1262,6 +1263,7 @@ namespace Seldon
         IndRow.Reallocate(nnz + nb_new_val);
         Val.Reallocate(nnz + nb_new_val);
         int k = 0, nb = 0;
+        T zero; SetComplexZero(zero);
         for (int i = 0; i <= n; i++)
           {
             while (k < IndCol.GetM() && IndCol(k) < i)
@@ -1297,7 +1299,7 @@ namespace Seldon
 		    {
 		      // New entry (null).
 		      IndRow(nb) = irow;
-		      Val(nb) = 0;
+		      Val(nb) = zero;
 		      nb++;
 		    }
 		}
@@ -1394,6 +1396,7 @@ namespace Seldon
 	    IndCol.Reallocate(nnz + nb_new_val);
 	    Val.Reallocate(nnz + nb_new_val);
 	    int k = 0, nb = 0;
+            T zero; SetComplexZero(zero);
 	    for (int i = 0; i <= n; i++)
 	      {
 		while (k < IndRow.GetM() && IndRow(k) < i)
@@ -1429,7 +1432,7 @@ namespace Seldon
 			{
 			  // New entry
 			  IndCol(nb) = icol;
-			  Val(nb) = 0;
+			  Val(nb) = zero;
 			  nb++;
 			}
 		    }
@@ -1538,6 +1541,7 @@ namespace Seldon
 	    IndCol.Reallocate(nnz + nb_new_val);
 	    Val.Reallocate(nnz + nb_new_val);
 	    int k = 0, nb = 0;
+            T zero; SetComplexZero(zero);
 	    for (int i = 0; i <= n; i++)
 	      {
 		while (k < IndRow.GetM() && IndRow(k) < i)
@@ -1573,7 +1577,7 @@ namespace Seldon
 			{
 			  // New entry
 			  IndCol(nb) = icol;
-			  Val(nb) = 0;
+			  Val(nb) = zero;
 			  nb++;
 			}
 		    }

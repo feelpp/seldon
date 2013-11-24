@@ -51,9 +51,13 @@ namespace Seldon
       return 0;
 
     typedef typename Vector1::value_type Complexe;
-    Complexe rho(1), rho_1(1), alpha, beta,delta;
+    Complexe rho, rho_1, alpha, beta, delta;
     Vector1 p(b), q(b), r(b), z(b);
-
+    Complexe zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    rho = one; rho_1 = one;
+    
     // we initialize iter
     int success_init = iter.Init(b);
     if (success_init != 0)
@@ -62,9 +66,9 @@ namespace Seldon
     // we compute the initial residual r = b - Ax
     Copy(b, r);
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), r);
+      MltAdd(-one, A, x, one, r);
     else
-      x.Zero();
+      x.Fill(zero);
 
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
@@ -77,7 +81,7 @@ namespace Seldon
 	// rho = (conj(r),z)
 	rho = DotProdConj(r, z);
 
-	if (rho == Complexe(0) )
+	if (rho == zero)
 	  {
 	    iter.Fail(1, "Cg breakdown #1");
 	    break;
@@ -90,13 +94,13 @@ namespace Seldon
 	    // p = beta*p + z  where  beta = rho_i/rho_{i-1}
 	    beta = rho / rho_1;
 	    Mlt(beta, p);
-	    Add(Complexe(1), z, p);
+	    Add(one, z, p);
 	  }
 
 	// matrix vector product q = A*p
 	Mlt(A, p, q);
 	delta = DotProdConj(p, q);
-	if (delta == Complexe(0))
+	if (delta == zero)
 	  {
 	    iter.Fail(2, "Cg breakdown #2");
 	    break;

@@ -47,13 +47,15 @@ namespace Seldon
       return 0;
 
     typedef typename Vector1::value_type Complexe;
-    Complexe delta, ep(0), beta;
+    Complexe delta, ep, beta;
     Titer  rho, rho_1, xi;
     Complexe theta_1, gamma_1;
-    Complexe theta(0), gamma(1), eta(-1), one;
+    Complexe theta, gamma, eta, one, zero;
     SetComplexOne(one);
+    SetComplexZero(zero);
+    theta = zero; gamma = one; eta = -one; ep = zero;
 
-    Vector1 r(b), y(b), z_tld(b); r.Zero();
+    Vector1 r(b), y(b), z_tld(b);
     Vector1 v(b), w(b), p_tld(b);
     Vector1 p(b), q(b), d(b), s(b);
 
@@ -65,9 +67,9 @@ namespace Seldon
     // r = b - Ax
     Copy(b, r);
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), r);
+      MltAdd(-one, A, x, one, r);
     else
-      x.Zero();
+      x.Fill(zero);
 
     Copy(r, v);
 
@@ -101,7 +103,7 @@ namespace Seldon
 	Mlt(one/xi, w);
 
 	delta = DotProd(w, y);
-	if (delta == Complexe(0))
+	if (delta == zero)
 	  {
 	    iter.Fail(3, "Qmr breakdown #3");
 	    break;
@@ -118,32 +120,32 @@ namespace Seldon
 	  {
 	    // p = y - (xi delta / ep) p
 	    // q = z_tld - (rho delta / ep) q
-	    Mlt(Complexe(-(xi  * delta / ep)), p);
-	    Add(Complexe(1), y, p);
-	    Mlt(Complexe(-(rho  * delta / ep)), q);
-	    Add(Complexe(1), z_tld, q);
+	    Mlt(-xi  * delta / ep, p);
+	    Add(one, y, p);
+	    Mlt(-rho  * delta / ep, q);
+	    Add(one, z_tld, q);
 	  }
 
 	// product matrix vector p_tld = A*p
 	Mlt(A, p, p_tld);
 
 	ep = DotProd(q, p_tld);
-	if (ep == Complexe(0))
+	if (ep == zero)
 	  {
 	    iter.Fail(4, "Qmr breakdown #4");
 	    break;
 	  }
 
 	beta = ep / delta;
-	if (beta == Complexe(0))
+	if (beta == zero)
 	  {
 	    iter.Fail(5, "Qmr breakdown #5");
 	    break;
 	  }
 
 	// v = -beta v + p_tld
-	Mlt(Complexe(-beta), v);
-	Add(Complexe(1), p_tld, v);
+	Mlt(-beta, v);
+	Add(one, p_tld, v);
 	M.Solve(A, v, y);
 
 	rho_1 = rho;
@@ -152,7 +154,7 @@ namespace Seldon
 	// product matrix vector z_tld = A q
 	Mlt(SeldonTrans, A, q, z_tld);
 	// w = z_tld - beta*w
-	Mlt(Complexe(-beta), w); Add(Complexe(1), z_tld, w);
+	Mlt(-beta, w); Add(one, z_tld, w);
 
 	xi = Norm2(w);
 
@@ -186,8 +188,8 @@ namespace Seldon
 	    Mlt(tmp, s);
 	    Add(eta, p_tld, s);
 	  }
-	Add(Complexe(1), d, x);
-	Add(-Complexe(1), s, r);
+	Add(one, d, x);
+	Add(-one, s, r);
 
 	++iter;
       }

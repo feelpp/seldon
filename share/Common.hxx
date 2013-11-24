@@ -121,6 +121,21 @@ namespace Seldon
 
   template <class T>
   void SetComplexOne(complex<T>& number);
+
+  template <class T>
+  void SetComplexReal(int n, complex<T>& number);
+
+  template <class T>
+  void SetComplexReal(int n, T& number);
+
+  template <class T>
+  void SetComplexReal(bool n, complex<T>& number);
+
+  template <class T>
+  void SetComplexReal(const T& x, complex<T>& number);
+
+  template <class T0, class T1>
+  void SetComplexReal(const T0& x, T1& number);
   
   template<class T>
   T ComplexAbs(const T& val);

@@ -52,9 +52,13 @@ namespace Seldon
       return 0;
 
     typedef typename Vector1::value_type Complexe;
-    Complexe rho_1, rho_2, mu,nu,alpha,beta,sigma,delta;
+    Complexe rho_1, rho_2, mu, nu, alpha, beta, sigma, delta;
     Vector1 p(b), q(b), r(b), rtilde(b), u(b),
       phat(b), r_qcgs(b), x_qcgs(b), v(b);
+
+    Complexe zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
 
     // we initialize iter
     int success_init = iter.Init(b);
@@ -64,15 +68,15 @@ namespace Seldon
     // we compute the residual r = b - Ax
     Copy(b,r);
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), r);
+      MltAdd(-one, A, x, one, r);
     else
-      x.Zero();
+      x.Fill(zero);
 
     Copy(r, rtilde);
-    rho_1 = Complexe(1);
-    q.Zero(); p.Zero();
+    rho_1 = one;
+    q.Fill(zero); p.Fill(zero);
     Copy(r, r_qcgs); Copy(x, x_qcgs);
-    Matrix<Complexe, Symmetric, RowSymPacked> bt_b(2,2),bt_b_m1(2,2);
+    Matrix<Complexe, Symmetric, RowSymPacked> bt_b(2,2), bt_b_m1(2,2);
     Vector<Complexe> bt_rn(2);
 
     iter.SetNumberIteration(0);
@@ -81,7 +85,7 @@ namespace Seldon
       {
 	rho_2 = DotProd(rtilde, r);
 
-	if (rho_1 == Complexe(0))
+	if (rho_1 == zero)
 	  {
 	    iter.Fail(1, "QCgs breakdown #1");
 	    break;
@@ -93,9 +97,9 @@ namespace Seldon
 	Copy(r, u);
 	Add(beta, q, u);
 	Mlt(beta, p);
-	Add(Complexe(1), q, p);
+	Add(one, q, p);
 	Mlt(beta, p);
-	Add(Complexe(1), u, p);
+	Add(one, u, p);
 
 	// preconditioning phat = M^{-1} p
 	M.Solve(A, p, phat);
@@ -103,7 +107,7 @@ namespace Seldon
 	// product matrix vector vhat = A*phat
 	Mlt(A, phat, v); ++iter;
 	sigma = DotProd(rtilde, v);
-	if (sigma == Complexe(0))
+	if (sigma == zero)
 	  {
 	    iter.Fail(2, "Qcgs breakdown #2");
 	    break;
@@ -114,7 +118,7 @@ namespace Seldon
 	Add(-alpha, v, q);
 
 	// u = u +q
-	Add(Complexe(1), q, u);
+	Add(one, q, u);
 	// x = x + alpha u
 	Add(alpha, u, x);
 	// preconditioning phat = M^{-1} u
@@ -126,14 +130,14 @@ namespace Seldon
 	Add(-alpha, u, r);
 	// u = r_qcgs - r_n
 	Copy(r_qcgs, u);
-	Add(-Complexe(1), r, u);
-	bt_b(0,0) = DotProd(u,u);
-	bt_b(1,1) = DotProd(v,v);
-	bt_b(1,0) = DotProd(u,v);
+	Add(-one, r, u);
+	bt_b(0,0) = DotProd(u, u);
+	bt_b(1,1) = DotProd(v, v);
+	bt_b(1,0) = DotProd(u, v);
 
 	// we compute inverse of bt_b
 	delta = bt_b(0,0)*bt_b(1,1) - bt_b(1,0)*bt_b(0,1);
-	if (delta == Complexe(0))
+	if (delta == zero)
 	  {
 	    iter.Fail(3, "Qcgs breakdown #3");
 	    break;
@@ -151,8 +155,8 @@ namespace Seldon
 	Copy(r, r_qcgs); Add(mu, u, r_qcgs);
 	Add(nu, v, r_qcgs);
 	// x_qcgs = x + mu (x_qcgs - x) - nu p
-	Mlt(mu,x_qcgs);
-	Add(Complexe(1)-mu, x, x_qcgs);
+	Mlt(mu, x_qcgs);
+	Add(one-mu, x, x_qcgs);
 	Add(-nu, p, x_qcgs);
 
 	rho_1 = rho_2;

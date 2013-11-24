@@ -751,9 +751,12 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Pointers<T, Prop, Storage, Allocator>::SetIdentity()
   {
-    Fill(T(0));
-
-    T one(1);
+    T zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    
+    Fill(zero);
+    
     for (int i = 0; i < min(this->m_, this->n_); i++)
       (*this)(i,i) = one;
   }
@@ -768,7 +771,7 @@ namespace Seldon
   void Matrix_Pointers<T, Prop, Storage, Allocator>::Fill()
   {
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = i;
+      SetComplexReal(i,  this->data_[i]);
   }
 
 
@@ -780,8 +783,9 @@ namespace Seldon
   template <class T0>
   void Matrix_Pointers<T, Prop, Storage, Allocator>::Fill(const T0& x)
   {
+    T x_; SetComplexReal(x, x_);
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = x;
+      this->data_[i] = x_;
   }
 
   //! Fills the matrix with a given value.
@@ -810,7 +814,7 @@ namespace Seldon
     srand(time(NULL));
 #endif
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = rand();
+      SetComplexReal(rand(), this->data_[i]);
   }
 
 

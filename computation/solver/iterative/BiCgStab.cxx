@@ -49,9 +49,13 @@ namespace Seldon
       return 0;
 
     typedef typename Vector1::value_type Complexe;
-    Complexe rho_1, rho_2(0), alpha(0), beta, omega(0), sigma;
+    Complexe rho_1, rho_2, alpha, beta, omega, sigma;
     Vector1 p(b), phat(b), s(b), shat(b), t(b), v(b), r(b), rtilde(b);
-
+    Complexe zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    omega = zero; alpha = zero; rho_2 = zero;
+    
     // we initialize iter
     int success_init = iter.Init(b);
     if (success_init != 0)
@@ -60,9 +64,9 @@ namespace Seldon
     // we compute the residual r = b - Ax
     Copy(b, r);
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), r);
+      MltAdd(-one, A, x, one, r);
     else
-      x.Zero();
+      x.Fill(zero);
 
     Copy(r, rtilde);
 
@@ -72,7 +76,7 @@ namespace Seldon
       {
 
 	rho_1 = DotProdConj(rtilde, r);
-	if (rho_1 == Complexe(0))
+	if (rho_1 == zero)
 	  {
 	    iter.Fail(1, "Bicgstab breakdown #1");
 	    break;
@@ -82,7 +86,7 @@ namespace Seldon
 	  Copy(r, p);
 	else
 	  {
-	    if (omega == Complexe(0))
+	    if (omega == zero)
 	      {
 		iter.Fail(2, "Bicgstab breakdown #2");
 		break;
@@ -92,7 +96,7 @@ namespace Seldon
 	    beta = (rho_1 / rho_2) * (alpha / omega);
 	    Add(-omega, v, p);
 	    Mlt(beta, p);
-	    Add(Complexe(1), r, p);
+	    Add(one, r, p);
 	  }
 	// preconditioning phat = M^{-1} p
 	M.Solve(A, p, phat);
@@ -102,7 +106,7 @@ namespace Seldon
 
 	// s=r-alpha*v  where alpha = rho_i / (v,rtilde)
 	sigma = DotProdConj(rtilde, v);
-	if (sigma == Complexe(0))
+	if (sigma == zero)
 	  {
 	    iter.Fail(3, "Bicgstab breakdown #3");
 	    break;

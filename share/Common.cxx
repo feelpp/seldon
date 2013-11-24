@@ -186,6 +186,61 @@ namespace Seldon
     number = complex<T>(T(1), T(0));
   }
 
+
+  //! Sets a real number to n.
+  /*!
+    \param[in,out] number real umber to be set to n.
+  */
+  template <class T>
+  inline void SetComplexReal(int n, T& number)
+  {
+    number = T(n);
+  }
+  
+  
+  //! Sets a complex number to (n, 0).
+  /*!
+    \param[in,out] number complex number to be set to (n, 0).
+  */
+  template <class T>
+  inline void SetComplexReal(int n, complex<T>& number)
+  {
+    number = complex<T>(n, 0);
+  }
+  
+
+  //! Sets a complex number to (n, 0).
+  /*!
+    \param[in,out] number complex number to be set to (n, 0).
+  */
+  template <class T>
+  inline void SetComplexReal(bool n, complex<T>& number)
+  {
+    number = complex<T>(n, 0);
+  }
+
+
+  //! Sets a complex number to (x, 0).
+  /*!
+    \param[in,out] number complex number to be set to (x, 0).
+  */  
+  template <class T>
+  void SetComplexReal(const T& x, complex<T>& number)
+  {
+    number = complex<T>(x, 0);
+  }
+  
+  
+  //! Sets a complex number to x.
+  /*!
+    \param[in,out] number complex number to be set to x.
+  */
+  template <class T0, class T1>
+  void SetComplexReal(const T0& x, T1& number)
+  {
+    number = x;
+  }
+  
   
   //! Returns true for a complex number
   template <class T>

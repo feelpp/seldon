@@ -67,13 +67,13 @@ namespace Seldon
 	ni = A.GetImagRowSize(i);
         for (int j = 0; j < n; j++)
 	  {
-	    value(j) = alpha*A.ValueReal(i, j);
+	    value(j) = alpha*complex<T2>(A.ValueReal(i, j), 0);
 	    index(j) = A.IndexReal(i, j);
 	  }
 
 	for (int j = 0; j < ni; j++)
 	  {
-	    value(j+n) = alpha*complex<T2>(0, 1) * A.ValueImag(i, j);
+	    value(j+n) = alpha*complex<T2>(0, A.ValueImag(i, j));
 	    index(j+n) = A.IndexImag(i, j);
 	  }
 	
@@ -95,13 +95,13 @@ namespace Seldon
       {
 	n = A.GetRealRowSize(i);
 	for (int j = 0; j < n; j++)
-	  value(j) = alpha*A.ValueReal(i, j);
+	  value(j) = alpha*complex<T1>(A.ValueReal(i, j), 0);
 
 	B.AddInteractionRow(i, n, A.GetRealInd(i), value.GetData());
 	
         n = A.GetImagRowSize(i);
         for (int j = 0; j < n; j++)
-	  value(j) = alpha*complex<T1>(0, 1) * A.ValueImag(i, j);
+	  value(j) = alpha*complex<T1>(0, A.ValueImag(i, j));
 
 	B.AddInteractionRow(i, n, A.GetImagInd(i), value.GetData());
       }
@@ -121,13 +121,13 @@ namespace Seldon
       {
 	n = A.GetRealRowSize(i);
         for (int j = 0; j < n; j++)
-          value(j) = alpha*A.ValueReal(i, j);
+          value(j) = alpha*complex<T1>(A.ValueReal(i, j), 0);
         
         B.AddInteractionRow(i, n, A.GetRealInd(i), value.GetData());
               
         n = A.GetImagRowSize(i);
         for (int j = 0; j < n; j++)
-          value(j) = alpha*complex<T1>(0, 1) * A.ValueImag(i, j);
+          value(j) = alpha*complex<T1>(0, A.ValueImag(i, j));
             
         B.AddInteractionRow(i, n, A.GetImagInd(i), value.GetData());
       }
@@ -149,13 +149,13 @@ namespace Seldon
 	ni = A.GetImagRowSize(i);
         for (int j = 0; j < n; j++)
           {
-            value(j) = alpha*A.ValueReal(i, j);
+            value(j) = alpha*complex<T2>(A.ValueReal(i, j), 0);
             index(j) = A.IndexReal(i, j);
           }
         
         for (int j = 0; j < ni; j++)
           {
-            value(n+j) = alpha*complex<T2>(0, 1) * A.ValueImag(i, j);
+            value(n+j) = alpha*complex<T2>(0, A.ValueImag(i, j));
             index(n+j) = A.IndexImag(i, j);
           }
             
@@ -181,13 +181,13 @@ namespace Seldon
 	ni = B.GetRowSize(i);
 	for (int j = 0; j < n; j++)
 	  {
-	    value(j) = alpha*A.Value(i, j);
+	    value(j) = alpha*complex<T3>(A.Value(i, j), 0);
 	    index(j) = A.Index(i, j);
 	  }
 
 	for (int j = 0; j < ni; j++)
 	  {
-	    value(n+j) = alpha*complex<T3>(0, 1) * B.Value(i, j);
+	    value(n+j) = alpha*complex<T3>(0, B.Value(i, j));
 	    index(n+j) = B.Index(i, j);
 	  }
 
@@ -214,13 +214,13 @@ namespace Seldon
 	ni = B.GetRowSize(i);
 	for (int j = 0; j < n; j++)
 	  {
-	    value(j) = alpha*A.Value(i, j);
+	    value(j) = alpha*complex<T3>(A.Value(i, j), 0);
 	    index(j) = A.Index(i, j);
 	  }
 
 	for (int j = 0; j < ni; j++)
 	  {
-	    value(n+j) = alpha*complex<T3>(0, 1) * B.Value(i, j);
+	    value(n+j) = alpha*complex<T3>(0, B.Value(i, j));
 	    index(n+j) = B.Index(i, j);
 	  }
 

@@ -92,10 +92,9 @@ namespace Seldon
 	   const Vector<T1, Storage1, Allocator1>& X,
 	   Vector<T2, Storage2, Allocator2>& Y)
   {
-    if (alpha != T0(0))
+    T0 zero; SetComplexZero(zero);
+    if (alpha != zero)
       {
-	T1 alpha_ = alpha;
-
 	int ma = X.GetM();
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -103,7 +102,7 @@ namespace Seldon
 #endif
 
 	for (int i = 0; i < ma; i++)
-	  Y(i) += alpha_ * X(i);
+	  Y(i) += alpha * X(i);
       }
   }
 
@@ -161,7 +160,9 @@ namespace Seldon
 	   const Vector<T1, VectSparse, Allocator1>& X,
 	   Vector<T2, VectSparse, Allocator2>& Y)
   {
-    if (alpha != T0(0))
+    T0 zero;
+    SetComplexZero(zero);
+    if (alpha != zero)
       {
 	Vector<T1, VectSparse, Allocator1> Xalpha = X;
 	Xalpha *= alpha;

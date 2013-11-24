@@ -49,6 +49,9 @@ namespace Seldon
     Complexe rho, rho_bar, phi, phi_bar, theta, c, s, tmp;
     Titer beta, alpha, rnorm;
     Vector1 v(b), v1(b), u(b), u1(b), w(b);
+    Complexe zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
 
     int success_init = iter.Init(b);
     if (success_init != 0)
@@ -56,21 +59,21 @@ namespace Seldon
 
     Copy(b, u);
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), u);
+      MltAdd(-one, A, x, one, u);
     else
-      x.Zero();
+      x.Fill(zero);
 
     rnorm = Norm2(u);
 
     Copy(b, u);
     beta = Norm2(u);
-    tmp = 1.0/beta; Mlt(tmp, u);
+    tmp = one/beta; Mlt(tmp, u);
     // matrix vector product
-    Mlt(SeldonTrans,A, u, v);
+    Mlt(SeldonTrans, A, u, v);
     alpha = Norm2(v);
-    tmp = 1.0/alpha; Mlt(tmp, v);
+    tmp = one/alpha; Mlt(tmp, v);
 
-    Copy(v,w); x.Zero();
+    Copy(v, w); x.Fill(zero);
 
     phi_bar = beta; rho_bar = alpha;
 
@@ -83,27 +86,27 @@ namespace Seldon
 	// u1 = u1 - alpha*u
 	Add(-alpha, u, u1);
 	beta = Norm2(u1);
-	if (beta == Complexe(0) )
+	if (beta == zero)
 	  {
 	    iter.Fail(1, "Lsqr breakdown #1");
 	    break;
 	  }
-	tmp = 1.0/beta; Mlt(tmp, u1);
+	tmp = one/beta; Mlt(tmp, u1);
 
 	// matrix vector  product v1 = A^t u1
 	Mlt(SeldonTrans, A, u1, v1);
 	// v1 = v1 - beta*v
 	Add(-beta, v, v1);
 	alpha = Norm2(v1);
-	if (alpha == Complexe(0) )
+	if (alpha == zero)
 	  {
 	    iter.Fail(2, "Lsqr breakdown #2");
 	    break;
 	  }
-	tmp = 1.0/alpha; Mlt(tmp, v1);
+	tmp = one/alpha; Mlt(tmp, v1);
 
 	rho = sqrt(rho_bar*rho_bar+beta*beta);
-	if (rho == Complexe(0) )
+	if (rho == zero)
 	  {
 	    iter.Fail(3, "Lsqr breakdown #3");
 	    break;
@@ -121,11 +124,12 @@ namespace Seldon
 	Add(tmp, w, x);
 	// w = v1 - (theta/rho) w
 	tmp  = -theta/rho;
-	Mlt(tmp,w); Add(Complexe(1), v1, w);
+	Mlt(tmp, w);
+        Add(one, v1, w);
 
 	rnorm = abs(phi_bar);
 
-	Swap(u1,u); Swap(v1,v);
+	Swap(u1, u); Swap(v1, v);
 
 	++iter;
 	++iter;

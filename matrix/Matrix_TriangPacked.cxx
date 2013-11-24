@@ -290,17 +290,20 @@ namespace Seldon
 		     string("Index should be in [0, ") + to_str(this->n_-1)
 		     + "], but is equal to " + to_str(j) + ".");
 #endif
-
+    
+    T zero;
+    SetComplexZero(zero);
+    
     if (Storage::UpLo())
       if (i > j)
-	return 0;
+	return zero;
       else
 	return this->data_[Storage::GetFirst(i * this->n_
 					     - (i * (i + 1)) / 2 + j,
 					     (j * (j + 1)) / 2 + i)];
     else
       if (i < j)
-	return 0;
+	return zero;
       else
 	return this->data_[Storage::GetFirst((i * (i + 1)) / 2 + j,
 					     j * this->m_
@@ -574,9 +577,12 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_TriangPacked<T, Prop, Storage, Allocator>::SetIdentity()
   {
-    this->Fill(T(0));
+    T zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    
+    this->Fill(zero);
 
-    T one(1);
     bool storage_col = (Storage::GetFirst(1,0) == 0);
     if ((Storage::UpLo() && storage_col)||(!Storage::UpLo() && !storage_col))
       {
@@ -617,7 +623,7 @@ namespace Seldon
   void Matrix_TriangPacked<T, Prop, Storage, Allocator>::Fill()
   {
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = i;
+      SetComplexReal(i, this->data_[i]);
   }
 
 
@@ -629,8 +635,10 @@ namespace Seldon
   template <class T0>
   void Matrix_TriangPacked<T, Prop, Storage, Allocator>::Fill(const T0& x)
   {
+    T x_;
+    SetComplexReal(x, x_);
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = x;
+      this->data_[i] = x_;
   }
 
 
@@ -660,7 +668,7 @@ namespace Seldon
     srand(time(NULL));
 #endif
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = rand();
+      SetComplexReal(rand(), this->data_[i]);
   }
 
 
