@@ -127,10 +127,10 @@ namespace Seldon
     void Print() const;
 
     // Input/output functions
-    void Write(string FileName, bool with_size) const;
-    void Write(ofstream& FileStream, bool with_size) const;
-    void Read(string FileName, bool with_size);
-    void Read(ifstream& FileStream, bool with_size);
+    void Write(string FileName, bool with_size = true) const;
+    void Write(ofstream& FileStream, bool with_size = true) const;
+    void Read(string FileName, bool with_size = true);
+    void Read(ifstream& FileStream, bool with_size = true);
   };
 
 

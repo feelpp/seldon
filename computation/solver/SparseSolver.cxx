@@ -933,7 +933,7 @@ namespace Seldon
 	   class T, class Alloc2>
   void GetLU(Matrix<T0, Prop, Storage, Allocator>& A,
 	     SparseSeldonSolver<T, Alloc2>& mat_lu,
-	     IVect& permut, bool keep_matrix = false)
+	     IVect& permut, bool keep_matrix)
   {
     typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;
     GetLU(A, mat_lu, permut, keep_matrix, x);

@@ -2369,7 +2369,7 @@ namespace Seldon
     \param FileName output file name.
   */
   template <class T, int N, class Allocator> void Array<T, N, Allocator>
-  ::Write(string FileName, bool with_size = true) const
+  ::Write(string FileName, bool with_size) const
   {
     ofstream FileStream;
     FileStream.open(FileName.c_str(), ofstream::binary);
@@ -2395,7 +2395,7 @@ namespace Seldon
     \param FileStream output stream.
   */
   template <class T, int N, class Allocator> void Array<T, N, Allocator>
-  ::Write(ofstream& FileStream, bool with_size = true) const
+  ::Write(ofstream& FileStream, bool with_size) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -2436,7 +2436,7 @@ namespace Seldon
     \param FileName input file name.
   */
   template <class T, int N, class Allocator>
-  void Array<T, N, Allocator>::Read(string FileName, bool with_size = true)
+  void Array<T, N, Allocator>::Read(string FileName, bool with_size)
   {
     ifstream FileStream;
     FileStream.open(FileName.c_str(), ifstream::binary);
@@ -2463,7 +2463,7 @@ namespace Seldon
   */
   template <class T, int N, class Allocator>
   void Array<T, N, Allocator>
-  ::Read(ifstream& FileStream, bool with_size = true)
+  ::Read(ifstream& FileStream, bool with_size)
   {
 
 #ifdef SELDON_CHECK_IO

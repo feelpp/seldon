@@ -87,11 +87,13 @@ namespace Seldon
     tolerance = outer.tolerance; facteur_reste = outer.facteur_reste;
     max_iter = outer.max_iter;
     nb_iter = 0;
+    fail_convergence = outer.fail_convergence;
     print_level = outer.print_level; error_code = outer.error_code;
     init_guess_null = true;
     type_solver = outer.type_solver;
     parameter_restart = outer.parameter_restart;
     type_preconditioning = outer.type_preconditioning;
+    file_name_history = outer.file_name_history;
   }
 
 
@@ -194,6 +196,15 @@ namespace Seldon
   }
 
 
+  //! History of residuals is printed in a file
+  template<class Titer>
+  void Iteration<Titer>::SaveFullHistory(const string& file_name)
+  {
+    file_name_history = file_name;
+    std::remove(file_name.data());
+  }
+
+
   //! Doesn't display any information
   template<class Titer>
   void Iteration<Titer>::HideMessages()
@@ -256,7 +267,15 @@ namespace Seldon
     else if (print_level >= 6)
       cout<<"Residu at iteration number "<<
 	GetNumberIteration()<<"  "<<reste<<endl;
-
+    
+    if (file_name_history.size() > 0)
+      {
+	ofstream file_out(file_name_history.data(), ios::app);
+	file_out.setf(ios::scientific);
+	file_out << GetNumberIteration() << " " << reste << '\n';
+	file_out.close();
+      }
+    
     // end of iterative solver when residual is small enough
     // or when the number of iterations is too high
     if ((reste < tolerance)||(nb_iter >= max_iter))
@@ -280,6 +299,14 @@ namespace Seldon
     else if (print_level >= 6)
       cout<<"Residu at iteration number "<<
 	GetNumberIteration()<<"  "<<reste<<endl;
+
+    if (file_name_history.size() > 0)
+      {
+	ofstream file_out(file_name_history.data(), ios::app);
+	file_out.setf(ios::scientific);
+	file_out << GetNumberIteration() << " " << reste << '\n';
+	file_out.close();
+      }
 
     // end of iterative solver when residual is small enough
     // or when the number of iterations is too high
@@ -313,8 +340,11 @@ namespace Seldon
 
   //! Returns the error code (if an error occured)
   template<class Titer>
-  int Iteration<Titer>::ErrorCode() const
+  int Iteration<Titer>::ErrorCode()
   {
+    // clearing file where the history has been written
+    file_name_history.clear();
+    
     if (nb_iter >= max_iter)
       return -2;
 

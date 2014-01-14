@@ -66,7 +66,7 @@ namespace Seldon
   template void ConvertMatrix_to_Coordinates(const Matrix<double, General, RowSparse, MallocAlloc<double> >& A,
                                              Vector<int>& IndRow, Vector<int>& IndCol,
                                              Vector<double, VectFull>& Val,
-                                             int index, bool sym);
+                                             int index = 0, bool sym = false);
 
 #ifndef SWIG
   template void ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,

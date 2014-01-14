@@ -45,6 +45,10 @@ namespace Seldon
     comm = MPI::COMM_WORLD;
 #endif
     
+    type_solver = SOLVER_LOBPCG;
+    ortho_manager = ORTHO_DGKS;
+    nb_blocks = 2;
+    restart_number = 20;
   }
   
   
@@ -152,6 +156,54 @@ namespace Seldon
   int EigenProblem_Base<T, MatStiff, MatMass>::GetNbAdditionalEigenvalues() const
   {
     return nb_add_eigenvalues;
+  }
+
+
+  //! returns the number of blocks used in blocked solvers
+  template<class T, class MatStiff, class MatMass>
+  int EigenProblem_Base<T, MatStiff, MatMass>::GetNbBlocks() const
+  {
+    return nb_blocks;
+  }
+
+
+  //! returns the number of blocks used in blocked solvers
+  template<class T, class MatStiff, class MatMass>
+  void EigenProblem_Base<T, MatStiff, MatMass>::SetNbBlocks(int n)
+  {
+    nb_blocks = n;
+  }
+  
+  
+  //! returns the restart parameter used in blocked solvers
+  template<class T, class MatStiff, class MatMass>
+  int EigenProblem_Base<T, MatStiff, MatMass>::GetNbMaximumRestarts() const
+  {
+    return restart_number;
+  }
+  
+  
+  //! returns orthogonalization manager set in Anasazi
+  template<class T, class MatStiff, class MatMass>
+  int EigenProblem_Base<T, MatStiff, MatMass>::GetOrthoManager() const
+  {
+    return ortho_manager;
+  }
+  
+  
+  //! returns the solver used in Anasazi
+  template<class T, class MatStiff, class MatMass>
+  int EigenProblem_Base<T, MatStiff, MatMass>::GetEigensolverType() const
+  {
+    return type_solver;
+  }
+
+
+  //! sets the solver used in Anasazi
+  template<class T, class MatStiff, class MatMass>
+  void EigenProblem_Base<T, MatStiff, MatMass>::SetEigensolverType(int type)
+  {
+    type_solver = type;
   }
   
 
@@ -458,6 +510,24 @@ namespace Seldon
     if (Kh != NULL)
       {
         return IsSymmetricMatrix(*Kh);
+      }
+    else
+      PrintErrorInit();
+    
+    return false;
+  }
+
+
+  //! returns true if the matrix is hermitian
+  template<class T, class MatStiff, class MatMass>
+  bool EigenProblem_Base<T, MatStiff, MatMass>::IsHermitianProblem() const
+  {
+    if (Kh != NULL)
+      {
+	if (IsComplexMatrix(*Kh))
+	  return false;
+	else
+	  return IsSymmetricMatrix(*Kh);
       }
     else
       PrintErrorInit();
@@ -1564,6 +1634,10 @@ namespace Seldon
     : EigenProblem_Base<T, MatStiff, Matrix<double, Symmetric, ArrayRowSymSparse> >()
   {
   }
+
+#ifndef SELDON_WITH_COMPILED_LIBRARY
+  int TypeEigenvalueSolver::default_solver(0);  
+#endif
   
 }
 

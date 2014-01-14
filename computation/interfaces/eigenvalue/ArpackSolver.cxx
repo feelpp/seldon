@@ -356,10 +356,6 @@ namespace Seldon
     return (i_success && p_success);
   }
   
-#ifndef SELDON_WITH_COMPILED_LIBRARY
-  int TypeEigenvalueSolver::default_solver(0);  
-#endif
-
 } // namespace Seldon.
 
 

@@ -49,6 +49,17 @@ namespace Seldon
     //! different sorting strategies
     enum {SORTED_REAL, SORTED_IMAG, SORTED_MODULUS};
     
+    //! different solvers (Anasazi)
+    /*!
+      SOLVER_LOBPCG : Locally Optimal Block Preconditioned Conjugate Gradient
+      SOLVER_BKS : Block Krylov Schur
+      SOLVER_BD : Block Davidson
+    */
+    enum {SOLVER_LOBPCG, SOLVER_BKS, SOLVER_BD};
+    
+    //! orthogonalization managers
+    enum {ORTHO_DGKS, ORTHO_SVQB};
+    
     //! type for number stored in mass matrix
     typedef typename MatMass::value_type MassValue;
         
@@ -70,6 +81,18 @@ namespace Seldon
     
     //! large eigenvalues because of their real part, imaginary part or magnitude ?
     int type_sort_eigenvalues;
+    
+    //! which solver ?
+    int type_solver;
+    
+    //! orthogonalization manager
+    int ortho_manager;
+    
+    //! number of blocks for blocked solvers
+    int nb_blocks;
+    
+    //! restart parameter for blocked solvers
+    int restart_number;
     
     //! if true, the generalized problem is reduced to a standard problem
     /*!
@@ -152,6 +175,14 @@ namespace Seldon
     int GetNbAdditionalEigenvalues() const;
     void SetNbAdditionalEigenvalues(int n);
     
+    int GetNbBlocks() const;
+    void SetNbBlocks(int);
+    int GetNbMaximumRestarts() const;
+    int GetOrthoManager() const;
+
+    int GetEigensolverType() const;
+    void SetEigensolverType(int type);
+    
     int GetTypeSpectrum() const;
     int GetTypeSorting() const;
     T GetShiftValue() const;
@@ -191,6 +222,7 @@ namespace Seldon
     
     void PrintErrorInit() const;
     bool IsSymmetricProblem() const;
+    bool IsHermitianProblem() const;
     
     // mass matrix stuff
     void FactorizeDiagonalMass(Vector<MassValue>& D);
@@ -427,6 +459,10 @@ namespace Seldon
     
     static inline int GetDefaultSolver()
     {
+#ifdef SELDON_WITH_ANASAZI
+      return ANASAZI;
+#endif
+
 #ifdef SELDON_WITH_ARPACK
       return ARPACK;
 #endif
@@ -458,6 +494,22 @@ namespace Seldon
                         var_eig.GetTypeSorting(), zero, zero);
 #else
         cout << "Recompile with Arpack" << endl;
+        abort();
+#endif
+      }
+    else if (type_solver == TypeEigenvalueSolver::ANASAZI)
+      {
+#ifdef SELDON_WITH_ANASAZI
+	T zero; SetComplexZero(zero);
+        Matrix<T, General, ColMajor, Alloc3> eigen_old;
+        FindEigenvaluesAnasazi(var_eig, lambda, lambda_imag, eigen_old);
+        
+        // eigenvalues are sorted by ascending order
+        SortEigenvalues(lambda, lambda_imag, eigen_old,
+                        eigen_vec, var_eig.LARGE_EIGENVALUES,
+                        var_eig.GetTypeSorting(), zero, zero);
+#else
+        cout << "Recompile with Anasazi" << endl;
         abort();
 #endif
       }

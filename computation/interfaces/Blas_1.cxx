@@ -543,7 +543,7 @@ namespace Seldon
 		    reinterpret_cast<const void*>(X.GetData()), 1,
 		    reinterpret_cast<const void*>(Y.GetData()), 1,
 		    reinterpret_cast<void*>(&dotc));*/
-    complex<double> dotc;
+    complex<float> dotc;
     int n = Y.GetLength(), inc = 1;
     cdotcsub_(&n, 
               reinterpret_cast<const void*>(X.GetData()), &inc,

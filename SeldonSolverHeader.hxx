@@ -69,9 +69,14 @@
 // eigenvalue stuff
 #ifdef SELDON_WITH_ARPACK
 #include "computation/interfaces/eigenvalue/Arpack.hxx"
-#include "computation/interfaces/eigenvalue/EigenvalueSolver.hxx"
 #include "computation/interfaces/eigenvalue/ArpackSolver.hxx"
 #endif
+
+#ifdef SELDON_WITH_ANASAZI
+#include "computation/interfaces/eigenvalue/Anasazi.hxx"
+#endif
+
+#include "computation/interfaces/eigenvalue/EigenvalueSolver.hxx"
 
 #define SELDON_FILE_SELDON_SOLVER_HEADER_HXX
 #endif
