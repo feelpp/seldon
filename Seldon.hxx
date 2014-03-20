@@ -98,6 +98,11 @@ namespace Seldon
 #include "computation/interfaces/Lapack_Eigenvalues.cxx"
 #endif // SELDON_WITH_LAPACK.
 
+// MKL additional functions
+#ifdef SELDON_WITH_MKL
+#include "computation/interfaces/Mkl_Sparse.cxx"
+#endif
+
 #include "share/Common.cxx"
 
 #ifdef SELDON_WITH_COMPILED_LIBRARY

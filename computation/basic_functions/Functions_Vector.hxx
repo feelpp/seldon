@@ -109,6 +109,13 @@ namespace Seldon
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
   void Add(const T0& alpha,
+	   const Vector<T1, VectSparse, Allocator1>& X,
+	   Vector<T2, VectFull, Allocator2>& Y);
+
+  template <class T0,
+	    class T1, class Allocator1,
+	    class T2, class Allocator2>
+  void Add(const T0& alpha,
 	   const Vector<T1, Collection, Allocator1>& X,
 	   Vector<T2, Collection, Allocator2>& Y);
 
@@ -207,9 +214,20 @@ namespace Seldon
 
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
+  T1 DotProd(const Vector<T1, VectSparse, Allocator1>& X,
+	     const Vector<T2, VectFull, Allocator2>& Y);
+
+  template<class T1, class Allocator1,
+	   class T2, class Allocator2>
   complex<T1>
   DotProdConj(const Vector<complex<T1>, VectSparse, Allocator1>& X,
 	      const Vector<T2, VectSparse, Allocator2>& Y);
+  
+  template<class T1, class Allocator1,
+	   class T2, class Allocator2>
+  complex<T1>
+  DotProdConj(const Vector<complex<T1>, VectSparse, Allocator1>& X,
+	      const Vector<T2, VectFull, Allocator2>& Y);
   
   
   // DOTPROD //
@@ -287,6 +305,16 @@ namespace Seldon
   void ApplyRot(complex<T>& x, complex<T>& y,
 		const T& c_, const complex<T>& s_);
   
+  template<class T, class Allocator1, class Allocator2>
+  void ApplyRot(Vector<T, VectFull, Allocator1>& X,
+		Vector<T, VectFull, Allocator2>& Y,
+		const T& c, const T& s);
+
+  template<class T, class Allocator1, class Allocator2>
+  void ApplyRot(Vector<T, VectSparse, Allocator1>& X,
+		Vector<T, VectFull, Allocator2>& Y,
+		const T& c, const T& s);
+
   
   // APPLYROT //
   //////////////
@@ -340,6 +368,27 @@ namespace Seldon
 
   // CHECKDIM //
   //////////////
+
+  
+  ////////////////////
+  // GATHER/SCATTER //
+
+
+  template<class T, class Allocator1, class Allocator2>
+  void GatherSparseEntry(const Vector<T, VectFull, Allocator1>& y,
+			 Vector<T, VectSparse, Allocator2>& x);
+
+  template<class T, class Allocator1, class Allocator2>
+  void GatherSparseEntryZero(Vector<T, VectFull, Allocator1>& y,
+			     Vector<T, VectSparse, Allocator2>& x);
+  
+  template<class T, class Allocator1, class Allocator2>
+  void ScatterSparseEntry(const Vector<T, VectSparse, Allocator1>& x,
+			  Vector<T, VectFull, Allocator2>& y);
+  
+
+  // GATHER/SCATTER //
+  ////////////////////  
 
 
   ///////////////

@@ -365,6 +365,10 @@ extern "C"
 
 #endif // SELDON_WITH_LAPACK.
 
+#ifdef SELDON_WITH_MKL
+#include "computation/interfaces/Mkl_Sparse.hxx"
+#endif
+
 namespace Seldon
 {
 

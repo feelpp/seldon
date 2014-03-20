@@ -177,6 +177,24 @@ namespace Seldon
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
   void Add(const T0& alpha,
+	   const Vector<T1, VectSparse, Allocator1>& X,
+	   Vector<T2, VectFull, Allocator2>& Y)
+  {
+    T0 zero;
+    SetComplexZero(zero);
+    if (alpha != zero)
+      {
+	for (int i = 0; i < X.GetM(); i++)
+	  Y(X.Index(i)) += alpha * X.Value(i);
+      }
+  }
+
+
+  //! Adds two vectors Y = Y + alpha X
+  template <class T0,
+	    class T1, class Allocator1,
+	    class T2, class Allocator2>
+  void Add(const T0& alpha,
 	   const Vector<T1, Collection, Allocator1>& X,
 	   Vector<T2, Collection, Allocator2>& Y)
   {
@@ -456,6 +474,21 @@ namespace Seldon
   }
 
 
+  //! Scalar product between a sparse vector and a dense vector
+  template<class T1, class Allocator1,
+	   class T2, class Allocator2>
+  T1 DotProd(const Vector<T1, VectSparse, Allocator1>& X,
+	     const Vector<T2, VectFull, Allocator2>& Y)
+  {
+    T1 value;
+    SetComplexZero(value);
+    for (int i = 0; i < X.GetM(); i++)
+      value += X.Value(i)*Y(X.Index(i));
+    
+    return value;
+  }
+  
+
   //! Scalar product between two sparse vectors conj(X).Y.
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
@@ -480,6 +513,22 @@ namespace Seldon
 	kx++;
       }
 
+    return value;
+  }
+
+
+  //! Scalar product between a sparse vector and dense one conj(X).Y.
+  template<class T1, class Allocator1,
+	   class T2, class Allocator2>
+  complex<T1>
+  DotProdConj(const Vector<complex<T1>, VectSparse, Allocator1>& X,
+	      const Vector<T2, VectFull, Allocator2>& Y)
+  {
+    complex<T1> value(0, 0);
+
+    for (int i = 0; i < X.GetM(); i++)
+      value += conj(X.Value(i))*Y(X.Index(i));
+    
     return value;
   }
 
@@ -724,7 +773,39 @@ namespace Seldon
     y = -conj(s_) * x + c_ * y;
     x = temp;
   }
-
+  
+  
+  //! Rotation of a vector of points in 2-D
+  template<class T, class Allocator1, class Allocator2>
+  void ApplyRot(Vector<T, VectFull, Allocator1>& X,
+		Vector<T, VectFull, Allocator2>& Y,
+		const T& c, const T& s)
+  {
+    T tmp;
+    for (int i = 0; i < X.GetM(); i++)
+      {
+	tmp = c*X(i) + s*Y(i);
+	Y(i) = c*Y(i) - s*X(i);
+	X(i) = tmp;
+      }
+  }
+  
+  
+  //! Rotation of a vector of points in 2-D
+  template<class T, class Allocator1, class Allocator2>
+  void ApplyRot(Vector<T, VectSparse, Allocator1>& X,
+		Vector<T, VectFull, Allocator2>& Y,
+		const T& c, const T& s)
+  {
+    T tmp;
+    for (int i = 0; i < X.GetM(); i++)
+      {
+	tmp = c*X.Value(i) + s*Y(X.Index(i));
+	Y(X.Index(i)) = c*Y(X.Index(i)) - s*X.Value(i);
+	X.Value(i) = tmp;
+      }    
+  }
+  
 
   // APPLYROT //
   //////////////
@@ -938,6 +1019,44 @@ namespace Seldon
   //////////////
 
 
+  ////////////////////
+  // GATHER/SCATTER //
+
+
+  template<class T, class Allocator1, class Allocator2>
+  void GatherSparseEntry(const Vector<T, VectFull, Allocator1>& Y,
+			 Vector<T, VectSparse, Allocator2>& X)
+  {
+    for (int i = 0; i < X.GetM(); i++)
+      X.Value(i) = Y(X.Index(i));
+  }
+
+  template<class T, class Allocator1, class Allocator2>
+  void GatherSparseEntryZero(Vector<T, VectFull, Allocator1>& Y,
+			     Vector<T, VectSparse, Allocator2>& X)
+  {
+    T zero; SetComplexZero(zero);
+    for (int i = 0; i < X.GetM(); i++)
+      {
+	X.Value(i) = Y(X.Index(i));
+	Y(X.Index(i)) = zero;
+      }
+  }
+  
+
+  template<class T, class Allocator1, class Allocator2>
+  void ScatterSparseEntry(const Vector<T, VectSparse, Allocator1>& X,
+			  Vector<T, VectFull, Allocator2>& Y)
+  {
+    for (int i = 0; i < X.GetM(); i++)
+      Y(X.Index(i)) = X.Value(i);
+  }
+  
+
+  // GATHER/SCATTER //
+  ////////////////////  
+
+  
   ///////////////
   // CONJUGATE //
 
