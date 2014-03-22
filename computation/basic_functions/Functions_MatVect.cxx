@@ -1747,7 +1747,7 @@ namespace Seldon
   // SOLVELU //
   /////////////
 
-
+  
   ///////////////////
   // GetAndSolveLU //
 
@@ -1779,6 +1779,321 @@ namespace Seldon
   // GetAndSolveLU //
   ///////////////////
 
+  
+  ///////////
+  // Solve //
+  
+  
+  //! solves by triangular upper part or lower part of A
+  template <class T0, class Prop0, class Allocator0,
+            class T1, class Allocator1>
+  void
+  Solve(const SeldonUplo& Uplo,
+        const SeldonTranspose& TransA,
+	const SeldonDiag& DiagA,
+	const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
+	const Vector<T1, VectFull, Allocator1>& X,
+        Vector<T1, VectFull, Allocator1>& Y)
+  {
+    int ma = A.GetM();
+    
+#ifdef SELDON_CHECK_DIMENSIONS
+    int na = A.GetN();
+    if (na != ma)
+      throw WrongDim("Solve(UpLo, TransA, DiagA, A, X, Y)",
+		     "The matrix must be squared.");
+
+    CheckDim(A, X, "Solve(UpLo, TransA, DiagA, A, X, Y)");
+    CheckDim(A, Y, "Solve(UpLo, TransA, DiagA, A, X, Y)");
+#endif
+    
+    Copy(X, Y);
+    
+    T0* data = A.GetData();
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T0 zero; SetComplexZero(zero);
+    T1 val;
+    if (Uplo.Lower())
+      {
+        if (TransA.NoTrans())
+          {
+            if (DiagA.NonUnit())
+              {
+                for (int i = 0; i < ma; i++)
+                  {
+                    val = Y(i);
+                    int j = ptr[i];
+                    while (ind[j] < i)
+                      {
+                        val -= data[j]*Y(ind[j]);
+                        j++;
+                      }
+                    
+#ifdef SELDON_CHECK_BOUNDS
+                    if ( (j >= ptr[i+1]) || (ind[j] != i) || (data[j] == zero))
+                      throw WrongArgument("Solve", "Matrix must contain"
+                                          " a non-null diagonal");
+#endif
+                    
+                    Y(i) = val/data[j];
+                  }
+              }
+            else
+              {
+                for (int i = 0; i < ma; i++)
+                  {
+                    val = Y(i);
+                    int j = ptr[i];
+                    while (ind[j] < i)
+                      {
+                        val -= data[j]*Y(ind[j]);
+                        j++;
+                      }
+                    
+#ifdef SELDON_CHECK_BOUNDS
+                    if ( (j >= ptr[i+1]) || (ind[j] != i))
+                      throw WrongArgument("Solve", "Matrix must contain"
+                                          " a non-null diagonal");
+#endif
+                    
+                    Y(i) = val;
+                  }
+              }
+          }
+        else if (TransA.Trans())
+          {
+            if (DiagA.NonUnit())
+              {
+                for (int i = ma-1; i >= 0; i--)
+                  {
+                    int j = ptr[i+1]-1;
+                    while (ind[j] > i)
+                      j--;
+                    
+#ifdef SELDON_CHECK_BOUNDS
+                    if ( (j < ptr[i]) || (ind[j] != i) || (data[j] == zero))
+                      throw WrongArgument("Solve", "Matrix must contain"
+                                          " a non-null diagonal");
+#endif
+                   
+                    Y(i) /= data[j];
+                    j--;
+                    while (j >= ptr[i])
+                      {
+                        Y(ind[j]) -= data[j]*Y(i);
+                        j--;
+                      }
+                  }
+              }
+            else
+              {
+                for (int i = ma-1; i >= 0; i--)
+                  {
+                    int j = ptr[i];
+                    while (ind[j] < i)
+                      {
+                        Y(ind[j]) -= data[j]*Y(i);
+                        j++;
+                      }
+                    
+#ifdef SELDON_CHECK_BOUNDS
+                    if ( (j >= ptr[i+1]) || (ind[j] != i) )
+                      throw WrongArgument("Solve", "Matrix must contain"
+                                          " a non-null diagonal");
+#endif
+                  }
+              }
+          }
+        else
+          {
+            if (DiagA.NonUnit())
+              {
+                for (int i = ma-1; i >= 0; i--)
+                  {
+                    int j = ptr[i+1]-1;
+                    while (ind[j] > i)
+                      j--;
+                    
+#ifdef SELDON_CHECK_BOUNDS
+                    if ( (j < ptr[i]) || (ind[j] != i) || (data[j] == zero))
+                      throw WrongArgument("Solve", "Matrix must contain"
+                                          " a non-null diagonal");
+#endif
+                   
+                    Y(i) /= conj(data[j]);
+                    j--;
+                    while (j >= ptr[i])
+                      {
+                        Y(ind[j]) -= conj(data[j])*Y(i);
+                        j--;
+                      }
+                  }
+              }
+            else
+              {
+                for (int i = ma-1; i >= 0; i--)
+                  {
+                    int j = ptr[i];
+                    while (ind[j] < i)
+                      {
+                        Y(ind[j]) -= conj(data[j])*Y(i);
+                        j++;
+                      }
+                    
+#ifdef SELDON_CHECK_BOUNDS
+                    if ( (j >= ptr[i+1]) || (ind[j] != i) )
+                      throw WrongArgument("Solve", "Matrix must contain"
+                                          " a non-null diagonal");
+#endif
+                  }
+              }
+          }
+      }
+    else
+      {
+        if (TransA.NoTrans())
+          {
+            if (DiagA.NonUnit())
+              {
+                for (int i = ma-1; i >= 0; i--)
+                  {
+                    val = Y(i);
+                    int j = ptr[i+1]-1;
+                    while (ind[j] > i)
+                      {
+                        val -= data[j]*Y(ind[j]);
+                        j--;
+                      }
+                    
+#ifdef SELDON_CHECK_BOUNDS
+                    if ( (j < ptr[i]) || (ind[j] != i) || (data[j] == zero))
+                      throw WrongArgument("Solve", "Matrix must contain"
+                                          " a non-null diagonal");
+#endif
+                   
+                    Y(i) = val/data[j];
+                  }
+              }
+            else
+              {
+                for (int i = ma-1; i >= 0; i--)
+                  {
+                    val = Y(i);
+                    int j = ptr[i+1]-1;
+                    while (ind[j] > i)
+                      {
+                        val -= data[j]*Y(ind[j]);
+                        j--;
+                      }
+                    
+#ifdef SELDON_CHECK_BOUNDS
+                    if ( (j < ptr[i]) || (ind[j] != i) )
+                      throw WrongArgument("Solve", "Matrix must contain"
+                                          " a non-null diagonal");
+#endif
+                   
+                    Y(i) = val;
+                  }
+              }
+          }
+        else if (TransA.Trans())
+          {
+            if (DiagA.NonUnit())
+              {
+                for (int i = 0; i < ma; i++)
+                  {
+                    int j = ptr[i];
+                    while (ind[j] < i)
+                      j++;
+                    
+#ifdef SELDON_CHECK_BOUNDS
+                    if ( (j >= ptr[i+1]) || (ind[j] != i) || (data[j] == zero) )
+                      throw WrongArgument("Solve", "Matrix must contain"
+                                          " a non-null diagonal");
+#endif
+                    
+                    Y(i) /= data[j];
+                    j++;
+                    while (j < ptr[i+1])
+                      {
+                        Y(ind[j]) -= data[j]*Y(i);
+                        j++;
+                      }
+                  }
+              }
+            else
+              {
+                for (int i = 0; i < ma; i++)
+                  {
+                    int j = ptr[i+1]-1;
+                    while (ind[j] > i)
+                      {
+                        Y(ind[j]) -= data[j]*Y(i);
+                        j--;
+                      }
+                    
+#ifdef SELDON_CHECK_BOUNDS
+                    if ( (j < ptr[i]) || (ind[j] != i) )
+                      throw WrongArgument("Solve", "Matrix must contain"
+                                          " a non-null diagonal");
+#endif
+                    
+                  }
+              }
+          }
+        else
+          {
+            if (DiagA.NonUnit())
+              {
+                for (int i = 0; i < ma; i++)
+                  {
+                    int j = ptr[i];
+                    while (ind[j] < i)
+                      j++;
+                    
+#ifdef SELDON_CHECK_BOUNDS
+                    if ( (j >= ptr[i+1]) || (ind[j] != i) || (data[j] == zero) )
+                      throw WrongArgument("Solve", "Matrix must contain"
+                                          " a non-null diagonal");
+#endif
+                    
+                    Y(i) /= conj(data[j]);
+                    j++;
+                    while (j < ptr[i+1])
+                      {
+                        Y(ind[j]) -= conj(data[j])*Y(i);
+                        j++;
+                      }
+                  }
+              }
+            else
+              {
+                for (int i = 0; i < ma; i++)
+                  {
+                    int j = ptr[i+1]-1;
+                    while (ind[j] > i)
+                      {
+                        Y(ind[j]) -= conj(data[j])*Y(i);
+                        j--;
+                      }
+                    
+#ifdef SELDON_CHECK_BOUNDS
+                    if ( (j < ptr[i]) || (ind[j] != i) )
+                      throw WrongArgument("Solve", "Matrix must contain"
+                                          " a non-null diagonal");
+#endif
+                    
+                  }
+              }
+          }
+      }
+  }
+  
+  
+  // Solve //
+  ///////////
+  
 
   //////////////
   // CHECKDIM //

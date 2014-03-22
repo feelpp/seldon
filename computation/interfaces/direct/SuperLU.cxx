@@ -858,7 +858,7 @@ namespace Seldon
   void SolveLU(MatrixSuperLU<complex<double> >& mat_lu,
                Vector<double, VectFull, Allocator>& x)
   {
-    throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
+    throw WrongArgument("SolveLU(MatrixSuperLU<complex<double> >, Vector<double>)", 
 			"The result should be a complex vector");
   }
 
@@ -869,7 +869,7 @@ namespace Seldon
 	       MatrixSuperLU<complex<double> >& mat_lu,
                Vector<double, VectFull, Allocator>& x)
   {
-    throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
+    throw WrongArgument("SolveLU(MatrixSuperLU<complex<double> >, Vector<double>)", 
 			"The result should be a complex vector");
   }
   
