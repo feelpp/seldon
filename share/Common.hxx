@@ -1,4 +1,4 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2001-2012 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -21,15 +21,58 @@
 
 #include <complex>
 #include <iostream>
+#include <typeinfo>
+
+#ifdef SELDON_WITH_HDF5
+#include <hdf5.h>
+#endif
+
 
 template <class T>
 void PrintArray(T* v, int lgth);
 
 namespace Seldon
 {
-
-
   using namespace std;
+  
+  // conj available for real numbers for compatibility
+  inline float conj(float x)
+  {
+    return x;
+  }
+
+  inline double conj(double x)
+  {
+    return x;
+  }
+  
+
+  //! This class helps formatting C++ strings on the fly.
+  /*!
+    It should may be used like that:
+    string output = Str() + "There are " + 3 + " laws of robotics.";
+  */
+  class Str
+  {
+  private:
+    //! Buffer.
+    std::ostringstream output_;
+
+  public:
+    Str();
+    Str(const Str& s);
+    operator std::string() const;
+    template <class T>
+    Str& operator << (const T& input);
+  };
+
+  template <class T>
+  Str operator + (const Str&, const T& input);
+
+#ifndef SWIG
+  ostream& operator << (ostream& out, Str& in);
+  ostream& operator << (ostream& out, Str in);
+#endif
 
 
   template<typename T>
@@ -41,6 +84,32 @@ namespace Seldon
   template <class T>
   T to_num(std::string s);
 
+  //! workaround class to retrieve double type from complex<double>
+  /*!
+    when T is a template parameter (double or complex<double>)
+    if you need to know the associated real type (double),
+    you can type :
+    typedef typename ClassComplexType<T>::Treal real;
+    In the same way, you can get complex<double> type :
+    typedef typename ClassComplexType<T>::Tcplx complexe;
+   */
+  template<class T>
+  class ClassComplexType
+  {
+    public : 
+    typedef T Treal;
+    typedef complex<T> Tcplx;
+  };
+
+  //! workaround class to retrieve double type from complex<double>
+  template<class T>
+  class ClassComplexType< complex<T> >
+  {
+  public : 
+    typedef T Treal;
+    typedef complex<T> Tcplx;
+  };
+  
   template <class T>
   void SetComplexZero(T& number);
 
@@ -52,6 +121,38 @@ namespace Seldon
 
   template <class T>
   void SetComplexOne(complex<T>& number);
+
+  template <class T>
+  void SetComplexReal(int n, complex<T>& number);
+
+  template <class T>
+  void SetComplexReal(int n, T& number);
+
+  template <class T>
+  void SetComplexReal(bool n, complex<T>& number);
+
+  template <class T>
+  void SetComplexReal(const T& x, complex<T>& number);
+
+  template <class T0, class T1>
+  void SetComplexReal(const T0& x, T1& number);
+  
+  template<class T>
+  T ComplexAbs(const T& val);
+
+  template<class T>
+  T ComplexAbs(const complex<T>& val);
+
+  template<class T>
+  T absSquare(const T& x);
+
+  template<class T>
+  T absSquare(const complex<T>& x);
+  
+#ifdef SELDON_WITH_HDF5
+  template <class T>
+  hid_t GetH5Type(T& input);
+#endif
 
 
 }  // namespace Seldon.

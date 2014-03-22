@@ -23,7 +23,6 @@
 // additional classes and functions for sparse matrices
 #include "matrix_sparse/Matrix_Conversions.cxx"
 #include "matrix_sparse/Matrix_ArraySparse.cxx"
-#include "matrix_sparse/Matrix_ArrayComplexSparse.cxx"
 #include "matrix_sparse/Permutation_ScalingMatrix.cxx"
 #include "matrix_sparse/Relaxation_MatVect.cxx"
 #include "matrix_sparse/Functions_MatrixArray.cxx"
@@ -46,11 +45,38 @@
 #include "computation/interfaces/direct/Pastix.cxx"
 #endif
 
-#include "computation/interfaces/direct/SparseSolver.cxx"
+#ifdef SELDON_WITH_PARDISO
+#include "computation/interfaces/direct/Pardiso.cxx"
+#endif
+
+#ifdef SELDON_WITH_PRECONDITIONING
+#include "SeldonPreconditioner.hxx"
+#endif
+
+#include "computation/solver/SparseSolver.cxx"
 
 // iterative solvers and preconditioning
 #include "computation/solver/iterative/Iterative.cxx"
 #include "computation/solver/preconditioner/Precond_Ssor.cxx"
+
+// Cholesky Solver
+#ifdef SELDON_WITH_CHOLMOD
+#include "computation/interfaces/direct/Cholmod.cxx"
+#endif
+
+#include "computation/solver/SparseCholeskyFactorisation.cxx"
+
+// eigenvalue stuff
+#ifdef SELDON_WITH_ARPACK
+#include "computation/interfaces/eigenvalue/Arpack.cxx"
+#include "computation/interfaces/eigenvalue/ArpackSolver.cxx"
+#endif
+
+#ifdef SELDON_WITH_ANASAZI
+#include "computation/interfaces/eigenvalue/Anasazi.cxx"
+#endif
+
+#include "computation/interfaces/eigenvalue/EigenvalueSolver.cxx"
 
 #define SELDON_FILE_SELDON_SOLVER_HXX
 #endif

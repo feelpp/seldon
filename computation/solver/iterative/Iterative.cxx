@@ -43,39 +43,10 @@
 #include "TfQmr.cxx"
 #include "Symmlq.cxx"
 
+#include "IterativeInline.cxx"
 
 namespace Seldon
 {
-
-  //! Default constructor
-  Preconditioner_Base::Preconditioner_Base()
-  {
-  }
-
-
-  //! Solves M z = r
-  /*!
-    Identity preconditioner M = I
-  */
-  template<class Matrix1, class Vector1>
-  void Preconditioner_Base::Solve(const Matrix1& A, const Vector1& r,
-				  Vector1& z)
-  {
-    Copy(r,z);
-  }
-
-
-  //! Solves M^t z = r
-  /*!
-    Identity preconditioner M = I
-  */
-  template<class Matrix1, class Vector1>
-  void Preconditioner_Base::
-  TransSolve(const Matrix1& A, const Vector1 & r, Vector1 & z)
-  {
-    Solve(A, r, z);
-  }
-
 
   //! Default constructor
   template<class Titer>
@@ -116,11 +87,13 @@ namespace Seldon
     tolerance = outer.tolerance; facteur_reste = outer.facteur_reste;
     max_iter = outer.max_iter;
     nb_iter = 0;
+    fail_convergence = outer.fail_convergence;
     print_level = outer.print_level; error_code = outer.error_code;
     init_guess_null = true;
     type_solver = outer.type_solver;
     parameter_restart = outer.parameter_restart;
     type_preconditioning = outer.type_preconditioning;
+    file_name_history = outer.file_name_history;
   }
 
 
@@ -195,7 +168,7 @@ namespace Seldon
   template<class Titer>
   void Iteration<Titer>::SetMaxNumberIteration(int max_iteration)
   {
-    max_iter=max_iteration;
+    max_iter = max_iteration;
   }
 
 
@@ -223,6 +196,15 @@ namespace Seldon
   }
 
 
+  //! History of residuals is printed in a file
+  template<class Titer>
+  void Iteration<Titer>::SaveFullHistory(const string& file_name)
+  {
+    file_name_history = file_name;
+    std::remove(file_name.data());
+  }
+
+
   //! Doesn't display any information
   template<class Titer>
   void Iteration<Titer>::HideMessages()
@@ -235,7 +217,7 @@ namespace Seldon
   template<class Titer> template<class Vector1>
   int Iteration<Titer>::Init(const Vector1& r)
   {
-    Titer norme_rhs = Titer(Norm2(r));
+    Titer norme_rhs = Norm2(r);
     // test of a null right hand side
     if (norme_rhs == Titer(0))
       return -1;
@@ -251,7 +233,7 @@ namespace Seldon
 
   //! Returns true if it is the first iteration
   template<class Titer>
-  inline bool Iteration<Titer>::First() const
+  bool Iteration<Titer>::First() const
   {
     if (nb_iter == 0)
       return true;
@@ -262,7 +244,7 @@ namespace Seldon
 
   //! Returns true if the initial guess is null
   template<class Titer>
-  inline bool Iteration<Titer>::IsInitGuess_Null() const
+  bool Iteration<Titer>::IsInitGuess_Null() const
   {
     return init_guess_null;
   }
@@ -270,7 +252,7 @@ namespace Seldon
 
   //! Returns true if the iterative solver has reached its end
   template<class Titer> template<class Vector1>
-  inline bool Iteration<Titer>::
+  bool Iteration<Titer>::
   Finished(const Vector1& r) const
   {
     // absolute residual
@@ -285,7 +267,15 @@ namespace Seldon
     else if (print_level >= 6)
       cout<<"Residu at iteration number "<<
 	GetNumberIteration()<<"  "<<reste<<endl;
-
+    
+    if (file_name_history.size() > 0)
+      {
+	ofstream file_out(file_name_history.data(), ios::app);
+	file_out.setf(ios::scientific);
+	file_out << GetNumberIteration() << " " << reste << '\n';
+	file_out.close();
+      }
+    
     // end of iterative solver when residual is small enough
     // or when the number of iterations is too high
     if ((reste < tolerance)||(nb_iter >= max_iter))
@@ -297,7 +287,7 @@ namespace Seldon
 
   //! Returns true if the iterative solver has reached its end
   template<class Titer>
-  inline bool Iteration<Titer>::Finished(const Titer& r) const
+  bool Iteration<Titer>::Finished(const Titer& r) const
   {
     // relative residual
     Titer reste = facteur_reste*r;
@@ -309,6 +299,14 @@ namespace Seldon
     else if (print_level >= 6)
       cout<<"Residu at iteration number "<<
 	GetNumberIteration()<<"  "<<reste<<endl;
+
+    if (file_name_history.size() > 0)
+      {
+	ofstream file_out(file_name_history.data(), ios::app);
+	file_out.setf(ios::scientific);
+	file_out << GetNumberIteration() << " " << reste << '\n';
+	file_out.close();
+      }
 
     // end of iterative solver when residual is small enough
     // or when the number of iterations is too high
@@ -333,7 +331,7 @@ namespace Seldon
 
   //! Increment the number of iterations
   template<class Titer>
-  inline Iteration<Titer>& Iteration<Titer>::operator ++ (void)
+  Iteration<Titer>& Iteration<Titer>::operator ++ (void)
   {
     ++nb_iter;
     return *this;
@@ -342,8 +340,11 @@ namespace Seldon
 
   //! Returns the error code (if an error occured)
   template<class Titer>
-  int Iteration<Titer>::ErrorCode() const
+  int Iteration<Titer>::ErrorCode()
   {
+    // clearing file where the history has been written
+    file_name_history.clear();
+    
     if (nb_iter >= max_iter)
       return -2;
 

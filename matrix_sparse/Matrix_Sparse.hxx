@@ -1,4 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2001-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -91,23 +92,31 @@ namespace Seldon
 		 Vector<int, Storage2, Allocator2>& ind);
     void SetData(int i, int j, int nz, pointer values, int* ptr, int* ind);
     void Nullify();
+    void Reallocate(int i, int j);
+    void Reallocate(int i, int j, int nz);
+    void Resize(int i, int j);
+    void Resize(int i, int j, int nz);
     void Copy(const Matrix_Sparse<T, Prop, Storage, Allocator>& A);
 
     // Basic methods.
     int GetNonZeros() const;
     int GetDataSize() const;
+    int64_t GetMemorySize() const;
     int* GetPtr() const;
     int* GetInd() const;
     int GetPtrSize() const;
     int GetIndSize() const;
 
     // Element acess and affectation.
-    value_type operator() (int i, int j) const;
+    const value_type operator() (int i, int j) const;
     value_type& Val(int i, int j);
+    value_type& Get(int i, int j);
 #ifndef SWIG
     const value_type& Val(int i, int j) const;
+    const value_type& Get(int i, int j) const;
 #endif
     void AddInteraction(int i, int j, const T& val);
+    void Set(int i, int j, const T& x);
 #ifndef SWIG
     Matrix_Sparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_Sparse<T, Prop, Storage, Allocator>& A);
@@ -120,9 +129,18 @@ namespace Seldon
     template <class T0>
     void Fill(const T0& x);
     void FillRand();
+    void FillRand(int Nelement);
+    void FillRand(int Nelement, const T& x);
+    
     void Print() const;
-    void WriteText(string FileName) const;
-    void WriteText(ostream& FileStream) const;
+    void Write(string FileName) const;
+    void Write(ostream& FileStream) const;
+    void WriteText(string FileName, bool cplx = false) const;
+    void WriteText(ostream& FileStream, bool cplx = false) const;
+    void Read(string FileName);
+    void Read(istream& FileStream);
+    void ReadText(string FileName, bool cplx = false);
+    void ReadText(istream& FileStream, bool cplx = false);
   };
 
 
@@ -139,7 +157,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
     Matrix(int i, int j, int nz);
     template <class Storage0, class Allocator0,
@@ -165,7 +183,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
     Matrix(int i, int j, int nz);
     template <class Storage0, class Allocator0,
@@ -176,10 +194,30 @@ namespace Seldon
 	   Vector<int, Storage1, Allocator1>& ptr,
 	   Vector<int, Storage2, Allocator2>& ind);
 
-    void FillRand(int Nelement);
-    void FillRand(int Nelement, const T& x);
   };
 
+  template<class Tint, class AllocInt, class T, class Allocator>
+  void ReadCoordinateMatrix(istream& FileStream,
+                            Vector<Tint, VectFull, AllocInt>& row_numbers,
+                            Vector<Tint, VectFull, AllocInt>& col_numbers,
+                            Vector<T, VectFull, Allocator>& values,
+                            bool cplx = false);
+  
+  template<class Matrix1, class T>
+  void ReadCoordinateMatrix(Matrix1& A, istream& FileStream, T& zero,
+                            int index = 1, int nnz = -1, bool cplx = false);
+
+  template<class Tint, class AllocInt, class T, class Allocator>
+  void WriteCoordinateMatrix(ostream& FileStream,
+                            const Vector<Tint, VectFull, AllocInt>& row_numbers,
+                            const Vector<Tint, VectFull, AllocInt>& col_numbers,
+                            const Vector<T, VectFull, Allocator>& values,
+                            bool cplx = false);
+  
+  template<class T0, class Prop0, class Storage0, class Alloc0, class T>
+  void WriteCoordinateMatrix(const Matrix<T0, Prop0, Storage0, Alloc0>& A,
+                             ostream& FileStream, T& zero,
+                             int index = 1, bool cplx = false);
 
 } // namespace Seldon.
 

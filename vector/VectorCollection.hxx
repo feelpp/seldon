@@ -78,13 +78,14 @@ namespace Seldon
     //! Methods.
   public:
     // Constructor.
-    explicit Vector()  throw();
+    explicit Vector();
     explicit Vector(int i);
     Vector(const Vector<T, Collection, Allocator>& A);
 
     // Destructor.
     ~Vector();
     void Clear();
+    void Reallocate(int i);
     void Deallocate();
 
    // Management of the vectors.
@@ -116,7 +117,7 @@ namespace Seldon
     const Vector<int, VectFull, MallocAlloc<int> >& GetVectorLength() const;
     const Vector<int, VectFull, MallocAlloc<int> >& GetLengthSum() const;
 
-    int GetIndexVector(string name) const;
+    int GetVectorIndex(string name) const;
     int GetIndex(string name) const;
 
     collection_reference GetVector();
@@ -145,11 +146,12 @@ namespace Seldon
     void Print() const;
 
     // Input/output functions.
-    void Write(string FileName, bool with_size) const;
-    void Write(ostream& FileStream, bool with_size) const;
+    void Write(string FileName, bool with_size = true) const;
+    void Write(ostream& FileStream, bool with_size = true) const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
 
+    void Read(string FileName);
     void Read(string FileName, Vector<int, VectFull, MallocAlloc<int> >& length_);
     void Read(istream& FileStream, Vector<int, VectFull, MallocAlloc<int> >& length_);
 

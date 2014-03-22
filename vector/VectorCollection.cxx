@@ -43,7 +43,7 @@ namespace Seldon
     Nothing is allocated. The vector length is set to zero.
   */
   template <class T, class Allocator>
-  inline Vector<T, Collection, Allocator>::Vector() throw():
+  inline Vector<T, Collection, Allocator>::Vector():
     Vector_Base<T, Allocator>(), label_map_(), label_vector_()
   {
     Nvector_ = 0;
@@ -113,6 +113,23 @@ namespace Seldon
     this->m_ = 0;
     label_map_.clear();
     label_vector_.clear();
+  }
+
+
+  //! Reallocates the vector collection.
+  /*! This method first clears the collection. Then it allocates a new vector
+    of size \a i, and puts this vector in the collection. On exit, the
+    collection is only composed of this vector of size \a i.
+    \param[in] i new size.
+  */
+  template <class T, class Allocator >
+  inline void Vector<T, Collection, Allocator>::Reallocate(int i)
+  {
+    Clear();
+    vector_type v;
+    v.Reallocate(i);
+    AddVector(v);
+    v.Nullify();
   }
 
 
@@ -277,6 +294,10 @@ namespace Seldon
 
 
   //! Changes the length of the collection and sets its data array.
+  /*!
+    \param[in] X collection with the vectors to which the current collection
+    will point on exit.
+  */
   template <class T, class Allocator >
   void Vector<T, Collection, Allocator>
   ::SetData(const Vector<T, Collection, Allocator>& X)
@@ -392,6 +413,41 @@ namespace Seldon
       throw WrongArgument("VectorCollection::SetVector(string name)",
 			  string("Unknown vector name: \"") + name + "\".");
     return (label_iterator->second == 0) ? 0 : length_sum_(label_iterator->second - 1);
+  }
+
+
+  //! Returns the vector index of the aggregated vector named \a name.
+  /*!
+    \param[in] name name of the aggregated vector.
+    \return The vector index of the aggregated vector.
+  */
+  template <class T, class Allocator >
+  inline int Vector<T, Collection, Allocator>
+  ::GetVectorIndex(string name) const
+  {
+    map<string,int>::const_iterator label_iterator = label_map_.find(name);
+    if (label_iterator == label_map_.end())
+      throw WrongArgument("VectorCollection::GetVectorIndex(string name)",
+			  "Unknown vector name: \"" + name + "\".");
+    return label_iterator->second;
+  }
+
+
+  /*! \brief Returns the index of the first element of the aggregated vector
+    named \a name. */
+  /*!
+    \param[in] name name of the aggregated vector.
+    \return The index of the first element of the aggregated vector.
+  */
+  template <class T, class Allocator >
+  inline int Vector<T, Collection, Allocator>::GetIndex(string name) const
+  {
+    map<string,int>::const_iterator label_iterator = label_map_.find(name);
+    if (label_iterator == label_map_.end())
+      throw WrongArgument("VectorCollection::GetIndex(string name)",
+			  string("Unknown vector name: \"") + name + "\".");
+    return (label_iterator->second == 0) ?
+      0 : length_sum_(label_iterator->second - 1);
   }
 
 
@@ -570,7 +626,7 @@ namespace Seldon
   }
 
 
-  //! Converts a full vector into a vector collection.
+  //! Copies the values of a full vector into the current vector.
   /*!
     \param[in] X full vector to be copied.
     \note Memory is duplicated: 'X' is therefore independent from the current
@@ -584,14 +640,15 @@ namespace Seldon
 #ifdef SELDON_CHECK_BOUNDS
     if (this->m_ != X.GetM())
       throw WrongIndex("VectorCollection::Copy(X)",
-		       string("X size should be equal to ")
+		       string("The size of X should be equal to ")
                        + to_str(this->m_ - 1)
 		       + ", but is equal to " + to_str(X.GetM()) + ".");
 #endif
 
     for (int i = 0; i < X.GetM(); i++)
-    (*this)(i) = X(i);
+      (*this)(i) = X(i);
   }
+
 
   //! Multiplies a vector collection by a scalar.
   /*!
@@ -652,10 +709,10 @@ namespace Seldon
   */
   template <class T, class Allocator >
   void Vector<T, Collection, Allocator>
-  ::Write(string FileName, bool with_size = true) const
+  ::Write(string FileName, bool with_size) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -679,7 +736,7 @@ namespace Seldon
   */
   template <class T, class Allocator >
   void Vector<T, Collection, Allocator>
-  ::Write(ostream& FileStream, bool with_size = true) const
+  ::Write(ostream& FileStream, bool with_size) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -764,6 +821,34 @@ namespace Seldon
 
 
   //! Sets the vector from a file.
+  /*! Sets the vector according to a binary file that stores the length of the
+    collection (number of inner vectors), followed by the inner vectors (i.e.,
+    an integer followed by data).
+    \param FileName file name.
+  */
+  template <class T, class Allocator >
+  void Vector<T, Collection, Allocator>::Read(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str(), ifstream::binary);
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Vector<Collection>::Read(string FileName)",
+                    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    Vector<int> length;
+    length.Read(FileStream);
+
+    this->Read(FileStream, length);
+
+    FileStream.close();
+  }
+
+
+  //! Sets the vector from a file.
   /*!
     Sets the vector according to a binary file that stores the length of the
     vector (integer) and all elements.
@@ -774,7 +859,7 @@ namespace Seldon
   ::Read(string FileName, Vector<int, VectFull, MallocAlloc<int> >& length)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -797,7 +882,8 @@ namespace Seldon
   */
   template <class T, class Allocator >
   void Vector<T, Collection, Allocator>
-  ::Read(istream& FileStream, Vector<int, VectFull, MallocAlloc<int> >& length)
+  ::Read(istream& FileStream,
+         Vector<int, VectFull, MallocAlloc<int> >& length)
   {
 
 #ifdef SELDON_CHECK_IO
@@ -839,7 +925,7 @@ namespace Seldon
     // Checks if data was read.
     if (!FileStream.good())
       throw IOError("Vector<Collection>::Read(istream& FileStream)",
-                    "Output operation failed.");
+                    "Input operation failed.");
 #endif
 
   }

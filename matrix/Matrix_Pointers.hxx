@@ -64,6 +64,7 @@ namespace Seldon
 
     // Basic methods.
     int GetDataSize() const;
+    pointer* GetMe() const;
 
     // Memory management.
     void Reallocate(int i, int j);
@@ -72,18 +73,24 @@ namespace Seldon
     void Resize(int i, int j);
 
     // Element access and affectation.
+    pointer GetDataPointer(int i, int j) const;
     reference operator() (int i, int j);
 #ifndef SWIG
     const_reference operator() (int i, int j) const;
 #endif
     reference Val(int i, int j);
+    reference Get(int i, int j);
 #ifndef SWIG
     const_reference Val(int i, int j) const;
+    const_reference Get(int i, int j) const;
     reference operator[] (int i);
     const_reference operator[] (int i) const;
+    
     Matrix_Pointers<T, Prop, Storage, Allocator>&
     operator= (const Matrix_Pointers<T, Prop, Storage, Allocator>& A);
 #endif
+
+    void Set(int i, int j, const T& val);
     void Copy(const Matrix_Pointers<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.
@@ -103,7 +110,12 @@ namespace Seldon
     void Print(int l) const;
 
     // Input/output functions.
+    void Append(string FileName) const;
     void Write(string FileName, bool with_size = true) const;
+#ifdef SELDON_WITH_HDF5
+    void WriteHDF5(string FileName, string group_name, string dataset_name)
+      const;
+#endif
     void Write(ostream& FileStream, bool with_size = true) const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
@@ -127,13 +139,18 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
     Matrix(const Matrix<T, Prop, ColMajor, Allocator>& A);
+
+    void WriteColumn(string FileName, int col) const;
+    void WriteColumn(ostream& FileStream, int col) const;
 
 #ifndef SWIG
     template <class T0>
     Matrix<T, Prop, ColMajor, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, ColMajor, Allocator>& operator=(const Matrix<T, Prop,
+                                                    ColMajor, Allocator>& A);
 #endif
     template<class T0>
     Matrix<T, Prop, ColMajor, Allocator>& operator*= (const T0& x);
@@ -153,13 +170,19 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
     Matrix(const Matrix<T, Prop, RowMajor, Allocator>& A);
 
+    void WriteRow(string FileName, int row) const;
+    void WriteRow(ostream& FileStream, int row) const;
+
 #ifndef SWIG
+
     template <class T0>
     Matrix<T, Prop, RowMajor, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, RowMajor, Allocator>& operator=(const Matrix<T, Prop,
+                                                    RowMajor, Allocator>& A);
 #endif
     template<class T0>
     Matrix<T, Prop, RowMajor, Allocator>& operator*= (const T0& x);

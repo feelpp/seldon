@@ -1,4 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2001-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -21,16 +22,29 @@
 
 #ifndef SELDON_FILE_MATRIX_COMPLEXSPARSE_HXX
 
-#include "../share/Common.hxx"
-#include "../share/Properties.hxx"
-#include "../share/Storage.hxx"
-#include "../share/Errors.hxx"
-#include "../share/Allocator.hxx"
-
 namespace Seldon
 {
 
+  class ColComplexSparse
+  {
+  public:
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static const bool Sparse = true;
+  };
 
+
+  class RowComplexSparse
+  {
+  public:
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static const bool Sparse = true;
+  };
+
+  
   //! Complex sparse-matrix class.
   /*!
     Sparse matrices are defined by: (1) the number of rows and columns;
@@ -114,11 +128,16 @@ namespace Seldon
 		 int imag_nz, pointer imag_values, int* imag_ptr,
 		 int* imag_ind);
     void Nullify();
+    void Reallocate(int i, int j);
+    void Reallocate(int i, int j, int real_nz, int imag_nz);
+    void Resize(int i, int j);
+    void Resize(int i, int j, int real_nz, int imag_nz);
     void Copy(const Matrix_ComplexSparse<T, Prop, Storage, Allocator>& A);
 
     // Basic methods.
     int GetNonZeros() const;
     int GetDataSize() const;
+    int64_t GetMemorySize() const;
     int* GetRealPtr() const;
     int* GetImagPtr() const;
     int* GetRealInd() const;
@@ -127,18 +146,42 @@ namespace Seldon
     int GetImagPtrSize() const;
     int GetRealIndSize() const;
     int GetImagIndSize() const;
+    int GetRealDataSize() const;
+    int GetImagDataSize() const;
     T* GetRealData() const;
     T* GetImagData() const;
 
     // Element acess and affectation.
-    complex<value_type> operator() (int i, int j) const;
-    complex<value_type>& Val(int i, int j);
-    const complex<value_type>& Val(int i, int j) const;
+    const complex<value_type> operator() (int i, int j) const;
+    value_type& ValReal(int i, int j);
+    const value_type& ValReal(int i, int j) const;
+    value_type& ValImag(int i, int j);
+    const value_type& ValImag(int i, int j) const;
+    value_type& GetReal(int i, int j);
+    const value_type& GetReal(int i, int j) const;
+    value_type& GetImag(int i, int j);
+    const value_type& GetImag(int i, int j) const;
+    void Set(int i, int j, const complex<T>& x);
+    void AddInteraction(int i, int j, const complex<T>& x);
     Matrix_ComplexSparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_ComplexSparse<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.
+    void Zero();
+    void SetIdentity();
+    void Fill();
+    void Fill(const complex<T>& x);
+    void FillRand();
+
     void Print() const;
+    void Write(string FileName) const;
+    void Write(ostream& FileStream) const;
+    void WriteText(string FileName, bool cplx = false) const;
+    void WriteText(ostream& FileStream, bool cplx = false) const;
+    void Read(string FileName);
+    void Read(istream& FileStream);
+    void ReadText(string FileName, bool cplx = false);
+    void ReadText(istream& FileStream, bool cplx = false);
   };
 
 
@@ -155,7 +198,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
     Matrix(int i, int j, int real_nz, int imag_nz);
     template <class Storage0, class Allocator0,
@@ -184,7 +227,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
     Matrix(int i, int j, int real_nz, int imag_nz);
     template <class Storage0, class Allocator0,
@@ -198,7 +241,6 @@ namespace Seldon
 	   Vector<int, Storage1, Allocator1>& imag_ptr,
 	   Vector<int, Storage2, Allocator2>& imag_ind);
   };
-
 
 } // namespace Seldon.
 

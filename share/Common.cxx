@@ -1,4 +1,4 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2001-2012 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -22,7 +22,7 @@
 #include "Common.hxx"
 
 template <class T>
-void PrintArray(T* v, int lgth)
+inline void PrintArray(T* v, int lgth)
 {
   for (int k = 0; k < lgth - 1; k++)
     std::cout << v[k] << " | ";
@@ -33,18 +33,87 @@ namespace Seldon
 {
 
 
+  //! Default constructor.
+  Str::Str()
+  {
+  }
+
+
+  //! Copy constructor.
+  /*!
+    \param[in] s 'Str' instance to be copied.
+  */
+  Str::Str(const Str& s)
+  {
+    output_ << s;
+  }
+
+
+  //! Conversion to string.
+  Str::operator std::string() const
+  {
+    return output_.str();
+  }
+
+
+  //! Adds an element to the string.
+  /*!
+    \param[in] input element added at the end of the string.
+  */
+  template <class T>
+  Str& Str::operator << (const T& input)
+  {
+    output_ << input;
+    return *this;
+  }
+
+
+  //! Adds an element to an instance of 'Str'.
+  /*!
+    \param[in] s 'Str' instance.
+    \param[in] input element added at the end of the string.
+  */
+  template <class T>
+  Str operator + (const Str& s, const T& input)
+  {
+    string s_input = s;
+    Str output;
+    output << s_input << input;
+    return output;
+  }
+
+
+  //! Converts a 'str' instance to an 'ostream' instance.
+  ostream& operator << (ostream& out, Str& in)
+  {
+    string output = in;
+    out << output;
+    return out;
+  }
+
+
+  //! Converts a 'str' instance to an 'ostream' instance.
+  ostream& operator << (ostream& out, Str in)
+  {
+    string output = in;
+    out << output;
+    return out;
+  }
+
+
   //! Converts most types to string.
   /*!
     \param input variable to be converted.
     \return A string containing 'input'.
   */
   template<typename T>
-  std::string to_str(const T& input)
+  inline std::string to_str(const T& input)
   {
     std::ostringstream output;
     output << input;
     return output.str();
   }
+
 
   //! Converts string to most types, specially numbers.
   /*!
@@ -52,11 +121,12 @@ namespace Seldon
     \param[out] num \a s converted to 'T'.
   */
   template <class T>
-  void to_num(std::string s, T& num)
+  inline void to_num(std::string s, T& num)
   {
     std::istringstream str(s);
     str >> num;
   }
+
 
   //! Converts string to most types, specially numbers.
   /*!
@@ -64,7 +134,7 @@ namespace Seldon
     \return \a s converted to 'T'.
   */
   template <class T>
-  T to_num(std::string s)
+  inline T to_num(std::string s)
   {
     T num;
     std::istringstream str(s);
@@ -115,6 +185,166 @@ namespace Seldon
   {
     number = complex<T>(T(1), T(0));
   }
+
+
+  //! Sets a real number to n.
+  /*!
+    \param[in,out] number real umber to be set to n.
+  */
+  template <class T>
+  inline void SetComplexReal(int n, T& number)
+  {
+    number = T(n);
+  }
+  
+  
+  //! Sets a complex number to (n, 0).
+  /*!
+    \param[in,out] number complex number to be set to (n, 0).
+  */
+  template <class T>
+  inline void SetComplexReal(int n, complex<T>& number)
+  {
+    number = complex<T>(n, 0);
+  }
+  
+
+  //! Sets a complex number to (n, 0).
+  /*!
+    \param[in,out] number complex number to be set to (n, 0).
+  */
+  template <class T>
+  inline void SetComplexReal(bool n, complex<T>& number)
+  {
+    number = complex<T>(n, 0);
+  }
+
+
+  //! Sets a complex number to (x, 0).
+  /*!
+    \param[in,out] number complex number to be set to (x, 0).
+  */  
+  template <class T>
+  void SetComplexReal(const T& x, complex<T>& number)
+  {
+    number = complex<T>(x, 0);
+  }
+  
+  
+  //! Sets a complex number to x.
+  /*!
+    \param[in,out] number complex number to be set to x.
+  */
+  template <class T0, class T1>
+  void SetComplexReal(const T0& x, T1& number)
+  {
+    number = x;
+  }
+  
+  
+  //! Returns true for a complex number
+  template <class T>
+  inline bool IsComplexNumber(T& number)
+  {
+    return false;
+  }
+
+
+  //! Returns true for a complex number
+  template <class T>
+  inline bool IsComplexNumber(complex<T>& number)
+  {
+    return true;
+  }
+
+  
+  //! returns absolute value of val
+  template<class T>
+  inline T ComplexAbs(const T& val)
+  {
+    return abs(val);
+  }
+  
+  
+  //! returns modulus of val
+  template<class T>
+  inline T ComplexAbs(const complex<T>& val)
+  {
+#if defined(SELDON_WITH_BLAS) && !defined(SELDON_WITH_LAPACK)
+    // we choose Blas convention
+    return abs(real(val)) + abs(imag(val));
+#else
+    // otherwise usual modulus
+    return abs(val);
+#endif
+  }
+
+
+  //! returns the square modulus of z
+  template<class T>
+  inline T absSquare(const complex<T>& z)
+  {
+    // more optimal than real(z * conj(z))
+    return real(z)*real(z) + imag(z)*imag(z);
+  }
+
+  
+  //! returns the square modulus of z
+  template<class T>
+  inline T absSquare(const T& z)
+  {
+    return z*z;
+  }
+
+    
+#ifdef SELDON_WITH_HDF5
+  //! Gives for most C types the corresponding HDF5 memory datatype.
+  /*!
+    \param[in] input variable to analyze.
+    \return HDF5 memory type of \a input.
+  */
+  template <class T>
+  hid_t GetH5Type(T& input)
+  {
+    double d;
+    float f;
+    int i;
+    long l;
+    char c;
+    unsigned char uc;
+    long long ll;
+    unsigned int ui;
+    unsigned short us;
+    unsigned long ul;
+    unsigned long long ull;
+
+    if (typeid(input) == typeid(d))
+      return H5T_NATIVE_DOUBLE;
+    if (typeid(input) == typeid(f))
+      return H5T_NATIVE_FLOAT;
+    if (typeid(input) == typeid(i))
+      return H5T_NATIVE_INT;
+    if (typeid(input) == typeid(l))
+      return H5T_NATIVE_LONG;
+    if (typeid(input) == typeid(c))
+      return H5T_NATIVE_CHAR;
+    if (typeid(input) == typeid(uc))
+      return H5T_NATIVE_UCHAR;
+    if (typeid(input) == typeid(ll))
+      return H5T_NATIVE_LLONG;
+    if (typeid(input) == typeid(ui))
+      return H5T_NATIVE_UINT;
+    if (typeid(input) == typeid(us))
+      return H5T_NATIVE_USHORT;
+    if (typeid(input) == typeid(ul))
+      return H5T_NATIVE_ULONG;
+    if (typeid(input) == typeid(ull))
+      return H5T_NATIVE_ULLONG;
+    else
+      throw Error("hid_t GetH5Type(T& input)",
+                  "Type has no corresponding native HDF5 datatype.");
+  }
+#endif
 
 
 }  // namespace Seldon.

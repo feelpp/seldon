@@ -24,6 +24,11 @@ extern "C"
 #define _COMPLEX_H
 
 #include "pastix.h"
+
+#undef FLOAT
+#undef INT
+#undef UINT
+
 }
 
 namespace Seldon
@@ -36,13 +41,11 @@ namespace Seldon
     //! pastix structure
     pastix_data_t* pastix_data;
     //! options (integers)
-    pastix_int_t iparm[64];
+    pastix_int_t iparm[IPARM_SIZE];
     //! options (floats)
-    double dparm[64];
+    double dparm[DPARM_SIZE];
     //! number of columns
     pastix_int_t n;
-    //! MPI communicator
-    MPI_Comm comm_facto;
     //! permutation arrays
     Vector<pastix_int_t> perm, invp;
     //! local to global
@@ -53,13 +56,16 @@ namespace Seldon
     int print_level;
     //! if true, solution is refined
     bool refine_solution;
-
+    //! threshold for static pivoting
+    double threshold_pivot;
+    //! adjust threshold for static pivoting ?
+    bool adjust_threshold_pivot;
+    
   public :
 
     MatrixPastix();
     ~MatrixPastix();
 
-    void CreateCommunicator();
     void Clear();
 
     void CallPastix(const MPI_Comm&, pastix_int_t* colptr, pastix_int_t* row,
@@ -67,20 +73,26 @@ namespace Seldon
 
     void HideMessages();
     void ShowMessages();
+    void ShowFullHistory();
 
+    void SelectOrdering(int type);
+    void SetPermutation(const IVect& permut);
+
+    void SetPivotThreshold(double eps);
     void RefineSolution();
     void DoNotRefineSolution();
-
+    int64_t GetMemorySize() const;
+    
     template<class T0, class Prop, class Storage, class Allocator, class Tint>
     void FindOrdering(Matrix<T0, Prop, Storage, Allocator> & mat,
 		      Vector<Tint>& numbers, bool keep_matrix = false);
 
-    template<class Storage, class Allocator>
-    void FactorizeMatrix(Matrix<T, General, Storage, Allocator> & mat,
+    template<class T0, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<T0, General, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
-    template<class Storage, class Allocator>
-    void FactorizeMatrix(Matrix<T, Symmetric, Storage, Allocator> & mat,
+    template<class T0, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<T0, Symmetric, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
     template<class Allocator2>
@@ -90,28 +102,65 @@ namespace Seldon
     void Solve(const Transpose_status& TransA,
 	       Vector<T, VectFull, Allocator2>& x);
 
-#ifdef SELDON_WITH_MPI
+    template<class Allocator2, class Transpose_status>
+    void Solve(const Transpose_status& TransA,
+	       Matrix<T, General, ColMajor, Allocator2>& x);
 
-    void SetNbThreadPerNode(int);
-
+    void SetNumberOfThreadPerNode(int);
+    
     template<class Alloc1, class Alloc2, class Alloc3, class Tint>
-    void FactorizeDistributedMatrix(Vector<pastix_int_t, VectFull, Alloc1>&,
+    void FactorizeDistributedMatrix(MPI::Comm& comm_facto,
+                                    Vector<pastix_int_t, VectFull, Alloc1>&,
                                     Vector<pastix_int_t, VectFull, Alloc2>&,
                                     Vector<T, VectFull, Alloc3>&,
                                     const Vector<Tint>& glob_number,
 				    bool sym, bool keep_matrix = false);
 
     template<class Allocator2, class Tint>
-    void SolveDistributed(Vector<T, Vect_Full, Allocator2>& x,
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          Vector<T, Vect_Full, Allocator2>& x,
                           const Vector<Tint>& glob_num);
 
     template<class Allocator2, class Transpose_status, class Tint>
-    void SolveDistributed(const Transpose_status& TransA,
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          const Transpose_status& TransA,
 			  Vector<T, Vect_Full, Allocator2>& x,
                           const Vector<Tint>& glob_num);
-#endif
 
   };
+
+  template<class T0, class Prop, class Storage, class Allocator, class T>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A, MatrixPastix<T>& mat_lu,
+	     bool keep_matrix = false);
+
+  template<class T, class Allocator>
+  void SolveLU(MatrixPastix<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
+
+  template<class T, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixPastix<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
+
+  template<class T, class Prop, class Allocator>
+  void SolveLU(MatrixPastix<T>& mat_lu,
+               Matrix<T, Prop, ColMajor, Allocator>& x);
+
+  template<class T, class Prop, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixPastix<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x);
+
+  template<class Allocator>
+  void SolveLU(MatrixPastix<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+  
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixPastix<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+
+  template<class Allocator>
+  void SolveLU(MatrixPastix<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixPastix<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
 
 }
 

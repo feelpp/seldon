@@ -24,15 +24,23 @@ extern "C"
 #include "superlu_interface.h"
 }
 
+
 namespace Seldon
 {
+
+  void SetComplexOne(doublecomplex& one)
+  {
+    one.r = 1.0;
+    one.i = 0.0;
+  }
+
   //! class interfacing SuperLU functions
   template<class T>
   class MatrixSuperLU_Base
   {
   protected :
     //! objects of SuperLU
-    SuperMatrix A, L, U, B;
+    SuperMatrix L, U, B;
     SCformat *Lstore;  //!< object of SuperLU
     NCformat *Ustore;  //!< object of SuperLU
     SuperLUStat_t stat; //!< statistics
@@ -40,30 +48,29 @@ namespace Seldon
     //! permutation array
     Vector<int> perm_r, perm_c;
 
-    int permc_spec; //!< ordering scheme
+    colperm_t permc_spec; //!< ordering scheme
     int n; //!< number of rows
     bool display_info; //!< display information about factorization ?
+    //! Error code returned by SuperLU.
+    int info_facto;
 
   public :
     MatrixSuperLU_Base();
     ~MatrixSuperLU_Base();
 
-    template<class Prop, class Allocator>
-    void GetLU(Matrix<double, Prop, ColSparse, Allocator>& Lmat,
-               Matrix<double, Prop, ColSparse, Allocator>& Umat,
-               bool permuted = true);
-    template<class Prop, class Allocator>
-    void GetLU(Matrix<double, Prop, RowSparse, Allocator>& Lmat,
-               Matrix<double, Prop, RowSparse, Allocator>& Umat,
-               bool permuted = true);
     const Vector<int>& GetRowPermutation() const;
     const Vector<int>& GetColPermutation() const;
+
+    void SelectOrdering(colperm_t type);
+    void SetPermutation(const IVect&);
 
     void Clear();
     void HideMessages();
     void ShowMessages();
 
+    int GetInfoFactorization() const;
   };
+
 
   //! empty matrix
   template<class T>
@@ -71,23 +78,43 @@ namespace Seldon
   {
   };
 
+
   //! class interfacing SuperLU functions in double precision
   template<>
   class MatrixSuperLU<double> : public MatrixSuperLU_Base<double>
   {
   public:
     MatrixSuperLU() : MatrixSuperLU_Base<double>() {}
+    
+    int64_t GetMemorySize() const;
+    
+    template<class Prop, class Allocator>
+    void GetLU(Matrix<double, Prop, ColSparse, Allocator>& Lmat,
+               Matrix<double, Prop, ColSparse, Allocator>& Umat,
+               bool permuted = true);
 
-    template<class Prop, class Storage, class Allocator>
-    void FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
+    template<class Prop, class Allocator>
+    void GetLU(Matrix<double, Prop, RowSparse, Allocator>& Lmat,
+               Matrix<double, Prop, RowSparse, Allocator>& Umat,
+               bool permuted = true);
+
+    template<class T0, class Prop, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
     template<class Allocator2>
     void Solve(Vector<double, VectFull, Allocator2>& x);
 
-    template<class Allocator2>
-    void Solve(const SeldonTranspose& TransA,
+    template<class TransStatus, class Allocator2>
+    void Solve(const TransStatus& TransA,
                Vector<double, VectFull, Allocator2>& x);
+
+    template<class Allocator2>
+    void Solve(Matrix<double, General, ColMajor, Allocator2>& x);
+
+    template<class TransStatus, class Allocator2>
+    void Solve(const TransStatus& TransA,
+               Matrix<double, General, ColMajor, Allocator2>& x);
   };
 
 
@@ -99,19 +126,71 @@ namespace Seldon
   public:
     MatrixSuperLU() : MatrixSuperLU_Base<complex<double> >() {}
 
-    template<class Prop, class Storage, class Allocator>
-    void FactorizeMatrix(Matrix<complex<double>, Prop,
+    int64_t GetMemorySize() const;
+    
+    template<class Prop, class Allocator>
+    void GetLU(Matrix<complex<double>, Prop, ColSparse, Allocator>& Lmat,
+               Matrix<complex<double>, Prop, ColSparse, Allocator>& Umat,
+               bool permuted = true);
+
+    template<class Prop, class Allocator>
+    void GetLU(Matrix<complex<double>, Prop, RowSparse, Allocator>& Lmat,
+               Matrix<complex<double>, Prop, RowSparse, Allocator>& Umat,
+               bool permuted = true);
+
+    template<class T0, class Prop, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<T0, Prop,
 			 Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
     template<class Allocator2>
     void Solve(Vector<complex<double>, VectFull, Allocator2>& x);
 
-    template<class Allocator2>
-    void Solve(const SeldonTranspose& TransA,
+    template<class TransStatus, class Allocator2>
+    void Solve(const TransStatus& TransA,
                Vector<complex<double>, VectFull, Allocator2>& x);
 
+    template<class Allocator2>
+    void Solve(Matrix<complex<double>, General, ColMajor, Allocator2>& x);
+
+    template<class TransStatus, class Allocator2>
+    void Solve(const TransStatus& TransA,
+               Matrix<complex<double>, General, ColMajor, Allocator2>& x);
+
   };
+
+  template<class T0, class Prop, class Storage, class Allocator, class T>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A, MatrixSuperLU<T>& mat_lu,
+	     bool keep_matrix = false);
+
+  template<class T, class Allocator>
+  void SolveLU(MatrixSuperLU<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
+
+  template<class T, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
+	       MatrixSuperLU<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
+  template<class T, class Prop, class Allocator>
+  void SolveLU(MatrixSuperLU<T>& mat_lu,
+               Matrix<T, Prop, ColMajor, Allocator>& x);
+
+  template<class T, class Prop, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixSuperLU<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x);
+
+  template<class Allocator>
+  void SolveLU(MatrixSuperLU<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixSuperLU<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+
+  template<class Allocator>
+  void SolveLU(MatrixSuperLU<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+  
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixSuperLU<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+  
 }
 
 #define SELDON_FILE_SUPERLU_HXX

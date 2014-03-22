@@ -1,5 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
-// Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -216,6 +216,21 @@ namespace Seldon
   }
 
 
+  //! Returns the pointer 'me_'.
+  /*! Returns the pointer 'me_' that defines an array pointing to the first
+    row or column elements, so that 'me_[1]' points to the first element of
+    the second row or column.
+    \return The pointer 'me_'.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  typename
+  Matrix_Pointers<T, Prop, Storage, Allocator>::pointer*
+  Matrix_Pointers<T, Prop, Storage, Allocator>::GetMe() const
+  {
+    return me_;
+  }
+
+
   /*********************
    * MEMORY MANAGEMENT *
    *********************/
@@ -419,6 +434,9 @@ namespace Seldon
   ::Resize(int i, int j)
   {
 
+    if (i == this->m_ && j == this->n_)
+      return;
+
     // Storing the old values of the matrix.
     int iold = Storage::GetFirst(this->m_, this->n_);
     int jold = Storage::GetSecond(this->m_, this->n_);
@@ -442,6 +460,23 @@ namespace Seldon
   /**********************************
    * ELEMENT ACCESS AND AFFECTATION *
    **********************************/
+
+
+  //! Returns a pointer to a data element.
+  /*!
+    \param i index along dimension #1.
+    \param j index along dimension #2.
+    \return A pointer to the data element.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  typename Matrix_Pointers<T, Prop, Storage, Allocator>::pointer
+  Matrix_Pointers<T, Prop, Storage, Allocator>::GetDataPointer(int i, int j)
+    const
+  {
+    int lgth = Storage::GetSecond(this->m_, this->n_);
+    return this->data_ + Storage::GetFirst(i, j) * lgth
+      + Storage::GetSecond(i, j);
+  }
 
 
   //! Access operator.
@@ -529,7 +564,22 @@ namespace Seldon
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
   }
 
-
+  
+  //! Access operator.
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Pointers<T, Prop, Storage, Allocator>::reference
+  Matrix_Pointers<T, Prop, Storage, Allocator>::Get(int i, int j)
+  {
+    return Val(i, j);
+  }
+  
+  
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -555,6 +605,22 @@ namespace Seldon
 #endif
 
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
+  }
+
+
+  //! Access operator.
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Pointers<T, Prop, Storage, Allocator>
+  ::const_reference
+  Matrix_Pointers<T, Prop, Storage, Allocator>::Get(int i, int j) const
+  {
+    return Val(i, j);
   }
 
 
@@ -602,6 +668,20 @@ namespace Seldon
 #endif
 
     return this->data_[i];
+  }
+
+
+  //! Sets an element of the matrix.
+  /*!
+    \param i row index.
+    \param j column index.
+    \param x new value for the matrix element (\a i, \a j).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Pointers<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const T& val)
+  {
+    this->Val(i, j) = val;
   }
 
 
@@ -671,9 +751,12 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Pointers<T, Prop, Storage, Allocator>::SetIdentity()
   {
-    Fill(T(0));
-
-    T one(1);
+    T zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    
+    Fill(zero);
+    
     for (int i = 0; i < min(this->m_, this->n_); i++)
       (*this)(i,i) = one;
   }
@@ -688,7 +771,7 @@ namespace Seldon
   void Matrix_Pointers<T, Prop, Storage, Allocator>::Fill()
   {
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = i;
+      SetComplexReal(i,  this->data_[i]);
   }
 
 
@@ -696,14 +779,14 @@ namespace Seldon
   /*!
     \param x the value to fill the matrix with.
   */
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Prop, class Storage, class Allocator> 
   template <class T0>
   void Matrix_Pointers<T, Prop, Storage, Allocator>::Fill(const T0& x)
   {
+    T x_; SetComplexReal(x, x_);
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = x;
+      this->data_[i] = x_;
   }
-
 
   //! Fills the matrix with a given value.
   /*!
@@ -727,9 +810,11 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Pointers<T, Prop, Storage, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = rand();
+      SetComplexReal(rand(), this->data_[i]);
   }
 
 
@@ -796,6 +881,50 @@ namespace Seldon
    * INPUT/OUTPUT FUNCTIONS *
    **************************/
 
+#ifdef SELDON_WITH_HDF5
+  //! Writes the matrix in a HDF5 file.
+  /*!
+    All elements of the matrix are stored in HDF5 format.
+    \param FileName file name.
+    \param group_name name of the group the matrix must be stored in.
+    \param dataset_name name of the dataset the matrix must be stored in.
+    \warning This method is not defined yet!
+  */
+ template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Pointers<T, Prop, Storage, Allocator>
+ ::WriteHDF5(string FileName, string group_name, string dataset_name) const
+  {
+    throw IOError("Matrix_Pointers::WriteHDF5(string FileName)",
+                  string("Unable to write matrix in \"") + FileName + "\".");
+  }
+#endif
+
+
+  //! Appends the matrix in a file.
+  /*!  
+    Appends the matrix in a file in binary format. The matrix elements are
+    appended in the same order as in memory (e.g. row-major storage).
+    \param FileName output file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Pointers<T, Prop, Storage, Allocator>
+  ::Append(string FileName) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str(), ofstream::binary | ios::app);
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_Pointers::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->Write(FileStream, false);
+
+    FileStream.close();
+  }
+
 
   //! Writes the matrix in a file.
   /*!
@@ -812,7 +941,7 @@ namespace Seldon
   ::Write(string FileName, bool with_size) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -954,7 +1083,7 @@ namespace Seldon
   ::Read(string FileName, bool with_size)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -1110,7 +1239,7 @@ namespace Seldon
     Builds a empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColMajor, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, ColMajor, Allocator>::Matrix():
     Matrix_Pointers<T, Prop, ColMajor, Allocator>()
   {
   }
@@ -1142,6 +1271,72 @@ namespace Seldon
    *****************/
 
 
+  //! Writes one column of matrix in a file.
+  /*!
+    Stores one column of matrix in a file in binary format.
+    The column indexed by \a col is written.
+    \param FileName output file name.
+    \param col column index.
+  */
+  template <class T, class Prop, class Allocator>
+  void Matrix<T, Prop, ColMajor, Allocator>
+  ::WriteColumn(string FileName, int col) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix::WriteColumn(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->WriteColumn(FileStream, col);
+
+    FileStream.close();
+  }
+
+
+  //! Writes one column of matrix in an output stream.
+  /*!
+    Stores one column of matrix in an output stream in binary format.
+    The column indexed by \a col is written.
+    \param FileStream output stream.
+    \param col column index.
+  */
+  template <class T, class Prop, class Allocator>
+  void Matrix<T, Prop, ColMajor, Allocator>
+  ::WriteColumn(ostream& FileStream, int col) const
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    if (col < 0 || col >= this->n_)
+      throw WrongCol("Matrix::WriteColumn(ostream& FileStream, int col)",
+		     string("Index should be in [0, ")
+		     + to_str(this->n_-1) + "], but is equal to "
+		     + to_str(col) + ".");
+#endif
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix::WriteColumn(ostream& FileStream, int col)",
+		    "The stream is not ready.");
+#endif
+
+    FileStream.write(reinterpret_cast<char*>(this->me_[col]),
+		     this->m_ * sizeof(value_type));
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was written.
+    if (!FileStream.good())
+      throw IOError("Matrix::WriteColumn(ostream& FileStream, int col)",
+                    "Output operation failed.");
+#endif
+
+  }
+
+
   //! Fills the matrix with a given value.
   /*!
     \param x the value to fill the matrix with.
@@ -1152,6 +1347,23 @@ namespace Seldon
   Matrix<T, Prop, ColMajor, Allocator>::operator= (const T0& x)
   {
     this->Fill(x);
+
+    return *this;
+  }
+
+  
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ColMajor, Allocator>&
+  Matrix<T, Prop, ColMajor, Allocator>
+  ::operator= (const Matrix<T, Prop, ColMajor, Allocator>& A)
+  {
+    this->Copy(A);
 
     return *this;
   }
@@ -1187,7 +1399,7 @@ namespace Seldon
     Builds a empty matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowMajor, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, RowMajor, Allocator>::Matrix():
     Matrix_Pointers<T, Prop, RowMajor, Allocator>()
   {
   }
@@ -1219,6 +1431,72 @@ namespace Seldon
    *****************/
 
 
+  //! Writes one row of matrix in a file.
+  /*!
+    Stores one row of matrix in a file in binary format.
+    The row indexed by \a row is written.
+    \param FileName output file name.
+    \param row row index.
+  */
+  template <class T, class Prop, class Allocator>
+  void Matrix<T, Prop, RowMajor, Allocator>
+  ::WriteRow(string FileName, int row) const
+  {
+    ofstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix::WriteRow(string FileName, int row)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->WriteRow(FileStream, row);
+
+    FileStream.close();
+  }
+
+
+  //! Writes one row of matrix in an output stream.
+  /*!
+    Stores one row of matrix in an output stream in binary format.
+    The row indexed by \a row is written.
+    \param FileStream output stream.
+    \param row row index.
+  */
+  template <class T, class Prop, class Allocator>
+  void Matrix<T, Prop, RowMajor, Allocator>
+  ::WriteRow(ostream& FileStream, int row) const
+  {
+#ifdef SELDON_CHECK_BOUNDS
+    if (row < 0 || row >= this->m_)
+      throw WrongRow("Matrix::WriteRow(ostream& FileStream, int row)",
+		     string("Index should be in [0, ")
+		     + to_str(this->m_-1) + "], but is equal to "
+		     + to_str(row) + ".");
+#endif
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix::WriteRow(ostream& FileStream, int rowm)",
+		    "The stream is not ready.");
+#endif
+
+    FileStream.write(reinterpret_cast<char*>(this->me_[row]),
+		     this->n_ * sizeof(value_type));
+
+#ifdef SELDON_CHECK_IO
+    // Checks if data was written.
+    if (!FileStream.good())
+      throw IOError("Matrix::WriteRow(ostream& FileStream, int row)",
+                    "Output operation failed.");
+#endif
+
+  }
+
+
   //! Fills the matrix with a given value.
   /*!
     \param x the value to fill the matrix with.
@@ -1229,6 +1507,23 @@ namespace Seldon
   Matrix<T, Prop, RowMajor, Allocator>::operator= (const T0& x)
   {
     this->Fill(x);
+
+    return *this;
+  }
+  
+  
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, RowMajor, Allocator>&
+  Matrix<T, Prop, RowMajor, Allocator>
+  ::operator= (const Matrix<T, Prop, RowMajor, Allocator>& A)
+  {
+    this->Copy(A);
 
     return *this;
   }

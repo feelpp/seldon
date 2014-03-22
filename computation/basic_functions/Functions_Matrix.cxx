@@ -1,5 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
-// Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
 // Copyright (C) 2010 INRIA
 // Author(s): Marc Fragu
 //
@@ -21,6 +21,11 @@
 
 
 #ifndef SELDON_FILE_FUNCTIONS_MATRIX_CXX
+#define SELDON_FILE_FUNCTIONS_MATRIX_CXX
+
+
+#include "Functions_Matrix.hxx"
+
 
 /*
   Function defined in this file:
@@ -52,8 +57,20 @@
   infinity norm of matrix A.
   NormInf(A)
 
+  transpose of matrix A
   Transpose(A)
+  
+  B = transpose(A)
+  Transpose(A, B)
+  
+  conjugate of transpose of matrix A
+  TransposeConj(A)
+  
+  conjugate of matrix A
+  Conjugate(A)
+  
 */
+
 
 namespace Seldon
 {
@@ -70,16 +87,14 @@ namespace Seldon
   */
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1>
-  void Mlt(const T0 alpha,
+  void Mlt(const T0& alpha,
 	   Matrix<T1, Prop1, Storage1, Allocator1>& A)  throw()
   {
-    T1 alpha_ = alpha;
-
     typename Matrix<T1, Prop1, Storage1, Allocator1>::pointer
       data = A.GetData();
 
     for (int i = 0; i < A.GetDataSize(); i++)
-      data[i] = alpha_ * data[i];
+      data[i] *= alpha;
   }
 
 
@@ -90,7 +105,7 @@ namespace Seldon
   */
   template <class T0,
 	    class T1, class Prop1, class Allocator1>
-  void Mlt(const T0 alpha,
+  void Mlt(const T0& alpha,
 	   Matrix<T1, Prop1, ColMajorCollection, Allocator1>& A)
   {
     typename T1::value_type alpha_ = alpha;
@@ -107,7 +122,7 @@ namespace Seldon
   */
   template <class T0,
 	    class T1, class Prop1, class Allocator1>
-  void Mlt(const T0 alpha,
+  void Mlt(const T0& alpha,
 	   Matrix<T1, Prop1, RowMajorCollection, Allocator1>& A)
   {
     typename T1::value_type alpha_ = alpha;
@@ -123,7 +138,7 @@ namespace Seldon
     \param[in,out] M matrix to be multiplied.
   */
   template <class T0, class Allocator>
-  void Mlt(const T0 alpha,
+  void Mlt(const T0& alpha,
 	   Matrix<FloatDouble, General, DenseSparseCollection, Allocator>& A)
   {
     typename Matrix<FloatDouble, General, DenseSparseCollection, Allocator>
@@ -187,13 +202,15 @@ namespace Seldon
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Prop2, class Storage2, class Allocator2,
 	    class T3, class Prop3, class Storage3, class Allocator3>
-  void Mlt(const T0 alpha,
+  void Mlt(const T0& alpha,
 	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
 	   const Matrix<T2, Prop2, Storage2, Allocator2>& B,
 	   Matrix<T3, Prop3, Storage3, Allocator3>& C)
   {
-    C.Fill(T3(0));
-    MltAdd(alpha, A, B, T3(0), C);
+    T3 zero;
+    SetComplexZero(zero);
+    C.Fill(zero);
+    MltAdd(alpha, A, B, zero, C);
   }
 
 
@@ -211,8 +228,11 @@ namespace Seldon
 	   const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 	   Matrix<T2, Prop2, Storage2, Allocator2>& C)
   {
-    C.Fill(T2(0));
-    MltAdd(T0(1), A, B, T2(0), C);
+    T0 one; T2 zero;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    C.Fill(zero);
+    MltAdd(one, A, B, zero, C);
   }
 
 
@@ -224,6 +244,8 @@ namespace Seldon
     \param[out] C row-major sparse matrix in Harwell-Boeing format, result of
     the product of \a A with \a B. It does not need to have the right non-zero
     entries.
+    \warning This function is working only for allocators
+    such MallocAlloc or CallocAlloc, not for NewAlloc
   */
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Prop1, class Allocator1,
@@ -237,10 +259,16 @@ namespace Seldon
              "Matrix<RowSparse>& B, Matrix<RowSparse>& C)");
 #endif
 
+#ifdef SELDON_CHECK_MEMORY
+    if (!Allocator2::KeepDataReallocate)
+      throw Undefined("Mlt(RowSparse)", "Function not defined for"
+                      " NewAlloc allocator");
+#endif
+    
     int h, i, k, l, col;
     int Nnonzero, Nnonzero_row, Nnonzero_row_max;
-    IVect column_index;
-    Vector<T2> row_value;
+    Vector<int, VectFull, CallocAlloc<int> > column_index;
+    Vector<T2, VectFull, Allocator2> row_value;
     T1 value;
     int m = A.GetM();
 
@@ -364,6 +392,88 @@ namespace Seldon
 
 
   //! Multiplies two row-major sparse matrices in Harwell-Boeing format.
+  /*! It performs the operation \f$ C = A B \f$ where \f$ A \f$, \f$ B \f$ and
+    \f$ C \f$ are row-major sparse matrices in Harwell-Boeing format.
+    \param[in] A row-major sparse matrix in Harwell-Boeing format.
+    \param[in] B row-major sparse matrix in Harwell-Boeing format.
+    \param[out] C row-major sparse matrix in Harwell-Boeing format, result of
+    the product of \a A with \a B. It does not need to have the right non-zero
+    entries.
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Prop2, class Allocator2>
+  void Mlt(const Matrix<T0, Prop0, RowMajor, Allocator0>& A,
+	   const Matrix<T1, Prop1, RowSparse, Allocator1>& B,
+	   Matrix<T2, Prop2, RowMajor, Allocator2>& C)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, B, "Mlt(const Matrix<RowMajor>& A, const "
+             "Matrix<RowSparse>& B, Matrix<RowMajor>& C)");
+#endif
+
+    int m = A.GetM();
+    int n = A.GetN();
+
+    T2 zero;
+    SetComplexZero(zero);
+    C.Reallocate(A.GetM(), B.GetN());
+    C.Fill(zero);
+
+    for (int i = 0; i < m; i++)
+      {
+        for (int k = 0; k < n; k++)
+          {
+            // Loop on all elements in the k-th row in B. These elements
+            // are multiplied with the element (i, k) of A.
+            for (int l = B.GetPtr()[k]; l < B.GetPtr()[k + 1]; l++)
+              C(i, B.GetInd()[l]) += A(i, k) * B.GetData()[l];
+          }
+      }
+  }
+
+
+  //! Multiplies two row-major sparse matrices in Harwell-Boeing format.
+  /*! It performs the operation \f$ C = A B \f$ where \f$ A \f$, \f$ B \f$ and
+    \f$ C \f$ are row-major sparse matrices in Harwell-Boeing format.
+    \param[in] A row-major sparse matrix in Harwell-Boeing format.
+    \param[in] B row-major sparse matrix in Harwell-Boeing format.
+    \param[out] C row-major sparse matrix in Harwell-Boeing format,result of
+    the product of \a A with \a B transposed. It does not need to have the
+    right non-zero entries.
+  */
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Prop2, class Allocator2>
+  void MltNoTransTrans(const Matrix<T0, Prop0, RowMajor, Allocator0>& A,
+                       const Matrix<T1, Prop1, RowSparse, Allocator1>& B,
+                       Matrix<T2, Prop2, RowMajor, Allocator2>& C)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(SeldonNoTrans, A, SeldonTrans, B,
+             "MltNoTransTrans(const Matrix<RowMajor>& A, const "
+             "Matrix<RowSparse>& B, Matrix<RowMajor>& C)");
+#endif
+    
+    T2 zero;
+    SetComplexZero(zero);
+    int m = A.GetM();
+    C.Reallocate(A.GetM(), B.GetM());
+    C.Fill(zero);
+    for (int i = 0; i < m; i++)
+      {
+        for (int j = 0; j < B.GetM(); j++)
+          {
+            // Loop on all elements in the i-th row in B. These elements
+            // are multiplied with the element (i, k) of A.
+            for (int l = B.GetPtr()[j]; l < B.GetPtr()[j + 1]; l++)
+              C(i, j) += A(i, B.GetInd()[l]) * B.GetData()[l];
+          }
+      }
+  }
+
+
+  //! Multiplies two row-major sparse matrices in Harwell-Boeing format.
   /*! It performs the operation \f$ C = A B^T \f$ where \f$ A \f$, \f$ B \f$
     and \f$ C \f$ are row-major sparse matrices in Harwell-Boeing format.
     \param[in] A row-major sparse matrix in Harwell-Boeing format.
@@ -371,6 +481,8 @@ namespace Seldon
     \param[out] C row-major sparse matrix in Harwell-Boeing format, result of
     the product of \a A with \a B transposed. It does not need to have the
     right non-zero entries.
+    \warning This function is working only for allocators
+    such MallocAlloc or CallocAlloc, not for NewAlloc
   */
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Prop1, class Allocator1,
@@ -385,6 +497,12 @@ namespace Seldon
              "const Matrix<RowSparse>& B, Matrix<RowSparse>& C)");
 #endif
 
+#ifdef SELDON_CHECK_MEMORY
+    if (!Allocator2::KeepDataReallocate)
+      throw Undefined("Mlt(RowSparse)", "Function not defined for"
+                      " NewAlloc allocator");
+#endif
+
     int h, i, k, col;
     int ib, kb;
     int Nnonzero_row;
@@ -394,7 +512,7 @@ namespace Seldon
     // There will be no need for 'Resize': 'Reallocate' will do the job.
     Vector<int, VectFull, MallocAlloc<int> > column_index;
     Vector<T2, VectFull, MallocAlloc<T2> > row_value;
-    T2 value = 0;
+    T2 value;
 
     int m = A.GetM();
     int n = B.GetM();
@@ -428,7 +546,9 @@ namespace Seldon
 
     // Number of non-zero elements in C.
     Nnonzero = 0;
-
+    T2 zero;
+    SetComplexZero(zero);
+    value = zero;
     for (i = 0; i < m; i++)
       {
         c_ptr[i + 1] = c_ptr[i];
@@ -449,11 +569,11 @@ namespace Seldon
                     for (kb = B.GetPtr()[ib]; kb < B.GetPtr()[ib + 1]; kb++)
                       if (col == B.GetInd()[kb])
                         value += A.GetData()[k] * B.GetData()[kb];
-                    if (value != T2(0))
+                    if (value != zero)
                       {
                         row_value.Append(value);
                         column_index.Append(ib);
-                        value = T2(0);
+                        value = zero;
                       }
                   }
               }
@@ -516,7 +636,6 @@ namespace Seldon
   /////////
 
 
-
   ////////////
   // MLTADD //
 
@@ -537,10 +656,10 @@ namespace Seldon
 	    class T2, class Prop2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Prop4, class Storage4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const Matrix<T1, Prop1, Storage1, Allocator1>& A,
 	      const Matrix<T2, Prop2, Storage2, Allocator2>& B,
-	      const T3 beta,
+	      const T3& beta,
 	      Matrix<T4, Prop4, Storage4, Allocator4>& C)
   {
     int na = A.GetN();
@@ -551,30 +670,298 @@ namespace Seldon
     CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
 #endif
 
+    if ( (Storage1::Sparse) || (Storage2::Sparse) || (Storage4::Sparse))
+      throw WrongArgument("MltAdd", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+    
+    T3 zero_T3;
+    SetComplexZero(zero_T3);
     T4 temp;
-    T4 alpha_(alpha);
-    T4 beta_(beta);
-
-    if (beta_ != T4(0))
+    T4 zero;
+    SetComplexZero(zero);
+    
+    if (beta != zero_T3)
       for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-	for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
-	  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
-	    *= beta_;
+	for (int j = Storage4::GetBeginLoop(i);
+             j < Storage4::GetEndLoop(mc, nc, i); j++)
+	  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+	    *= beta;
     else
       for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-	for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
-	  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j)) = T4(0);
+	for (int j = Storage4::GetBeginLoop(i);
+             j < Storage4::GetEndLoop(mc, nc, i); j++)
+	  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j)) = zero;
 
     for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
-      for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
+      for (int j = Storage4::GetBeginLoop(i);
+           j < Storage4::GetEndLoop(mc, nc, i); j++)
 	{
-	  temp = T4(0);
+	  temp = zero;
 	  for (int k = 0; k < na; k++)
 	    temp += A(Storage4::GetFirst(i, j), k)
 	      * B(k, Storage4::GetSecond(i, j));
-	  C(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
-	    += alpha_ * temp;
+	  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+	    += alpha * temp;
 	}
+  }
+
+
+  //! Multiplies two matrices, and adds the result to a third matrix.
+  /*! It performs the operation \f$ C = \alpha A B + \beta C \f$
+    or \f$C = \alpha A B^T + \beta C \f$, where \f$
+    \alpha \f$ and \f$ \beta \f$ are scalars, and \f$ A \f$, \f$ B \f$ and \f$
+    C \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] TransA status of A:
+    SeldonNoTrans, SeldonTrans or SeldonConjTrans.
+    \param[in] A matrix.
+    \param[in] TransB status of B:
+    SeldonNoTrans, SeldonTrans or SeldonConjTrans.
+    \param[in] B matrix.
+    \param[in] beta scalar.
+    \param[in,out] C matrix, result of the product of \a A with \a B or \a
+    B^T, times \a alpha, plus \a beta times \a C.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Storage1, class Allocator1,
+	    class T2, class Prop2, class Storage2, class Allocator2,
+	    class T3,
+	    class T4, class Prop4, class Storage4, class Allocator4>
+  void MltAdd(const T0& alpha,
+	      const SeldonTranspose& TransA,
+	      const Matrix<T1, Prop1, Storage1, Allocator1>& A,
+	      const SeldonTranspose& TransB,
+	      const Matrix<T2, Prop2, Storage2, Allocator2>& B,
+	      const T3& beta,
+	      Matrix<T4, Prop4, Storage4, Allocator4>& C)
+  {
+    if ( (Storage1::Sparse) || (Storage2::Sparse) || (Storage4::Sparse))
+      throw WrongArgument("MltAdd", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
+    int ma = A.GetM();
+    int na = A.GetN();
+    int mc = C.GetM();
+    int nc = C.GetN();
+    
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(TransA, A, TransB, B, C,
+	     "MltAdd(alpha, TransA, A, TransB, B, beta, C)");
+#endif
+    
+    T3 zero_T3, one_T3;
+    SetComplexZero(zero_T3);
+    SetComplexOne(one_T3);
+    T4 temp;    
+    T4 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    
+    // step C = beta C
+    if (beta != zero_T3)
+      {
+	if (beta != one_T3)
+	  Mlt(beta, C);
+      }
+    else
+      C.Fill(zero);
+    
+    if (TransB.NoTrans())
+      {
+	if (TransA.NoTrans())
+	  MltAdd(alpha, A, B, one, C);
+	else if (TransA.Trans())
+	  {
+	    // C = C + alpha A^T B
+	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
+		{
+		  temp = zero;
+		  for (int k = 0; k < ma; k++)
+		    temp += A(k, Storage4::GetFirst(i, j))
+		      * B(k, Storage4::GetSecond(i, j));
+                  
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		    += alpha * temp;
+		}	    
+	  }
+	else
+	  {
+	    // C = C + alpha A^H B
+	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
+		{
+		  temp = zero;
+		  for (int k = 0; k < ma; k++)
+		    temp += conj(A(k, Storage4::GetFirst(i, j)))
+		      * B(k, Storage4::GetSecond(i, j));
+		  
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		    += alpha * temp;
+		}	    
+	  }
+      }
+    else if (TransB.ConjTrans())
+      {
+	if (TransA.NoTrans())
+	  {
+	    // C = C + alpha A B^H
+	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
+		{
+		  temp = zero;
+		  for (int k = 0; k < na; k++)
+		    temp += A(Storage4::GetFirst(i, j), k)
+		      * conj(B(Storage4::GetSecond(i, j), k));
+		  
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		    += alpha * temp;
+		}
+	  }
+	else if (TransA.Trans())
+	  {
+	    // C = C + alpha A^T B^H
+	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
+		{
+		  temp = zero;
+		  for (int k = 0; k < ma; k++)
+		    temp += A(k, Storage4::GetFirst(i, j))
+		      * conj(B(Storage4::GetSecond(i, j), k));
+		  
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		    += alpha * temp;
+		}	    
+	  }
+	else
+	  {
+	    // C = C + alpha A^H B^H
+	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
+		{
+		  temp = zero;
+		  for (int k = 0; k < ma; k++)
+		    temp += conj(A(k, Storage4::GetFirst(i, j)))
+		      * conj(B(Storage4::GetSecond(i, j), k));
+		  
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		    += alpha * temp;
+		}	    
+	  }
+      }
+    else
+      {
+	if (TransA.NoTrans())
+	  {
+	    // C = C + alpha A B^T
+	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
+		{
+		  temp = zero;
+		  for (int k = 0; k < na; k++)
+		    temp += A(Storage4::GetFirst(i, j), k)
+		      * B(Storage4::GetSecond(i, j), k);
+		  
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		    += alpha * temp;
+		}
+	  }
+	else if (TransA.Trans())
+	  {
+	    // C = C + alpha A^T B^T
+	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
+		{
+		  temp = zero;
+		  for (int k = 0; k < ma; k++)
+		    temp += A(k, Storage4::GetFirst(i, j))
+		      * B(Storage4::GetSecond(i, j), k);
+		  
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		    += alpha * temp;
+		}	    
+	  }
+	else
+	  {
+	    // C = C + alpha A^H B^T
+	    for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
+	      for (int j = Storage4::GetBeginLoop(i);
+                   j < Storage4::GetEndLoop(mc, nc, i); j++)
+		{
+		  temp = zero;
+		  for (int k = 0; k < ma; k++)
+		    temp += conj(A(k, Storage4::GetFirst(i, j)))
+		      * B(Storage4::GetSecond(i, j), k);
+		  
+		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
+		    += alpha * temp;
+		}	    
+	  }
+      }
+  }
+
+
+  //! Multiplies two matrices, and adds the result to a third matrix.
+  /*! It performs the operation \f$ C = \alpha A B + \beta C \f$ where \f$
+    \alpha \f$ and \f$ \beta \f$ are scalars, and \f$ A \f$, \f$ B \f$ and \f$
+    C \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] A matrix.
+    \param[in] B matrix.
+    \param[in] beta scalar.
+    \param[in,out] C matrix, result of the product of \a A with \a B, times \a
+    alpha, plus \a beta times \a C.
+  */
+  template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Prop4, class Allocator4>
+  void MltAdd(const T0& alpha,
+              const Matrix<T1, Prop1, PETScMPIDense, Allocator1>& A,
+              const Matrix<T2, General, RowMajor, Allocator2>& B,
+              const T3& beta,
+              Matrix<T4, Prop4, PETScMPIDense, Allocator4>& C)
+  {
+    int na = A.GetN();
+    int mc = C.GetM();
+    int nc = C.GetN();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, B, C, "MltAdd(alpha, A, B, beta, C)");
+#endif
+    T1 *local_a;
+    MatGetArray(A.GetPetscMatrix(), &local_a);
+    int nlocal_A;
+    int mlocal_A;
+    MatGetLocalSize(A.GetPetscMatrix(), &mlocal_A, &nlocal_A);
+    Matrix<T1, Prop1, ColMajor, Allocator1> local_A;
+    local_A.SetData(mlocal_A, na, local_a);
+
+    T4 *local_c;
+    MatGetArray(C.GetPetscMatrix(), &local_c);
+    int nlocal_C;
+    int mlocal_C;
+    MatGetLocalSize(C.GetPetscMatrix(), &mlocal_C, &nlocal_C);
+    Matrix<T4, Prop4, ColMajor, Allocator4> local_C;
+    local_C.SetData(mlocal_C, nc, local_c);
+
+    MltAdd(alpha, local_A, B, beta, local_C);
+
+    local_A.Nullify();
+    MatRestoreArray(A.GetPetscMatrix(), &local_a);
+    A.Flush();
+
+    local_C.Nullify();
+    MatRestoreArray(C.GetPetscMatrix(), &local_c);
+    C.Flush();
   }
 
 
@@ -594,10 +981,10 @@ namespace Seldon
 	    class T2, class Prop2, class Allocator2,
 	    class T3,
 	    class T4, class Prop4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const Matrix<T1, Prop1, RowMajorCollection, Allocator1>& A,
 	      const Matrix<T2, Prop2, RowMajorCollection, Allocator2>& B,
-	      const T3 beta,
+	      const T3& beta,
 	      Matrix<T4, Prop4, RowMajorCollection, Allocator4>& C)
   {
     int na = A.GetNmatrix();
@@ -636,10 +1023,10 @@ namespace Seldon
 	    class T2, class Prop2, class Allocator2,
 	    class T3,
 	    class T4, class Prop4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const Matrix<T1, Prop1, ColMajorCollection, Allocator1>& A,
 	      const Matrix<T2, Prop2, ColMajorCollection, Allocator2>& B,
-	      const T3 beta,
+	      const T3& beta,
 	      Matrix<T4, Prop4, ColMajorCollection, Allocator4>& C)
   {
     int na = A.GetNmatrix();
@@ -667,10 +1054,10 @@ namespace Seldon
 	    class T2, class Allocator2,
 	    class T3,
 	    class T4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const Matrix<T1, General, RowMajor, Allocator1>& A,
 	      const Matrix<T2, General, RowMajor, Allocator2>& B,
-	      const T3 beta,
+	      const T3& beta,
 	      Matrix<T4, General, RowSparse, Allocator4>& C)
   {
     throw Undefined("void MltAdd(const T0 alpha,"
@@ -686,10 +1073,10 @@ namespace Seldon
 	    class T2, class Allocator2,
 	    class T3,
 	    class T4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const Matrix<T1, General, RowMajor, Allocator1>& A,
 	      const Matrix<T2, General, RowSparse, Allocator2>& B,
-	      const T3 beta,
+	      const T3& beta,
 	      Matrix<T4, General, RowSparse, Allocator4>& C)
   {
     throw Undefined("void MltAdd(const T0 alpha,"
@@ -705,10 +1092,10 @@ namespace Seldon
 	    class T2, class Allocator2,
 	    class T3,
 	    class T4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const Matrix<T1, General, RowSparse, Allocator1>& A,
 	      const Matrix<T2, General, RowMajor, Allocator2>& B,
-	      const T3 beta,
+	      const T3& beta,
 	      Matrix<T4, General, RowSparse, Allocator4>& C)
   {
     throw Undefined("void MltAdd(const T0 alpha,"
@@ -720,11 +1107,11 @@ namespace Seldon
 
 
   template <class T0,
-	   class Allocator1,
-	   class Allocator2,
-	   class Allocator3,
-	   class T4, class Prop4, class Storage4, class Allocator4>
-  void MltAdd_heterogeneous(const T0 alpha,
+            class Allocator1,
+            class Allocator2,
+            class Allocator3,
+            class T4, class Prop4, class Storage4, class Allocator4>
+  void MltAdd_heterogeneous(const T0& alpha,
 			    const Matrix<FloatDouble, General,
 			    DenseSparseCollection, Allocator1>& A,
 			    const Matrix<FloatDouble, General,
@@ -783,7 +1170,7 @@ namespace Seldon
 	   class Allocator2,
 	   class Allocator3,
 	   class T4, class Prop4, class Storage4, class Allocator4>
-  void MltAdd_heterogeneous2(const T0 alpha,
+  void MltAdd_heterogeneous2(const T0& alpha,
 			     const Matrix<T1, Prop1,
                              Storage1, Allocator1>& ma,
 			     const Matrix<FloatDouble, General,
@@ -841,12 +1228,12 @@ namespace Seldon
   */
   template <class T0, class Allocator1, class Allocator2, class T3,
 	    class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const Matrix<FloatDouble, General, DenseSparseCollection,
 	      Allocator1>& A,
 	      const Matrix<FloatDouble, General, DenseSparseCollection,
 	      Allocator2>& B,
-	      const T3 beta,
+	      const T3& beta,
 	      Matrix<FloatDouble, General, DenseSparseCollection,
 	      Allocator4>& C)
   {
@@ -918,32 +1305,35 @@ namespace Seldon
 	    class T2, class Prop2, class Allocator2,
 	    class T3,
             class T4, class Prop4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
               const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
               const Matrix<T2, Prop2, RowSparse, Allocator2>& B,
-              const T3 beta,
+              const T3& beta,
               Matrix<T4, Prop4, RowSparse, Allocator4>& C)
   {
-    if (beta == T3(0))
+    T0 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    if (beta == zero)
       {
-        if (alpha == T0(0))
+        if (alpha == zero)
           Mlt(alpha, C);
         else
           {
             Mlt(A, B, C);
-            if (alpha != T0(1))
+            if (alpha != one)
               Mlt(alpha, C);
           }
       }
     else
       {
-        if (alpha == T0(0))
+        if (alpha == zero)
           Mlt(beta, C);
         else
           {
             Matrix<T4, Prop4, RowSparse, Allocator4> tmp;
             Mlt(A, B, tmp);
-            if (beta != T0(1))
+            if (beta != one)
               Mlt(beta, C);
             Add(alpha, tmp, C);
           }
@@ -969,32 +1359,36 @@ namespace Seldon
 	    class T2, class Prop2, class Allocator2,
 	    class T3,
             class T4, class Prop4, class Allocator4>
-  void MltNoTransTransAdd(const T0 alpha,
+  void MltNoTransTransAdd(const T0& alpha,
                           const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
                           const Matrix<T2, Prop2, RowSparse, Allocator2>& B,
-                          const T3 beta,
+                          const T3& beta,
                           Matrix<T4, Prop4, RowSparse, Allocator4>& C)
   {
-    if (beta == T3(0))
+    T0 zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+
+    if (beta == zero)
       {
-        if (alpha == T0(0))
+        if (alpha == zero)
           Mlt(alpha, C);
         else
           {
             MltNoTransTrans(A, B, C);
-            if (alpha != T0(1))
+            if (alpha != one)
               Mlt(alpha, C);
           }
       }
     else
       {
-        if (alpha == T0(0))
+        if (alpha == zero)
           Mlt(beta, C);
         else
           {
             Matrix<T4, Prop4, RowSparse, Allocator4> tmp;
             MltNoTransTrans(A, B, tmp);
-            if (beta != T0(1))
+            if (beta != one)
               Mlt(beta, C);
             Add(alpha, tmp, C);
           }
@@ -1024,12 +1418,12 @@ namespace Seldon
 	    class T2, class Prop2, class Allocator2,
 	    class T3,
             class T4, class Prop4, class Allocator4>
-  void MltAdd(const T0 alpha,
+  void MltAdd(const T0& alpha,
 	      const SeldonTranspose& TransA,
               const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
 	      const SeldonTranspose& TransB,
               const Matrix<T2, Prop2, RowSparse, Allocator2>& B,
-              const T3 beta,
+              const T3& beta,
               Matrix<T4, Prop4, RowSparse, Allocator4>& C)
   {
     if (!TransA.NoTrans())
@@ -1048,6 +1442,273 @@ namespace Seldon
 
     if (TransB.Trans())
       MltNoTransTransAdd(alpha, A, B, beta, C);
+    else
+      MltAdd(alpha, A, B, beta, C);
+  }
+
+  
+  template<class T0, class T1, class Prop1, class Allocator1, class T4,
+           class T2, class Prop2, class Storage2, class Allocator2,
+           class T3, class Prop3, class Storage3, class Allocator3>
+  void MltAdd(const T0& alpha,
+              const Matrix<T1, Prop1, RowSparse, Allocator1>& A,              
+              const Matrix<T2, Prop2, Storage2, Allocator2>& B,
+              const T4& beta,
+              Matrix<T3, Prop3, Storage3, Allocator3>& C)
+  {
+    if (Storage2::Sparse || Storage3::Sparse)
+      throw WrongArgument("Mlt", "Function intended for product "
+                          " between a sparse matrix and a dense matrix");
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, B, C, "Mlt(A, B, C)");
+#endif
+    
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T1* data = A.GetData();
+    T3 zero, val;
+    SetComplexZero(zero);
+    
+    int m = A.GetM();
+    int n = B.GetN();
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+    
+    for (int i = 0; i < m; i++)
+      for (int k2 = ptr[i]; k2 < ptr[i+1]; k2++)
+	{
+          int k = ind[k2];
+	  val = data[k2] * alpha;
+          // c_ij = \sum_k a_ik b_kj
+          for (int j = 0; j < n; j++)
+            C(i, j) += val*B(k, j);
+        }
+  }
+
+  
+  template<class T0, class T1, class Prop1, class Allocator1, class T4,
+           class T2, class Prop2, class Storage2, class Allocator2,
+           class T3, class Prop3, class Storage3, class Allocator3>
+  void MltAddTransNoTrans(const T0& alpha,
+                          const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
+                          const Matrix<T2, Prop2, Storage2, Allocator2>& B,
+                          const T4& beta,
+                          Matrix<T3, Prop3, Storage3, Allocator3>& C)
+  {
+    if (Storage2::Sparse || Storage3::Sparse)
+      throw WrongArgument("Mlt", "Function intended for product "
+                          " between a sparse matrix and a dense matrix");
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(SeldonTrans, A, SeldonNoTrans, B, C, "MltAdd(A, B, C)");
+#endif
+    
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T1* data = A.GetData();
+    T3 zero, val;
+    SetComplexZero(zero);
+    
+    int m = A.GetM();
+    int n = B.GetN();
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+    
+    for (int i = 0; i < m; i++)
+      for (int k2 = ptr[i]; k2 < ptr[i+1]; k2++)
+	{
+          int k = ind[k2];
+	  val = data[k2] * alpha;
+          // c_kj = \sum_i a_ik b_ij
+          for (int j = 0; j < n; j++)
+            C(k, j) += val*B(i, j);
+        }
+  }
+
+
+  template<class T0, class T1, class Prop1, class Allocator1, class T4,
+           class T2, class Prop2, class Storage2, class Allocator2,
+           class T3, class Prop3, class Storage3, class Allocator3>
+  void MltAddTransTrans(const T0& alpha,
+                        const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
+                        const Matrix<T2, Prop2, Storage2, Allocator2>& B,
+                        const T4& beta,
+                        Matrix<T3, Prop3, Storage3, Allocator3>& C)
+  {
+    if (Storage2::Sparse || Storage3::Sparse)
+      throw WrongArgument("Mlt", "Function intended for product "
+                          " between a sparse matrix and a dense matrix");
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(SeldonTrans, A, SeldonTrans, B, C, "MltAdd(A, B, C)");
+#endif
+    
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T1* data = A.GetData();
+    T3 zero, val;
+    SetComplexZero(zero);
+    
+    int m = A.GetM();
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+    
+    for (int i = 0; i < m; i++)
+      for (int k2 = ptr[i]; k2 < ptr[i+1]; k2++)
+	{
+          int k = ind[k2];
+	  val = data[k2] * alpha;
+          // c_kj = \sum_i a_ik b_ji
+          for (int j = 0; j < B.GetM(); j++)
+            C(k, j) += val*B(j, i);
+        }
+  }
+
+  
+  template<class T0, class T1, class Prop1, class Allocator1, class T4,
+           class T2, class Prop2, class Storage2, class Allocator2,
+           class T3, class Prop3, class Storage3, class Allocator3>
+  void MltAddNoTransTrans(const T0& alpha,
+                          const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
+                          const Matrix<T2, Prop2, Storage2, Allocator2>& B,
+                          const T4& beta,
+                          Matrix<T3, Prop3, Storage3, Allocator3>& C)
+  {
+    if (Storage2::Sparse || Storage3::Sparse)
+      throw WrongArgument("Mlt", "Function intended for product "
+                          " between a sparse matrix and a dense matrix");
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(SeldonNoTrans, A, SeldonTrans, B, C, "MltAdd(A, B, C)");
+#endif
+    
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T1* data = A.GetData();
+    T3 zero, val;
+    SetComplexZero(zero);
+    
+    int m = A.GetM();
+    if (beta == zero)
+      C.Fill(zero);
+    else
+      Mlt(beta, C);
+    
+    for (int i = 0; i < m; i++)
+      for (int k2 = ptr[i]; k2 < ptr[i+1]; k2++)
+	{
+          int k = ind[k2];
+	  val = data[k2] * alpha;
+          // c_ij = \sum_k a_ik b_jk
+          for (int j = 0; j < B.GetM(); j++)
+            C(i, j) += val*B(j, k);
+        }
+  }
+
+  
+  template<class T0, class T1, class Prop1, class Allocator1, class T4,
+           class T2, class Prop2, class Storage2, class Allocator2,
+           class T3, class Prop3, class Storage3, class Allocator3>
+  void MltAdd(const T0& alpha,
+              const SeldonTranspose& TransA,
+              const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
+              const SeldonTranspose& TransB,
+              const Matrix<T2, Prop2, Storage2, Allocator2>& B,
+              const T4& beta,
+              Matrix<T3, Prop3, Storage3, Allocator3>& C)
+  {
+    if (TransA.NoTrans())
+      {
+        if (TransB.NoTrans())
+          MltAdd(alpha, A, B, beta, C);
+        else if (TransB.Trans())
+          MltAddNoTransTrans(alpha, A, B, beta, C);
+        else
+          throw Undefined("MltAdd", "Not implemented for ConjTrans");
+      }
+    else if (TransA.Trans())
+      {
+        if (TransB.NoTrans())
+          MltAddTransNoTrans(alpha, A, B, beta, C);
+        else if (TransB.Trans())
+          MltAddTransTrans(alpha, A, B, beta, C);
+        else
+          throw Undefined("MltAdd", "Not implemented for ConjTrans");
+      }
+    else
+      throw Undefined("MltAdd", "Not implemented for ConjTrans");
+    
+  }
+
+
+  /*! \brief Multiplies a row-major matrix with a row-major sparse matrix
+    and adds it to a third.*/
+  /*! It performs the operation \f$ C = \alpha A B^T + \beta C \f$ where \f$ A
+    \f$ and \f$ C \f$ are row-major dense matrices and \f$ B \f$ a row-major
+    sparse matrix in Harwell-Boeing format.
+    \param[in] A row-major dense matrix.
+    \param[in] B row-major sparse matrix in Harwell-Boeing format.
+    \param[out] C resulting row-major dense matrix.
+  */
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Prop2, class Allocator2,
+	    class T3,
+            class T4, class Prop4, class Allocator4>
+  void MltAdd(const T0& alpha,
+              const SeldonTranspose& TransA,
+              const Matrix<T1, Prop1, RowMajor, Allocator1>& A,
+              const SeldonTranspose& TransB,
+              const Matrix<T2, Prop2, RowSparse, Allocator2>& B,
+              const T3& beta,
+              Matrix<T4, Prop4, RowMajor, Allocator4>& C)
+  {
+    if (!TransA.NoTrans())
+      throw WrongArgument("MltAdd(T0 alpha, SeldonTranspose TransA, "
+                          "const Matrix<RowMajor>& A, SeldonTranspose "
+                          "TransB, const Matrix<RowSparse>& B, T3 beta, "
+                          "Matrix<RowSparse>& C)",
+                          "'TransA' must be equal to 'SeldonNoTrans'.");
+    if (!TransB.NoTrans() && !TransB.Trans())
+      throw WrongArgument("MltAdd(T0 alpha, SeldonTranspose TransA, "
+                          "const Matrix<RowMajor>& A, SeldonTranspose "
+                          "TransB, const Matrix<RowSparse>& B, T3 beta, "
+                          "Matrix<RowMajor>& C)",
+                          "'TransB' must be equal to 'SeldonNoTrans' or "
+                          "'SeldonTrans'.");
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(SeldonNoTrans, A, SeldonTrans, B, C,
+             "MltAdd(T0 alpha, const Matrix<RowMajor>& A, const "
+             "Matrix<RowSparse>& B, T3 beta, Matrix<RowMajor>& C)");
+#endif
+
+    if (TransB.Trans())
+      {
+        T2 zero;
+        SetComplexZero(zero);
+        int m = A.GetM();
+        if (beta == zero)
+          C.Fill(zero);
+        else
+          Mlt(beta, C);
+        if (alpha != zero)
+          for (int i = 0; i < m; i++)
+            for (int j = 0; j < B.GetM(); j++)
+              {
+                // Loop on all elements in the i-th row in B. These elements
+                // are multiplied with the element (i, k) of A.
+                for (int l = B.GetPtr()[j]; l < B.GetPtr()[j + 1]; l++)
+                  C(i, j) += alpha * A(i, B.GetInd()[l]) * B.GetData()[l];
+              }
+      }
     else
       MltAdd(alpha, A, B, beta, C);
   }
@@ -1076,10 +1737,17 @@ namespace Seldon
 	   const Matrix<T1, Prop1, Storage1, Allocator1>& A,
 	   Matrix<T2, Prop2, Storage2, Allocator2>& B)
   {
+    if ( (Storage1::Sparse) || (Storage2::Sparse) )
+      throw WrongArgument("Add", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
     int i, j;
-    for (i = 0; i < A.GetM(); i++)
-      for (j = 0; j < A.GetN(); j++)
-	B(i, j) += alpha * A(i, j);
+    int mb = B.GetM(), nb = B.GetN();
+    for (i = 0; i < Storage2::GetFirst(mb, nb); i++)
+      for (j = Storage2::GetBeginLoop(i);
+           j < Storage2::GetEndLoop(mb, nb, i); j++)
+	B.Get(Storage2::GetFirst(i, j), Storage2::GetSecond(i, j))
+          += alpha * A(Storage2::GetFirst(i, j), Storage2::GetSecond(i, j));
   }
 
 
@@ -1109,7 +1777,7 @@ namespace Seldon
   }
 
 
-   //! Adds two matrices.
+  //! Adds two matrices.
   /*! It performs the operation \f$ B = \alpha A + B \f$ where \f$ \alpha \f$
     is a scalar, and \f$ A \f$ and \f$ B \f$ are matrices.
     \param[in] alpha scalar.
@@ -1138,7 +1806,7 @@ namespace Seldon
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class Allocator2>
-  void Add_heterogeneous(const T0 alpha,
+  void Add_heterogeneous(const T0& alpha,
 			 const  Matrix<T1, Prop1, Storage1, Allocator1 >& ma,
 			 Matrix<FloatDouble, General,
                          DenseSparseCollection, Allocator2>& B,
@@ -1197,7 +1865,7 @@ namespace Seldon
     \param[in,out] M matrix to be multiplied.
   */
   template <class T0, class Allocator1, class Allocator2>
-  void Add(const T0 alpha,
+  void Add(const T0& alpha,
 	   const Matrix<FloatDouble, General,
            DenseSparseCollection, Allocator1>& A,
 	   Matrix<FloatDouble, General, DenseSparseCollection, Allocator2>& B)
@@ -1254,7 +1922,7 @@ namespace Seldon
            class T2, class Prop2, class Allocator2>
   void Add(const T0& alpha,
 	   const Matrix<T1, Prop1, RowMajor, Allocator1>& A,
-	   Matrix<T2, Prop2, RowSparse, Allocator2>& B) throw()
+	   Matrix<T2, Prop2, RowSparse, Allocator2>& B)
   {
     throw Undefined("void Add(const T0& alpha,"
 		    "const Matrix<T1, Prop1, RowMajor, Allocator1>& A,"
@@ -1266,7 +1934,7 @@ namespace Seldon
            class T2, class Prop2, class Allocator2>
   void Add(const T0& alpha,
 	   const Matrix<T1, Prop1, ColMajor, Allocator1>& A,
-	   Matrix<T2, Prop2, RowSparse, Allocator2>& B) throw()
+	   Matrix<T2, Prop2, RowSparse, Allocator2>& B)
   {
     throw Undefined("void Add(const T0& alpha,"
 		    "const Matrix<T1, Prop1, RowMajor, Allocator1>& A,"
@@ -1274,32 +1942,11 @@ namespace Seldon
   }
 
 
-  template<class T0, class T1, class Storage1, class Allocator1,
-	   class T2, class Storage2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Symmetric, Storage1, Allocator1>& A,
-	   Matrix<T2, Symmetric, Storage2, Allocator2>& B)
-  {
-    int i, j;
-    for (i = 0; i < A.GetM(); i++)
-      for (j = i; j < A.GetN(); j++)
-	B(i, j) += alpha * A(i, j);
-  }
-
-
-  //! Adds two matrices.
-  /*! It performs the operation \f$ B = \alpha A + B \f$ where \f$ \alpha \f$
-    is a scalar, and \f$ A \f$ and \f$ B \f$ are matrices.
-    \param[in] alpha scalar.
-    \param[in] A matrix.
-    \param[in,out] B matrix, result of the addition of \a B (on entry) and \a
-    A times \a alpha.
-  */
   template<class T0, class T1, class Prop1, class Allocator1,
-           class T2, class Prop2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
-	   Matrix<T2, Prop2, RowSparse, Allocator2>& B)
+           class T2, class Prop2, class Storage, class Allocator2>
+  void Add_csr(const T0& alpha,
+               const Matrix<T1, Prop1, Storage, Allocator1>& A,
+               Matrix<T2, Prop2, Storage, Allocator2>& B, int p)
   {
 #ifdef SELDON_CHECK_BOUNDS
     if (A.GetM() != B.GetM() || A.GetN() != B.GetN())
@@ -1320,7 +1967,7 @@ namespace Seldon
       {
         // Loop over all non-zeros. If the structures of A and B differ at any
         // time, the loop is broken and a different strategy is undertaken.
-        for (i = 0; i < A.GetM(); i++)
+        for (i = 0; i < p; i++)
           if (A.GetPtr()[i + 1] == B.GetPtr()[i + 1])
             {
               for (j = A.GetPtr()[i]; j < A.GetPtr()[i + 1]; j++)
@@ -1347,114 +1994,54 @@ namespace Seldon
 
     // Number of non zero entries currently found.
     int Nnonzero = A.GetPtr()[i];
+    
+    // counting the number of non-zero entries
+    int kb, jb(0), ka, ja(0);
+    for (int i2 = i; i2 < p; i2++)
+      {
+        kb = B.GetPtr()[i2];
+        
+        for (ka = A.GetPtr()[i2]; ka < A.GetPtr()[i2 + 1]; ka++)
+          {
+            ja = A.GetInd()[ka];
+            while (kb < B.GetPtr()[i2 + 1] && B.GetInd()[kb] < ja)
+              {
+                kb++;
+                Nnonzero++;
+              }
+            
+            if (kb < B.GetPtr()[i2 + 1] && ja == B.GetInd()[kb])
+              kb++;
+            
+            Nnonzero++;
+          }
 
+        while (kb < B.GetPtr()[i2 + 1])
+          {
+            kb++;
+            Nnonzero++;
+          }
+      }
+    
     // A and B do not have the same structure. An intermediate matrix will be
     // needed. The first i rows have already been added. These computations
-    // should be preserved.
-    int* c_ptr = NULL;
-    int* c_ind = NULL;
-    T2* c_data = NULL;
-
-#ifdef SELDON_CHECK_MEMORY
-    try
+    // are preserved in arrays Ptr, Ind Val.
+    Vector<int, VectFull, CallocAlloc<int> > Ptr(p+1), Ind(Nnonzero);
+    Vector<T2, VectFull, Allocator2> Val(Nnonzero);
+    
+    for (int i2 = 0; i2 <= i; i2++)
+      Ptr(i2) = B.GetPtr()[i2];
+    
+    for (j = 0; j < B.GetPtr()[i]; j++)
       {
-#endif
-
-	c_ptr = reinterpret_cast<int*>(calloc(A.GetM() + 1, sizeof(int)));
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-        c_ptr = NULL;
+        Ind(j) = B.GetInd()[j];
+        Val(j) = B.GetData()[j];
       }
 
-    if (c_ptr == NULL)
-      throw NoMemory("Add(alpha, const Matrix<RowSparse>& A, "
-                     "Matrix<RowSparse>& B)",
-		     "Unable to allocate memory for an array of "
-		     + to_str(A.GetM() + 1) + " integers.");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-        // Reallocates 'c_ind' and 'c_data' for the first i rows.
-        c_ind = reinterpret_cast<int*>
-          (realloc(reinterpret_cast<void*>(c_ind), Nnonzero * sizeof(int)));
-        c_data = reinterpret_cast<T2*>
-          (B.GetAllocator().reallocate(c_data, Nnonzero));
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-        c_ind = NULL;
-        c_data = NULL;
-      }
-
-    if ((c_ind == NULL || c_data == NULL)
-        && Nnonzero != 0)
-      throw NoMemory("Add(alpha, const Matrix<RowSparse>& A, "
-                     "Matrix<RowSparse>& B)",
-                     "Unable to allocate memory for an array of "
-                     + to_str(Nnonzero) + " integers and for an array of "
-                     + to_str(sizeof(T2) * Nnonzero) + " bytes.");
-#endif
-
-    // The pointers of the first i rows are correct.
-    for (k = 0; k < i + 1; k++)
-      c_ptr[k] = B.GetPtr()[k];
-
-    // Copies the elements from the first i rows, as they were already added.
-    for (k = 0; k < Nnonzero; k++)
-      {
-        c_ind[k] = B.GetInd()[k];
-        c_data[k] = B.GetData()[k];
-      }
-
-    int Nnonzero_row_max;
-    int Nnonzero_max;
-    int ja, jb(0), ka, kb;
     // Now deals with the remaining lines.
-    for (; i < A.GetM(); i++)
+    Nnonzero = A.GetPtr()[i];
+    for (; i < p; i++)
       {
-        Nnonzero_row_max = A.GetPtr()[i + 1] - A.GetPtr()[i]
-          + B.GetPtr()[i + 1] - B.GetPtr()[i];
-        // Maximum number of non zero entries up to row i.
-        Nnonzero_max = Nnonzero + Nnonzero_row_max;
-
-#ifdef SELDON_CHECK_MEMORY
-        try
-          {
-#endif
-
-            c_ind = reinterpret_cast<int*>
-              (realloc(reinterpret_cast<void*>(c_ind),
-                       Nnonzero_max * sizeof(int)));
-            c_data = reinterpret_cast<T2*>
-              (B.GetAllocator().reallocate(c_data, Nnonzero_max));
-
-#ifdef SELDON_CHECK_MEMORY
-          }
-        catch (...)
-          {
-            c_ind = NULL;
-            c_data = NULL;
-          }
-
-        if ((c_ind == NULL || c_data == NULL)
-            && Nnonzero_max != 0)
-          throw NoMemory("Add(alpha, const Matrix<RowSparse>& A, "
-                         "Matrix<RowSparse>& B)",
-                         "Unable to allocate memory for an array of "
-                         + to_str(Nnonzero_max) + " integers and for an "
-                         "array of "
-                         + to_str(sizeof(T2) * Nnonzero_max) + " bytes.");
-#endif
-
         kb = B.GetPtr()[i];
         if (kb < B.GetPtr()[i + 1])
           jb = B.GetInd()[kb];
@@ -1464,8 +2051,8 @@ namespace Seldon
             while (kb < B.GetPtr()[i + 1] && jb < ja)
               // For all elements in B that are before the ka-th element of A.
               {
-                c_ind[Nnonzero] = jb;
-                c_data[Nnonzero] = B.GetData()[kb];
+                Ind(Nnonzero) = jb;
+                Val(Nnonzero) = B.GetData()[kb];
                 kb++;
                 if (kb < B.GetPtr()[i + 1])
                   jb = B.GetInd()[kb];
@@ -1475,16 +2062,16 @@ namespace Seldon
             if (kb < B.GetPtr()[i + 1] && ja == jb)
               // The element in A is also in B.
               {
-                c_ind[Nnonzero] = jb;
-                c_data[Nnonzero] = B.GetData()[kb] + alpha * A.GetData()[ka];
+                Ind(Nnonzero) = jb;
+                Val(Nnonzero) = B.GetData()[kb] + alpha * A.GetData()[ka];
                 kb++;
                 if (kb < B.GetPtr()[i + 1])
                   jb = B.GetInd()[kb];
               }
             else
               {
-                c_ind[Nnonzero] = ja;
-                c_data[Nnonzero] = alpha * A.GetData()[ka];
+                Ind(Nnonzero) = ja;
+                Val(Nnonzero) = alpha * A.GetData()[ka];
               }
             Nnonzero++;
           }
@@ -1492,24 +2079,95 @@ namespace Seldon
         // The remaining elements from B.
         while (kb < B.GetPtr()[i + 1])
           {
-            c_ind[Nnonzero] = jb;
-            c_data[Nnonzero] = B.GetData()[kb];
+            Ind(Nnonzero) = jb;
+            Val(Nnonzero) = B.GetData()[kb];
             kb++;
             if (kb < B.GetPtr()[i + 1])
               jb = B.GetInd()[kb];
             Nnonzero++;
           }
 
-        c_ptr[i + 1] = Nnonzero;
+        Ptr(i + 1) = Nnonzero;
       }
-
-    B.SetData(B.GetM(), B.GetN(), Nnonzero, c_data, c_ptr, c_ind);
+    
+    B.SetData(B.GetM(), B.GetN(), Val, Ptr, Ind);
   }
 
 
+  //! Adds two matrices.
+  /*! It performs the operation \f$ B = \alpha A + B \f$ where \f$ \alpha \f$
+    is a scalar, and \f$ A \f$ and \f$ B \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] A matrix.
+    \param[in,out] B matrix, result of the addition of \a B (on entry) and \a
+    A times \a alpha.
+  */
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2>
+  void Add(const T0& alpha,
+           const Matrix<T1, Prop1, RowSparse, Allocator1>& A,
+           Matrix<T2, Prop2, RowSparse, Allocator2>& B)
+  {
+    Add_csr(alpha, A, B, B.GetM());
+  }
+  
+  
+  //! Adds two matrices.
+  /*! It performs the operation \f$ B = \alpha A + B \f$ where \f$ \alpha \f$
+    is a scalar, and \f$ A \f$ and \f$ B \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] A matrix.
+    \param[in,out] B matrix, result of the addition of \a B (on entry) and \a
+    A times \a alpha.
+  */
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2>
+  void Add(const T0& alpha,
+           const Matrix<T1, Prop1, ColSparse, Allocator1>& A,
+           Matrix<T2, Prop2, ColSparse, Allocator2>& B)
+  {
+    Add_csr(alpha, A, B, B.GetN());
+  }
+
+
+  //! Adds two matrices.
+  /*! It performs the operation \f$ B = \alpha A + B \f$ where \f$ \alpha \f$
+    is a scalar, and \f$ A \f$ and \f$ B \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] A matrix.
+    \param[in,out] B matrix, result of the addition of \a B (on entry) and \a
+    A times \a alpha.
+  */
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2>
+  void Add(const T0& alpha,
+           const Matrix<T1, Prop1, RowSymSparse, Allocator1>& A,
+           Matrix<T2, Prop2, RowSymSparse, Allocator2>& B)
+  {
+    Add_csr(alpha, A, B, B.GetM());
+  }
+
+
+  //! Adds two matrices.
+  /*! It performs the operation \f$ B = \alpha A + B \f$ where \f$ \alpha \f$
+    is a scalar, and \f$ A \f$ and \f$ B \f$ are matrices.
+    \param[in] alpha scalar.
+    \param[in] A matrix.
+    \param[in,out] B matrix, result of the addition of \a B (on entry) and \a
+    A times \a alpha.
+  */
+  template<class T0, class T1, class Prop1, class Allocator1,
+           class T2, class Prop2, class Allocator2>
+  void Add(const T0& alpha,
+           const Matrix<T1, Prop1, ColSymSparse, Allocator1>& A,
+           Matrix<T2, Prop2, ColSymSparse, Allocator2>& B)
+  {
+    Add_csr(alpha, A, B, B.GetN());
+  }
+
+  
   // ADD //
   /////////
-
 
 
   ///////////
@@ -1531,7 +2189,8 @@ namespace Seldon
   void GetLU(Matrix<T0, Prop0, Storage0, Allocator0>& A)
   {
     int i, p, q, k;
-    T0 temp;
+    T0 temp, zero;
+    SetComplexZero(zero);
 
     int ma = A.GetM();
 
@@ -1541,18 +2200,22 @@ namespace Seldon
       throw WrongDim("GetLU(A)", "The matrix must be squared.");
 #endif
 
+    if (Storage0::Sparse)
+      throw WrongArgument("GetLU", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
     for (i = 0; i < ma; i++)
       {
 	for (p = i; p < ma; p++)
 	  {
-	    temp = 0;
+	    temp = zero;
 	    for (k = 0; k < i; k++)
 	      temp += A(p, k) * A(k, i);
 	    A(p, i) -= temp;
 	  }
 	for (q = i+1; q < ma; q++)
 	  {
-	    temp = 0;
+	    temp = zero;
 	    for (k = 0; k < i; k++)
 	      temp += A(i, k) * A(k, q);
 	    A(i, q) = (A(i,q ) - temp) / A(i, i);
@@ -1563,7 +2226,6 @@ namespace Seldon
 
   // GETLU //
   ///////////
-
 
 
   //////////////
@@ -1586,16 +2248,22 @@ namespace Seldon
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
-		string function = "")
+		string function)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Achar = to_str(&A), Bchar = to_str(&B), Cchar = to_str(&C);
+#else
+    string Achar("A"), Bchar("B"), Cchar("C");
+#endif
+
     if (B.GetM() != A.GetN() || C.GetM() != A.GetM() || B.GetN() != C.GetN())
       throw WrongDim(function, string("Operation A B + C -> C not permitted:")
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix;\n     C (")
-		     + to_str(&C) + string(") is a ") + to_str(C.GetM())
+		     + Cchar + string(") is a ") + to_str(C.GetM())
 		     + string(" x ") + to_str(C.GetN()) + string(" matrix."));
   }
 
@@ -1618,29 +2286,35 @@ namespace Seldon
 		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
-		string function = "")
+		string function)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Achar = to_str(&A), Bchar = to_str(&B), Cchar = to_str(&C);
+#else
+    string Achar("A"), Bchar("B"), Cchar("C");
+#endif
+
     if ( SeldonSide(side).Left() &&
 	 (B.GetM() != A.GetN() || C.GetM() != A.GetM()
 	  || B.GetN() != C.GetN()) )
       throw WrongDim(function, string("Operation A B + C -> C not permitted:")
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix;\n     C (")
-		     + to_str(&C) + string(") is a ") + to_str(C.GetM())
+		     + Cchar + string(") is a ") + to_str(C.GetM())
 		     + string(" x ") + to_str(C.GetN()) + string(" matrix."));
     else if ( SeldonSide(side).Right() &&
 	      (B.GetN() != A.GetM() || C.GetM() != B.GetM()
 	       || A.GetN() != C.GetN()) )
       throw WrongDim(function, string("Operation B A + C -> C not permitted:")
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix;\n     C (")
-		     + to_str(&C) + string(") is a ") + to_str(C.GetM())
+		     + Cchar + string(") is a ") + to_str(C.GetM())
 		     + string(" x ") + to_str(C.GetN()) + string(" matrix."));
   }
 
@@ -1662,8 +2336,14 @@ namespace Seldon
 		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const SeldonTranspose& TransB,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
-		string function = "")
+		string function)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Achar = to_str(&A), Bchar = to_str(&B);
+#else
+    string Achar("A"), Bchar("B");
+#endif
+
     SeldonTranspose status_A(TransA);
     SeldonTranspose status_B(TransB);
     string op;
@@ -1682,9 +2362,9 @@ namespace Seldon
     op = string("Operation ") + op + string(" not permitted:");
     if (B.GetM(status_B) != A.GetN(status_A))
       throw WrongDim(function, op
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix."));
   }
@@ -1710,8 +2390,14 @@ namespace Seldon
 		const SeldonTranspose& TransB,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
 		const Matrix<T2, Prop2, Storage2, Allocator2>& C,
-		string function = "")
+		string function)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Achar = to_str(&A), Bchar = to_str(&B), Cchar = to_str(&C);
+#else
+    string Achar("A"), Bchar("B"), Cchar("C");
+#endif
+
     string op;
     if (TransA.Trans())
       op = string("A'");
@@ -1729,12 +2415,12 @@ namespace Seldon
     if (B.GetM(TransB) != A.GetN(TransA) || C.GetM() != A.GetM(TransA)
 	|| B.GetN(TransB) != C.GetN())
       throw WrongDim(function, op
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix;\n     C (")
-		     + to_str(&C) + string(") is a ") + to_str(C.GetM())
+		     + Cchar + string(") is a ") + to_str(C.GetM())
 		     + string(" x ") + to_str(C.GetN()) + string(" matrix."));
   }
 
@@ -1752,7 +2438,7 @@ namespace Seldon
 	    class T1, class Prop1, class Storage1, class Allocator1>
   void CheckDim(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
-		string function = "")
+		string function)
   {
     CheckDim(SeldonLeft, A, B, function);
   }
@@ -1773,20 +2459,26 @@ namespace Seldon
   void CheckDim(const SeldonSide& side,
 		const Matrix<T0, Prop0, Storage0, Allocator0>& A,
 		const Matrix<T1, Prop1, Storage1, Allocator1>& B,
-		string function = "")
+		string function)
   {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+    string Achar = to_str(&A), Bchar = to_str(&B);
+#else
+    string Achar("A"), Bchar("B");
+#endif
+
     if (side.Left() && B.GetM() != A.GetN())
       throw WrongDim(function, string("Operation A B not permitted:")
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix."));
     else if (side.Right() && B.GetN() != A.GetM())
       throw WrongDim(function, string("Operation B A not permitted:")
-		     + string("\n     A (") + to_str(&A) + string(") is a ")
+		     + string("\n     A (") + Achar + string(") is a ")
 		     + to_str(A.GetM()) + string(" x ") + to_str(A.GetN())
-		     + string(" matrix;\n     B (") + to_str(&B)
+		     + string(" matrix;\n     B (") + Bchar
 		     + string(") is a ") + to_str(B.GetM())  + string(" x ")
 		     + to_str(B.GetN()) + string(" matrix."));
   }
@@ -1806,12 +2498,17 @@ namespace Seldon
     \return The maximum (in absolute value) of all elements of \a A.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  T MaxAbs(const Matrix<T, Prop, Storage, Allocator>& A)
+  typename ClassComplexType<T>::Treal
+  MaxAbs(const Matrix<T, Prop, Storage, Allocator>& A)
   {
-    T res(0);
+    if (Storage::Sparse)
+      throw WrongArgument("MaxAbs", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
+    typename ClassComplexType<T>::Treal res(0);
     for (int i = 0; i < A.GetM(); i++)
       for (int j = 0; j < A.GetN(); j++)
-	res = max(res, abs(A(i, j)) );
+	res = max(res, ComplexAbs(A(i, j)) );
 
     return res;
   }
@@ -1823,14 +2520,19 @@ namespace Seldon
     \return \f$ max_j \sum_i |A_{ij}| \f$
   */
   template <class T, class Prop, class Storage, class Allocator>
-  T Norm1(const Matrix<T, Prop, Storage, Allocator>& A)
+  typename ClassComplexType<T>::Treal
+  Norm1(const Matrix<T, Prop, Storage, Allocator>& A)
   {
-    T res(0), sum;
+    if (Storage::Sparse)
+      throw WrongArgument("Norm1", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
+    typename ClassComplexType<T>::Treal res(0), sum;
     for (int j = 0; j < A.GetN(); j++)
       {
-	sum = T(0);
+	sum = 0;
 	for (int i = 0; i < A.GetM(); i++)
-	  sum += abs( A(i, j) );
+	  sum += ComplexAbs( A(i, j) );
 
 	res = max(res, sum);
       }
@@ -1845,14 +2547,19 @@ namespace Seldon
     \return \f$ max_i \sum_j |A_{ij}| \f$
   */
   template <class T, class Prop, class Storage, class Allocator>
-  T NormInf(const Matrix<T, Prop, Storage, Allocator>& A)
+  typename ClassComplexType<T>::Treal
+  NormInf(const Matrix<T, Prop, Storage, Allocator>& A)
   {
-    T res(0), sum;
+    if (Storage::Sparse)
+      throw WrongArgument("NormInf", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
+    typename ClassComplexType<T>::Treal res(0), sum;
     for (int i = 0; i < A.GetM(); i++)
       {
-	sum = T(0);
+	sum = 0;
 	for (int j = 0; j < A.GetN(); j++)
-	  sum += abs( A(i, j) );
+	  sum += ComplexAbs( A(i, j) );
 
 	res = max(res, sum);
       }
@@ -1861,21 +2568,19 @@ namespace Seldon
   }
 
 
-  //! Returns the maximum (in modulus) of a matrix.
+  //! Returns the maximum (in absolute value) of a matrix.
   /*!
     \param[in] A matrix.
-    \return The maximum (in modulus) of all elements of \a A.
+    \return The maximum (in absolute value) of all elements of \a A.
   */
-  template <class T, class Prop, class Storage, class Allocator>
-  T MaxAbs(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  MaxAbs(const Matrix<T, Prop, RowSparse, Allocator>& A)
   {
-    T res(0);
-    for (int i = 0; i < A.GetM(); i++)
-      for (int j = 0; j < A.GetN(); j++)
-	{
-	  res = max(res, abs(A(i, j)) );
-	}
-
+    typename ClassComplexType<T>::Treal res(0);
+    for (int i = 0; i < A.GetDataSize(); i++)
+      res = max(res, ComplexAbs(A.GetData()[i]));
+    
     return res;
   }
 
@@ -1885,19 +2590,82 @@ namespace Seldon
     \param[in] A matrix.
     \return \f$ max_j \sum_i |A_{ij}| \f$
   */
-  template <class T, class Prop, class Storage, class Allocator>
-  T Norm1(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  Norm1(const Matrix<T, Prop, RowSparse, Allocator>& A)
   {
-    T res(0), sum;
-    for (int j = 0; j < A.GetN(); j++)
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Vector<Treal> sum(A.GetN());
+    sum.Fill(Treal(0));
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
+        sum(A.GetInd()[j]) += ComplexAbs( A.GetData()[j]);
+    
+    return sum.GetNormInf();
+  }
+
+
+  //! Returns the infinity-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_i \sum_j |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  NormInf(const Matrix<T, Prop, RowSparse, Allocator>& A)
+  {
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal res(0), sum;
+    for (int i = 0; i < A.GetM(); i++)
       {
-	sum = T(0);
-	for (int i = 0; i < A.GetM(); i++)
-	  sum += abs( A(i, j) );
-
-	res = max(res, sum);
+        sum = Treal(0);
+        for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
+          sum += ComplexAbs( A.GetData()[j]);
+        
+        res = max(res, sum);
       }
+    
+    return res;
+  }
 
+  
+  //! Returns the maximum (in absolute value) of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return The maximum (in absolute value) of all elements of \a A.
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  MaxAbs(const Matrix<T, Prop, ColSparse, Allocator>& A)
+  {
+    typename ClassComplexType<T>::Treal res(0);
+    for (int i = 0; i < A.GetDataSize(); i++)
+      res = max(res, ComplexAbs(A.GetData()[i]));
+    
+    return res;
+  }
+
+
+  //! Returns the 1-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_j \sum_i |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  Norm1(const Matrix<T, Prop, ColSparse, Allocator>& A)
+  {
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal res(0), sum;
+    for (int i = 0; i < A.GetN(); i++)
+      {
+        sum = Treal(0);
+        for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
+          sum += ComplexAbs( A.GetData()[j]);
+        
+        res = max(res, sum);
+      }
+    
     return res;
   }
 
@@ -1907,26 +2675,131 @@ namespace Seldon
     \param[in] A matrix.
     \return \f$ max_i \sum_j |A_{ij}| \f$
   */
-  template <class T, class Prop, class Storage, class Allocator>
-  T NormInf(const Matrix<complex<T>, Prop, Storage, Allocator>& A)
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  NormInf(const Matrix<T, Prop, ColSparse, Allocator>& A)
   {
-    T res(0), sum;
-    for (int i = 0; i < A.GetM(); i++)
-      {
-	sum = T(0);
-	for (int j = 0; j < A.GetN(); j++)
-	  sum += abs( A(i, j) );
-
-	res = max(res, sum);
-      }
-
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Vector<Treal> sum(A.GetM());
+    sum.Fill(Treal(0));
+    for (int i = 0; i < A.GetN(); i++)
+      for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
+        sum(A.GetInd()[j]) += ComplexAbs( A.GetData()[j]);
+    
+    return sum.GetNormInf();
+  }
+  
+  
+  //! Returns the maximum (in absolute value) of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return The maximum (in absolute value) of all elements of \a A.
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  MaxAbs(const Matrix<T, Prop, RowSymSparse, Allocator>& A)
+  {
+    typename ClassComplexType<T>::Treal res(0);
+    for (int i = 0; i < A.GetDataSize(); i++)
+      res = max(res, ComplexAbs(A.GetData()[i]));
+    
     return res;
   }
 
 
+  //! Returns the 1-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_j \sum_i |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  Norm1(const Matrix<T, Prop, RowSymSparse, Allocator>& A)
+  {
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Vector<Treal> sum(A.GetN());
+    sum.Fill(Treal(0));
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
+        {
+          sum(A.GetInd()[j]) += ComplexAbs( A.GetData()[j]);
+          if (A.GetInd()[j] != i)
+            sum(i) += ComplexAbs(A.GetData()[j]);
+        }
+    
+    return sum.GetNormInf();
+  }
+
+
+  //! Returns the infinity-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_i \sum_j |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  NormInf(const Matrix<T, Prop, RowSymSparse, Allocator>& A)
+  {
+    return Norm1(A);
+  }
+
+  
+  //! Returns the maximum (in absolute value) of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return The maximum (in absolute value) of all elements of \a A.
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  MaxAbs(const Matrix<T, Prop, ColSymSparse, Allocator>& A)
+  {
+    typename ClassComplexType<T>::Treal res(0);
+    for (int i = 0; i < A.GetDataSize(); i++)
+      res = max(res, ComplexAbs(A.GetData()[i]));
+    
+    return res;
+  }
+
+
+  //! Returns the 1-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_j \sum_i |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  Norm1(const Matrix<T, Prop, ColSymSparse, Allocator>& A)
+  {
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Vector<Treal> sum(A.GetN());
+    sum.Fill(Treal(0));
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
+        {
+          sum(A.GetInd()[j]) += ComplexAbs( A.GetData()[j]);
+          if (A.GetInd()[j] != i)
+            sum(i) += ComplexAbs(A.GetData()[j]);
+        }
+    
+    return sum.GetNormInf();
+  }
+
+
+  //! Returns the infinity-norm of a matrix.
+  /*!
+    \param[in] A matrix.
+    \return \f$ max_i \sum_j |A_{ij}| \f$
+  */
+  template <class T, class Prop, class Allocator>
+  typename ClassComplexType<T>::Treal
+  NormInf(const Matrix<T, Prop, ColSymSparse, Allocator>& A)
+  {
+    return Norm1(A);
+  }
+
+  
   // NORMS //
   ///////////
-
 
 
   ///////////////
@@ -1937,36 +2810,98 @@ namespace Seldon
   template<class T, class Prop, class Storage, class Allocator>
   void Transpose(Matrix<T, Prop, Storage, Allocator>& A)
   {
+    if (Storage::Sparse)
+      throw WrongArgument("Transpose", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+
     int m = A.GetM();
     int n = A.GetN();
 
     if (m == n)
       {
+        // for square matrices, we avoid allocation
 	T tmp;
 	for (int i = 0; i < m; i++)
 	  for (int j = 0; j < i; j++)
 	    {
-	      tmp = A(i,j);
-	      A(i,j) = A(j,i);
-	      A(j,i) = tmp;
+	      tmp = A(i, j);
+	      A(i, j) = A(j, i);
+	      A(j, i) = tmp;
 	    }
       }
     else
       {
 	Matrix<T, Prop, Storage, Allocator> B;
 	B = A;
-	A.Reallocate(n,m);
+	A.Reallocate(n, m);
 	for (int i = 0; i < m; i++)
 	  for (int j = 0; j < n; j++)
-	    A(j,i) = B(i,j);
+	    A.Get(j,i) = B(i,j);
+	
       }
   }
 
+  
+  //! Matrix transposition.
+  template<class T, class Prop, class Storage, class Allocator>
+  void Transpose(const Matrix<T, Prop, Storage, Allocator>& A,
+                 Matrix<T, Prop, Storage, Allocator>& B)
+  {
+    if (Storage::Sparse)
+      throw WrongArgument("Transpose", "This function is intended to dense"
+                          " matrices only and not to sparse matrices");
+    
+    B.Reallocate(A.GetN(), A.GetM());
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetN(); j++)
+        B(j, i) = A(i, j);
+  }
+  
+  
+  //! Matrix transposition.
+  template<class T, class Storage, class Allocator>
+  void Transpose(Matrix<T, Symmetric, Storage, Allocator>& A)
+  {
+    // A symmetric, then equal to its transpose
+  }
+  
+  
+  //! Matrix transposition.
+  template<class T, class Storage, class Allocator>
+  void Transpose(Matrix<T, Hermitian, Storage, Allocator>& A)
+  {
+    // A hermitian, then transpose is conjugate
+    Conjugate(A);
+  }
 
+
+  //! Matrix transposition
+  template<class T, class Storage, class Allocator>
+  void Transpose(const Matrix<T, Symmetric, Storage, Allocator>& A,
+                 Matrix<T, Symmetric, Storage, Allocator>& B)
+  {
+    // A symmetric, then equal to its transpose
+    B = A;
+  }
+  
+  
+  //! Matrix transposition
+  template<class T, class Storage, class Allocator>
+  void Transpose(const Matrix<T, Hermitian, Storage, Allocator>& A,
+                 Matrix<T, Hermitian, Storage, Allocator>& B)
+  {
+    // A hermitian, B = conj(A)
+    B = A;
+    Conjugate(B);
+  }
+  
+  
   //! Matrix transposition.
   template<class T, class Allocator>
-  void Transpose(Matrix<T, General, RowSparse, Allocator>& A)
+  void Transpose(const Matrix<T, General, RowSparse, Allocator>& A,
+                 Matrix<T, General, RowSparse, Allocator>& B)
   {
+    B.Clear();
     int m = A.GetM();
     int n = A.GetN();
     int nnz = A.GetDataSize();
@@ -1980,7 +2915,7 @@ namespace Seldon
 
     ptr_T.Zero();
     ind_T.Zero();
-    data_T.Zero();
+    data_T.Fill(0);
 
     // For each column j, computes number of its non-zeroes and stores it in
     // ptr_T[j].
@@ -2003,11 +2938,106 @@ namespace Seldon
 	  ind_T(k) = i;
     	}
 
-    A.SetData(n, m, data_T, ptr_T, ind_T);
+    // sorting numbers
+    for (int i = 0; i < n; i++)
+      Sort(ptr_T(i), ptr_T(i+1)-1, ind_T, data_T);
+    
+    B.SetData(n, m, data_T, ptr_T, ind_T);
 
     data.Nullify();
     ptr.Nullify();
     ind.Nullify();
+  }
+
+  
+  //! Matrix transposition.
+  template<class T, class Allocator>
+  void Transpose(Matrix<T, General, RowSparse, Allocator>& A)
+  {
+    Matrix<T, General, RowSparse, Allocator> Acopy(A);
+    Transpose(Acopy, A);
+  }
+  
+  
+  //! Matrix transposition.
+  template<class T, class Allocator>
+  void Transpose(const Matrix<T, General, ColSparse, Allocator>& A,
+                 Matrix<T, General, ColSparse, Allocator>& B)
+  {
+    B.Clear();
+    int m = A.GetM();
+    int n = A.GetN();
+    int nnz = A.GetDataSize();
+    Vector<int, VectFull, CallocAlloc<int> > ptr_T(m+1), ptr;
+    Vector<int, VectFull, CallocAlloc<int> > ind_T(nnz), ind;
+    Vector<T, VectFull, Allocator> data_T(nnz), data;
+
+    ptr.SetData(n+1, A.GetPtr());
+    ind.SetData(nnz,  A.GetInd());
+    data.SetData(nnz, A.GetData());
+
+    ptr_T.Zero();
+    ind_T.Zero();
+    data_T.Fill(0);
+
+    // For each column j, computes number of its non-zeroes and stores it in
+    // ptr_T[j].
+    for (int i = 0; i < nnz; i++)
+      ptr_T(ind(i) + 1)++;
+
+    // Computes the required number of non-zeroes ptr_T(j).
+    for (int j = 1; j < m + 1; j++)
+      ptr_T(j) += ptr_T(j - 1);
+
+    Vector<int, VectFull, CallocAlloc<int> > row_ind(m+1);
+    row_ind.Fill(0);
+    for (int i = 0; i < n; i++)
+      for (int jp = ptr(i); jp < ptr(i+1); jp++)
+    	{
+	  int j = ind(jp);
+	  int k = ptr_T(j) + row_ind(j);
+	  ++row_ind(j);
+	  data_T(k) = data(jp);
+	  ind_T(k) = i;
+    	}
+
+    // sorting numbers
+    for (int i = 0; i < m; i++)
+      Sort(ptr_T(i), ptr_T(i+1)-1, ind_T, data_T);
+
+    B.SetData(n, m, data_T, ptr_T, ind_T);
+
+    data.Nullify();
+    ptr.Nullify();
+    ind.Nullify();
+  }
+  
+  
+  //! Matrix transposition.
+  template<class T, class Allocator>
+  void Transpose(Matrix<T, General, ColSparse, Allocator>& A)
+  {
+    Matrix<T, General, ColSparse, Allocator> Acopy(A);
+    Transpose(Acopy, A);
+  }
+
+  
+  //! A is replaced by its conjugate
+  template<class T, class Prop, class Storage, class Allocator>
+  void Conjugate(Matrix<T, Prop, Storage, Allocator>& A)
+  {
+    for (int i = 0; i < A.GetDataSize(); i++)
+      A.GetData()[i] = conj(A.GetData()[i]);
+  }
+  
+  
+  //! Matrix transposition and conjugation.
+  template<class T, class Prop, class Storage, class Allocator>
+  void TransposeConj(const Matrix<T, Prop, Storage, Allocator>& A,
+                     Matrix<T, Prop, Storage, Allocator>& B)
+  {
+    Transpose(A, B);
+    Conjugate(B);
   }
 
 
@@ -2015,68 +3045,16 @@ namespace Seldon
   template<class T, class Prop, class Storage, class Allocator>
   void TransposeConj(Matrix<T, Prop, Storage, Allocator>& A)
   {
-    int i, j;
-
-    int m = A.GetM();
-    int n = A.GetN();
-
-    if (m == n)
-      {
-	T tmp;
-	for (i = 0; i < m; i++)
-	  {
-            // Extra-diagonal part.
-            for (j = 0; j < i; j++)
-              {
-                tmp = A(i, j);
-                A(i, j) = conj(A(j, i));
-                A(j, i) = conj(tmp);
-              }
-
-            // Diagonal part.
-            A(i, i) = conj(A(i, i));
-          }
-      }
-    else
-      {
-	Matrix<T, Prop, Storage, Allocator> B;
-	B = A;
-	A.Reallocate(n, m);
-	for (i = 0; i < m; i++)
-	  for (j = 0; j < n; j++)
-	    A(j, i) = conj(B(i, j));
-      }
+    Transpose(A);
+    Conjugate(A);
   }
 
 
   // TRANSPOSE //
   ///////////////
 
-
-  ///////////////////////
-  // ISSYMMETRICMATRIX //
-
-
-  //! returns true if the matrix is symmetric
-  template<class T, class Prop, class Storage, class Allocator>
-  bool IsSymmetricMatrix(const Matrix<T, Prop, Storage, Allocator>& A)
-  {
-    return false;
-  }
-
-
-  //! returns true if the matrix is symmetric
-  template<class T, class Storage, class Allocator>
-  bool IsSymmetricMatrix(const Matrix<T, Symmetric, Storage, Allocator>& A)
-  {
-    return true;
-  }
-
-
-  // ISSYMMETRICMATRIX //
-  ///////////////////////
-
+  
 } // namespace Seldon.
 
-#define SELDON_FILE_FUNCTIONS_MATRIX_CXX
+
 #endif

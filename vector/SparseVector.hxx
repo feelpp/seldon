@@ -1,5 +1,5 @@
-// Copyright (C) 2003-2009 Marc Duruflé
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -46,11 +46,11 @@ namespace Seldon
   private:
     //! Indices of the non-zero entries.
     int* index_;
-
+    
     // Methods.
   public:
     // Constructor.
-    explicit Vector()  throw();
+    explicit Vector();
     explicit Vector(int i);
     Vector(const Vector<T, VectSparse, Allocator>& A);
 
@@ -78,12 +78,13 @@ namespace Seldon
 #ifndef SWIG
     int Index(int i) const;
 #endif
-    reference operator() (int i);
-#ifndef SWIG
-    value_type operator() (int i) const;
-#endif
+    
+    value_type operator() (int i);
+    reference Get(int i);
     reference Val(int i);
 #ifndef SWIG
+    value_type operator() (int i) const;
+    const_reference Get(int i) const;
     const_reference Val(int i) const;
     Vector<T, VectSparse, Allocator>& operator= (const Vector<T, VectSparse,
 						 Allocator>& X);
@@ -105,10 +106,13 @@ namespace Seldon
     void AddInteraction(int i, const T& val);
     void AddInteractionRow(int, int*, T*, bool already_sorted = false);
     template<class Allocator0>
-    void AddInteractionRow(int nb, Vector<int> col,
-			   Vector<T, VectFull, Allocator0> val,
+    void AddInteractionRow(int nb, const Vector<int>& col,
+			   const Vector<T, VectFull, Allocator0>& val,
                            bool already_sorted = false);
-
+    
+    typename ClassComplexType<T>::Treal GetNormInf() const;
+    int GetNormInfIndex() const;
+    
     // Input/output functions.
     void Write(string FileName) const;
     void Write(ostream& FileStream) const;

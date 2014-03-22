@@ -3,3 +3,4 @@
 doxygen
 # Assuming the output directory is "../html/".
 \cp prettify.js ../html/
+\cp hr1.gif ../html/

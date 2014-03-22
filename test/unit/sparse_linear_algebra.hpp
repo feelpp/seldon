@@ -277,6 +277,29 @@ public:
           for (int j = 0; j < p_; j++)
             CPPUNIT_ASSERT_DOUBLES_EQUAL(C_full(i, j), C(i, j),
                                          1.e-14 * C_full(i, j));
+
+        Matrix<double> C_full_2(m_, p_);
+
+        Mlt(A_full, B, C_full_2);
+        Mlt(A_full, B_full, C_full);
+
+        for (int i = 0; i < m_; i++)
+          for (int j = 0; j < p_; j++)
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(C_full(i, j), C_full_2(i, j),
+                                         1.e-14 * C_full(i, j));
+        Transpose(B);
+        Transpose(B_full);
+
+        C_full.Fill(0);
+        C_full_2.Fill(0);
+
+        MltNoTransTrans(A_full, B, C_full_2);
+        MltAdd(1., SeldonNoTrans, A_full, SeldonTrans, B_full, 0., C_full);
+
+        for (int i = 0; i < m_; i++)
+          for (int j = 0; j < p_; j++)
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(C_full(i, j), C_full_2(i, j),
+                                         1.e-14 * C_full(i, j));
       }
   }
 

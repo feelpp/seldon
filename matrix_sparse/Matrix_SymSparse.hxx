@@ -1,4 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2001-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -92,27 +93,49 @@ namespace Seldon
 		 Vector<int, Storage2, Allocator2>& ind);
     void SetData(int i, int j, int nz, pointer values, int* ptr, int* ind);
     void Nullify();
+    void Reallocate(int i, int j);
+    void Reallocate(int i, int j, int nz);
+    void Resize(int i, int j);
+    void Resize(int i, int j, int nz);
     void Copy(const Matrix_SymSparse<T, Prop, Storage, Allocator>& A);
 
     // Basic methods.
     int GetNonZeros() const;
     int GetDataSize() const;
+    int64_t GetMemorySize() const;
     int* GetPtr() const;
     int* GetInd() const;
     int GetPtrSize() const;
     int GetIndSize() const;
 
     // Element acess and affectation.
-    value_type operator() (int i, int j) const;
+    const value_type operator() (int i, int j) const;
     value_type& Val(int i, int j);
+    value_type& Get(int i, int j);
     const value_type& Val(int i, int j) const;
+    const value_type& Get(int i, int j) const;
+    void Set(int i, int j, const T& x);
+    void AddInteraction(int i, int j, const T& x);
     Matrix_SymSparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_SymSparse<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.
+    void Zero();
+    void SetIdentity();
+    void Fill();
+    template <class T0>
+    void Fill(const T0& x);
+    void FillRand();
+    
     void Print() const;
-    void WriteText(string FileName) const;
-    void WriteText(ostream& FileStream) const;
+    void Write(string FileName) const;
+    void Write(ostream& FileStream) const;
+    void WriteText(string FileName, bool cplx = false) const;
+    void WriteText(ostream& FileStream, bool cplx = false) const;
+    void Read(string FileName);
+    void Read(istream& FileStream);
+    void ReadText(string FileName, bool cplx = false);
+    void ReadText(istream& FileStream, bool cplx = false);
   };
 
 
@@ -129,7 +152,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
     Matrix(int i, int j, int nz);
     template <class Storage0, class Allocator0,
@@ -155,7 +178,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
     Matrix(int i, int j, int nz);
     template <class Storage0, class Allocator0,
@@ -166,7 +189,6 @@ namespace Seldon
 	   Vector<int, Storage1, Allocator1>& ptr,
 	   Vector<int, Storage2, Allocator2>& ind);
   };
-
 
 } // namespace Seldon.
 

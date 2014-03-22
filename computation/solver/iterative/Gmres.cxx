@@ -50,7 +50,9 @@ namespace Seldon
       return 0;
 
     typedef typename Vector1::value_type Complexe;
-    Complexe zero(0);
+    Complexe zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
 
     int m = outer.GetRestart();
     // V is the array of orthogonal basis contructed
@@ -60,7 +62,8 @@ namespace Seldon
     // Upper triangular hessenberg matrix
     // we don't store the sub-diagonal
     // we apply rotations to eliminate this sub-diagonal
-    Matrix<Complexe, General, ColUpTriang> H(m+1,m+1); H.Fill(zero);
+    Matrix<Complexe, General, ColUpTriang> H(m+1,m+1);
+    H.Fill(zero);
 
     // s is the vector of residual norm for each inner iteration
     // w is used in the Arnoldi algorithm
@@ -81,7 +84,7 @@ namespace Seldon
     // we compute residual
     Copy(b, w);
     if (!outer.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), w);
+      MltAdd(-one, A, x, one, w);
     else
       x.Fill(zero);
 
@@ -103,9 +106,9 @@ namespace Seldon
       {
 	// we normalize V(0) and we init s
 	Copy(r, V[0]);
-	Mlt(Complexe(Complexe(1)/beta), V[0]);
+	Mlt(one/beta, V[0]);
 	s.Fill(zero);
-	s(0) = beta;
+	SetComplexReal(beta, s(0));
 
 	int i = 0, k;
 
@@ -132,12 +135,12 @@ namespace Seldon
 	      }
 
 	    // we compute h(i+1,i)
-	    hi_ip1 = Norm2(w);
+	    SetComplexReal(Norm2(w), hi_ip1);
 	    Copy(w, V[i+1]);
 
 	    // we normalize V(i+1)
 	    if (hi_ip1 != zero)
-	      Mlt(Complexe(1)/hi_ip1, V[i+1]);
+	      Mlt(one/hi_ip1, V[i+1]);
 
 	    // we apply precedent generated rotations
 	    // to the last column we computed.
@@ -171,7 +174,7 @@ namespace Seldon
 
 	// we compute the new residual
 	Copy(b, w);
-	MltAdd(Complexe(-1), A, x, Complexe(1), w);
+	MltAdd(-one, A, x, one, w);
 	M.Solve(A, w, r);
 
 	// residual norm

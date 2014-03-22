@@ -19,30 +19,9 @@
 
 #ifndef SELDON_FILE_BLAS_1_CXX
 
-/*
-  Functions included in this file:
 
-  xROTG   (GenRot)
-  xROTMG  (GenModifRot)
-  xROT    (ApplyRot)
-  xROTM   (ApplyModifRot)
-  xSWAP   (Swap)
-  xSCAL   (Mlt)
-  xCOPY   (Copy)
-  xAXPY   (Add)
-  xDOT    (DotProd)
-  xDOTU   (DotProd)
-  SDSDOT  (ScaledDotProd)
-  xDOTC   (DotProdConj)
-  xASUM   (Norm1)
-  xNRM2   (Norm2)
-  IxAMAX  (GetMaxAbsIndex)
-*/
+#include "Blas_1.hxx"
 
-extern "C"
-{
-#include "cblas.h"
-}
 
 namespace Seldon
 {
@@ -101,7 +80,7 @@ namespace Seldon
   template <class Allocator>
   void ApplyRot(Vector<float, VectFull, Allocator>& X,
 		Vector<float, VectFull, Allocator>& Y,
-		const float c, const float s)
+		const float& c, const float& s)
   {
     cblas_srot(X.GetLength(), X.GetData(), 1,
 	       Y.GetData(), 1, c, s);
@@ -111,7 +90,7 @@ namespace Seldon
   template <class Allocator>
   void ApplyRot(Vector<double, VectFull, Allocator>& X,
 		Vector<double, VectFull, Allocator>& Y,
-		const double c, const double s)
+		const double& c, const double& s)
   {
     cblas_drot(X.GetLength(), X.GetData(), 1,
 	       Y.GetData(), 1, c, s);
@@ -222,7 +201,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const float alpha,
+  void Mlt(const float& alpha,
 	   Vector<float, VectFull, Allocator>& X)
   {
     cblas_sscal(X.GetLength(), alpha, X.GetData(), 1);
@@ -230,7 +209,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const double alpha,
+  void Mlt(const double& alpha,
 	   Vector<double, VectFull, Allocator>& X)
   {
     cblas_dscal(X.GetLength(), alpha, X.GetData(), 1);
@@ -238,7 +217,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const float alpha,
+  void Mlt(const float& alpha,
 	   Vector<complex<float>, VectFull, Allocator>& X)
   {
     cblas_csscal(X.GetLength(), alpha,
@@ -247,7 +226,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const double alpha,
+  void Mlt(const double& alpha,
 	   Vector<complex<double>, VectFull, Allocator>& X)
   {
     cblas_zdscal(X.GetLength(), alpha,
@@ -256,7 +235,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const complex<float> alpha,
+  void Mlt(const complex<float>& alpha,
 	   Vector<complex<float>, VectFull, Allocator>& X)
   {
     cblas_cscal(X.GetLength(),
@@ -266,7 +245,7 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const complex<double> alpha,
+  void Mlt(const complex<double>& alpha,
 	   Vector<complex<double>, VectFull, Allocator>& X)
   {
     cblas_zscal(X.GetLength(),
@@ -354,7 +333,7 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Add(const float alpha,
+  void Add(const float& alpha,
 	   const Vector<float, VectFull, Allocator0>& X,
 	   Vector<float, VectFull, Allocator1>& Y)
   {
@@ -371,7 +350,7 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Add(const double alpha,
+  void Add(const double& alpha,
 	   const Vector<double, VectFull, Allocator0>& X,
 	   Vector<double, VectFull, Allocator1>& Y)
   {
@@ -388,7 +367,7 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Add(const complex<float> alpha,
+  void Add(const complex<float>& alpha,
 	   const Vector<complex<float>, VectFull, Allocator0>& X,
 	   Vector<complex<float>, VectFull, Allocator1>& Y)
   {
@@ -405,7 +384,7 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Add(const complex<double> alpha,
+  void Add(const complex<double>& alpha,
 	   const Vector<complex<double>, VectFull, Allocator0>& X,
 	   Vector<complex<double>, VectFull, Allocator1>& Y)
   {
@@ -470,11 +449,18 @@ namespace Seldon
     CheckDim(X, Y, "DotProd(X, Y)", "dot(X, Y)");
 #endif
 
-    complex<float> dotu;
+    // not using cblas_cdotu_sub because of a bug in mkl function
+    /*complex<float> dotu;
     cblas_cdotu_sub(Y.GetLength(),
 		    reinterpret_cast<const void*>(X.GetData()), 1,
 		    reinterpret_cast<const void*>(Y.GetData()), 1,
-		    reinterpret_cast<void*>(&dotu));
+		    reinterpret_cast<void*>(&dotu));*/
+    complex<float> dotu;
+    int n = Y.GetLength(), inc = 1;
+    cdotusub_(&n, 
+              reinterpret_cast<const void*>(X.GetData()), &inc,
+              reinterpret_cast<const void*>(Y.GetData()), &inc,
+              reinterpret_cast<void*>(&dotu));
     return dotu;
   }
 
@@ -488,12 +474,21 @@ namespace Seldon
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(X, Y, "DotProd(X, Y)", "dot(X, Y)");
 #endif
-
-    complex<double> dotu;
+    
+    // not using cblas_zdotu_sub because of a bug in mkl function
+    /*complex<double> dotu;
     cblas_zdotu_sub(Y.GetLength(),
 		    reinterpret_cast<const void*>(X.GetData()), 1,
 		    reinterpret_cast<const void*>(Y.GetData()), 1,
-		    reinterpret_cast<void*>(&dotu));
+		    reinterpret_cast<void*>(&dotu));*/
+    
+    complex<double> dotu;
+    int n = Y.GetLength(), inc = 1;
+    zdotusub_(&n, 
+              reinterpret_cast<const void*>(X.GetData()), &inc,
+              reinterpret_cast<const void*>(Y.GetData()), &inc,
+              reinterpret_cast<void*>(&dotu));
+    
     return dotu;
   }
 
@@ -508,7 +503,7 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  float ScaledDotProd(const float alpha,
+  float ScaledDotProd(const float& alpha,
 		      const Vector<float, VectFull, Allocator0>& X,
 		      const Vector<float, VectFull, Allocator1>& Y)
   {
@@ -542,11 +537,18 @@ namespace Seldon
     CheckDim(X, Y, "DotProdConj(X, Y)", "dot(X, Y)");
 #endif
 
-    complex<float> dotc;
+    // not using cblas_cdotc_sub because of a bug in mkl function
+    /*complex<float> dotc;
     cblas_cdotc_sub(Y.GetLength(),
 		    reinterpret_cast<const void*>(X.GetData()), 1,
 		    reinterpret_cast<const void*>(Y.GetData()), 1,
-		    reinterpret_cast<void*>(&dotc));
+		    reinterpret_cast<void*>(&dotc));*/
+    complex<float> dotc;
+    int n = Y.GetLength(), inc = 1;
+    cdotcsub_(&n, 
+              reinterpret_cast<const void*>(X.GetData()), &inc,
+              reinterpret_cast<const void*>(Y.GetData()), &inc,
+              reinterpret_cast<void*>(&dotc));
     return dotc;
   }
 
@@ -561,11 +563,18 @@ namespace Seldon
     CheckDim(X, Y, "DotProdConj(X, Y)", "dot(X, Y)");
 #endif
 
-    complex<double> dotc;
+    // not using cblas_zdotc_sub because of a bug in mkl function
+    /*complex<double> dotc;
     cblas_zdotc_sub(Y.GetLength(),
 		    reinterpret_cast<const void*>(X.GetData()), 1,
 		    reinterpret_cast<const void*>(Y.GetData()), 1,
-		    reinterpret_cast<void*>(&dotc));
+		    reinterpret_cast<void*>(&dotc));*/
+    complex<double> dotc;
+    int n = Y.GetLength(), inc = 1;
+    zdotcsub_(&n, 
+              reinterpret_cast<const void*>(X.GetData()), &inc,
+              reinterpret_cast<const void*>(Y.GetData()), &inc,
+              reinterpret_cast<void*>(&dotc));
     return dotc;
   }
 
@@ -598,16 +607,30 @@ namespace Seldon
   template <class Allocator>
   float Norm1(const Vector<complex<float>, VectFull, Allocator>& X)
   {
+#ifdef SELDON_WITH_LAPACK
+    // we use Lapack routine in order to have genuine absolue value
+    int n = X.GetLength(), incx = 1;
+    return scsum1_(&n, 
+		   reinterpret_cast<const void*>(X.GetData()), &incx);
+#else
     return cblas_scasum(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
+#endif
   }
 
 
   template <class Allocator>
   double Norm1(const Vector<complex<double>, VectFull, Allocator>& X)
   {
+#ifdef SELDON_WITH_LAPACK
+    // we use Lapack routine in order to have genuine absolue value
+    int n = X.GetLength(), incx = 1;
+    return dzsum1_(&n, 
+		   reinterpret_cast<const void*>(X.GetData()), &incx);
+#else
     return cblas_dzasum(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
+#endif
   }
 
 
@@ -680,8 +703,16 @@ namespace Seldon
   template <class Allocator>
   size_t GetMaxAbsIndex(const Vector<complex<float>, VectFull, Allocator>& X)
   {
+#ifdef SELDON_WITH_LAPACK
+    int n = X.GetLength(), incx = 1;
+    size_t p = icmax1_(&n,
+		       reinterpret_cast<void*>(X.GetData()), &incx);
+    
+    return p-1;
+#else
     return cblas_icamax(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
+#endif
   }
 
 
@@ -689,8 +720,15 @@ namespace Seldon
   size_t
   GetMaxAbsIndex(const Vector<complex<double>, VectFull, Allocator>& X)
   {
+#ifdef SELDON_WITH_LAPACK
+    int n = X.GetLength(), incx = 1;
+    size_t p = izmax1_(&n,
+		       reinterpret_cast<void*>(X.GetData()), &incx);
+    return p-1;
+#else
     return cblas_izamax(X.GetLength(),
 			reinterpret_cast<const void*>(X.GetData()), 1);
+#endif
   }
 
 

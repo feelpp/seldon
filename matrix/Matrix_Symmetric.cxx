@@ -1,5 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
-// Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -476,7 +476,7 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>::value_type
+  inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>::reference
   Matrix_Symmetric<T, Prop, Storage, Allocator>::operator() (int i, int j)
   {
 
@@ -506,7 +506,8 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>::value_type
+  inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>
+  ::const_reference
   Matrix_Symmetric<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
   {
@@ -551,6 +552,12 @@ namespace Seldon
       throw WrongCol("Matrix_Symmetric::Val(int, int) const",
 		     string("Index should be in [0, ") + to_str(this->n_-1)
 		     + "], but is equal to " + to_str(j) + ".");
+    if (i > j)
+      throw WrongRow("Matrix_Symmetric::Val(int, int)",
+		     string("Attempted to access to element (")
+		     + to_str(i) + ", " + to_str(j)
+		     + ") but row index should not be strictly"
+		     + " greater than column index.");
 #endif
 
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
@@ -578,9 +585,77 @@ namespace Seldon
       throw WrongCol("Matrix_Symmetric::Val(int, int)",
 		     string("Index should be in [0, ") + to_str(this->n_-1)
 		     + "], but is equal to " + to_str(j) + ".");
+    if (i > j)
+      throw WrongRow("Matrix_Symmetric::Val(int, int)",
+		     string("Attempted to access to element (")
+		     + to_str(i) + ", " + to_str(j)
+		     + ") but row index should not be strictly"
+		     + " greater than column index.");
 #endif
 
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
+  }
+
+  
+  //! Returns the element (\a i, \a j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>::reference
+  Matrix_Symmetric<T, Prop, Storage, Allocator>::Get(int i, int j)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_Symmetric::Get(int, int)",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_Symmetric::Get(int, int)",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    if (i > j)
+      return me_[Storage::GetSecond(i, j)][Storage::GetFirst(i, j)];
+    else
+      return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
+  }
+
+
+  //! Returns the element (\a i, \a j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>
+  ::const_reference
+  Matrix_Symmetric<T, Prop, Storage, Allocator>
+  ::Get(int i, int j) const
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_Symmetric::Get(int, int) const",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_Symmetric::Get(int, int) const",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    if (i > j)
+      return me_[Storage::GetSecond(i, j)][Storage::GetFirst(i, j)];
+    else
+      return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
   }
 
 
@@ -648,6 +723,20 @@ namespace Seldon
   }
 
 
+  //! Sets an element of the matrix.
+  /*!
+    \param i row index.
+    \param j column index.
+    \param x new value for the matrix element (\a i, \a j).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Symmetric<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const T& x)
+  {
+    this->Get(i, j) = x;
+  }
+
+
   //! Duplicates a matrix.
   /*!
     \param A matrix to be copied.
@@ -686,9 +775,12 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Symmetric<T, Prop, Storage, Allocator>::SetIdentity()
   {
-    this->Fill(T(0));
+    T zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    
+    this->Fill(zero);
 
-    T one(1);
     for (int i = 0; i < min(this->m_, this->n_); i++)
       this->Val(i, i) = one;
   }
@@ -703,7 +795,7 @@ namespace Seldon
   void Matrix_Symmetric<T, Prop, Storage, Allocator>::Fill()
   {
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = i;
+      SetComplexReal(i, this->data_[i]);
   }
 
 
@@ -715,8 +807,10 @@ namespace Seldon
   template <class T0>
   void Matrix_Symmetric<T, Prop, Storage, Allocator>::Fill(const T0& x)
   {
+    T x_;
+    SetComplexReal(x, x_);
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = x;
+      this->data_[i] = x_;
   }
 
 
@@ -742,9 +836,11 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Symmetric<T, Prop, Storage, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = rand();
+      SetComplexReal(rand(), this->data_[i]);
   }
 
 
@@ -825,7 +921,7 @@ namespace Seldon
   ::Write(string FileName) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -962,7 +1058,7 @@ namespace Seldon
   void Matrix_Symmetric<T, Prop, Storage, Allocator>::Read(string FileName)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -1009,8 +1105,8 @@ namespace Seldon
     // Checks if data was read.
     if (!FileStream.good())
       throw IOError("Matrix_Symmetric::Read(ifstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The intput file may have been removed")
+                    string("Input operation failed.")
+		    + string(" The input file may have been removed")
 		    + " or may not contain enough data.");
 #endif
 
@@ -1123,7 +1219,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColSym, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, ColSym, Allocator>::Matrix():
     Matrix_Symmetric<T, Prop, ColSym, Allocator>()
   {
   }
@@ -1161,6 +1257,23 @@ namespace Seldon
   }
 
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ColSym, Allocator>&
+  Matrix<T, Prop, ColSym, Allocator>::operator= (const Matrix<T, Prop,
+                                                       ColSym,
+                                                       Allocator>& A)
+  {
+    this->Copy(A);
+    return *this;
+  }
+
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1192,7 +1305,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowSym, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, RowSym, Allocator>::Matrix():
     Matrix_Symmetric<T, Prop, RowSym, Allocator>()
   {
   }
@@ -1226,6 +1339,22 @@ namespace Seldon
   {
     this->Fill(x);
 
+    return *this;
+  }
+
+//! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, RowSym, Allocator>&
+  Matrix<T, Prop, RowSym, Allocator>::operator= (const Matrix<T, Prop,
+                                                       RowSym,
+                                                       Allocator>& A)
+  {
+    this->Copy(A);
     return *this;
   }
 

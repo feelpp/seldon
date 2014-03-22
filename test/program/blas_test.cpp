@@ -316,7 +316,7 @@ void TestBlas23(complex<T> x)
   cout << "matrix/vectors after Rank1Update " << endl;
   DISP(B); DISP(X); DISP(Y);
 
-  Matrix<complex<T>, General, RowHermPacked> As(n, n);
+  Matrix<complex<T>, Hermitian, RowHermPacked> As(n, n);
   nb = 0; T norme = 0.5;
   for (int i = 0; i < n; i++)
     {

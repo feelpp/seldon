@@ -1289,7 +1289,7 @@ namespace Seldon
   ::Write(string FileName, bool with_size) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -1509,7 +1509,7 @@ namespace Seldon
   ::Read(string FileName)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -1605,7 +1605,7 @@ namespace Seldon
     if (!FileStream.good())
       throw IOError("HeterogeneousMatrixCollection"
                     "::Read(istream& FileStream)",
-                    "Output operation failed.");
+                    "Input operation failed.");
 #endif
 
   }

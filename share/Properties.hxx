@@ -31,6 +31,9 @@ namespace Seldon
   {
   };
 
+  class Hermitian
+  {
+  };
 
 }  // namespace Seldon.
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2003-2009 Marc Duruflé
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -68,8 +68,8 @@ namespace Seldon
     void Clear();
 
     // Memory management.
-    void Reallocate(int i,int j);
-    void Resize(int i,int j);
+    void Reallocate(int i, int j);
+    void Resize(int i, int j);
 
     // Basic methods.
     int GetM() const;
@@ -78,16 +78,22 @@ namespace Seldon
     int GetN(const SeldonTranspose& status) const;
     int GetNonZeros() const;
     int GetDataSize() const;
+    int64_t GetMemorySize() const;
     int* GetIndex(int i) const;
     T* GetData(int i) const;
 
     Vector<T, VectSparse, Allocator>* GetData() const;
 
     // Element acess and affectation.
-    T operator() (int i, int j) const;
+#ifdef SELDON_WITH_MODIFIABLE_PARENTHESIS_OPERATOR
     T& operator() (int i, int j);
+#endif
+    const T operator() (int i, int j) const;    
+    T& Get(int i, int j);
+    const T& Get(int i, int j) const;
     T& Val(int i, int j);
     const T& Val(int i, int j) const;
+    void Set(int i, int j, const T& x);
 
     const T& Value(int num_row, int i) const;
     T& Value(int num_row, int i);
@@ -117,12 +123,12 @@ namespace Seldon
     // Input/output functions.
     void Write(string FileName) const;
     void Write(ostream& FileStream) const;
-    void WriteText(string FileName) const;
-    void WriteText(ostream& FileStream) const;
+    void WriteText(string FileName, bool cplx = false) const;
+    void WriteText(ostream& FileStream, bool cplx = false) const;
     void Read(string FileName);
     void Read(istream& FileStream);
-    void ReadText(string FileName);
-    void ReadText(istream& FileStream);
+    void ReadText(string FileName, bool cplx = false);
+    void ReadText(istream& FileStream, bool cplx = false);
 
   };
 
@@ -140,7 +146,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     // Memory management.
@@ -157,14 +163,15 @@ namespace Seldon
     void AddInteraction(int i, int j, const T& val);
 
     void AddInteractionRow(int, int, int*, T*);
-    void AddInteractionColumn(int, int, int*, T*);
+    void AddInteractionColumn(int, int, int*, T*, bool already_sorted = false);
 
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
 			   const Vector<T, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<T, VectFull, Alloc1>& val);
+			      const Vector<T, VectFull, Alloc1>& val,
+                              bool already_sorted = false);
   };
 
 
@@ -181,7 +188,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     // Memory management.
@@ -197,12 +204,14 @@ namespace Seldon
 
     void AddInteraction(int i, int j, const T& val);
 
-    void AddInteractionRow(int, int, int*, T*);
+    void AddInteractionRow(int, int, int*, T*, bool already_sorted = false);
     void AddInteractionColumn(int, int, int*, T*);
 
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<T, VectFull, Alloc1>& val);
+			   const Vector<T, VectFull, Alloc1>& val,
+                           bool already_sorted = false);
+    
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
 			      const Vector<T, VectFull, Alloc1>& val);
@@ -221,11 +230,20 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
-
-    T operator() (int i, int j) const;
+    
+    // access operator
+#ifdef SELDON_WITH_MODIFIABLE_PARENTHESIS_OPERATOR
     T& operator() (int i, int j);
+#endif
+    const T operator() (int i, int j) const;
+    
+    T& Get(int i, int j);
+    const T& Get(int i, int j) const;
+    T& Val(int i, int j);
+    const T& Val(int i, int j) const;
+    void Set(int i, int j, const T& x);
 
     // Memory management.
     void ClearColumn(int i);
@@ -241,14 +259,16 @@ namespace Seldon
     void AddInteraction(int i, int j, const T& val);
 
     void AddInteractionRow(int, int, int*, T*);
-    void AddInteractionColumn(int, int, int*, T*);
+    void AddInteractionColumn(int, int, int*, T*,
+                              bool already_sorted = false);
 
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
 			   const Vector<T, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<T, VectFull, Alloc1>& val);
+			      const Vector<T, VectFull, Alloc1>& val,
+                              bool already_sorted = false);
   };
 
 
@@ -265,11 +285,20 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
-    T operator() (int i, int j) const;
+    // access operator
+#ifdef SELDON_WITH_MODIFIABLE_PARENTHESIS_OPERATOR
     T& operator() (int i, int j);
+#endif
+    const T operator() (int i, int j) const;
+
+    T& Get(int i, int j);
+    const T& Get(int i, int j) const;
+    T& Val(int i, int j);
+    const T& Val(int i, int j) const;
+    void Set(int i, int j, const T& x);
 
     // Memory management.
     void ClearRow(int i);
@@ -284,12 +313,14 @@ namespace Seldon
 
     void AddInteraction(int i, int j, const T& val);
 
-    void AddInteractionRow(int, int, int*, T*);
+    void AddInteractionRow(int, int, int*, T*, bool already_sorted = false);
     void AddInteractionColumn(int, int, int*, T*);
 
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<T, VectFull, Alloc1>& val);
+			   const Vector<T, VectFull, Alloc1>& val,
+                           bool already_sorted = false);
+    
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
 			      const Vector<T, VectFull, Alloc1>& val);

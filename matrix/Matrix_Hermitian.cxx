@@ -1,5 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
-// Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -476,37 +476,8 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_Hermitian<T, Prop, Storage, Allocator>::value_type
-  Matrix_Hermitian<T, Prop, Storage, Allocator>::operator() (int i, int j)
-  {
-
-#ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_Hermitian::operator()",
-		     string("Index should be in [0, ") + to_str(this->m_-1)
-		     + "], but is equal to " + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_Hermitian::operator()",
-		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");
-#endif
-
-    if (i > j)
-      return conj(me_[Storage::GetSecond(i, j)][Storage::GetFirst(i, j)]);
-    else
-      return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
-  }
-
-
-  //! Access operator.
-  /*!
-    Returns the value of element (i, j).
-    \param i row index.
-    \param j column index.
-    \return Element (i, j) of the matrix.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_Hermitian<T, Prop, Storage, Allocator>::value_type
+  inline const typename
+  Matrix_Hermitian<T, Prop, Storage, Allocator>::value_type
   Matrix_Hermitian<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
   {
@@ -551,7 +522,13 @@ namespace Seldon
     if (j < 0 || j >= this->n_)
       throw WrongCol("Matrix_Hermitian::Val(int, int) const",
 		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");
+		     + "], but is equal to " + to_str(j) + ".");    
+    if (i > j)
+      throw WrongRow("Matrix_Hermitian::Val(int, int)",
+		     string("Attempted to access to element (")
+		     + to_str(i) + ", " + to_str(j)
+		     + ") but row index should not be strictly"
+		     + " greater than column index.");
 #endif
 
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
@@ -579,12 +556,85 @@ namespace Seldon
       throw WrongCol("Matrix_Hermitian::Val(int, int)",
 		     string("Index should be in [0, ") + to_str(this->n_-1)
 		     + "], but is equal to " + to_str(j) + ".");
+    if (i > j)
+      throw WrongRow("Matrix_Hermitian::Val(int, int)",
+		     string("Attempted to access to element (")
+		     + to_str(i) + ", " + to_str(j)
+		     + ") but row index should not be strictly"
+		     + " greater than column index.");
+#endif
+
+    return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
+  }
+
+  
+  //! Returns access to an element (i, j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Hermitian<T, Prop, Storage, Allocator>
+  ::const_reference
+  Matrix_Hermitian<T, Prop, Storage, Allocator>::Get(int i, int j) const
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_Hermitian::Val(int, int) const",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_Hermitian::Val(int, int) const",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+    if (i > j)
+      throw WrongRow("Matrix_Hermitian::Get(int, int)",
+		     string("Attempted to access to element (")
+		     + to_str(i) + ", " + to_str(j)
+		     + ") but row index should not be strictly"
+		     + " greater than column index.");
 #endif
 
     return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
   }
 
 
+  //! Returns the element (i, j).
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Hermitian<T, Prop, Storage, Allocator>::reference
+  Matrix_Hermitian<T, Prop, Storage, Allocator>::Get(int i, int j)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_Hermitian::Val(int, int)",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_Hermitian::Val(int, int)",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+    if (i > j)
+      throw WrongRow("Matrix_Hermitian::Val(int, int)",
+		     string("Attempted to access to element (")
+		     + to_str(i) + ", " + to_str(j)
+		     + ") but row index should not be strictly"
+		     + " greater than column index.");
+#endif
+    
+    return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
+  }
+  
+  
   //! Access to elements of the data array.
   /*!
     Provides a direct access to the data array.
@@ -631,6 +681,23 @@ namespace Seldon
     return this->data_[i];
   }
 
+  
+  //! Sets an element of the matrix
+  /*!
+    \param i row index
+    \param j column index
+    \param x sets a(i, j) = x
+   */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Hermitian<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const T& x)
+  {
+    if (i > j)
+      this->Val(j, i) = conj(x);
+    else
+      this->Val(i, j) = x;
+  }
+  
 
   //! Duplicates a matrix (assignement operator).
   /*!
@@ -691,11 +758,14 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Hermitian<T, Prop, Storage, Allocator>::SetIdentity()
   {
-    this->Fill(T(0));
+    T one, zero;
+    SetComplexZero(zero);
+    SetComplexOne(one);
 
-    T one(1);
+    this->Fill(zero);
+
     for (int i = 0; i < min(this->m_, this->n_); i++)
-      this->Val(i,i) = one;
+      this->Val(i, i) = one;
   }
 
 
@@ -708,26 +778,32 @@ namespace Seldon
   void Matrix_Hermitian<T, Prop, Storage, Allocator>::Fill()
   {
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = i;
+      SetComplexReal(i, this->data_[i]);
   }
 
 
   //! Fills a matrix with a given value.
   /*!
     \param x the value to fill the matrix with.
+    \note If the imaginary part of x is non-null, the upper part will
+    contain x, whereas lower part will contain conj(x).
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
   void Matrix_Hermitian<T, Prop, Storage, Allocator>::Fill(const T0& x)
   {
+    T x_;
+    SetComplexReal(x, x_);
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = x;
+      this->data_[i] = x_;
   }
 
 
   //! Fills a matrix with a given value.
   /*!
     \param x the value to fill the matrix with.
+    \note If the imaginary part of x is non-null, the upper part will
+    contain x, whereas lower part will contain conj(x).
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
@@ -747,9 +823,11 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Hermitian<T, Prop, Storage, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = rand();
+      SetComplexReal(rand(), this->data_[i]);
   }
 
 
@@ -830,7 +908,7 @@ namespace Seldon
   ::Write(string FileName) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -967,7 +1045,7 @@ namespace Seldon
   void Matrix_Hermitian<T, Prop, Storage, Allocator>::Read(string FileName)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -1014,8 +1092,8 @@ namespace Seldon
     // Checks if data was read.
     if (!FileStream.good())
       throw IOError("Matrix_Hermitian::Read(ifstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The intput file may have been removed")
+                    string("Input operation failed.")
+		    + string(" The input file may have been removed")
 		    + " or may not contain enough data.");
 #endif
 
@@ -1128,7 +1206,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColHerm, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, ColHerm, Allocator>::Matrix():
     Matrix_Hermitian<T, Prop, ColHerm, Allocator>()
   {
   }
@@ -1165,10 +1243,28 @@ namespace Seldon
     return *this;
   }
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ColHerm, Allocator>&
+  Matrix<T, Prop, ColHerm, Allocator>::operator= (const Matrix<T, Prop,
+                                                  ColHerm,
+                                                  Allocator>& A)
+  {
+    this->Copy(A);
+    return *this;
+  }
+
 
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
+    \warning The imaginary part of x should be null to keep an Hermitian
+    matrix.
   */
   template <class T, class Prop, class Allocator>
   template <class T0>
@@ -1198,7 +1294,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowHerm, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, RowHerm, Allocator>::Matrix():
     Matrix_Hermitian<T, Prop, RowHerm, Allocator>()
   {
   }
@@ -1232,6 +1328,22 @@ namespace Seldon
   {
     this->Fill(x);
 
+    return *this;
+  }
+
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, RowHerm, Allocator>&
+  Matrix<T, Prop, RowHerm, Allocator>::operator= (const Matrix<T, Prop,
+                                                       RowHerm,
+                                                       Allocator>& A)
+  {
+    this->Copy(A);
     return *this;
   }
 

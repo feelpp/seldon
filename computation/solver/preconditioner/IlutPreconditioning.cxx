@@ -45,7 +45,6 @@ namespace Seldon
     permutation_row.Clear();
     mat_sym.Clear();
     mat_unsym.Clear();
-    xtmp.Clear();
   }
 
 
@@ -84,7 +83,16 @@ namespace Seldon
     return mbloc;
   }
 
-
+  
+  template<class real, class cplx, class Allocator>
+  int64_t IlutPreconditioning<real, cplx, Allocator>::GetMemorySize() const
+  {
+    int64_t taille = sizeof(int)*(permutation_row.GetM() + permutation_col.GetM());
+    taille += mat_sym.GetMemorySize() + mat_unsym.GetMemorySize();
+    return taille;
+  }
+  
+  
   template<class real, class cplx, class Allocator>
   void IlutPreconditioning<real, cplx, Allocator>
   ::SetFactorisationType(int type)
@@ -255,9 +263,6 @@ namespace Seldon
     // Matrix is permuted.
     ApplyInversePermutation(mat_sym, perm, perm);
 
-    // Temporary vector used for solving.
-    xtmp.Reallocate(n);
-
     // Factorization is performed.
     GetIlut(*this, mat_sym);
   }
@@ -309,9 +314,6 @@ namespace Seldon
     // Rows of matrix are permuted.
     ApplyInversePermutation(mat_unsym, perm, perm);
 
-    // Temporary vector used for solving.
-    xtmp.Reallocate(n);
-
     // Factorization is performed.
     // Columns are permuted during the factorization.
     inv_permutation.Fill();
@@ -333,16 +335,18 @@ namespace Seldon
   {
     if (symmetric_algorithm)
       {
+	Vector1 xtmp(z);
         for (int i = 0; i < r.GetM(); i++)
           xtmp(permutation_row(i)) = r(i);
-
+	
         SolveLU(mat_sym, xtmp);
-
+	
         for (int i = 0; i < r.GetM(); i++)
           z(i) = xtmp(permutation_row(i));
       }
     else
       {
+	Vector1 xtmp(z);
         for (int i = 0; i < r.GetM(); i++)
           xtmp(permutation_row(i)) = r(i);
 
@@ -363,6 +367,7 @@ namespace Seldon
       Solve(A, r, z);
     else
       {
+	Vector1 xtmp(z);
         for (int i = 0; i < r.GetM(); i++)
           xtmp(i) = r(permutation_col(i));
 
@@ -380,6 +385,7 @@ namespace Seldon
   {
     if (symmetric_algorithm)
       {
+	Vector1 xtmp(z);
         for (int i = 0; i < z.GetM(); i++)
           xtmp(permutation_row(i)) = z(i);
 
@@ -390,6 +396,7 @@ namespace Seldon
       }
     else
       {
+	Vector1 xtmp(z);
         for (int i = 0; i < z.GetM(); i++)
           xtmp(permutation_row(i)) = z(i);
 
@@ -409,6 +416,7 @@ namespace Seldon
       Solve(z);
     else
       {
+	Vector1 xtmp(z);
         for (int i = 0; i < z.GetM(); i++)
           xtmp(i) = z(permutation_col(i));
 
@@ -417,6 +425,18 @@ namespace Seldon
         for (int i = 0; i < z.GetM(); i++)
           z(i) = xtmp(permutation_row(i));
       }
+  }
+
+  
+  template<class real, class cplx, class Allocator>
+  template<class TransStatus, class Vector1>
+  void IlutPreconditioning<real, cplx, Allocator>
+  ::Solve(const TransStatus& transA, Vector1& z)
+  {
+    if (transA.Trans())
+      TransSolve(z);
+    else
+      Solve(z);
   }
 
 
@@ -494,7 +514,7 @@ namespace Seldon
   {
     int size_row;
     int n = A.GetN();
-    int type_factorisation = param.GetFactorisationType();
+    int type_factorization = param.GetFactorisationType();
     int lfil = param.GetFillLevel();
     real zero(0);
     real droptol = param.GetDroppingThreshold();
@@ -506,26 +526,26 @@ namespace Seldon
     real permtol = param.GetPivotThreshold();
     int print_level = param.GetPrintLevel();
 
-    if (type_factorisation == param.ILUT)
+    if (type_factorization == param.ILUT)
       standard_dropping = false;
-    else if (type_factorisation == param.ILU_D)
+    else if (type_factorization == param.ILU_D)
       standard_dropping = true;
-    else if (type_factorisation == param.ILUT_K)
+    else if (type_factorization == param.ILUT_K)
       {
 	variable_fill = true;   // We use a variable lfil
 	standard_dropping = false;
       }
-    else if (type_factorisation == param.ILU_0)
+    else if (type_factorization == param.ILU_0)
       {
 	GetIlu0(A);
         return;
       }
-    else if (type_factorisation == param.MILU_0)
+    else if (type_factorization == param.MILU_0)
       {
 	GetMilu0(A);
         return;
       }
-    else if (type_factorisation == param.ILU_K)
+    else if (type_factorization == param.ILU_K)
       {
 	GetIluk(lfil, A);
         return;
@@ -845,12 +865,12 @@ namespace Seldon
 	  Row_Val(i_row) += alpha*dropsum;
 
 	if (Row_Val(i_row) == czero)
-          Row_Val(i_row) = (droptol + 1e-4) * tnorm;
+          Row_Val(i_row) = (droptol + real(1e-4)) * tnorm;
 
 	A.Value(i_row, index_diag) = cone / Row_Val(i_row);
 
       } // end main loop
-
+    
     if (print_level > 0)
       cout << endl;
 
@@ -868,7 +888,7 @@ namespace Seldon
   void GetIluk(int lfil, Matrix<cplx, General, ArrayRowSparse, Allocator>& A)
   {
     int n = A.GetM();
-    Vector<cplx, VectFull, CallocAlloc<cplx> > w;
+    Vector<cplx, VectFull, NewAlloc<cplx> > w;
     w.Reallocate(n+1);
     IVect jw(3*n), Index_Diag(n);
     Vector<IVect, VectFull, NewAlloc<IVect> > levs(n);
@@ -880,7 +900,7 @@ namespace Seldon
     // Local variables
     cplx fact, s, t;
     int length_lower,length_upper, jpos, jrow, i_row, j_col;
-    int i, j, k, index_lu, length;
+    int i, j, k, index_lu;
     bool element_dropped;
 
     int n2 = 2*n, jlev, k_, size_upper;
@@ -926,8 +946,6 @@ namespace Seldon
 	  }
 
 	j_col = 0;
-        length = 0;
-
 
         // Eliminates previous rows.
 	while (j_col <length_lower)
@@ -1194,7 +1212,7 @@ namespace Seldon
 	int jm = ju(i_row)-1;
 	// Exit if diagonal element is reached.
 	// s accumulates fill-in values.
-	cplx s(0);
+	cplx s; SetComplexZero(s);
 	for (int j = 0; j <= jm; j++)
 	  {
 	    jrow = A.Index(i_row, j);
@@ -1229,90 +1247,44 @@ namespace Seldon
 	  Index(A.Index(i_row, i)) = -1;
       }
   }
-
-
-  //! Resolution of LU y = x (x is overwritten with y)
-  /*!  L and U are assumed to be stored in A. The diagonal of A contains the
-    inverse of the diagonal of U.
-  */
-  template<class real, class cplx, class Allocator,
-           class Storage2, class Allocator2>
-  void SolveLU(const Matrix<real, General, ArrayRowSparse, Allocator>& A,
-               Vector<cplx, Storage2, Allocator2>& x)
+  
+  
+  template<class MatrixSparse, class Treal, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, IlutPreconditioning<Treal, T, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix, T& x)
   {
-    int i, k, n, k_;
-    real inv_diag;
-    n = A.GetM();
-
-    // Forward solve.
-    for (i = 0; i < n; i++)
-      {
-	k_ = 0; k = A.Index(i,k_);
-	while ( k < i)
-	  {
-	    x(i) -= A.Value(i,k_)*x(k);
-	    k_++;
-            k = A.Index(i,k_);
-	  }
-      }
-
-    // Backward solve.
-    for (i = n-1; i >= 0; i--)
-      {
-	k_ = 0; k = A.Index(i,k_);
-	while ( k < i)
-	  {
-	    k_++;
-	    k = A.Index(i,k_);
-	  }
-
-	inv_diag = A.Value(i,k_);
-	for ( k = (k_+1); k < A.GetRowSize(i) ; k++)
-          x(i) -= A.Value(i,k) * x(A.Index(i,k));
-
-	x(i) *= inv_diag;
-      }
+    mat_lu.FactorizeMatrix(permut, A, keep_matrix);
   }
-
-
-  template<class cplx, class Allocator, class Storage2, class Allocator2>
-  void SolveLU(const class_SeldonTrans& transA,
-               const Matrix<cplx, General, ArrayRowSparse, Allocator>& A,
-               Vector<cplx,Storage2,Allocator2>& x)
+  
+  
+  template<class MatrixSparse, class Treal, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, IlutPreconditioning<Treal, T, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix, complex<T>& x)
   {
-    int i, k, n, k_;
-    n = A.GetM();
-
-    // Forward solve (with U^T).
-    for (i = 0 ; i < n ; i++)
-      {
-	k_ = 0; k = A.Index(i,k_);
-	while ( k < i)
-	  {
-	    k_++;
-	    k = A.Index(i,k_);
-	  }
-
-	x(i) *= A.Value(i,k_);
-	for ( k = (k_+1); k < A.GetRowSize(i) ; k++)
-	  {
-	    x(A.Index(i,k)) -= A.Value(i,k) * x(i);
-	  }
-      }
-
-    // Backward solve (with L^T).
-    for (i = n-1 ; i>=0  ; i--)
-      {
-	k_ = 0; k = A.Index(i,k_);
-	while ( k < i)
-	  {
-	    x(k) -= A.Value(i,k_)*x(i);
-	    k_++;
-	    k = A.Index(i,k_);
-	  }
-      }
+    throw WrongArgument("GetLU(Matrix<complex<T> >& A, IlutPreconditioning<T>& mat_lu, bool)",
+			"The LU matrix must be complex");
   }
-
+  
+  
+  template<class MatrixSparse, class Treal, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, IlutPreconditioning<Treal, complex<T>, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix, T& x)
+  {
+    throw WrongArgument("GetLU(Matrix<T>& A, IlutPreconditioning<complex<T> >& mat_lu, bool)",
+			"The sparse matrix must be complex");
+  }
+  
+  
+  template<class T0, class Prop, class Storage, class Allocator,
+	   class Treal, class T, class Alloc2>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A,
+	     IlutPreconditioning<Treal, T, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix)
+  {
+    typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;
+    GetLU(A, mat_lu, permut, keep_matrix, x);
+  }
+  
 }
 
 #define SELDON_FILE_ILUT_PRECONDITIONING_CXX

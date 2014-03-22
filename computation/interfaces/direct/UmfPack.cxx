@@ -36,8 +36,9 @@ namespace Seldon
     Control.Reallocate(UMFPACK_CONTROL);
     Info.Reallocate(UMFPACK_INFO);
 
-    display_info = false;
+    print_level = -1;
     transpose = false;
+    status_facto = 0;
   }
 
 
@@ -45,7 +46,7 @@ namespace Seldon
   template<class T>
   void MatrixUmfPack_Base<T>::HideMessages()
   {
-    display_info = false;
+    print_level = -1;
     Control(UMFPACK_PRL) = 0;
   }
 
@@ -54,8 +55,52 @@ namespace Seldon
   template<class T>
   void MatrixUmfPack_Base<T>::ShowMessages()
   {
-    display_info = true;
+    print_level = 1;
     Control(UMFPACK_PRL) = 2;
+  }
+
+
+  template<class T>
+  void MatrixUmfPack_Base<T>::ShowFullHistory()
+  {
+    print_level = 2;
+  }
+
+
+  template<class T>
+  int MatrixUmfPack_Base<T>::GetInfoFactorization() const
+  {
+    return status_facto;
+  }
+
+  
+  template<class T>
+  int64_t MatrixUmfPack_Base<T>::GetMemorySize() const
+  {
+    if (this->n > 0)
+      {
+        int64_t size_mem = (this->Info(UMFPACK_SYMBOLIC_SIZE)
+                            + this->Info(UMFPACK_VARIABLE_PEAK))
+          *int64_t(this->Info(UMFPACK_SIZE_OF_UNIT));
+        
+        return size_mem;
+      }
+    
+    return 0;
+  }
+
+  
+  template<class T>
+  void MatrixUmfPack_Base<T>::SelectOrdering(int type)
+  {
+    Control(UMFPACK_ORDERING) = type;
+  }
+
+
+  template<class T>
+  void MatrixUmfPack_Base<T>::SetPermutation(const IVect& permut)
+  {
+    throw Undefined("MatrixUmfPack_Base::SetPermutation(const Vector&)");
   }
 
 
@@ -153,9 +198,9 @@ namespace Seldon
 
 
   //! factorization of a real matrix in double precision
-  template<class Prop, class Storage, class Allocator>
+  template<class T0, class Prop, class Storage, class Allocator>
   void MatrixUmfPack<double>::
-  FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
+  FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 		  bool keep_matrix)
   {
     // we clear previous factorization
@@ -176,21 +221,31 @@ namespace Seldon
     data_ = Acsc.GetData();
     Acsc.Nullify();
 
-    // factorization with UmfPack
+    // symbolic factorization
     umfpack_di_symbolic(this->n, this->n, ptr_, ind_, data_, &this->Symbolic,
                         this->Control.GetData(), this->Info.GetData());
 
-    // we display informations about the performed operation
-    int status =
+    // numerical factorization
+    status_facto =
       umfpack_di_numeric(ptr_, ind_, data_,
                          this->Symbolic, &this->Numeric,
                          this->Control.GetData(), this->Info.GetData());
 
     // we display informations about the performed operation
-    if (this->display_info)
+    if (print_level > 1)
       {
-	umfpack_di_report_status(this->Control.GetData(), status);
+	umfpack_di_report_status(this->Control.GetData(), status_facto);
 	umfpack_di_report_info(this->Control.GetData(),this->Info.GetData());
+      }
+
+    if (print_level > 0)
+      {
+	int size_mem = (this->Info(UMFPACK_SYMBOLIC_SIZE)
+			+ this->Info(UMFPACK_NUMERIC_SIZE_ESTIMATE))
+	  *this->Info(UMFPACK_SIZE_OF_UNIT);
+
+	cout << "Memory used to store LU factors: "
+	     << double(size_mem)/(1024*1024) << " MB" << endl;
       }
   }
 
@@ -233,15 +288,15 @@ namespace Seldon
     for (int i = 0; i < mat.GetDataSize(); i++)
       data_[i] = data[i];
 
-    int status =
+    status_facto =
       umfpack_di_numeric(ptr_, ind_, data_,
 			 this->Symbolic, &this->Numeric,
 			 this->Control.GetData(), this->Info.GetData());
 
     // we display informations about the performed operation
-    if (this->display_info)
+    if (print_level > 1)
       {
-	umfpack_di_report_status(this->Control.GetData(), status);
+	umfpack_di_report_status(this->Control.GetData(), status_facto);
 	umfpack_di_report_info(this->Control.GetData(),this->Info.GetData());
       }
   }
@@ -264,15 +319,43 @@ namespace Seldon
 			 this->Info.GetData());
 
     // we display informations about the performed operation
-    if (this->display_info)
+    if (print_level > 1)
+      umfpack_di_report_status(this->Control.GetData(), status);
+  }
+
+
+  template<class StatusTrans, class Allocator2>
+  void MatrixUmfPack<double>::Solve(const StatusTrans& TransA,
+				    Vector<double, VectFull, Allocator2>& x)
+  {
+    if (TransA.NoTrans())
+      {
+	Solve(x);
+	return;
+      }
+
+    // local copy of x
+    Vector<double, VectFull, Allocator2> b(x);
+
+    int sys = UMFPACK_Aat;
+    if (transpose)
+      sys = UMFPACK_A;
+
+    int status
+      = umfpack_di_solve(sys, ptr_, ind_, data_, x.GetData(),
+			 b.GetData(), this->Numeric, this->Control.GetData(),
+			 this->Info.GetData());
+
+    // We display information about the performed operation.
+    if (print_level > 1)
       umfpack_di_report_status(this->Control.GetData(), status);
   }
 
 
   //! LU factorization using UmfPack in double complex precision
-  template<class Prop, class Storage,class Allocator>
+  template<class T0, class Prop, class Storage,class Allocator>
   void MatrixUmfPack<complex<double> >::
-  FactorizeMatrix(Matrix<complex<double>, Prop, Storage, Allocator> & mat,
+  FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 		  bool keep_matrix)
   {
     Clear();
@@ -323,15 +406,25 @@ namespace Seldon
 			&this->Symbolic, this->Control.GetData(),
 			this->Info.GetData());
 
-    int status
+    status_facto
       = umfpack_zi_numeric(ptr_, ind_, data_real_, data_imag_,
 			   this->Symbolic, &this->Numeric,
 			   this->Control.GetData(), this->Info.GetData());
 
-    if (this->display_info)
+    if (print_level > 1)
       {
-	umfpack_zi_report_status(this->Control.GetData(), status);
+	umfpack_zi_report_status(this->Control.GetData(), status_facto);
 	umfpack_zi_report_info(this->Control.GetData(), this->Info.GetData());
+      }
+
+    if (print_level > 0)
+      {
+	int size_mem = (this->Info(UMFPACK_SYMBOLIC_SIZE)
+			+ this->Info(UMFPACK_NUMERIC_SIZE_ESTIMATE))
+	  *this->Info(UMFPACK_SIZE_OF_UNIT);
+
+	cout << "Estimated memory used to store LU factors: "
+	     << double(size_mem)/(1024*1024) << " MB" << endl;
       }
   }
 
@@ -340,6 +433,16 @@ namespace Seldon
   template<class Allocator2>
   void MatrixUmfPack<complex<double> >::
   Solve(Vector<complex<double>, VectFull, Allocator2>& x)
+  {
+    Solve(SeldonNoTrans, x);
+  }
+
+
+  //! Solves linear system in complex double precision using UmfPack.
+  template<class StatusTrans, class Allocator2>
+  void MatrixUmfPack<complex<double> >::
+  Solve(const StatusTrans& TransA,
+	Vector<complex<double>, VectFull, Allocator2>& x)
   {
     int m = x.GetM();
     // creation of vectors
@@ -353,8 +456,13 @@ namespace Seldon
     Vector<double> x_real(m), x_imag(m);
     x_real.Zero();
     x_imag.Zero();
+
+    int sys = UMFPACK_A;
+    if (TransA.Trans())
+      sys = UMFPACK_Aat;
+
     int status
-      = umfpack_zi_solve(UMFPACK_A, ptr_, ind_, data_real_, data_imag_,
+      = umfpack_zi_solve(sys, ptr_, ind_, data_real_, data_imag_,
 			 x_real.GetData(), x_imag.GetData(),
 			 b_real.GetData(), b_imag.GetData(),
 			 this->Numeric,
@@ -365,21 +473,55 @@ namespace Seldon
     for (int i = 0; i < m; i++)
       x(i) = complex<double>(x_real(i), x_imag(i));
 
-    if (this->display_info)
+    if (print_level > 1)
       umfpack_zi_report_status(this->Control.GetData(), status);
   }
 
-
-  //! LU factorization
-  template<class T, class Prop, class Storage, class Allocator>
-  void GetLU(Matrix<T, Prop, Storage, Allocator>& A, MatrixUmfPack<T>& mat_lu,
-	     bool keep_matrix = false)
+  
+  //! Factorization of a matrix of same type T as for the UmfPack object 
+  template<class MatrixSparse, class T>
+  void GetLU(MatrixSparse& A, MatrixUmfPack<T>& mat_lu, bool keep_matrix, T& x)
   {
     mat_lu.FactorizeMatrix(A, keep_matrix);
   }
+  
+  
+  //! Factorization of a complex matrix with a real UmfPack object
+  template<class MatrixSparse, class T>
+  void GetLU(MatrixSparse& A, MatrixUmfPack<T>& mat_lu,
+             bool keep_matrix, complex<T>& x)
+  {
+    throw WrongArgument("GetLU(Matrix<complex<T> >& A, MatrixUmfPack<T>& mat_lu, bool)",
+			"The LU matrix must be complex");
+  }
 
 
-  //! LU resolution
+  //! Factorization of a real matrix with a complex UmfPack object
+  template<class MatrixSparse, class T>
+  void GetLU(MatrixSparse& A, MatrixUmfPack<complex<T> >& mat_lu,
+             bool keep_matrix, T& x)
+  {
+    throw WrongArgument("GetLU(Matrix<T>& A, MatrixUmfPack<complex<T> >& mat_lu, bool)",
+			"The sparse matrix must be complex");
+  }
+  
+  
+  //! Factorization of a general matrix with UmfPack
+  template<class T0, class Prop, class Storage, class Allocator, class T>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A, MatrixUmfPack<T>& mat_lu,
+	     bool keep_matrix)
+  {
+    // we check if the type of non-zero entries of matrix A
+    // and of the UmfPack object (T) are different
+    // we call one of the GetLUs written above
+    // such a protection avoids to compile the factorisation of a complex
+    // matrix with a real UmfPack object
+    typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;
+    GetLU(A, mat_lu, keep_matrix, x);
+  }
+  
+  
+  //! LU resolution with a vector whose type is the same as for UmfPack object
   template<class T, class Allocator>
   void SolveLU(MatrixUmfPack<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
@@ -387,15 +529,107 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a vector whose type is the same as for UmfPack object
+  //! Solves transpose system A^T x = b or A x = b depending on TransA
   template<class T, class Allocator>
   void SolveLU(const SeldonTranspose& TransA,
                MatrixUmfPack<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
-    if (!TransA.NoTrans())
-      throw
-        WrongArgument("SolveLU(SeldonTranspose&, MatrixUmfPack&, Vector&)",
-                      "Only non-transposed matrices are supported.");
-    mat_lu.Solve(x);
+    mat_lu.Solve(TransA, x);
+  }
+
+
+  //! LU resolution with a matrix whose type is the same as for UmfPack object
+  template<class T, class Prop, class Allocator>
+  void SolveLU(MatrixUmfPack<T>& mat_lu,
+               Matrix<T, Prop, ColMajor, Allocator>& x)
+  {
+    Vector<T> v;
+    for (int i = 0; i < x.GetN(); i++)
+      {
+	v.SetData(x.GetM(), &x(0, i));
+	mat_lu.Solve(v);
+	v.Nullify();
+      }
+  }
+
+
+  //! LU resolution with a matrix whose type is the same as for UmfPack object
+  //! Solves transpose system A^T x = b or A x = b depending on TransA
+  template<class T, class Prop, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixUmfPack<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
+  {
+    Vector<T> v;
+    for (int i = 0; i < x.GetN(); i++)
+      {
+	v.SetData(x.GetM(), &x(0, i));
+	mat_lu.Solve(TransA, v);
+	v.Nullify();
+      }
+  }
+  
+  
+  //! Solves A x = b, where A is real and x is complex
+  template<class Allocator>
+  void SolveLU(MatrixUmfPack<double>& mat_lu,
+               Vector<complex<double>, VectFull, Allocator>& x)
+  {
+    Matrix<double, General, ColMajor> y(x.GetM(), 2);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      {
+	y(i, 0) = real(x(i));
+	y(i, 1) = imag(x(i));
+      }
+    
+    SolveLU(mat_lu, y);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      x(i) = complex<double>(y(i, 0), y(i, 1));
+  }
+  
+
+  //! Solves A x = b or A^T x = b, where A is real and x is complex
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixUmfPack<double>& mat_lu,
+               Vector<complex<double>, VectFull, Allocator>& x)
+  {
+    Matrix<double, General, ColMajor> y(x.GetM(), 2);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      {
+	y(i, 0) = real(x(i));
+	y(i, 1) = imag(x(i));
+      }
+    
+    SolveLU(TransA, mat_lu, y);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      x(i) = complex<double>(y(i, 0), y(i, 1));
+
+  }
+
+  
+  //! Solves A x = b, where A is complex and x is real => Forbidden
+  template<class Allocator>
+  void SolveLU(MatrixUmfPack<complex<double> >& mat_lu,
+               Vector<double, VectFull, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
+			"The result should be a complex vector");
+  }
+
+
+  //! Solves A x = b or A^T x = b, where A is complex and x is real => Forbidden  
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixUmfPack<complex<double> >& mat_lu,
+               Vector<double, VectFull, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
+			"The result should be a complex vector");
   }
 
 }

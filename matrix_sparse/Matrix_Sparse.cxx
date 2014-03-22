@@ -1,5 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
-// Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -26,6 +26,17 @@
 
 #include <set>
 
+/*
+  Functions defined in this file:
+
+  reads coordinate form (i, j, val) from an input stream
+  ReadCoordinateMatrix(FileStream, row_index, col_index, values, cplx)
+  
+  writes coordinate form (i, j, val) in an input stream
+  WriteCoordinateMatrix(FileStream, row_index, col_index, values, cplx)
+
+  These functions are used by ReadText/WriteText
+*/
 
 namespace Seldon
 {
@@ -59,11 +70,13 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_Sparse<T, Prop, Storage, Allocator>::Matrix_Sparse(int i,
 								   int j):
-    Matrix_Base<T, Allocator>(i, j)
+    Matrix_Base<T, Allocator>()
   {
     nz_ = 0;
     ptr_ = NULL;
     ind_ = NULL;
+
+    Reallocate(i, j);
   }
 
 
@@ -78,149 +91,13 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_Sparse<T, Prop, Storage, Allocator>::
   Matrix_Sparse(int i, int j, int nz):
-    Matrix_Base<T, Allocator>(i, j)
+    Matrix_Base<T, Allocator>()
   {
+    this->nz_ = 0;
+    ind_ = NULL;
+    ptr_ = NULL;
 
-    this->nz_ = nz;
-
-#ifdef SELDON_CHECK_DIMENSIONS
-    if (nz_ < 0)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-	throw WrongDim("Matrix_Sparse::Matrix_Sparse(int, int, int)",
-		       "Invalid number of non-zero elements: " + to_str(nz)
-                       + ".");
-      }
-    if (nz_ > 0
-        && (j == 0
-            || static_cast<long int>(nz_-1) / static_cast<long int>(j)
-            >= static_cast<long int>(i)))
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-	throw WrongDim("Matrix_Sparse::Matrix_Sparse(int, int, int)",
-		       string("There are more values (") + to_str(nz)
-		       + " values) than elements in the matrix ("
-		       + to_str(i) + " by " + to_str(j) + ").");
-      }
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
-					      sizeof(int)) );
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-      }
-    if (ptr_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ind_ = NULL;
-	this->data_ = NULL;
-      }
-    if (ptr_ == NULL && i != 0 && j != 0)
-      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
-		     string("Unable to allocate ")
-		     + to_str(sizeof(int) * (Storage::GetFirst(i, j)+1) )
-		     + " bytes to store " + to_str(Storage::GetFirst(i, j)+1)
-		     + " row or column start indices, for a "
-		     + to_str(i) + " by " + to_str(j) + " matrix.");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	free(ptr_);
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-      }
-    if (ind_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	free(ptr_);
-	ptr_ = NULL;
-	this->data_ = NULL;
-      }
-    if (ind_ == NULL && i != 0 && j != 0)
-      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
-		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
-		     + " bytes to store " + to_str(nz)
-		     + " row or column indices, for a "
-		     + to_str(i) + " by " + to_str(j) + " matrix.");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	this->data_ = this->allocator_.allocate(nz_, this);
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	free(ptr_);
-	ptr_ = NULL;
-	free(ind_);
-	ind_ = NULL;
-	this->data_ = NULL;
-      }
-    if (this->data_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	free(ptr_);
-	ptr_ = NULL;
-	free(ind_);
-	ind_ = NULL;
-      }
-    if (this->data_ == NULL && i != 0 && j != 0)
-      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
-		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
-		     + " bytes to store " + to_str(nz) + " values, for a "
-		     + to_str(i) + " by " + to_str(j) + " matrix.");
-#endif
-
+    Reallocate(i, j, nz);
   }
 
 
@@ -318,7 +195,8 @@ namespace Seldon
   //! Copy constructor
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_Sparse<T, Prop, Storage, Allocator>::
-  Matrix_Sparse(const Matrix_Sparse<T, Prop, Storage, Allocator>& A)
+  Matrix_Sparse(const Matrix_Sparse<T, Prop, Storage, Allocator>& A):
+    Matrix_Base<T, Allocator>(A)
   {
     this->m_ = 0;
     this->n_ = 0;
@@ -562,6 +440,376 @@ namespace Seldon
   }
 
 
+  //! Initialization of an empty sparse matrix with i rows and j columns
+  /*!
+    \param i number of rows
+    \param j number of columns
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::Reallocate(int i, int j)
+  {
+    // clearing previous entries
+    Clear();
+
+    this->m_ = i;
+    this->n_ = j;
+
+    // we try to allocate ptr_
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
+					      sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL && i != 0 && j != 0)
+      throw NoMemory("Matrix_Sparse::Reallocate(int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * (Storage::GetFirst(i, j)+1) )
+		     + " bytes to store " + to_str(Storage::GetFirst(i, j)+1)
+		     + " row or column start indices, for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+    // then filing ptr_ with 0
+    for (int k = 0; k <= Storage::GetFirst(i, j); k++)
+      ptr_[k] = 0;
+
+  }
+
+
+  //! Initialization of a sparse matrix with i rows and j columns
+  /*!
+    \param i number of rows
+    \param j number of columns
+    \param nz number of non-zero entries
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::Reallocate(int i, int j, int nz)
+  {
+    // clearing previous entries
+    Clear();
+
+    this->nz_ = nz;
+    this->m_ = i;
+    this->n_ = j;
+    
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (nz_ < 0)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		       "Invalid number of non-zero elements: " + to_str(nz)
+                       + ".");
+      }
+    if (nz_ > 0
+        && (j == 0
+            || static_cast<long int>(nz_-1) / static_cast<long int>(j)
+            >= static_cast<long int>(i)))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		       string("There are more values (") + to_str(nz)
+		       + " values) than elements in the matrix ("
+		       + to_str(i) + " by " + to_str(j) + ").");
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
+					      sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ptr_ == NULL && i != 0 && j != 0)
+      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		     string("Unable to allocate ")
+		     + to_str(sizeof(int) * (Storage::GetFirst(i, j)+1) )
+		     + " bytes to store " + to_str(Storage::GetFirst(i, j)+1)
+		     + " row or column start indices, for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ind_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	this->data_ = NULL;
+      }
+    if (ind_ == NULL && i != 0 && j != 0)
+      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
+		     + " bytes to store " + to_str(nz)
+		     + " row or column indices, for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	this->data_ = this->allocator_.allocate(nz_, this);
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	free(ind_);
+	ind_ = NULL;
+	this->data_ = NULL;
+      }
+    if (this->data_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	free(ptr_);
+	ptr_ = NULL;
+	free(ind_);
+	ind_ = NULL;
+      }
+    if (this->data_ == NULL && i != 0 && j != 0)
+      throw NoMemory("Matrix_Sparse::Matrix_Sparse(int, int, int)",
+		     string("Unable to allocate ") + to_str(sizeof(int) * nz)
+		     + " bytes to store " + to_str(nz) + " values, for a "
+		     + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+  }
+
+
+  //! Reallocates memory to resize the matrix and keeps previous entries.
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::Resize(int i, int j)
+  {
+    if (Storage::GetFirst(i, j) < Storage::GetFirst(this->m_, this->n_))
+      Resize(i, j, ptr_[Storage::GetFirst(i, j)]);
+    else
+      Resize(i, j, nz_);
+  }
+   
+
+  //! Reallocates memory to resize the matrix and keeps previous entries.
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+    \param nz number of non-zero elements.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::Resize(int i, int j, int nz)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (nz < 0)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim("Matrix_Sparse::Resize(int, int, int)",
+		       "Invalid number of non-zero elements: " + to_str(nz)
+                       + ".");
+      }
+    if (nz > 0
+        && (j == 0
+            || static_cast<long int>(nz_-1) / static_cast<long int>(j)
+            >= static_cast<long int>(i)))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim("Matrix_Sparse::Resize(int, int, int)",
+		       string("There are more values (") + to_str(nz)
+		       + " values) than elements in the matrix ("
+		       + to_str(i) + " by " + to_str(j) + ").");
+      }
+#endif
+
+    if (nz != nz_)
+      {
+        // trying to resize ind_ and data_
+#ifdef SELDON_CHECK_MEMORY
+        try
+          {
+#endif
+            ind_
+              = reinterpret_cast<int*>(realloc(reinterpret_cast<void*>(ind_),
+                                               nz*sizeof(int)));
+
+#ifdef SELDON_CHECK_MEMORY
+          }
+        catch (...)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            nz_ = 0;
+            free(ptr_);
+            ptr_ = NULL;
+            ind_ = NULL;
+            this->data_ = NULL;
+          }
+        if (ind_ == NULL)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            nz_ = 0;
+            free(ptr_);
+            ptr_ = NULL;
+            this->data_ = NULL;
+          }
+        if (ind_ == NULL && i != 0 && j != 0)
+          throw NoMemory("Matrix_Sparse::Resize(int, int, int)",
+                         string("Unable to allocate ") + to_str(sizeof(int) * nz)
+                         + " bytes to store " + to_str(nz)
+                         + " row or column indices, for a "
+                         + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+        Vector<T, VectFull, Allocator> val;
+        val.SetData(nz_, this->data_);
+        val.Resize(nz);
+
+        this->data_ = val.GetData();
+        nz_ = nz;
+        val.Nullify();
+      }
+
+    if (Storage::GetFirst(this->m_, this->n_) != Storage::GetFirst(i, j))
+      {
+#ifdef SELDON_CHECK_MEMORY
+        try
+          {
+#endif
+            // trying to resize ptr_
+            ptr_ = reinterpret_cast<int*>( realloc(ptr_, (Storage::GetFirst(i, j)+1)*
+                                                   sizeof(int)) );
+
+#ifdef SELDON_CHECK_MEMORY
+          }
+        catch (...)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            nz_ = 0;
+            ptr_ = NULL;
+            ind_ = NULL;
+            this->data_ = NULL;
+          }
+        if (ptr_ == NULL)
+          {
+            this->m_ = 0;
+            this->n_ = 0;
+            nz_ = 0;
+            ind_ = NULL;
+            this->data_ = NULL;
+          }
+        if (ptr_ == NULL && i != 0 && j != 0)
+          throw NoMemory("Matrix_Sparse::Resize(int, int)",
+                         string("Unable to allocate ")
+                         + to_str(sizeof(int) * (Storage::GetFirst(i, j)+1) )
+                         + " bytes to store " + to_str(Storage::GetFirst(i, j)+1)
+                         + " row or column start indices, for a "
+                         + to_str(i) + " by " + to_str(j) + " matrix.");
+#endif
+
+        // then filing last values of ptr_ with nz_
+        for (int k = Storage::GetFirst(this->m_, this->n_);
+             k <= Storage::GetFirst(i, j); k++)
+          ptr_[k] = this->nz_;
+      }
+
+    this->m_ = i;
+    this->n_ = j;
+  }
+
+
   //! Copies a matrix
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_Sparse<T, Prop, Storage, Allocator>::
@@ -743,6 +991,17 @@ namespace Seldon
   }
 
 
+  //! returns size of A in bytes used to store the matrix
+  template<class T, class Prop, class Storage, class Allocator>
+  int64_t Matrix_Sparse<T, Prop, Storage, Allocator>::GetMemorySize() const
+  {
+    int64_t taille = this->GetPtrSize()*sizeof(int);
+    int coef = sizeof(T) + sizeof(int); // for each non-zero entry
+    taille += coef*int64_t(this->nz_);
+    return taille;
+  }
+  
+
   //! Returns (row or column) start indices.
   /*!
     Returns the array ('ptr_') of start indices.
@@ -810,7 +1069,7 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type
+  inline const typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type
   Matrix_Sparse<T, Prop, Storage, Allocator>::operator() (int i, int j) const
   {
 
@@ -827,12 +1086,14 @@ namespace Seldon
 
     int k,l;
     int a,b;
-
+    T zero;
+    SetComplexZero(zero);
+    
     a = ptr_[Storage::GetFirst(i, j)];
     b = ptr_[Storage::GetFirst(i, j) + 1];
 
     if (a == b)
-      return T(0);
+      return zero;
 
     l = Storage::GetSecond(i, j);
 
@@ -841,7 +1102,7 @@ namespace Seldon
     if (ind_[k] == l)
       return this->data_[k];
     else
-      return T(0);
+      return zero;
   }
 
 
@@ -947,10 +1208,89 @@ namespace Seldon
                           + ") can be returned: it is a zero entry.");
   }
 
+  
+  //! Access method.
+  /*! Returns reference to element (\a i, \a j) 
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+    If the element does not belong to sparsity pattern of the matrix,
+    the matrix is resized.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type&
+  Matrix_Sparse<T, Prop, Storage, Allocator>::Get(int i, int j)
+  {
 
+#ifdef SELDON_CHECK_BOUNDS
+    if (i < 0 || i >= this->m_)
+      throw WrongRow("Matrix_Sparse::Get(int, int)",
+		     string("Index should be in [0, ") + to_str(this->m_-1)
+		     + "], but is equal to " + to_str(i) + ".");
+    if (j < 0 || j >= this->n_)
+      throw WrongCol("Matrix_Sparse::Get(int, int)",
+		     string("Index should be in [0, ") + to_str(this->n_-1)
+		     + "], but is equal to " + to_str(j) + ".");
+#endif
+
+    int k, l;
+    int a, b;
+
+    a = ptr_[Storage::GetFirst(i, j)];
+    b = ptr_[Storage::GetFirst(i, j) + 1];
+
+    if (a < b)
+      {
+        l = Storage::GetSecond(i, j);
+        
+        for (k = a; (k < b) && (ind_[k] < l); k++);
+
+        if ( (k < b) && (ind_[k] == l))
+          return this->data_[k];
+      }
+    else
+      k = a;
+    
+    // adding a non-zero entry
+    Resize(this->m_, this->n_, nz_+1);
+    
+    for (int m = Storage::GetFirst(i, j)+1;
+         m <= Storage::GetFirst(this->m_, this->n_); m++)
+      ptr_[m]++;
+    
+    for (int m = nz_-1; m >= k+1; m--)
+      {
+        ind_[m] = ind_[m-1];
+        this->data_[m] = this->data_[m-1];
+      }
+    
+    ind_[k] = Storage::GetSecond(i, j);
+
+    // value of new non-zero entry is set to 0
+    SetComplexZero(this->data_[k]);
+    
+    return this->data_[k];
+  }
+  
+  
+  //! Access method.
+  /*! Returns reference to element (\a i, \a j) 
+    \param[in] i row index.
+    \param[in] j column index.
+    \return Element (\a i, \a j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline const typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type&
+  Matrix_Sparse<T, Prop, Storage, Allocator>::Get(int i, int j) const
+  {
+    return Val(i, j);
+  }
+  
+  
   //! Add a value to a non-zero entry.
-  /*! This function adds \a val to the element (\a i, \a j), providing that
-    this element is already a non-zero entry.
+  /*! This function adds \a val to the element (\a i, \a j), provided that
+    this element is already a non-zero entry. Otherwise 
+    a non-zero entry is inserted equal to \a val.
     \param[in] i row index.
     \param[in] j column index.
     \param[in] val value to be added to the element (\a i, \a j).
@@ -959,10 +1299,24 @@ namespace Seldon
   inline void Matrix_Sparse<T, Prop, Storage, Allocator>
   ::AddInteraction(int i, int j, const T& val)
   {
-    Val(i, j) += val;
+    Get(i, j) += val;
   }
 
+  
+  //! Sets an element (i, j) to a value
+  /*! This function sets \a val to the element (\a i, \a j)
+    \param[in] i row index.
+    \param[in] j column index.
+    \param[in] val A(i, j) = val
+  */  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const T& val)
+  {
+    Get(i, j) = val;
+  }
 
+  
   //! Duplicates a matrix (assignment operator).
   /*!
     \param A matrix to be copied.
@@ -1015,7 +1369,8 @@ namespace Seldon
     Vector<int, VectFull, CallocAlloc<int> > ptr(Storage::GetFirst(m, n) + 1);
     Vector<int, VectFull, CallocAlloc<int> > ind(nz);
 
-    values.Fill(T(1));
+    T one; SetComplexOne(one);
+    values.Fill(one);
     ind.Fill();
     int i;
     for (i = 0; i < nz + 1; i++)
@@ -1035,7 +1390,7 @@ namespace Seldon
   void Matrix_Sparse<T, Prop, Storage, Allocator>::Fill()
   {
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = i;
+      SetComplexReal(i, this->data_[i]);
   }
 
 
@@ -1047,8 +1402,10 @@ namespace Seldon
   template <class T0>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::Fill(const T0& x)
   {
+    T x_;
+    SetComplexReal(x, x_);
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = x;
+      this->data_[i] = x_;
   }
 
 
@@ -1059,12 +1416,100 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = rand();
+      SetComplexReal(rand(), this->data_[i]);
+  }
+
+  
+  //! Fills the matrix with random elements.
+  /*! The matrix is cleared and then filled with \a n random elements. Both
+    the position of the elements and their values are randomly generated. On
+    exit, the matrix may not have \a n non-zero elements: it is possible that
+    the randomly-generated positions of two elements are the same.
+    \param[in] Nelement the number of random elements to be inserted in the
+    matrix.
+    \note The random generator is very basic.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::FillRand(int Nelement)
+  {
+    if (this->m_ == 0 || this->n_ == 0)
+      return;
+    
+    Vector<int> i(Nelement), j(Nelement);
+    Vector<T> value(Nelement);
+
+    set<pair<int, int> > skeleton;
+    set<pair<int, int> >::iterator it;
+
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
+    srand(time(NULL));
+#endif
+    
+    // generation of triplet (i, j, value)
+    while (static_cast<int>(skeleton.size()) != Nelement)
+      skeleton.insert(make_pair(rand() % this->m_, rand() % this->n_));
+
+    int l = 0;
+    for (it = skeleton.begin(); it != skeleton.end(); it++)
+      {
+	i(l) = it->first;
+	j(l) = it->second;
+        SetComplexReal(rand(), value(l));
+	l++;
+      }
+    
+    // then conversion to current sparse matrix
+    Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
+    
+    ConvertMatrix_from_Coordinates(i, j, value, leaf_class, 0);
   }
 
 
+  //! Fills the matrix with one value inserted at random positions.
+  /*! The matrix is cleared and then filled with \a n random elements. Only
+    the position of the elements is randomly generated. Their value will
+    always be \a x. On exit, the matrix may not have \a n non-zero elements:
+    it is possible that the randomly-generated positions of two elements are
+    the same.
+    \param[in] Nelement the number of random elements to be inserted in the
+    matrix.
+    \param[in] x the value to be inserted.
+    \note The random generator is very basic.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::FillRand(int Nelement, const T& x)
+  {
+    if (this->m_ == 0 || this->n_ == 0)
+      return;
+
+    Vector<int> i(Nelement), j(Nelement);
+    Vector<T> value(Nelement);
+    value.Fill(x);
+
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
+    srand(time(NULL));
+#endif
+    
+    for (int l = 0; l < Nelement; l++)
+      {
+        i(l) = rand() % this->m_;
+        j(l) = rand() % this->n_;
+      }
+
+    Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
+
+    ConvertMatrix_from_Coordinates(i, j, value, leaf_class, 0);
+  }
+  
+  
   //! Displays the matrix on the standard output.
   /*!
     Displays elements on the standard output, in text format.
@@ -1085,26 +1530,24 @@ namespace Seldon
 
   //! Writes the matrix in a file.
   /*!
-    Stores the matrix in a file in ascii format.
-    The entries are written in coordinate format (row column value)
-    1-index convention is used
+    Stores the matrix in a file in binary format.
     \param FileName output file name.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Sparse<T, Prop, Storage, Allocator>::
-  WriteText(string FileName) const
+  void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::Write(string FileName) const
   {
-    ofstream FileStream; FileStream.precision(14);
-    FileStream.open(FileName.c_str());
+    ofstream FileStream;
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
     if (!FileStream.is_open())
-      throw IOError("Matrix_ArraySparse::Write(string FileName)",
+      throw IOError("Matrix_Sparse::Write(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    this->WriteText(FileStream);
+    this->Write(FileStream);
 
     FileStream.close();
   }
@@ -1112,37 +1555,211 @@ namespace Seldon
 
   //! Writes the matrix to an output stream.
   /*!
+    Stores the matrix in an output stream in binary format.
+    \param FileStream output stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>
+  ::Write(ostream& FileStream) const
+  {
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_Sparse::Write(ofstream& FileStream)",
+		    "Stream is not ready.");
+#endif
+
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
+		     sizeof(int));
+    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->nz_)),
+		     sizeof(int));
+
+    FileStream.write(reinterpret_cast<char*>(this->ptr_),
+		     sizeof(int)*(Storage::GetFirst(this->m_, this->n_)+1));
+    FileStream.write(reinterpret_cast<char*>(this->ind_),
+		     sizeof(int)*this->nz_);
+    FileStream.write(reinterpret_cast<char*>(this->data_),
+		     sizeof(T)*this->nz_);
+  }
+
+
+  //! Writes the matrix in a file.
+  /*!
     Stores the matrix in a file in ascii format.
     The entries are written in coordinate format (row column value)
     1-index convention is used
-    \param FileStream output file name.
+    \param FileName output file name.
+    \param cplx if true the real part and imaginary part are written
+          in two separate columns, otherwise the complex values
+          are written (a,b)
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::
-  WriteText(ostream& FileStream) const
+  WriteText(string FileName, bool cplx) const
+  {
+    ofstream FileStream; FileStream.precision(14);
+    FileStream.open(FileName.c_str());
+
+    // changing precision
+    FileStream.precision(cout.precision());
+    
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_Sparse::Write(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->WriteText(FileStream, cplx);
+
+    FileStream.close();
+  }
+
+  
+  //! Writes the matrix to an output stream.
+  /*!
+    Stores the matrix in a file in ascii format.
+    The entries are written in coordinate format (row column value)
+    1-index convention is used
+    \param FileStream output stream.
+    \param cplx if true the real part and imaginary part are given
+          in two separate columns, otherwise the complex values
+          are written (a,b)
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::
+  WriteText(ostream& FileStream, bool cplx) const
   {
 
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
-      throw IOError("Matrix_ArraySparse::Write(ofstream& FileStream)",
+      throw IOError("Matrix_Sparse::Write(ofstream& FileStream)",
 		    "Stream is not ready.");
 #endif
 
-    // conversion in coordinate format (1-index convention)
-    IVect IndRow, IndCol; Vector<T> Value;
+    // conversion in coordinate format (1-index convention)    
     const Matrix<T, Prop, Storage, Allocator>& leaf_class =
       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this);
+    
+    T zero; int index = 1;
+    WriteCoordinateMatrix(leaf_class, FileStream, zero, index, cplx);
+  }
+  
+  
+  //! Reads the matrix from a file.
+  /*!
+    Reads a matrix stored in binary format in a file.
+    \param FileName input file name.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::
+  Read(string FileName)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
-    ConvertMatrix_to_Coordinates(leaf_class, IndRow, IndCol,
-				 Value, 1, true);
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_Sparse::Read(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
 
-    for (int i = 0; i < IndRow.GetM(); i++)
-      FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
+    this->Read(FileStream);
 
+    FileStream.close();
   }
 
 
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix in binary format from an input stream.
+    \param FileStream input stream
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::
+  Read(istream& FileStream)
+  {
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("Matrix_Sparse::Read(istream& FileStream)",
+		    "Stream is not ready.");
+#endif
+    
+    int m, n, nz;
+    FileStream.read(reinterpret_cast<char*>(&m), sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(&n), sizeof(int));
+    FileStream.read(reinterpret_cast<char*>(&nz), sizeof(int));
+    
+    Reallocate(m, n, nz);
+
+    FileStream.read(reinterpret_cast<char*>(ptr_),
+                    sizeof(int)*(Storage::GetFirst(m, n)+1));
+    FileStream.read(reinterpret_cast<char*>(ind_), sizeof(int)*nz);
+    FileStream.read(reinterpret_cast<char*>(this->data_), sizeof(T)*nz);
+    
+#ifdef SELDON_CHECK_IO
+    // Checks if data was read.
+    if (!FileStream.good())
+      throw IOError("Matrix_Sparse::Read(istream& FileStream)",
+                    string("Input operation failed.")
+		    + string(" The input file may have been removed")
+		    + " or may not contain enough data.");
+#endif
+
+  }
+
+  
+  //! Reads the matrix from a file.
+  /*!
+    Reads the matrix from a file in text format.
+    \param FileName input file name.
+    \param cplx if true the real part and imaginary part are given
+          in two separate columns, otherwise the complex values
+          are written (a,b)
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::
+  ReadText(string FileName, bool cplx)
+  {
+    ifstream FileStream;
+    FileStream.open(FileName.c_str());
+
+#ifdef SELDON_CHECK_IO
+    // Checks if the file was opened.
+    if (!FileStream.is_open())
+      throw IOError("Matrix_Sparse::ReadText(string FileName)",
+		    string("Unable to open file \"") + FileName + "\".");
+#endif
+
+    this->ReadText(FileStream, cplx);
+
+    FileStream.close();
+  }
+
+
+  //! Reads the matrix from an input stream.
+  /*!
+    Reads a matrix from a stream in text format.
+    \param FileStream input stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::
+  ReadText(istream& FileStream, bool cplx)
+  {
+    Matrix<T, Prop, Storage, Allocator>& leaf_class =
+      static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
+    
+    T zero; int index = 1;
+    ReadCoordinateMatrix(leaf_class, FileStream, zero, index, -1, cplx);
+  }
+
+  
   ///////////////////////
   // MATRIX<COLSPARSE> //
   ///////////////////////
@@ -1157,7 +1774,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColSparse, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, ColSparse, Allocator>::Matrix():
     Matrix_Sparse<T, Prop, ColSparse, Allocator>()
   {
   }
@@ -1230,7 +1847,7 @@ namespace Seldon
     Builds an empty 0x0 matrix.
   */
   template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowSparse, Allocator>::Matrix()  throw():
+  Matrix<T, Prop, RowSparse, Allocator>::Matrix():
     Matrix_Sparse<T, Prop, RowSparse, Allocator>()
   {
   }
@@ -1288,77 +1905,236 @@ namespace Seldon
   }
 
 
-  //! Fills the matrix with random elements.
-  /*! The matrix is cleared and then filled with \a n random elements. Both
-    the position of the elements and their values are randomly generated. On
-    exit, the matrix may not have \a n non-zero elements: it is possible that
-    the randomly-generated positions of two elements are the same.
-    \param[in] Nelement the number of random elements to be inserted in the
-    matrix.
-    \note The random generator is very basic.
-  */
-  template <class T, class Prop, class Allocator>
-  void Matrix<T, Prop, RowSparse, Allocator>::FillRand(int Nelement)
+  //////////////////////////
+  // ReadCoordinateMatrix //
+  //////////////////////////
+  
+  
+  //! reads a real or complex value in a file
+  template<class T>
+  void ReadComplexValue(istream& FileStream, T& entry)
   {
-    if (this->m_ == 0 || this->n_ == 0)
-      return;
+    FileStream >> entry;
+  }
+  
+  
+  //! reads a real or complex value in a file
+  template<class T>
+  void ReadComplexValue(istream& FileStream, complex<T>& entry)
+  {
+    T a, b;
+    FileStream >> a >> b;
+    entry = complex<T>(a, b);
+  }
+  
 
-    Vector<int> i(Nelement), j(Nelement);
-    Vector<T> value(Nelement);
+  //! reads a real or complex value in a file
+  template<class T>
+  void WriteComplexValue(ostream& FileStream, const T& entry)
+  {
+    FileStream << entry;
+  }
+  
+  
+  //! reads a real or complex value in a file
+  template<class T>
+  void WriteComplexValue(ostream& FileStream, const complex<T>& entry)
+  {
+    FileStream << real(entry) << " " << imag(entry);
+  }
+  
+  
+  //! Reading of matrix in coordinate format
+  /*!
+    \param FileStream stream where the matrix is read
+    \param row_numbers row indices
+    \param col_numbers column indices
+    \param values
+    \param cplx if true, imaginary and real part are in
+                two separate columns
+   */  
+  template<class Tint, class AllocInt, class T, class Allocator>
+  void ReadCoordinateMatrix(istream& FileStream,
+                            Vector<Tint, VectFull, AllocInt>& row_numbers,
+                            Vector<Tint, VectFull, AllocInt>& col_numbers,
+                            Vector<T, VectFull, Allocator>& values,
+                            bool cplx)
+  {
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("ReadCoordinateMatrix", "Stream is not ready.");
+#endif
 
-    set<pair<int, int> > skeleton;
-    set<pair<int, int> >::iterator it;
+    T entry; int row = 0, col = 0;
+    int nb_elt = 0;
+    SetComplexZero(entry);
 
-    srand(time(NULL));
-
-    while (static_cast<int>(skeleton.size()) != Nelement)
-      skeleton.insert(make_pair(rand() % this->m_, rand() % this->n_));
-
-    int l = 0;
-    for (it = skeleton.begin(); it != skeleton.end(); it++)
+    while (!FileStream.eof())
       {
-	i(l) = it->first;
-	j(l) = it->second;
-	value(l) = double(rand());
-	l++;
-      }
+	// new entry is read (1-index)
+	FileStream >> row >> col;
+        if (cplx)
+          ReadComplexValue(FileStream, entry);
+        else
+          FileStream >> entry;
+        
+	if (FileStream.fail())
+	  break;
+	else
+	  {
+#ifdef SELDON_CHECK_IO
+	    if (row < 1)
+	      throw IOError(string("ReadCoordinateMatrix"),
+			    string("Error : Row number should be greater ")
+			    + "than 0 but is equal to " + to_str(row));
 
-    ConvertMatrix_from_Coordinates(i, j, value, *this);
+	    if (col < 1)
+	      throw IOError(string("ReadCoordinateMatrix"),
+			    string("Error : Column number should be greater")
+			    + " than 0 but is equal to " + to_str(col));
+#endif
+
+	    nb_elt++;
+
+	    // inserting new element
+	    if (nb_elt > values.GetM())
+	      {
+		values.Resize(2*nb_elt);
+		row_numbers.Resize(2*nb_elt);
+		col_numbers.Resize(2*nb_elt);
+	      }
+
+	    values(nb_elt-1) = entry;
+	    row_numbers(nb_elt-1) = row;
+	    col_numbers(nb_elt-1) = col;
+	  }
+      }
+    
+    if (nb_elt > 0)
+      {
+	row_numbers.Resize(nb_elt);
+	col_numbers.Resize(nb_elt);
+	values.Resize(nb_elt);
+      }
+  }
+  
+
+  //! Reading of matrix in coordinate format
+  /*!
+    \param A output matrix
+    \param FileStream stream where the matrix is read
+    \param zero type of value to read (double or complex<double>)
+    \param index starting index (usually 0 or 1)
+    \param nnz number of non-zero entries
+    \param cplx if true, imaginary and real part are in
+                two separate columns
+    If nnz is equal to -1, we consider that the number of non-zero entries
+    is unknown and is deduced from the number of lines present in the stream
+   */
+  template<class Matrix1, class T>
+  void ReadCoordinateMatrix(Matrix1& A, istream& FileStream, T& zero,
+                            int index, int nnz, bool cplx)
+  {
+    // previous elements are removed
+    A.Clear();
+    
+    Vector<int> row_numbers, col_numbers;
+    Vector<T> values;
+    if (nnz >= 0)
+      {
+        values.Reallocate(nnz);
+        row_numbers.Reallocate(nnz);
+        col_numbers.Reallocate(nnz);
+      }
+    
+    ReadCoordinateMatrix(FileStream, row_numbers, col_numbers, values, cplx);
+    
+    if (row_numbers.GetM() > 0)
+      ConvertMatrix_from_Coordinates(row_numbers, col_numbers, values,
+                                     A, index);
+    
   }
 
 
-  //! Fills the matrix with one value inserted at random positions.
-  /*! The matrix is cleared and then filled with \a n random elements. Only
-    the position of the elements is randomly generated. Their value will
-    always be \a x. On exit, the matrix may not have \a n non-zero elements:
-    it is possible that the randomly-generated positions of two elements are
-    the same.
-    \param[in] Nelement the number of random elements to be inserted in the
-    matrix.
-    \param[in] x the value to be inserted.
-    \note The random generator is very basic.
-  */
-  template <class T, class Prop, class Allocator>
-  void Matrix<T, Prop, RowSparse, Allocator>
-  ::FillRand(int Nelement, const T& x)
+  //! Writes a matrix in coordinate format
+  /*!
+    \param FileStream stream where the matrix is read
+    \param row_numbers row indices
+    \param col_numbers column indices
+    \param values
+    \param cplx if true, imaginary and real part are written in
+                two separate columns
+   */    
+  template<class Tint, class AllocInt, class T, class Allocator>
+  void WriteCoordinateMatrix(ostream& FileStream,
+                             const Vector<Tint, VectFull, AllocInt>& row_numbers,
+                             const Vector<Tint, VectFull, AllocInt>& col_numbers,
+                             const Vector<T, VectFull, Allocator>& values,
+                             bool cplx)
   {
-    if (this->m_ == 0 || this->n_ == 0)
-      return;
-
-    Vector<int> i(Nelement), j(Nelement);
-    Vector<T> value(Nelement);
-    value.Fill(x);
-
-    srand(time(NULL));
-    for (int l = 0; l < Nelement; l++)
+    if (cplx)
       {
-        i(l) = rand() % this->m_;
-        j(l) = rand() % this->n_;
+        for (int i = 0; i < row_numbers.GetM(); i++)
+          {
+            FileStream << row_numbers(i) << " " << col_numbers(i) << " ";
+            WriteComplexValue(FileStream, values(i));
+            FileStream << '\n';    
+          }
       }
-
-    ConvertMatrix_from_Coordinates(i, j, value, *this);
+    else
+      {
+        for (int i = 0; i < row_numbers.GetM(); i++)
+          FileStream << row_numbers(i) << " " << col_numbers(i)
+                     << " " << values(i) << '\n';
+      }
   }
-
+  
+  
+  //! Writes matrix in coordinate format
+  /*!
+    \param A output matrix
+    \param FileStream stream where the matrix is read
+    \param zero type of value to read (double or complex<double>)
+    \param index starting index (usually 0 or 1)
+    \param cplx if true, imaginary and real part are in
+                two separate columns
+  */
+  template<class T0, class Prop0, class Storage0, class Alloc0, class T>
+  void WriteCoordinateMatrix(const Matrix<T0, Prop0, Storage0, Alloc0>& A,
+                             ostream& FileStream, T& zero,
+                             int index, bool cplx)
+  {
+    // conversion to coordinate format (if symmetric part, lower and upper part
+    // are recovered)
+    Vector<int, VectFull, CallocAlloc<int> > IndRow, IndCol;
+    Vector<T> Value;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol,
+                                 Value, index, true);
+    
+    WriteCoordinateMatrix(FileStream, IndRow, IndCol, Value, cplx);
+    
+    // if last element is not present, 0 is printed
+    int N = IndRow.GetM()-1;
+    if (N >= 0)
+      {
+        int m = A.GetM()-1, n = A.GetN()-1;
+        SetComplexZero(zero);
+        if ( (IndRow(N) != m+index) || (IndCol(N) != n+index))
+          {
+            if (A(m, n) == zero)
+              {
+                FileStream << m+index << " " << n+index << " ";
+                if (cplx)
+                  WriteComplexValue(FileStream, zero);
+                else
+                  FileStream << zero;
+                
+                FileStream << '\n';
+              }          
+          }
+      }
+  }
 
 } // namespace Seldon.
 

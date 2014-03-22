@@ -55,8 +55,6 @@ namespace Seldon
     Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator> mat_sym;
     //! Unsymmetric matrix.
     Matrix<cplx, General, ArrayRowSparse, Allocator> mat_unsym;
-    //! Temporary vector.
-    Vector<cplx, VectFull, Allocator> xtmp;
 
   public :
 
@@ -72,6 +70,7 @@ namespace Seldon
     int GetAdditionalFillNumber() const;
     int GetPrintLevel() const;
     int GetPivotBlockInteger() const;
+    int64_t GetMemorySize() const;
 
     void SetFactorisationType(int);
     void SetFillLevel(int);
@@ -119,7 +118,47 @@ namespace Seldon
     template<class Vector1>
     void Solve(Vector1& z);
 
+    template<class TransStatus, class Vector1>
+    void Solve(const TransStatus& transA, Vector1& z);
+
   };
+
+  template<class real, class cplx, class Storage, class Allocator>
+  void qsplit_ilut(Vector<cplx, Storage, Allocator>& a, IVect& ind, int first,
+                   int n, int ncut, const real& abs_ncut);
+
+  template<class real, class cplx, class Allocator1, class Allocator2>
+  void GetIlut(const IlutPreconditioning<real, cplx, Allocator1>& param,
+               Matrix<cplx, General, ArrayRowSparse, Allocator2>& A,
+               IVect& iperm, IVect& rperm);
+
+  template<class cplx, class Allocator>
+  void GetIluk(int lfil, Matrix<cplx, General, ArrayRowSparse, Allocator>& A);
+
+  template<class cplx, class Allocator>
+  void GetIlu0(Matrix<cplx, General, ArrayRowSparse, Allocator>& A);
+
+  template<class cplx, class Allocator>
+  void GetMilu0(Matrix<cplx, General, ArrayRowSparse, Allocator>& A);
+
+  template<class real, class cplx, class Allocator1, class Allocator2>
+  void GetIlut(const IlutPreconditioning<real, cplx, Allocator1>& param,
+               Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator2>& A);
+  
+  template<class cplx, class Allocator>
+  void GetIluk(int lfil, int print_level,
+               Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator>& A);
+  
+  template<class cplx, class Allocator>
+  void GetIlu0(Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator>& A);
+  
+  template<class cplx, class Allocator>
+  void GetMilu0(Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator>& A);
+  
+  template<class T0, class Prop, class Storage, class Allocator, class Treal, class T, class Alloc2>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A,
+	     IlutPreconditioning<Treal, T, Alloc2>& mat_lu, IVect& permut,
+	     bool keep_matrix = false);
 
 }
 

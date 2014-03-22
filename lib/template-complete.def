@@ -17,11 +17,9 @@
 // along with Seldon. If not, see http://www.gnu.org/licenses/.
 
 
-(define @storage = ColMajor, RowMajor, ColSparse, RowSparse, ColComplexSparse,
- RowComplexSparse, ColSymSparse, RowSymSparse, ColSymComplexSparse,
- RowSymComplexSparse, ArrayRowSparse, ArrayColSparse, ArrayRowSymSparse,
- ArrayColSymSparse, ArrayRowComplexSparse, ArrayRowSymComplexSparse,
- ArrayColComplexSparse, ArrayColSymComplexSparse, ColSymPacked, RowSymPacked,
+(define @storage = ColMajor, RowMajor, ColSparse, RowSparse, 
+ ColSymSparse, RowSymSparse, ArrayRowSparse, ArrayColSparse, ArrayRowSymSparse,
+ ArrayColSymSparse, ColSymPacked, RowSymPacked,
  ColSym, RowSym, ColHerm, RowHerm, ColHermPacked, RowHermPacked, ColUpTriang,
  ColLoTriang, RowUpTriang, RowLoTriang, ColUpTriangPacked, ColLoTriangPacked,
  RowUpTriangPacked, RowLoTriangPacked);
@@ -62,33 +60,33 @@
 (define @storage_blasGE = ColMajor, RowMajor);
 (define @storage_blasHE = ColHerm, RowHerm);
 (define @storage_blasHP = ColHermPacked, RowHermPacked);
+(define @storage_blasH = ColHerm, RowHerm, ColHermPacked, RowHermPacked);
 (define @storage_blasSY = ColSym, RowSym);
 (define @storage_blasSP = ColSymPacked, RowSymPacked);
+(define @storage_blasS = ColSym, RowSym, ColSymPacked, RowSymPacked);
 (define @storage_blasTR = ColUpTriang, ColLoTriang, RowUpTriang, RowLoTriang);
 (define @storage_blasTP = ColUpTriangPacked, ColLoTriangPacked,
+ RowUpTriangPacked, RowLoTriangPacked);
+(define @storage_blasTCol = ColUpTriang, ColLoTriang, ColUpTriangPacked, ColLoTriangPacked);
+(define @storage_blasTRow = RowUpTriang, RowLoTriang,
  RowUpTriangPacked, RowLoTriangPacked);
 (define @storage_blasT = ColUpTriang, ColLoTriang, RowUpTriang, RowLoTriang,
  ColUpTriangPacked, ColLoTriangPacked, RowUpTriangPacked, RowLoTriangPacked);
 
-(define @storage_sparse = ColSparse, RowSparse, ColComplexSparse,
- RowComplexSparse, ColSymSparse, RowSymSparse, ColSymComplexSparse,
- RowSymComplexSparse, ArrayRowSparse, ArrayColSparse, ArrayRowSymSparse,
- ArrayColSymSparse, ArrayRowComplexSparse, ArrayRowSymComplexSparse,
- ArrayColComplexSparse, ArrayColSymComplexSparse);
+(define @storage_sparse = ColSparse, RowSparse, ColSymSparse,
+  RowSymSparse, ArrayRowSparse, ArrayColSparse, ArrayRowSymSparse,
+ ArrayColSymSparse);
 
 (define @storage_rectangular = ColMajor, RowMajor, ColSparse, RowSparse,
- ColComplexSparse, RowComplexSparse, ArrayRowSparse, ArrayColSparse,
- ArrayRowComplexSparse, ArrayColComplexSparse);
+ ArrayRowSparse, ArrayColSparse);
 
 (define @storage_rectangular_full = ColMajor, RowMajor);
 
-(define @storage_rectangular_sparse = ColSparse, RowSparse, ColComplexSparse,
- RowComplexSparse, ArrayRowSparse, ArrayColSparse, ArrayRowComplexSparse,
- ArrayColComplexSparse);
+(define @storage_rectangular_sparse = ColSparse, RowSparse,
+ ArrayRowSparse, ArrayColSparse);
 
-(define @storage_square = ColSymSparse, RowSymSparse, ColSymComplexSparse,
- RowSymComplexSparse, ArrayRowSymSparse, ArrayColSymSparse,
- ArrayRowSymComplexSparse, ArrayColSymComplexSparse, ColSymPacked,
+(define @storage_square = ColSymSparse, RowSymSparse,
+ ArrayRowSymSparse, ArrayColSymSparse, ColSymPacked,
  RowSymPacked, ColSym, RowSym, ColHerm, RowHerm, ColHermPacked, RowHermPacked,
  ColUpTriang, ColLoTriang, RowUpTriang, RowLoTriang, ColUpTriangPacked,
  ColLoTriangPacked, RowUpTriangPacked, RowLoTriangPacked);
@@ -99,8 +97,7 @@
  RowUpTriangPacked, RowLoTriangPacked);
 
 (define @storage_square_sparse = ColSymSparse, RowSymSparse,
- ColSymComplexSparse, RowSymComplexSparse, ArrayRowSymSparse,
- ArrayColSymSparse, ArrayRowSymComplexSparse, ArrayColSymComplexSparse);
+ ArrayRowSymSparse, ArrayColSymSparse);
 
 (define @scalar = int, float, double, complexfloat, complexdouble);
 
@@ -111,13 +108,13 @@
 (define @real_complex = float, double, complexfloat, complexdouble);
 
 // Seldon objects.
-(define @trans = SeldonTrans, SeldonNoTrans, SeldonConjTrans);
-(define @trans+ = SeldonTrans, SeldonNoTrans, SeldonConjTrans);
-(define @diag = SeldonUnit, SeldonNonUnit);
+(define @trans = class_SeldonTrans, class_SeldonNoTrans, class_SeldonConjTrans);
+(define @trans+ = class_SeldonTrans, class_SeldonNoTrans, class_SeldonConjTrans);
+(define @diag = class_SeldonUnit, class_SeldonNonUnit);
 (define @uplo = SeldonUpper, SeldonLower);
 (define @norm = SeldonNorm1, SeldonNormInf);
 (define @conj = SeldonConj, SeldonUnconj);
-(define @side = SeldonLeft, SeldonRight);
+(define @side = class_SeldonLeft, class_SeldonRight);
 
 // Miscellaneous.
 (define @colrow = Col, Row);

@@ -194,7 +194,7 @@ namespace Seldon
 
   public:
     SeldonConjugate(bool status);
-    inline bool Conj() const;
+    bool Conj() const;
   };
 
 
@@ -224,6 +224,8 @@ namespace Seldon
     SeldonSide(const enum CBLAS_SIDE status);
     operator CBLAS_SIDE() const;
 #endif
+    char Char() const;
+    char RevChar() const;
     bool Left() const;
     bool Right() const;
   };

@@ -24,13 +24,6 @@ extern "C"
 {
 #include "dmumps_c.h"
 #include "zmumps_c.h"
-
-  // including mpi from sequential version of Mumps if the
-  // compilation is not made on a parallel machine
-#ifndef SELDON_WITH_MPI
-#include "mpi.h"
-#endif
-
 }
 
 namespace Seldon
@@ -66,23 +59,24 @@ namespace Seldon
   class MatrixMumps
   {
   protected :
-    int rank; //!< rank of processor
     int type_ordering; //!< ordering scheme (AMD, Metis, etc)
     //! object containing Mumps data structure
     typename TypeMumps<T>::data struct_mumps;
     //! double* or complex<double>*
     typedef typename TypeMumps<T>::pointer pointer;
     int print_level;
+    int info_facto;
     bool out_of_core;
-#ifdef SELDON_WITH_MPI
-    MPI_Group single_group;
-    MPI_Comm single_comm;
-#endif
     IVect num_row_glob, num_col_glob;
-    bool new_communicator;
+    IVect perm;
+    double coef_overestimate;
+    double coef_increase_memory;
+    double coef_max_overestimate;
 
     // internal methods
     void CallMumps();
+    void IterateFacto();
+    
     template<class MatrixSparse>
     void InitMatrix(const MatrixSparse&, bool dist = false);
 
@@ -93,21 +87,27 @@ namespace Seldon
     void Clear();
 
     void SelectOrdering(int num_ordering);
+    void SetPermutation(const IVect& permut);
 
     void HideMessages();
     void ShowMessages();
 
     void EnableOutOfCore();
     void DisableOutOfCore();
+    
+    void SetCoefficientEstimationNeededMemory(double);
+    void SetMaximumCoefficientEstimationNeededMemory(double);
+    void SetIncreaseCoefficientEstimationNeededMemory(double);
 
+    int64_t GetMemorySize() const;
     int GetInfoFactorization() const;
 
-    template<class Prop, class Storage, class Allocator>
-    void FindOrdering(Matrix<T, Prop, Storage, Allocator> & mat,
+    template<class T0, class Prop, class Storage, class Allocator>
+    void FindOrdering(Matrix<T0, Prop, Storage, Allocator> & mat,
 		      IVect& numbers, bool keep_matrix = false);
 
-    template<class Prop, class Storage, class Allocator>
-    void FactorizeMatrix(Matrix<T, Prop, Storage, Allocator> & mat,
+    template<class T0, class Prop, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
     template<class Prop, class Storage, class Allocator>
@@ -135,31 +135,72 @@ namespace Seldon
 	       Matrix<T, Prop, ColMajor, Allocator2>& x);
 
 #ifdef SELDON_WITH_MPI
-    template<class Prop, class Allocator>
-    void FactorizeDistributedMatrix(Matrix<T, General,
-				    ColSparse, Allocator> & mat,
-				    const Prop& sym, const IVect& glob_number,
-				    bool keep_matrix = false);
-
     template<class Alloc1, class Alloc2, class Alloc3, class Tint>
-    void FactorizeDistributedMatrix(Vector<int, VectFull, Alloc1>&,
-                                    Vector<int, VectFull, Alloc2>&,
+    void FactorizeDistributedMatrix(MPI::Comm& comm_facto,
+                                    Vector<Tint, VectFull, Alloc1>&,
+                                    Vector<Tint, VectFull, Alloc2>&,
                                     Vector<T, VectFull, Alloc3>&,
                                     const Vector<Tint>& glob_number,
 				    bool sym, bool keep_matrix = false);
 
+    template<class Allocator2, class Tint>
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          Vector<T, Vect_Full, Allocator2>& x,
+                          const Vector<Tint>& glob_num);
+
     template<class Allocator2, class Transpose_status>
-    void SolveDistributed(const Transpose_status& TransA,
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          const Transpose_status& TransA,
 			  Vector<T, VectFull, Allocator2>& x,
 			  const IVect& glob_num);
-
-    template<class Allocator2>
-    void SolveDistributed(Vector<T, VectFull, Allocator2>& x, const IVect& );
 
 #endif
 
   };
 
+  template<class T0, class Prop, class Storage, class Allocator, class T>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A, MatrixMumps<T>& mat_lu,
+	     bool keep_matrix = false);
+  
+  template<class T, class Storage, class Allocator, class MatrixFull>
+  void GetSchurMatrix(Matrix<T, Symmetric, Storage, Allocator>& A,
+                      MatrixMumps<T>& mat_lu, const IVect& num,
+                      MatrixFull& schur_matrix, bool keep_matrix = false);
+
+  template<class T, class Storage, class Allocator, class MatrixFull>
+  void GetSchurMatrix(Matrix<T, General, Storage, Allocator>& A,
+                      MatrixMumps<T>& mat_lu, const IVect& num,
+                      MatrixFull& schur_matrix, bool keep_matrix = false);
+
+  template<class T, class Allocator>
+  void SolveLU(MatrixMumps<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
+
+  template<class T, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixMumps<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
+
+  template<class T, class Prop, class Allocator>
+  void SolveLU(MatrixMumps<T>& mat_lu,
+               Matrix<T, Prop, ColMajor, Allocator>& x);
+
+  template<class T, class Allocator, class Prop, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixMumps<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x);
+
+  template<class Allocator>
+  void SolveLU(MatrixMumps<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixMumps<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+
+  template<class Allocator>
+  void SolveLU(MatrixMumps<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixMumps<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+  
 }
 
 #define SELDON_FILE_MUMPS_HXX

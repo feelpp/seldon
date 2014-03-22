@@ -81,15 +81,20 @@ namespace Seldon
     int GetSize() const;
     int GetDataSize() const;
     pointer GetData() const;
+    pointer GetDataPointer(int i, int j, int k) const;
 
     // Memory management.
     void Reallocate(int i, int j, int k);
+    void SetData(int i, int j, int k, pointer data);
+    void Nullify();
     void Clear();
 
     // Element access and affectation.
     reference operator() (int i, int j, int k);
+#ifndef SWIG
     const_reference operator() (int i, int j, int k) const;
     Array3D<T, Allocator>& operator= (const Array3D<T, Allocator>& A);
+#endif
     void Copy(const Array3D<T, Allocator>& A);
 
     // Convenient functions.
@@ -101,13 +106,14 @@ namespace Seldon
     void Print() const;
 
     // Input/output functions
-    void Write(string FileName) const;
-    void Write(ofstream& FileStream) const;
-    void Read(string FileName);
-    void Read(ifstream& FileStream);
+    void Write(string FileName, bool with_size = true) const;
+    void Write(ofstream& FileStream, bool with_size = true) const;
+    void Read(string FileName, bool with_size = true);
+    void Read(ifstream& FileStream, bool with_size = true);
   };
 
 
+#ifndef SWIG
   // 3D array allocator.
   template <class T, class Allocator>
   Allocator Array3D<T, Allocator>::array3D_allocator_;
@@ -116,7 +122,10 @@ namespace Seldon
   template <class T, class Allocator>
   ostream& operator << (ostream& out,
 			const Array3D<T, Allocator>& A);
+#endif
 
+  template <class T0, class T, class Allocator>
+  void Mlt(const T0& alpha, Array3D<T, Allocator>& A);
 
 } // namespace Seldon.
 

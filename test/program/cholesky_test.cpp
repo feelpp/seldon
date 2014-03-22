@@ -19,8 +19,6 @@
 
 #include "Seldon.hxx"
 #include "SeldonSolver.hxx"
-#include "computation/solver/SparseCholeskyFactorisation.cxx"
-#include "computation/interfaces/direct/Cholmod.cxx"
 
 using namespace Seldon;
 
@@ -38,18 +36,20 @@ bool CheckVector(Vector<T>& x)
 
 int main()
 {
+  TRY;
+
   cout.precision(16);
 
   // symmetric matrix is read in a file
   Matrix<double, Symmetric, ArrayRowSymSparse > A;
-  A.ReadText("MhSparse.dat");
+  A.ReadText("matrix/MhSparse.dat");
 
   // creation of a right hand side b = A*[0;1;...;n-1]
   Vector<double> x(A.GetM()), b(A.GetM()), y(A.GetM());
   x.Fill();
   Mlt(A, x, b);
 
-  // Cholesky factorisation using Seldon function
+  // Cholesky factorization using Seldon function
   GetCholesky(A);
 
   x = b;
@@ -68,10 +68,11 @@ int main()
 
   bool test_mlt_seldon = CheckVector(x);
 
-  // Cholesky factorisation using Cholmod
+#ifdef SELDON_WITH_CHOLMOD
+  // Cholesky factorization using Cholmod.
   MatrixCholmod mat_chol;
 
-  A.ReadText("MhSparse.dat");
+  A.ReadText("matrix/MhSparse.dat");
 
   GetCholesky(A, mat_chol);
 
@@ -80,6 +81,7 @@ int main()
   SolveCholesky(SeldonTrans, mat_chol, x);
 
   bool test_solve_cholmod = CheckVector(x);
+#endif
 
   bool all_test = true;
   if (!test_solve_seldon)
@@ -94,14 +96,61 @@ int main()
       cout << "MltCholesky provided by Seldon incorrect" << endl;
     }
 
+#ifdef SELDON_WITH_CHOLMOD
   if (!test_solve_cholmod)
     {
       all_test = false;
       cout << "SolveCholesky provided by Cholmod incorrect" << endl;
     }
+#endif
+
+  A.ReadText("matrix/MatFente.dat");
+
+  // creation of a right hand side b = A*[0;1;...;n-1]
+  x.Reallocate(A.GetM());
+  b.Reallocate(A.GetM());
+  y.Reallocate(A.GetM());
+  x.FillRand();
+  Mlt(1e-9, x);
+  Vector<double> xsol = x;
+  Mlt(A, x, b);
+
+  // Cholesky factorization using Seldon function.
+  SparseCholeskySolver<double> solver;
+  solver.ShowMessages();
+  solver.SelectOrdering(SparseMatrixOrdering::METIS);
+  solver.SelectDirectSolver(solver.SELDON_SOLVER);
+  // solver.SelectDirectSolver(solver.CHOLMOD);
+  solver.Factorize(A);
+
+  x = b;
+  solver.Solve(SeldonNoTrans, x);
+  solver.Solve(SeldonTrans, x);
+
+  for (int i = 0; i < x.GetM(); i++)
+    if (abs(x(i) - xsol(i)) > 1e-12)
+      {
+        cout << "Solver failed." << endl;
+        abort();
+      }
+
+  solver.Mlt(SeldonTrans, x);
+  solver.Mlt(SeldonNoTrans, x);
+
+  for (int i = 0; i < x.GetM(); i++)
+    if (abs(x(i) - b(i)) > 1e-12)
+      {
+        cout << "Mlt failed." << endl;
+        abort();
+      }
+
 
   if (all_test)
     cout << "All tests passed successfully" << endl;
+  else
+    return -1;
+
+  END;
 
   return 0;
 }

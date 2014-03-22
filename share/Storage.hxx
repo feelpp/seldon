@@ -1,5 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
-// Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -35,6 +35,9 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = false;
   };
 #endif
 
@@ -44,6 +47,9 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = false;
   };
 
 
@@ -57,6 +63,11 @@ namespace Seldon
   class VectSparse;
   class Collection;
   class DenseSparseCollection;
+  class PETScSeq;
+  class PETScPar;
+  class PETScSeqDense;
+  class PETScMPIDense;
+  class PETScMPIAIJ;
 
 
   ////////////
@@ -70,6 +81,9 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = true;
   };
 #endif
 
@@ -79,31 +93,21 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = true;
   };
 
 
 #ifndef SWIG
-  class ColComplexSparse
-  {
-  public:
-    static int GetFirst(int i, int j);
-    static int GetSecond(int i, int j);
-  };
-
-
-  class RowComplexSparse
-  {
-  public:
-    static int GetFirst(int i, int j);
-    static int GetSecond(int i, int j);
-  };
-
-
   class ColSymSparse
   {
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = true;
   };
 
 
@@ -112,22 +116,9 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
-  };
-
-
-  class ColSymComplexSparse
-  {
-  public:
-    static int GetFirst(int i, int j);
-    static int GetSecond(int i, int j);
-  };
-
-
-  class RowSymComplexSparse
-  {
-  public:
-    static int GetFirst(int i, int j);
-    static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = true;
   };
 
   class ArrayRowSparse : public RowSparse
@@ -146,23 +137,7 @@ namespace Seldon
   {
   };
 
-  class ArrayRowComplexSparse : public RowComplexSparse
-  {
-  };
-
-  class ArrayRowSymComplexSparse : public RowSymComplexSparse
-  {
-  };
-
-  class ArrayColComplexSparse : public ColComplexSparse
-  {
-  };
-
-  class ArrayColSymComplexSparse : public ColSymComplexSparse
-  {
-  };
-
-
+  
   ///////////////
   // SYMMETRIC //
   ///////////////
@@ -173,6 +148,9 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = false;
   };
 
 
@@ -181,6 +159,9 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = false;
   };
 
 
@@ -189,6 +170,9 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = false;
   };
 
 
@@ -197,6 +181,9 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = false;
   };
 
 
@@ -211,6 +198,9 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = false;
   };
 
 
@@ -219,6 +209,9 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = false;
   };
 
 
@@ -227,6 +220,9 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = false;
   };
 
 
@@ -235,6 +231,9 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
+    static const bool Sparse = false;
   };
 
 
@@ -249,7 +248,10 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -258,7 +260,10 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -267,7 +272,10 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -276,7 +284,10 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -285,7 +296,10 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -294,7 +308,10 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -303,7 +320,10 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 
 
@@ -312,7 +332,10 @@ namespace Seldon
   public:
     static int GetFirst(int i, int j);
     static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
     static bool UpLo();
+    static const bool Sparse = false;
   };
 #endif
 

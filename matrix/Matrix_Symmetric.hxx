@@ -1,5 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
-// Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -73,14 +73,17 @@ namespace Seldon
     void Resize(int i, int j);
 
     // Element access and affectation.
-    value_type operator() (int i, int j);
-    value_type operator() (int i, int j) const;
+    reference operator() (int i, int j);
+    const_reference operator() (int i, int j) const;
     const_reference Val(int i, int j) const;
     reference Val(int i, int j);
+    reference Get(int i, int j);
+    const_reference Get(int i, int j) const;
     reference operator[] (int i);
     const_reference operator[] (int i) const;
     Matrix_Symmetric<T, Prop, Storage, Allocator>&
     operator= (const Matrix_Symmetric<T, Prop, Storage, Allocator>& A);
+    void Set(int i, int j, const T& x);
     void Copy(const Matrix_Symmetric<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.
@@ -122,11 +125,14 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     template <class T0>
     Matrix<T, Prop, ColSym, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, ColSym, Allocator>& operator= (const Matrix<T, Prop,
+                                                         ColSym,
+                                                         Allocator>& A);
     template<class T0>
     Matrix<T, Prop, ColSym, Allocator>& operator*= (const T0& x);
 
@@ -146,11 +152,14 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     template <class T0>
     Matrix<T, Prop, RowSym, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, RowSym, Allocator>& operator= (const Matrix<T, Prop,
+                                                         RowSym,
+                                                         Allocator>& A);
     template<class T0>
     Matrix<T, Prop, RowSym, Allocator>& operator*= (const T0& x);
 

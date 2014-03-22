@@ -1,4 +1,4 @@
-// Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2003-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -23,7 +23,24 @@
 
 namespace Seldon
 {
+  
+  class ArrayRowComplexSparse : public RowComplexSparse
+  {
+  };
 
+  class ArrayRowSymComplexSparse : public RowSymComplexSparse
+  {
+  };
+
+  class ArrayColComplexSparse : public ColComplexSparse
+  {
+  };
+
+  class ArrayColSymComplexSparse : public ColSymComplexSparse
+  {
+  };
+
+  
   //! Sparse Array-matrix class.
   /*!
     Sparse matrices are defined by: (1) the number of rows and columns;
@@ -84,6 +101,7 @@ namespace Seldon
     int GetRealDataSize() const;
     int GetImagDataSize() const;
     int GetDataSize() const;
+    int64_t GetMemorySize() const;
     int* GetRealInd(int i) const;
     int* GetImagInd(int i) const;
     T* GetRealData(int i) const;
@@ -92,9 +110,23 @@ namespace Seldon
     Vector<T, VectSparse, Allocator>* GetImagData() const;
 
     // Element acess and affectation.
-    complex<T> operator() (int i, int j) const;
+    const complex<T> operator() (int i, int j) const;
     complex<T>& Val(int i, int j);
     const complex<T>& Val(int i, int j) const;
+    complex<T>& Get(int i, int j);
+    const complex<T>& Get(int i, int j) const;
+
+    T& ValReal(int i, int j);
+    const T& ValReal(int i, int j) const;
+    T& ValImag(int i, int j);
+    const T& ValImag(int i, int j) const;
+    T& GetReal(int i, int j);
+    const T& GetReal(int i, int j) const;
+    T& GetImag(int i, int j);
+    const T& GetImag(int i, int j) const;    
+    
+    void Set(int i, int j, const complex<T>& x);
+    
     const T& ValueReal(int num_row,int i) const;
     T& ValueReal(int num_row,int i);
     int IndexReal(int num_row,int i) const;
@@ -115,9 +147,17 @@ namespace Seldon
 
     // Convenient functions.
     void Print() const;
-    void WriteText(string FileName) const;
-    void WriteText(ostream& FileStream) const;
+    void Write(string FileName) const;
+    void Write(ostream& FileStream) const;
+    void WriteText(string FileName, bool cplx = false) const;
+    void WriteText(ostream& FileStream, bool cplx = false) const;
+    void Read(string FileName);
+    void Read(istream& FileStream);
+    void ReadText(string FileName, bool cplx = false);
+    void ReadText(istream& FileStream, bool cplx = false);
+    
     void Assemble();
+    
     template<class T0>
     void RemoveSmallEntry(const T0& epsilon);
 
@@ -147,7 +187,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     // Memory management.
@@ -194,7 +234,7 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
     // Memory management.
@@ -241,10 +281,21 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
-    complex<T> operator() (int i, int j) const;
+    const complex<T> operator() (int i, int j) const;
+    
+    T& ValReal(int i, int j);
+    const T& ValReal(int i, int j) const;
+    T& ValImag(int i, int j);
+    const T& ValImag(int i, int j) const;
+    T& GetReal(int i, int j);
+    const T& GetReal(int i, int j) const;
+    T& GetImag(int i, int j);
+    const T& GetImag(int i, int j) const;    
+    
+    void Set(int i, int j, const complex<T>& x);
 
     // Memory management.
     void ClearRealColumn(int i);
@@ -290,10 +341,21 @@ namespace Seldon
     typedef Allocator allocator;
 
   public:
-    Matrix()  throw();
+    Matrix();
     Matrix(int i, int j);
 
-    complex<T> operator() (int i, int j) const;
+    const complex<T> operator() (int i, int j) const;
+    
+    T& ValReal(int i, int j);
+    const T& ValReal(int i, int j) const;
+    T& ValImag(int i, int j);
+    const T& ValImag(int i, int j) const;
+    T& GetReal(int i, int j);
+    const T& GetReal(int i, int j) const;
+    T& GetImag(int i, int j);
+    const T& GetImag(int i, int j) const;    
+    
+    void Set(int i, int j, const complex<T>& x);
 
     // Memory management.
     void ClearRealRow(int i);
@@ -324,8 +386,7 @@ namespace Seldon
 			      const Vector<complex<T>, VectFull,
 			      Alloc1>& val);
   };
-
-
+  
 } // namespace Seldon
 
 #define SELDON_FILE_MATRIX_ARRAY_COMPLEX_SPARSE_HXX

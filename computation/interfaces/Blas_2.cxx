@@ -1,4 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2001-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -19,31 +20,9 @@
 
 #ifndef SELDON_FILE_BLAS_2_CXX
 
-/*
-  Functions included in this file:
 
-  xTRMV   (Mlt)
-  xTPMV   (Mlt)
-  xGEMV   (MltAdd)
-  xHEMV   (MltAdd)
-  xHPMV   (MltAdd)
-  xSYMV   (MltAdd)
-  xSPMV   (MltAdd)
-  xGER    (Rank1Update)
-  xGERU   (Rank1Update)
-  xGERC   (Rank1Update)
-  xSPR    (Rank1Update)
-  xHPR    (Rank1Update)
-  xSPR2   (Rank2Update)
-  xHPR2   (Rank2Update)
-  xTRSV   (Solve)
-  xTPSV   (Solve)
-*/
+#include "Blas_2.hxx"
 
-extern "C"
-{
-#include "cblas.h"
-}
 
 namespace Seldon
 {
@@ -1205,10 +1184,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float alpha,
+  void MltAdd(const float& alpha,
 	      const Matrix<float, Prop0, ColMajor, Allocator0>& A,
 	      const Vector<float, VectFull, Allocator1>& X,
-	      const float beta,
+	      const float& beta,
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
@@ -1224,10 +1203,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double alpha,
+  void MltAdd(const double& alpha,
 	      const Matrix<double, Prop0, ColMajor, Allocator0>& A,
 	      const Vector<double, VectFull, Allocator1>& X,
-	      const double beta,
+	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
@@ -1243,10 +1222,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float> alpha,
+  void MltAdd(const complex<float>& alpha,
 	      const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float> beta,
+	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
@@ -1265,10 +1244,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double> alpha,
+  void MltAdd(const complex<double>& alpha,
 	      const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double> beta,
+	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
@@ -1290,11 +1269,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float alpha,
+  void MltAdd(const float& alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<float, Prop0, ColMajor, Allocator0>& A,
 	      const Vector<float, VectFull, Allocator1>& X,
-	      const float beta,
+	      const float& beta,
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
@@ -1310,11 +1289,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double alpha,
+  void MltAdd(const double& alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<double, Prop0, ColMajor, Allocator0>& A,
 	      const Vector<double, VectFull, Allocator1>& X,
-	      const double beta,
+	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
@@ -1330,11 +1309,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float> alpha,
+  void MltAdd(const complex<float>& alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float> beta,
+	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
@@ -1353,11 +1332,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double> alpha,
+  void MltAdd(const complex<double>& alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double> beta,
+	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
@@ -1379,10 +1358,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float alpha,
+  void MltAdd(const float& alpha,
 	      const Matrix<float, Prop0, RowMajor, Allocator0>& A,
 	      const Vector<float, VectFull, Allocator1>& X,
-	      const float beta,
+	      const float& beta,
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
@@ -1398,10 +1377,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double alpha,
+  void MltAdd(const double& alpha,
 	      const Matrix<double, Prop0, RowMajor, Allocator0>& A,
 	      const Vector<double, VectFull, Allocator1>& X,
-	      const double beta,
+	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
@@ -1417,10 +1396,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float> alpha,
+  void MltAdd(const complex<float>& alpha,
 	      const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float> beta,
+	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
@@ -1439,10 +1418,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double> alpha,
+  void MltAdd(const complex<double>& alpha,
 	      const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double> beta,
+	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
@@ -1464,11 +1443,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float alpha,
+  void MltAdd(const float& alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<float, Prop0, RowMajor, Allocator0>& A,
 	      const Vector<float, VectFull, Allocator1>& X,
-	      const float beta,
+	      const float& beta,
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
@@ -1484,11 +1463,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double alpha,
+  void MltAdd(const double& alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<double, Prop0, RowMajor, Allocator0>& A,
 	      const Vector<double, VectFull, Allocator1>& X,
-	      const double beta,
+	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
@@ -1504,11 +1483,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float> alpha,
+  void MltAdd(const complex<float>& alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float> beta,
+	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
@@ -1527,11 +1506,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double> alpha,
+  void MltAdd(const complex<double>& alpha,
 	      const SeldonTranspose& TransA,
 	      const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double> beta,
+	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
@@ -1555,10 +1534,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float> alpha,
+  void MltAdd(const complex<float>& alpha,
 	      const Matrix<complex<float>, Prop0, ColHerm, Allocator0>& A,
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float> beta,
+	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
@@ -1576,10 +1555,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double> alpha,
+  void MltAdd(const complex<double>& alpha,
 	      const Matrix<complex<double>, Prop0, ColHerm, Allocator0>& A,
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double> beta,
+	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
@@ -1600,11 +1579,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float> alpha,
+  void MltAdd(const complex<float>& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<float>, Prop0, ColHerm, Allocator0>& A,
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float> beta,
+	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
@@ -1622,11 +1601,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double> alpha,
+  void MltAdd(const complex<double>& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<double>, Prop0, ColHerm, Allocator0>& A,
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double> beta,
+	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
@@ -1647,10 +1626,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float> alpha,
+  void MltAdd(const complex<float>& alpha,
 	      const Matrix<complex<float>, Prop0, RowHerm, Allocator0>& A,
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float> beta,
+	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
@@ -1668,10 +1647,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double> alpha,
+  void MltAdd(const complex<double>& alpha,
 	      const Matrix<complex<double>, Prop0, RowHerm, Allocator0>& A,
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double> beta,
+	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
@@ -1692,11 +1671,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float> alpha,
+  void MltAdd(const complex<float>& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<float>, Prop0, RowHerm, Allocator0>& A,
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float> beta,
+	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
@@ -1714,11 +1693,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double> alpha,
+  void MltAdd(const complex<double>& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<double>, Prop0, RowHerm, Allocator0>& A,
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double> beta,
+	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
@@ -1741,11 +1720,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float> alpha,
+  void MltAdd(const complex<float>& alpha,
 	      const Matrix<complex<float>, Prop0,
 	      ColHermPacked, Allocator0>& A,
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float> beta,
+	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
@@ -1763,11 +1742,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double> alpha,
+  void MltAdd(const complex<double>& alpha,
 	      const Matrix<complex<double>, Prop0,
 	      ColHermPacked, Allocator0>& A,
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double> beta,
+	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
@@ -1788,12 +1767,12 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float> alpha,
+  void MltAdd(const complex<float>& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<float>, Prop0,
 	      ColHermPacked, Allocator0>& A,
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float> beta,
+	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
@@ -1811,12 +1790,12 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double> alpha,
+  void MltAdd(const complex<double>& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<double>, Prop0,
 	      ColHermPacked, Allocator0>& A,
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double> beta,
+	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
@@ -1837,11 +1816,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float> alpha,
+  void MltAdd(const complex<float>& alpha,
 	      const Matrix<complex<float>, Prop0,
 	      RowHermPacked, Allocator0>& A,
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float> beta,
+	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
@@ -1859,11 +1838,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double> alpha,
+  void MltAdd(const complex<double>& alpha,
 	      const Matrix<complex<double>, Prop0,
 	      RowHermPacked, Allocator0>& A,
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double> beta,
+	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
@@ -1884,12 +1863,12 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float> alpha,
+  void MltAdd(const complex<float>& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<float>, Prop0,
 	      RowHermPacked, Allocator0>& A,
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float> beta,
+	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y)
   {
 
@@ -1907,12 +1886,12 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double> alpha,
+  void MltAdd(const complex<double>& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<complex<double>, Prop0,
 	      RowHermPacked, Allocator0>& A,
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double> beta,
+	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y)
   {
 
@@ -1935,10 +1914,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float alpha,
+  void MltAdd(const float& alpha,
 	      const Matrix<float, Prop0, ColSym, Allocator0>& A,
 	      const Vector<float, VectFull, Allocator1>& X,
-	      const float beta,
+	      const float& beta,
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
@@ -1954,10 +1933,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double alpha,
+  void MltAdd(const double& alpha,
 	      const Matrix<double, Prop0, ColSym, Allocator0>& A,
 	      const Vector<double, VectFull, Allocator1>& X,
-	      const double beta,
+	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
@@ -1976,11 +1955,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float alpha,
+  void MltAdd(const float& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<float, Prop0, ColSym, Allocator0>& A,
 	      const Vector<float, VectFull, Allocator1>& X,
-	      const float beta,
+	      const float& beta,
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
@@ -1996,11 +1975,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double alpha,
+  void MltAdd(const double& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<double, Prop0, ColSym, Allocator0>& A,
 	      const Vector<double, VectFull, Allocator1>& X,
-	      const double beta,
+	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
@@ -2019,10 +1998,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float alpha,
+  void MltAdd(const float& alpha,
 	      const Matrix<float, Prop0, RowSym, Allocator0>& A,
 	      const Vector<float, VectFull, Allocator1>& X,
-	      const float beta,
+	      const float& beta,
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
@@ -2038,10 +2017,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double alpha,
+  void MltAdd(const double& alpha,
 	      const Matrix<double, Prop0, RowSym, Allocator0>& A,
 	      const Vector<double, VectFull, Allocator1>& X,
-	      const double beta,
+	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
@@ -2060,11 +2039,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float alpha,
+  void MltAdd(const float& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<float, Prop0, RowSym, Allocator0>& A,
 	      const Vector<float, VectFull, Allocator1>& X,
-	      const float beta,
+	      const float& beta,
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
@@ -2080,11 +2059,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double alpha,
+  void MltAdd(const double& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<double, Prop0, RowSym, Allocator0>& A,
 	      const Vector<double, VectFull, Allocator1>& X,
-	      const double beta,
+	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
@@ -2105,10 +2084,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float alpha,
+  void MltAdd(const float& alpha,
 	      const Matrix<float, Prop0, ColSymPacked, Allocator0>& A,
 	      const Vector<float, VectFull, Allocator1>& X,
-	      const float beta,
+	      const float& beta,
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
@@ -2124,10 +2103,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double alpha,
+  void MltAdd(const double& alpha,
 	      const Matrix<double, Prop0, ColSymPacked, Allocator0>& A,
 	      const Vector<double, VectFull, Allocator1>& X,
-	      const double beta,
+	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
@@ -2146,11 +2125,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float alpha,
+  void MltAdd(const float& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<float, Prop0, ColSymPacked, Allocator0>& A,
 	      const Vector<float, VectFull, Allocator1>& X,
-	      const float beta,
+	      const float& beta,
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
@@ -2166,11 +2145,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double alpha,
+  void MltAdd(const double& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<double, Prop0, ColSymPacked, Allocator0>& A,
 	      const Vector<double, VectFull, Allocator1>& X,
-	      const double beta,
+	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
@@ -2189,10 +2168,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float alpha,
+  void MltAdd(const float& alpha,
 	      const Matrix<float, Prop0, RowSymPacked, Allocator0>& A,
 	      const Vector<float, VectFull, Allocator1>& X,
-	      const float beta,
+	      const float& beta,
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
@@ -2208,10 +2187,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double alpha,
+  void MltAdd(const double& alpha,
 	      const Matrix<double, Prop0, RowSymPacked, Allocator0>& A,
 	      const Vector<double, VectFull, Allocator1>& X,
-	      const double beta,
+	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
@@ -2230,11 +2209,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float alpha,
+  void MltAdd(const float& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<float, Prop0, RowSymPacked, Allocator0>& A,
 	      const Vector<float, VectFull, Allocator1>& X,
-	      const float beta,
+	      const float& beta,
 	      Vector<float, VectFull, Allocator2>& Y)
   {
 
@@ -2250,11 +2229,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double alpha,
+  void MltAdd(const double& alpha,
 	      const SeldonUplo& Uplo,
 	      const Matrix<double, Prop0, RowSymPacked, Allocator0>& A,
 	      const Vector<double, VectFull, Allocator1>& X,
-	      const double beta,
+	      const double& beta,
 	      Vector<double, VectFull, Allocator2>& Y)
   {
 
@@ -2282,7 +2261,7 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void Rank1Update(const float alpha,
+  void Rank1Update(const float& alpha,
 		   const Vector<float, VectFull, Allocator1>& X,
 		   const Vector<float, VectFull, Allocator2>& Y,
 		   Matrix<float, Prop0, ColMajor, Allocator0>& A)
@@ -2300,7 +2279,7 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void Rank1Update(const double alpha,
+  void Rank1Update(const double& alpha,
 		   const Vector<double, VectFull, Allocator1>& X,
 		   const Vector<double, VectFull, Allocator2>& Y,
 		   Matrix<double, Prop0, ColMajor, Allocator0>& A)
@@ -2318,7 +2297,7 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void Rank1Update(const complex<float> alpha,
+  void Rank1Update(const complex<float>& alpha,
 		   const Vector<complex<float>, VectFull, Allocator1>& X,
 		   const Vector<complex<float>, VectFull, Allocator2>& Y,
 		   Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A)
@@ -2339,7 +2318,7 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void Rank1Update(const complex<double> alpha,
+  void Rank1Update(const complex<double>& alpha,
 		   const Vector<complex<double>, VectFull, Allocator1>& X,
 		   const Vector<complex<double>, VectFull, Allocator2>& Y,
 		   Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A)
@@ -2363,7 +2342,7 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void Rank1Update(const complex<float> alpha,
+  void Rank1Update(const complex<float>& alpha,
 		   const Vector<complex<float>, VectFull, Allocator1>& X,
 		   const SeldonConjugate& ConjY,
 		   const Vector<complex<float>, VectFull, Allocator2>& Y,
@@ -2392,7 +2371,7 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void Rank1Update(const complex<double> alpha,
+  void Rank1Update(const complex<double>& alpha,
 		   const Vector<complex<double>, VectFull, Allocator1>& X,
 		   const SeldonConjugate& ConjY,
 		   const Vector<complex<double>, VectFull, Allocator2>& Y,
@@ -2424,7 +2403,7 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void Rank1Update(const float alpha,
+  void Rank1Update(const float& alpha,
 		   const Vector<float, VectFull, Allocator1>& X,
 		   const Vector<float, VectFull, Allocator2>& Y,
 		   Matrix<float, Prop0, RowMajor, Allocator0>& A)
@@ -2442,7 +2421,7 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void Rank1Update(const double alpha,
+  void Rank1Update(const double& alpha,
 		   const Vector<double, VectFull, Allocator1>& X,
 		   const Vector<double, VectFull, Allocator2>& Y,
 		   Matrix<double, Prop0, RowMajor, Allocator0>& A)
@@ -2460,7 +2439,7 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void Rank1Update(const complex<float> alpha,
+  void Rank1Update(const complex<float>& alpha,
 		   const Vector<complex<float>, VectFull, Allocator1>& X,
 		   const Vector<complex<float>, VectFull, Allocator2>& Y,
 		   Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A)
@@ -2481,7 +2460,7 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void Rank1Update(const complex<double> alpha,
+  void Rank1Update(const complex<double>& alpha,
 		   const Vector<complex<double>, VectFull, Allocator1>& X,
 		   const Vector<complex<double>, VectFull, Allocator2>& Y,
 		   Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A)
@@ -2505,7 +2484,7 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void Rank1Update(const complex<float> alpha,
+  void Rank1Update(const complex<float>& alpha,
 		   const Vector<complex<float>, VectFull, Allocator1>& X,
 		   const SeldonConjugate& ConjY,
 		   const Vector<complex<float>, VectFull, Allocator2>& Y,
@@ -2534,7 +2513,7 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void Rank1Update(const complex<double> alpha,
+  void Rank1Update(const complex<double>& alpha,
 		   const Vector<complex<double>, VectFull, Allocator1>& X,
 		   const SeldonConjugate& ConjY,
 		   const Vector<complex<double>, VectFull, Allocator2>& Y,
@@ -2566,7 +2545,7 @@ namespace Seldon
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
-  void Rank1Update(const float alpha,
+  void Rank1Update(const float& alpha,
 		   const Vector<float, VectFull, Allocator0>& X,
 		   Matrix<float, Prop1, ColSymPacked, Allocator1>& A)
   {
@@ -2582,7 +2561,7 @@ namespace Seldon
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
-  void Rank1Update(const double alpha,
+  void Rank1Update(const double& alpha,
 		   const Vector<double, VectFull, Allocator0>& X,
 		   Matrix<double, Prop1, ColSymPacked, Allocator1>& A)
   {
@@ -2595,11 +2574,43 @@ namespace Seldon
 	       X.GetData(), 1, A.GetData());
   }
 
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const float& alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   Matrix<float, Prop1, ColSym, Allocator1>& A)
+  {
 
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_ssyr(CblasColMajor, CblasUpper, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const double& alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   Matrix<double, Prop1, ColSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_dsyr(CblasColMajor, CblasUpper, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
-  Rank1Update(const float alpha,
+  Rank1Update(const float& alpha,
 	      const Vector<complex<float>, VectFull, Allocator0>& X,
 	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
   {
@@ -2617,7 +2628,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
-  Rank1Update(const double alpha,
+  Rank1Update(const double& alpha,
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
   {
@@ -2630,6 +2641,42 @@ namespace Seldon
 	       reinterpret_cast<const void*>(X.GetData()), 1,
 	       reinterpret_cast<void*>(A.GetData()));
   }
+  
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const float& alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      Matrix<complex<float>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_cher(CblasColMajor, CblasUpper, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+  
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const double& alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_zher(CblasColMajor, CblasUpper, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
 
 
   /*** ColSymPacked and Uplo ***/
@@ -2637,7 +2684,7 @@ namespace Seldon
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
-  void Rank1Update(const float alpha,
+  void Rank1Update(const float& alpha,
 		   const Vector<float, VectFull, Allocator0>& X,
 		   const SeldonUplo& Uplo,
 		   Matrix<float, Prop1, ColSymPacked, Allocator1>& A)
@@ -2654,7 +2701,7 @@ namespace Seldon
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
-  void Rank1Update(const double alpha,
+  void Rank1Update(const double& alpha,
 		   const Vector<double, VectFull, Allocator0>& X,
 		   const SeldonUplo& Uplo,
 		   Matrix<double, Prop1, ColSymPacked, Allocator1>& A)
@@ -2668,11 +2715,45 @@ namespace Seldon
 	       X.GetData(), 1, A.GetData());
   }
 
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const float& alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const SeldonUplo& Uplo,
+		   Matrix<float, Prop1, ColSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_ssyr(CblasColMajor, Uplo, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
+  void Rank1Update(const double& alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const SeldonUplo& Uplo,
+		   Matrix<double, Prop1, ColSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_dsyr(CblasColMajor, Uplo, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
   void
-  Rank1Update(const float alpha,
+  Rank1Update(const float& alpha,
 	      const Vector<complex<float>, VectFull, Allocator0>& X,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
@@ -2691,7 +2772,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
-  Rank1Update(const double alpha,
+  Rank1Update(const double& alpha,
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
@@ -2707,12 +2788,50 @@ namespace Seldon
   }
 
 
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const float& alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<float>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_cher(CblasColMajor, Uplo, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const double& alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_zher(CblasColMajor, Uplo, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
   /*** RowSymPacked and Upper ***/
 
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
-  void Rank1Update(const float alpha,
+  void Rank1Update(const float& alpha,
 		   const Vector<float, VectFull, Allocator0>& X,
 		   Matrix<float, Prop1, RowSymPacked, Allocator1>& A)
   {
@@ -2728,7 +2847,7 @@ namespace Seldon
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
-  void Rank1Update(const double alpha,
+  void Rank1Update(const double& alpha,
 		   const Vector<double, VectFull, Allocator0>& X,
 		   Matrix<double, Prop1, RowSymPacked, Allocator1>& A)
   {
@@ -2741,11 +2860,43 @@ namespace Seldon
 	       X.GetData(), 1, A.GetData());
   }
 
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const float& alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   Matrix<float, Prop1, RowSym, Allocator1>& A)
+  {
 
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_ssyr(CblasRowMajor, CblasUpper, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const double& alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   Matrix<double, Prop1, RowSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_dsyr(CblasRowMajor, CblasUpper, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
-  Rank1Update(const float alpha,
+  Rank1Update(const float& alpha,
 	      const Vector<complex<float>, VectFull, Allocator0>& X,
 	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
   {
@@ -2763,7 +2914,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
-  Rank1Update(const double alpha,
+  Rank1Update(const double& alpha,
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
   {
@@ -2777,13 +2928,49 @@ namespace Seldon
 	       reinterpret_cast<void*>(A.GetData()));
   }
 
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const float& alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      Matrix<complex<float>, Prop1, RowHerm, Allocator1>& A)
+  {
 
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_cher(CblasRowMajor, CblasUpper, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const double& alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, M)", "X.X' + M");
+#endif
+
+    cblas_zher(CblasRowMajor, CblasUpper, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+  
   /*** RowSymPacked and Uplo ***/
 
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
-  void Rank1Update(const float alpha,
+  void Rank1Update(const float& alpha,
 		   const Vector<float, VectFull, Allocator0>& X,
 		   const SeldonUplo& Uplo,
 		   Matrix<float, Prop1, RowSymPacked, Allocator1>& A)
@@ -2800,7 +2987,7 @@ namespace Seldon
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
-  void Rank1Update(const double alpha,
+  void Rank1Update(const double& alpha,
 		   const Vector<double, VectFull, Allocator0>& X,
 		   const SeldonUplo& Uplo,
 		   Matrix<double, Prop1, RowSymPacked, Allocator1>& A)
@@ -2814,11 +3001,45 @@ namespace Seldon
 	       X.GetData(), 1, A.GetData());
   }
 
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void Rank1Update(const float& alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const SeldonUplo& Uplo,
+		   Matrix<float, Prop1, RowSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_ssyr(CblasRowMajor, Uplo, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
 
   template <class Allocator0,
 	    class Prop1, class Allocator1>
+  void Rank1Update(const double& alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const SeldonUplo& Uplo,
+		   Matrix<double, Prop1, RowSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_dsyr(CblasRowMajor, Uplo, A.GetM(), alpha,
+	       X.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
   void
-  Rank1Update(const float alpha,
+  Rank1Update(const float& alpha,
 	      const Vector<complex<float>, VectFull, Allocator0>& X,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
@@ -2837,7 +3058,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1>
   void
-  Rank1Update(const double alpha,
+  Rank1Update(const double& alpha,
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      const SeldonUplo& Uplo,
 	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
@@ -2850,6 +3071,44 @@ namespace Seldon
     cblas_zhpr(CblasRowMajor, Uplo, A.GetM(), alpha,
 	       reinterpret_cast<const void*>(X.GetData()), 1,
 	       reinterpret_cast<void*>(A.GetData()));
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const float& alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<float>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_cher(CblasRowMajor, Uplo, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1>
+  void
+  Rank1Update(const double& alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    CheckDim(A, X, "Rank1Update(alpha, X, uplo, M)", "X.X' + M");
+#endif
+
+    cblas_zher(CblasRowMajor, Uplo, A.GetM(), alpha,
+	       reinterpret_cast<const void*>(X.GetData()), 1,
+	       reinterpret_cast<void*>(A.GetData()), A.GetM());
   }
 
 
@@ -2868,7 +3127,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
-  void Rank2Update(const float alpha,
+  void Rank2Update(const float& alpha,
 		   const Vector<float, VectFull, Allocator0>& X,
 		   const Vector<float, VectFull, Allocator2>& Y,
 		   Matrix<float, Prop1, ColSymPacked, Allocator1>& A)
@@ -2887,7 +3146,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
-  void Rank2Update(const double alpha,
+  void Rank2Update(const double& alpha,
 		   const Vector<double, VectFull, Allocator0>& X,
 		   const Vector<double, VectFull, Allocator2>& Y,
 		   Matrix<double, Prop1, ColSymPacked, Allocator1>& A)
@@ -2902,12 +3161,50 @@ namespace Seldon
 		X.GetData(), 1, Y.GetData(), 1, A.GetData());
   }
 
+  
+    template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void Rank2Update(const float& alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
+		   Matrix<float, Prop1, ColSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_ssyr2(CblasColMajor, CblasUpper, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
 
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
+  void Rank2Update(const double& alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
+		   Matrix<double, Prop1, ColSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_dsyr2(CblasColMajor, CblasUpper, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
   void
-  Rank2Update(const complex<float> alpha,
+  Rank2Update(const complex<float>& alpha,
 	      const Vector<complex<float>, VectFull, Allocator0>& X,
 	      const Vector<complex<float>, VectFull, Allocator2>& Y,
 	      Matrix<complex<float>, Prop1, ColHermPacked, Allocator1>& A)
@@ -2930,7 +3227,7 @@ namespace Seldon
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void
-  Rank2Update(const complex<double> alpha,
+  Rank2Update(const complex<double>& alpha,
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      const Vector<complex<double>, VectFull, Allocator2>& Y,
 	      Matrix<complex<double>, Prop1, ColHermPacked, Allocator1>& A)
@@ -2948,14 +3245,60 @@ namespace Seldon
 		reinterpret_cast<void*>(A.GetData()));
   }
 
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<float>& alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator2>& Y,
+	      Matrix<complex<float>, Prop1, ColHerm, Allocator1>& A)
+  {
 
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_cher2(CblasColMajor, CblasUpper, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<double>& alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator2>& Y,
+	      Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_zher2(CblasColMajor, CblasUpper, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+  
   /*** ColSymPacked and Uplo ***/
 
 
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
-  void Rank2Update(const float alpha,
+  void Rank2Update(const float& alpha,
 		   const Vector<float, VectFull, Allocator0>& X,
 		   const Vector<float, VectFull, Allocator2>& Y,
 		   const SeldonUplo& Uplo,
@@ -2975,7 +3318,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
-  void Rank2Update(const double alpha,
+  void Rank2Update(const double& alpha,
 		   const Vector<double, VectFull, Allocator0>& X,
 		   const Vector<double, VectFull, Allocator2>& Y,
 		   const SeldonUplo& Uplo,
@@ -2995,8 +3338,48 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
+  void Rank2Update(const float& alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
+		   const SeldonUplo& Uplo,
+		   Matrix<float, Prop1, ColSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_ssyr2(CblasColMajor, Uplo, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void Rank2Update(const double& alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
+		   const SeldonUplo& Uplo,
+		   Matrix<double, Prop1, ColSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_dsyr2(CblasColMajor, Uplo, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+  
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
   void
-  Rank2Update(const complex<float> alpha,
+  Rank2Update(const complex<float>& alpha,
 	      const Vector<complex<float>, VectFull, Allocator0>& X,
 	      const Vector<complex<float>, VectFull, Allocator2>& Y,
 	      const SeldonUplo& Uplo,
@@ -3020,7 +3403,7 @@ namespace Seldon
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void
-  Rank2Update(const complex<double> alpha,
+  Rank2Update(const complex<double>& alpha,
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      const Vector<complex<double>, VectFull, Allocator2>& Y,
 	      const SeldonUplo& Uplo,
@@ -3040,13 +3423,61 @@ namespace Seldon
   }
 
 
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<float>& alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator2>& Y,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<float>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_cher2(CblasColMajor, Uplo, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<double>& alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator2>& Y,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_zher2(CblasColMajor, Uplo, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+  
   /*** RowSymPacked and Upper ***/
 
 
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
-  void Rank2Update(const float alpha,
+  void Rank2Update(const float& alpha,
 		   const Vector<float, VectFull, Allocator0>& X,
 		   const Vector<float, VectFull, Allocator2>& Y,
 		   Matrix<float, Prop1, RowSymPacked, Allocator1>& A)
@@ -3065,7 +3496,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
-  void Rank2Update(const double alpha,
+  void Rank2Update(const double& alpha,
 		   const Vector<double, VectFull, Allocator0>& X,
 		   const Vector<double, VectFull, Allocator2>& Y,
 		   Matrix<double, Prop1, RowSymPacked, Allocator1>& A)
@@ -3084,8 +3515,46 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
+  void Rank2Update(const float& alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
+		   Matrix<float, Prop1, RowSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_ssyr2(CblasRowMajor, CblasUpper, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void Rank2Update(const double& alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
+		   Matrix<double, Prop1, RowSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_dsyr2(CblasRowMajor, CblasUpper, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+  
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
   void
-  Rank2Update(const complex<float> alpha,
+  Rank2Update(const complex<float>& alpha,
 	      const Vector<complex<float>, VectFull, Allocator0>& X,
 	      const Vector<complex<float>, VectFull, Allocator2>& Y,
 	      Matrix<complex<float>, Prop1, RowHermPacked, Allocator1>& A)
@@ -3108,7 +3577,7 @@ namespace Seldon
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void
-  Rank2Update(const complex<double> alpha,
+  Rank2Update(const complex<double>& alpha,
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      const Vector<complex<double>, VectFull, Allocator2>& Y,
 	      Matrix<complex<double>, Prop1, RowHermPacked, Allocator1>& A)
@@ -3127,13 +3596,59 @@ namespace Seldon
   }
 
 
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<float>& alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator2>& Y,
+	      Matrix<complex<float>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_cher2(CblasRowMajor, CblasUpper, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<double>& alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator2>& Y,
+	      Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_zher2(CblasRowMajor, CblasUpper, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
   /*** RowSymPacked and Uplo ***/
 
 
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
-  void Rank2Update(const float alpha,
+  void Rank2Update(const float& alpha,
 		   const Vector<float, VectFull, Allocator0>& X,
 		   const Vector<float, VectFull, Allocator2>& Y,
 		   const SeldonUplo& Uplo,
@@ -3153,7 +3668,7 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
-  void Rank2Update(const double alpha,
+  void Rank2Update(const double& alpha,
 		   const Vector<double, VectFull, Allocator0>& X,
 		   const Vector<double, VectFull, Allocator2>& Y,
 		   const SeldonUplo& Uplo,
@@ -3173,8 +3688,48 @@ namespace Seldon
   template <class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Allocator2>
+  void Rank2Update(const float& alpha,
+		   const Vector<float, VectFull, Allocator0>& X,
+		   const Vector<float, VectFull, Allocator2>& Y,
+		   const SeldonUplo& Uplo,
+		   Matrix<float, Prop1, RowSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_ssyr2(CblasRowMajor, Uplo, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void Rank2Update(const double& alpha,
+		   const Vector<double, VectFull, Allocator0>& X,
+		   const Vector<double, VectFull, Allocator2>& Y,
+		   const SeldonUplo& Uplo,
+		   Matrix<double, Prop1, RowSym, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_dsyr2(CblasRowMajor, Uplo, A.GetM(), alpha,
+		X.GetData(), 1, Y.GetData(), 1, A.GetData(), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
   void
-  Rank2Update(const complex<float> alpha,
+  Rank2Update(const complex<float>& alpha,
 	      const Vector<complex<float>, VectFull, Allocator0>& X,
 	      const Vector<complex<float>, VectFull, Allocator2>& Y,
 	      const SeldonUplo& Uplo,
@@ -3198,7 +3753,7 @@ namespace Seldon
 	    class Prop1, class Allocator1,
 	    class Allocator2>
   void
-  Rank2Update(const complex<double> alpha,
+  Rank2Update(const complex<double>& alpha,
 	      const Vector<complex<double>, VectFull, Allocator0>& X,
 	      const Vector<complex<double>, VectFull, Allocator2>& Y,
 	      const SeldonUplo& Uplo,
@@ -3215,6 +3770,54 @@ namespace Seldon
 		reinterpret_cast<const void*>(X.GetData()), 1,
 		reinterpret_cast<const void*>(Y.GetData()), 1,
 		reinterpret_cast<void*>(A.GetData()));
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<float>& alpha,
+	      const Vector<complex<float>, VectFull, Allocator0>& X,
+	      const Vector<complex<float>, VectFull, Allocator2>& Y,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<float>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_cher2(CblasRowMajor, Uplo, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
+  }
+
+
+  template <class Allocator0,
+	    class Prop1, class Allocator1,
+	    class Allocator2>
+  void
+  Rank2Update(const complex<double>& alpha,
+	      const Vector<complex<double>, VectFull, Allocator0>& X,
+	      const Vector<complex<double>, VectFull, Allocator2>& Y,
+	      const SeldonUplo& Uplo,
+	      Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A)
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(A, X, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+    CheckDim(A, Y, "Rank2Update(alpha, X, Y, uplo, M)", "X.Y' + Y.X' + M");
+#endif
+
+    cblas_zher2(CblasRowMajor, Uplo, A.GetM(),
+		reinterpret_cast<const void*>(&alpha),
+		reinterpret_cast<const void*>(X.GetData()), 1,
+		reinterpret_cast<const void*>(Y.GetData()), 1,
+		reinterpret_cast<void*>(A.GetData()), A.GetM());
   }
 
 

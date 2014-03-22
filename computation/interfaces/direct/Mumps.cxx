@@ -21,6 +21,15 @@
 
 #include "Mumps.hxx"
 
+extern "C"
+{
+  // including mpi from sequential version of Mumps if the
+  // compilation is not made on a parallel machine
+#ifndef SELDON_WITH_MPI
+#include "mpi.h"
+#endif
+}
+
 namespace Seldon
 {
 
@@ -44,7 +53,6 @@ namespace Seldon
   template<class T>
   inline MatrixMumps<T>::MatrixMumps()
   {
-    // struct_mumps.comm_fortran = MPI_Comm_c2f(MPI_COMM_WORLD);
     struct_mumps.comm_fortran = -987654;
 
     // parameters for mumps
@@ -52,18 +60,40 @@ namespace Seldon
     struct_mumps.par = 1;
     struct_mumps.sym = 0; // 0 -> unsymmetric matrix
 
-    // mumps is called
-    CallMumps();
-
     // other parameters
     struct_mumps.n = 0;
     type_ordering = 7; // default : we let Mumps choose the ordering
     print_level = -1;
+    info_facto = 0;
     out_of_core = false;
-    new_communicator = false;
+    coef_overestimate = 1.3;
+    coef_increase_memory = 1.5;
+    coef_max_overestimate = 50.0;
   }
 
 
+  // Function used to force factorisation when estimated space was too small
+  template<class T>
+  void MatrixMumps<T>::IterateFacto()
+  {
+    // if error -9 occurs, retrying with larger size
+    int init_percentage = struct_mumps.icntl[13];
+    int new_percentage = init_percentage;
+    while (((struct_mumps.info[0] == -9) || (struct_mumps.info[0] == -8)
+            || (struct_mumps.info[0] == -17) || (struct_mumps.info[0] == -20))
+           && (new_percentage < coef_max_overestimate*100.0))
+      {
+        new_percentage = int(new_percentage*coef_increase_memory);
+        struct_mumps.icntl[13] = new_percentage;
+        struct_mumps.job = 2;
+        CallMumps();
+      }
+    
+    struct_mumps.icntl[13] = init_percentage;
+    info_facto = struct_mumps.info[0];
+  }
+  
+  
   //! initialization of the computation
   template<class T> template<class MatrixSparse>
   inline void MatrixMumps<T>
@@ -77,17 +107,12 @@ namespace Seldon
     if (distributed)
       {
 	// for distributed matrix, every processor is assumed to be involved
-	struct_mumps.comm_fortran = -987654;
+	struct_mumps.comm_fortran = MPI_Comm_c2f(MPI::COMM_WORLD);
       }
     else
       {
 	// centralized matrix => a linear system per processor
-	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-	MPI_Comm_group(MPI_COMM_WORLD, &single_group);
-	MPI_Group_incl(single_group, 1, &rank, &single_group);
-	MPI_Comm_create(MPI_COMM_WORLD, single_group, &single_comm);
-	struct_mumps.comm_fortran = MPI_Comm_c2f(single_comm);
-	new_communicator = true;
+        struct_mumps.comm_fortran = MPI_Comm_c2f(MPI::COMM_SELF);
       }
 #endif
 
@@ -100,9 +125,12 @@ namespace Seldon
 
     // mumps is called
     CallMumps();
-
-    struct_mumps.icntl[13] = 20;
+    
+    struct_mumps.icntl[13] = int(100.0*(coef_overestimate-1.0));
     struct_mumps.icntl[6] = type_ordering;
+    if (type_ordering == 1)
+      struct_mumps.perm_in = perm.GetData();
+
     // setting out of core parameters
     if (out_of_core)
       struct_mumps.icntl[21] = 1;
@@ -137,6 +165,16 @@ namespace Seldon
   }
 
 
+  template<class T>
+  inline void MatrixMumps<T>::SetPermutation(const IVect& permut)
+  {
+    type_ordering = 1;
+    perm.Reallocate(permut.GetM());
+    for (int i = 0; i < perm.GetM(); i++)
+      perm(i) = permut(i) + 1;
+  }
+
+
   //! clears factorization
   template<class T>
   MatrixMumps<T>::~MatrixMumps()
@@ -152,21 +190,13 @@ namespace Seldon
     if (struct_mumps.n > 0)
       {
 	struct_mumps.job = -2;
-	CallMumps(); /* Terminate instance */
+	// Mumps variables are deleted.
+        CallMumps();
 
-	num_row_glob.Clear(); num_col_glob.Clear();
+	num_row_glob.Clear();
+	num_col_glob.Clear();
 	struct_mumps.n = 0;
-
       }
-
-#ifdef SELDON_WITH_MPI
-    if (new_communicator)
-      {
-	MPI_Comm_free(&single_comm);
-	new_communicator = false;
-      }
-#endif
-
   }
 
 
@@ -198,6 +228,7 @@ namespace Seldon
   }
 
 
+  //! Enables writing on the disk (out of core).
   template<class T>
   inline void MatrixMumps<T>::EnableOutOfCore()
   {
@@ -205,29 +236,53 @@ namespace Seldon
   }
 
 
+  //! Disables writing on the disk (incore).
   template<class T>
   inline void MatrixMumps<T>::DisableOutOfCore()
   {
     out_of_core = false;
   }
 
+  
+  template<class T>
+  inline void MatrixMumps<T>::SetCoefficientEstimationNeededMemory(double coef)
+  {
+    coef_overestimate = coef;
+  }
+  
+  
+  template<class T>
+  inline void MatrixMumps<T>::SetMaximumCoefficientEstimationNeededMemory(double coef)
+  {
+    coef_max_overestimate = coef;
+  }
+  
+  
+  template<class T>
+  void MatrixMumps<T>::SetIncreaseCoefficientEstimationNeededMemory(double coef)
+  {
+    coef_increase_memory = coef;
+  }
+  
 
-  //! computes row numbers
+  //! Computes an ordering for matrix renumbering.
   /*!
     \param[in,out] mat matrix whose we want to find the ordering
     \param[out] numbers new row numbers
     \param[in] keep_matrix if false, the given matrix is cleared
   */
-  template<class T> template<class Prop,class Storage,class Allocator>
-  void MatrixMumps<T>::FindOrdering(Matrix<T, Prop, Storage, Allocator> & mat,
+  template<class T> template<class T0, class Prop,class Storage,class Allocator>
+  void MatrixMumps<T>::FindOrdering(Matrix<T0, Prop, Storage, Allocator> & mat,
 				    IVect& numbers, bool keep_matrix)
   {
     InitMatrix(mat);
 
-    int n = mat.GetM(), nnz = mat.GetNonZeros();
+    int n = mat.GetM();
     // conversion in coordinate format
-    IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
+    IVect num_row, num_col; Vector<T, VectFull, CallocAlloc<T> > values;
     ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
+    
+    int nnz = num_col.GetM();
     // no values needed to renumber
     values.Clear();
     if (!keep_matrix)
@@ -237,42 +292,47 @@ namespace Seldon
     struct_mumps.irn = num_row.GetData();
     struct_mumps.jcn = num_col.GetData();
 
-    /* Call the MUMPS package. */
+    // Call the MUMPS package.
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
+
+    info_facto = struct_mumps.info[0];
 
     numbers.Reallocate(n);
     for (int i = 0; i < n; i++)
       numbers(i) = struct_mumps.sym_perm[i]-1;
   }
 
-
+  
   //! factorization of a given matrix
   /*!
     \param[in,out] mat matrix to factorize
     \param[in] keep_matrix if false, the given matrix is cleared
   */
-  template<class T> template<class Prop, class Storage, class Allocator>
-  void MatrixMumps<T>::FactorizeMatrix(Matrix<T,Prop,Storage,Allocator> & mat,
+  template<class T> template<class T0, class Prop, class Storage, class Allocator>
+  void MatrixMumps<T>::FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 				       bool keep_matrix)
   {
     InitMatrix(mat);
 
-    int n = mat.GetM(), nnz = mat.GetNonZeros();
+    int n = mat.GetM();
     // conversion in coordinate format with fortran convention (1-index)
-    IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
+    IVect num_row, num_col; Vector<T, VectFull, CallocAlloc<T> > values;
     ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
     if (!keep_matrix)
       mat.Clear();
 
+    int nnz = values.GetM();
     struct_mumps.n = n; struct_mumps.nz = nnz;
     struct_mumps.irn = num_row.GetData();
     struct_mumps.jcn = num_col.GetData();
     struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
 
-    /* Call the MUMPS package. */
+    // Call the MUMPS package.
     struct_mumps.job = 4; // we analyse and factorize the system
     CallMumps();
+    
+    IterateFacto();
   }
 
 
@@ -293,9 +353,11 @@ namespace Seldon
     struct_mumps.jcn = num_col_glob.GetData();
     struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
 
-    /* Call the MUMPS package. */
+    // Call the MUMPS package.
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
+
+    info_facto = struct_mumps.info[0];
   }
 
 
@@ -314,17 +376,40 @@ namespace Seldon
     // to the row/column numbers given for the analysis
     struct_mumps.a = reinterpret_cast<pointer>(mat.GetData());
 
-    /* Call the MUMPS package. */
+    // Call the MUMPS package.
     struct_mumps.job = 2; // we factorize the system
     CallMumps();
+    
+    IterateFacto();
   }
 
+  
+  //! returns memory used by the factorisation in bytes
+  template<class T>
+  int64_t MatrixMumps<T>::GetMemorySize() const
+  {
+    int64_t taille = sizeof(int)*(num_row_glob.GetM()
+                                  + num_col_glob.GetM() + perm.GetM());
+    
+    int64_t nnz = struct_mumps.info[8];
+    if (struct_mumps.info[8] < 0)
+      nnz = abs(struct_mumps.info[8])*int64_t(1000000);
+
+    taille += sizeof(T)*nnz ;
+    nnz = struct_mumps.info[9];
+    if (struct_mumps.info[9] < 0)
+      nnz = abs(struct_mumps.info[9])*int64_t(1000000);
+    
+    taille += sizeof(int)*nnz;
+    return taille;
+  }
+  
 
   //! returns information about factorization performed
   template<class T>
   int MatrixMumps<T>::GetInfoFactorization() const
   {
-    return struct_mumps.info[0];
+    return info_facto;
   }
 
 
@@ -343,8 +428,8 @@ namespace Seldon
 		 bool keep_matrix)
   {
     InitMatrix(mat);
-
-    int n_schur = num.GetM(), n = mat.GetM();
+    
+    int n_schur = num.GetM();
     // Subscripts are changed to respect fortran convention
     IVect index_schur(n_schur);
     for (int i = 0; i < n_schur; i++)
@@ -352,15 +437,33 @@ namespace Seldon
 
     // array that will contain values of Schur matrix
     Vector<T, VectFull, Allocator2> vec_schur(n_schur*n_schur);
-
-    struct_mumps.icntl[18] = n_schur;
+    vec_schur.Fill(0);
+    
+    struct_mumps.icntl[18] = 1;
     struct_mumps.size_schur = n_schur;
     struct_mumps.listvar_schur = index_schur.GetData();
     struct_mumps.schur = reinterpret_cast<pointer>(vec_schur.GetData());
 
-    // factorization of the matrix
-    FactorizeMatrix(mat, keep_matrix);
+    int n = mat.GetM(), nnz = mat.GetNonZeros();
+    // conversion in coordinate format with fortran convention (1-index)
+    IVect num_row, num_col;
+    Vector<T, VectFull, Allocator> values;
+    ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
+    if (!keep_matrix)
+      mat.Clear();
 
+    struct_mumps.n = n;
+    struct_mumps.nz = nnz;
+    struct_mumps.irn = num_row.GetData();
+    struct_mumps.jcn = num_col.GetData();
+    struct_mumps.a = reinterpret_cast<pointer>(values.GetData());
+
+    // Call the MUMPS package.
+    struct_mumps.job = 4; // we analyse and factorize the system
+    CallMumps();
+    
+    IterateFacto();
+    
     // resetting parameters related to Schur complement
     struct_mumps.icntl[18] = 0;
     struct_mumps.size_schur = 0;
@@ -369,11 +472,19 @@ namespace Seldon
 
     // schur complement stored by rows
     int nb = 0;
-    mat_schur.Reallocate(n,n);
-    for (int i = 0; i < n; i++)
-      for (int j = 0; j < n ;j++)
-	mat_schur(i,j) = vec_schur(nb++);
-
+    mat_schur.Reallocate(n_schur, n_schur);
+    if (IsSymmetricMatrix(mat))
+      for (int i = 0; i < n_schur; i++)
+	for (int j = 0; j <= i; j++)
+	  {
+	    mat_schur(i, j) = vec_schur(i*n_schur + j);
+	    mat_schur(j, i) = vec_schur(i*n_schur + j);
+	  }
+    else
+      for (int i = 0; i < n_schur; i++)
+	for (int j = 0; j < n_schur;j++)
+	  mat_schur(i, j) = vec_schur(nb++);
+    
     vec_schur.Clear(); index_schur.Clear();
   }
 
@@ -400,7 +511,9 @@ namespace Seldon
       struct_mumps.icntl[8] = 0;
     else
       struct_mumps.icntl[8] = 1;
-
+    
+    struct_mumps.nrhs = 1;
+    struct_mumps.lrhs = x.GetM();
     struct_mumps.rhs = reinterpret_cast<pointer>(x.GetData());
     struct_mumps.job = 3; // we solve system
     CallMumps();
@@ -449,76 +562,129 @@ namespace Seldon
 #ifdef SELDON_WITH_MPI
   //! factorization of a given matrix in distributed form (parallel execution)
   /*!
-    \param[inout] mat columns of the matrix to factorize
-    \param[in] sym Symmetric or General
+    \param[in,out] comm_facto MPI communicator
+    \param[in,out] Ptr start indices for each column
+    \param[in,out] IndRow row indices
+    \param[in,out] Val data
+    \param[in] sym if true, the matrix is assumed to be symmetric (upper part
+    is provided)
     \param[in] glob_number row numbers (in the global matrix)
     \param[in] keep_matrix if false, the given matrix is cleared
   */
-  template<class T> template<class Prop, class Allocator>
+  template<class T>
+  template<class Alloc1, class Alloc2, class Alloc3, class Tint>
   void MatrixMumps<T>::
-  FactorizeDistributedMatrix(Matrix<T, General, ColSparse, Allocator> & mat,
-			     const Prop& sym, const IVect& glob_number,
-			     bool keep_matrix)
+  FactorizeDistributedMatrix(MPI::Comm& comm_facto,
+                             Vector<Tint, VectFull, Alloc1>& Ptr,
+                             Vector<Tint, VectFull, Alloc2>& IndRow,
+                             Vector<T, VectFull, Alloc3>& Val,
+                             const Vector<Tint>& glob_number,
+                             bool sym, bool keep_matrix)
   {
-    // initialization depending on symmetric of the matrix
-    Matrix<T, Prop, RowSparse, Allocator> Atest;
-    InitMatrix(Atest, true);
+    // Initialization depending on symmetry of the matrix.
+    if (sym)
+      {
+        Matrix<T, Symmetric, RowSymSparse, Alloc3> Atest;
+        InitMatrix(Atest, true);
+      }
+    else
+      {
+        Matrix<T, General, RowSparse, Alloc3> Atest;
+        InitMatrix(Atest, true);
+      }
+
+    // Fortran communicator
+    struct_mumps.comm_fortran = MPI_Comm_c2f(comm_facto);
 
     // distributed matrix
     struct_mumps.icntl[17] = 3;
 
-    // global number of rows : mat.GetM()
-    int N = mat.GetM();
-    int nnz = mat.GetNonZeros();
-    // conversion in coordinate format with C-convention (0-index)
-    IVect num_row, num_col; Vector<T, VectFull, Allocator> values;
-    ConvertMatrix_to_Coordinates(mat, num_row,
-				 num_col, values, 0);
+    // finding the size of the overall system
+    Tint nmax = 0, N = 0;
+    for (int i = 0; i < glob_number.GetM(); i++)
+      nmax = max(glob_number(i)+1, nmax);
 
-    // we replace num_col with global numbers
-    for (int i = 0; i < num_row.GetM(); i++)
-      {
-	num_row(i)++;
-	num_col(i) = glob_number(num_col(i)) + 1;
-      }
+    comm_facto.Allreduce(&nmax, &N, 1, MPI::INTEGER, MPI::MAX);
+
+    // number of non-zero entries on this processor
+    int nnz = IndRow.GetM();
+
+    // conversion in coordinate format
+    Vector<Tint, VectFull, Alloc2> IndCol(nnz);
+    for (int i = 0; i < IndRow.GetM(); i++)
+      IndRow(i)++;
+
+    for (int i = 0; i < Ptr.GetM()-1; i++)
+      for (int j = Ptr(i); j < Ptr(i+1); j++)
+        IndCol(j) = glob_number(i) + 1;
 
     if (!keep_matrix)
-      mat.Clear();
+      Ptr.Clear();
 
-    /* Define the problem on the host */
-    struct_mumps.n = N; struct_mumps.nz_loc = nnz;
-    struct_mumps.irn_loc = num_row.GetData();
-    struct_mumps.jcn_loc = num_col.GetData();
-    struct_mumps.a_loc = reinterpret_cast<pointer>(values.GetData());
+    // Define the problem on the host
+    struct_mumps.n = N;
+    struct_mumps.nz_loc = nnz;
+    struct_mumps.irn_loc = IndRow.GetData();
+    struct_mumps.jcn_loc = IndCol.GetData();
+    struct_mumps.a_loc = reinterpret_cast<pointer>(Val.GetData());
 
-    /* Call the MUMPS package. */
-    struct_mumps.job = 4; // we analyse and factorize the system
+    // Call the MUMPS package.
+    struct_mumps.job = 1; // we analyse the system
     CallMumps();
-    cout<<"Factorization completed"<<endl;
-  }
 
+    // overestimating size in order to avoid error -9
+    double coef = coef_overestimate;
+    struct_mumps.icntl[22] = int(coef*struct_mumps.infog[25]);
+    struct_mumps.job = 2; // we factorize the system
+    CallMumps();
+    
+    int info = 0;
+    comm_facto.Allreduce(&struct_mumps.info[0], &info, 1, MPI::INTEGER, MPI::MIN);
+    
+    bool test_loop = true;
+    int init_percentage = struct_mumps.icntl[13];
+    int new_percentage = init_percentage;
+    // loop in order to complete factorisation
+    while (test_loop)
+      {
+        if (((info == -9)||(info==-8)||(info==-17)||(info==-20))
+             && (coef < coef_max_overestimate))
+          {
+            coef *= coef_increase_memory;
+            // increasing icntl(23) if error -9 occured
+            struct_mumps.icntl[22] = int(coef*struct_mumps.infog[25]);
+            new_percentage = int(new_percentage*coef_increase_memory);
+            struct_mumps.icntl[13] = new_percentage;        
+          }
+        else
+          test_loop = false;
+        
+        if (test_loop)
+          {
+            CallMumps();
+            
+            comm_facto.Allreduce(&struct_mumps.info[0], &info, 1, MPI::INTEGER, MPI::MIN);
+          }
+      }
 
-  //! Undefined (empty) function.
-  template<class Alloc1, class Alloc2, class Alloc3, class Tint>
-  void FactorizeDistributedMatrix(Vector<int, VectFull, Alloc1>&,
-                                  Vector<int, VectFull, Alloc2>&,
-                                  Vector<T, VectFull, Alloc3>&,
-                                  const Vector<Tint>& glob_number,
-                                  bool sym, bool keep_matrix)
-  {
-    throw Undefined("FactorizeDistributedMatrix(Vector<int>&, Vector<int>&, "
-                    "Vector<T>&, Vector<Tint>, bool, bool)");
+    struct_mumps.icntl[13] = init_percentage;
+    info_facto = info;
+    
+    if ((comm_facto.Get_rank() == 0) && (print_level >= 0))
+      cout<<"Factorization completed"<<endl;
+
   }
 
 
   //! solves linear system with parallel execution
   /*!
     \param[in] TransA we solve A x = b or A^T x = b
-    \param[inout] x right-hand-side then solution
-    \param[inout] glob_num global row numbers
+    \param[in,out] x right-hand-side then solution
+    \param[in,out] glob_num global row numbers
   */
   template<class T> template<class Allocator2, class Transpose_status>
-  void MatrixMumps<T>::SolveDistributed(const Transpose_status& TransA,
+  void MatrixMumps<T>::SolveDistributed(MPI::Comm& comm_facto,
+                                        const Transpose_status& TransA,
 					Vector<T, VectFull, Allocator2>& x,
 					const IVect& glob_num)
   {
@@ -526,12 +692,12 @@ namespace Seldon
     int cplx = sizeof(T)/8;
     // allocating the global right hand side
     rhs.Reallocate(struct_mumps.n); rhs.Zero();
-
-    if (rank == 0)
+    
+    if (comm_facto.Get_rank() == 0)
       {
 	// on the host, we retrieve datas of all the other processors
-	int nb_procs; MPI_Status status;
-	MPI_Comm_size(MPI_COMM_WORLD, &nb_procs);
+	int nb_procs = comm_facto.Get_size();
+        MPI::Status status;
 	if (nb_procs > 1)
 	  {
 	    // assembling the right hand side
@@ -542,15 +708,19 @@ namespace Seldon
 
 		if (i != 0)
 		  {
+                    // On the host processor receiving components of right
+                    // hand side.
 		    int nb_dof;
-		    MPI_Recv(&nb_dof, 1, MPI_INT, i, 34,
-                             MPI_COMM_WORLD, &status);
-		    xp.Reallocate(nb_dof);
+		    comm_facto.Recv(&nb_dof, 1, MPI::INTEGER, i, 34, status);
+
+                    xp.Reallocate(nb_dof);
 		    nump.Reallocate(nb_dof);
-		    MPI_Recv(xp.GetDataVoid(), cplx*nb_dof,
-                             MPI_DOUBLE, i, 35, MPI_COMM_WORLD, &status);
-		    MPI_Recv(nump.GetData(), nb_dof, MPI_INT, i, 36,
-                             MPI_COMM_WORLD, &status);
+
+                    comm_facto.Recv(xp.GetDataVoid(), cplx*nb_dof,
+                                    MPI::DOUBLE, i, 35, status);
+
+		    comm_facto.Recv(nump.GetData(), nb_dof, MPI::INTEGER,
+                                    i, 36, status);
 		  }
 		else
 		  {
@@ -568,11 +738,11 @@ namespace Seldon
       }
     else
       {
-	// on other processors, we send solution
+	// On other processors, we send right hand side.
 	int nb = x.GetM();
-	MPI_Send(&nb, 1, MPI_INT, 0, 34, MPI_COMM_WORLD);
-	MPI_Send(x.GetDataVoid(), cplx*nb, MPI_DOUBLE, 0, 35, MPI_COMM_WORLD);
-	MPI_Send(glob_num.GetData(), nb, MPI_INT, 0, 36, MPI_COMM_WORLD);
+	comm_facto.Send(&nb, 1, MPI::INTEGER, 0, 34);
+	comm_facto.Send(x.GetDataVoid(), cplx*nb, MPI::DOUBLE, 0, 35);
+	comm_facto.Send(glob_num.GetData(), nb, MPI::INTEGER, 0, 36);
       }
 
     // we solve system
@@ -581,12 +751,12 @@ namespace Seldon
     else
       struct_mumps.icntl[8] = 1;
 
+    struct_mumps.nrhs = 1;
     struct_mumps.job = 3;
     CallMumps();
 
     // we distribute solution on all the processors
-    MPI_Bcast(rhs.GetDataVoid(), cplx*rhs.GetM(),
-              MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    comm_facto.Bcast(rhs.GetDataVoid(), cplx*rhs.GetM(), MPI::DOUBLE, 0);
 
     // and we extract the solution on provided numbers
     for (int i = 0; i < x.GetM(); i++)
@@ -594,49 +764,78 @@ namespace Seldon
   }
 
 
-  template<class T> template<class Allocator2>
-  void MatrixMumps<T>::SolveDistributed(Vector<T, VectFull, Allocator2>& x,
-					const IVect& glob_num)
+  template<class T> template<class Allocator2, class Tint>
+  void MatrixMumps<T>::SolveDistributed(MPI::Comm& comm_facto,
+                                        Vector<T, VectFull, Allocator2>& x,
+					const Vector<Tint>& glob_num)
   {
-    SolveDistributed(SeldonNoTrans, x, glob_num);
+    SolveDistributed(comm_facto, SeldonNoTrans, x, glob_num);
   }
 #endif
 
 
-  template<class T, class Storage, class Allocator>
-  void GetLU(Matrix<T,Symmetric,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
-	     bool keep_matrix = false)
+  //! Factorization of a matrix of same type T as for the Mumps object   
+  template<class MatrixSparse, class T>
+  void GetLU(MatrixSparse& A, MatrixMumps<T>& mat_lu, bool keep_matrix, T& x)
   {
     mat_lu.FactorizeMatrix(A, keep_matrix);
   }
+  
 
-
-  template<class T, class Storage, class Allocator>
-  void GetLU(Matrix<T,General,Storage,Allocator>& A, MatrixMumps<T>& mat_lu,
-	     bool keep_matrix = false)
+  //! Factorization of a complex matrix with a real Mumps object
+  template<class MatrixSparse, class T>
+  void GetLU(MatrixSparse& A, MatrixMumps<T>& mat_lu, bool keep_matrix, complex<T>& x)
   {
-    mat_lu.FactorizeMatrix(A, keep_matrix);
+    throw WrongArgument("GetLU(Matrix<complex<T> >& A, MatrixMumps<T>& mat_lu, bool)",
+			"The LU matrix must be complex");
   }
 
 
+  //! Factorization of a real matrix with a complex Mumps object
+  template<class MatrixSparse, class T>
+  void GetLU(MatrixSparse& A, MatrixMumps<complex<T> >& mat_lu, bool keep_matrix, T& x)
+  {
+    throw WrongArgument("GetLU(Matrix<T>& A, MatrixMumps<complex<T> >& mat_lu, bool)",
+			"The sparse matrix must be complex");
+  }
+  
+
+  //! Factorization of a general matrix with Mumps
+  template<class T0, class Prop, class Storage, class Allocator, class T>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A, MatrixMumps<T>& mat_lu,
+	     bool keep_matrix)
+  {
+    // we check if the type of non-zero entries of matrix A
+    // and of the Mumps object (T) are different
+    // we call one of the GetLUs written above
+    // such a protection avoids to compile the factorisation of a complex
+    // matrix with a real Mumps object
+    typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;
+    GetLU(A, mat_lu, keep_matrix, x);
+  }
+  
+  
+  //! computes Schur complement of a symmetric matrix
   template<class T, class Storage, class Allocator, class MatrixFull>
   void GetSchurMatrix(Matrix<T, Symmetric, Storage, Allocator>& A,
                       MatrixMumps<T>& mat_lu, const IVect& num,
-                      MatrixFull& schur_matrix, bool keep_matrix = false)
+                      MatrixFull& schur_matrix, bool keep_matrix)
   {
     mat_lu.GetSchurMatrix(A, num, schur_matrix, keep_matrix);
   }
 
 
+  //! computes Schur complement of an unsymmetric matrix
   template<class T, class Storage, class Allocator, class MatrixFull>
   void GetSchurMatrix(Matrix<T, General, Storage, Allocator>& A,
                       MatrixMumps<T>& mat_lu, const IVect& num,
-                      MatrixFull& schur_matrix, bool keep_matrix = false)
+                      MatrixFull& schur_matrix, bool keep_matrix)
   {
     mat_lu.GetSchurMatrix(A, num, schur_matrix, keep_matrix);
   }
 
 
+  //! LU resolution with a vector whose type is the same as for Mumps object
   template<class T, class Allocator>
   void SolveLU(MatrixMumps<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
@@ -644,6 +843,8 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a vector whose type is the same as for Mumps object
+  //! Solves transpose system A^T x = b or A x = b depending on TransA
   template<class T, class Allocator, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
 	       MatrixMumps<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
@@ -652,6 +853,7 @@ namespace Seldon
   }
 
 
+  //! LU resolution with a matrix whose type is the same as for Mumps object
   template<class T, class Prop, class Allocator>
   void SolveLU(MatrixMumps<T>& mat_lu,
                Matrix<T, Prop, ColMajor, Allocator>& x)
@@ -660,11 +862,76 @@ namespace Seldon
   }
 
 
-  template<class T, class Allocator, class Transpose_status>
+  //! LU resolution with a matrix whose type is the same as for Mumps object
+  //! Solves transpose system A^T x = b or A x = b depending on TransA
+  template<class T, class Allocator, class Prop, class Transpose_status>
   void SolveLU(const Transpose_status& TransA,
-	       MatrixMumps<T>& mat_lu, Matrix<T, ColMajor, Allocator>& x)
+	       MatrixMumps<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
+  }
+
+
+  //! Solves A x = b, where A is real and x is complex
+  template<class Allocator>
+  void SolveLU(MatrixMumps<double>& mat_lu,
+               Vector<complex<double>, VectFull, Allocator>& x)
+  {
+    Matrix<double, General, ColMajor> y(x.GetM(), 2);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      {
+	y(i, 0) = real(x(i));
+	y(i, 1) = imag(x(i));
+      }
+    
+    SolveLU(mat_lu, y);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      x(i) = complex<double>(y(i, 0), y(i, 1));
+  }
+  
+
+  //! Solves A x = b or A^T x = b, where A is real and x is complex
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixMumps<double>& mat_lu,
+               Vector<complex<double>, VectFull, Allocator>& x)
+  {
+    Matrix<double, General, ColMajor> y(x.GetM(), 2);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      {
+	y(i, 0) = real(x(i));
+	y(i, 1) = imag(x(i));
+      }
+    
+    SolveLU(TransA, mat_lu, y);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      x(i) = complex<double>(y(i, 0), y(i, 1));
+
+  }
+
+
+  //! Solves A x = b, where A is complex and x is real => Forbidden
+  template<class Allocator>
+  void SolveLU(MatrixMumps<complex<double> >& mat_lu,
+               Vector<double, VectFull, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixMumps<complex<double> >, Vector<double>)", 
+			"The result should be a complex vector");
+  }
+
+  
+  //! Solves A x = b or A^T x = b, where A is complex and x is real => Forbidden  
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixMumps<complex<double> >& mat_lu,
+               Vector<double, VectFull, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixMumps<complex<double> >, Vector<double>)", 
+			"The result should be a complex vector");
   }
 
 }

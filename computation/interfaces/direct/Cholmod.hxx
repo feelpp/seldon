@@ -34,6 +34,7 @@ namespace Seldon
   protected :
     cholmod_common param_chol;
     cholmod_factor* L;
+    cholmod_sparse* Lsparse;
     int n;
 
   public :
@@ -42,15 +43,38 @@ namespace Seldon
 
     void Clear();
 
+    void HideMessages();
+    void ShowMessages();
+    void ShowFullHistory();
+
     template<class Prop, class Storage, class Allocator>
     void FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
-			 bool keep_matrix = false);
+                         bool keep_matrix = false);
 
     template<class Transpose_status, class Allocator>
     void Solve(const Transpose_status& TransA,
                Vector<double, VectFull, Allocator>& x);
+
+    template<class Transpose_status, class Allocator>
+    void Mlt(const Transpose_status& TransA,
+             Vector<double, VectFull, Allocator>& x);
+
   };
 
+  template<class T, class Prop, class Storage, class Allocator>
+  void GetCholesky(Matrix<T, Prop, Storage, Allocator>& A,
+                   MatrixCholmod& mat_chol, bool keep_matrix = false);
+
+  template<class T, class Allocator, class Transpose_status>
+  void
+  SolveCholesky(const Transpose_status& TransA,
+                MatrixCholmod& mat_chol, Vector<T, VectFull, Allocator>& x);
+
+  template<class T, class Allocator, class Transpose_status>
+  void
+  MltCholesky(const Transpose_status& TransA,
+	      MatrixCholmod& mat_chol, Vector<T, VectFull, Allocator>& x);
+  
 }
 
 #define SELDON_FILE_CHOLMOD_HXX

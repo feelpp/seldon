@@ -1,5 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
-// Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -402,6 +402,37 @@ namespace Seldon
   }
 
 
+  //! Returns the element (\a i, \a j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::const_reference
+  Matrix_SymPacked<T, Prop, Storage, Allocator>::Get(int i, int j) const
+  {
+    return this->Val(i, j);
+  }
+
+
+  //! Returns the element (\a i, \a j)
+  /*!
+    Returns the value of element (i, j).
+    \param i row index.
+    \param j column index.
+    \return Element (i, j) of the matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::reference Matrix_SymPacked<T, Prop, Storage, Allocator>::Get(int i, int j)
+  {
+    return this->Val(i, j);
+  }
+
+
   //! Access to elements of the data array.
   /*!
     Provides a direct access to the data array.
@@ -465,6 +496,20 @@ namespace Seldon
     return *this;
   }
 
+  
+  //! Sets an element of the matrix
+  /*!
+    \param i row index
+    \param j column index
+    \param x sets a(i, j) = x
+   */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const T& x)
+  {
+    this->Val(i, j) = x;
+  }
+  
 
   //! Duplicates a matrix.
   /*!
@@ -504,9 +549,12 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymPacked<T, Prop, Storage, Allocator>::SetIdentity()
   {
-    this->Fill(T(0));
+    T one, zero;
+    SetComplexOne(one);
+    SetComplexZero(zero);
+    
+    this->Fill(zero);
 
-    T one(1);
     for (int i = 0; i < min(this->m_, this->n_); i++)
       (*this)(i, i) = one;
   }
@@ -521,7 +569,7 @@ namespace Seldon
   void Matrix_SymPacked<T, Prop, Storage, Allocator>::Fill()
   {
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = i;
+      SetComplexReal(i, this->data_[i]);
   }
 
 
@@ -533,8 +581,10 @@ namespace Seldon
   template <class T0>
   void Matrix_SymPacked<T, Prop, Storage, Allocator>::Fill(const T0& x)
   {
+    T x_;
+    SetComplexReal(x, x_);
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = x;
+      this->data_[i] = x_;
   }
 
 
@@ -560,9 +610,11 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymPacked<T, Prop, Storage, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = rand();
+      SetComplexReal(rand(), this->data_[i]);
   }
 
 
@@ -643,7 +695,7 @@ namespace Seldon
   ::Write(string FileName) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -776,7 +828,7 @@ namespace Seldon
   void Matrix_SymPacked<T, Prop, Storage, Allocator>::Read(string FileName)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -823,7 +875,7 @@ namespace Seldon
     // Checks if data was read.
     if (!FileStream.good())
       throw IOError("Matrix_SymPacked::Read(istream& FileStream)",
-                    "Output operation failed.");
+                    "Input operation failed.");
 #endif
 
   }
@@ -968,6 +1020,22 @@ namespace Seldon
     return *this;
   }
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ColSymPacked, Allocator>&
+  Matrix<T, Prop, ColSymPacked, Allocator>::operator= (const Matrix<T, Prop,
+                                                       ColSymPacked,
+                                                       Allocator>& A)
+  {
+    this->Copy(A);
+    return *this;
+  }
+
 
   //! Multiplies the matrix by a given value.
   /*!
@@ -1062,7 +1130,23 @@ namespace Seldon
   Matrix<T, Prop, RowSymPacked, Allocator>::operator= (const T0& x)
   {
     this->Fill(x);
-
+    return *this;
+  }
+  
+  
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, RowSymPacked, Allocator>&
+  Matrix<T, Prop, RowSymPacked, Allocator>::operator= (const Matrix<T, Prop,
+                                                       RowSymPacked,
+                                                       Allocator>& A)
+  {
+    this->Copy(A);
     return *this;
   }
 

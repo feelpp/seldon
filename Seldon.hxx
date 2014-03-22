@@ -58,20 +58,21 @@ namespace Seldon
 #include "share/Errors.cxx"
 #endif
 
-#include "array3d/Array3D.cxx"
+#include "array/Array3D.cxx"
+#include "array/Array4D.cxx"
+#include "array/Array.cxx"
 #include "matrix/Matrix_Base.cxx"
 #include "matrix/Matrix_Pointers.cxx"
 #include "matrix/Matrix_Triangular.cxx"
 #include "matrix/Matrix_Symmetric.cxx"
 #include "matrix/Matrix_Hermitian.cxx"
 #include "matrix_sparse/Matrix_Sparse.cxx"
-#include "matrix_sparse/Matrix_ComplexSparse.cxx"
 #include "matrix_sparse/Matrix_SymSparse.cxx"
-#include "matrix_sparse/Matrix_SymComplexSparse.cxx"
 #include "matrix/Matrix_SymPacked.cxx"
 #include "matrix/Matrix_HermPacked.cxx"
 #include "matrix/Matrix_TriangPacked.cxx"
 #include "vector/Vector.cxx"
+#include "vector/VectorCollection.cxx"
 #include "vector/Functions_Arrays.cxx"
 #include "vector/SparseVector.cxx"
 #include "matrix/Functions.cxx"
@@ -96,6 +97,13 @@ namespace Seldon
 #include "computation/interfaces/Lapack_LeastSquares.cxx"
 #include "computation/interfaces/Lapack_Eigenvalues.cxx"
 #endif // SELDON_WITH_LAPACK.
+
+// MKL additional functions
+#ifdef SELDON_WITH_MKL
+#include "computation/interfaces/Mkl_Sparse.cxx"
+#endif
+
+#include "share/Common.cxx"
 
 #ifdef SELDON_WITH_COMPILED_LIBRARY
 #include "lib/Common.cpp"

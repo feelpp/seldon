@@ -52,13 +52,17 @@ namespace Seldon
 
     typedef typename Vector1::value_type Complexe;
     Complexe alpha, beta, ibeta, beta_old, beta1,
-      ceta(0), ceta_oold, ceta_old, ceta_bar;
+      ceta, ceta_oold, ceta_old, ceta_bar;
     Complexe c, cold, s, sold, coold, soold, rho0, rho1, rho2, rho3, dp;
-
+    Complexe zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    ceta = zero;
+    
     Vector1 r(b), z(b), u(b), v(b), w(b), u_old(b), v_old(b), w_bar(b);
 
     Titer np, s_prod;
-    u_old.Zero(); v_old.Zero(); w.Zero(); w_bar.Zero();
+    u_old.Fill(zero); v_old.Fill(zero); w.Fill(zero); w_bar.Fill(zero);
 
     int success_init = iter.Init(b);
     if (success_init != 0)
@@ -67,12 +71,12 @@ namespace Seldon
     Copy(b, r);
     // r = b - A x
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), r);
+      MltAdd(-one, A, x, one, r);
     else
-      x.Zero();
+      x.Fill(zero);
 
-    ceta_oold = 0.0; ceta_old = 0.0;
-    c = 1.0; cold = 1.0; s = 0.0; sold = 0.0;
+    ceta_oold = zero; ceta_old = zero;
+    c = one; cold = one; s = zero; sold = zero;
     M.Solve(A, r, z);
 
     dp = DotProd(r, z);
@@ -80,7 +84,7 @@ namespace Seldon
     s_prod = abs(beta1);
 
     Copy(r, v); Copy(z, u);
-    ibeta = 1.0/beta;
+    ibeta = one/beta;
     Mlt(ibeta, v); Mlt(ibeta, u);
     Copy(u, w_bar);
     np = Norm2(b);
@@ -93,7 +97,7 @@ namespace Seldon
 	if (!iter.First())
 	  {
 	    Copy(v, v_old); Copy(u, u_old);
-	    ibeta = 1.0/beta;
+	    ibeta = one/beta;
 	    // v = ibeta r
 	    // u = ibeta z
 	    Copy(r, v); Mlt(ibeta, v);
@@ -101,9 +105,9 @@ namespace Seldon
 	    // w = c*w_bar + s*u
 	    Copy(w_bar, w); Mlt(c, w); Add(s, u, w);
 	    // w_bar = -s*w_bar + c*u
-	    Mlt(Complexe(-s),w_bar); Add(c,u,w_bar);
+	    Mlt(-s,w_bar); Add(c, u, w_bar);
 	    // x = x+ceta*w
-	    Add(ceta,w,x);
+	    Add(ceta, w, x);
 
 	    ceta_oold = ceta_old;
 	    ceta_old = ceta;
@@ -111,22 +115,22 @@ namespace Seldon
 
 	// product matrix vector r = A u
 	Mlt(A, u, r);
-	alpha = DotProd(u,r);
+	alpha = DotProd(u, r);
 	// preconditioning
-	M.Solve(A, r,z);
+	M.Solve(A, r, z);
 
 	// r = r - alpha*v
 	// z = z - alpha*u
-	Add(-alpha,v,r);
-	Add(-alpha,u,z);
+	Add(-alpha, v, r);
+	Add(-alpha, u, z);
 
 	// r = r - beta*v_old
 	// z = z - beta*u_old
-	Add(-beta,v_old,r);
-	Add(-beta,u_old,z);
+	Add(-beta, v_old, r);
+	Add(-beta, u_old, z);
 
 	beta_old = beta;
-	dp = DotProd(r,z);
+	dp = DotProd(r, z);
 	beta = sqrt(dp);
 
 	// QR factorization
@@ -145,19 +149,19 @@ namespace Seldon
 	  ceta = -(rho2*ceta_old + rho3*ceta_oold)/rho1;
 
 	s_prod *= abs(s);
-	if (c == Complexe(0))
+	if (c == zero)
 	  np = s_prod*1e16;
 	else
 	  np = s_prod/abs(c);
 
 	++iter;
       }
-    if (c == Complexe(0))
+    if (c == zero)
       ceta_bar = ceta*1e15;
     else
       ceta_bar = ceta/c;
 
-    Add(ceta_bar,w_bar,x);
+    Add(ceta_bar, w_bar, x);
 
     return iter.ErrorCode();
   }

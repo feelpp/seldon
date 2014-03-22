@@ -1,4 +1,4 @@
-// Copyright (C) 2010 Vivien Mallet
+// Copyright (C) 2003-2009 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -17,31 +17,42 @@
 // along with Seldon. If not, see http://www.gnu.org/licenses/.
 
 
-#ifndef SELDON_FILE_COMPUTATION_SPARSESOLVER_HXX
-
+#ifndef SELDON_FILE_ITERATIVE_INLINE_CXX
 
 namespace Seldon
 {
 
-
-  template <class T0, class Prop0, class Storage0, class Allocator0,
-	    class T1, class Storage1, class Allocator1>
-  void SparseSolve(Matrix<T0, Prop0, Storage0, Allocator0>& M,
-                   Vector<T1, Storage1, Allocator1>& Y);
-
-
-  template <class T, class Prop0, class Allocator0, class Allocator1>
-  void Solve(Matrix<T, Prop0, ColSparse, Allocator0>& M,
-             Vector<T, VectFull, Allocator1>& Y);
+  //! Default constructor
+  inline Preconditioner_Base::Preconditioner_Base()
+  {
+  }
 
 
-  template <class T, class Prop0, class Allocator0, class Allocator1>
-  void Solve(Matrix<T, Prop0, RowSparse, Allocator0>& M,
-             Vector<T, VectFull, Allocator1>& Y);
+  //! Solves M z = r
+  /*!
+    Identity preconditioner M = I
+  */
+  template<class Matrix1, class Vector1>
+  inline void Preconditioner_Base::Solve(const Matrix1& A, const Vector1& r,
+                                         Vector1& z)
+  {
+    Copy(r,z);
+  }
 
 
-}  // namespace Seldon.
+  //! Solves M^t z = r
+  /*!
+    Identity preconditioner M = I
+  */
+  template<class Matrix1, class Vector1>
+  inline void Preconditioner_Base::
+  TransSolve(const Matrix1& A, const Vector1 & r, Vector1 & z)
+  {
+    Solve(A, r, z);
+  }
 
+} // end namespace
 
-#define SELDON_FILE_COMPUTATION_SPARSESOLVER_HXX
+#define SELDON_FILE_ITERATIVE_INLINE_CXX
 #endif
+

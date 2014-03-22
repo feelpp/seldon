@@ -1,5 +1,6 @@
 // Copyright (C) 2010, INRIA
 // Author(s): Marc Fragu, Vivien Mallet
+// Copyright (C) 2011, Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -92,6 +93,7 @@ namespace Seldon
     void Reallocate(int i, int N);
     void Reallocate(const Vector<int>& length);
     void Select(int beg, int end);
+    Vector<T, VectFull, Allocator0> Flatten() const;
     template <class Td, class Allocatord>
     void Flatten(Vector<Td, VectFull, Allocatord>& data) const;
     template <class Td, class Allocatord>
@@ -100,8 +102,10 @@ namespace Seldon
 
     void PushBack(int i, const T& x);
     void PushBack(const Vector<T, VectFull, Allocator0>& X);
+#ifndef SWIG
     void PushBack(const Vector<Vector<T, VectFull, Allocator0>,
 		  VectFull, Allocator1>& V);
+#endif
     void PushBack(const Vector2<T, Allocator0, Allocator1>& V);
 
     void Clear();
@@ -111,19 +115,28 @@ namespace Seldon
 
     Vector<Vector<T, VectFull, Allocator0>, VectFull, Allocator1>&
     GetVector();
+#ifndef SWIG
     const Vector<Vector<T, VectFull, Allocator0>, VectFull,
                  Allocator1> GetVector() const;
+#endif
 
     Vector<T, VectFull, Allocator0>& GetVector(int i);
+#ifndef SWIG
     const Vector<T, VectFull, Allocator0>& GetVector(int i) const;
+#endif
 
     void Copy(const Vector2<T, Allocator0, Allocator1>& V);
+    Vector2<T, Allocator0, Allocator1> Copy() const;
 
     /*** Element access and assignment ***/
 
+#ifndef SWIG
     const Vector<T, VectFull, Allocator0>& operator() (int i) const;
+#endif
     Vector<T, VectFull, Allocator0>& operator() (int i);
+#ifndef SWIG
     const_reference operator() (int i, int j) const;
+#endif
     reference operator() (int i, int j);
 
     /*** Convenient methods ***/
@@ -131,6 +144,13 @@ namespace Seldon
     template <class V2>
     bool HasSameShape(const V2& V) const;
     void Print() const;
+
+    /*** Input/output functions ***/
+
+    void Write(string file_name, bool with_size = true) const;
+    void Write(ostream& file_stream, bool with_size = true) const;
+    void Read(string file_name, bool with_size = true);
+    void Read(istream& file_stream, bool with_size = true);
   };
 
 

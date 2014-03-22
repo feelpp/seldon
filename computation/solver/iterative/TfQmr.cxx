@@ -55,15 +55,18 @@ namespace Seldon
     typedef typename Vector1::value_type Complexe;
     Complexe sigma, alpha, beta, eta, rho, rho0;
     Titer c, kappa, tau, theta;
+    Complexe zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
 
-    tmp.Zero();
+    tmp.Fill(zero);
     // x is initial value
     // 1. r0 = M^{-1} (b - A x)
     Copy(b, tmp);
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), tmp);
+      MltAdd(-one, A, x, one, tmp);
     else
-      x.Zero();
+      x.Fill(zero);
 
     M.Solve(A, tmp, r0);
 
@@ -85,14 +88,14 @@ namespace Seldon
     Copy(v, g);
 
     // 4. d=0
-    d.Zero();
+    d.Fill(zero);
 
     // 5. tau = ||r||
     tau = Norm2(r0);
 
     // 6. theta = eta = 0
-    theta = 0.0;
-    eta = 0.0;
+    theta = Titer(0);
+    eta = zero;
 
     // 7. rtilde = r
     Copy(r0, rtilde);
@@ -111,7 +114,7 @@ namespace Seldon
 	// y2k=y(2k-1)-alpha*v
 	sigma = DotProd(rtilde, v);
 
-	if (sigma == Complexe(0))
+	if (sigma == zero)
 	  {
 	    iter.Fail(1, "Tfqmr breakdown: sigma=0");
 	    break;
@@ -133,14 +136,14 @@ namespace Seldon
 	//w = w - alpha * g;
 	Add(-alpha, g, w);
 	// 18. d=y0+((theta0^2)*eta0/alpha)*d         //need check breakdown
-	if (alpha == Complexe(0))
+	if (alpha == zero)
 	  {
 	    iter.Fail(2, "Tfqmr breakdown: alpha=0");
 	    break;
 	  }
 	//d = y1 + ( theta * theta * eta / alpha ) * d;
-	Mlt(theta * theta * eta / alpha,d);
-	Add(Complexe(1), y1, d);
+	Mlt(theta * theta * eta / alpha, d);
+	Add(one, y1, d);
 
 	// 14. theta=||w||_2/tau0       //need check breakdown
 	if (tau == Titer(0))
@@ -148,7 +151,7 @@ namespace Seldon
 	    iter.Fail(3, "Tfqmr breakdown: tau=0");
 	    break;
 	  }
-	theta  = Norm2(w) / tau;
+        theta  = Norm2(w) / tau;
 
 	// 15. c = 1/sqrt(1+theta^2)
 	c = Titer(1) / sqrt(Titer(1) + theta * theta);
@@ -162,7 +165,7 @@ namespace Seldon
 	// 19. x = x+eta*d
 	Add(eta, d, x);
 	// 20. kappa = tau*sqrt(m+1)
-	kappa = tau * sqrt( 2.* (iter.GetNumberIteration()+1) );
+	kappa = tau * sqrt( Titer(2)* (iter.GetNumberIteration()+1) );
 
 	// 21. check stopping criterion
 	if ( iter.Finished(kappa) )
@@ -176,10 +179,10 @@ namespace Seldon
 
 	// 13. w = w-alpha*M^{-1} A y0
 	// w = w - alpha * g;
-	Add(-alpha,g,w);
+	Add(-alpha, g, w);
 	// 18. d = y0+((theta0^2)*eta0/alpha)*d
 	Mlt(theta * theta * eta / alpha,d);
-	Add(Complexe(1), y0, d);
+	Add(one, y0, d);
 	// 14. theta=||w||_2/tau0
 	if (tau == Titer(0))
 	  {
@@ -201,7 +204,7 @@ namespace Seldon
 	Add(eta, d, x);
 
 	// 20. kappa = tau*sqrt(m+1)
-	kappa = tau * sqrt(2.* (iter.GetNumberIteration()+1)  + 1.);
+	kappa = tau * sqrt(Titer(2)* (iter.GetNumberIteration()+1)  + Titer(1));
 
 	// 21. check stopping criterion
 	if ( iter.Finished(kappa) )
@@ -214,7 +217,7 @@ namespace Seldon
 
 	rho0 = rho;
 	rho = DotProd(rtilde, w);
-	if (rho0 == Complexe(0))
+	if (rho0 == zero)
 	  {
 	    iter.Fail(5, "tfqmr breakdown: beta=0");
 	    break;
@@ -234,11 +237,11 @@ namespace Seldon
 
 	Mlt(beta*beta, v);
 	Add(beta, h, v);
-	Add(Complexe(1), g, v);
+	Add(one, g, v);
 
 	++iter;
       }
-
+    
     return iter.ErrorCode();
   }
 

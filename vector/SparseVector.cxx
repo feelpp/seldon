@@ -1,5 +1,5 @@
-// Copyright (C) 2003-2009 Marc Duruflé
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -36,7 +36,7 @@ namespace Seldon
     On exit, the vector is empty.
   */
   template <class T, class Allocator>
-  Vector<T, VectSparse, Allocator>::Vector()  throw():
+  Vector<T, VectSparse, Allocator>::Vector():
     Vector<T, VectFull, Allocator>()
   {
     index_ = NULL;
@@ -422,39 +422,19 @@ namespace Seldon
     \return The value of the vector at \a i.
   */
   template <class T, class Allocator>
-  inline typename Vector<T, VectSparse, Allocator>::reference
-  Vector<T, VectSparse, Allocator>::operator() (int i)
-  {
-    int k = 0;
-    // Searching for the entry.
-    while (k < this->m_ && index_[k] < i)
-      k++;
-
-    if (k >= this->m_ || index_[k] != i)
-      // The entry does not exist yet, so a zero entry is introduced.
-      AddInteraction(i, T(0));
-
-    return this->data_[k];
-  }
-
-
-  //! Access operator.
-  /*!
-    \param i index.
-    \return The value of the vector at \a i.
-  */
-  template <class T, class Allocator>
   inline typename Vector<T, VectSparse, Allocator>::value_type
   Vector<T, VectSparse, Allocator>::operator() (int i) const
   {
     int k = 0;
+    T zero;
+    SetComplexZero(zero);
     // Searching for the entry.
     while (k < this->m_ && index_[k] < i)
       k++;
 
     if (k >= this->m_ || index_[k] != i)
       // The entry does not exist, a zero is returned.
-      return T(0);
+      return zero;
 
     return this->data_[k];
   }
@@ -464,12 +444,51 @@ namespace Seldon
   /*! Returns the value of element \a i.
     \param[in] i index.
     \return Element \a i of the vector.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the vector).
+  */
+  template <class T, class Allocator>
+  inline typename Vector<T, VectSparse, Allocator>::value_type
+  Vector<T, VectSparse, Allocator>::operator() (int i)
+  {
+    int k = 0;
+    T zero;
+    SetComplexZero(zero);
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      // The entry does not exist, a zero is returned.
+      return zero;
+    
+    return this->data_[k];
+  }
+  
+  
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the vector).
   */
   template <class T, class Allocator>
   inline typename Vector<T, VectSparse, Allocator>::reference
-  Vector<T, VectSparse, Allocator>::Val(int i)
+  Vector<T, VectSparse, Allocator>::Get(int i)
   {
-    return (*this)(i);
+    int k = 0;
+    T zero;
+    SetComplexZero(zero);
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      // The entry does not exist yet, so a zero entry is introduced.
+      AddInteraction(i, zero);
+    
+    return this->data_[k];
   }
 
 
@@ -482,6 +501,55 @@ namespace Seldon
   */
   template <class T, class Allocator>
   inline typename Vector<T, VectSparse, Allocator>::const_reference
+  Vector<T, VectSparse, Allocator>::Get(int i) const
+  {
+    int k = 0;
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      throw WrongArgument("Vector<VectSparse>::Val(int)",
+                          "No reference to element " + to_str(i)
+                          + " can be returned: it is a zero entry.");
+    
+    return this->data_[k];
+  }
+
+
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument if i does not belong to the sparsity pattern
+  */
+  template <class T, class Allocator>
+  inline typename Vector<T, VectSparse, Allocator>::reference
+  Vector<T, VectSparse, Allocator>::Val(int i)
+  {
+    int k = 0;
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      throw WrongArgument("Vector<VectSparse>::Val(int)",
+                          "the entry " + to_str(i) +
+                          " does not belong to the sparsity pattern.");
+
+    
+    return this->data_[k];
+  }
+
+
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument if i does not belong to the sparsity pattern
+  */
+  template <class T, class Allocator>
+  inline typename Vector<T, VectSparse, Allocator>::const_reference
   Vector<T, VectSparse, Allocator>::Val(int i) const
   {
     int k = 0;
@@ -490,15 +558,14 @@ namespace Seldon
       k++;
 
     if (k >= this->m_ || index_[k] != i)
-      // The entry does not exist, no reference can be returned.
       throw WrongArgument("Vector<VectSparse>::Val(int)",
-                          "No reference to element " + to_str(i)
-                          + " can be returned: it is a zero entry.");
-
+                          "the entry " + to_str(i) +
+                          " does not belong to the sparsity pattern.");
+    
     return this->data_[k];
   }
 
-
+  
   //! Duplicates a vector (assignment operator).
   /*!
     \param X vector to be copied.
@@ -712,14 +779,31 @@ namespace Seldon
   template <class T, class Allocator>
   template<class Allocator0>
   void Vector<T, VectSparse, Allocator>::
-  AddInteractionRow(int n, Vector<int> index,
-		    Vector<T, VectFull, Allocator0> value,
+  AddInteractionRow(int n, const Vector<int>& index2,
+		    const Vector<T, VectFull, Allocator0>& value2,
 		    bool already_sorted)
   {
+    Vector<int> index;
+    Vector<T, VectFull, Allocator0> value;
     if (!already_sorted)
-      // Sorts the values to be added according to their indices.
-      Seldon::Assemble(n, index, value);
-
+      {
+        index.Reallocate(n);
+        value.Reallocate(n);
+        for (int i = 0; i < n; i++)
+          {
+            index(i) = index2(i);
+            value(i) = value2(i);
+          }
+        
+        // Sorts the values to be added according to their indices.
+        Seldon::Assemble(n, index, value);
+      }
+    else
+      {
+        index.SetData(n, index2.GetData());
+        value.SetData(n, value2.GetData());
+      }
+    
     /***  Values that already have an entry ***/
 
     // Number of values to be added without entry.
@@ -776,9 +860,58 @@ namespace Seldon
 
 	SetData(new_val, new_ind);
       }
+
+    if (already_sorted)
+      {
+        index.Nullify();
+        value.Nullify();
+      }
+  }
+
+  
+  //! Returns the infinite norm.
+  /*!
+    \return The infinite norm.
+  */
+  template <class T, class Allocator>
+  typename ClassComplexType<T>::Treal
+  Vector<T, VectSparse, Allocator>::GetNormInf() const
+  {
+    typename ClassComplexType<T>::Treal res(0);
+    for (int i = 0; i < this->m_; i++)
+      res = max(res, abs(this->data_[i]));
+    
+    return res;
   }
 
 
+  //! Returns the index of the highest absolute value.
+  /*!
+    \return The index of the element that has the highest absolute value.
+  */
+  template <class T, class Allocator>
+  int Vector<T, VectSparse, Allocator>::GetNormInfIndex() const
+  {
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (this->GetLength() == 0)
+      throw WrongDim("Vector<VectSparse>::GetNormInfIndex()",
+		     "Vector is null.");
+#endif
+
+    typename ClassComplexType<T>::Treal res(0), temp;
+    int j = 0;
+    for (int i = 0; i < this->GetLength(); i++)
+      {
+	temp = res;
+	res = max(res, abs(this->data_[i]));
+	if (temp != res) j = i;
+      }
+
+    return this->index_[j];
+  }
+
+  
   /**************************
    * OUTPUT/INPUT FUNCTIONS *
    **************************/
@@ -794,7 +927,7 @@ namespace Seldon
   void Vector<T, VectSparse, Allocator>::Write(string FileName) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -890,14 +1023,9 @@ namespace Seldon
 #endif
 
     // First entries.
-    for (int i = 0; i < this->m_ - 1; i++)
+    for (int i = 0; i < this->m_; i++)
       stream << (Index(i) + 1) << " " << Value(i) << '\n';
-
-    // Last entry is a special case: there should be no empty line at the end
-    // of the stream.
-    if (this->m_ > 0)
-      stream << (Index(this->m_ - 1) + 1) << " " << Value(this->m_ - 1);
-
+    
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!stream.good())
@@ -917,7 +1045,7 @@ namespace Seldon
   void Vector<T, VectSparse, Allocator>::Read(string FileName)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -961,7 +1089,7 @@ namespace Seldon
     // Checks if data was read.
     if (!stream.good())
       throw IOError("Vector<VectSparse>::Read(istream& stream)",
-                    "Output operation failed.");
+                    "Input operation failed.");
 #endif
 
   }

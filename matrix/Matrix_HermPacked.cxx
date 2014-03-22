@@ -1,5 +1,5 @@
-// Copyright (C) 2001-2009 Vivien Mallet
-// Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -264,8 +264,8 @@ namespace Seldon
   /**********************************
    * ELEMENT ACCESS AND AFFECTATION *
    **********************************/
-
-
+  
+  
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -274,42 +274,8 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_HermPacked<T, Prop, Storage, Allocator>::reference
-  Matrix_HermPacked<T, Prop, Storage, Allocator>::operator() (int i, int j)
-  {
-
-#ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_HermPacked::operator()",
-		     string("Index should be in [0, ") + to_str(this->m_-1)
-		     + "], but is equal to " + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_HermPacked::operator()",
-		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");
-
-    if (i > j)
-      throw WrongRow("Matrix_HermPacked::operator()",
-		     string("Attempted to access to element (")
-		     + to_str(i) + ", " + to_str(j)
-		     + ") but row index should not be strictly"
-		     + " more than column index.");
-#endif
-
-    return this->data_[Storage::GetFirst(i * this->n_ - (i*(i+1)) / 2 + j,
-					 (j*(j+1)) / 2 + i)];
-  }
-
-
-  //! Access operator.
-  /*!
-    Returns the value of element (i, j).
-    \param i row index.
-    \param j column index.
-    \return Element (i, j) of the matrix.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_HermPacked<T, Prop, Storage, Allocator>::value_type
+  inline const typename 
+  Matrix_HermPacked<T, Prop, Storage, Allocator>::value_type
   Matrix_HermPacked<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
   {
@@ -362,7 +328,7 @@ namespace Seldon
 		     string("Attempted to access to element (")
 		     + to_str(i) + ", " + to_str(j)
 		     + ") but row index should not be strictly"
-		     + " more than column index.");
+		     + " greater than column index.");
 #endif
 
     return this->data_[Storage::GetFirst(i * this->n_ - (i*(i+1)) / 2 + j,
@@ -398,11 +364,40 @@ namespace Seldon
 		     string("Attempted to access to element (")
 		     + to_str(i) + ", " + to_str(j)
 		     + string(") but row index should not be strictly")
-		     + " more than column index.");
+		     + " greater than column index.");
 #endif
 
     return this->data_[Storage::GetFirst(i * this->n_ - (i*(i+1)) / 2 + j,
 					 (j*(j+1)) / 2 + i)];
+  }
+
+
+  //! Returns access to an element (i, j)
+  /*!
+    \param i row index.
+    \param j column index.
+    \return The value of the matrix at (i, j).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_HermPacked<T, Prop, Storage, Allocator>::reference
+  Matrix_HermPacked<T, Prop, Storage, Allocator>::Get(int i, int j)
+  {
+    return this->Val(i, j);
+  }
+
+
+  //! Returns access to an element (i, j)
+  /*!
+    \param i row index.
+    \param j column index.
+    \return The value of the matrix at (i, j).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Matrix_HermPacked<T, Prop, Storage, Allocator>
+  ::const_reference
+  Matrix_HermPacked<T, Prop, Storage, Allocator>::Get(int i, int j) const
+  {
+    return this->Val(i, j);
   }
 
 
@@ -470,6 +465,23 @@ namespace Seldon
   }
 
 
+  //! Sets an element of the matrix.
+  /*!
+    \param i row index.
+    \param j column index.
+    \param x new value for the matrix element (\a i, \a j).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_HermPacked<T, Prop, Storage, Allocator>
+  ::Set(int i, int j, const T& x)
+  {
+    if (i > j)
+      this->Val(j, i) = conj(x);
+    else
+      this->Val(i, j) = x;
+  }
+
+
   //! Duplicates a matrix.
   /*!
     \param A matrix to be copied.
@@ -508,11 +520,14 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_HermPacked<T, Prop, Storage, Allocator>::SetIdentity()
   {
-    this->Fill(T(0));
+    T one, zero;
+    SetComplexOne(one);
+    SetComplexZero(zero);
+    
+    this->Fill(zero);
 
-    T one(1);
     for (int i = 0; i < min(this->m_, this->n_); i++)
-      (*this)(i,i) = one;
+      this->Val(i,i) = one;
   }
 
 
@@ -525,26 +540,32 @@ namespace Seldon
   void Matrix_HermPacked<T, Prop, Storage, Allocator>::Fill()
   {
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = i;
+      SetComplexReal(i, this->data_[i]);
   }
 
 
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
+    \note If the imaginary part of x is non-null, the upper part will
+    contain x, whereas lower part will contain conj(x).
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
   void Matrix_HermPacked<T, Prop, Storage, Allocator>::Fill(const T0& x)
   {
+    T x_;
+    SetComplexReal(x, x_);
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = x;
+      this->data_[i] = x_;
   }
 
 
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
+    \note If the imaginary part of x is non-null, the upper part will
+    contain x, whereas lower part will contain conj(x).
   */
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
@@ -564,9 +585,11 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_HermPacked<T, Prop, Storage, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     for (int i = 0; i < this->GetDataSize(); i++)
-      this->data_[i] = rand();
+      SetComplexReal(rand(), this->data_[i]);
   }
 
 
@@ -648,7 +671,7 @@ namespace Seldon
   {
 
     ofstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -786,7 +809,7 @@ namespace Seldon
   void Matrix_HermPacked<T, Prop, Storage, Allocator>::Read(string FileName)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -833,8 +856,8 @@ namespace Seldon
     // Checks if data was read.
     if (!FileStream.good())
       throw IOError("Matrix_HermPacked::Read(ifstream& FileStream)",
-                    string("Output operation failed.")
-		    + string(" The intput file may have been removed")
+                    string("Input operation failed.")
+		    + string(" The input file may have been removed")
 		    + " or may not contain enough data.");
 #endif
 
@@ -987,9 +1010,27 @@ namespace Seldon
   }
 
 
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, ColHermPacked, Allocator>&
+  Matrix<T, Prop, ColHermPacked, Allocator>::operator= (const Matrix<T, Prop,
+                                                       ColHermPacked,
+                                                       Allocator>& A)
+  {
+    this->Copy(A);
+    return *this;
+  }
+
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
+    \warning imaginary part of x should be null to keep an hermitian matrix
   */
   template <class T, class Prop, class Allocator>
   template <class T0>
@@ -1083,6 +1124,23 @@ namespace Seldon
   {
     this->Fill(x);
 
+    return *this;
+  }
+
+
+  //! Duplicates a matrix (assignment operator).
+  /*!
+    \param A matrix to be copied.
+    \note Memory is duplicated: \a A is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Prop, class Allocator>
+  inline Matrix<T, Prop, RowHermPacked, Allocator>&
+  Matrix<T, Prop, RowHermPacked, Allocator>::operator= (const Matrix<T, Prop,
+                                                       RowHermPacked,
+                                                       Allocator>& A)
+  {
+    this->Copy(A);
     return *this;
   }
 

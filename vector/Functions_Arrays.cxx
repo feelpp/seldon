@@ -1,5 +1,5 @@
-// Copyright (C) 2003-2009 Marc Duruflé
-// Copyright (C) 2001-2009 Vivien Mallet
+// Copyright (C) 2003-2011 Marc Duruflé
+// Copyright (C) 2001-2011 Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -48,6 +48,8 @@
   RemoveDuplicate(m, X, Y);
   RemoveDuplicate(X);
   RemoveDuplicate(X, Y);
+
+  HasElement(X, a);
 */
 
 namespace Seldon
@@ -738,6 +740,17 @@ namespace Seldon
 
   //  SORT  //
   ////////////
+
+
+  //! Whether \a X contains element \a a.
+  template<class T, class Storage, class Allocator>
+  bool HasElement(Vector<T, Storage, Allocator>& X, T& a)
+  {
+    for (int i = 0; i < X.GetM(); i++)
+      if (a == X(i))
+	return true;
+    return false;
+  }
 
 
 } // namespace Seldon

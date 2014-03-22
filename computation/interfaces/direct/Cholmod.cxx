@@ -28,7 +28,7 @@ namespace Seldon
   {
     // Sets default parameters.
     cholmod_start(&param_chol);
-
+    Lsparse = NULL;
     n = 0;
   }
 
@@ -37,10 +37,24 @@ namespace Seldon
   MatrixCholmod::~MatrixCholmod()
   {
     if (n > 0)
-      {
-        Clear();
-        cholmod_finish(&param_chol);
-      }
+      Clear();
+    
+    cholmod_finish(&param_chol);
+  }
+
+
+  void MatrixCholmod::HideMessages()
+  {
+  }
+
+
+  void MatrixCholmod::ShowMessages()
+  {
+  }
+
+
+  void MatrixCholmod::ShowFullHistory()
+  {
   }
 
 
@@ -50,6 +64,10 @@ namespace Seldon
       {
         n = 0;
         cholmod_free_factor(&L, &param_chol);
+        if (Lsparse != NULL)
+          cholmod_free_sparse(&Lsparse, &param_chol);
+
+        Lsparse = NULL;
       }
   }
 
@@ -62,7 +80,7 @@ namespace Seldon
     Clear();
 
     n = mat.GetM();
-    Matrix<double, Symmetric, RowSymSparse, MallocAlloc<double> > Acsc;
+    Matrix<double, Symmetric, RowSymSparse> Acsc;
     Copy(mat, Acsc);
     if (!keep_matrix)
       mat.Clear();
@@ -83,21 +101,28 @@ namespace Seldon
     A.dtype = CHOLMOD_DOUBLE;
     A.sorted = true;
     A.packed = true;
-
     L = cholmod_analyze(&A, &param_chol);
 
+    // Cholesky factorization.
     cholmod_factorize(&A, L, &param_chol);
 
     cholmod_change_factor(CHOLMOD_REAL, true, L->is_super,
                           true, L->is_monotonic, L, &param_chol);
+
+    // We convert the factorization to column sparse row format.
+    cholmod_factor* B = cholmod_copy_factor(L, &param_chol);
+    Lsparse = cholmod_factor_to_sparse(B, &param_chol);
+
+    cholmod_free_factor(&B, &param_chol);
   }
 
 
+  //! Solves L x = b or L^T x = b.
   template<class Transpose_status, class Allocator>
   void MatrixCholmod::Solve(const Transpose_status& TransA,
                             Vector<double, VectFull, Allocator>& x)
   {
-    // and dense right hand side
+    // Dense right hand side.
     cholmod_dense b_rhs;
     b_rhs.nrow = x.GetM();
     b_rhs.ncol = 1;
@@ -129,12 +154,79 @@ namespace Seldon
   }
 
 
+  //! Performs the matrix vector product y = L X or y = L^T X.
+  template<class Transpose_status, class Allocator>
+  void MatrixCholmod::Mlt(const Transpose_status& TransA,
+                          Vector<double, VectFull, Allocator>& X)
+  {
+    Vector<double, VectFull, Allocator> Y = X;
+
+    cholmod_dense Xchol,Ychol;
+
+    Xchol.nrow = X.GetM();
+    Xchol.ncol = 1;
+    Xchol.nzmax = Xchol.nrow;
+    Xchol.d = Xchol.nrow;
+    Xchol.x = X.GetData();
+    Xchol.z = NULL;
+    Xchol.xtype = CHOLMOD_REAL;
+    Xchol.dtype = CHOLMOD_DOUBLE;
+
+    Ychol.nrow = X.GetM();
+    Ychol.ncol = 1;
+    Ychol.nzmax = Ychol.nrow;
+    Ychol.d = Ychol.nrow;
+    Ychol.x = Y.GetData();
+    Ychol.z = NULL;
+    Ychol.xtype = CHOLMOD_REAL;
+    Ychol.dtype = CHOLMOD_DOUBLE;
+
+    // Conversion from Lsparse to Seldon structure.
+    Matrix<double, General, RowSparse> Lcsr;
+    Lcsr.SetData(n, n, Lsparse->nzmax, reinterpret_cast<double*>(Lsparse->x),
+                 reinterpret_cast<int*>(Lsparse->p),
+                 reinterpret_cast<int*>(Lsparse->i));
+
+    if (TransA.Trans())
+      {
+        // Computing L^T P^T x.
+        cholmod_dense* x_sol;
+        x_sol = cholmod_solve(CHOLMOD_P, L, &Xchol, &param_chol);
+
+        double* data = reinterpret_cast<double*>(x_sol->x);
+        for (int i = 0; i < n; i++)
+          Y(i) = data[i];
+
+        Seldon::Mlt(Lcsr, Y, X);
+
+        cholmod_free_dense(&x_sol, &param_chol);
+      }
+    else
+      {
+        // Computing P L x.
+        Seldon::MltAdd(1.0, SeldonTrans, Lcsr, X, 0.0, Y);
+
+        cholmod_dense* x_sol;
+        x_sol = cholmod_solve(CHOLMOD_Pt, L, &Ychol, &param_chol);
+
+        double* data = reinterpret_cast<double*>(x_sol->x);
+        for (int i = 0; i < X.GetM(); i++)
+          X(i) = data[i];
+
+        cholmod_free_dense(&x_sol, &param_chol);
+      }
+
+    Lcsr.Nullify();
+  }
+
+
   template<class T, class Prop, class Storage, class Allocator>
   void GetCholesky(Matrix<T, Prop, Storage, Allocator>& A,
-                   MatrixCholmod& mat_chol, bool keep_matrix = false)
+                   MatrixCholmod& mat_chol, bool keep_matrix)
   {
     mat_chol.FactorizeMatrix(A, keep_matrix);
   }
+
 
   template<class T, class Allocator, class Transpose_status>
   void
@@ -142,6 +234,15 @@ namespace Seldon
                 MatrixCholmod& mat_chol, Vector<T, VectFull, Allocator>& x)
   {
     mat_chol.Solve(TransA, x);
+  }
+
+
+  template<class T, class Allocator, class Transpose_status>
+  void
+  MltCholesky(const Transpose_status& TransA,
+              MatrixCholmod& mat_chol, Vector<T, VectFull, Allocator>& x)
+  {
+    mat_chol.Mlt(TransA, x);
   }
 
 }

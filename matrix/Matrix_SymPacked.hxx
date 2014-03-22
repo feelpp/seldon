@@ -74,10 +74,13 @@ namespace Seldon
     const_reference operator() (int i, int j) const;
     reference Val(int i, int j);
     const_reference Val(int i, int j) const;
+    reference Get(int i, int j);
+    const_reference Get(int i, int j) const;
     reference operator[] (int i);
     const_reference operator[] (int i) const;
     Matrix_SymPacked<T, Prop, Storage, Allocator>&
     operator= (const Matrix_SymPacked<T, Prop, Storage, Allocator>& A);
+    void Set(int i, int j, const T& x);
     void Copy(const Matrix_SymPacked<T, Prop, Storage, Allocator>& A);
 
     // Convenient functions.
@@ -123,6 +126,9 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, ColSymPacked, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, ColSymPacked, Allocator>& operator= (const Matrix<T, Prop,
+                                                         ColSymPacked,
+                                                         Allocator>& A);
     template<class T0>
     Matrix<T, Prop, ColSymPacked, Allocator>& operator*= (const T0& x);
     void Resize(int i, int j);
@@ -147,6 +153,9 @@ namespace Seldon
 
     template <class T0>
     Matrix<T, Prop, RowSymPacked, Allocator>& operator= (const T0& x);
+    Matrix<T, Prop, RowSymPacked, Allocator>& operator= (const Matrix<T, Prop,
+                                                         RowSymPacked,
+                                                         Allocator>& A);
     template<class T0>
     Matrix<T, Prop, RowSymPacked, Allocator>& operator*= (const T0& x);
     void Resize(int i, int j);

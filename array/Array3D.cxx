@@ -174,7 +174,7 @@ namespace Seldon
 	try
 	  {
 #endif
-
+            
 	    data_ =
 	      reinterpret_cast<pointer>(array3D_allocator_.reallocate(data_,
 								      i*j*k,
@@ -203,6 +203,55 @@ namespace Seldon
 #endif
 
       }
+  }
+
+
+  //! Changes the size of the array and sets its data array
+  //! (low level method).
+  /*!
+    The 3D array is first cleared (memory is freed). The 3D array is then
+    resized to a i x j x k, and the data array of the 3D array is set to
+    'data'.  'data' elements are not duplicated: the new data array of the 3D
+    array is the 'data' array. It is useful to create a 3D array from
+    pre-existing data.
+    \param i length in dimension #1.
+    \param j length in dimension #2.
+    \param k length in dimension #3.
+    \param data new array storing elements.
+    \warning 'data' has to be used carefully outside the object.
+    Unless you use 'Nullify', 'data' will be freed by the destructor,
+    which means that 'data' must have been allocated carefully. The matrix
+    allocator should be compatible.
+    \note This method should only be used by advanced users.
+  */
+  template <class T, class Allocator>
+  inline void Array3D<T, Allocator>::SetData(int i, int j, int k, 
+					     typename Array3D<T, Allocator>
+					     ::pointer data)
+  {
+    Clear();
+    
+    length1_ = i;
+    length2_ = j;
+    length3_ = k;
+    length23_ = j * k;
+    data_ = data;
+  }
+
+
+  //! Clears the 3D array without releasing memory.
+  /*!
+    On exit, the 3D array is empty and the memory has not been released.
+    It is useful for low level manipulations on a 3D arrat instance.
+  */
+  template <class T, class Allocator>
+  inline void Array3D<T, Allocator>::Nullify()
+  {
+    length1_ = 0;
+    length2_ = 0;
+    length3_ = 0;
+    length23_ = 0;
+    data_ = NULL;
   }
 
 
@@ -297,6 +346,22 @@ namespace Seldon
   ::GetData() const
   {
     return data_;
+  }
+
+
+  //! Returns a pointer to an element of data array.
+  /*!
+    Returns a pointer to an element of data array.
+    \param i index along dimension #1.
+    \param j index along dimension #2.
+    \param k index along dimension #3.
+    \return A pointer to the data array.
+  */
+  template <class T, class Allocator>
+  typename Array3D<T, Allocator>::pointer Array3D<T, Allocator>
+  ::GetDataPointer(int i, int j, int k) const
+  {
+    return data_ + i * length23_ + j * length3_ + k;
   }
 
 
@@ -431,7 +496,7 @@ namespace Seldon
   void Array3D<T, Allocator>::Fill()
   {
     for (int i = 0; i < GetDataSize(); i++)
-      data_[i] = i;
+      SetComplexReal(i, data_[i]);
   }
 
 
@@ -444,8 +509,10 @@ namespace Seldon
   template <class T0>
   void Array3D<T, Allocator>::Fill(const T0& x)
   {
+    T x_;
+    SetComplexReal(x, x_);
     for (int i = 0; i < GetDataSize(); i++)
-      data_[i] = x;
+      data_[i] = x_;
   }
 
 
@@ -456,9 +523,11 @@ namespace Seldon
   template <class T, class Allocator>
   void Array3D<T, Allocator>::FillRand()
   {
+#ifndef SELDON_WITHOUT_REINIT_RANDOM
     srand(time(NULL));
+#endif
     for (int i = 0; i < GetDataSize(); i++)
-      data_[i] = rand();
+      SetComplexReal(rand(), this->data_[i]);
   }
 
 
@@ -498,10 +567,10 @@ namespace Seldon
     \param FileName output file name.
   */
   template <class T, class Allocator> void Array3D<T, Allocator>
-  ::Write(string FileName) const
+  ::Write(string FileName, bool with_size) const
   {
     ofstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ofstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -510,7 +579,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    Write(FileStream);
+    Write(FileStream, with_size);
 
     FileStream.close();
   }
@@ -525,7 +594,7 @@ namespace Seldon
     \param FileStream output stream.
   */
   template <class T, class Allocator> void Array3D<T, Allocator>
-  ::Write(ofstream& FileStream) const
+  ::Write(ofstream& FileStream, bool with_size) const
   {
 
 #ifdef SELDON_CHECK_IO
@@ -535,12 +604,15 @@ namespace Seldon
 		    "Stream is not ready.");
 #endif
 
-    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length1_)),
-		     sizeof(int));
-    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length2_)),
-		     sizeof(int));
-    FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length3_)),
-		     sizeof(int));
+    if (with_size)
+      {
+	FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length1_)),
+			 sizeof(int));
+	FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length2_)),
+			 sizeof(int));
+	FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&length3_)),
+			 sizeof(int));
+      }
 
     FileStream.write(reinterpret_cast<char*>(data_),
 		     length23_ * length1_ * sizeof(value_type));
@@ -566,10 +638,10 @@ namespace Seldon
     \param FileName input file name.
   */
   template <class T, class Allocator>
-  void Array3D<T, Allocator>::Read(string FileName)
+  void Array3D<T, Allocator>::Read(string FileName, bool with_size)
   {
     ifstream FileStream;
-    FileStream.open(FileName.c_str());
+    FileStream.open(FileName.c_str(), ifstream::binary);
 
 #ifdef SELDON_CHECK_IO
     // Checks if the file was opened.
@@ -578,7 +650,7 @@ namespace Seldon
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
 
-    Read(FileStream);
+    Read(FileStream, with_size);
 
     FileStream.close();
   }
@@ -594,7 +666,7 @@ namespace Seldon
   */
   template <class T, class Allocator>
   void Array3D<T, Allocator>
-  ::Read(ifstream& FileStream)
+  ::Read(ifstream& FileStream, bool with_size)
   {
 
 #ifdef SELDON_CHECK_IO
@@ -604,11 +676,14 @@ namespace Seldon
                     "Stream is not ready.");
 #endif
 
-    int new_l1, new_l2, new_l3;
-    FileStream.read(reinterpret_cast<char*>(&new_l1), sizeof(int));
-    FileStream.read(reinterpret_cast<char*>(&new_l2), sizeof(int));
-    FileStream.read(reinterpret_cast<char*>(&new_l3), sizeof(int));
-    Reallocate(new_l1, new_l2, new_l3);
+    if (with_size)
+      {
+	int new_l1, new_l2, new_l3;
+	FileStream.read(reinterpret_cast<char*>(&new_l1), sizeof(int));
+	FileStream.read(reinterpret_cast<char*>(&new_l2), sizeof(int));
+	FileStream.read(reinterpret_cast<char*>(&new_l3), sizeof(int));
+	Reallocate(new_l1, new_l2, new_l3);
+      }
 
     FileStream.read(reinterpret_cast<char*>(data_),
 		    length23_ * length1_ * sizeof(value_type));
@@ -623,6 +698,7 @@ namespace Seldon
 #endif
 
   }
+
 
   //! operator<< overloaded for a 3D array.
   /*!
@@ -651,6 +727,19 @@ namespace Seldon
   }
 
 
+  //! Multiplication of all elements of a 3D array by a scalar.
+  /*!
+    \param[in] alpha scalar by which \a A should be multiplied.
+    \param[in,out] A the array to be multiplied by \a alpha.
+  */
+  template <class T0, class T, class Allocator>
+  void Mlt(const T0& alpha, Array3D<T, Allocator>& A)
+  {
+    T* data = A.GetData();
+    for (int i = 0; i < A.GetDataSize(); i++)
+      data[i] *= alpha;
+  }
+  
 } // namespace Seldon.
 
 #define SELDON_FILE_ARRAY3D_CXX

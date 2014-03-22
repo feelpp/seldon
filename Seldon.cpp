@@ -24,18 +24,39 @@
 namespace Seldon
 {
   template class MallocAlloc<int>;
+
   template class Vector_Base<int, MallocAlloc<int> >;
   template class Vector<int, VectFull, MallocAlloc<int> >;
+  
+  template class MallocAlloc<float>;
+  template class Vector_Base<float, MallocAlloc<float> >;
+  template class Vector<float, VectFull, MallocAlloc<float> >;
+  
+  template class Vector<Vector<int, VectFull, MallocAlloc<int> >, Collection,
+                MallocAlloc<Vector<int, VectFull, MallocAlloc<int> > > >;
+  
   template class MallocAlloc<double>;
   template class Vector_Base<double, MallocAlloc<double> >;
   template class Vector<double, VectFull, MallocAlloc<double> >;
+  template class Vector<Vector<double, VectFull, MallocAlloc<double> >,
+            Collection, MallocAlloc<Vector<double, VectFull, MallocAlloc<double> > > >;
 
   template class Matrix_Base<int, MallocAlloc<int> >;
   template class Matrix_Pointers<int, General, RowMajor, MallocAlloc<int> >;
   template class Matrix<int, General, RowMajor, MallocAlloc<int> >;
+  template class Matrix_Base<float, MallocAlloc<float> >;
+  template class Matrix_Pointers<float, General, RowMajor, MallocAlloc<float> >;
+  template class Matrix<float, General, RowMajor, MallocAlloc<float> >;
   template class Matrix_Base<double, MallocAlloc<double> >;
   template class Matrix_Pointers<double, General, RowMajor, MallocAlloc<double> >;
   template class Matrix<double, General, RowMajor, MallocAlloc<double> >;
+
+  template class Array3D<int, MallocAlloc<int> >;
+  template class Array3D<float, MallocAlloc<float> >;
+  template class Array3D<double, MallocAlloc<double> >;
+  template class Array4D<int, MallocAlloc<int> >;
+  template class Array4D<float, MallocAlloc<float> >;
+  template class Array4D<double, MallocAlloc<double> >;
 
   template class Vector<double, VectSparse, MallocAlloc<double> >;
 
@@ -47,10 +68,30 @@ namespace Seldon
                                              Vector<double, VectFull>& Val,
                                              int index = 0, bool sym = false);
 
+#ifndef SWIG
   template void ConvertMatrix_from_Coordinates(Vector<int>& IndRow, Vector<int>& IndCol,
                                                Vector<double, VectFull>& Val,
                                                Matrix<double, General, RowSparse, MallocAlloc<double> >& A,
                                                int index = 0);
+#endif
+
+  // Skips one vector in an input stream.
+  void skip_vector_double(istream& input_stream)
+  {
+    int size;
+    input_stream.read(reinterpret_cast<char*>(&size), sizeof(int));
+    input_stream.seekg(size * sizeof(double), istream::cur);
+  }
+
+  // Skips one matrix in an input stream.
+  void skip_matrix_double(istream& input_stream)
+  {
+    int m, n;
+    input_stream.read(reinterpret_cast<char*>(&m), sizeof(int));
+    input_stream.read(reinterpret_cast<char*>(&n), sizeof(int));
+    input_stream.seekg(m * n * sizeof(double), istream::cur);
+  }
+  
 }
 
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2010, INRIA
-// Author(s): Marc Fragu
+// Copyright (C) 2010-2012, INRIA
+// Author(s): Marc Fragu, Vivien Mallet
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -103,6 +103,9 @@ namespace Seldon
     int GetSize(int i, int j) const;
     int GetNelement() const;
     int GetNelement(int beg, int end) const;
+    int GetNelement(int beg0, int end0, int beg1, int end1) const;
+    Vector<int> GetShape(int i) const;
+    void GetShape(int i, Vector<int>& shape) const;
     void Reallocate(int N);
     void Reallocate(int i, int N);
     void Reallocate(int i, int j, int N);
@@ -112,6 +115,9 @@ namespace Seldon
     template <class Td, class Allocatord>
     void Flatten(int beg, int end, Vector<Td, VectFull, Allocatord>& data)
       const;
+    template <class Td, class Allocatord>
+    void Flatten(int beg0, int end0, int beg1, int end1,
+                 Vector<Td, VectFull, Allocatord>& data) const;
 
     void PushBack(int i, int j, const T& x);
     void PushBack(int i, const Vector<T, Vect_Full, Allocator0>& X);
@@ -141,8 +147,7 @@ namespace Seldon
     GetVector(int i) const;
 
     Vector<T, Vect_Full, Allocator0>& GetVector(int i, int j);
-    const Vector<T, Vect_Full, Allocator0>& GetVector(int i, int j)
-      const;
+    const Vector<T, Vect_Full, Allocator0>& GetVector(int i, int j) const;
 
     /*** Element access and assignment ***/
     const
@@ -161,6 +166,13 @@ namespace Seldon
     /*** Convenient method ***/
 
     void Print() const;
+
+    /*** Input/output functions ***/
+
+    void Write(string file_name, bool with_size = true) const;
+    void Write(ostream& file_stream, bool with_size = true) const;
+    void Read(string file_name, bool with_size = true);
+    void Read(istream& file_stream, bool with_size = true);
   };
 
 }

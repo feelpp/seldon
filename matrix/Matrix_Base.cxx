@@ -76,6 +76,7 @@ namespace Seldon
   {
     m_ = A.GetM();
     n_ = A.GetN();
+    data_ = NULL;
   }
 
 

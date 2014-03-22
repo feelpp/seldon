@@ -65,7 +65,8 @@ namespace Seldon
     int type_solver; //!< iterative solver used
     int parameter_restart; //!< restart parameter (for Gmres and Gcr)
     int type_preconditioning; //!< preconditioner used
-
+    string file_name_history;
+    
   public :
 
     Iteration();
@@ -86,6 +87,7 @@ namespace Seldon
 
     void ShowMessages();
     void ShowFullHistory();
+    void SaveFullHistory(const string& file);
     void HideMessages();
 
     template<class Vector1>
@@ -103,7 +105,7 @@ namespace Seldon
 
     Iteration& operator ++ (void);
 
-    int ErrorCode() const;
+    int ErrorCode();
 
   };
 

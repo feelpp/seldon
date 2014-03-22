@@ -22,6 +22,7 @@
 extern "C"
 {
 #include "umfpack.h"
+#include "colamd.h"
 }
 
 namespace Seldon
@@ -34,15 +35,22 @@ namespace Seldon
     Vector<double> Control, Info; //!< parameters for UmfPack
     void *Symbolic, *Numeric ; //!< pointers of UmfPack objects
     int n; //!< number of rows in the matrix
-    bool display_info; //!< true if display is allowed
+    int print_level;
     bool transpose; //! transpose system to solve ?
+    int status_facto;
 
   public :
     MatrixUmfPack_Base();
 
     void HideMessages();
     void ShowMessages();
+    void ShowFullHistory();
 
+    int GetInfoFactorization() const;
+    int64_t GetMemorySize() const;
+
+    void SelectOrdering(int type);
+    void SetPermutation(const IVect&);
   };
 
   //! empty class
@@ -69,8 +77,8 @@ namespace Seldon
 
     void Clear();
 
-    template<class Prop, class Storage, class Allocator>
-    void FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
+    template<class T0, class Prop, class Storage, class Allocator>
+    void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
     template<class Prop, class Allocator>
@@ -82,6 +90,9 @@ namespace Seldon
 
     template<class Allocator2>
     void Solve(Vector<double, VectFull, Allocator2>& x);
+
+    template<class StatusTrans, class Allocator2>
+    void Solve(const StatusTrans&, Vector<double, VectFull, Allocator2>& x);
 
   };
 
@@ -105,15 +116,55 @@ namespace Seldon
 
     void Clear();
 
-    template<class Prop, class Storage, class Allocator>
+    template<class T0, class Prop, class Storage, class Allocator>
     void
-    FactorizeMatrix(Matrix<complex<double>, Prop, Storage, Allocator> & mat,
+    FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
                     bool keep_matrix = false);
 
     template<class Allocator2>
     void Solve(Vector<complex<double>, VectFull, Allocator2>& x);
 
+    template<class StatusTrans, class Allocator2>
+    void Solve(const StatusTrans&, Vector<complex<double>, VectFull, Allocator2>& x);
+
   };
+
+  template<class T0, class Prop, class Storage, class Allocator, class T>
+  void GetLU(Matrix<T0, Prop, Storage, Allocator>& A, MatrixUmfPack<T>& mat_lu,
+	     bool keep_matrix = false);
+  
+  template<class T, class Allocator>
+  void SolveLU(MatrixUmfPack<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
+
+  template<class T, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
+               MatrixUmfPack<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
+  
+  template<class T, class Prop, class Allocator>
+  void SolveLU(MatrixUmfPack<T>& mat_lu,
+               Matrix<T, Prop, ColMajor, Allocator>& x);
+
+  template<class T, class Prop, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixUmfPack<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x);
+  
+  template<class Allocator>
+  void SolveLU(MatrixUmfPack<double>& mat_lu,
+               Vector<complex<double>, VectFull, Allocator>& x);
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixUmfPack<double>& mat_lu,
+               Vector<complex<double>, VectFull, Allocator>& x);
+
+  template<class Allocator>
+  void SolveLU(MatrixUmfPack<complex<double> >& mat_lu,
+               Vector<double, VectFull, Allocator>& x);
+
+  template<class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixUmfPack<complex<double> >& mat_lu,
+               Vector<double, VectFull, Allocator>& x);
 
 }
 

@@ -50,9 +50,12 @@ namespace Seldon
       return 0;
 
     typedef typename Vector1::value_type Complexe;
-    Complexe rho, rho_1(0), alpha, beta, delta, zero;
-    zero = b(0)*Titer(0);
-    rho = zero+Titer(1);
+    Complexe rho, rho_1, alpha, beta, delta;
+    Complexe zero, one;
+    SetComplexZero(zero);
+    SetComplexOne(one);
+    rho = one;
+    rho_1 = zero;
 
     Vector1 p(b), q(b), r(b), z(b);
     p.Fill(zero); q.Fill(zero); r.Fill(zero); z.Fill(zero);
@@ -63,19 +66,20 @@ namespace Seldon
     if (success_init != 0)
       return iter.ErrorCode();
 
-    Copy(b,r);
+    Copy(b, r);
     if (!iter.IsInitGuess_Null())
-      MltAdd(Complexe(-1), A, x, Complexe(1), r);
+      MltAdd(-one, A, x, one, r);
     else
       x.Fill(zero);
 
     iter.SetNumberIteration(0);
+        
     // Loop until the stopping criteria are reached
     while (! iter.Finished(r))
       {
 	// preconditioning
 	M.Solve(A, r, z);
-
+        
 	// instead of (bar(r),z) in CG we compute (r,z)
 	rho = DotProd(r, z);
 
@@ -91,7 +95,7 @@ namespace Seldon
 	  {
 	    beta = rho / rho_1;
 	    Mlt(beta, p);
-	    Add(Complexe(1), z, p);
+	    Add(one, z, p);
 	  }
 	// product matrix vector
 	Mlt(A, p, q);
@@ -118,5 +122,5 @@ namespace Seldon
 
 } // end namespace
 
-#define ITERATIVE_COCG_CXX
+#define SELDON_FILE_ITERATIVE_COCG_CXX
 #endif

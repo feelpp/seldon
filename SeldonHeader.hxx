@@ -52,7 +52,6 @@ extern "C"
 }
 #endif
 
-
 //////////////////
 // DEBUG LEVELS //
 //////////////////
@@ -109,46 +108,46 @@ extern "C"
 #define TRY try {
 #endif
 #ifndef END
-#define END                                                     \
-  }                                                             \
-    catch(Seldon::Error& Err)                                   \
-      {                                                         \
-        Err.CoutWhat();                                         \
-        return 1;                                               \
-      }                                                         \
-    catch (std::exception& Err)                                 \
-      {                                                         \
-        cout << "C++ exception: " << Err.what() << endl;        \
-        return 1;                                               \
-      }                                                         \
-    catch (std::string& str)                                    \
-      {                                                         \
-        cout << str << endl;                                    \
-        return 1;                                               \
-      }                                                         \
-    catch (const char* str)                                     \
-      {                                                         \
-        cout << str << endl;                                    \
-        return 1;                                               \
-      }                                                         \
-    catch(...)                                                  \
-      {                                                         \
-        cout << "Unknown exception..." << endl;                 \
-        return 1;                                               \
+#define END                                                             \
+  }                                                                     \
+    catch(Seldon::Error& Err)                                           \
+      {                                                                 \
+        Err.CoutWhat();                                                 \
+        return 1;                                                       \
+      }                                                                 \
+    catch (std::exception& Err)                                         \
+      {                                                                 \
+        std::cout << "C++ exception: " << Err.what() << std::endl;      \
+        return 1;                                                       \
+      }                                                                 \
+    catch (std::string& str)                                            \
+      {                                                                 \
+        std::cout << str << std::endl;                                  \
+        return 1;                                                       \
+      }                                                                 \
+    catch (const char* str)                                             \
+      {                                                                 \
+        std::cout << str << std::endl;                                  \
+        return 1;                                                       \
+      }                                                                 \
+    catch(...)                                                          \
+      {                                                                 \
+        std::cout << "Unknown exception..." << std::endl;               \
+        return 1;                                                       \
       }
 #endif
 
 //! To display a message... call Hermes!
 #ifndef ERR
-#define ERR(x) cout << "Hermes - " #x << endl
+#define ERR(x) std::cout << "Hermes - " #x << std::endl
 #endif
 //! To display a variable (with its name); same as DISPLAY.
 #ifndef DISP
-#define DISP(x) cout << #x ": " << x << endl
+#define DISP(x) std::cout << #x ": " << x << std::endl
 #endif
 //! To display a variable (with its name); same as DISP.
 #ifndef DISPLAY
-#define DISPLAY(x) cout << #x ": " << x << endl
+#define DISPLAY(x) std::cout << #x ": " << x << std::endl
 #endif
 
 // For backward compatibility. These lines should be removed one day.
@@ -259,22 +258,6 @@ namespace Seldon
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, RowSymSparse, Allocator>;
 
-  // column-major complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ColComplexSparse, Allocator>;
-
-  // row-major complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, RowComplexSparse, Allocator>;
-
-  // column-major symmetric complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ColSymComplexSparse, Allocator>;
-
-  // row-major symmetric complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, RowSymComplexSparse, Allocator>;
-
   // column-major sparse matrix.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayColSparse, Allocator>;
@@ -291,53 +274,61 @@ namespace Seldon
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayRowSymSparse, Allocator>;
 
-  // column-major complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ColComplexSparse, Allocator>;
-
-  // row-major complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ArrayRowComplexSparse, Allocator>;
-
-  // column-major symmetric complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>;
-
-  // row-major symmetric complex sparse matrix.
-  template <class T, class Prop, class Allocator>
-  class Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>;
+  // 3D array.
+  template <class T, int N, class Allocator>
+  class Array;
 
   // 3D array.
   template <class T, class Allocator>
   class Array3D;
 
+  // 4D array.
+  template <class T, class Allocator>
+  class Array4D;
+
 
 } // namespace Seldon.
 
+const int ARRAY_MINRANK = 3;
+const int ARRAY_MAXRANK = 9;
 
-#include "array3d/Array3D.hxx"
+#include "array/Array3D.hxx"
+#include "array/Array4D.hxx"
+#include "array/Array.hxx"
 #include "matrix/Matrix_Base.hxx"
 #include "matrix/Matrix_Pointers.hxx"
 #include "matrix/Matrix_Triangular.hxx"
 #include "matrix/Matrix_Symmetric.hxx"
 #include "matrix/Matrix_Hermitian.hxx"
 #include "matrix_sparse/Matrix_Sparse.hxx"
-#include "matrix_sparse/Matrix_ComplexSparse.hxx"
 #include "matrix_sparse/Matrix_SymSparse.hxx"
-#include "matrix_sparse/Matrix_SymComplexSparse.hxx"
 #include "matrix/Matrix_SymPacked.hxx"
 #include "matrix/Matrix_HermPacked.hxx"
 #include "matrix/Matrix_TriangPacked.hxx"
 #include "vector/Vector.hxx"
 #include "vector/SparseVector.hxx"
+#include "vector/Functions_Arrays.hxx"
 #include "matrix/Functions.hxx"
 #include "matrix_sparse/Matrix_Conversions.hxx"
+#include "computation/basic_functions/Functions_Vector.hxx"
+#include "computation/basic_functions/Functions_MatVect.hxx"
+#include "computation/basic_functions/Functions_Matrix.hxx"
 
 #include "matrix/SubMatrix_Base.hxx"
 #include "matrix/SubMatrix.hxx"
 
+// Blas interface.
+#ifdef SELDON_WITH_BLAS
+
+#include "computation/interfaces/Blas_1.hxx"
+#include "computation/interfaces/Blas_2.hxx"
+#include "computation/interfaces/Blas_3.hxx"
+
+#endif
+
 // Lapack interface.
 #ifdef SELDON_WITH_LAPACK
+
 #undef LAPACK_INTEGER
 #define LAPACK_INTEGER int
 #undef LAPACK_REAL
@@ -367,12 +358,21 @@ extern "C"
 #define SELDON_CHECK_INFO(f, lf)
 #endif
 #endif
+
+#include "computation/interfaces/Lapack_LinearEquations.hxx"
+#include "computation/interfaces/Lapack_LeastSquares.hxx"
+#include "computation/interfaces/Lapack_Eigenvalues.hxx"
+
 #endif // SELDON_WITH_LAPACK.
+
+#ifdef SELDON_WITH_MKL
+#include "computation/interfaces/Mkl_Sparse.hxx"
+#endif
 
 namespace Seldon
 {
 
-
+  typedef Array3D<int, SELDON_DEFAULT_ALLOCATOR<int> > IArr3D;
   typedef Vector<int, VectFull, SELDON_DEFAULT_ALLOCATOR<int> > IVect;
   typedef Vector<float, VectFull, SELDON_DEFAULT_ALLOCATOR<float> > SVect;
   typedef Vector<double, VectFull, SELDON_DEFAULT_ALLOCATOR<double> > DVect;
