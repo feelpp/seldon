@@ -382,39 +382,6 @@ namespace Seldon
     return length_sum_;
   }
 
-  //! Returns the 'vector' index of the aggregated vector named \a name.
-  /*!
-    \param[in] name of an aggregated vector.
-    \return the index of the aggregated vector.
-  */
-  template <class T, class Allocator >
-  inline int Vector<T, Collection, Allocator>::GetIndexVector(string name) const
-  {
-    map<string,int>::const_iterator label_iterator;
-    label_iterator = label_map_.find(name);
-    if (label_iterator == label_map_.end())
-      throw WrongArgument("VectorCollection::SetVector(string name)",
-			  string("Unknown vector name: \"") + name + "\".");
-    return label_iterator->second;
-  }
-
-
-  //! Returns the index of the aggregated vector named \a name.
-  /*!
-    \param[in] name of an aggregated vector.
-    \return the index of the aggregated vector.
-  */
-  template <class T, class Allocator >
-  inline int Vector<T, Collection, Allocator>::GetIndex(string name) const
-  {
-    map<string,int>::const_iterator label_iterator;
-    label_iterator = label_map_.find(name);
-    if (label_iterator == label_map_.end())
-      throw WrongArgument("VectorCollection::SetVector(string name)",
-			  string("Unknown vector name: \"") + name + "\".");
-    return (label_iterator->second == 0) ? 0 : length_sum_(label_iterator->second - 1);
-  }
-
 
   //! Returns the vector index of the aggregated vector named \a name.
   /*!

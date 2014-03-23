@@ -776,8 +776,18 @@ namespace Seldon
 
     char transA('T');
     int ma = A.GetM();
-    mkl_cspblas_scsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                         X.GetData(), Y.GetData());
+    if (ma == A.GetN())
+      mkl_cspblas_scsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
+                           X.GetData(), Y.GetData());
+    else
+      {
+        Y.Zero();
+        int na = A.GetN(); float one(1), zero(0);
+        char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
+        mkl_scsrmv(&transA, &ma, &na, &one, matdescra, A.GetData(), 
+                   A.GetInd(), A.GetPtr(), A.GetPtr()+1,
+                   X.GetData(), &zero, Y.GetData());
+      }
   }
 
 
@@ -791,11 +801,21 @@ namespace Seldon
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
 #endif
-
+    
     char transA('T');
     int ma = A.GetM();
-    mkl_cspblas_dcsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                         X.GetData(), Y.GetData());
+    if (ma == A.GetN())
+      mkl_cspblas_dcsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
+                           X.GetData(), Y.GetData());
+    else
+      {
+        Y.Zero();
+        int na = A.GetN(); double one(1), zero(0);
+        char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
+        mkl_dcsrmv(&transA, &ma, &na, &one, matdescra, A.GetData(), 
+                   A.GetInd(), A.GetPtr(), A.GetPtr()+1,
+                   X.GetData(), &zero, Y.GetData());        
+      }
   }
 
 
@@ -812,8 +832,18 @@ namespace Seldon
 
     char transA('T');
     int ma = A.GetM();
-    mkl_cspblas_ccsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                         X.GetDataVoid(), Y.GetDataVoid());
+    if (ma == A.GetN())
+      mkl_cspblas_ccsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
+                           X.GetDataVoid(), Y.GetDataVoid());
+    else
+      {
+        Y.Zero();
+        int na = A.GetN(); complex<float> one(1, 0), zero(0, 0);
+        char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
+        mkl_ccsrmv(&transA, &ma, &na, &one, matdescra, A.GetDataVoid(), 
+                   A.GetInd(), A.GetPtr(), A.GetPtr()+1,
+                   X.GetDataVoid(), &zero, Y.GetDataVoid());        
+      }
   }
 
 
@@ -830,8 +860,18 @@ namespace Seldon
 
     char transA('T');
     int ma = A.GetM();
-    mkl_cspblas_zcsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                         X.GetDataVoid(), Y.GetDataVoid());
+    if (ma == A.GetN())
+      mkl_cspblas_zcsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
+                           X.GetDataVoid(), Y.GetDataVoid());
+    else
+      {
+        Y.Zero();
+        int na = A.GetN(); complex<double> one(1, 0), zero(0, 0);
+        char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
+        mkl_zcsrmv(&transA, &ma, &na, &one, matdescra, A.GetDataVoid(), 
+                   A.GetInd(), A.GetPtr(), A.GetPtr()+1,
+                   X.GetDataVoid(), &zero, Y.GetDataVoid());        
+      }
   }
 
 
@@ -920,8 +960,18 @@ namespace Seldon
 
     char transA('T');
     int ma = A.GetM();
-    mkl_cspblas_scsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                         X.GetData(), Y.GetData());
+    if (ma == A.GetN())
+      mkl_cspblas_scsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
+                           X.GetData(), Y.GetData());
+    else
+      {
+        Y.Zero();
+        int na = A.GetN(); float one(1), zero(0);
+        char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
+        mkl_scsrmv(&transA, &ma, &na, &one, matdescra, A.GetData(), 
+                   A.GetInd(), A.GetPtr(), A.GetPtr()+1,
+                   X.GetData(), &zero, Y.GetData());
+      }
   }
 
 
@@ -938,8 +988,18 @@ namespace Seldon
 
     char transA('T');
     int ma = A.GetM();
-    mkl_cspblas_dcsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                         X.GetData(), Y.GetData());
+    if (ma == A.GetN())
+      mkl_cspblas_dcsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
+                           X.GetData(), Y.GetData());
+    else
+      {
+        Y.Zero();
+        int na = A.GetN(); double one(1), zero(0);
+        char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
+        mkl_dcsrmv(&transA, &ma, &na, &one, matdescra, A.GetData(), 
+                   A.GetInd(), A.GetPtr(), A.GetPtr()+1,
+                   X.GetData(), &zero, Y.GetData());        
+      }
   }
 
 
@@ -956,8 +1016,18 @@ namespace Seldon
 
     char transA('C');
     int ma = A.GetM();
-    mkl_cspblas_ccsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                         X.GetDataVoid(), Y.GetDataVoid());
+    if (ma == A.GetN())
+      mkl_cspblas_ccsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
+                           X.GetDataVoid(), Y.GetDataVoid());
+    else
+      {
+        Y.Zero();
+        int na = A.GetN(); complex<float> one(1, 0), zero(0, 0);
+        char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
+        mkl_ccsrmv(&transA, &ma, &na, &one, matdescra, A.GetDataVoid(), 
+                   A.GetInd(), A.GetPtr(), A.GetPtr()+1,
+                   X.GetDataVoid(), &zero, Y.GetDataVoid());        
+      }
   }
 
 
@@ -974,8 +1044,18 @@ namespace Seldon
 
     char transA('C');
     int ma = A.GetM();
-    mkl_cspblas_zcsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                         X.GetDataVoid(), Y.GetDataVoid());
+    if (ma == A.GetN())
+      mkl_cspblas_zcsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
+                           X.GetDataVoid(), Y.GetDataVoid());
+    else
+      {
+        Y.Zero();
+        int na = A.GetN(); complex<double> one(1, 0), zero(0, 0);
+        char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
+        mkl_zcsrmv(&transA, &ma, &na, &one, matdescra, A.GetDataVoid(), 
+                   A.GetInd(), A.GetPtr(), A.GetPtr()+1,
+                   X.GetDataVoid(), &zero, Y.GetDataVoid());        
+      }
   }
 
 
