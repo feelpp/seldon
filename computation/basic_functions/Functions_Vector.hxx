@@ -34,6 +34,9 @@
   alpha X + Y -> Y
   Add(alpha, X, Y)
 
+  alpha X + beta Y -> Y
+  Add(alpha, X, beta, Y)
+
   X -> Y
   Copy(X, Y)
 
@@ -82,7 +85,14 @@ namespace Seldon
   void Add(const T0& alpha,
 	   const Vector<T1, Storage1, Allocator1>& X,
 	   Vector<T2, Storage2, Allocator2>& Y);
-  
+
+  template <class T0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2>
+  void Add(const T0& alpha,
+	   const Vector<T1, Storage1, Allocator1>& X,
+	   const T0& beta,
+           Vector<T2, Storage2, Allocator2>& Y);  
   
   template <class T0,
             class T1, class Allocator1,

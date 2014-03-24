@@ -5,14 +5,56 @@
 namespace Seldon
 {
 
+  //! computes Y = beta Y + alpha X
+  template<class Alloc1, class Alloc2>
+  void Add(const float& alpha, const Vector<float, VectFull, Alloc1>& X,
+           const float& beta, Vector<float, VectFull, Alloc2>& Y)
+  {
+    cblas_saxpby(X.GetM(), alpha, X.GetData(), 1, beta, Y.GetData(), 1);
+  }
+
+
+  //! computes Y = beta Y + alpha X
+  template<class Alloc1, class Alloc2>
+  void Add(const double& alpha, const Vector<double, VectFull, Alloc1>& X,
+           const double& beta, Vector<double, VectFull, Alloc2>& Y)
+  {
+    cblas_daxpby(X.GetM(), alpha, X.GetData(), 1, beta, Y.GetData(), 1);
+  }
+
+
+  //! computes Y = beta Y + alpha X
+  template<class Alloc1, class Alloc2>
+  void Add(const complex<float>& alpha,
+           const Vector<complex<float>, VectFull, Alloc1>& X,
+           const complex<float>& beta,
+           Vector<complex<float>, VectFull, Alloc2>& Y)
+  {
+    cblas_caxpby(X.GetM(), &alpha, X.GetDataVoid(), 1,
+                 &beta, Y.GetDataVoid(), 1);
+  }
+
+
+  //! computes Y = beta Y + alpha X
+  template<class Alloc1, class Alloc2>
+  void Add(const complex<double>& alpha,
+           const Vector<complex<double>, VectFull, Alloc1>& X,
+           const complex<double>& beta,
+           Vector<complex<double>, VectFull, Alloc2>& Y)
+  {
+    cblas_zaxpby(X.GetM(), &alpha, X.GetDataVoid(), 1,
+                 &beta, Y.GetDataVoid(), 1);
+  }
+
+  
   /***********************
    * Sparse Blas Level 1 *
    ***********************/
-
+  
   
   //! computes Y = Y + alpha X
   template<class Alloc1, class Alloc2>
-  void Add(const float& alpha, Vector<float, VectSparse, Alloc1>& X,
+  void Add(const float& alpha, const Vector<float, VectSparse, Alloc1>& X,
 	   Vector<float, VectFull, Alloc2>& Y)
   {
     cblas_saxpyi(X.GetM(), alpha, X.GetData(), X.GetIndex(), Y.GetData());
@@ -21,7 +63,7 @@ namespace Seldon
   
   //! computes Y = Y + alpha X
   template<class Alloc1, class Alloc2>
-  void Add(const double& alpha, Vector<double, VectSparse, Alloc1>& X,
+  void Add(const double& alpha, const Vector<double, VectSparse, Alloc1>& X,
 	   Vector<double, VectFull, Alloc2>& Y)
   {
     cblas_daxpyi(X.GetM(), alpha, X.GetData(), X.GetIndex(), Y.GetData());
@@ -30,7 +72,8 @@ namespace Seldon
 
   //! computes Y = Y + alpha X
   template<class Alloc1, class Alloc2>
-  void Add(const complex<float>& alpha, Vector<complex<float>, VectSparse, Alloc1>& X,
+  void Add(const complex<float>& alpha,
+           const Vector<complex<float>, VectSparse, Alloc1>& X,
 	   Vector<complex<float>, VectFull, Alloc2>& Y)
   {
     cblas_caxpyi(X.GetM(), &alpha, X.GetDataVoid(), X.GetIndex(), Y.GetDataVoid());
@@ -39,7 +82,8 @@ namespace Seldon
 
   //! computes Y = Y + alpha X
   template<class Alloc1, class Alloc2>
-  void Add(const complex<double>& alpha, Vector<complex<double>, VectSparse, Alloc1>& X,
+  void Add(const complex<double>& alpha,
+           const Vector<complex<double>, VectSparse, Alloc1>& X,
 	   Vector<complex<double>, VectFull, Alloc2>& Y)
   {
     cblas_zaxpyi(X.GetM(), &alpha, X.GetDataVoid(), X.GetIndex(), Y.GetDataVoid());
@@ -2056,7 +2100,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(A, B, C, "MltAdd(alpha, transA, A, transB, B, beta, C)");
 #endif
-
+    
     char transa('N');
     int m = A.GetM(), n = C.GetN(), k = A.GetN();
     char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
@@ -2148,7 +2192,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(A, B, C, "MltAdd(alpha, transA, A, transB, B, beta, C)");
 #endif
-
+    
     char transa('N');
     int m = A.GetM(), n = C.GetN(), k = A.GetN();
     char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};

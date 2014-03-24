@@ -1845,17 +1845,11 @@ namespace Seldon
                   {
                     val = Y(i);
                     int j = ptr[i];
-                    while (ind[j] < i)
+                    while ((j < ptr[i+1]) && (ind[j] < i))
                       {
                         val -= data[j]*Y(ind[j]);
                         j++;
                       }
-                    
-#ifdef SELDON_CHECK_BOUNDS
-                    if ( (j >= ptr[i+1]) || (ind[j] != i))
-                      throw WrongArgument("Solve", "Matrix must contain"
-                                          " a non-null diagonal");
-#endif
                     
                     Y(i) = val;
                   }
@@ -1891,17 +1885,11 @@ namespace Seldon
                 for (int i = ma-1; i >= 0; i--)
                   {
                     int j = ptr[i];
-                    while (ind[j] < i)
+                    while ( (j < ptr[i+1]) && (ind[j] < i))
                       {
                         Y(ind[j]) -= data[j]*Y(i);
                         j++;
                       }
-                    
-#ifdef SELDON_CHECK_BOUNDS
-                    if ( (j >= ptr[i+1]) || (ind[j] != i) )
-                      throw WrongArgument("Solve", "Matrix must contain"
-                                          " a non-null diagonal");
-#endif
                   }
               }
           }
@@ -1935,17 +1923,11 @@ namespace Seldon
                 for (int i = ma-1; i >= 0; i--)
                   {
                     int j = ptr[i];
-                    while (ind[j] < i)
+                    while ((j < ptr[i+1]) && (ind[j] < i))
                       {
                         Y(ind[j]) -= conj(data[j])*Y(i);
                         j++;
                       }
-                    
-#ifdef SELDON_CHECK_BOUNDS
-                    if ( (j >= ptr[i+1]) || (ind[j] != i) )
-                      throw WrongArgument("Solve", "Matrix must contain"
-                                          " a non-null diagonal");
-#endif
                   }
               }
           }
@@ -1981,18 +1963,12 @@ namespace Seldon
                   {
                     val = Y(i);
                     int j = ptr[i+1]-1;
-                    while (ind[j] > i)
+                    while ( (j >= ptr[i]) && (ind[j] > i))
                       {
                         val -= data[j]*Y(ind[j]);
                         j--;
                       }
                     
-#ifdef SELDON_CHECK_BOUNDS
-                    if ( (j < ptr[i]) || (ind[j] != i) )
-                      throw WrongArgument("Solve", "Matrix must contain"
-                                          " a non-null diagonal");
-#endif
-                   
                     Y(i) = val;
                   }
               }
@@ -2027,19 +2003,12 @@ namespace Seldon
                 for (int i = 0; i < ma; i++)
                   {
                     int j = ptr[i+1]-1;
-                    while (ind[j] > i)
+                    while ( (j >= ptr[i]) && (ind[j] > i))
                       {
                         Y(ind[j]) -= data[j]*Y(i);
                         j--;
-                      }
-                    
-#ifdef SELDON_CHECK_BOUNDS
-                    if ( (j < ptr[i]) || (ind[j] != i) )
-                      throw WrongArgument("Solve", "Matrix must contain"
-                                          " a non-null diagonal");
-#endif
-                    
-                  }
+                      }         
+                  }           
               }
           }
         else
@@ -2072,19 +2041,12 @@ namespace Seldon
                 for (int i = 0; i < ma; i++)
                   {
                     int j = ptr[i+1]-1;
-                    while (ind[j] > i)
+                    while ( (j >= ptr[i]) && (ind[j] > i))
                       {
                         Y(ind[j]) -= conj(data[j])*Y(i);
                         j--;
-                      }
-                    
-#ifdef SELDON_CHECK_BOUNDS
-                    if ( (j < ptr[i]) || (ind[j] != i) )
-                      throw WrongArgument("Solve", "Matrix must contain"
-                                          " a non-null diagonal");
-#endif
-                    
-                  }
+                      }         
+                  }           
               }
           }
       }

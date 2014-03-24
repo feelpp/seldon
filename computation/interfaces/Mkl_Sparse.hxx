@@ -20,6 +20,22 @@ extern "C"
   void cblas_zdotci_sub(const int N, const void *X, const int *indx,
                         const void *Y, void *dotui);
   
+  void cblas_saxpby(const int N, const float alpha, const float *X,
+                    const int incX, const float beta, const float *Y,
+                    const int incY);
+
+  void cblas_daxpby(const int N, const double alpha, const double *X,
+                    const int incX, const double beta, const double *Y,
+                    const int incY);
+  
+  void cblas_caxpby(const int N, const void *alpha, const void *X,
+                    const int incX, const void *beta, const void *Y,
+                    const int incY);
+
+  void cblas_zaxpby(const int N, const void *alpha, const void *X,
+                    const int incX, const void *beta, const void *Y,
+                    const int incY);
+  
   void cblas_saxpyi(const int N, const float alpha, const float *X,
 		    const int *indx, float *Y);
 
@@ -190,6 +206,26 @@ extern "C"
 
 namespace Seldon
 {
+
+  template<class Alloc1, class Alloc2>
+  void Add(const float& alpha, const Vector<float, VectFull, Alloc1>& X,
+           const float& beta, Vector<float, VectFull, Alloc2>& Y);
+ 
+  template<class Alloc1, class Alloc2>
+  void Add(const double& alpha, const Vector<double, VectFull, Alloc1>& X,
+           const double& beta, Vector<double, VectFull, Alloc2>& Y);
+
+  template<class Alloc1, class Alloc2>
+  void Add(const complex<float>& alpha,
+           const Vector<complex<float>, VectFull, Alloc1>& X,
+           const complex<float>& beta,
+           Vector<complex<float>, VectFull, Alloc2>& Y);
+  
+  template<class Alloc1, class Alloc2>
+  void Add(const complex<double>& alpha,
+           const Vector<complex<double>, VectFull, Alloc1>& X,
+           const complex<double>& beta,
+           Vector<complex<double>, VectFull, Alloc2>& Y);
   
   /***********************
    * Sparse Blas Level 1 *
@@ -197,20 +233,22 @@ namespace Seldon
   
   
   template<class Alloc1, class Alloc2>
-  void Add(const float& alpha, Vector<float, VectSparse, Alloc1>& X,
+  void Add(const float& alpha, const Vector<float, VectSparse, Alloc1>& X,
 	   Vector<float, VectFull, Alloc2>& Y);
 
   template<class Alloc1, class Alloc2>
-  void Add(const double& alpha, Vector<double, VectSparse, Alloc1>& X,
+  void Add(const double& alpha, const Vector<double, VectSparse, Alloc1>& X,
 	   Vector<double, VectFull, Alloc2>& Y);
   
   template<class Alloc1, class Alloc2>
-  void Add(const complex<float>& alpha, Vector<complex<float>, VectSparse, Alloc1>& X,
-	   Vector<complex<float>, VectFull, Alloc2>& Y);
+  void Add(const complex<float>& alpha,
+           const Vector<complex<float>, VectSparse, Alloc1>& X,
+           Vector<complex<float>, VectFull, Alloc2>& Y);
 
   template<class Alloc1, class Alloc2>
-  void Add(const complex<double>& alpha, Vector<complex<double>, VectSparse, Alloc1>& X,
-	   Vector<complex<double>, VectFull, Alloc2>& Y);
+  void Add(const complex<double>& alpha,
+           const Vector<complex<double>, VectSparse, Alloc1>& X,
+           Vector<complex<double>, VectFull, Alloc2>& Y);
 
   template<class Alloc1, class Alloc2>
   float DotProd(const Vector<float, VectSparse, Alloc1>& x,
