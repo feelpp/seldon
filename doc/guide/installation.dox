@@ -42,7 +42,7 @@ Vector: 0       1       2       19
 
 <p>A second test is provided: <code>test_Blas.cpp</code>. If Blas and CBlas are properly installed and the library file of CBlas is located in <code>[CBlas-library]</code> (e.g. [CBlas-directory]/lib/LINUX/cblas_LINUX.a), the compilation line should be:</p>
 
-\prescreen g++ -I../.. test_Blas.cpp [CBlas-library] -lblas -lg2c && ./a.out\endprescreen
+\prescreen g++ -I../.. test_Blas.cpp [CBlas-library] -lblas && ./a.out\endprescreen
 
 <p>This should return:</p>
 
@@ -55,10 +55,9 @@ V = 0   1       2
 
 <p>If Cblas is already installed in your system or if you installed it by using apt-get on linux or fink on mac, you may type the following compilation line:</p>
 
-\prescreen g++ -I../.. test_Blas.cpp -lcblas -lblas -lg2c && ./a.out\endprescreen
+\prescreen g++ -I../.. test_Blas.cpp -lcblas -lblas && ./a.out\endprescreen
 
-<p>For recent versions of gcc, g77 has been superseded by gfortran and
--lg2c should be replaced by -lgfortran. If you are using intel
-compiler icc, it should be -lifcore. </p>
+<p>For older versions of gcc, -lg2c or -lgfortran may be needed. If you are using old intel
+compiler icc, -lifcore may be needed. </p>
 
 */

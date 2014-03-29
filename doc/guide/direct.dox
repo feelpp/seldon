@@ -5,7 +5,7 @@
 /*!
 \page direct Direct Solvers
 
-<p>%Seldon is interfaced with libraries performing the direct resolution of very large sparse linear systems : <b><a href="http://mumps.enseeiht.fr/">MUMPS</a></b>, <b><a href="http://crd.lbl.gov/~xiaoye/SuperLU/">SuperLU</a></b>, <b><a href="http://www.cise.ufl.edu/research/sparse/umfpack/">UmfPack</a></b> and <b><a href="http://pastix.gforge.inria.fr/">Pastix</a></b>. An example file is located in test/program/direct_test.cpp. If you want to test the interface with <b>MUMPS</b>, assuming that MUMPS has been compiled in directory <code>MumpsDir</code>, you can compile this file by typing :</p>
+<p>%Seldon is interfaced with libraries performing the direct resolution of very large sparse linear systems : <b><a href="http://mumps.enseeiht.fr/">MUMPS</a></b>, <b><a href="http://crd.lbl.gov/~xiaoye/SuperLU/">SuperLU</a></b>, <b><a href="http://www.cise.ufl.edu/research/sparse/umfpack/">UmfPack</a></b>, <b><a href="http://pastix.gforge.inria.fr/">Pastix</a></b> and Pardiso. An example file is located in test/program/direct_test.cpp. If you want to test the interface with <b>MUMPS</b>, assuming that MUMPS has been compiled in directory <code>MumpsDir</code>, you can compile this file by typing :</p>
 
 <h2> MUMPS </h2>
 
@@ -110,7 +110,7 @@ In this file, you can replace cc by gcc and g77 by gfortran. The path for Blas, 
 <p>For <b>SuperLU</b>, the compilation line reads
 (<code>SuperLUdir</code> is the directory where SuperLU is located) :</p>
 
-<pre class="fragment">g++ -DSELDON_WITH_SUPERLU direct_test.cpp -ISuperLUdir/SRC -LSuperLUdir -lsuperlu</pre>
+<pre class="fragment">g++ -DSELDON_WITH_SUPERLU direct_test.cpp -ISuperLUdir/SRC -LSuperLUdir -lsuperlu -LCblas_dir -lcblas -lblas</pre>
 
 <p>For the installation of SuperLU, you should read the documentation or complete the following instructions </p>
 
@@ -149,6 +149,16 @@ CCPASTIX   := $(CCPASTIX) -I$(SCOTCH_INC) -DDISTRIBUTED -DWITH_SCOTCH <br/>
 EXTRALIB   := $(EXTRALIB) -L$(SCOTCH_LIB) -lptscotch -lscotcherrexit<br/>
 <li> <b>make</b> </li>
 </ul>
+
+<h2>Pardiso</h2>
+
+<p>The interface with Pardiso is written for the version contained in the MKL (Math Kernel Library). To compile you can type </p>
+
+<pre class="fragment">g++ -DSELDON_WITH_PARDISO direct_test.cpp -L/opt/intel/mkl/lib/ia32 -lmkl_gf -lmkl_gnu_thread -lmkl_core -fopenmp</pre>
+
+<p> With this command, the multi-threaded MKL is used. It will launch threads when the solver is called. If you wish to disable threads, you can link your code with the sequential library as follows:</p>
+
+<pre class="fragment">g++ -DSELDON_WITH_PARDISO direct_test.cpp -L/opt/intel/mkl/lib/ia32 -lmkl_gf -lmkl_sequential -lmkl_core</pre>
 
 <p> All in all, <b>MUMPS</b> seems more efficient, and includes more
 functionalities than the other libraries.</p>

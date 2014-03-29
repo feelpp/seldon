@@ -19,6 +19,7 @@
 
 #define SELDON_DEBUG_LEVEL_4
 #define SELDON_WITH_BLAS
+#define SELDON_DEFAULT_ALLOCATOR CallocAlloc
 
 #if !defined(SELDON_WITH_UMFPACK) && !defined(SELDON_WITH_SUPERLU) \
   && !defined(SELDON_WITH_MUMPS) && !defined(SELDON_WITH_PASTIX)
@@ -76,17 +77,21 @@ void Solve(Matrix<T, Prop, Storage, Allocator1>& A,
 template<class Vector1>
 bool CheckSolution(const Vector1& x)
 {
+  typename Vector1::value_type one;
+  SetComplexOne(one);
   Vector1 xt(x.GetM());
   xt.Fill();
-  Add(-1, x, xt);
+  Add(-one, x, xt);
   return Norm2(xt) <= epsilon;
 }
 
 template<class Vector1>
 bool CheckSolution(const Vector1& x, const Vector1& x_ref, double& err)
 {
+  typename Vector1::value_type one;
+  SetComplexOne(one);
   Vector1 xt(x);
-  Add(-1, x_ref, xt);
+  Add(-one, x_ref, xt);
   err = Norm2(xt)/Norm2(x_ref);
   return ( err <= epsilon );
 }
