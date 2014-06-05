@@ -396,6 +396,9 @@ namespace Seldon
     
     void FactorizeCholeskyMass();
     
+    void FactorizeCholeskyMass(double&);
+    void FactorizeCholeskyMass(complex<double>&);
+    
     template<class TransStatus, class T0>
     void MltCholeskyMass(const TransStatus& transA, Vector<T0>& X);
     
@@ -405,10 +408,26 @@ namespace Seldon
     template<class TransStatus>
     void MltCholeskyMass(const TransStatus& transA,
                          Vector<complex<double> >& X);
+
+    template<class TransStatus>
+    void MltCholeskyMass(const TransStatus& transA,
+                         Vector<complex<double> >& X, double&);
+
+    template<class TransStatus>
+    void MltCholeskyMass(const TransStatus& transA,
+                         Vector<complex<double> >& X, complex<double>&);
+
+    template<class TransStatus>
+    void SolveCholeskyMass(const TransStatus& transA,
+			   Vector<complex<double> >& X);
     
     template<class TransStatus>
     void SolveCholeskyMass(const TransStatus& transA,
-                           Vector<complex<double> >& X);
+                           Vector<complex<double> >& X, double&);
+
+    template<class TransStatus>
+    void SolveCholeskyMass(const TransStatus& transA,
+                           Vector<complex<double> >& X, complex<double>&);
     
     void ComputeAndFactorizeStiffnessMatrix(const T& a, const T& b);
     void ComputeAndFactorizeStiffnessMatrix(const complex<T>& a,

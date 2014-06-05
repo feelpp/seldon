@@ -512,6 +512,14 @@ namespace Seldon
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
                     Vector<T, VectFull, Alloc4>& Value);
+
+
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayRowSparse, Alloc1>& A,
+                    Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<T, VectFull, Alloc4>& Value);
   
   
   template<class T, class Prop, class Alloc1,
@@ -594,6 +602,12 @@ namespace Seldon
 	   class T1, class Prop1, class Allocator1>
   void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& mat_array,
 	    Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
+
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& mat_array,
+	    Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr);
 
 
   template<class T, class Prop, class Alloc1, class Alloc2>

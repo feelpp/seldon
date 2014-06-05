@@ -124,13 +124,13 @@ namespace Seldon
             cout << "Currently not working" << endl;
             abort();
           }
-          
+	
         if ( (var.GetComputationalMode() == var.BUCKLING_MODE)
              || (var.GetComputationalMode() == var.CAYLEY_MODE) )
           {
             if ( !var.IsSymmetricProblem() || IsComplexNumber(zero))
               {
-                cout << "Cayley or Bucking mode are reserved for symmetric"
+                cout << "Cayley or Bucking mode are reserved for real symmetric "
                      << "generalized eigenproblems " << endl;                
                 abort();
               }
@@ -142,7 +142,7 @@ namespace Seldon
                 if (var.DiagonalMass() || var.UseCholeskyFactoForMass()
                     || var.GetComputationalMode() == var.INVERT_MODE )
                   {
-                    cout << "Complex shifts for unsymmetric real problems"
+                    cout << "Complex shifts for unsymmetric real problems "
                          << "are not possible with invert mode" << endl;
                     
                     cout << "Select SHIFTED_MODE or IMAG_SHIFTED_MODE" << endl;
@@ -186,7 +186,7 @@ namespace Seldon
           {
             // computation of M
             var.ComputeDiagonalMass(Dh_diag);
-
+	    
             // computation of M^{-1/2}
             var.FactorizeDiagonalMass(Dh_diag);
             Dh_diag.Clear();
@@ -345,7 +345,7 @@ namespace Seldon
             // drawback : the matrix is non-symmetric even if K and M are symmetric            
             bmat = 'I';
             
-            if (var.GetTypeSpectrum() == var.LARGE_EIGENVALUES)
+            if (var.GetTypeSpectrum() != var.CENTERED_EIGENVALUES)
               {
                 // => regular mode for matrix M^-1 K
                 iparam(6) = 1;
@@ -406,9 +406,9 @@ namespace Seldon
                     for (int i = 0; i < n; i++)
                       Xh(i) = workd(ipntr(0)+i-1);
                     
-                    if (var.GetTypeSpectrum() == var.LARGE_EIGENVALUES)
+                    if (var.GetTypeSpectrum() != var.CENTERED_EIGENVALUES)
                       {
-                        var.MltStiffness(Xh, Zh);
+			var.MltStiffness(Xh, Zh);
                         var.ComputeSolution(Zh, Yh);
                         var.IncrementProdMatVect();
                       }
@@ -424,8 +424,8 @@ namespace Seldon
                   }
                 else
                   test_loop = false;
-						 
-              }
+		
+              }	    
           }
         else if (var.GetComputationalMode() == var.REGULAR_MODE)
           {
@@ -558,7 +558,7 @@ namespace Seldon
               {
                 CallArpack(comm_f, ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
                            iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
-                
+               
                 if ((ido == -1)||(ido == 1))
                   {
                     // computation of Real( (K - sigma M)^-1  M) X
@@ -591,12 +591,12 @@ namespace Seldon
 		    
                     for (int i = 0; i < n; i++)
                       workd(ipntr(1)+i-1) = Yh(i);
-                  }
+		    
+		  }
                 else
                   test_loop = false;
 		
-              }
-					 
+              }					 
           }
         else if (var.GetComputationalMode() == var.BUCKLING_MODE)
           {
@@ -638,7 +638,7 @@ namespace Seldon
               {
                 CallArpack(comm_f, ido, bmat, n, which, nev, tol, resid, ncv, v, ldv,
                            iparam, ipntr, sym, workd, workl, lworkl, rwork, info);
-                
+		
                 if ((ido == -1)||(ido == 1))
                   {
                     // computation of (K - sigma M)^-1 K X or (K - sigma M)^-1 X
@@ -655,25 +655,25 @@ namespace Seldon
 							 
                     var.ComputeSolution(Xh, Yh);
                     var.IncrementProdMatVect();
-							 
-                    for (int i = 0; i < n; i++)
+		    
+		    for (int i = 0; i < n; i++)
                       workd(ipntr(1)+i-1) = Yh(i);
                   }
                 else if (ido == 2)
                   {
-                    // computation of M X
+                    // computation of K X
                     for (int i = 0; i < n; i++)
                       Xh(i) = workd(ipntr(0)+i-1);
-							 
+		    
                     var.MltStiffness(Xh, Yh);
                     var.IncrementProdMatVect();
-							 
-                    for (int i = 0; i < n; i++)
+		    
+		    for (int i = 0; i < n; i++)
                       workd(ipntr(1)+i-1) = Yh(i);
                   }
                 else
                   test_loop = false;
-						 
+		
               }
           }
         else if (var.GetComputationalMode() == var.CAYLEY_MODE)
@@ -770,6 +770,13 @@ namespace Seldon
     Xh.Clear();
     Yh.Clear();
     Zh.Clear();
+    
+    if (Norm2(resid) == 0)
+      {
+	cout << "This eigenvalue problem rises an unknown bug in Arpack " << endl;
+	cout << "This bug can sometimes disappear if wise printing is done" << endl;
+	abort();
+      }
     
     // we recover eigenvalues and eigenvectors
     int nconv = nev+1+var.GetNbAdditionalEigenvalues();

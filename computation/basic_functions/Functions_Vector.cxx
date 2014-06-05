@@ -147,9 +147,7 @@ namespace Seldon
     if (alpha != T0(0))
       {
         T1 alpha_ = alpha;
-
-        int ma = X.GetM();
-
+	
 #ifdef SELDON_CHECK_DIMENSIONS
         CheckDim(X, Y, "Add(alpha, X, Y)");
 #endif
@@ -169,9 +167,7 @@ namespace Seldon
     if (alpha != T0(0))
       {
         T1 alpha_ = alpha;
-
-        int ma = X.GetM();
-
+	
 #ifdef SELDON_CHECK_DIMENSIONS
         CheckDim(X, Y, "Add(alpha, X, Y)");
 #endif

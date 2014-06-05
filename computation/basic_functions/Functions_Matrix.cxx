@@ -931,7 +931,6 @@ namespace Seldon
               Matrix<T4, Prop4, PETScMPIDense, Allocator4>& C)
   {
     int na = A.GetN();
-    int mc = C.GetM();
     int nc = C.GetN();
 
 #ifdef SELDON_CHECK_DIMENSIONS

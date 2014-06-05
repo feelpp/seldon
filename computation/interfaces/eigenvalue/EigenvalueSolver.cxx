@@ -806,7 +806,7 @@ namespace Seldon
     if (var.GetComputationalMode() != var.REGULAR_MODE)
       {
         if ( (var.eigenvalue_computation_mode == var.INVERT_MODE)
-             && (var.GetTypeSpectrum() == var.LARGE_EIGENVALUES))
+             && (var.GetTypeSpectrum() != var.CENTERED_EIGENVALUES))
           {
             // nothing to change
           }
@@ -939,15 +939,15 @@ namespace Seldon
               eigen_vectors(i,j) = Xcol(i);
           }
       }
-    
+
     if (var.GetComputationalMode() != var.REGULAR_MODE)
       {
         if ( (var.eigenvalue_computation_mode == var.INVERT_MODE)
-             && (var.GetTypeSpectrum() == var.LARGE_EIGENVALUES))
+             && (var.GetTypeSpectrum() != var.CENTERED_EIGENVALUES))
           {
             // nothing to change
-          }
-        if ((var.DiagonalMass())|| (var.UseCholeskyFactoForMass())
+	  }
+        else if ((var.DiagonalMass())|| (var.UseCholeskyFactoForMass())
             || (var.eigenvalue_computation_mode == var.INVERT_MODE))
           {
             // shift-invert mode, we have to modify eigenvalues
@@ -1038,7 +1038,7 @@ namespace Seldon
     
     // sorting L, and retrieving permutation array
     Sort(L, permutation);
-				 
+    
     // permuting eigenvalues and eigenvectors
     Vector<T> oldLambda_r = lambda_r, oldLambda_i = lambda_i;
     for (int i = 0; i < n; i++)
@@ -1123,7 +1123,7 @@ namespace Seldon
     
     // sorting L, and retrieving permutation array
     Sort(L, permutation);
-				 
+    
     // permuting eigenvalues and eigenvectors
     Vector<complex<T> > oldLambda_r = lambda_r, oldLambda_i = lambda_i;
     for (int i = 0; i < n; i++)
@@ -1384,7 +1384,7 @@ namespace Seldon
   }
     
   
-  //! computation of Cholesky factorisation of M from matrix M
+  //! computes Cholesky factorisation of M from matrix M
   template<class T, class MatStiff, class MatMass>
   void SparseEigenProblem<T, MatStiff, MatMass>::
   FactorizeCholeskyMass()
@@ -1395,7 +1395,8 @@ namespace Seldon
     if (this->print_level > 0)
       chol_facto_mass_matrix.ShowMessages();
     
-    chol_facto_mass_matrix.Factorize(*this->Mh, true);    
+    MassValue x_test;
+    FactorizeCholeskyMass(x_test);
     
     if (this->print_level < 2)
       chol_facto_mass_matrix.HideMessages();
@@ -1405,7 +1406,27 @@ namespace Seldon
   }
   
   
-  //! computation of L X or L^T x if M = L L^T
+  //! intermediary function
+  template<class T, class MatStiff, class MatMass>
+  void SparseEigenProblem<T, MatStiff, MatMass>::
+  FactorizeCholeskyMass(double&)
+  {
+    chol_facto_mass_matrix.Factorize(*this->Mh, true);    
+  }
+
+
+  //! intermediary function
+  template<class T, class MatStiff, class MatMass>
+  void SparseEigenProblem<T, MatStiff, MatMass>::
+  FactorizeCholeskyMass(complex<double>&)
+  {
+    cout << "Cholesky factorisation has not been implemented "
+	 << "for complex matrices" << endl;
+    abort();    
+  }
+  
+  
+  //! computes L X or L^T x if M = L L^T
   template<class T, class MatStiff, class MatMass>
   template<class TransStatus, class T0>
   void SparseEigenProblem<T, MatStiff, MatMass>::
@@ -1415,7 +1436,7 @@ namespace Seldon
   }
   
   
-  //! computation of L^-1 X or L^-T x if M = L L^T
+  //! computes L^-1 X or L^-T x if M = L L^T
   template<class T, class MatStiff, class MatMass>
   template<class TransStatus, class T0>
   void SparseEigenProblem<T, MatStiff, MatMass>::
@@ -1425,11 +1446,35 @@ namespace Seldon
   }
 
 
-  //! computation of L X or L^T x if M = L L^T
+  //! computes L X or L^T x if M = L L^T
   template<class T, class MatStiff, class MatMass>
   template<class TransStatus>
   void SparseEigenProblem<T, MatStiff, MatMass>::
   MltCholeskyMass(const TransStatus& TransA, Vector<complex<double> >& X)
+  {
+    MassValue x_test;
+    MltCholeskyMass(TransA, X, x_test);
+  }
+  
+
+  //! computes L X or L^T x if M = L L^T
+  template<class T, class MatStiff, class MatMass>
+  template<class TransStatus>
+  void SparseEigenProblem<T, MatStiff, MatMass>::
+  MltCholeskyMass(const TransStatus& TransA, Vector<complex<double> >& X,
+		  complex<double>&)
+  {
+    cout << "Cholesky factorisation has not been implemented "
+	 << "for complex matrices" << endl;
+    abort();
+  }
+  
+  
+  //! computes L X or L^T x if M = L L^T
+  template<class T, class MatStiff, class MatMass>
+  template<class TransStatus>
+  void SparseEigenProblem<T, MatStiff, MatMass>::
+  MltCholeskyMass(const TransStatus& TransA, Vector<complex<double> >& X, double&)  
   {
     for (int i = 0; i < X.GetM(); i++)
       {
@@ -1446,11 +1491,34 @@ namespace Seldon
   }
   
   
-  //! computation of L^-1 X or L^-T x if M = L L^T
+  //! computes L^-1 X or L^-T x if M = L L^T
   template<class T, class MatStiff, class MatMass>
   template<class TransStatus>
   void SparseEigenProblem<T, MatStiff, MatMass>::
   SolveCholeskyMass(const TransStatus& TransA, Vector<complex<double> >& X)
+  {
+    MassValue x_test;
+    SolveCholeskyMass(TransA, X, x_test);
+  }
+  
+
+  //! computes L^-1 X or L^-T x if M = L L^T
+  template<class T, class MatStiff, class MatMass>
+  template<class TransStatus>
+  void SparseEigenProblem<T, MatStiff, MatMass>::
+  SolveCholeskyMass(const TransStatus& TransA, Vector<complex<double> >& X,
+		    complex<double>&)
+  {
+    cout << "Cholesky factorisation has not been implemented for complex matrices" << endl;
+    abort();
+  }
+  
+  
+  //! computes L^-1 X or L^-T x if M = L L^T
+  template<class T, class MatStiff, class MatMass>
+  template<class TransStatus>
+  void SparseEigenProblem<T, MatStiff, MatMass>::
+  SolveCholeskyMass(const TransStatus& TransA, Vector<complex<double> >& X, double&)
   {
     for (int i = 0; i < X.GetM(); i++)
       {
@@ -1463,10 +1531,10 @@ namespace Seldon
     
     for (int i = 0; i < X.GetM(); i++)
       X(i) = complex<double>(Xchol_real(i), Xchol_imag(i));
-
   }
   
   
+  //! computes and factorizes a M + b K where M is the mass matrix and K the stiffness matrix
   template<class T, class MatStiff, class MatMass>
   void SparseEigenProblem<T, MatStiff, MatMass>::
   ComputeAndFactorizeStiffnessMatrix(const T& a, const T& b)
@@ -1478,35 +1546,77 @@ namespace Seldon
     if (this->print_level > 0)
       mat_lu.ShowMessages();
     
-    // forming a M + b K
-    if (IsSymmetricMatrix(*this->Kh))
+    // retrieving symmetry of mass matrix 
+    bool sym_mh = true;
+    if (this->Mh != NULL)
       {
+	if (!IsSymmetricMatrix(*this->Mh))
+	  sym_mh = false;
+      }
+
+    T zero; SetComplexZero(zero);
+    
+    if (b == zero)
+      {
+	// only mass matrix must be factorized
+	if (sym_mh)
+	  {
+	    Matrix<T, Symmetric, ArrayRowSymSparse> A;
+	    if (this->Mh == NULL)
+	      {
+		A.Reallocate(this->n_, this->n_);
+		A.SetIdentity();
+	      }
+	    else
+	      Copy(*(this->Mh), A);
+	    
+	    Mlt(a, A);
+	    mat_lu.Factorize(A);
+	  }
+	else
+	  {
+	    Matrix<T, General, ArrayRowSparse> A;
+	    Copy(*(this->Mh), A);
+	    Mlt(a, A);
+	    mat_lu.Factorize(A);
+	  }
+      }
+    else if (IsSymmetricMatrix(*this->Kh) && sym_mh)
+      {
+	// forming a M + b K and factorizing it when the result is symmetric
         Matrix<T, Symmetric, ArrayRowSymSparse> A;
         Copy(*(this->Kh), A);
         Mlt(b, A);
-        if (this->Mh == NULL)
-          {
-            for (int i = 0; i < this->n_; i++)
-              A.AddInteraction(i, i, a);
-          }
-        else
-          Add(a, *(this->Mh), A);
-        
+	if (a != zero)
+	  {
+	    if (this->Mh == NULL)
+	      {
+		for (int i = 0; i < this->n_; i++)
+		  A.AddInteraction(i, i, a);
+	      }
+	    else
+	      Add(a, *(this->Mh), A);
+	  }
+	
         mat_lu.Factorize(A);
       } 
     else
       {
+	// forming a M + b K and factorizing it when the result is unsymmetric
         Matrix<T, General, ArrayRowSparse> A;
         Copy(*(this->Kh), A);
         Mlt(b, A);
-        if (this->Mh == NULL)
-          {
-            for (int i = 0; i < this->n_; i++)
-              A.AddInteraction(i, i, a);
-          }
-        else
-          Add(a, *(this->Mh), A);
-        
+	if (a != zero)
+	  {
+	    if (this->Mh == NULL)
+	      {
+		for (int i = 0; i < this->n_; i++)
+		  A.AddInteraction(i, i, a);
+	      }
+	    else
+	      Add(a, *(this->Mh), A);
+	  }
+	
         mat_lu.Factorize(A);
       }      
 
@@ -1548,22 +1658,83 @@ namespace Seldon
       this->PrintErrorInit();
     
     imag_solution = !real_p;
-    // forming a M + b K
-    Matrix<Complexe, General, ArrayRowSparse> A;
-    Copy(*(this->Kh), A);
-    Mlt(b, A);
-    if (this->Mh == NULL)
-      {
-        for (int i = 0; i < this->n_; i++)
-          A.AddInteraction(i, i, a);
-      }
-    else
-      Add(a, *(this->Mh), A);
-    
+
     if (this->print_level > 0)
       mat_lu_cplx.ShowMessages();
+    
+    // retrieving symmetry of mass matrix 
+    bool sym_mh = true;
+    if (this->Mh != NULL)
+      {
+	if (!IsSymmetricMatrix(*this->Mh))
+	  sym_mh = false;
+      }
 
-    mat_lu_cplx.Factorize(A);
+    complex<double> zero(0, 0);
+    
+    if (b == zero)
+      {
+	// only mass matrix must be factorized
+	if (sym_mh)
+	  {
+	    Matrix<Complexe, Symmetric, ArrayRowSymSparse> A;
+	    if (this->Mh == NULL)
+	      {
+		A.Reallocate(this->n_, this->n_);
+		A.SetIdentity();
+	      }
+	    else
+	      Copy(*(this->Mh), A);
+	    
+	    Mlt(a, A);
+	    mat_lu_cplx.Factorize(A);
+	  }
+	else
+	  {
+	    Matrix<Complexe, General, ArrayRowSparse> A;
+	    Copy(*(this->Mh), A);
+	    Mlt(a, A);
+	    mat_lu_cplx.Factorize(A);
+	  }
+      }
+    else if (IsSymmetricMatrix(*this->Kh) && sym_mh)
+      {
+	// forming a M + b K
+	Matrix<Complexe, Symmetric, ArrayRowSymSparse> A;
+	Copy(*(this->Kh), A);
+	Mlt(b, A);
+	if (a != zero)
+	  {
+	    if (this->Mh == NULL)
+	      {
+		for (int i = 0; i < this->n_; i++)
+		  A.AddInteraction(i, i, a);
+	      }
+	    else
+	      Add(a, *(this->Mh), A);
+	  }
+	
+	mat_lu_cplx.Factorize(A);
+      }
+    else
+      {
+	// forming a M + b K
+	Matrix<Complexe, General, ArrayRowSparse> A;
+	Copy(*(this->Kh), A);
+	Mlt(b, A);
+	if (a != zero)
+	  {
+	    if (this->Mh == NULL)
+	      {
+		for (int i = 0; i < this->n_; i++)
+		  A.AddInteraction(i, i, a);
+	      }
+	    else
+	      Add(a, *(this->Mh), A);
+	  }
+	
+	mat_lu_cplx.Factorize(A);
+      }
 
     if (this->print_level < 2)
       mat_lu_cplx.HideMessages();

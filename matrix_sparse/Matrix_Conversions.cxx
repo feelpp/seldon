@@ -2377,6 +2377,48 @@ namespace Seldon
       }
   }
 
+
+  //! Conversion from ArrayRowSparse to CSR
+  template<class T, class Prop, class Alloc1,
+           class Tint, class Alloc2, class Alloc3, class Alloc4>
+  void ConvertToCSR(const Matrix<T, Prop, ArrayRowSparse, Alloc1>& A,
+                    Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
+                    Vector<Tint, VectFull, Alloc3>& IndCol,
+                    Vector<T, VectFull, Alloc4>& Value)
+  {
+    int m = A.GetM();
+    if (m <= 0)
+      {
+	Ptr.Clear();
+	IndCol.Clear();
+	Value.Clear();
+	return;
+      }
+
+    int  nnz = 0;
+    for (int i = 0; i < m; i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+	if (A.Index(i, j) >= i)
+	  nnz++;
+    
+    Ptr.Reallocate(m+1);
+    IndCol.Reallocate(nnz);
+    Value.Reallocate(nnz);
+    nnz = 0; Ptr(0) = 0;
+    for (int i = 0; i < m; i++)
+      {
+	for (int j = 0; j < A.GetRowSize(i); j++)
+	  if (A.Index(i, j) >= i)
+	    {
+	      IndCol(nnz) = A.Index(i, j);
+	      Value(nnz) = A.Value(i, j);
+	      nnz++;
+	    }
+	
+	Ptr(i+1) = nnz;
+      }
+  }
+
   
   //! Conversion from ColSymSparse to symmetric CSR
   template<class T, class Prop, class Alloc1,
@@ -2674,6 +2716,25 @@ namespace Seldon
     Vector<int, VectFull, CallocAlloc<int> > IndCol;
 
     General sym;
+    ConvertToCSR(mat_array, sym, IndRow, IndCol, Val);
+
+    int m = mat_array.GetM();
+    int n = mat_array.GetN();
+    mat_csr.SetData(m, n, Val, IndRow, IndCol);
+  }
+
+
+  //! Conversion from ArrayRowSparse to RowSymSparse.
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Prop1, class Allocator1>
+  void Copy(const Matrix<T0, Prop0, ArrayRowSparse, Allocator0>& mat_array,
+	    Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
+  {
+    Vector<T1, VectFull, Allocator1> Val;
+    Vector<int, VectFull, CallocAlloc<int> > IndRow;
+    Vector<int, VectFull, CallocAlloc<int> > IndCol;
+    
+    Symmetric sym;
     ConvertToCSR(mat_array, sym, IndRow, IndCol, Val);
 
     int m = mat_array.GetM();

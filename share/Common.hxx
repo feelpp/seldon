@@ -27,15 +27,10 @@
 #include <hdf5.h>
 #endif
 
-
-template <class T>
-void PrintArray(T* v, int lgth);
-
-namespace Seldon
+#ifndef __APPLE__
+namespace std
 {
-  using namespace std;
-  
-  // conj available for real numbers for compatibility
+  // conj available for real numbers for compatibility                                                                                                                                                                                       
   inline float conj(float x)
   {
     return x;
@@ -45,8 +40,27 @@ namespace Seldon
   {
     return x;
   }
-  
 
+  inline float real(float x)
+  {
+    return x;
+  }
+
+  inline double real(double x)
+  {
+    return x;
+  }
+
+}
+#endif
+
+template <class T>
+void PrintArray(T* v, int lgth);
+
+namespace Seldon
+{
+  using namespace std;
+  
   //! This class helps formatting C++ strings on the fly.
   /*!
     It should may be used like that:
