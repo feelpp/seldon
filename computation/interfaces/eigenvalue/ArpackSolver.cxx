@@ -64,7 +64,7 @@ namespace Seldon
   void ArpackSolver<T, Y>
   ::Init(int n, int nev, int ncv, int maxit, T tol,
 	 string solver_type, int mode, string which,
-	 char bmat, char HowMny, bool with_arpack_verbose = false)
+	 char bmat, char HowMny, bool with_arpack_verbose)
   {
     n_ = n;
     nev_ = nev;

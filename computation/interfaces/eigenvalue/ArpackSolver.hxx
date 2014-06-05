@@ -116,7 +116,7 @@ namespace Seldon
 
     void Init(int n, int nev, int ncv, int maxit, T tol, string solver_type,
 	      int mode, string which, char bmat, char HowMny,
-	      bool with_arpack_verbose);
+	      bool with_arpack_verbose = false);
     void CheckParameter();
     void Clear();
     void Allocate();

@@ -405,7 +405,7 @@ namespace Seldon
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(A, X, Y, "Mlt(A, X, Y)");
 #endif
-
+    
     char uplo('U');
     int ma = A.GetM();
     mkl_cspblas_dcsrsymv(&uplo, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
