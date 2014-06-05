@@ -93,11 +93,14 @@ var_eig.InitMatrix(K, M);
 GetEigenvaluesEigenvectors(var_eig, lambda, lambda_imag, eigen_vec);
 
 // you can also give a specific type for mass Matrix :
-SparseEigenProblem<double, Matrix<double, General, RowSparse>, Matrix<double, Symmetric, RowSymSparse> > var_eig2;
+SparseEigenProblem<double, Matrix<double, General, RowSparse>, 
+                   Matrix<double, Symmetric, RowSymSparse> > var_eig2;
 
 // then perform the same operations on var_eig2
 
 \endprecode
+
+You should pay attention to the computational mode selected since in most of the situations, the mass matrix is required to be real symmetric positive. If you have selected Arpack (which is the default eigenvalue solver) as solver, and if you provide a real symmetric mass matrix but indefinite (with both positive and negative eigenvalues), the computation will be completed without warnings, but the eigenvalues will be incorrect. So it is up to the user to check that the matrices are fulfilling the requirements of the computational mode given when <a href="#GetComputationalMode">GetComputationalMode</a> is called. 
 
 
 <h2>Advanced use</h2>
@@ -643,13 +646,27 @@ GetEigenvaluesEigenvectors(var_eig, lambda, lambda_imag, eigen_vec);
 <p><b>SetComputationalMode</b> sets the computational mode to use for the research of eigenvalues and eigenvectors, whereas <b>GetComputationalMode</b> returns the computation mode used. The default computational mode is REGULAR_MODE. This mode is particularly well suited if you are looking for largest eigenvalues of the matrix. However, it can induce a lot of iterations to converge if smallest eigenvalues are researched, and you can't compute eigenvalues closest to the shift with that mode. The following available modes are (we put equivalent mode numbers in Arpack) : </p>
 
 <ul>
-<li> REGULAR_MODE : regular mode (1 for standard eigenproblem, 2 for generalized one) : K x = &mu; M x </li>
-<li> SHIFTED_MODE : shifted mode (1 for standard eigenproblem, 3 for generalized one) : (K - &sigma; M)<sup>-1</sup> M x = &mu; x <</li>
-<li> IMAG_SHIFTED_MODE : shifted mode and use of imaginary part (4 for generalized eigenproblem, only for real unsymmetric matrices) : Imag{ (K- &sigma; M)<sup>-1</sup> M} x = &mu; x </li>
-<li> INVERT_MODE : multiplication by inverse of M to have a standard eigenvalue problem (only for generalized eigenproblem) : (K - &sigma; M)<sup>-1</sup> M x = &mu; x </li>
+<li> REGULAR_MODE : regular mode (1 for standard eigenproblem, 2 for generalized one) : K x = &mu; M x <br/>
+In that mode, the mass matrix M must be real symmetric positive. <br/>
+</li>
+
+<li> SHIFTED_MODE : shifted mode (1 for standard eigenproblem, 3 for generalized one) : (K - &sigma; M)<sup>-1</sup> M x = &mu; x <br/>
+In that mode, the mass matrix M must be real symmetric positive. <br/>
+</li>
+
+<li> IMAG_SHIFTED_MODE : shifted mode and use of imaginary part (4 for generalized eigenproblem, only for real unsymmetric matrices) : Imag{ (K- &sigma; M)<sup>-1</sup> M} x = &mu; x <br/>
+In that mode, the mass matrix M must be real symmetric positive. <br/>
+</li>
+
+<li> INVERT_MODE : multiplication by inverse of M to have a standard eigenvalue problem (only for generalized eigenproblem) : (K - &sigma; M)<sup>-1</sup> M x = &mu; x <br/>
+In that mode, the mass matrix M and stiffness matrix K can be any type of matrices. <br/> </li>
+
 <li> BUCKLING_MODE : available for  real generalized symmetric eigenproblems (4 for Arpack) :
- (K - &sigma; M)<sup>-1</sup> K x = &mu; x </li>
-<li> CAYLEY_MODE : available for real generalized symmetric eigenproblems (5 for Arpack) : (K - &sigma; M)<sup>-1</sup> (K + &sigma; M) x = &mu; x  </li>
+ (K - &sigma; M)<sup>-1</sup> K x = &mu; x <br/>
+In that mode, the mass matrix M and stiffness matrix K must be real symmetric positive. <br/> </li>
+
+<li> CAYLEY_MODE : available for real generalized symmetric eigenproblems (5 for Arpack) : (K - &sigma; M)<sup>-1</sup> (K + &sigma; M) x = &mu; x  <br/>
+In that mode, the mass matrix M must be real symmetric positive, the stiffness matrix K must be real symmetric. <br/> </li>
 </ul>
 
 <p> INVERT_MODE is not a computational mode of Arpack, but rather a trick in order to use mode 1 for generalized eigenvalue problems. Similarly, if you inform that the mass matrix is diagonal, or if you ask to perform a Cholesky factorisation of the mass matrix, GetEigenvaluesEigenvectors will use mode 1 (a regular mode on K or (K - &sigma; M)<sup>-1</sup> M ) to compute eigenvalues. However for diagonal mass and Cholesky factorisation, the eigenproblem stays symmetric, while INVERT_MODE breaks the symmetry, and the computation should be less efficient. </p>
