@@ -76,6 +76,11 @@
 #include "computation/interfaces/eigenvalue/Anasazi.cxx"
 #endif
 
+#ifdef SELDON_WITH_FEAST
+#include "computation/interfaces/eigenvalue/Feast.hxx"
+#include "computation/interfaces/eigenvalue/Feast.cxx"
+#endif
+
 #include "computation/interfaces/eigenvalue/EigenvalueSolver.cxx"
 
 #define SELDON_FILE_SELDON_SOLVER_HXX

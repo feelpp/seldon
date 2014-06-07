@@ -52,13 +52,14 @@ namespace Seldon
   }
   
   
-  //! initialisation of a standard problem
+  //! initialisation of the size of the eigenvalue problem
   template<class T, class MatStiff, class MatMass>
   void EigenProblem_Base<T, MatStiff, MatMass>::Init(int n)
   {
     n_ = n;
     nb_prod = 0;
 
+    // counting the size of the global system for parallel computation
     int nglob = n;
 #ifdef SELDON_WITH_MPI
     comm.Allreduce(&n, &nglob, 1, MPI::INTEGER, MPI::SUM);    
@@ -208,12 +209,14 @@ namespace Seldon
   
 
 #ifdef SELDON_WITH_MPI
+  //! returns the MPI communicator shared by processors
   template<class T, class MatStiff, class MatMass>
   MPI::Intracomm& EigenProblem_Base<T, MatStiff, MatMass>::GetCommunicator()
   {
     return comm;
   }
-
+  
+  //! sets the MPI communicator shared by processors
   template<class T, class MatStiff, class MatMass>
   void EigenProblem_Base<T, MatStiff, MatMass>::SetCommunicator(MPI::Comm& comm_)
   {
@@ -341,6 +344,34 @@ namespace Seldon
   }
   
   
+  //! returns lower bound of the interval where eigenvalues are searched
+  template<class T, class MatStiff, class MatMass>
+  double EigenProblem_Base<T, MatStiff, MatMass>
+  ::GetLowerBoundInterval() const
+  {
+    return emin_interval;
+  }
+
+
+  //! returns upper bound of the interval where eigenvalues are searched
+  template<class T, class MatStiff, class MatMass>
+  double EigenProblem_Base<T, MatStiff, MatMass>
+  ::GetUpperBoundInterval() const
+  {
+    return emax_interval;
+  }
+  
+  
+  //! sets the interval where eigenvalues are searched
+  template<class T, class MatStiff, class MatMass>
+  void EigenProblem_Base<T, MatStiff, MatMass>
+  ::SetIntervalSpectrum(double l0, double l1)
+  {
+    emin_interval = l0;
+    emax_interval = l1;
+  }
+    
+
   //! indicates the use of Cholesky factorisation in order to 
   //! solve a standard eigenvalue problem instead of a generalized one
   template<class T, class MatStiff, class MatMass>
@@ -509,7 +540,13 @@ namespace Seldon
   {
     if (Kh != NULL)
       {
-        return IsSymmetricMatrix(*Kh);
+        if (IsSymmetricMatrix(*Kh))
+          {
+            if (Mh == NULL)
+              return true;
+            else
+              return IsSymmetricMatrix(*Mh);
+          }
       }
     else
       PrintErrorInit();
@@ -527,7 +564,15 @@ namespace Seldon
 	if (IsComplexMatrix(*Kh))
 	  return false;
 	else
-	  return IsSymmetricMatrix(*Kh);
+	  {
+            if (IsSymmetricMatrix(*Kh))
+              {
+                if (Mh == NULL)
+                  return true;
+                else
+                  return IsSymmetricMatrix(*Mh);
+              }
+          }
       }
     else
       PrintErrorInit();
@@ -553,9 +598,9 @@ namespace Seldon
   
   
   //! multiplication of X by D^-1/2
-  template<class T, class MatStiff, class MatMass>
+  template<class T, class MatStiff, class MatMass> template<class T0>
   void EigenProblem_Base<T, MatStiff, MatMass>::
-  MltInvSqrtDiagonalMass(Vector<T>& X)
+  MltInvSqrtDiagonalMass(Vector<T0>& X)
   {
     for (int i = 0; i < X.GetM(); i++)
       X(i) /= sqrt_diagonal_mass(i);
@@ -563,9 +608,9 @@ namespace Seldon
   
   
   //! multiplication of X by D^1/2
-  template<class T, class MatStiff, class MatMass>
+  template<class T, class MatStiff, class MatMass> template<class T0>
   void EigenProblem_Base<T, MatStiff, MatMass>::
-  MltSqrtDiagonalMass(Vector<T>& X)
+  MltSqrtDiagonalMass(Vector<T0>& X)
   {
     for (int i = 0; i < X.GetM(); i++)
       X(i) *= sqrt_diagonal_mass(i);
@@ -720,15 +765,25 @@ namespace Seldon
   
   
   //! solving the linear system (a M + b K) Y = X
-  template<class T, class MatStiff, class MatMass>
+  template<class T, class MatStiff, class MatMass> template<class T0>
   void EigenProblem_Base<T, MatStiff, MatMass>::
-  ComputeSolution(const Vector<T>& X, Vector<T>& Y)
+  ComputeSolution(const Vector<T0>& X, Vector<T0>& Y)
   {
     abort();
   }
   
   
-    //! computation of Cholesky factorisation of M from matrix M
+  //! solving the linear system (a M + b K) Y = X
+  template<class T, class MatStiff, class MatMass>
+  template<class TransA, class T0>
+  void EigenProblem_Base<T, MatStiff, MatMass>::
+  ComputeSolution(const TransA&, const Vector<T0>& X, Vector<T0>& Y)
+  {
+    abort();
+  }
+
+  
+  //! computation of Cholesky factorisation of M from matrix M
   template<class T, class MatStiff, class MatMass>
   void EigenProblem_Base<T, MatStiff, MatMass>::FactorizeCholeskyMass()
   {
@@ -1339,9 +1394,9 @@ namespace Seldon
   
   //! solution of (a M + b K) Y = X
   template<class T, class Prop, class Storage,
-           class Tmass, class PropM, class StorageM>
+           class Tmass, class PropM, class StorageM> template<class T0>
   void DenseEigenProblem<T, Prop, Storage, Tmass, PropM, StorageM>::
-  ComputeSolution(const Vector<T>& X, Vector<T>& Y)
+  ComputeSolution(const Vector<T0>& X, Vector<T0>& Y)
   {
     if (this->complex_system)
       Mlt(mat_lu, X, Y);
@@ -1352,6 +1407,23 @@ namespace Seldon
       }
   }
    
+
+  //! solution of (a M + b K) Y = X or transpose system
+  template<class T, class Prop, class Storage,
+           class Tmass, class PropM, class StorageM>
+  template<class TransA, class T0>
+  void DenseEigenProblem<T, Prop, Storage, Tmass, PropM, StorageM>::
+  ComputeSolution(const TransA& transA, const Vector<T0>& X, Vector<T0>& Y)
+  {
+    if (this->complex_system)
+      Mlt(transA, mat_lu, X, Y);
+    else
+      {
+        Copy(X, Y);
+        SolveLU(transA, mat_lu, pivot, Y);
+      }
+  }
+  
   
   //! clearing variables used for eigenvalue resolution
   template<class T, class Prop, class Storage,
@@ -1625,6 +1697,7 @@ namespace Seldon
   }
   
   
+  //! computes and factorizes matrix (a M + b K) for complex values of a and b
   template<class T, class MatStiff, class MatMass>
   void SparseEigenProblem<T, MatStiff, MatMass>::
   ComputeAndFactorizeStiffnessMatrix(const complex<T>& a,
@@ -1635,6 +1708,7 @@ namespace Seldon
   }
   
   
+  //! intermediary function
   template<class T, class MatStiff, class MatMass> template<class T0>
   void SparseEigenProblem<T, MatStiff, MatMass>::
   ComputeAndFactorizeComplexMatrix(const complex<T0>& a,
@@ -1647,6 +1721,7 @@ namespace Seldon
   }
 
   
+  //! computes and factorizes matrix (a M + b K) for complex values of a and b
   template<class T, class MatStiff, class MatMass> 
   void SparseEigenProblem<T, MatStiff, MatMass>::
   ComputeAndFactorizeComplexMatrix(const complex<double>& a,
@@ -1741,13 +1816,14 @@ namespace Seldon
   }
 
   
-  template<class T, class MatStiff, class MatMass>
+  //! solves (a M + b K) Y = X with stored factorization 
+  template<class T, class MatStiff, class MatMass> template<class T0>
   void SparseEigenProblem<T, MatStiff, MatMass>::
-  ComputeSolution(const Vector<T>& X, Vector<T>& Y)
+  ComputeSolution(const Vector<T0>& X, Vector<T0>& Y)
   {
     if (this->complex_system)
       {
-        ComputeComplexSolution(X, Y);
+        ComputeComplexSolution(SeldonNoTrans, X, Y);
       }
     else
       {
@@ -1756,12 +1832,31 @@ namespace Seldon
       }
   }
   
-
-  template<class T, class MatStiff, class MatMass> template<class T0>
+  
+  //! solves (a M + b K) Y = X or transpose system
+  template<class T, class MatStiff, class MatMass>
+  template<class TransA, class T0>
   void SparseEigenProblem<T, MatStiff, MatMass>::
-  ComputeComplexSolution(const Vector<T0>& X, Vector<T0>& Y)
+  ComputeSolution(const TransA& transA, const Vector<T0>& X, Vector<T0>& Y)
   {
-    Vector<complex<T0> > Xcplx(this->n_);
+    if (this->complex_system)
+      {
+        ComputeComplexSolution(transA, X, Y);
+      }
+    else
+      {
+        Copy(X, Y);
+        mat_lu.Solve(transA, Y);
+      }
+  }
+  
+  
+  //! solves (a M + b K) Y = X when a and b are complex
+  template<class T, class MatStiff, class MatMass> template<class TransA>
+  void SparseEigenProblem<T, MatStiff, MatMass>::
+  ComputeComplexSolution(const TransA& transA, const Vector<T>& X, Vector<T>& Y)
+  {
+    Vector<complex<T> > Xcplx(this->n_);
     for (int i = 0; i < this->n_; i++)
       Xcplx(i) = X(i);
     
@@ -1777,17 +1872,19 @@ namespace Seldon
   }
 
 
-  template<class T, class MatStiff, class MatMass>
+  //! intermediary function
+  template<class T, class MatStiff, class MatMass> template<class TransA>
   void SparseEigenProblem<T, MatStiff, MatMass>::
-  ComputeComplexSolution(const Vector<complex<double> >& X,
+  ComputeComplexSolution(const TransA& transA,
+                         const Vector<complex<double> >& X,
                          Vector<complex<double> >& Y)
   {
-    // this case should not appear
-    cout << "Case not handled" << endl;
-    abort();
+    Copy(X, Y);
+    mat_lu_cplx.Solve(transA, Y);
   }
 
-
+  
+  //! clears memory used by the object
   template<class T, class MatStiff, class MatMass>
   void SparseEigenProblem<T, MatStiff, MatMass>::Clear()
   {
@@ -1798,7 +1895,8 @@ namespace Seldon
     Xchol_imag.Clear();    
   }
 
-
+  
+  //! default constructor
   template<class T, class MatStiff>
   MatrixFreeEigenProblem<T, MatStiff>::
   MatrixFreeEigenProblem() 

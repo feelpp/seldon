@@ -18,7 +18,7 @@ namespace Seldon
   class EigenProblem_Base
   {
   public :
-    //! several available modes to find eigenvalues
+    //! several available modes to find eigenvalues (Arpack)
     /*!
       REGULAR_MODE : Regular mode
                  standard problem => no linear system to solve
@@ -57,7 +57,7 @@ namespace Seldon
     */
     enum {SOLVER_LOBPCG, SOLVER_BKS, SOLVER_BD};
     
-    //! orthogonalization managers
+    //! orthogonalization managers (Anasazi)
     enum {ORTHO_DGKS, ORTHO_SVQB};
     
     //! type for number stored in mass matrix
@@ -81,18 +81,6 @@ namespace Seldon
     
     //! large eigenvalues because of their real part, imaginary part or magnitude ?
     int type_sort_eigenvalues;
-    
-    //! which solver ?
-    int type_solver;
-    
-    //! orthogonalization manager
-    int ortho_manager;
-    
-    //! number of blocks for blocked solvers
-    int nb_blocks;
-    
-    //! restart parameter for blocked solvers
-    int restart_number;
     
     //! if true, the generalized problem is reduced to a standard problem
     /*!
@@ -136,7 +124,7 @@ namespace Seldon
     Vector<MassValue> sqrt_diagonal_mass;
 
     //! if true consider Real( (a M + bK)^-1) or Imag( (a M + b K)^-1 )
-    //! a and/or being complex
+    //! or the whole system, a and/or b being complex
     bool complex_system;    
     
     //! mass matrix
@@ -149,6 +137,29 @@ namespace Seldon
     //! communicator used to compute eigenvalues
     MPI::Intracomm comm;
 #endif
+
+    //! which solver ?
+    int type_solver;
+    
+    /************************** 
+     * Parameters for Anasazi *
+     **************************/
+    
+    //! orthogonalization manager
+    int ortho_manager;
+    
+    //! number of blocks for blocked solvers
+    int nb_blocks;
+    
+    //! restart parameter for blocked solvers
+    int restart_number;
+    
+    /************************
+     * Parameters for Feast *
+     ************************/
+    
+    //! interval where eigenvalues are searched
+    double emin_interval, emax_interval;
     
   public :
 
@@ -195,7 +206,12 @@ namespace Seldon
     
     void SetTypeSpectrum(int type, const complex<T>& val,
                          int type_sort = SORTED_MODULUS);
-        
+
+    double GetLowerBoundInterval() const;
+    double GetUpperBoundInterval() const;
+
+    void SetIntervalSpectrum(double, double);
+            
     void SetCholeskyFactoForMass(bool chol = true);
     bool UseCholeskyFactoForMass() const;
     
@@ -226,8 +242,8 @@ namespace Seldon
     
     // mass matrix stuff
     void FactorizeDiagonalMass(Vector<MassValue>& D);
-    void MltInvSqrtDiagonalMass(Vector<T>& X);
-    void MltSqrtDiagonalMass(Vector<T>& X);
+    template<class T0> void MltInvSqrtDiagonalMass(Vector<T0>& X);
+    template<class T0> void MltSqrtDiagonalMass(Vector<T0>& X);
     
     void ComputeDiagonalMass(Vector<MassValue>& D);
     void ComputeMassForCholesky();
@@ -248,7 +264,12 @@ namespace Seldon
                                             const complex<T>& b,
                                             bool real_p = true);
     
-    void ComputeSolution(const Vector<T>& X, Vector<T>& Y);
+    template<class T0>
+    void ComputeSolution(const Vector<T0>& X, Vector<T0>& Y);
+    
+    template<class TransA, class T0>
+    void ComputeSolution(const TransA& transA,
+                         const Vector<T0>& X, Vector<T0>& Y);
     
     void FactorizeCholeskyMass();
     
@@ -356,7 +377,12 @@ namespace Seldon
                                           const complex<double>& b,
                                             bool real_p = true);
 
-    void ComputeSolution(const Vector<T>& X, Vector<T>& Y);
+    template<class T0>
+    void ComputeSolution(const Vector<T0>& X, Vector<T0>& Y);
+
+    template<class TransA, class T0>
+    void ComputeSolution(const TransA& transA,
+                         const Vector<T0>& X, Vector<T0>& Y);
     
     void Clear();
     
@@ -443,11 +469,20 @@ namespace Seldon
                                           const complex<double>& b,
                                             bool real_p = true);
 
-    void ComputeSolution(const Vector<T>& X, Vector<T>& Y);
-
     template<class T0>
-    void ComputeComplexSolution(const Vector<T0>& X, Vector<T0>& Y);
-    void ComputeComplexSolution(const Vector<complex<double> >& X,
+    void ComputeSolution(const Vector<T0>& X, Vector<T0>& Y);
+    
+    template<class TransA, class T0>
+    void ComputeSolution(const TransA& transA,
+                         const Vector<T0>& X, Vector<T0>& Y);
+    
+    template<class TransA>
+    void ComputeComplexSolution(const TransA&,
+                                const Vector<T>& X, Vector<T>& Y);
+    
+    template<class TransA>
+    void ComputeComplexSolution(const TransA&,
+                                const Vector<complex<double> >& X,
                                 Vector<complex<double> >& Y);
     
     void Clear();
@@ -472,7 +507,7 @@ namespace Seldon
   class TypeEigenvalueSolver
   {
   public :
-    enum {DEFAULT, ARPACK, ANASAZI};
+    enum {DEFAULT, ARPACK, ANASAZI, FEAST};
     
     static int default_solver;
     
@@ -482,9 +517,14 @@ namespace Seldon
       return ANASAZI;
 #endif
 
+#ifdef SELDON_WITH_FEAST
+      return FEAST;
+#endif
+
 #ifdef SELDON_WITH_ARPACK
       return ARPACK;
 #endif
+
       return -1;
     }
     
@@ -529,6 +569,22 @@ namespace Seldon
                         var_eig.GetTypeSorting(), zero, zero);
 #else
         cout << "Recompile with Anasazi" << endl;
+        abort();
+#endif
+      }
+    else if (type_solver == TypeEigenvalueSolver::FEAST)
+      {
+#ifdef SELDON_WITH_FEAST
+        T zero; SetComplexZero(zero);
+        Matrix<T, General, ColMajor, Alloc3> eigen_old;
+        FindEigenvaluesFeast(var_eig, lambda, lambda_imag, eigen_old);
+        
+        // eigenvalues are sorted by ascending order
+        SortEigenvalues(lambda, lambda_imag, eigen_old,
+                        eigen_vec, var_eig.LARGE_EIGENVALUES,
+                        var_eig.GetTypeSorting(), zero, zero);
+#else
+        cout << "Recompile with MKL" << endl;
         abort();
 #endif
       }
