@@ -1854,7 +1854,8 @@ namespace Seldon
   //! solves (a M + b K) Y = X when a and b are complex
   template<class T, class MatStiff, class MatMass> template<class TransA>
   void SparseEigenProblem<T, MatStiff, MatMass>::
-  ComputeComplexSolution(const TransA& transA, const Vector<T>& X, Vector<T>& Y)
+  ComputeComplexSolution(const TransA& transA,
+                         const Vector<double>& X, Vector<double>& Y)
   {
     Vector<complex<T> > Xcplx(this->n_);
     for (int i = 0; i < this->n_; i++)

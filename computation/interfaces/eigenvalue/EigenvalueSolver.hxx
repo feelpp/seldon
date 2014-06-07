@@ -478,7 +478,7 @@ namespace Seldon
     
     template<class TransA>
     void ComputeComplexSolution(const TransA&,
-                                const Vector<T>& X, Vector<T>& Y);
+                                const Vector<double>& X, Vector<double>& Y);
     
     template<class TransA>
     void ComputeComplexSolution(const TransA&,
