@@ -100,7 +100,7 @@ namespace Seldon
     var.ComputeStiffnessMatrix();
 
     // main loop (reverse communication interface)
-    int ijob = -1, info = 0;
+    int ijob = -1, info = 0; DISP(emin); DISP(emax);
     while (ijob != 0)
       { 
         // feast is called
@@ -110,30 +110,33 @@ namespace Seldon
         //DISP(ijob); DISP(ze); DISP(loop); DISP(info);
         if (ijob == 10)
           {
-            // we have to factorize ze K - M
-            var.ComputeAndFactorizeStiffnessMatrix(-one, ze);
+            // we have to factorize ze M - K
+            var.ComputeAndFactorizeStiffnessMatrix(ze, -one);
           }
         else if (ijob == 11)
           {
             // solves (ze K - M) y = workc(n, m0)
-            for (int i = 0; i < n; i++)
-              xc(i) = workc(i, m0-1);
-            
-            if (var.DiagonalMass())
-              var.MltSqrtDiagonalMass(xc);
-            else if (var.UseCholeskyFactoForMass())
-              var.MltCholeskyMass(SeldonNoTrans, xc);
-            
-            var.ComputeSolution(xc, yc);
-            var.IncrementProdMatVect();
-            
-            if (var.DiagonalMass())
-              var.MltSqrtDiagonalMass(yc);
-            else if (var.UseCholeskyFactoForMass())
-              var.MltCholeskyMass(SeldonTrans, yc);
-            
-            for (int i = 0; i < n; i++)
-              workc(i, m0-1) = yc(i);
+            for (int k = 0; k < m0; k++)
+              {
+                for (int i = 0; i < n; i++)
+                  xc(i) = workc(i, k);
+                
+                if (var.DiagonalMass())
+                  var.MltSqrtDiagonalMass(xc);
+                else if (var.UseCholeskyFactoForMass())
+                  var.MltCholeskyMass(SeldonNoTrans, xc);
+                
+                var.ComputeSolution(xc, yc);
+                var.IncrementProdMatVect();
+                
+                if (var.DiagonalMass())
+                  var.MltSqrtDiagonalMass(yc);
+                else if (var.UseCholeskyFactoForMass())
+                  var.MltCholeskyMass(SeldonTrans, yc);
+                
+                for (int i = 0; i < n; i++)
+                  workc(i, k) = yc(i);
+              }
           }
         else if (ijob == 20)
           {
@@ -143,30 +146,33 @@ namespace Seldon
         else if (ijob == 21)
           {
             // solves (ze K - M)^H y = workc(n, m0)
-            for (int i = 0; i < n; i++)
-              xc(i) = workc(i, m0-1);
-            
-            if (var.DiagonalMass())
-              var.MltSqrtDiagonalMass(xc);
-            else if (var.UseCholeskyFactoForMass())
-              var.MltCholeskyMass(SeldonNoTrans, xc);
-            
-            Conjugate(xc);
-            var.ComputeSolution(SeldonTrans, xc, yc);
-            Conjugate(yc);
-            
-            if (var.DiagonalMass())
-              var.MltSqrtDiagonalMass(yc);
-            else if (var.UseCholeskyFactoForMass())
-              var.MltCholeskyMass(SeldonTrans, yc);
-
-            for (int i = 0; i < n; i++)
-              workc(i, m0-1) = yc(i);
+            for (int k = 0; k < m0; k++)
+              {
+                for (int i = 0; i < n; i++)
+                  xc(i) = workc(i, k);
+                
+                if (var.DiagonalMass())
+                  var.MltSqrtDiagonalMass(xc);
+                else if (var.UseCholeskyFactoForMass())
+                  var.MltCholeskyMass(SeldonNoTrans, xc);
+                
+                Conjugate(xc);
+                var.ComputeSolution(SeldonTrans, xc, yc);
+                Conjugate(yc);
+                
+                if (var.DiagonalMass())
+                  var.MltSqrtDiagonalMass(yc);
+                else if (var.UseCholeskyFactoForMass())
+                  var.MltCholeskyMass(SeldonTrans, yc);
+                
+                for (int i = 0; i < n; i++)
+                  workc(i, k) = yc(i);
+              }
           }
         else if (ijob == 30)
           {
             // multiplication by matrix A
-            int i = fpm(24), j = fpm(23) + fpm(24)-1;
+            int i = fpm(23), j = fpm(23) + fpm(24)-1;
             for (int k = i; k <= j; k++)
               {
                 for (int p = 0; p < n; p++)
@@ -191,7 +197,7 @@ namespace Seldon
         else if (ijob == 40)
           {
             // multiplication by matrix B
-            int i = fpm(24), j = fpm(23) + fpm(24)-1;
+            int i = fpm(23), j = fpm(23) + fpm(24)-1;
             for (int k = i; k <= j; k++)
               {
                 for (int p = 0; p < n; p++)
@@ -214,6 +220,17 @@ namespace Seldon
         cout << "info = " << info << endl;
         abort();
       }
+    
+    work.Clear();
+    workc.Clear();
+    
+    eigen_values.Reallocate(m);
+    lambda_imag.Reallocate(m);
+    lambda_imag.Fill(0);
+    for (int i = 0; i < m; i++)
+      eigen_values(i) = lambda(i);
+    
+    eigen_vectors.Resize(n, m);
   }
   
 }
