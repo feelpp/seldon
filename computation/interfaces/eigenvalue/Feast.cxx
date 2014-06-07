@@ -100,7 +100,7 @@ namespace Seldon
     var.ComputeStiffnessMatrix();
 
     // main loop (reverse communication interface)
-    int ijob = -1, info = 0; DISP(emin); DISP(emax);
+    int ijob = -1, info = 0;
     while (ijob != 0)
       { 
         // feast is called
