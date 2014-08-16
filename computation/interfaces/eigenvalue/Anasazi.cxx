@@ -85,13 +85,6 @@ namespace Seldon
     Vector<Tmass> Dh_diag;
     int print_level = var.GetPrintLevel();
 
-#ifdef SELDON_WITH_MPI
-    MPI::Intracomm& comm = var.GetCommunicator();
-    int comm_f = MPI_Comm_c2f(comm);
-#else
-    int comm_f(0);
-#endif
-    
     int solver = var.GetEigensolverType();
     
     typedef Anasazi::MultiVec<T>  MV;
@@ -117,8 +110,7 @@ namespace Seldon
     
     MyPL.set("Verbosity", print_level);
     MyPL.set("Convergence Tolerance", tol);
-    
-    
+        
     // MyPL.set("Relative Convergence Tolerance", tol);
     // MyPL.set("Convergence Norm", "2");
     // MyPL.set("Use Locking", useLocking_);
@@ -163,10 +155,104 @@ namespace Seldon
     
     // Inform the eigenproblem that the operator A is symmetric
     bool isherm = var.IsHermitianProblem();
-    MyProblem->setHermitian(isherm);
     
     // Set the number of eigenvalues requested and the blocksize the solver should use
     MyProblem->setNEV(nev);
+    
+    if (var.DiagonalMass() || var.UseCholeskyFactoForMass())
+      {	
+        // solving a standard eigenvalue problem
+        if (var.DiagonalMass())
+	  {
+	    Vector<Tmass> Dh_diag;
+	    
+	    // computation of M
+            var.ComputeDiagonalMass(Dh_diag);
+	    
+            // computation of M^{-1/2}
+            var.FactorizeDiagonalMass(Dh_diag);
+            Dh_diag.Clear();
+          }
+	else
+	  {
+	    // computation of M for Cholesky factorisation
+            var.ComputeMassForCholesky();
+            
+            // computation of Cholesky factorisation M = L L^T
+            var.FactorizeCholeskyMass();
+          }
+		
+	if (var.GetComputationalMode() == var.REGULAR_MODE)
+          {
+	    // computation of the stiffness matrix
+            var.ComputeStiffnessMatrix();
+	  }
+	else
+	  {
+            // computation and factorization of K - sigma M
+            var.ComputeAndFactorizeStiffnessMatrix(-shiftr, one);
+	  }
+      }
+    else
+      {
+	if (var.GetComputationalMode() == var.INVERT_MODE)
+          {	    
+            // we consider standard problem M^-1 K U = lambda U
+            // drawback : the matrix is non-symmetric even if K and M are symmetric
+	    isherm = false;
+	    if (var.GetTypeSpectrum() != var.CENTERED_EIGENVALUES)
+              {
+		// large eigenvalues of M^-1 K
+                // computation and factorisation of mass matrix
+                var.ComputeAndFactorizeStiffnessMatrix(one, zero);
+                
+                // computation of stiffness matrix
+                var.ComputeStiffnessMatrix();
+              }
+            else
+              {
+                // large eigenvalues of (K - sigma M)^-1 M
+                // computation and factorization of (K - sigma M)
+                var.ComputeAndFactorizeStiffnessMatrix(-shiftr, one);
+
+                // computation of M
+                var.ComputeMassMatrix();
+              }
+	  }
+	else if (var.GetComputationalMode() == var.REGULAR_MODE)
+	  {
+	    if (solver == var.SOLVER_BKS)
+	      {
+		cout << "generalized eigenproblem not implemented for this solver" << endl;
+		abort();
+	      }
+	    
+	    // factorization of the mass matrix
+            // var.ComputeAndFactorizeStiffnessMatrix(one, zero);
+	    
+            // computation of stiffness and mass matrix
+            var.ComputeStiffnessMatrix();
+            var.ComputeMassMatrix();
+	    
+	  }
+	else
+	  {
+	    cout << "not implemented " << endl;
+	    abort();
+	  }
+      }
+
+    if (!isherm)
+      {
+	if (solver != var.SOLVER_BKS)
+	  {
+	    cout << "Only Block-Krylov Schur (SOLVER_BKS) "
+		 << " can be used for nonsymmetric system" << endl;
+	    abort();
+	  }
+      }
+
+    MyProblem->setHermitian(isherm);
     
     // Inform the eigenproblem that you are done passing it information
     bool pb_set = MyProblem->setProblem();
@@ -204,16 +290,25 @@ namespace Seldon
     eigen_values.Reallocate(sol.Evals.size());
     lambda_imag.Reallocate(sol.Evals.size());    
     eigen_vectors.Reallocate(n, sol.Evals.size());
+    typename ClassComplexType<T>::Treal lr, li;
+    //typename ClassComplexType<T>::Tcplx Iwp(0, 1), mu;
+    //typename ClassComplexType<T>::Tcplx shift = shiftr + Iwp*shifti;
     for (unsigned int i = 0; i < sol.Evals.size(); i++)
       {
-	SetComplexEigenvalue(sol.Evals[i].realpart, sol.Evals[i].imagpart,
-			     eigen_values(i), lambda_imag(i));
+	lr = sol.Evals[i].realpart;
+	li = sol.Evals[i].imagpart;
+	
+	SetComplexEigenvalue(lr, li, eigen_values(i), lambda_imag(i));
 	
 	T* x = static_cast<Anasazi::MyMultiVec<T>& >(*sol.Evecs)[i];
 	for (int j = 0; j < n; j++)
 	  eigen_vectors(j, i) = x[j];
       }
-	
+    
+    // modifies eigenvalues and eigenvectors if needed
+    ApplyScalingEigenvec(var, eigen_values, lambda_imag, eigen_vectors,
+                         shiftr, shifti);
+    
     // clears eigenproblem
     var.Clear();
   }

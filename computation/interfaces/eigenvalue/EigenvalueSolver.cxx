@@ -183,6 +183,14 @@ namespace Seldon
     return restart_number;
   }
   
+
+  //! sets the restart parameter used in blocked solvers
+  template<class T, class MatStiff, class MatMass>
+  void EigenProblem_Base<T, MatStiff, MatMass>::SetNbMaximumRestarts(int m)
+  {
+    restart_number = m;
+  }
+
   
   //! returns orthogonalization manager set in Anasazi
   template<class T, class MatStiff, class MatMass>
@@ -570,7 +578,12 @@ namespace Seldon
                 if (Mh == NULL)
                   return true;
                 else
-                  return IsSymmetricMatrix(*Mh);
+                  {
+		    if (IsComplexMatrix(*Mh))
+		      return false;
+
+		    return IsSymmetricMatrix(*Mh);
+		  }
               }
           }
       }

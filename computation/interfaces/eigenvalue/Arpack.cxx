@@ -252,7 +252,7 @@ namespace Seldon
                     var.MltStiffness(Xh, Yh);
                     var.IncrementProdMatVect();
                     
-                    if(var.DiagonalMass())
+                    if (var.DiagonalMass())
                       var.MltInvSqrtDiagonalMass(Yh);
                     else
                       var.SolveCholeskyMass(SeldonNoTrans, Yh);
@@ -311,7 +311,7 @@ namespace Seldon
                     for (int i = 0; i < n; i++)
                       Xh(i) = workd(ipntr(0)+i-1);
                       
-                    if(var.DiagonalMass())
+                    if (var.DiagonalMass())
                       var.MltSqrtDiagonalMass(Xh);
                     else
                       var.MltCholeskyMass(SeldonNoTrans, Xh);
@@ -319,7 +319,7 @@ namespace Seldon
                     var.ComputeSolution(Xh, Yh);
                     var.IncrementProdMatVect();
                     
-                    if(var.DiagonalMass())
+                    if (var.DiagonalMass())
                       var.MltSqrtDiagonalMass(Yh);
                     else
                       var.MltCholeskyMass(SeldonTrans, Yh);

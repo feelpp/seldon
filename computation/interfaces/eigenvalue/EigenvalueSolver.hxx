@@ -189,6 +189,7 @@ namespace Seldon
     int GetNbBlocks() const;
     void SetNbBlocks(int);
     int GetNbMaximumRestarts() const;
+    void SetNbMaximumRestarts(int);
     int GetOrthoManager() const;
 
     int GetEigensolverType() const;
