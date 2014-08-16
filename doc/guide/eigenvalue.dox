@@ -5,7 +5,7 @@
 /*!
 \page eigenvalue Eigenvalue Solvers
 
-<p>%Seldon is interfaced with libraries performing the research of eigenvalues and eigenvectors of very large sparse linear systems : <b><a href="http://www.caam.rice.edu/software/ARPACK/">Arpack</a></b>, <b><a href="http://trilinos.sandia.gov/packages/anasazi/">Anasazi</a></b> and <b><a href="http://">Feast</a></b>. An example file is located in test/program/eigenvalue_test.cpp. For an efficient computation, the user should compile with one of the direct solvers interfaced by Seldon (ie. Mumps, Pastix, SuperLU or UmfPack). For example, if you are compiling with Arpack, you may type (Blas and Lapack are assumed to be provided by MKL library): </p>
+<p>%Seldon is interfaced with libraries performing the research of eigenvalues and eigenvectors of very large sparse linear systems : <b><a href="http://www.caam.rice.edu/software/ARPACK/">Arpack</a></b>, <b><a href="http://trilinos.sandia.gov/packages/anasazi/">Anasazi</a></b> and <b><a href="http://www.ecs.umass.edu/~polizzi/feast/">Feast</a></b>. An example file is located in test/program/eigenvalue_test.cpp. For an efficient computation, the user should compile with one of the direct solvers interfaced by Seldon (ie. Mumps, Pastix, SuperLU or UmfPack). For example, if you are compiling with Arpack, you may type (Blas and Lapack are assumed to be provided by MKL library): </p>
 
 <pre class="fragment">g++ eigenvalue_test.cpp -o run -DSELDON_WITH_ARPACK -DSELDON_WITH_CBLAS -DSELDON_WITH_LAPACK -LArpackDir -larpack -LMklDir -lmkl_lapack95 -lmkl_gf -lmkl_gnu_thread -lmkl_core -lgfortran -I../.. -fopenmp etime.o </pre>
 
