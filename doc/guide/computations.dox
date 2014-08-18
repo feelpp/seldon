@@ -5,7 +5,7 @@
 /*!
 \page computations Computations
 
-<p> %Seldon is fully interfaced with <b>Blas</b> (level 1, 2 and 3), except for Blas functions involving banded matrices (since this format is not available for the moment) and rank operations. If Blas is not available to the user, a few alternative functions (same functions written in C++) may be used.</p>
+<p> %Seldon is fully interfaced with <b>Blas</b> (level 1, 2 and 3), except for Blas functions involving banded matrices and rank operations. If Blas is not available to the user, a few alternative functions (same functions written in C++) may be used.</p>
 
 <h2>Blas</h2>
 

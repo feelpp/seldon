@@ -67,6 +67,10 @@
 
   <li> <code> ArrayColSymSparse</code>: symmetric sparse matrix, each column being stored as a sparse vector. Only upper part of the matrix is stored. </li>
 
+  <li> <code> BandedCol </code> : banded matrix stored by columns as prescribed in Lapack documentation </li>
+
+  <li> <code> ArrowCol </code> : banded matrix stored by columns with additional rows and columns at the end </li>
+
 </ul>
 
 <p><code>RowMajor</code> is the default storage.  </p>
@@ -270,5 +274,6 @@ MltAdd(1.0, A, x, 0, b);
 \endprecode
 
 <p>A comprehensive test of sparse matrices is achieved in file <code>test/program/sparse_matrices_test.cpp</code>. </p>
+
 
 */
