@@ -295,7 +295,25 @@ namespace Seldon
   {
     return z*z;
   }
+  
+  
+  //! returns extension of a string 
+  string GetExtension(const string& nom)
+  {
+    size_t index = nom.find_last_of('.');
+    string extension = nom.substr(index+1, nom.size()-index);  
+    return extension;
+  }
 
+  
+  //! returns base of a string
+  string GetBaseString(const string& nom)
+  {
+    size_t index = nom.find_last_of('.');
+    string base = nom.substr(0, index);
+    return base;
+  }
+  
     
 #ifdef SELDON_WITH_HDF5
   //! Gives for most C types the corresponding HDF5 memory datatype.

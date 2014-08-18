@@ -374,7 +374,9 @@ namespace Seldon
 	   const Matrix<T1, Symmetric, RowSymComplexSparse, Allocator1>& A,
 	   Matrix<T2, Symmetric, RowSymComplexSparse, Allocator2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > PtrReal, IndReal, PtrImag, IndImag;
+    Vector<int, VectFull, CallocAlloc<int> >
+      PtrReal, IndReal, PtrImag, IndImag;
+    
     Vector<T2, VectFull, Allocator2> DataReal, DataImag;
     Add_csr_ptr(alpha, A.GetRealPtr(), A.GetRealInd(), A.GetRealData(),
                 B.GetRealPtr(), B.GetRealInd(), B.GetRealData(), B.GetM(),
@@ -396,7 +398,9 @@ namespace Seldon
 	   const Matrix<T1, General, RowComplexSparse, Allocator1>& A,
 	   Matrix<T2, General, RowComplexSparse, Allocator2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > PtrReal, IndReal, PtrImag, IndImag;
+    Vector<int, VectFull, CallocAlloc<int> >
+      PtrReal, IndReal, PtrImag, IndImag;
+    
     Vector<T2, VectFull, Allocator2> DataReal, DataImag;
     Add_csr_ptr(alpha, A.GetRealPtr(), A.GetRealInd(), A.GetRealData(),
                 B.GetRealPtr(), B.GetRealInd(), B.GetRealData(), B.GetM(),
@@ -422,7 +426,9 @@ namespace Seldon
       throw Undefined("Add(Matrix<RowSymComplexSparse>)",
                       "Function not implemented for complex scalars");
 
-    Vector<int, VectFull, CallocAlloc<int> > PtrReal, IndReal, PtrImag, IndImag;
+    Vector<int, VectFull, CallocAlloc<int> >
+      PtrReal, IndReal, PtrImag, IndImag;
+    
     Vector<T2, VectFull, Allocator2> DataReal, DataImag;
     Add_csr_ptr(real(alpha), A.GetRealPtr(), A.GetRealInd(), A.GetRealData(),
                 B.GetRealPtr(), B.GetRealInd(), B.GetRealData(), B.GetM(),
@@ -448,7 +454,9 @@ namespace Seldon
       throw Undefined("Add(Matrix<RowComplexSparse>)",
                       "Function not implemented for complex scalars");
 
-    Vector<int, VectFull, CallocAlloc<int> > PtrReal, IndReal, PtrImag, IndImag;
+    Vector<int, VectFull, CallocAlloc<int> >
+      PtrReal, IndReal, PtrImag, IndImag;
+    
     Vector<T2, VectFull, Allocator2> DataReal, DataImag;
     Add_csr_ptr(real(alpha), A.GetRealPtr(), A.GetRealInd(), A.GetRealData(),
                 B.GetRealPtr(), B.GetRealInd(), B.GetRealData(), B.GetM(),
@@ -573,7 +581,8 @@ namespace Seldon
 
   //! multiplication by a scalar
   template<class T0, class T, class Prop, class Allocator>
-  void Mlt(const T0& alpha, Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
+  void Mlt(const T0& alpha,
+	   Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
   {
     T* data_A = A.GetRealData();
     for (int i = 0; i < A.GetRealDataSize(); i++)
@@ -611,7 +620,8 @@ namespace Seldon
     Equivalent Matlab operation: A(row_perm, col_perm) = A.
   */
   template<class T, class Prop, class Allocator>
-  void ApplyInversePermutation(Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A,
+  void ApplyInversePermutation(Matrix<T, Prop,
+			       ArrayRowComplexSparse, Allocator>& A,
                                const IVect& row_perm, const IVect& col_perm)
   {
     int m = A.GetM();
@@ -821,10 +831,10 @@ namespace Seldon
     B(i, j) = A(row_perm(i), row_perm(j)) and A = B.
     Equivalent Matlab operation: A = A(row_perm, row_perm)
   */
-  template<class T, class Prop, class Allocator>
-  void ApplyPermutation(Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A,
-                        const Vector<int>& row_perm,
-                        const Vector<int>& col_perm)
+  template<class T, class Prop, class Allocator> void
+  ApplyPermutation(Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A,
+		   const Vector<int>& row_perm,
+		   const Vector<int>& col_perm)
   {
     Vector<int> inv_row_perm(row_perm.GetM());
     for (int i = 0; i < row_perm.GetM(); i++)
@@ -840,7 +850,8 @@ namespace Seldon
   */
   template<class Prop, class T1, class Allocator1,
 	   class T2, class Allocator2, class T3, class Allocator3>
-  void ScaleMatrix(Matrix<T1, Prop, ArrayRowSymComplexSparse, Allocator1>& A,
+  void ScaleMatrix(Matrix<T1, Prop,
+		   ArrayRowSymComplexSparse, Allocator1>& A,
 		   const Vector<T2, VectFull, Allocator2>& scale_left,
 		   const Vector<T3, VectFull, Allocator3>& scale_right)
   {
@@ -905,7 +916,8 @@ namespace Seldon
   */
   template<class T1, class Allocator1,
 	   class Prop, class T2, class Allocator2>
-  void ScaleRightMatrix(Matrix<T1, Prop, ArrayRowComplexSparse, Allocator1>& A,
+  void ScaleRightMatrix(Matrix<T1, Prop,
+			ArrayRowComplexSparse, Allocator1>& A,
 		       const Vector<T2, VectFull, Allocator2>& scale)
   {
     int m = A.GetM();
@@ -1030,7 +1042,8 @@ namespace Seldon
   
   //! Matrix transposition.
   template<class T, class Allocator>
-  void Transpose(const Matrix<T, General, ArrayRowComplexSparse, Allocator>& A,
+  void Transpose(const Matrix<T, General,
+		 ArrayRowComplexSparse, Allocator>& A,
                  Matrix<T, General, ArrayRowComplexSparse, Allocator>& B)
   {
     B.Clear();
@@ -1798,46 +1811,1353 @@ namespace Seldon
 
   
   template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
+  bool IsComplexMatrix(const Matrix<T, Prop,
+		       RowSymComplexSparse, Allocator>& A)
   {
     return true;
   }
 
   
   template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop, ColSymComplexSparse, Allocator>& A)
+  bool IsComplexMatrix(const Matrix<T, Prop,
+		       ColSymComplexSparse, Allocator>& A)
   {
     return true;
   }
 
   
   template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A)
+  bool IsComplexMatrix(const Matrix<T, Prop,
+		       ArrayRowComplexSparse, Allocator>& A)
   {
     return true;
   }
 
   
   template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop, ArrayColComplexSparse, Allocator>& A)
+  bool IsComplexMatrix(const Matrix<T, Prop,
+		       ArrayColComplexSparse, Allocator>& A)
   {
     return true;
   }
 
   
   template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A)
+  bool IsComplexMatrix(const Matrix<T, Prop,
+		       ArrayRowSymComplexSparse, Allocator>& A)
   {
     return true;
   }
 
   
   template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>& A)
+  bool IsComplexMatrix(const Matrix<T, Prop,
+		       ArrayColSymComplexSparse, Allocator>& A)
   {
     return true;
   }
 
+
+  //! drops non-zero entries below epsilon
+  template<class T, class Prop, class Allocator, class T0>
+  void RemoveSmallEntry(Matrix<T, Prop, RowComplexSparse, Allocator>& A,
+                        const T0& epsilon)
+  {
+    // TO BE DONE
+  }
+
+
+  //! drops non-zero entries below epsilon
+  template<class T, class Prop, class Allocator, class T0>
+  void RemoveSmallEntry(Matrix<T, Prop, RowSymComplexSparse, Allocator>& A,
+                        const T0& epsilon)
+  {
+    // TO BE DONE
+  }
+
+
+  //! clears several columns of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the columns to be cleared
+    \param[inout] A sparse matrix where columns are erased
+   */  
+  template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, ArrayRowSymComplexSparse, Allocator>& A)
+  {
+    int m = col_number.GetM();
+    // index array to know fastly if it is a column to erase
+    IVect index(A.GetM()); index.Fill(-1);
+    for (int i = 0; i < m; i++)
+      index(col_number(i)) = i;
+    
+    // first, we remove rows
+    for (int i = 0; i < A.GetM(); i++)
+      {
+	if (index(i) != -1)
+	  {
+	    A.ClearRealRow(i);
+	    A.ClearImagRow(i);
+	  }
+      }
+	
+    
+    // then columns
+    for (int i = 0; i < A.GetM(); i++)
+      {
+	bool something_to_remove = false;
+	for (int j = 0; j < A.GetRealRowSize(i); j++)
+	  if (index(A.IndexReal(i,j)) != -1)
+	    something_to_remove = true;
+	
+	if (something_to_remove)
+	  {
+	    int nb = 0;
+	    for (int j = 0; j < A.GetRealRowSize(i); j++)
+	      if (index(A.IndexReal(i,j)) == -1)
+		{
+		  A.IndexReal(i, nb) = A.IndexReal(i, j);
+		  A.ValueReal(i, nb) = A.ValueReal(i, j);	      
+		  nb++;
+		}
+	    
+	    A.ResizeRealRow(i, nb);
+	  }
+
+	something_to_remove = false;
+	for (int j = 0; j < A.GetImagRowSize(i); j++)
+	  if (index(A.IndexImag(i,j)) != -1)
+	    something_to_remove = true;
+	
+	if (something_to_remove)
+	  {
+	    int nb = 0;
+	    for (int j = 0; j < A.GetImagRowSize(i); j++)
+	      if (index(A.IndexImag(i,j)) == -1)
+		{
+		  A.IndexImag(i, nb) = A.IndexImag(i, j);
+		  A.ValueImag(i, nb) = A.ValueImag(i, j);	      
+		  nb++;
+		}
+	    
+	    A.ResizeImagRow(i, nb);
+	  }
+      }
+  }
+
+
+  //! clears several columns of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the columns to be cleared
+    \param[inout] A sparse matrix where columns are erased
+   */  
+  template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, ArrayRowComplexSparse, Allocator>& A)
+  {
+    int m = col_number.GetM();
+    // index array to know fastly if it is a column to erase
+    IVect index(A.GetM()); index.Fill(-1);
+    for (int i = 0; i < m; i++)
+      index(col_number(i)) = i;
+    
+    for (int i = 0; i < A.GetM(); i++)
+      {
+	bool something_to_remove = false;
+	for (int j = 0; j < A.GetRealRowSize(i); j++)
+	  if (index(A.IndexReal(i,j)) != -1)
+	    something_to_remove = true;
+	
+	if (something_to_remove)
+	  {
+	    int nb = 0;
+	    for (int j = 0; j < A.GetRealRowSize(i); j++)
+	      if (index(A.IndexReal(i,j)) == -1)
+		{
+		  A.IndexReal(i, nb) = A.IndexReal(i, j);
+		  A.ValueReal(i, nb) = A.ValueReal(i, j);	      
+		  nb++;
+		}
+	    
+	    A.ResizeRealRow(i, nb);
+	  }
+
+	something_to_remove = false;
+	for (int j = 0; j < A.GetImagRowSize(i); j++)
+	  if (index(A.IndexImag(i,j)) != -1)
+	    something_to_remove = true;
+	
+	if (something_to_remove)
+	  {
+	    int nb = 0;
+	    for (int j = 0; j < A.GetImagRowSize(i); j++)
+	      if (index(A.IndexImag(i,j)) == -1)
+		{
+		  A.IndexImag(i, nb) = A.IndexImag(i, j);
+		  A.ValueImag(i, nb) = A.ValueImag(i, j);	      
+		  nb++;
+		}
+	    
+	    A.ResizeImagRow(i, nb);
+	  }
+      }
+  }
+  
+  
+  //! clears several columns of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the columns to be cleared
+    \param[inout] A sparse matrix where columns are erased
+   */
+  template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, RowComplexSparse, Allocator>& A)
+  {
+    int m = A.GetM(), n = A.GetN();
+    int nnz_real = A.GetRealIndSize();
+    int nnz_imag = A.GetImagIndSize();
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T1* data_real = A.GetRealData();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T1* data_imag = A.GetImagData();
+    Vector<bool> ColToKeep(n);
+    ColToKeep.Fill(true);
+    for (int i = 0; i < col_number.GetM(); i++)
+      ColToKeep(col_number(i)) = false;
+    
+    for (int i = 0; i < A.GetRealIndSize(); i++)
+      if (!ColToKeep(ind_real[i]))
+        nnz_real--;
+
+    for (int i = 0; i < A.GetImagIndSize(); i++)
+      if (!ColToKeep(ind_imag[i]))
+        nnz_imag--;
+    
+    if ((nnz_real == A.GetRealIndSize()) && (nnz_imag == A.GetImagIndSize()))
+      return;
+    
+    Vector<int, VectFull, CallocAlloc<int> > PtrReal(m+1), IndReal(nnz_real);
+    Vector<int, VectFull, CallocAlloc<int> > PtrImag(m+1), IndImag(nnz_imag);
+    Vector<T1, VectFull, Allocator> ValReal(nnz_real), ValImag(nnz_imag);
+    PtrReal(0) = 0; PtrImag(0) = 0;
+    for (int i = 0; i < m; i++)
+      {
+        int jA = PtrReal(i), size_row = 0;
+        for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+          if (ColToKeep(ind_real[j]))
+            {
+              IndReal(jA) = ind_real[j];
+              ValReal(jA) = data_real[j];
+              size_row++; jA++;
+            }
+        
+        PtrReal(i+1) = PtrReal(i) + size_row;
+
+        jA = PtrImag(i); size_row = 0;
+        for (int j = ptr_imag[i]; j < ptr_imag[i+1]; j++)
+          if (ColToKeep(ind_imag[j]))
+            {
+              IndImag(jA) = ind_imag[j];
+              ValImag(jA) = data_imag[j];
+              size_row++; jA++;
+            }
+        
+        PtrImag(i+1) = PtrImag(i) + size_row;
+      }
+    
+    A.SetData(m, n, ValReal, PtrReal, IndReal, ValImag, PtrImag, IndImag);
+  }
+
+
+  //! clears several columns of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the columns to be cleared
+    \param[inout] A sparse matrix where columns are erased
+   */
+  template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, RowSymComplexSparse, Allocator>& A)
+  {
+    int m = A.GetM(), n = A.GetN();
+    int nnz_real = A.GetRealIndSize();
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T1* data_real = A.GetRealData();
+    int nnz_imag = A.GetImagIndSize();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T1* data_imag = A.GetImagData();
+    Vector<bool> ColToKeep(n);
+    ColToKeep.Fill(true);
+    for (int i = 0; i < col_number.GetM(); i++)
+      ColToKeep(col_number(i)) = false;
+    
+    for (int i = 0; i < m; i++)
+      {
+        if (!ColToKeep(i))
+          {
+            nnz_real -= ptr_real[i+1] - ptr_real[i];
+            nnz_imag -= ptr_imag[i+1] - ptr_imag[i];
+          }
+        else
+          {
+            for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+              if (!ColToKeep(ind_real[j]))
+                nnz_real--;
+            
+            for (int j = ptr_imag[i]; j < ptr_imag[i+1]; j++)
+              if (!ColToKeep(ind_imag[j]))
+                nnz_imag--;
+          }
+      }
+    
+    if ((nnz_real == A.GetRealIndSize()) && (nnz_imag == A.GetImagIndSize()))
+      return;
+    
+    Vector<int, VectFull, CallocAlloc<int> > PtrReal(m+1), IndReal(nnz_real);
+    Vector<int, VectFull, CallocAlloc<int> > PtrImag(m+1), IndImag(nnz_imag);
+    Vector<T1, VectFull, Allocator> ValReal(nnz_real), ValImag(nnz_imag);
+    PtrReal(0) = 0; PtrImag(0) = 0;
+    for (int i = 0; i < m; i++)
+      {
+        int jA = PtrReal(i), size_row = 0;
+        if (ColToKeep(i))            
+          for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+            if (ColToKeep(ind_real[j]))
+              {
+                IndReal(jA) = ind_real[j];
+                ValReal(jA) = data_real[j];
+                size_row++; jA++;
+              }
+        
+        PtrReal(i+1) = PtrReal(i) + size_row;
+
+        jA = PtrImag(i); size_row = 0;
+        if (ColToKeep(i))            
+          for (int j = ptr_imag[i]; j < ptr_imag[i+1]; j++)
+            if (ColToKeep(ind_imag[j]))
+              {
+                IndImag(jA) = ind_imag[j];
+                ValImag(jA) = data_imag[j];
+                size_row++; jA++;
+              }
+        
+        PtrImag(i+1) = PtrImag(i) + size_row;
+      }
+    
+    A.SetData(m, n, ValReal, PtrReal, IndReal, ValImag, PtrImag, IndImag);
+  }
+
+
+  //! clears several rows of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the rows to be cleared
+    \param[inout] A sparse matrix where rows are erased
+   */
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, ArrayRowSymComplexSparse, Allocator>& A)
+  {
+    EraseCol(col_number, A);
+  }
+  
+
+  //! clears several rows of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the rows to be cleared
+    \param[inout] A sparse matrix where rows are erased
+   */
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, ArrayRowComplexSparse, Allocator>& A)
+  {
+    for (int i = 0; i < col_number.GetM(); i++)
+      {
+	A.ClearRealRow(col_number(i));
+	A.ClearImagRow(col_number(i));
+      }
+  }
+  
+
+  //! clears several rows of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the rows to be cleared
+    \param[inout] A sparse matrix where rows are erased
+   */
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, RowComplexSparse, Allocator>& A)
+  {
+    int m = A.GetM(), n = A.GetN();
+    int nnz_real = A.GetRealIndSize();
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T1* data_real = A.GetRealData();
+    int nnz_imag = A.GetImagIndSize();
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T1* data_imag = A.GetImagData();
+    Vector<bool> RowToKeep(m);
+    RowToKeep.Fill(true);
+    for (int i = 0; i < col_number.GetM(); i++)
+      RowToKeep(col_number(i)) = false;
+    
+    for (int i = 0; i < m; i++)
+      if (!RowToKeep(i))
+        {
+          nnz_real -= ptr_real[i+1] - ptr_real[i];
+          nnz_imag -= ptr_imag[i+1] - ptr_imag[i];
+        }
+    
+    Vector<int, VectFull, CallocAlloc<int> > PtrReal(m+1), IndReal(nnz_real);
+    Vector<int, VectFull, CallocAlloc<int> > PtrImag(m+1), IndImag(nnz_imag);
+    Vector<T1, VectFull, Allocator> ValReal(nnz_real), ValImag(nnz_imag);
+    PtrReal(0) = 0; PtrImag(0) = 0;
+    for (int i = 0; i < m; i++)
+      {
+        if (RowToKeep(i))
+          {
+            int size_row = ptr_real[i+1] - ptr_real[i];
+            for (int j = 0; j < size_row; j++)
+              {
+                IndReal(PtrReal(i) + j) = ind_real[ptr_real[i] + j];
+                ValReal(PtrReal(i) + j) = data_real[ptr_real[i] + j];
+              }
+            
+            PtrReal(i+1) = PtrReal(i) + size_row;
+
+            size_row = ptr_imag[i+1] - ptr_imag[i];
+            for (int j = 0; j < size_row; j++)
+              {
+                IndImag(PtrImag(i) + j) = ind_imag[ptr_imag[i] + j];
+                ValImag(PtrImag(i) + j) = data_imag[ptr_imag[i] + j];
+              }
+            
+            PtrImag(i+1) = PtrImag(i) + size_row;
+          }
+        else
+          {
+            PtrReal(i+1) = PtrReal(i);
+            PtrImag(i+1) = PtrImag(i);
+          }
+      }
+    
+    A.SetData(m, n, ValReal, PtrReal, IndReal, ValImag, PtrImag, IndImag);
+  }
+  
+  
+  //! clears several rows of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the rows to be cleared
+    \param[inout] A sparse matrix where rows are erased
+   */
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, RowSymComplexSparse, Allocator>& A)
+  {
+    EraseCol(col_number, A);
+  }
+
+  
+  //! For each row of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale_left vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[in] mat given matrix
+   */
+  template<class T>
+  void GetRowSum(Vector<T>& diagonal_scale_left,
+		 const Matrix<T, Symmetric, ArrayRowSymComplexSparse> & mat)
+  {
+    int n = mat.GetM();
+    diagonal_scale_left.Reallocate(n);
+    diagonal_scale_left.Fill(0);
+    for (int i = 0; i < n; i++)
+      {
+	for (int j = 0; j < mat.GetRealRowSize(i); j++)
+	  {
+	    diagonal_scale_left(i) += abs(mat.ValueReal(i,j));
+	    if (i != mat.IndexReal(i,j))
+	      diagonal_scale_left(mat.IndexReal(i,j))
+		+= abs(mat.ValueReal(i,j));
+	  }
+	
+	for (int j = 0; j < mat.GetImagRowSize(i); j++)
+	  {
+	    diagonal_scale_left(i) += abs(mat.ValueImag(i,j));
+	    if (i != mat.IndexImag(i,j))
+	      diagonal_scale_left(mat.IndexImag(i,j))
+		+= abs(mat.ValueImag(i,j));
+	  }
+      }
+  }
+  
+  
+  //! For each row of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale_left vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[in] mat given matrix
+   */
+  template<class T>
+  void GetRowSum(Vector<T>& diagonal_scale_left,
+		 const Matrix<T, General, ArrayRowComplexSparse>& mat)
+  {
+    int n = mat.GetM();
+    diagonal_scale_left.Reallocate(n);
+    diagonal_scale_left.Fill(0);
+    for (int i = 0; i < n; i++)
+      {
+	for (int j = 0; j < mat.GetRealRowSize(i); j++)
+	  diagonal_scale_left(i) += abs(mat.ValueReal(i,j));
+	
+	for (int j = 0; j < mat.GetImagRowSize(i); j++)
+	  diagonal_scale_left(i) += abs(mat.ValueImag(i,j));
+      }
+  }
+  
+
+  //! For each row of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale_left vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[in] mat given matrix
+   */
+  template<class T>
+  void GetRowSum(Vector<T>& diagonal_scale_left,
+		 const Matrix<T, Symmetric, RowSymComplexSparse> & mat)
+  {
+    int n = mat.GetM();
+    diagonal_scale_left.Reallocate(n);
+    diagonal_scale_left.Fill(0);
+    int* ptr_real = mat.GetRealPtr();
+    int* ind_real = mat.GetRealInd();
+    T* data_real = mat.GetRealData();
+    int* ptr_imag = mat.GetImagPtr();
+    int* ind_imag = mat.GetImagInd();
+    T* data_imag = mat.GetImagData();
+    for (int i = 0; i < n; i++)
+      {
+	for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+	  {
+	    diagonal_scale_left(i) += abs(data_real[j]);
+	    if (i != ind_real[j])
+	      diagonal_scale_left(ind_real[j]) += abs(data_real[j]);
+	  }
+	
+	for (int j = ptr_imag[i]; j < ptr_imag[i+1]; j++)
+	  {
+	    diagonal_scale_left(i) += abs(data_imag[j]);
+	    if (i != ind_imag[j])
+	      diagonal_scale_left(ind_imag[j]) += abs(data_imag[j]);
+	  }
+      }
+  }
+  
+  
+  //! For each row of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale_left vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[in] mat given matrix
+   */
+  template<class T>
+  void GetRowSum(Vector<T>& diagonal_scale_left,
+		 const Matrix<T, General, RowComplexSparse>& mat)
+  {
+    int n = mat.GetM();
+    diagonal_scale_left.Reallocate(n);
+    diagonal_scale_left.Fill(0);
+    int* ptr_real = mat.GetRealPtr();
+    T* data_real = mat.GetRealData();
+    int* ptr_imag = mat.GetImagPtr();
+    T* data_imag = mat.GetImagData();
+    for (int i = 0; i < n; i++)
+      {
+	for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+	  diagonal_scale_left(i) += abs(data_real[j]);
+	
+	for (int j = ptr_imag[i]; j < ptr_imag[i+1]; j++)
+	  diagonal_scale_left(i) += abs(data_imag[j]);
+      }
+  }
+
+
+  //! For each column of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] mat given matrix
+   */
+  template<class T>
+  void GetColSum(Vector<T>& diagonal_scale,
+		 const Matrix<T, Symmetric, ArrayRowSymComplexSparse> & mat)
+  {
+    GetRowSum(diagonal_scale, mat);
+  }
+  
+  
+  //! For each column of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] mat given matrix
+   */
+  template<class T>
+  void GetColSum(Vector<T>& diagonal_scale,
+		 const Matrix<T, General, ArrayRowComplexSparse>& mat)
+  {
+    int n = mat.GetM();
+    diagonal_scale.Reallocate(mat.GetN());
+    diagonal_scale.Fill(0);
+    for (int i = 0; i < n; i++)
+      {
+	for (int j = 0; j < mat.GetRealRowSize(i); j++)
+	  diagonal_scale(mat.IndexReal(i, j)) += abs(mat.ValueReal(i,j));
+	
+	for (int j = 0; j < mat.GetImagRowSize(i); j++)
+	  diagonal_scale(mat.IndexImag(i, j)) += abs(mat.ValueImag(i,j));
+      }
+  }
+  
+
+  //! For each column of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] mat given matrix
+   */
+  template<class T>
+  void GetColSum(Vector<T>& diagonal_scale,
+		 const Matrix<T, Symmetric, RowSymComplexSparse> & mat)
+  {
+    GetRowSum(diagonal_scale, mat);
+  }
+  
+  
+  //! For each column of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] mat given matrix
+   */
+  template<class T>
+  void GetColSum(Vector<T>& diagonal_scale,
+		 const Matrix<T, General, RowComplexSparse>& mat)
+  {
+    int n = mat.GetM();
+    diagonal_scale.Reallocate(mat.GetN());
+    diagonal_scale.Fill(0);
+    int* ptr_real = mat.GetRealPtr();
+    int* ind_real = mat.GetRealInd();
+    T* data_real = mat.GetRealData();
+    int* ptr_imag = mat.GetImagPtr();
+    int* ind_imag = mat.GetImagInd();
+    T* data_imag = mat.GetImagData();
+    for (int i = 0; i < n; i++)
+      {
+	for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+	  diagonal_scale(ind_real[j]) += abs(data_real[j]);
+	
+	for (int j = ptr_imag[i]; j < ptr_imag[i+1]; j++)
+	  diagonal_scale(ind_imag[j]) += abs(data_imag[j]);
+      }
+  }
+
+
+  //! For each row and column of the matrix,
+  //! computation of the sum of absolute values
+  /*!
+    \param[out] sum_row vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[out] sum_col vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] mat given matrix
+   */
+  template<class T>
+  void GetRowColSum(Vector<T>& sum_row,
+		    Vector<T>& sum_col,
+		    const Matrix<T, Symmetric, ArrayRowSymComplexSparse> & mat)
+  {
+    GetRowSum(sum_row, mat);
+    sum_col = sum_row;
+  }
+  
+
+  //! For each row and column of the matrix,
+  //! computation of the sum of absolute values
+  /*!
+    \param[out] sum_row vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[out] sum_col vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] mat given matrix
+   */
+  template<class T>
+  void GetRowColSum(Vector<T>& sum_row,
+		    Vector<T>& sum_col,
+		    const Matrix<T, General, ArrayRowComplexSparse>& mat)
+  {
+    int n = mat.GetM();
+    sum_row.Reallocate(n);
+    sum_col.Reallocate(mat.GetN());
+    sum_row.Fill(0);
+    sum_col.Fill(0);
+    for (int i = 0; i < n; i++)
+      {
+	for (int j = 0; j < mat.GetRealRowSize(i); j++)
+	  {
+	    sum_row(i) += abs(mat.ValueReal(i,j));
+	    sum_col(mat.IndexReal(i, j)) += abs(mat.ValueReal(i,j));
+	  }
+	
+	for (int j = 0; j < mat.GetImagRowSize(i); j++)
+	  {
+	    sum_row(i) += abs(mat.ValueImag(i,j));
+	    sum_col(mat.IndexImag(i, j)) += abs(mat.ValueImag(i,j));
+	  }
+      }
+  }
+
+
+  //! For each row and column of the matrix,
+  //! computation of the sum of absolute values
+  /*!
+    \param[out] sum_row vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[out] sum_col vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] mat given matrix
+   */
+  template<class T>
+  void GetRowColSum(Vector<T>& sum_row,
+		    Vector<T>& sum_col,
+		    const Matrix<T, Symmetric, RowSymComplexSparse> & mat)
+  {
+    GetRowSum(sum_row, mat);
+    sum_col = sum_row;
+  }
+  
+
+  //! For each row and column of the matrix,
+  //! computation of the sum of absolute values
+  /*!
+    \param[out] sum_row vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[out] sum_col vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] mat given matrix
+   */
+  template<class T>
+  void GetRowColSum(Vector<T>& sum_row,
+		    Vector<T>& sum_col,
+		    const Matrix<T, General, RowComplexSparse>& mat)
+  {
+    int n = mat.GetM();
+    sum_row.Reallocate(n);
+    sum_col.Reallocate(mat.GetN());
+    sum_row.Fill(0);
+    sum_col.Fill(0);
+    int* ptr_real = mat.GetRealPtr();
+    int* ind_real = mat.GetRealInd();
+    T* data_real = mat.GetRealData();
+    int* ptr_imag = mat.GetImagPtr();
+    int* ind_imag = mat.GetImagInd();
+    T* data_imag = mat.GetImagData();
+    for (int i = 0; i < n; i++)
+      {
+	for (int j = ptr_real[i]; j < ptr_real[i+1]; j++)
+	  {
+	    sum_row(i) += abs(data_real[j]);
+	    sum_col(ind_real[j]) += abs(data_real[j]);
+	  }
+	
+	for (int j = ptr_imag[i]; j < ptr_imag[i+1]; j++)
+	  {
+	    sum_row(i) += abs(data_imag[j]);
+	    sum_col(ind_imag[j]) += abs(data_imag[j]);
+	  }
+      }
+  }
+
+
+  //! extracts some rows/columns of a matrix
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Allocator1>
+  void CopySubMatrix(const Matrix<T0, Prop0,
+		     ArrayRowComplexSparse, Allocator0>& A,
+                     const IVect& row, const IVect& col,
+                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
+                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<complex<T1>, VectFull, Allocator1>& Value)
+  {
+    int m = A.GetM(), n = A.GetN();
+    if ((m <= 0) || (n <= 0) || (row.GetM() <= 0) || (col.GetM() <= 0))
+      {
+        RowNum.Clear(); ColNum.Clear(); Value.Clear();
+        return;
+      }
+    
+    Vector<bool> RowKept(m), ColKept(n);
+    RowKept.Fill(false); ColKept.Fill(false);
+    for (int i = 0; i < row.GetM(); i++)
+      RowKept(row(i)) = true;
+    
+    for (int i = 0; i < col.GetM(); i++)
+      ColKept(col(i)) = true;
+    
+    // counting the number of non-zero elements to keep
+    int nnz = 0;
+    for (int i = 0; i < A.GetM(); i++)
+      if (RowKept(i))
+        {
+          int ji = 0;
+          int size_imag = A.GetImagRowSize(i);        
+          for (int jr = 0; jr < A.GetRealRowSize(i); jr++)
+            {
+              int jcol = A.IndexReal(i, jr);
+              while ((ji < size_imag) && (A.IndexImag(i, ji) < jcol))
+                {
+                  if (ColKept(A.IndexImag(i, ji)))
+                    nnz++;
+                  
+                  ji++;
+                }
+              
+              if ((ji < size_imag) && (A.IndexImag(i, ji) == jcol))
+                ji++;
+              
+              if (ColKept(jcol))
+                nnz++;
+            }
+          
+          while (ji < size_imag)
+            {
+              if (ColKept(A.IndexImag(i, ji)))
+                nnz++;
+              
+              ji++;
+            }
+        }
+    
+    RowNum.Reallocate(nnz);
+    ColNum.Reallocate(nnz);
+    Value.Reallocate(nnz);
+    nnz = 0;
+    // then filling the arrays RowNum, ColNum, Value
+    for (int i = 0; i < A.GetM(); i++)
+      if (RowKept(i))
+        {
+          int ji = 0;
+          int size_imag = A.GetImagRowSize(i);        
+          for (int jr = 0; jr < A.GetRealRowSize(i); jr++)
+            {
+              int jcol = A.IndexReal(i, jr);
+              while ((ji < size_imag) && (A.IndexImag(i, ji) < jcol))
+                {
+                  if (ColKept(A.IndexImag(i, ji)))
+                    {
+                      RowNum(nnz) = i;
+                      ColNum(nnz) = A.IndexImag(i, ji);
+                      Value(nnz) = complex<T0>(0, A.ValueImag(i, ji));
+                      nnz++;
+                    }
+                  
+                  ji++;
+                }
+              
+              if ((ji < size_imag) && (A.IndexImag(i, ji) == jcol))
+                {                  
+                  if (ColKept(jcol))
+                    {
+                      RowNum(nnz) = i;
+                      ColNum(nnz) = jcol;
+                      Value(nnz)
+			= complex<T0>(A.ValueReal(i, jr), A.ValueImag(i, ji));
+                      nnz++;
+                    }
+                  
+                  ji++;
+                }
+              else
+                {
+                  if (ColKept(jcol))
+                    {
+                      RowNum(nnz) = i;
+                      ColNum(nnz) = jcol;
+                      Value(nnz) = complex<T0>(A.ValueReal(i, jr), 0);
+                      nnz++;
+                    }
+                }
+            }
+          
+          while (ji < size_imag)
+            {
+              if (ColKept(A.IndexImag(i, ji)))
+                {
+                  RowNum(nnz) = i;
+                  ColNum(nnz) = A.IndexImag(i, ji);
+                  Value(nnz) = complex<T0>(0, A.ValueImag(i, ji));
+                  nnz++;
+                }
+              
+              ji++;
+            }
+        }
+  }
+  
+
+  //! extracts some rows/columns of a matrix
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Allocator1>
+  void CopySubMatrix(const Matrix<T0, Prop0,
+		     ArrayRowSymComplexSparse, Allocator0>& A,
+                     const IVect& row, const IVect& col,
+                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
+                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<complex<T1>, VectFull, Allocator1>& Value)
+  {
+    int m = A.GetM(), n = A.GetN();
+    if ((m <= 0) || (n <= 0) || (row.GetM() <= 0) || (col.GetM() <= 0))
+      {
+        RowNum.Clear(); ColNum.Clear(); Value.Clear();
+        return;
+      }
+    
+    Vector<bool> RowKept(m), ColKept(n);
+    RowKept.Fill(false); ColKept.Fill(false);
+    for (int i = 0; i < row.GetM(); i++)
+      RowKept(row(i)) = true;
+    
+    for (int i = 0; i < col.GetM(); i++)
+      ColKept(col(i)) = true;
+    
+    // counting the number of non-zero elements to keep
+    int nnz = 0;
+    for (int i = 0; i < A.GetM(); i++)
+      {
+        int ji = 0;
+        int size_imag = A.GetImagRowSize(i);
+        for (int jr = 0; jr < A.GetRealRowSize(i); jr++)
+          {
+            int jcol = A.IndexReal(i, jr);
+            while ((ji < size_imag) && (A.IndexImag(i, ji) < jcol))
+              {                              
+                if (ColKept(A.IndexImag(i, ji)) && RowKept(i))
+                  nnz++;
+                
+                if (A.IndexImag(i, ji) != i)
+                  if (RowKept(A.IndexImag(i, ji)) && ColKept(i))
+                    nnz++;
+                
+                ji++;
+              }
+            
+            if ((ji < size_imag) && (A.IndexImag(i, ji) == jcol))
+              ji++;
+            
+            if (ColKept(jcol) && RowKept(i))
+              nnz++;
+            
+            if (jcol != i)
+              if (RowKept(jcol) && ColKept(i))
+                nnz++;
+          }
+        
+        while (ji < size_imag)
+          {
+            if (ColKept(A.IndexImag(i, ji)) && RowKept(i))
+              nnz++;
+            
+            if (A.IndexImag(i, ji) != i)
+              if (RowKept(A.IndexImag(i, ji)) && ColKept(i))
+                nnz++;
+            
+            ji++;
+          }
+      }
+    
+    RowNum.Reallocate(nnz);
+    ColNum.Reallocate(nnz);
+    Value.Reallocate(nnz);
+    nnz = 0;
+    for (int i = 0; i < A.GetM(); i++)
+      {
+        int ji = 0;
+        int size_imag = A.GetImagRowSize(i);
+        for (int jr = 0; jr < A.GetRealRowSize(i); jr++)
+          {
+            int jcol = A.IndexReal(i, jr);
+            while ((ji < size_imag) && (A.IndexImag(i, ji) < jcol))
+              {                              
+                if (ColKept(A.IndexImag(i, ji)) && RowKept(i))
+                  {
+                    RowNum(nnz) = i;
+                    ColNum(nnz) = A.IndexImag(i, ji);
+                    Value(nnz) = complex<T0>(0, A.ValueImag(i, ji));
+                    nnz++;
+                  }
+                
+                if (A.IndexImag(i, ji) != i)
+                  if (RowKept(A.IndexImag(i, ji)) && ColKept(i))
+                    {
+                      RowNum(nnz) = A.IndexImag(i, ji);
+                      ColNum(nnz) = i;
+                      Value(nnz) = complex<T0>(0, A.ValueImag(i, ji));
+                      nnz++;
+                    }
+                
+                ji++;
+              }
+            
+            if (ColKept(jcol) && RowKept(i))
+              {
+                RowNum(nnz) = i;
+                ColNum(nnz) = jcol;
+                if ((ji < size_imag) && (A.IndexImag(i, ji) == jcol))
+                  Value(nnz)
+		    = complex<T0>(A.ValueReal(i, jr), A.ValueImag(i, ji));
+                else
+                  Value(nnz) = complex<T0>(A.ValueReal(i, jr), 0);
+                
+                nnz++;
+              }
+            
+            if (jcol != i)
+              if (RowKept(jcol) && ColKept(i))
+                {
+                  RowNum(nnz) = jcol;
+                  ColNum(nnz) = i;
+                  if ((ji < size_imag) && (A.IndexImag(i, ji) == jcol))
+                    Value(nnz)
+		      = complex<T0>(A.ValueReal(i, jr), A.ValueImag(i, ji));
+                  else
+                    Value(nnz) = complex<T0>(A.ValueReal(i, jr), 0);
+                  
+                  nnz++;
+                }
+            
+            if ((ji < size_imag) && (A.IndexImag(i, ji) == jcol))
+              ji++;
+          }
+        
+        while (ji < size_imag)
+          {
+            if (ColKept(A.IndexImag(i, ji)) && RowKept(i))
+              {
+                RowNum(nnz) = i;
+                ColNum(nnz) = A.IndexImag(i, ji);
+                Value(nnz) = complex<T0>(0, A.ValueImag(i, ji));
+                nnz++;
+              }
+            
+            if (A.IndexImag(i, ji) != i)
+              if (RowKept(A.IndexImag(i, ji)) && ColKept(i))
+                {
+                  RowNum(nnz) = A.IndexImag(i, ji);
+                  ColNum(nnz) = i;
+                  Value(nnz) = complex<T0>(0, A.ValueImag(i, ji));
+                  nnz++;
+                }
+            
+            ji++;
+          }
+      }
+  }
+  
+
+  //! extracts some rows/columns of a matrix
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Allocator1>
+  void CopySubMatrix(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
+                     const IVect& row, const IVect& col,
+                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
+                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<complex<T1>, VectFull, Allocator1>& Value)
+  {
+    int m = A.GetM(), n = A.GetN();
+    if ((m <= 0) || (n <= 0) || (row.GetM() <= 0) || (col.GetM() <= 0))
+      {
+        RowNum.Clear(); ColNum.Clear(); Value.Clear();
+        return;
+      }
+
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T0* data_real = A.GetRealData();    
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T0* data_imag = A.GetImagData();    
+    
+    Vector<bool> RowKept(m), ColKept(n);
+    RowKept.Fill(false); ColKept.Fill(false);
+    for (int i = 0; i < row.GetM(); i++)
+      RowKept(row(i)) = true;
+    
+    for (int i = 0; i < col.GetM(); i++)
+      ColKept(col(i)) = true;
+    
+    // counting the number of non-zero elements to keep
+    int nnz = 0;
+    for (int i = 0; i < m; i++)
+      if (RowKept(i))
+        {
+          int ji = ptr_imag[i];
+          for (int jr = ptr_real[i]; jr < ptr_real[i+1]; jr++)
+            {
+              int jcol = ind_real[jr];
+              while ((ji < ptr_imag[i+1]) && (ind_imag[ji] < jcol))
+                {
+                  if (ColKept(ind_imag[ji]))
+                    nnz++;
+                  
+                  ji++;
+                }
+              
+              if ((ji < ptr_imag[i+1]) && (ind_imag[ji] == jcol))
+                ji++;
+              
+              if (ColKept(jcol))
+                nnz++;
+            }
+          
+          while (ji < ptr_imag[i+1])
+            {
+              if (ColKept(ind_imag[ji]))
+                nnz++;
+              
+              ji++;
+            }
+        }
+    
+    RowNum.Reallocate(nnz);
+    ColNum.Reallocate(nnz);
+    Value.Reallocate(nnz);
+    nnz = 0;
+    // then filling the arrays RowNum, ColNum, Value
+    for (int i = 0; i < A.GetM(); i++)
+      if (RowKept(i))
+        {
+          int ji = ptr_imag[i];
+          for (int jr = ptr_real[i]; jr < ptr_real[i+1]; jr++)
+            {
+              int jcol = ind_real[jr];
+              while ((ji < ptr_imag[i+1]) && (ind_imag[ji] < jcol))
+                {
+                  if (ColKept(ind_imag[ji]))
+                    {
+                      RowNum(nnz) = i;
+                      ColNum(nnz) = ind_imag[ji];
+                      Value(nnz) = complex<T0>(0, data_imag[ji]);
+                      nnz++;
+                    }
+                  
+                  ji++;
+                }
+              
+              if ((ji < ptr_imag[i+1]) && (ind_imag[ji] == jcol))
+                {                  
+                  if (ColKept(jcol))
+                    {
+                      RowNum(nnz) = i;
+                      ColNum(nnz) = jcol;
+                      Value(nnz) = complex<T0>(data_real[jr], data_imag[ji]);
+                      nnz++;
+                    }
+                  
+                  ji++;
+                }
+              else
+                {
+                  if (ColKept(jcol))
+                    {
+                      RowNum(nnz) = i;
+                      ColNum(nnz) = jcol;
+                      Value(nnz) = complex<T0>(data_real[jr], 0);
+                      nnz++;
+                    }
+                }
+            }
+          
+          while (ji < ptr_imag[i+1])
+            {
+              if (ColKept(ind_imag[ji]))
+                {
+                  RowNum(nnz) = i;
+                  ColNum(nnz) = ind_imag[ji];
+                  Value(nnz) = complex<T0>(0, data_imag[ji]);
+                  nnz++;
+                }
+              
+              ji++;
+            }
+        }
+  }
+  
+
+  //! extracts some rows/columns of a matrix
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Allocator1>
+  void CopySubMatrix(const Matrix<T0, Prop0,
+		     RowSymComplexSparse, Allocator0>& A,
+                     const IVect& row, const IVect& col,
+                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
+                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<complex<T1>, VectFull, Allocator1>& Value)
+  {
+    int m = A.GetM(), n = A.GetN();
+    if ((m <= 0) || (n <= 0) || (row.GetM() <= 0) || (col.GetM() <= 0))
+      {
+        RowNum.Clear(); ColNum.Clear(); Value.Clear();
+        return;
+      }
+    
+    int* ptr_real = A.GetRealPtr();
+    int* ind_real = A.GetRealInd();
+    T0* data_real = A.GetRealData();    
+    int* ptr_imag = A.GetImagPtr();
+    int* ind_imag = A.GetImagInd();
+    T0* data_imag = A.GetImagData();    
+    
+    Vector<bool> RowKept(m), ColKept(n);
+    RowKept.Fill(false); ColKept.Fill(false);
+    for (int i = 0; i < row.GetM(); i++)
+      RowKept(row(i)) = true;
+    
+    for (int i = 0; i < col.GetM(); i++)
+      ColKept(col(i)) = true;
+    
+    // counting the number of non-zero elements to keep
+    int nnz = 0;
+    for (int i = 0; i < m; i++)
+      {
+        int ji = ptr_imag[i];
+        for (int jr = ptr_real[i]; jr < ptr_real[i+1]; jr++)
+          {
+            int jcol = ind_real[jr];
+            while ((ji < ptr_imag[i+1]) && (ind_imag[ji] < jcol))
+              {                              
+                if (ColKept(ind_imag[ji]) && RowKept(i))
+                  nnz++;
+                
+                if (ind_imag[ji] != i)
+                  if (RowKept(ind_imag[ji]) && ColKept(i))
+                    nnz++;
+                
+                ji++;
+              }
+            
+            if ((ji < ptr_imag[i+1]) && (ind_imag[ji] == jcol))
+              ji++;
+            
+            if (ColKept(jcol) && RowKept(i))
+              nnz++;
+            
+            if (jcol != i)
+              if (RowKept(jcol) && ColKept(i))
+                nnz++;
+          }
+        
+        while (ji < ptr_imag[i+1])
+          {
+            if (ColKept(ind_imag[ji]) && RowKept(i))
+              nnz++;
+            
+            if (ind_imag[ji] != i)
+              if (RowKept(ind_imag[ji]) && ColKept(i))
+                nnz++;
+            
+            ji++;
+          }
+      }
+    
+    RowNum.Reallocate(nnz);
+    ColNum.Reallocate(nnz);
+    Value.Reallocate(nnz);
+    nnz = 0;
+    for (int i = 0; i < m; i++)
+      {
+        int ji = ptr_imag[i];
+        for (int jr = ptr_real[i]; jr < ptr_real[i+1]; jr++)
+          {
+            int jcol = ind_real[jr];
+            while ((ji < ptr_imag[i+1]) && (ind_imag[ji] < jcol))
+              {                              
+                if (ColKept(ind_imag[ji]) && RowKept(i))
+                  {
+                    RowNum(nnz) = i;
+                    ColNum(nnz) = ind_imag[ji];
+                    Value(nnz) = complex<T0>(0, data_imag[ji]);
+                    nnz++;
+                  }
+                
+                if (ind_imag[ji] != i)
+                  if (RowKept(ind_imag[ji]) && ColKept(i))
+                    {
+                      RowNum(nnz) = ind_imag[ji];
+                      ColNum(nnz) = i;
+                      Value(nnz) = complex<T0>(0, data_imag[ji]);
+                      nnz++;
+                    }
+                
+                ji++;
+              }
+            
+            if (ColKept(jcol) && RowKept(i))
+              {
+                RowNum(nnz) = i;
+                ColNum(nnz) = jcol;
+                if ((ji < ptr_imag[i+1]) && (ind_imag[ji] == jcol))
+                  Value(nnz) = complex<T0>(data_real[jr], data_imag[ji]);
+                else
+                  Value(nnz) = complex<T0>(data_real[jr], 0);
+                
+                nnz++;
+              }
+            
+            if (jcol != i)
+              if (RowKept(jcol) && ColKept(i))
+                {
+                  RowNum(nnz) = jcol;
+                  ColNum(nnz) = i;
+                  if ((ji < ptr_imag[i+1]) && (ind_imag[ji] == jcol))
+                    Value(nnz) = complex<T0>(data_real[jr], data_imag[ji]);
+                  else
+                    Value(nnz) = complex<T0>(data_real[jr], 0);
+                  
+                  nnz++;
+                }
+            
+            if ((ji < ptr_imag[i+1]) && (ind_imag[ji] == jcol))
+              ji++;
+          }
+        
+        while (ji < ptr_imag[i+1])
+          {
+            if (ColKept(ind_imag[ji]) && RowKept(i))
+              {
+                RowNum(nnz) = i;
+                ColNum(nnz) = ind_imag[ji];
+                Value(nnz) = complex<T0>(0, data_imag[ji]);
+                nnz++;
+              }
+            
+            if (ind_imag[ji] != i)
+              if (RowKept(ind_imag[ji]) && ColKept(i))
+                {
+                  RowNum(nnz) = ind_imag[ji];
+                  ColNum(nnz) = i;
+                  Value(nnz) = complex<T0>(0, data_imag[ji]);
+                  nnz++;
+                }
+            
+            ji++;
+          }
+      }
+  }
+  
 }
 
 #define SELDON_FILE_FUNCTIONS_MATRIX_COMPLEX_CXX

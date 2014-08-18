@@ -30,7 +30,7 @@
 #ifndef __APPLE__
 namespace std
 {
-  // conj available for real numbers for compatibility                                                                                                                                                                                       
+  // conj available for real numbers for compatibility
   inline float conj(float x)
   {
     return x;
@@ -53,6 +53,22 @@ namespace std
 
 }
 #endif
+
+namespace std
+{
+  template<class T>
+  T conjugate(const T& x)
+  {
+    return x;
+  }
+  
+  template<class T>
+  complex<T> conjugate(const complex<T>& x)
+  {
+    return conj(x);
+  }
+}
+      
 
 template <class T>
 void PrintArray(T* v, int lgth);
@@ -162,6 +178,9 @@ namespace Seldon
 
   template<class T>
   T absSquare(const complex<T>& x);
+  
+  string GetExtension(const string& nom);
+  string GetBaseString(const string& nom);
   
 #ifdef SELDON_WITH_HDF5
   template <class T>

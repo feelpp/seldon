@@ -485,6 +485,142 @@ namespace Seldon
               const Matrix<T2, Prop2, ArrayRowSparse, Allocator2>& B,
               const T3& beta,
               Matrix<T4, Prop4, ArrayRowSparse, Allocator4>& C);
+
+  template<class T, class Prop, class  Storage, class Allocator, class T0>
+  void RemoveSmallEntry(Matrix<T, Prop, Storage, Allocator>& A, const T0&);
+
+  template<class T, class Prop, class Allocator, class T0>
+  void RemoveSmallEntry(Matrix<T, Prop, RowSparse, Allocator>& A, const T0&);
+
+  template<class T, class Prop, class Allocator, class T0>
+  void RemoveSmallEntry(Matrix<T, Prop, RowSymSparse, Allocator>& A,
+			const T0&);
+
+  template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, ArrayRowSymSparse, Allocator>& A);
+  
+  template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, ArrayRowSparse, Allocator>& A);
+  
+  template<class T1, class Prop, class Storage, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, Storage, Allocator>& A);
+  
+  template<class T1, class Prop, class Storage, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, Storage, Allocator>& A);
+  
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, ArrayRowSymSparse, Allocator>& A);
+
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, ArrayRowSparse, Allocator>& A);
+
+  template<class T, class Complexe, class Allocator>
+  void GetRowSum(Vector<T>& diagonal_scale_left,
+		 const Matrix<Complexe, General,
+                 ArrayRowSparse, Allocator> & mat_direct);
+  
+  template<class T, class Complexe, class Allocator>
+  void GetRowSum(Vector<T>& diagonal_scale_left, 
+		 const Matrix<Complexe, Symmetric,
+                 ArrayRowSymSparse, Allocator> & mat_direct);
+  
+  template<class T, class Complexe, class Allocator>
+  void GetRowSum(Vector<T>& diagonal_scale_left,
+		 const Matrix<Complexe, General,
+                 RowSparse, Allocator> & mat_direct);
+  
+  template<class T, class Complexe, class Allocator>
+  void GetRowSum(Vector<T>& diagonal_scale_left, 
+		 const Matrix<Complexe, Symmetric,
+                 RowSymSparse, Allocator> & mat_direct);
+  
+  template<class T, class Complexe, class Allocator>
+  void GetColSum(Vector<T>& diagonal_scale_left,
+		 const Matrix<Complexe, General,
+                 ArrayRowSparse, Allocator> & mat_direct);
+  
+  template<class T, class Complexe, class Allocator>
+  void GetColSum(Vector<T>& diagonal_scale_left, 
+		 const Matrix<Complexe, Symmetric,
+                 ArrayRowSymSparse, Allocator> & mat_direct);
+  
+  template<class T, class Complexe, class Allocator>
+  void GetColSum(Vector<T>& diagonal_scale_left,
+		 const Matrix<Complexe, General,
+                 RowSparse, Allocator> & mat_direct);
+  
+  template<class T, class Complexe, class Allocator>
+  void GetColSum(Vector<T>& diagonal_scale_left, 
+		 const Matrix<Complexe, Symmetric,
+                 RowSymSparse, Allocator> & mat_direct);
+
+  template<class T, class Complexe, class Allocator>
+  void GetRowColSum(Vector<T>& sum_row,
+                    Vector<T>& sum_col,
+                    const Matrix<Complexe, General,
+				 ArrayRowSparse, Allocator> & A);
+  
+  template<class T, class Complexe, class Allocator>
+  void GetRowColSum(Vector<T>& sum_row,
+                    Vector<T>& sum_col,
+                    const Matrix<Complexe, Symmetric,
+				 ArrayRowSymSparse, Allocator> & A);
+
+  template<class T, class Complexe, class Allocator>
+  void GetRowColSum(Vector<T>& sum_row,
+                    Vector<T>& sum_col,
+                    const Matrix<Complexe, General,
+				 RowSparse, Allocator> & A);
+  
+  template<class T, class Complexe, class Allocator>
+  void GetRowColSum(Vector<T>& sum_row,
+                    Vector<T>& sum_col,
+                    const Matrix<Complexe, Symmetric,
+				 RowSymSparse, Allocator> & A);
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Allocator1>
+  void CopySubMatrix(const Matrix<T0, Prop0, ArrayRowSparse, Allocator0>& A,
+                     const IVect& row, const IVect& col,
+                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
+                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<T1, VectFull, Allocator1>& Value);
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Allocator1> void
+  CopySubMatrix(const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
+		const IVect& row, const IVect& col,
+		Vector<int, VectFull, CallocAlloc<int> >& RowNum,
+		Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+		Vector<T1, VectFull, Allocator1>& Value);
+  
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Allocator1>
+  void CopySubMatrix(const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
+                     const IVect& row, const IVect& col,
+                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
+                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<T1, VectFull, Allocator1>& Value);
+
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Allocator1>
+  void CopySubMatrix(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+                     const IVect& row, const IVect& col,
+                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
+                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<T1, VectFull, Allocator1>& Value);
+  
+  template<class T0, class Prop0, class Storage0, class Allocator0,
+           class T1, class Prop1, class Storage1, class Allocator1>
+  void CopySubMatrix(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+                     const IVect& row, const IVect& col,
+                     Matrix<T1, Prop1, Storage1, Allocator1>& B);
   
 } // namespace Seldon
 

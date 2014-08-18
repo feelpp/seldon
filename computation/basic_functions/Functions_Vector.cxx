@@ -372,6 +372,19 @@ namespace Seldon
   }
 
 
+  //! Swaps X and Y with pointers
+  template <class T>
+  void SwapPointer(Vector<T>& X, Vector<T>& Y)
+  {
+    int nx = X.GetM();
+    T* data = X.GetData();
+    X.Nullify();
+    X.SetData(Y.GetM(), Y.GetData());
+    Y.Nullify();
+    Y.SetData(nx, data);
+  }
+  
+
   // SWAP //
   //////////
 

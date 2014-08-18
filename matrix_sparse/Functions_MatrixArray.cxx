@@ -2688,7 +2688,856 @@ namespace Seldon
   
   // MltAdd (matrix-matrix product) //  
   ////////////////////////////////////
+
+
+  //! drops non-zero entries below epsilon
+  template<class T, class Prop, class  Storage, class Allocator, class T0>
+  void RemoveSmallEntry(Matrix<T, Prop, Storage, Allocator>& A,
+                        const T0& epsilon)
+  {
+    A.RemoveSmallEntry(epsilon);
+  }
+
+
+  //! drops non-zero entries below epsilon
+  template<class T, class Prop, class Allocator, class T0>
+  void RemoveSmallEntry(Matrix<T, Prop, RowSparse, Allocator>& A,
+                        const T0& epsilon)
+  {
+    // TO BE DONE
+  }
+
+
+  //! drops non-zero entries below epsilon
+  template<class T, class Prop, class Allocator, class T0>
+  void RemoveSmallEntry(Matrix<T, Prop, RowSymSparse, Allocator>& A,
+                        const T0& epsilon)
+  {
+    // TO BE DONE
+  }
+
+
+  //! clears several columns of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the columns to be cleared
+    \param[inout] A sparse matrix where columns are erased
+   */
+  template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, ArrayRowSymSparse, Allocator>& A)
+  {
+    int m = col_number.GetM();
+    // index array to know fastly if it is a column to erase
+    IVect index(A.GetM()); index.Fill(-1);
+    for (int i = 0; i < m; i++)
+      index(col_number(i)) = i;
+    
+    // first, we remove rows
+    for (int i = 0; i < A.GetM(); i++)
+      {
+	if (index(i) != -1)
+	  A.ClearRow(i);
+      }
+    
+    // then columns
+    for (int i = 0; i < A.GetM(); i++)
+      {
+	bool something_to_remove = false;
+	for (int j = 0; j < A.GetRowSize(i); j++)
+	  if (index(A.Index(i,j)) != -1)
+	    something_to_remove = true;
+	
+	if (something_to_remove)
+	  {
+	    int nb = 0;
+	    for (int j = 0; j < A.GetRowSize(i); j++)
+	      if (index(A.Index(i,j)) == -1)
+		{
+		  A.Index(i, nb) = A.Index(i, j);
+		  A.Value(i, nb) = A.Value(i, j);	      
+		  nb++;
+		}
+	    
+	    A.ResizeRow(i, nb);
+	  }
+      }
+  }
+
+
+  //! clears several columns of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the columns to be cleared
+    \param[inout] A sparse matrix where columns are erased
+   */  
+  template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, ArrayRowSparse, Allocator>& A)
+  {
+    int m = col_number.GetM();
+    // index array to know fastly if it is a column to erase
+    IVect index(A.GetM()); index.Fill(-1);
+    for (int i = 0; i < m; i++)
+      index(col_number(i)) = i;
+    
+    for (int i = 0; i < A.GetM(); i++)
+      {
+	bool something_to_remove = false;
+	for (int j = 0; j < A.GetRowSize(i); j++)
+	  if (index(A.Index(i,j)) != -1)
+	    something_to_remove = true;
+	
+	if (something_to_remove)
+	  {
+	    int nb = 0;
+	    for (int j = 0; j < A.GetRowSize(i); j++)
+	      if (index(A.Index(i,j)) == -1)
+		{
+		  A.Index(i, nb) = A.Index(i, j);
+		  A.Value(i, nb) = A.Value(i, j);	      
+		  nb++;
+		}
+	    
+	    A.ResizeRow(i, nb);
+	  }
+      }
+  }
   
+
+  //! clears several columns of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the columns to be cleared
+    \param[inout] A sparse matrix where columns are erased
+   */
+  template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, RowSparse, Allocator>& A)
+  {
+    int m = A.GetM(), n = A.GetN();
+    int nnz = A.GetIndSize();
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T1* data = A.GetData();
+    Vector<bool> ColToKeep(n);
+    ColToKeep.Fill(true);
+    for (int i = 0; i < col_number.GetM(); i++)
+      ColToKeep(col_number(i)) = false;
+    
+    for (int i = 0; i < A.GetIndSize(); i++)
+      if (!ColToKeep(ind[i]))
+        nnz--;
+    
+    if (nnz == A.GetIndSize())
+      return;
+    
+    Vector<int, VectFull, CallocAlloc<int> > Ptr(m+1), Ind(nnz);
+    Vector<T1, VectFull, Allocator> Val(nnz);
+    Ptr(0) = 0;
+    for (int i = 0; i < m; i++)
+      {
+        int jA = Ptr(i), size_row = 0;
+        for (int j = ptr[i]; j < ptr[i+1]; j++)
+          if (ColToKeep(ind[j]))
+            {
+              Ind(jA) = ind[j];
+              Val(jA) = data[j];
+              size_row++; jA++;
+            }
+        
+        Ptr(i+1) = Ptr(i) + size_row;
+      }
+    
+    A.SetData(m, n, Val, Ptr, Ind);
+  }
+
+
+  //! clears several columns of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the columns to be cleared
+    \param[inout] A sparse matrix where columns are erased
+   */
+  template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, RowSymSparse, Allocator>& A)
+  {
+    int m = A.GetM(), n = A.GetN();
+    int nnz = A.GetIndSize();
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T1* data = A.GetData();
+    Vector<bool> ColToKeep(n);
+    ColToKeep.Fill(true);
+    for (int i = 0; i < col_number.GetM(); i++)
+      ColToKeep(col_number(i)) = false;
+    
+    for (int i = 0; i < m; i++)
+      {
+        if (!ColToKeep(i))
+          nnz -= ptr[i+1] - ptr[i];
+        else
+          {
+            for (int j = ptr[i]; j < ptr[i+1]; j++)
+              if (!ColToKeep(ind[j]))
+                nnz--;
+          }
+      }
+    
+    if (nnz == A.GetIndSize())
+      return;
+    
+    Vector<int, VectFull, CallocAlloc<int> > Ptr(m+1), Ind(nnz);
+    Vector<T1, VectFull, Allocator> Val(nnz);
+    Ptr(0) = 0;
+    for (int i = 0; i < m; i++)
+      {
+        int jA = Ptr(i), size_row = 0;
+        if (ColToKeep(i))            
+          for (int j = ptr[i]; j < ptr[i+1]; j++)
+            if (ColToKeep(ind[j]))
+              {
+                Ind(jA) = ind[j];
+                Val(jA) = data[j];
+                size_row++; jA++;
+              }
+        
+        Ptr(i+1) = Ptr(i) + size_row;
+      }
+    
+    A.SetData(m, n, Val, Ptr, Ind);
+  }
+  
+
+  //! clears several columns of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the columns to be cleared
+    \param[inout] A sparse matrix where columns are erased
+   */
+  template<class T1, class Prop, class Storage, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, Storage, Allocator>& A)
+  {
+    abort();
+  }
+   
+
+  //! clears several rows of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the rows to be cleared
+    \param[inout] A sparse matrix where rows are erased
+   */
+  template<class T1, class Prop, class Storage, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, Storage, Allocator>& A)
+  {
+    abort();
+  }
+
+
+  //! clears several rows of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the rows to be cleared
+    \param[inout] A sparse matrix where rows are erased
+   */    
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, ArrayRowSymSparse, Allocator>& A)
+  {
+    EraseCol(col_number, A);
+  }
+  
+
+  //! clears several rows of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the rows to be cleared
+    \param[inout] A sparse matrix where rows are erased
+   */
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, ArrayRowSparse, Allocator>& A)
+  {
+    for (int i = 0; i < col_number.GetM(); i++)
+      A.ClearRow(col_number(i));
+  }
+  
+
+  //! clears several rows of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the rows to be cleared
+    \param[inout] A sparse matrix where rows are erased
+   */
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, RowSparse, Allocator>& A)
+  {
+    int m = A.GetM(), n = A.GetN();
+    int nnz = A.GetIndSize();
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T1* data = A.GetData();
+    Vector<bool> RowToKeep(m);
+    RowToKeep.Fill(true);
+    for (int i = 0; i < col_number.GetM(); i++)
+      RowToKeep(col_number(i)) = false;
+    
+    for (int i = 0; i < m; i++)
+      if (!RowToKeep(i))
+        nnz -= ptr[i+1] - ptr[i];
+    
+    Vector<int, VectFull, CallocAlloc<int> > Ptr(m+1), Ind(nnz);
+    Vector<T1, VectFull, Allocator> Val(nnz);
+    Ptr(0) = 0;
+    for (int i = 0; i < m; i++)
+      {
+        if (RowToKeep(i))
+          {
+            int size_row = ptr[i+1] - ptr[i];
+            for (int j = 0; j < size_row; j++)
+              {
+                Ind(Ptr(i) + j) = ind[ptr[i] + j];
+                Val(Ptr(i) + j) = data[ptr[i] + j];
+              }
+            
+            Ptr(i+1) = Ptr(i) + size_row;
+          }
+        else
+          Ptr(i+1) = Ptr(i);
+      }
+    
+    A.SetData(m, n, Val, Ptr, Ind);
+  }
+  
+  //! clears several rows of a sparse matrix
+  /*!
+    \param[in] col_number numbers of the rows to be cleared
+    \param[inout] A sparse matrix where rows are erased
+   */
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, RowSymSparse, Allocator>& A)
+  {
+    EraseCol(col_number, A);
+  }
+  
+
+  //! For each row of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale_left vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[in] mat_direct given matrix
+   */
+  template<class T, class Complexe, class Allocator>
+  void GetRowSum(Vector<T>& diagonal_scale_left,
+		 const Matrix<Complexe, General,
+		 ArrayRowSparse, Allocator> & mat_direct)
+  {
+    int n = mat_direct.GetM();
+    diagonal_scale_left.Reallocate(n);
+    diagonal_scale_left.Fill(0);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < mat_direct.GetRowSize(i); j++)
+	diagonal_scale_left(i) += abs(mat_direct.Value(i,j));
+    
+  }
+  
+  
+  //! For each row of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale_left vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[in] mat_direct given matrix
+   */
+  template<class T, class Complexe, class Allocator>
+  void GetRowSum(Vector<T>& diagonal_scale_left, 
+		 const Matrix<Complexe, Symmetric,
+		 ArrayRowSymSparse, Allocator> & mat_direct)
+  {
+    int n = mat_direct.GetM();
+    diagonal_scale_left.Reallocate(n);
+    diagonal_scale_left.Fill(0);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < mat_direct.GetRowSize(i); j++)
+	{
+	  diagonal_scale_left(i) += abs(mat_direct.Value(i,j));
+	  if (i != mat_direct.Index(i,j))
+	    diagonal_scale_left(mat_direct.Index(i,j))
+	      += abs(mat_direct.Value(i,j));
+	}
+  }
+  
+  
+  //! For each row of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale_left vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[in] mat_direct given matrix
+   */
+  template<class T, class Complexe, class Allocator>
+  void GetRowSum(Vector<T>& diagonal_scale_left,
+		 const Matrix<Complexe, General,
+		 RowSparse, Allocator> & mat_direct)
+  {
+    int n = mat_direct.GetM();
+    diagonal_scale_left.Reallocate(n);
+    diagonal_scale_left.Fill(0);
+    int* ptr = mat_direct.GetPtr();
+    Complexe* data = mat_direct.GetData();
+    for (int i = 0; i < n; i++)
+      for (int j = ptr[i]; j < ptr[i+1]; j++)
+	diagonal_scale_left(i) += abs(data[j]);
+    
+  }
+  
+  
+  //! For each row of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale_left vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[in] mat_direct given matrix
+   */
+  template<class T, class Complexe, class Allocator>
+  void GetRowSum(Vector<T>& diagonal_scale_left, 
+		 const Matrix<Complexe, Symmetric,
+		 RowSymSparse, Allocator> & mat_direct)
+  {
+    int n = mat_direct.GetM();
+    diagonal_scale_left.Reallocate(n);
+    diagonal_scale_left.Fill(0);
+    int* ptr = mat_direct.GetPtr();
+    int* ind = mat_direct.GetInd();
+    Complexe* data = mat_direct.GetData();
+    for (int i = 0; i < n; i++)
+      for (int j = ptr[i]; j < ptr[i+1]; j++)
+	{
+	  diagonal_scale_left(i) += abs(data[j]);
+	  if (i != ind[j])
+	    diagonal_scale_left(ind[j]) += abs(data[j]);
+	}
+  }
+  
+  
+  //! For each column of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] mat_direct given matrix
+   */
+  template<class T, class Complexe, class Allocator>
+  void GetColSum(Vector<T>& diagonal_scale,
+		 const Matrix<Complexe, General,
+		 ArrayRowSparse, Allocator> & mat_direct)
+  {
+    int n = mat_direct.GetM();
+    diagonal_scale.Reallocate(mat_direct.GetN());
+    diagonal_scale.Fill(0);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < mat_direct.GetRowSize(i); j++)
+	diagonal_scale(mat_direct.Index(i, j)) += abs(mat_direct.Value(i, j));
+    
+  }
+  
+  
+  //! For each column of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] mat_direct given matrix
+   */
+  template<class T, class Complexe, class Allocator>
+  void GetColSum(Vector<T>& diagonal_scale, 
+		 const Matrix<Complexe, Symmetric,
+		 ArrayRowSymSparse, Allocator> & mat_direct)
+  {
+    GetRowSum(diagonal_scale, mat_direct);
+  }
+  
+  
+  //! For each column of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] mat_direct given matrix
+   */
+  template<class T, class Complexe, class Allocator>
+  void GetColSum(Vector<T>& diagonal_scale,
+		 const Matrix<Complexe, General,
+		 RowSparse, Allocator> & mat_direct)
+  {
+    int n = mat_direct.GetM();
+    diagonal_scale.Reallocate(mat_direct.GetN());
+    diagonal_scale.Fill(0);
+    int* ptr = mat_direct.GetPtr();
+    int* ind = mat_direct.GetInd();
+    Complexe* data = mat_direct.GetData();
+    for (int i = 0; i < n; i++)
+      for (int j = ptr[i]; j < ptr[i+1]; j++)
+	diagonal_scale(ind[j]) += abs(data[j]);
+    
+  }
+  
+  
+  //! For each column of the matrix, computation of the sum of absolute values
+  /*!
+    \param[out] diagonal_scale vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] mat_direct given matrix
+   */
+  template<class T, class Complexe, class Allocator>
+  void GetColSum(Vector<T>& diagonal_scale, 
+		 const Matrix<Complexe, Symmetric,
+		 RowSymSparse, Allocator> & mat_direct)
+  {
+    GetRowSum(diagonal_scale, mat_direct);
+  }
+  
+
+  //! For each row and column of the matrix,
+  //! computation of the sum of absolute values
+  /*!
+    \param[out] sum_row vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[out] sum_col vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] A given matrix
+   */
+  template<class T, class Complexe, class Allocator>
+  void GetRowColSum(Vector<T>& sum_row,
+                    Vector<T>& sum_col,
+                    const Matrix<Complexe, General,
+                    ArrayRowSparse, Allocator> & A)
+  {
+    int n = A.GetM();
+    sum_row.Reallocate(n);
+    sum_col.Reallocate(A.GetN());
+    sum_row.Fill(0);
+    sum_col.Fill(0);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+	{
+          sum_row(i) += abs(A.Value(i,j));
+          sum_col(A.Index(i, j)) += abs(A.Value(i,j));
+        }    
+  }
+  
+
+  //! For each row and column of the matrix
+  //! computation of the sum of absolute values
+  /*!
+    \param[out] sum_row vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[out] sum_col vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] A given matrix
+   */
+  template<class T, class Complexe, class Allocator>
+  void GetRowColSum(Vector<T>& sum_row,
+                    Vector<T>& sum_col,
+                    const Matrix<Complexe, Symmetric,
+                    ArrayRowSymSparse, Allocator> & A)
+  {
+    GetRowSum(sum_row, A);
+    sum_col = sum_row;
+  }
+
+  
+  //! For each row and column of the matrix,
+  //! computation of the sum of absolute values
+  /*!
+    \param[out] sum_row vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[out] sum_col vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] A given matrix
+   */
+  template<class T, class Complexe, class Allocator>
+  void GetRowColSum(Vector<T>& sum_row,
+                    Vector<T>& sum_col,
+                    const Matrix<Complexe, General,
+                    RowSparse, Allocator> & A)
+  {
+    int n = A.GetM();
+    sum_row.Reallocate(n);
+    sum_col.Reallocate(A.GetN());
+    sum_row.Fill(0);
+    sum_col.Fill(0);
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    Complexe* data = A.GetData();
+    for (int i = 0; i < n; i++)
+      for (int j = ptr[i]; j < ptr[i+1]; j++)
+	{
+          sum_row(i) += abs(data[j]);
+          sum_col(ind[j]) += abs(data[j]);
+        }    
+  }
+  
+
+  //! For each row and column of the matrix,
+  //! computation of the sum of absolute values
+  /*!
+    \param[out] sum_row vector containing the sum of
+                            the magnitudes of non-zero entries of each row
+    \param[out] sum_col vector containing the sum of
+                            the magnitudes of non-zero entries of each column
+    \param[in] A given matrix
+   */
+  template<class T, class Complexe, class Allocator>
+  void GetRowColSum(Vector<T>& sum_row,
+                    Vector<T>& sum_col,
+                    const Matrix<Complexe, Symmetric,
+                    RowSymSparse, Allocator> & A)
+  {
+    GetRowSum(sum_row, A);
+    sum_col = sum_row;
+  }
+
+
+  //! extracts some rows/columns of a matrix
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Allocator1>
+  void CopySubMatrix(const Matrix<T0, Prop0, ArrayRowSparse, Allocator0>& A,
+                     const IVect& row, const IVect& col,
+                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
+                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<T1, VectFull, Allocator1>& Value)
+  {
+    int m = A.GetM(), n = A.GetN();
+    if ((m <= 0) || (n <= 0) || (row.GetM() <= 0) || (col.GetM() <= 0))
+      {
+        RowNum.Clear(); ColNum.Clear(); Value.Clear();
+        return;
+      }
+    
+    Vector<bool> RowKept(m), ColKept(n);
+    RowKept.Fill(false); ColKept.Fill(false);
+    for (int i = 0; i < row.GetM(); i++)
+      RowKept(row(i)) = true;
+    
+    for (int i = 0; i < col.GetM(); i++)
+      ColKept(col(i)) = true;
+    
+    int nnz = 0;
+    for (int i = 0; i < A.GetM(); i++)
+      if (RowKept(i))
+        for (int j = 0; j < A.GetRowSize(i); j++)
+          if (ColKept(A.Index(i, j)))
+            nnz++;
+    
+    RowNum.Reallocate(nnz);
+    ColNum.Reallocate(nnz);
+    Value.Reallocate(nnz);
+    nnz = 0;
+    for (int i = 0; i < A.GetM(); i++)
+      if (RowKept(i))
+        for (int j = 0; j < A.GetRowSize(i); j++)
+          if (ColKept(A.Index(i, j)))
+            {
+              RowNum(nnz) = i;
+              ColNum(nnz) = A.Index(i, j);
+              Value(nnz) = A.Value(i, j);
+              nnz++;
+            }
+  }
+  
+
+  //! extracts some rows/columns of a matrix
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Allocator1>
+  void CopySubMatrix(const Matrix<T0, Prop0,
+		     ArrayRowSymSparse, Allocator0>& A,
+                     const IVect& row, const IVect& col,
+                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
+                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<T1, VectFull, Allocator1>& Value)
+  {
+    int m = A.GetM(), n = A.GetN();
+    if ((m <= 0) || (n <= 0) || (row.GetM() <= 0) || (col.GetM() <= 0))
+      {
+        RowNum.Clear(); ColNum.Clear(); Value.Clear();
+        return;
+      }
+    
+    Vector<bool> RowKept(m), ColKept(n);
+    RowKept.Fill(false); ColKept.Fill(false);
+    for (int i = 0; i < row.GetM(); i++)
+      RowKept(row(i)) = true;
+    
+    for (int i = 0; i < col.GetM(); i++)
+      ColKept(col(i)) = true;
+    
+    int nnz = 0;
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+        {
+          if (ColKept(A.Index(i, j)) && RowKept(i))
+            nnz++;
+          
+          if (A.Index(i, j) != i)
+            if (RowKept(A.Index(i, j)) && ColKept(i))
+              nnz++;
+        }
+    
+    RowNum.Reallocate(nnz);
+    ColNum.Reallocate(nnz);
+    Value.Reallocate(nnz);
+    nnz = 0;
+    for (int i = 0; i < A.GetM(); i++)
+      for (int j = 0; j < A.GetRowSize(i); j++)
+        {
+          if (ColKept(A.Index(i, j)) && RowKept(i))
+            {
+              RowNum(nnz) = i;
+              ColNum(nnz) = A.Index(i, j);
+              Value(nnz) = A.Value(i, j);
+              nnz++;
+            }
+          
+          if (A.Index(i, j) != i)
+            if (RowKept(A.Index(i, j)) && ColKept(i))
+              {
+                RowNum(nnz) = A.Index(i, j);
+                ColNum(nnz) = i;
+                Value(nnz) = A.Value(i, j);
+                nnz++;
+              }
+        }
+  }
+
+
+  //! extracts some rows/columns of a matrix
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Allocator1>
+  void CopySubMatrix(const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
+                     const IVect& row, const IVect& col,
+                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
+                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<T1, VectFull, Allocator1>& Value)
+  {
+    int m = A.GetM(), n = A.GetN();
+    if ((m <= 0) || (n <= 0) || (row.GetM() <= 0) || (col.GetM() <= 0))
+      {
+        RowNum.Clear(); ColNum.Clear(); Value.Clear();
+        return;
+      }
+    
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T0* data = A.GetData();
+    Vector<bool> RowKept(m), ColKept(n);
+    RowKept.Fill(false); ColKept.Fill(false);
+    for (int i = 0; i < row.GetM(); i++)
+      RowKept(row(i)) = true;
+    
+    for (int i = 0; i < col.GetM(); i++)
+      ColKept(col(i)) = true;
+    
+    int nnz = 0;
+    for (int i = 0; i < m; i++)
+      if (RowKept(i))
+        for (int j = ptr[i]; j < ptr[i+1]; j++)
+          if (ColKept(ind[j]))
+            nnz++;
+    
+    RowNum.Reallocate(nnz);
+    ColNum.Reallocate(nnz);
+    Value.Reallocate(nnz);
+    nnz = 0;
+    for (int i = 0; i < m; i++)
+      if (RowKept(i))
+        for (int j = ptr[i]; j < ptr[i+1]; j++)
+          if (ColKept(ind[j]))
+            {
+              RowNum(nnz) = i;
+              ColNum(nnz) = ind[j];
+              Value(nnz) = data[j];
+              nnz++;
+            }
+  }
+  
+
+  //! extracts some rows/columns of a matrix
+  template<class T0, class Prop0, class Allocator0,
+	   class T1, class Allocator1>
+  void CopySubMatrix(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+                     const IVect& row, const IVect& col,
+                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
+                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<T1, VectFull, Allocator1>& Value)
+  {
+    int m = A.GetM(), n = A.GetN();
+    if ((m <= 0) || (n <= 0) || (row.GetM() <= 0) || (col.GetM() <= 0))
+      {
+        RowNum.Clear(); ColNum.Clear(); Value.Clear();
+        return;
+      }
+
+    int* ptr = A.GetPtr();
+    int* ind = A.GetInd();
+    T0* data = A.GetData();    
+    Vector<bool> RowKept(m), ColKept(n);
+    RowKept.Fill(false); ColKept.Fill(false);
+    for (int i = 0; i < row.GetM(); i++)
+      RowKept(row(i)) = true;
+    
+    for (int i = 0; i < col.GetM(); i++)
+      ColKept(col(i)) = true;
+    
+    int nnz = 0;
+    for (int i = 0; i < m; i++)
+      for (int j = ptr[i]; j < ptr[i+1]; j++)
+        {
+          if (ColKept(ind[j]) && RowKept(i))
+            nnz++;
+          
+          if (ind[j] != i)
+            if (RowKept(ind[j]) && ColKept(i))
+              nnz++;
+        }
+    
+    RowNum.Reallocate(nnz);
+    ColNum.Reallocate(nnz);
+    Value.Reallocate(nnz);
+    nnz = 0;
+    for (int i = 0; i < m; i++)
+      for (int j = ptr[i]; j < ptr[i+1]; j++)
+        {
+          if (ColKept(ind[j]) && RowKept(i))
+            {
+              RowNum(nnz) = i;
+              ColNum(nnz) = ind[j];
+              Value(nnz) = data[j];
+              nnz++;
+            }
+          
+          if (ind[j] != i)
+            if (RowKept(ind[j]) && ColKept(i))
+              {
+                RowNum(nnz) = ind[j];
+                ColNum(nnz) = i;
+                Value(nnz) = data[j];
+                nnz++;
+              }
+        }
+  }
+
+
+  //! extracts some rows/columns of a matrix
+  template<class T0, class Prop0, class Storage0, class Allocator0,
+           class T1, class Prop1, class Storage1, class Allocator1>
+  void CopySubMatrix(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+                     const IVect& row, const IVect& col,
+                     Matrix<T1, Prop1, Storage1, Allocator1>& B)
+  {
+    Vector<int, VectFull, CallocAlloc<int> > RowNum, ColNum;
+    typedef typename Matrix<T0, Prop0, Storage0, Allocator0>::entry_type T;
+    Vector<T> Value;
+    
+    // extracts rows/columns in coordinate format
+    CopySubMatrix(A, row, col, RowNum, ColNum, Value);
+    
+    // converts to the sparse matrix B
+    B.Reallocate(A.GetM(), A.GetN());
+    ConvertMatrix_from_Coordinates(RowNum, ColNum, Value, B);
+  }
+
 } // namespace Seldon
 
 #define SELDON_FILE_FUNCTIONS_MATRIX_ARRAY_CXX

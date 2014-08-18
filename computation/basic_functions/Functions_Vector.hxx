@@ -180,7 +180,10 @@ namespace Seldon
   void Swap(Vector<T, VectSparse, Allocator>& X,
 	    Vector<T, VectSparse, Allocator>& Y);
   
-  
+  template<class T>
+  void SwapPointer(Vector<T>& X, Vector<T>& Y);
+
+
   // SWAP //
   //////////
   
