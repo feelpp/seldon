@@ -565,14 +565,8 @@ void CheckDistributedMatrix(DistributedMatrix<T, Prop, Storage, Allocator>& mat,
   CheckMatrixMlt(Asparse, Aref, "Copy", true);
   
   // testing Zero
-#ifdef MONTJOIE_WITH_MPFR
-  T0 zero; SetComplexZero(zero);
-  B.Fill(zero);
-  Bref.Fill(zero);
-#else
   B.Zero();
   Bref.Zero();
-#endif
   
   CheckMatrixMlt(B, Bref, "Zero");
 

@@ -12,6 +12,10 @@
 #include <unistd.h>
 #include <stdint.h>
 
+#ifdef SELDON_WITH_MPI
+#include "mpi.h"
+#endif
+
 #include "Seldon.hxx"
 #include "SeldonSolver.hxx"
 
@@ -82,11 +86,7 @@ void CheckBandMatrix(Matrix<T, General, BandedCol>& A, int n, int kl, int ku)
   T one; SetComplexOne(one);
   typedef typename ClassComplexType<T>::Treal Treal;
   
-#ifdef MONTJOIE_WITH_MPFR  
-  A.Fill(zero);
-#else
   A.Zero();
-#endif
   
   for (int i = 0; i < n; i++)
     for (int j = 0; j < n; j++)
@@ -237,9 +237,7 @@ void CheckBandMatrix(Matrix<T, General, BandedCol>& A, int n, int kl, int ku)
   // checking FillRand, Write, WriteText
   A.FillRand(); A *= Treal(1e-9);
   
-#ifndef MONTJOIE_WITH_MPFR
   A.Write("band_bin.dat");
-#endif
   
   A.WriteText("band.dat");
   
@@ -339,7 +337,6 @@ void CheckBandMatrix(Matrix<T, General, BandedCol>& A, int n, int kl, int ku)
       }
   
   // checking GetLU/SolveLU of Lapack interface
-#ifndef MONTJOIE_WITH_MPFR
   //n = 26;
   IVect pivot(n);
   Mlt(A, x, y);
@@ -353,7 +350,6 @@ void CheckBandMatrix(Matrix<T, General, BandedCol>& A, int n, int kl, int ku)
         cout << "Lapack's GetLU/SolveLU incorrect" << endl;
         abort();
       }
-#endif
 }
 
 template<class T>
@@ -398,11 +394,7 @@ void CheckArrowMatrix(Matrix<T, General, ArrowCol>& A, int n, int kl, int ku, in
   T one; SetComplexOne(one);
   typedef typename ClassComplexType<T>::Treal Treal;
   
-#ifdef MONTJOIE_WITH_MPFR
-  A.Fill(zero);
-#else
   A.Zero();
-#endif
   
   for (int i = 0; i < n; i++)
     for (int j = 0; j < n; j++)
@@ -550,9 +542,7 @@ void CheckArrowMatrix(Matrix<T, General, ArrowCol>& A, int n, int kl, int ku, in
   // checking FillRand, Write, WriteText
   A.FillRand(); A *= Treal(1e-9);
   
-#ifndef MONTJOIE_WITH_MPFR
   A.Write("band_bin.dat");
-#endif
   
   A.WriteText("band.dat");
   
