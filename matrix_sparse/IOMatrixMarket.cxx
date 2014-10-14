@@ -553,9 +553,9 @@ namespace Seldon
         for (int j = i; j < min(i+3, 2*nnz); j++)
           {
             if (j%2 == 0)
-              file_out << setw(23) << real(Val(j/2));
+              file_out << setw(23) << std::real(Val(j/2));
             else
-              file_out << setw(23) << imag(Val(j/2));
+              file_out << setw(23) << std::imag(Val(j/2));
           }
         
         file_out << '\n';

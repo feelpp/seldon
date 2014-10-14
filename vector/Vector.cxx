@@ -1167,7 +1167,6 @@ namespace Seldon
       {
 	// Reads a new entry.
 	FileStream >> entry;
-        
 	if (FileStream.fail())
 	  break;
 	else
