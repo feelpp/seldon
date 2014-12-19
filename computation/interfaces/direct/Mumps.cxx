@@ -771,6 +771,107 @@ namespace Seldon
   {
     SolveDistributed(comm_facto, SeldonNoTrans, x, glob_num);
   }
+
+
+  //! solves linear system with parallel execution
+  /*!
+    \param[in] TransA we solve A x = b or A^T x = b
+    \param[in,out] x right-hand-side then solution
+    \param[in,out] glob_num global row numbers
+  */
+  template<class T> template<class Allocator2, class Transpose_status, class Prop>
+  void MatrixMumps<T>::SolveDistributed(MPI::Comm& comm_facto,
+                                        const Transpose_status& TransA,
+					Matrix<T, Prop, ColMajor, Allocator2>& x,
+					const IVect& glob_num)
+  {
+    Matrix<T, General, ColMajor, Allocator2> rhs;
+    int cplx = sizeof(T)/8, nrhs = x.GetN();
+    // allocating the global right hand side
+    rhs.Reallocate(struct_mumps.n, nrhs); rhs.Zero();
+    
+    if (comm_facto.Get_rank() == 0)
+      {
+	// on the host, we retrieve datas of all the other processors
+	int nb_procs = comm_facto.Get_size();
+        MPI::Status status;
+	if (nb_procs > 1)
+	  {
+	    // assembling the right hand side
+	    Matrix<T, General, ColMajor, Allocator2> xp;
+	    IVect nump;
+	    for (int i = 0; i < nb_procs; i++)
+	      {
+
+		if (i != 0)
+		  {
+                    // On the host processor receiving components of right
+                    // hand side.
+		    int nb_dof;
+		    comm_facto.Recv(&nb_dof, 1, MPI::INTEGER, i, 33, status);
+
+                    xp.Reallocate(nb_dof, nrhs);
+		    nump.Reallocate(nb_dof);
+
+                    comm_facto.Recv(xp.GetDataVoid(), cplx*nb_dof*nrhs,
+                                    MPI::DOUBLE, i, 37, status);
+
+		    comm_facto.Recv(nump.GetData(), nb_dof, MPI::INTEGER,
+                                    i, 38, status);
+		  }
+		else
+		  {
+		    xp = x; nump = glob_num;
+		  }
+
+		for (int k = 0; k < nrhs; k++)
+		  for (int j = 0; j < nump.GetM(); j++)
+		    rhs(nump(j), k) = xp(j, k);
+	      }
+	  }
+	else
+	  Copy(x, rhs);
+	
+	struct_mumps.rhs = reinterpret_cast<pointer>(rhs.GetData());
+      }
+    else
+      {
+	// On other processors, we send right hand side.
+	int nb = x.GetM();
+	comm_facto.Send(&nb, 1, MPI::INTEGER, 0, 33);
+	comm_facto.Send(x.GetDataVoid(), cplx*nb*nrhs, MPI::DOUBLE, 0, 37);
+	comm_facto.Send(glob_num.GetData(), nb, MPI::INTEGER, 0, 38);
+      }
+
+    // we solve system
+    if (TransA.Trans())
+      struct_mumps.icntl[8] = 0;
+    else
+      struct_mumps.icntl[8] = 1;
+
+    struct_mumps.nrhs = nrhs;
+    struct_mumps.lrhs = struct_mumps.n;
+    struct_mumps.job = 3;
+    CallMumps();
+
+    // we distribute solution on all the processors
+    comm_facto.Bcast(rhs.GetDataVoid(), cplx*rhs.GetM()*rhs.GetN(), MPI::DOUBLE, 0);
+
+    // and we extract the solution on provided numbers
+    for (int k = 0; k < nrhs; k++)
+      for (int i = 0; i < x.GetM(); i++)
+	x(i, k) = rhs(glob_num(i), k);
+  }
+
+
+  template<class T> template<class Allocator2, class Tint, class Prop>
+  void MatrixMumps<T>::SolveDistributed(MPI::Comm& comm_facto,
+                                        Matrix<T, Prop, ColMajor, Allocator2>& x,
+					const Vector<Tint>& glob_num)
+  {
+    SolveDistributed(comm_facto, SeldonNoTrans, x, glob_num);
+  }
+
 #endif
 
 
@@ -853,25 +954,6 @@ namespace Seldon
   }
 
 
-  //! LU resolution with a matrix whose type is the same as for Mumps object
-  template<class T, class Prop, class Allocator>
-  void SolveLU(MatrixMumps<T>& mat_lu,
-               Matrix<T, Prop, ColMajor, Allocator>& x)
-  {
-    mat_lu.Solve(SeldonNoTrans, x);
-  }
-
-
-  //! LU resolution with a matrix whose type is the same as for Mumps object
-  //! Solves transpose system A^T x = b or A x = b depending on TransA
-  template<class T, class Allocator, class Prop, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
-	       MatrixMumps<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
-  {
-    mat_lu.Solve(TransA, x);
-  }
-
-
   //! Solves A x = b, where A is real and x is complex
   template<class Allocator>
   void SolveLU(MatrixMumps<double>& mat_lu,
@@ -932,6 +1014,63 @@ namespace Seldon
   {
     throw WrongArgument("SolveLU(MatrixMumps<complex<double> >, Vector<double>)", 
 			"The result should be a complex vector");
+  }
+
+
+  //! LU resolution with a matrix whose type is the same as for Mumps object
+  template<class T, class Prop, class Allocator>
+  void SolveLU(MatrixMumps<T>& mat_lu,
+               Matrix<T, Prop, ColMajor, Allocator>& x)
+  {
+    mat_lu.Solve(SeldonNoTrans, x);
+  }
+
+
+  //! LU resolution with a matrix whose type is the same as for Mumps object
+  //! Solves transpose system A^T x = b or A x = b depending on TransA
+  template<class T, class Allocator, class Prop, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixMumps<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
+  {
+    mat_lu.Solve(TransA, x);
+  }
+
+
+  template<class Prop, class Allocator>
+  void SolveLU(MatrixMumps<double>& mat_lu,
+	       Matrix<complex<double>, Prop, ColMajor, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixMumps<double>, Matrix<complex<double> >)", 
+			"The result should be a real vector");
+  }
+
+  
+  template<class Prop, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixMumps<double>& mat_lu,
+	       Matrix<complex<double>, Prop, ColMajor, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixMumps<double>, Matrix<complex<double> >)", 
+			"The result should be a real vector");
+  }
+  
+
+  template<class Prop, class Allocator>
+  void SolveLU(MatrixMumps<complex<double> >& mat_lu,
+	       Matrix<double, Prop, ColMajor, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixMumps<complex<double> >, Matrix<double>)", 
+			"The result should be a complex matrix");
+  }
+
+  
+  template<class Prop, class Allocator, class Transpose_status>
+  void SolveLU(const Transpose_status& TransA,
+	       MatrixMumps<complex<double> >& mat_lu,
+	       Matrix<double, Prop, ColMajor, Allocator>& x)
+  {
+    throw WrongArgument("SolveLU(MatrixMumps<complex<double> >, Matrix<double>)", 
+			"The result should be a complex matrix");
   }
 
 }

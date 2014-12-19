@@ -225,6 +225,9 @@ namespace Seldon
     template<class TransStatus, class Vector1>
     void Solve(const TransStatus& TransA, Vector1& x);
 
+    template<class T1, class Alloc1>
+    void Solve(Matrix<T1, General, ColMajor, Alloc1>& x);
+
 #ifdef SELDON_WITH_MPI
     template<class Tint>
     void FactorizeDistributed(MPI::Comm& comm_facto,

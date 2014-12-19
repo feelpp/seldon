@@ -930,6 +930,82 @@ namespace Seldon
       }
   }
   
+
+  //! x_solution is overwritten by solution of A x = b
+  /*!
+    Multiple right hand sides
+    We assume that Factorize has been called previously
+  */
+  template<class T> template<class T1, class Alloc1>
+  inline void SparseDirectSolver<T>
+  ::Solve(Matrix<T1, General, ColMajor, Alloc1>& x_solution)
+  {
+    if (type_solver == UMFPACK)
+      {
+#ifdef SELDON_WITH_UMFPACK
+        throw Undefined("SparseDirectSolver::Solve(Matrix&)",
+                        "Multiple right hand sides not available in UmfPack.");
+#else
+        throw Undefined("SparseDirectSolver::Solve(Matrix&)",
+                        "Seldon was not compiled with UmfPack support.");
+#endif
+      }
+    else if (type_solver == SUPERLU)
+      {
+#ifdef SELDON_WITH_SUPERLU
+	throw Undefined("SparseDirectSolver::Solve(Matrix&)",
+                        "Multiple right hand sides not available in SuperLU.");
+#else
+        throw Undefined("SparseDirectSolver::Solve(Matrix&)",
+                        "Seldon was not compiled with SuperLU support.");
+#endif
+      }
+    else if (type_solver == PARDISO)
+      {
+#ifdef SELDON_WITH_PARDISO
+        throw Undefined("SparseDirectSolver::Solve(Matrix&)",
+                        "Multiple right hand sides not available in Pardiso.");
+#else
+        throw Undefined("SparseDirectSolver::Solve(Matrix&)",
+                        "Seldon was not compiled with Pardiso support.");
+#endif
+      } 
+    else if (type_solver == MUMPS)
+      {
+#ifdef SELDON_WITH_MUMPS
+	Seldon::SolveLU(mat_mumps, x_solution);
+#else
+        throw Undefined("SparseDirectSolver::Solve(Vector&)",
+                        "Seldon was not compiled with Mumps support.");
+#endif
+      }
+    else if (type_solver == PASTIX)
+      {
+#ifdef SELDON_WITH_PASTIX
+        throw Undefined("SparseDirectSolver::Solve(Matrix&)",
+	                 "Multiple right hand sides not available in Pastix.");
+#else
+        throw Undefined("SparseDirectSolver::Solve(Matrix&)",
+                        "Seldon was not compiled with Pastix support.");
+#endif
+      }
+    else if (type_solver == ILUT)
+      {
+#ifdef SELDON_WITH_PRECONDITIONING
+	throw Undefined("SparseDirectSolver::Solve(Matrix&)",
+	                "Multiple right hand sides not available in ILUT.");
+#else
+        throw Undefined("SparseDirectSolver::Solve(Matrix&)",
+                        "Seldon was not compiled with the preconditioners.");
+#endif
+      }
+    else
+      {
+	throw Undefined("SparseDirectSolver::Solve(Matrix&)",
+	                "Multiple right hand sides not available in Seldon.");	
+      }
+  }
+
   
 #ifdef SELDON_WITH_MPI
   //! Factorization of a matrix
