@@ -691,18 +691,24 @@ namespace Seldon
     Vector<T, VectFull, Allocator2> rhs;
     int cplx = sizeof(T)/8;
     // allocating the global right hand side
-    rhs.Reallocate(struct_mumps.n); rhs.Zero();
+    if (comm_facto.Get_rank() == 0)
+      {
+        rhs.Reallocate(struct_mumps.n);
+        rhs.Zero();
+      }
+
+    int nb_procs = comm_facto.Get_size();
+    MPI::Status status;
     
+    Vector<T, VectFull, Allocator2> xp;
+    Vector<IVect> nump(nb_procs);
+	    
     if (comm_facto.Get_rank() == 0)
       {
 	// on the host, we retrieve datas of all the other processors
-	int nb_procs = comm_facto.Get_size();
-        MPI::Status status;
 	if (nb_procs > 1)
 	  {
 	    // assembling the right hand side
-	    Vector<T, VectFull, Allocator2> xp;
-	    IVect nump;
 	    for (int i = 0; i < nb_procs; i++)
 	      {
 
@@ -714,21 +720,21 @@ namespace Seldon
 		    comm_facto.Recv(&nb_dof, 1, MPI::INTEGER, i, 34, status);
 
                     xp.Reallocate(nb_dof);
-		    nump.Reallocate(nb_dof);
+		    nump(i).Reallocate(nb_dof);
 
                     comm_facto.Recv(xp.GetDataVoid(), cplx*nb_dof,
                                     MPI::DOUBLE, i, 35, status);
 
-		    comm_facto.Recv(nump.GetData(), nb_dof, MPI::INTEGER,
+		    comm_facto.Recv(nump(i).GetData(), nb_dof, MPI::INTEGER,
                                     i, 36, status);
 		  }
 		else
 		  {
-		    xp = x; nump = glob_num;
+		    xp = x; nump(i) = glob_num;
 		  }
 
-		for (int j = 0; j < nump.GetM(); j++)
-		  rhs(nump(j)) = xp(j);
+		for (int j = 0; j < nump(i).GetM(); j++)
+		  rhs(nump(i)(j)) = xp(j);
 	      }
 	  }
 	else
@@ -756,11 +762,38 @@ namespace Seldon
     CallMumps();
 
     // we distribute solution on all the processors
-    comm_facto.Bcast(rhs.GetDataVoid(), cplx*rhs.GetM(), MPI::DOUBLE, 0);
-
-    // and we extract the solution on provided numbers
-    for (int i = 0; i < x.GetM(); i++)
-      x(i) = rhs(glob_num(i));
+    if (nb_procs > 1)
+      {
+        if (comm_facto.Get_rank() == 0)
+          {
+            for (int i = 0; i < nb_procs; i++)
+              {
+                if (i != 0)
+                  {
+                    int nb_dof = nump(i).GetM(); 
+                    xp.Reallocate(nb_dof);
+                    for (int j = 0; j < nb_dof; j++)
+                      xp(j) = rhs(nump(i)(j));
+                    
+                    comm_facto.Send(xp.GetDataVoid(), cplx*nb_dof,
+                                    MPI::DOUBLE, i, 41);
+                  }
+                else
+                  {
+                    for (int j = 0; j < x.GetM(); j++)
+                      x(j) = rhs(glob_num(j));
+                  }
+              }
+          }
+        else
+          {
+            int nb_dof = x.GetM();
+            comm_facto.Recv(x.GetDataVoid(), cplx*nb_dof,
+                            MPI::DOUBLE, 0, 41, status);
+          }
+      }
+    else
+      Copy(rhs, x);
   }
 
 
@@ -787,80 +820,165 @@ namespace Seldon
   {
     Matrix<T, General, ColMajor, Allocator2> rhs;
     int cplx = sizeof(T)/8, nrhs = x.GetN();
+    int nblock = 8;
     // allocating the global right hand side
-    rhs.Reallocate(struct_mumps.n, nrhs); rhs.Zero();
-    
     if (comm_facto.Get_rank() == 0)
       {
-	// on the host, we retrieve datas of all the other processors
-	int nb_procs = comm_facto.Get_size();
-        MPI::Status status;
-	if (nb_procs > 1)
-	  {
-	    // assembling the right hand side
-	    Matrix<T, General, ColMajor, Allocator2> xp;
-	    IVect nump;
-	    for (int i = 0; i < nb_procs; i++)
-	      {
-
-		if (i != 0)
-		  {
-                    // On the host processor receiving components of right
-                    // hand side.
-		    int nb_dof;
-		    comm_facto.Recv(&nb_dof, 1, MPI::INTEGER, i, 33, status);
-
-                    xp.Reallocate(nb_dof, nrhs);
-		    nump.Reallocate(nb_dof);
-
-                    comm_facto.Recv(xp.GetDataVoid(), cplx*nb_dof*nrhs,
-                                    MPI::DOUBLE, i, 37, status);
-
-		    comm_facto.Recv(nump.GetData(), nb_dof, MPI::INTEGER,
-                                    i, 38, status);
-		  }
-		else
-		  {
-		    xp = x; nump = glob_num;
-		  }
-
-		for (int k = 0; k < nrhs; k++)
-		  for (int j = 0; j < nump.GetM(); j++)
-		    rhs(nump(j), k) = xp(j, k);
-	      }
-	  }
-	else
-	  Copy(x, rhs);
-	
-	struct_mumps.rhs = reinterpret_cast<pointer>(rhs.GetData());
+        rhs.Reallocate(struct_mumps.n, min(nrhs, nblock));
+        rhs.Zero();
       }
-    else
+    
+    Matrix<T, General, ColMajor, Allocator2> xp;
+    int nb_procs = comm_facto.Get_size();
+    MPI::Status status;
+ 
+    // retrieving dofs of all processors
+    Vector<IVect> nump(nb_procs);
+    if (nb_procs > 1)
       {
-	// On other processors, we send right hand side.
-	int nb = x.GetM();
-	comm_facto.Send(&nb, 1, MPI::INTEGER, 0, 33);
-	comm_facto.Send(x.GetDataVoid(), cplx*nb*nrhs, MPI::DOUBLE, 0, 37);
-	comm_facto.Send(glob_num.GetData(), nb, MPI::INTEGER, 0, 38);
+        if (comm_facto.Get_rank() == 0)
+          {
+            for (int i = 0; i < nb_procs; i++)
+              {
+                if (i != 0)
+                  {
+                    int nb_dof;
+                    comm_facto.Recv(&nb_dof, 1, MPI::INTEGER, i, 33, status);
+                    
+                    nump(i).Reallocate(nb_dof);
+                    comm_facto.Recv(nump(i).GetData(), nb_dof, MPI::INTEGER,
+                                    i, 38, status);
+                  }
+                else
+                  nump(i) = glob_num;
+                
+              }
+          }
+        else
+          {
+            int nb = glob_num.GetM();
+            comm_facto.Send(&nb, 1, MPI::INTEGER, 0, 33);
+            comm_facto.Send(glob_num.GetData(), nb, MPI::INTEGER, 0, 38);
+          }
       }
+    
+    // then loop over blocks of right hand sides
+    int num_rhs = 0;
+    int lvl = print_level; HideMessages();
+    while (num_rhs < nrhs)
+      {
+        int nrhs_p = min(nrhs-num_rhs, nblock);
+        if (comm_facto.Get_rank() == 0)
+          {
+            // on the host, we retrieve datas of all the other processors
+            if (nb_procs > 1)
+              {
+                // assembling the right hand side
+                for (int i = 0; i < nb_procs; i++)
+                  {
+                    
+                    if (i != 0)
+                      {
+                        // On the host processor receiving components of right
+                        // hand side.
+                        int nb_dof = nump(i).GetM();
+                        xp.Reallocate(nb_dof, nrhs_p);
+                        
+                        comm_facto.Recv(xp.GetDataVoid(), cplx*nb_dof*nrhs_p,
+                                        MPI::DOUBLE, i, 37, status);
+                      }
+                    else
+                      {
+                        xp.Reallocate(x.GetM(), nrhs_p);
+                        for (int k = 0; k < nrhs_p; k++)
+                          for (int j = 0; j < x.GetM(); j++)
+                            xp(j, k) = x(j, num_rhs+k);
+                      }
+                    
+                    for (int k = 0; k < nrhs_p; k++)
+                      for (int j = 0; j < nump(i).GetM(); j++)
+                        rhs(nump(i)(j), k) = xp(j, k);
+                  }
+              }
+            else
+              {
+                for (int k = 0; k < nrhs_p; k++)
+                  for (int j = 0; j < x.GetM(); j++)
+                    rhs(j, k) = x(j, num_rhs+k);
+              }
+          
+            struct_mumps.rhs = reinterpret_cast<pointer>(rhs.GetData());
+          }
+        else
+          {
+            // On other processors, we send right hand side.
+            int nb_dof = x.GetM();
+            comm_facto.Send(&x(0, num_rhs), cplx*nb_dof*nrhs_p, MPI::DOUBLE, 0, 37);
+          }
+    
+        // we solve system
+        if (TransA.Trans())
+          struct_mumps.icntl[8] = 0;
+        else
+          struct_mumps.icntl[8] = 1;
+        
+        struct_mumps.nrhs = nrhs_p;
+        struct_mumps.lrhs = struct_mumps.n;
+        struct_mumps.job = 3;
+        CallMumps();
+        
+        // we distribute solution on all the processors
+        if (nb_procs > 1)
+          {
+            if (comm_facto.Get_rank() == 0)
+              {
+                for (int i = 0; i < nb_procs; i++)
+                  {
+                    if (i != 0)
+                      {
+                        int nb_dof = nump(i).GetM(); 
+                        xp.Reallocate(nb_dof, nrhs_p);
+                        for (int j = 0; j < nb_dof; j++)
+                          for (int k = 0; k < nrhs_p; k++)
+                            xp(j, k) = rhs(nump(i)(j), k);
+                        
+                        comm_facto.Send(xp.GetDataVoid(), cplx*nb_dof*nrhs_p,
+                                        MPI::DOUBLE, i, 40);
+                      }
+                    else
+                      {
+                        for (int k = 0; k < nrhs_p; k++)
+                          for (int j = 0; j < x.GetM(); j++)
+                            x(j, num_rhs+k) = rhs(glob_num(j), k);
+                      }
+                  }
+              }
+            else
+              {
+                int nb_dof = x.GetM();
+                xp.Reallocate(nb_dof, nrhs_p);
+                comm_facto.Recv(xp.GetDataVoid(), cplx*nb_dof*nrhs_p,
+                                MPI::DOUBLE, 0, 40, status);
+                
+                for (int k = 0; k < nrhs_p; k++)
+                  for (int j = 0; j < x.GetM(); j++)
+                    x(j, num_rhs+k) = xp(j, k);
+              }
+          }
+        else
+          {
+            for (int k = 0; k < nrhs_p; k++)
+              for (int i = 0; i < x.GetM(); i++)
+                x(i, num_rhs+k) = rhs(i, k);
+          }
 
-    // we solve system
-    if (TransA.Trans())
-      struct_mumps.icntl[8] = 0;
-    else
-      struct_mumps.icntl[8] = 1;
-
-    struct_mumps.nrhs = nrhs;
-    struct_mumps.lrhs = struct_mumps.n;
-    struct_mumps.job = 3;
-    CallMumps();
-
-    // we distribute solution on all the processors
-    comm_facto.Bcast(rhs.GetDataVoid(), cplx*rhs.GetM()*rhs.GetN(), MPI::DOUBLE, 0);
-
-    // and we extract the solution on provided numbers
-    for (int k = 0; k < nrhs; k++)
-      for (int i = 0; i < x.GetM(); i++)
-	x(i, k) = rhs(glob_num(i), k);
+        num_rhs += nrhs_p;
+      }
+    
+    if (lvl > 0)
+      ShowMessages();
+    
+    print_level = lvl;
   }
 
 
