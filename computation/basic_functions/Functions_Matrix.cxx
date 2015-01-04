@@ -508,10 +508,10 @@ namespace Seldon
     int Nnonzero_row;
     int Nnonzero;
 
-    // 'MallocAlloc' is specified so that reallocations may be efficient.
+    // 'CallocAlloc' is specified so that reallocations may be efficient.
     // There will be no need for 'Resize': 'Reallocate' will do the job.
-    Vector<int, VectFull, MallocAlloc<int> > column_index;
-    Vector<T2, VectFull, MallocAlloc<T2> > row_value;
+    Vector<int, VectFull, CallocAlloc<int> > column_index;
+    Vector<T2, VectFull, CallocAlloc<T2> > row_value;
     T2 value;
 
     int m = A.GetM();

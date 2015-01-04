@@ -309,6 +309,7 @@ const int ARRAY_MAXRANK = 9;
 #include "vector/SparseVector.hxx"
 #include "vector/Functions_Arrays.hxx"
 #include "matrix/Functions.hxx"
+#include "matrix_sparse/IOMatrixMarket.hxx"
 #include "matrix_sparse/Matrix_Conversions.hxx"
 #include "computation/basic_functions/Functions_Vector.hxx"
 #include "computation/basic_functions/Functions_MatVect.hxx"
@@ -424,6 +425,21 @@ namespace Seldon
 		 SELDON_DEFAULT_ALLOCATOR<complex<float> > > CGCSMat;
   typedef Matrix<complex<double>, General, ColSparse,
 		 SELDON_DEFAULT_ALLOCATOR<complex<double> > > ZGCSMat;
+
+  // Vector class - specialized for each used type.
+  template <class T, class Storage, class Allocator>
+  class Vector
+  {
+    // Nothing in it: no default vector is supplied so as to avoid suprises!
+  };
+
+
+  // Matrix class - specialized for each used type.
+  template <class T, class Prop, class Storage, class Allocator>
+  class Matrix
+  {
+    // Nothing in it: no default matrix is supplied so as to avoid suprises!
+  };
 
 
 } // namespace Seldon.

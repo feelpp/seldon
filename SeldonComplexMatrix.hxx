@@ -20,6 +20,9 @@
 
 #ifndef SELDON_FILE_SELDON_COMPLEX_MATRIX_HXX
 
+#include "SeldonComplexMatrixHeader.hxx"
+#include "SeldonComplexMatrixInline.hxx"
+
 // additional classes and functions for sparse complex matrices
 // where real part and imaginary part are stored separately
 #include "matrix_sparse/complex/Matrix_ComplexSparse.cxx"

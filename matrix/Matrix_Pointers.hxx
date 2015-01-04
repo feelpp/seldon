@@ -55,7 +55,7 @@ namespace Seldon
   public:
     // Constructor.
     Matrix_Pointers();
-    Matrix_Pointers(int i, int j);
+    explicit Matrix_Pointers(int i, int j);
     Matrix_Pointers(const Matrix_Pointers<T, Prop, Storage, Allocator>& A);
 
     // Destructor.
@@ -140,7 +140,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
     Matrix(const Matrix<T, Prop, ColMajor, Allocator>& A);
 
     void WriteColumn(string FileName, int col) const;
@@ -171,7 +171,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
     Matrix(const Matrix<T, Prop, RowMajor, Allocator>& A);
 
     void WriteRow(string FileName, int row) const;

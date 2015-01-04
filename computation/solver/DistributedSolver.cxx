@@ -7,7 +7,7 @@ namespace Seldon
 
   //! Default constructor
   template <class T>
-  inline SparseDistributedSolver<T>::SparseDistributedSolver()
+  SparseDistributedSolver<T>::SparseDistributedSolver()
     : SparseDirectSolver<T>()
   {
     diagonal_scaling_left = false;
@@ -26,7 +26,31 @@ namespace Seldon
 #endif
   }
 
+
+  //! Changes the level of displayed messages
+  template <class T>
+  void SparseDistributedSolver<T>::SetPrintLevel(int print_level)
+  { 
+    if (print_level >= 2)
+      this->ShowMessages(); 
+    else if (print_level >= 6)
+      this->ShowFullHistory();
+    else
+      this->HideMessages();    
+  }
   
+  
+  //! Clears LU matrices
+  template <class T>
+  void SparseDistributedSolver<T>::Clear()
+  {
+    SparseDirectSolver<T>::Clear();
+    
+    diagonal_scale_left.Clear();
+    diagonal_scale_right.Clear();
+  }
+  
+    
   //! scales matrix with 1 / \sum a_{i, j} (rows and columns)
   template<class T> template<class MatrixSparse>
   void SparseDistributedSolver<T>::ScaleMatrixRowCol(MatrixSparse& A)
@@ -125,6 +149,25 @@ namespace Seldon
   {
     AssembleVector(X, MPI::SUM, *ProcSharingRows_, *SharingRowNumbers_,
                    *comm_, nodl_scalar_, nb_unknowns_scal_, 20);
+  }
+
+  //! assembles the vector (adds values of shared rows)
+  template<class T> template<class T2>
+  void SparseDistributedSolver<T>::AssembleVec(Matrix<T2, General, ColMajor>& A) const
+  {
+    if (nb_unknowns_scal_ > 1)
+      {
+	cout << "not implemented " << endl;
+	abort();
+      }
+
+    int nrhs = A.GetN();
+    Vector<T2> X;
+    X.SetData(nrhs*A.GetM(), A.GetData());
+    AssembleVector(X, MPI::SUM, *ProcSharingRows_, *SharingRowNumbers_,
+                   *comm_, A.GetM(), nrhs, 21);
+    
+    X.Nullify();
   }
 #endif
   
@@ -230,7 +273,53 @@ namespace Seldon
       for (int i = 0; i < x_solution.GetM(); i++)
         x_solution(i) *= diagonal_scale_left(i);
   }
-
+  
+  
+  //! solution of linear system Ax = b by using LU factorization (with scaling)
+  /*!
+    \param[in,out] x_solution on input right hand side, on output solution
+   */
+  template<class T> template<class T1>
+  void SparseDistributedSolver<T>::Solve(Matrix<T1, General, ColMajor>& x_solution)
+  {
+    if (diagonal_scaling_left)
+      ScaleLeftMatrix(x_solution, diagonal_scale_left);
+    
+#ifdef SELDON_WITH_MPI
+    MPI::Comm& comm = *comm_;
+    if (comm.Get_size() == 1)
+      SparseDirectSolver<T>::Solve(x_solution);
+    else
+      {
+        // extracting right hand side (we remove overlapped dofs)
+	int n = local_col_numbers.GetM();
+	int N = x_solution.GetM(), nrhs = x_solution.GetN();
+        Matrix<T1, General, ColMajor> x_sol_extract(n, nrhs);
+	for (int k = 0; k < nrhs; k++)
+	  for (int i = 0; i < local_col_numbers.GetM(); i++)
+	    x_sol_extract(i, k) = x_solution(local_col_numbers(i), k);
+        
+	x_solution.Clear();
+        SolveLU_Distributed(comm, SeldonNoTrans, *this,
+                            x_sol_extract, global_col_numbers);
+        
+	x_solution.Reallocate(N, nrhs);
+        x_solution.Fill(0);
+	for (int k = 0; k < nrhs; k++)
+	  for (int i = 0; i < local_col_numbers.GetM(); i++)
+	    x_solution(local_col_numbers(i), k) = x_sol_extract(i, k);
+        
+        // adding overlapped components
+        this->AssembleVec(x_solution);
+      }
+#else
+    SparseDirectSolver<T>::Solve(x_solution);
+#endif
+    
+    if (diagonal_scaling_right)
+      ScaleLeftMatrix(x_solution, diagonal_scale_right);
+  }
+  
 
 #ifdef SELDON_WITH_MPI
   template<class TransA, class T>
@@ -270,7 +359,64 @@ namespace Seldon
     for (int i = 0; i < x.GetM(); i++)
       x(i) = complex<T>(xreal(i), ximag(i));
   }
+  
+  
+  template<class TransA, class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const TransA& transA,
+			   SparseDistributedSolver<T>& mat_lu,
+                           Matrix<T, General, ColMajor>& x, Vector<int>& global_col)
+  {
+    mat_lu.SolveDistributed(comm, transA, x, global_col);
+  }
+
+  
+  template<class TransA, class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const TransA& transA,
+                           SparseDistributedSolver<complex<T> >& mat_lu,
+                           Matrix<T, General, ColMajor>& x, Vector<int>& global_col)
+  {
+    throw WrongArgument("SolveLU(SparseDistributedSolver, Vector, Vector)",
+			"the result must be complex");
+  }
+  
+  
+  template<class TransA, class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const TransA& transA,
+			   SparseDistributedSolver<T>& mat_lu,
+                           Matrix<complex<T>, General, ColMajor>& x, Vector<int>& global_col)
+  {
+    throw WrongArgument("SolveLU(SparseDistributedSolver, Vector, Vector)",
+			"the matrix must be real");
+  }
 #endif  
+
+
+  //! Computation of a Schur Complement
+  /*!
+    \param[in] mat_direct initial matrix
+    \param[in] num row numbers of the Schur Complement
+    \param[out] mat_schur Schur Complement
+   */
+  template<class T> template<class MatrixSparse, class MatrixFull>
+  void SparseDistributedSolver<T>::GetSchurComplement(MatrixSparse& mat_direct, 
+						      const IVect& num, MatrixFull& mat_schur)
+  {
+    if (this->type_solver == this->MUMPS)
+      {
+#ifdef SELDON_WITH_MUMPS
+	GetSchurMatrix(mat_direct, this->mat_mumps, num, mat_schur);
+#else
+	cout<<"Recompile Montjoie with Mumps."
+	    << " Schur complement can't be performed otherwise"<<endl;
+	abort();
+#endif
+      }
+    else
+      {
+        cout << "Try to use Mumps, not implemented with other solvers " <<endl;
+        abort();
+      }
+  }
 
   
   //! returns in byte memory used by the direct solver
@@ -325,6 +471,16 @@ namespace Seldon
 			"the types are not compatible");
   }
 
+
+  //! factorizes a matrix
+  template<class T, class MatrixSparse, class T0>
+  void GetLU(SparseDistributedSolver<T>& mat_lu, MatrixSparse& A,
+             bool keep_matrix, bool scale_matrix)
+  {
+    typename MatrixSparse::entry_type x;
+    GetLU(mat_lu, A, keep_matrix, scale_matrix, x);
+  }
+  
   
   //! solves A x = b
   template<class T0, class T1>
@@ -339,6 +495,25 @@ namespace Seldon
   template<class T>
   void SolveLU(SparseDistributedSolver<complex<T> >& mat_lu,
 	       Vector<T>& x, const Vector<T>& b)
+  {
+    throw WrongArgument("SolveLU(SparseDistributedSolver, Vector, Vector)",
+			"the result must be complex");
+  }
+
+
+  //! solves A x = b
+  template<class T0, class T1>
+  void SolveLU(SparseDistributedSolver<T0>& mat_lu,
+	       Matrix<T1, General, ColMajor>& x)
+  {
+    mat_lu.Solve(x);
+  }
+
+
+  //! solves A x = b
+  template<class T>
+  void SolveLU(SparseDistributedSolver<complex<T> >& mat_lu,
+	       Matrix<T, General, ColMajor>& x)
   {
     throw WrongArgument("SolveLU(SparseDistributedSolver, Vector, Vector)",
 			"the result must be complex");

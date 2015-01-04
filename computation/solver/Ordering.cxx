@@ -46,7 +46,7 @@ namespace Seldon
     // Pattern of A + A' is retrieved in CSC format.
     typedef typename Matrix<T, Prop, Storage, Allocator>::entry_type T0;
     Vector<Tint, VectFull, Alloc> Ptr, Ind;
-    Vector<T0, VectFull, CallocAlloc<T0> > Value;
+    Vector<T0> Value;
     General sym;
     ConvertToCSC(A, sym, Ptr, Ind, Value, true);
     Value.Clear();

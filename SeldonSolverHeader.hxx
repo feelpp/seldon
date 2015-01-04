@@ -50,14 +50,14 @@
 #endif
 
 #ifdef SELDON_WITH_PRECONDITIONING
-#include "computation/solver/preconditioner/IlutPreconditioning.hxx"
+#include "SeldonPreconditionerHeader.hxx"
 #endif
 
 #include "computation/solver/SparseSolver.hxx"
+#include "computation/interfaces/direct/SparseDirectSolver.hxx"
 
 // iterative solvers and preconditioning
 #include "computation/solver/iterative/Iterative.hxx"
-#include "computation/solver/preconditioner/Precond_Ssor.cxx"
 
 // Cholesky Solver
 #ifdef SELDON_WITH_CHOLMOD
@@ -74,6 +74,10 @@
 
 #ifdef SELDON_WITH_ANASAZI
 #include "computation/interfaces/eigenvalue/Anasazi.hxx"
+#endif
+
+#ifdef SELDON_WITH_FEAST
+#include "computation/interfaces/eigenvalue/Feast.hxx"
 #endif
 
 #include "computation/interfaces/eigenvalue/EigenvalueSolver.hxx"

@@ -77,12 +77,7 @@ namespace Seldon
 
   };
 
-
-  // Vector allocator.
-  template <class T, class Allocator>
-  Allocator Vector_Base<T, Allocator>::vect_allocator_;
-
-
+  
   //! Full vector class.
   /*!
     Basic vector class (i.e. not sparse).

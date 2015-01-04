@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Seldon. If not, see http://www.gnu.org/licenses/.
 
+
 #include "SeldonHeader.hxx"
 
 #ifndef SELDON_WITH_COMPILED_LIBRARY
@@ -23,8 +24,6 @@
 #include "share/Allocator.cxx"
 #include "vector/Vector.cxx"
 #include "vector/Functions_Arrays.cxx"
-#include "vector/SparseVector.cxx"
-#include "computation/basic_functions/Functions_Vector.cxx"
 #endif
 
 #include "share/Common.cxx"
@@ -38,8 +37,6 @@ typedef std::complex<double> complexdouble;
 namespace Seldon
 {
 
-#ifdef SELDON_WITH_SLOW_COMPILED_LIBRARY
-  
   SELDON_EXTERN template class MallocAlloc<@scalar>;
   SELDON_EXTERN template class Vector_Base<@scalar, MallocAlloc<@scalar> >;
   SELDON_EXTERN template class Vector<@scalar, VectFull, MallocAlloc<@scalar> >;
@@ -77,46 +74,47 @@ namespace Seldon
 #ifndef SWIG
   SELDON_EXTERN template ostream& operator << (ostream& out, const Vector<@scalar, VectFull, NewAlloc<@scalar> >& V);
 #endif
-  
-#endif
 
   // Functions Sort, RemoveDuplicate, QuickSort, etc
   SELDON_EXTERN template void QuickSort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
   SELDON_EXTERN template void QuickSort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
   SELDON_EXTERN template void QuickSort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
 
   SELDON_EXTERN template void MergeSort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
   SELDON_EXTERN template void MergeSort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
   SELDON_EXTERN template void MergeSort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
 
   SELDON_EXTERN template void Sort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
   SELDON_EXTERN template void Sort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
   SELDON_EXTERN template void Sort(int, int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
   SELDON_EXTERN template void Sort(int, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
   SELDON_EXTERN template void Sort(int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
   SELDON_EXTERN template void Sort(int, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
   SELDON_EXTERN template void Sort(Vector<@real, VectFull, NewAlloc<@real> >&);
+  
   SELDON_EXTERN template void Sort(Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+  
   SELDON_EXTERN template void Sort(Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
   
   SELDON_EXTERN template void Assemble(int&, Vector<int, VectFull, NewAlloc<int> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+
   SELDON_EXTERN template void Assemble(int&, Vector<int, VectFull, NewAlloc<int> >&);
+  
   SELDON_EXTERN template void Assemble(Vector<int, VectFull, NewAlloc<int> >&);
 
   SELDON_EXTERN template void RemoveDuplicate(int&, Vector<int, VectFull, NewAlloc<int> >&, Vector<@real, VectFull, NewAlloc<@real> >&);
+
   SELDON_EXTERN template void RemoveDuplicate(int&, Vector<int, VectFull, NewAlloc<int> >&);
+
   SELDON_EXTERN template void RemoveDuplicate(Vector<int, VectFull, NewAlloc<int> >&);
-  
-  SELDON_EXTERN template void Add(const @real_complex&, const Vector<@real_complex, VectSparse>&, Vector<@real_complex, VectSparse>&);
-  SELDON_EXTERN template void Swap(Vector<@real_complex, VectSparse>&, Vector<@real_complex, VectSparse>&);
-  
-  SELDON_EXTERN template @real_complex DotProd(const Vector<@real_complex, VectSparse>&, const Vector<@real_complex, VectSparse>&);
-  SELDON_EXTERN template @real_complex DotProdConj(const Vector<@real_complex, VectSparse>&, const Vector<@real_complex, VectSparse>&);
-  
-  SELDON_EXTERN template @real Norm1(const Vector<@real, VectSparse>&);
-  SELDON_EXTERN template @real Norm2(const Vector<@real, VectSparse>&);
-  SELDON_EXTERN template double Norm1(const Vector<complex<double>, VectSparse>&);
-  SELDON_EXTERN template double Norm2(const Vector<complex<double>, VectSparse>&);
-  
-  SELDON_EXTERN template void Conjugate(Vector<@real_complex, VectSparse>&);
 }

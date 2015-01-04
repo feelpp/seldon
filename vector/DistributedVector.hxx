@@ -1,3 +1,22 @@
+// Copyright (C) 2014 INRIA
+// Author(s): Marc Duruflé
+//
+// This file is part of the linear-algebra library Seldon,
+// http://seldon.sourceforge.net/.
+//
+// Seldon is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your option)
+// any later version.
+//
+// Seldon is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+// more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with Seldon. If not, see http://www.gnu.org/licenses/.
+
 #ifndef SELDON_FILE_DISTRIBUTED_VECTOR_HXX
 
 namespace Seldon
@@ -64,6 +83,39 @@ namespace Seldon
   // returns euclidian norm of x
   template<class T, class Allocator>
   T Norm2(const DistributedVector<T, Allocator>& x);
+
+  template<class T>
+  T minComplex(const T& x, const T& y);
+
+  template<class T>
+  complex<T> minComplex(const complex<T>& x, const complex<T>& y);
+
+  template<class T>
+  T maxComplex(const T& x, const T& y);
+
+  template<class T>
+  complex<T> maxComplex(const complex<T>& x, const complex<T>& y);
+
+  void AssembleVectorMin(Vector<int>& X, Vector<int>& Xproc,
+                         const IVect& ProcNumber,
+			 const Vector<IVect>& DofNumber,
+                         const MPI::Comm& comm, int Nvol, int nb_u, int tag);
+
+  template<class T>
+  void AssembleVector(Vector<T>& X, const MPI::Op& oper,
+                      const IVect& ProcNumber, const Vector<IVect>& DofNumber,
+                      const MPI::Comm& comm, int Nvol, int nb_u, int tag);
+
+  template<class T>
+  void ExchangeVector(Vector<T>& X,
+                      const IVect& ProcNumber, const Vector<IVect>& DofNumber,
+                      const MPI::Comm& comm, int Nvol, int nb_u, int tag);
+
+  template<class T, class Treal>
+  void ExchangeRelaxVector(Vector<T>& X, const Treal& omega, int proc,
+			   const IVect& ProcNumber,
+			   const Vector<IVect>& DofNumber,
+			   const MPI::Comm& comm, int Nvol, int nb_u, int tag);
 
 }
 

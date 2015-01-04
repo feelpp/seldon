@@ -90,6 +90,12 @@ void LUextract(SuperMatrix *L, SuperMatrix *U, T *Lval, int *Lrow,
 
 namespace Seldon
 {
+  void SetComplexOne(doublecomplex& one)
+  {
+    one.r = 1.0;
+    one.i = 0.0;
+  }
+
   //! default constructor
   template<class T>
   MatrixSuperLU_Base<T>::MatrixSuperLU_Base()

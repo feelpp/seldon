@@ -22,8 +22,6 @@
 
 #include "Matrix_Sparse.hxx"
 
-#include "../vector/Functions_Arrays.cxx"
-
 #include <set>
 
 /*
@@ -41,257 +39,7 @@
 namespace Seldon
 {
 
-
-  /****************
-   * CONSTRUCTORS *
-   ****************/
-
-
-  //! Default constructor.
-  /*!
-    Builds an empty 0x0 matrix.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline Matrix_Sparse<T, Prop, Storage, Allocator>::Matrix_Sparse():
-    Matrix_Base<T, Allocator>()
-  {
-    nz_ = 0;
-    ptr_ = NULL;
-    ind_ = NULL;
-  }
-
-
-  //! Constructor.
-  /*!
-    Builds a i by j sparse matrix.
-    \param i number of rows.
-    \param j number of columns.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline Matrix_Sparse<T, Prop, Storage, Allocator>::Matrix_Sparse(int i,
-								   int j):
-    Matrix_Base<T, Allocator>()
-  {
-    nz_ = 0;
-    ptr_ = NULL;
-    ind_ = NULL;
-
-    Reallocate(i, j);
-  }
-
-
-  //! Constructor.
-  /*! Builds a sparse matrix of size i by j , with nz non-zero elements.
-    \param i number of rows.
-    \param j number of columns.
-    \param nz number of non-zero elements.
-    \note Matrix values are not initialized. Indices of non-zero entries
-    are not initialized either.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline Matrix_Sparse<T, Prop, Storage, Allocator>::
-  Matrix_Sparse(int i, int j, int nz):
-    Matrix_Base<T, Allocator>()
-  {
-    this->nz_ = 0;
-    ind_ = NULL;
-    ptr_ = NULL;
-
-    Reallocate(i, j, nz);
-  }
-
-
-  //! Constructor.
-  /*!
-    Builds a i by j sparse matrix with non-zero values and indices
-    provided by 'values' (values), 'ptr' (pointers) and 'ind' (indices).
-    Input vectors are released and are empty on exit.
-    \param i number of rows.
-    \param j number of columns.
-    \param values values of non-zero entries.
-    \param ptr row or column start indices.
-    \param ind row or column indices.
-    \warning Input vectors 'values', 'ptr' and 'ind' are empty on exit.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  template <class Storage0, class Allocator0,
-	    class Storage1, class Allocator1,
-	    class Storage2, class Allocator2>
-  inline Matrix_Sparse<T, Prop, Storage, Allocator>::
-  Matrix_Sparse(int i, int j,
-		Vector<T, Storage0, Allocator0>& values,
-		Vector<int, Storage1, Allocator1>& ptr,
-		Vector<int, Storage2, Allocator2>& ind):
-    Matrix_Base<T, Allocator>(i, j)
-  {
-    nz_ = values.GetLength();
-
-#ifdef SELDON_CHECK_DIMENSIONS
-    // Checks whether vector sizes are acceptable.
-
-    if (ind.GetLength() != nz_)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-	throw WrongDim(string("Matrix_Sparse::Matrix_Sparse(int, int, ")
-		       + "const Vector&, const Vector&, const Vector&)",
-		       string("There are ") + to_str(nz_) + " values but "
-		       + to_str(ind.GetLength()) + " row or column indices.");
-      }
-
-    if (ptr.GetLength()-1 != Storage::GetFirst(i, j))
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-	throw WrongDim(string("Matrix_Sparse::Matrix_Sparse(int, int, ")
-		       + "const Vector&, const Vector&, const Vector&)",
-		       string("The vector of start indices contains ")
-		       + to_str(ptr.GetLength()-1) + string(" row or column")
-		       + string(" start indices (plus the number")
-		       + " of non-zero entries) but there are "
-		       + to_str(Storage::GetFirst(i, j))
-		       + " rows or columns (" + to_str(i) + " by "
-		       + to_str(j) + " matrix).");
-      }
-
-    if (nz_ > 0
-        && (j == 0
-            || static_cast<long int>(nz_-1) / static_cast<long int>(j)
-            >= static_cast<long int>(i)))
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	nz_ = 0;
-	ptr_ = NULL;
-	ind_ = NULL;
-	this->data_ = NULL;
-	throw WrongDim(string("Matrix_Sparse::Matrix_Sparse(int, int, ")
-		       + "const Vector&, const Vector&, const Vector&)",
-		       string("There are more values (")
-		       + to_str(values.GetLength())
-		       + " values) than elements in the matrix ("
-		       + to_str(i) + " by " + to_str(j) + ").");
-      }
-#endif
-
-    this->ptr_ = ptr.GetData();
-    this->ind_ = ind.GetData();
-    this->data_ = values.GetData();
-
-    ptr.Nullify();
-    ind.Nullify();
-    values.Nullify();
-  }
-
-
-  //! Copy constructor
-  template <class T, class Prop, class Storage, class Allocator>
-  inline Matrix_Sparse<T, Prop, Storage, Allocator>::
-  Matrix_Sparse(const Matrix_Sparse<T, Prop, Storage, Allocator>& A):
-    Matrix_Base<T, Allocator>(A)
-  {
-    this->m_ = 0;
-    this->n_ = 0;
-    this->nz_ = 0;
-    ptr_ = NULL;
-    ind_ = NULL;
-    this->Copy(A);
-  }
-
-
-  /**************
-   * DESTRUCTOR *
-   **************/
-
-
-  //! Destructor.
-  template <class T, class Prop, class Storage, class Allocator>
-  inline Matrix_Sparse<T, Prop, Storage, Allocator>::~Matrix_Sparse()
-  {
-    this->m_ = 0;
-    this->n_ = 0;
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	if (ptr_ != NULL)
-	  {
-	    free(ptr_);
-	    ptr_ = NULL;
-	  }
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	ptr_ = NULL;
-      }
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	if (ind_ != NULL)
-	  {
-	    free(ind_);
-	    ind_ = NULL;
-	  }
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	ind_ = NULL;
-      }
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	if (this->data_ != NULL)
-	  {
-	    this->allocator_.deallocate(this->data_, nz_);
-	    this->data_ = NULL;
-	  }
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->nz_ = 0;
-	this->data_ = NULL;
-      }
-#endif
-
-    this->nz_ = 0;
-  }
-
-
-  //! Clears the matrix.
-  /*! This methods is equivalent to the destructor. On exit, the matrix
-    is empty (0x0).
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Sparse<T, Prop, Storage, Allocator>::Clear()
-  {
-    this->~Matrix_Sparse();
-  }
-
-
+  
   /*********************
    * MEMORY MANAGEMENT *
    *********************/
@@ -404,7 +152,7 @@ namespace Seldon
     therefore, the user mustn't release those arrays.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Sparse<T, Prop, Storage, Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>
   ::SetData(int i, int j, int nz,
 	    typename Matrix_Sparse<T, Prop, Storage, Allocator>
 	    ::pointer values,
@@ -429,7 +177,7 @@ namespace Seldon
     It is useful for low level manipulations on a Matrix instance.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Sparse<T, Prop, Storage, Allocator>::Nullify()
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::Nullify()
   {
     this->data_ = NULL;
     this->m_ = 0;
@@ -812,7 +560,7 @@ namespace Seldon
 
   //! Copies a matrix
   template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Sparse<T, Prop, Storage, Allocator>::
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::
   Copy(const Matrix_Sparse<T, Prop, Storage, Allocator>& A)
   {
     this->Clear();
@@ -961,101 +709,7 @@ namespace Seldon
 
   }
 
-
-  /*******************
-   * BASIC FUNCTIONS *
-   *******************/
-
-
-  //! Returns the number of non-zero elements.
-  /*!
-    \return The number of non-zero elements.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Sparse<T, Prop, Storage, Allocator>::GetNonZeros() const
-  {
-    return nz_;
-  }
-
-
-  //! Returns the number of elements stored in memory.
-  /*!
-    Returns the number of elements stored in memory, i.e.
-    the number of non-zero entries.
-    \return The number of elements stored in memory.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Sparse<T, Prop, Storage, Allocator>::GetDataSize() const
-  {
-    return nz_;
-  }
-
-
-  //! returns size of A in bytes used to store the matrix
-  template<class T, class Prop, class Storage, class Allocator>
-  int64_t Matrix_Sparse<T, Prop, Storage, Allocator>::GetMemorySize() const
-  {
-    int64_t taille = this->GetPtrSize()*sizeof(int);
-    int coef = sizeof(T) + sizeof(int); // for each non-zero entry
-    taille += coef*int64_t(this->nz_);
-    return taille;
-  }
   
-
-  //! Returns (row or column) start indices.
-  /*!
-    Returns the array ('ptr_') of start indices.
-    \return The array of start indices.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  int* Matrix_Sparse<T, Prop, Storage, Allocator>::GetPtr() const
-  {
-    return ptr_;
-  }
-
-
-  //! Returns (row or column) indices of non-zero entries.
-  /*!
-    Returns the array ('ind_') of (row or column) indices
-    of non-zero entries. This array defines non-zero entries
-    indices if coupled with (column or row) start indices.
-    \return The array of (row or column) indices of
-    non-zero entries.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  int* Matrix_Sparse<T, Prop, Storage, Allocator>::GetInd() const
-  {
-    return ind_;
-  }
-
-
-  //! Returns the length of the array of start indices.
-  /*!
-    \return The length of the array of start indices.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Sparse<T, Prop, Storage, Allocator>::GetPtrSize() const
-  {
-    return (Storage::GetFirst(this->m_, this->n_) + 1);
-  }
-
-
-  //! Returns the length of the array of (column or row) indices.
-  /*!
-    Returns the length of the array ('ind_') of (row or column) indices
-    of non-zero entries. This array defines non-zero entries indices
-    if coupled with (column or row) start indices.
-    \return The length of the array of (column or row) indices.
-    \note The length of the array of (column or row) indices is the
-    number of non-zero entries.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Sparse<T, Prop, Storage, Allocator>::GetIndSize() const
-  {
-    return nz_;
-  }
-
-
   /**********************************
    * ELEMENT ACCESS AND AFFECTATION *
    **********************************/
@@ -1069,7 +723,7 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline const typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type
+  const typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type
   Matrix_Sparse<T, Prop, Storage, Allocator>::operator() (int i, int j) const
   {
 
@@ -1116,7 +770,7 @@ namespace Seldon
     zero entry (not stored in the matrix).
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type&
+  typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type&
   Matrix_Sparse<T, Prop, Storage, Allocator>::Val(int i, int j)
   {
 
@@ -1167,7 +821,6 @@ namespace Seldon
     zero entry (not stored in the matrix).
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline
   const typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type&
   Matrix_Sparse<T, Prop, Storage, Allocator>::Val(int i, int j) const
   {
@@ -1218,7 +871,7 @@ namespace Seldon
     the matrix is resized.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type&
+  typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type&
   Matrix_Sparse<T, Prop, Storage, Allocator>::Get(int i, int j)
   {
 
@@ -1273,67 +926,6 @@ namespace Seldon
   }
   
   
-  //! Access method.
-  /*! Returns reference to element (\a i, \a j) 
-    \param[in] i row index.
-    \param[in] j column index.
-    \return Element (\a i, \a j) of the matrix.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline const typename Matrix_Sparse<T, Prop, Storage, Allocator>::value_type&
-  Matrix_Sparse<T, Prop, Storage, Allocator>::Get(int i, int j) const
-  {
-    return Val(i, j);
-  }
-  
-  
-  //! Add a value to a non-zero entry.
-  /*! This function adds \a val to the element (\a i, \a j), provided that
-    this element is already a non-zero entry. Otherwise 
-    a non-zero entry is inserted equal to \a val.
-    \param[in] i row index.
-    \param[in] j column index.
-    \param[in] val value to be added to the element (\a i, \a j).
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Sparse<T, Prop, Storage, Allocator>
-  ::AddInteraction(int i, int j, const T& val)
-  {
-    Get(i, j) += val;
-  }
-
-  
-  //! Sets an element (i, j) to a value
-  /*! This function sets \a val to the element (\a i, \a j)
-    \param[in] i row index.
-    \param[in] j column index.
-    \param[in] val A(i, j) = val
-  */  
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Sparse<T, Prop, Storage, Allocator>
-  ::Set(int i, int j, const T& val)
-  {
-    Get(i, j) = val;
-  }
-
-  
-  //! Duplicates a matrix (assignment operator).
-  /*!
-    \param A matrix to be copied.
-    \note Memory is duplicated: 'A' is therefore independent from the current
-    instance after the copy.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline Matrix_Sparse<T, Prop, Storage, Allocator>&
-  Matrix_Sparse<T, Prop, Storage, Allocator>
-  ::operator= (const Matrix_Sparse<T, Prop, Storage, Allocator>& A)
-  {
-    this->Copy(A);
-
-    return *this;
-  }
-
-
   /************************
    * CONVENIENT FUNCTIONS *
    ************************/
@@ -1760,382 +1352,6 @@ namespace Seldon
   }
 
   
-  ///////////////////////
-  // MATRIX<COLSPARSE> //
-  ///////////////////////
-
-
-  /****************
-   * CONSTRUCTORS *
-   ****************/
-
-  //! Default constructor.
-  /*!
-    Builds an empty 0x0 matrix.
-  */
-  template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColSparse, Allocator>::Matrix():
-    Matrix_Sparse<T, Prop, ColSparse, Allocator>()
-  {
-  }
-
-
-  //! Constructor.
-  /*! Builds a i by j matrix.
-    \param i number of rows.
-    \param j number of columns.
-  */
-  template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColSparse, Allocator>::Matrix(int i, int j):
-    Matrix_Sparse<T, Prop, ColSparse, Allocator>(i, j, 0)
-  {
-  }
-
-
-  //! Constructor.
-  /*! Builds a i by j matrix with nz non-zero elements.
-    \param i number of rows.
-    \param j number of columns.
-    \param nz number of non-zero elements.
-    \note Matrix values are not initialized.
-  */
-  template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, ColSparse, Allocator>::Matrix(int i, int j, int nz):
-    Matrix_Sparse<T, Prop, ColSparse, Allocator>(i, j, nz)
-  {
-  }
-
-
-  //! Constructor.
-  /*!
-    Builds a i by j sparse matrix with non-zero values and indices
-    provided by 'values' (values), 'ptr' (pointers) and 'ind' (indices).
-    Input vectors are released and are empty on exit.
-    \param i number of rows.
-    \param j number of columns.
-    \param values values of non-zero entries.
-    \param ptr row start indices.
-    \param ind column indices.
-    \warning Input vectors 'values', 'ptr' and 'ind' are empty on exit.
-  */
-  template <class T, class Prop, class Allocator>
-  template <class Storage0, class Allocator0,
-	    class Storage1, class Allocator1,
-	    class Storage2, class Allocator2>
-  Matrix<T, Prop, ColSparse, Allocator>::
-  Matrix(int i, int j,
-	 Vector<T, Storage0, Allocator0>& values,
-	 Vector<int, Storage1, Allocator1>& ptr,
-	 Vector<int, Storage2, Allocator2>& ind):
-    Matrix_Sparse<T, Prop, ColSparse, Allocator>(i, j, values, ptr, ind)
-  {
-  }
-
-
-
-  ///////////////////////
-  // MATRIX<ROWSPARSE> //
-  ///////////////////////
-
-
-  /****************
-   * CONSTRUCTORS *
-   ****************/
-
-  //! Default constructor.
-  /*!
-    Builds an empty 0x0 matrix.
-  */
-  template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowSparse, Allocator>::Matrix():
-    Matrix_Sparse<T, Prop, RowSparse, Allocator>()
-  {
-  }
-
-
-  //! Constructor.
-  /*! Builds a i by j matrix.
-    \param i number of rows.
-    \param j number of columns.
-  */
-  template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowSparse, Allocator>::Matrix(int i, int j):
-    Matrix_Sparse<T, Prop, RowSparse, Allocator>(i, j, 0)
-  {
-  }
-
-
-  //! Constructor.
-  /*! Builds a i by j matrix with nz non-zero elements.
-    \param i number of rows.
-    \param j number of columns.
-    \param nz number of non-zero elements.
-    \note Matrix values are not initialized.
-  */
-  template <class T, class Prop, class Allocator>
-  Matrix<T, Prop, RowSparse, Allocator>::Matrix(int i, int j, int nz):
-    Matrix_Sparse<T, Prop, RowSparse, Allocator>(i, j, nz)
-  {
-  }
-
-
-  //! Constructor.
-  /*!
-    Builds a i by j sparse matrix with non-zero values and indices
-    provided by 'values' (values), 'ptr' (pointers) and 'ind' (indices).
-    Input vectors are released and are empty on exit.
-    \param i number of rows.
-    \param j number of columns.
-    \param values values of non-zero entries.
-    \param ptr column start indices.
-    \param ind row indices.
-    \warning Input vectors 'values', 'ptr' and 'ind' are empty on exit.
-  */
-  template <class T, class Prop, class Allocator>
-  template <class Storage0, class Allocator0,
-	    class Storage1, class Allocator1,
-	    class Storage2, class Allocator2>
-  Matrix<T, Prop, RowSparse, Allocator>::
-  Matrix(int i, int j,
-	 Vector<T, Storage0, Allocator0>& values,
-	 Vector<int, Storage1, Allocator1>& ptr,
-	 Vector<int, Storage2, Allocator2>& ind):
-    Matrix_Sparse<T, Prop, RowSparse, Allocator>(i, j, values, ptr, ind)
-  {
-  }
-
-
-  //////////////////////////
-  // ReadCoordinateMatrix //
-  //////////////////////////
-  
-  
-  //! reads a real or complex value in a file
-  template<class T>
-  void ReadComplexValue(istream& FileStream, T& entry)
-  {
-    FileStream >> entry;
-  }
-  
-  
-  //! reads a real or complex value in a file
-  template<class T>
-  void ReadComplexValue(istream& FileStream, complex<T>& entry)
-  {
-    T a, b;
-    FileStream >> a >> b;
-    entry = complex<T>(a, b);
-  }
-  
-
-  //! reads a real or complex value in a file
-  template<class T>
-  void WriteComplexValue(ostream& FileStream, const T& entry)
-  {
-    FileStream << entry;
-  }
-  
-  
-  //! reads a real or complex value in a file
-  template<class T>
-  void WriteComplexValue(ostream& FileStream, const complex<T>& entry)
-  {
-    FileStream << real(entry) << " " << imag(entry);
-  }
-  
-  
-  //! Reading of matrix in coordinate format
-  /*!
-    \param FileStream stream where the matrix is read
-    \param row_numbers row indices
-    \param col_numbers column indices
-    \param values
-    \param cplx if true, imaginary and real part are in
-                two separate columns
-   */  
-  template<class Tint, class AllocInt, class T, class Allocator>
-  void ReadCoordinateMatrix(istream& FileStream,
-                            Vector<Tint, VectFull, AllocInt>& row_numbers,
-                            Vector<Tint, VectFull, AllocInt>& col_numbers,
-                            Vector<T, VectFull, Allocator>& values,
-                            bool cplx)
-  {
-#ifdef SELDON_CHECK_IO
-    // Checks if the stream is ready.
-    if (!FileStream.good())
-      throw IOError("ReadCoordinateMatrix", "Stream is not ready.");
-#endif
-
-    T entry; int row = 0, col = 0;
-    int nb_elt = 0;
-    SetComplexZero(entry);
-
-    while (!FileStream.eof())
-      {
-	// new entry is read (1-index)
-	FileStream >> row >> col;
-        if (cplx)
-          ReadComplexValue(FileStream, entry);
-        else
-          FileStream >> entry;
-        
-	if (FileStream.fail())
-	  break;
-	else
-	  {
-#ifdef SELDON_CHECK_IO
-	    if (row < 1)
-	      throw IOError(string("ReadCoordinateMatrix"),
-			    string("Error : Row number should be greater ")
-			    + "than 0 but is equal to " + to_str(row));
-
-	    if (col < 1)
-	      throw IOError(string("ReadCoordinateMatrix"),
-			    string("Error : Column number should be greater")
-			    + " than 0 but is equal to " + to_str(col));
-#endif
-
-	    nb_elt++;
-
-	    // inserting new element
-	    if (nb_elt > values.GetM())
-	      {
-		values.Resize(2*nb_elt);
-		row_numbers.Resize(2*nb_elt);
-		col_numbers.Resize(2*nb_elt);
-	      }
-
-	    values(nb_elt-1) = entry;
-	    row_numbers(nb_elt-1) = row;
-	    col_numbers(nb_elt-1) = col;
-	  }
-      }
-    
-    if (nb_elt > 0)
-      {
-	row_numbers.Resize(nb_elt);
-	col_numbers.Resize(nb_elt);
-	values.Resize(nb_elt);
-      }
-  }
-  
-
-  //! Reading of matrix in coordinate format
-  /*!
-    \param A output matrix
-    \param FileStream stream where the matrix is read
-    \param zero type of value to read (double or complex<double>)
-    \param index starting index (usually 0 or 1)
-    \param nnz number of non-zero entries
-    \param cplx if true, imaginary and real part are in
-                two separate columns
-    If nnz is equal to -1, we consider that the number of non-zero entries
-    is unknown and is deduced from the number of lines present in the stream
-   */
-  template<class Matrix1, class T>
-  void ReadCoordinateMatrix(Matrix1& A, istream& FileStream, T& zero,
-                            int index, int nnz, bool cplx)
-  {
-    // previous elements are removed
-    A.Clear();
-    
-    Vector<int> row_numbers, col_numbers;
-    Vector<T> values;
-    if (nnz >= 0)
-      {
-        values.Reallocate(nnz);
-        row_numbers.Reallocate(nnz);
-        col_numbers.Reallocate(nnz);
-      }
-    
-    ReadCoordinateMatrix(FileStream, row_numbers, col_numbers, values, cplx);
-    
-    if (row_numbers.GetM() > 0)
-      ConvertMatrix_from_Coordinates(row_numbers, col_numbers, values,
-                                     A, index);
-    
-  }
-
-
-  //! Writes a matrix in coordinate format
-  /*!
-    \param FileStream stream where the matrix is read
-    \param row_numbers row indices
-    \param col_numbers column indices
-    \param values
-    \param cplx if true, imaginary and real part are written in
-                two separate columns
-   */    
-  template<class Tint, class AllocInt, class T, class Allocator>
-  void WriteCoordinateMatrix(ostream& FileStream,
-                             const Vector<Tint, VectFull, AllocInt>& row_numbers,
-                             const Vector<Tint, VectFull, AllocInt>& col_numbers,
-                             const Vector<T, VectFull, Allocator>& values,
-                             bool cplx)
-  {
-    if (cplx)
-      {
-        for (int i = 0; i < row_numbers.GetM(); i++)
-          {
-            FileStream << row_numbers(i) << " " << col_numbers(i) << " ";
-            WriteComplexValue(FileStream, values(i));
-            FileStream << '\n';    
-          }
-      }
-    else
-      {
-        for (int i = 0; i < row_numbers.GetM(); i++)
-          FileStream << row_numbers(i) << " " << col_numbers(i)
-                     << " " << values(i) << '\n';
-      }
-  }
-  
-  
-  //! Writes matrix in coordinate format
-  /*!
-    \param A output matrix
-    \param FileStream stream where the matrix is read
-    \param zero type of value to read (double or complex<double>)
-    \param index starting index (usually 0 or 1)
-    \param cplx if true, imaginary and real part are in
-                two separate columns
-  */
-  template<class T0, class Prop0, class Storage0, class Alloc0, class T>
-  void WriteCoordinateMatrix(const Matrix<T0, Prop0, Storage0, Alloc0>& A,
-                             ostream& FileStream, T& zero,
-                             int index, bool cplx)
-  {
-    // conversion to coordinate format (if symmetric part, lower and upper part
-    // are recovered)
-    Vector<int, VectFull, CallocAlloc<int> > IndRow, IndCol;
-    Vector<T> Value;
-    ConvertMatrix_to_Coordinates(A, IndRow, IndCol,
-                                 Value, index, true);
-    
-    WriteCoordinateMatrix(FileStream, IndRow, IndCol, Value, cplx);
-    
-    // if last element is not present, 0 is printed
-    int N = IndRow.GetM()-1;
-    if (N >= 0)
-      {
-        int m = A.GetM()-1, n = A.GetN()-1;
-        SetComplexZero(zero);
-        if ( (IndRow(N) != m+index) || (IndCol(N) != n+index))
-          {
-            if (A(m, n) == zero)
-              {
-                FileStream << m+index << " " << n+index << " ";
-                if (cplx)
-                  WriteComplexValue(FileStream, zero);
-                else
-                  FileStream << zero;
-                
-                FileStream << '\n';
-              }          
-          }
-      }
-  }
-
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_SPARSE_CXX

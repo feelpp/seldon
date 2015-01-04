@@ -19,11 +19,11 @@
 
 #ifndef SELDON_FILE_SELDON_PRECONDITIONER_HXX
 
+#include "SeldonPreconditionerHeader.hxx"
+#include "SeldonPreconditionerInline.hxx"
 
 // Incomplete factorization.
-#include "computation/solver/preconditioner/IlutPreconditioning.hxx"
 #include "computation/solver/preconditioner/IlutPreconditioning.cxx"
-#include "computation/solver/preconditioner/Precond_Ssor.cxx"
 
 
 #define SELDON_FILE_SELDON_PRECONDITIONER_HXX

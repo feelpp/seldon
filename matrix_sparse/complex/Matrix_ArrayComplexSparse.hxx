@@ -81,7 +81,7 @@ namespace Seldon
   public:
     // Constructors.
     Matrix_ArrayComplexSparse();
-    Matrix_ArrayComplexSparse(int i, int j);
+    explicit Matrix_ArrayComplexSparse(int i, int j);
 
     // Destructor.
     ~Matrix_ArrayComplexSparse();
@@ -188,7 +188,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
 
     // Memory management.
     void ClearRealColumn(int i);
@@ -235,7 +235,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
 
     // Memory management.
     void ClearRealRow(int i);
@@ -282,7 +282,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
 
     const complex<T> operator() (int i, int j) const;
     
@@ -342,7 +342,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
 
     const complex<T> operator() (int i, int j) const;
     

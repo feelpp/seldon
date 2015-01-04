@@ -63,6 +63,7 @@ namespace Seldon
   {
   public:
     Undefined(string function = "", string comment = "");
+    virtual ~Undefined();
 
     virtual string What();
   };
@@ -76,6 +77,7 @@ namespace Seldon
   {
   public:
     WrongArgument(string function = "", string comment = "");
+    virtual ~WrongArgument();
 
     virtual string What();
   };
@@ -89,6 +91,7 @@ namespace Seldon
   {
   public:
     NoMemory(string function = "", string comment = "");
+    virtual ~NoMemory();
   };
 
 
@@ -100,6 +103,7 @@ namespace Seldon
   {
   public:
     WrongDim(string function = "", string comment = "");
+    virtual ~WrongDim();
   };
 
 
@@ -111,6 +115,7 @@ namespace Seldon
   {
   public:
     WrongIndex(string function = "", string comment = "");
+    virtual ~WrongIndex();
   };
 
 
@@ -122,6 +127,7 @@ namespace Seldon
   {
   public:
     WrongRow(string function = "", string comment = "");
+    virtual ~WrongRow();
   };
 
 
@@ -133,6 +139,7 @@ namespace Seldon
   {
   public:
     WrongCol(string function = "", string comment = "");
+    virtual ~WrongCol();
   };
 
 
@@ -144,6 +151,7 @@ namespace Seldon
   {
   public:
     IOError(string function = "", string comment = "");
+    virtual ~IOError();
   };
 
 
@@ -158,6 +166,7 @@ namespace Seldon
 
   public:
     LapackError(int info, string function, string comment);
+    virtual ~LapackError();
 
     virtual string What();
   };

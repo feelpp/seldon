@@ -92,7 +92,7 @@ namespace Seldon
   public:
     // Constructors.
     Matrix_ComplexSparse();
-    Matrix_ComplexSparse(int i, int j);
+    explicit Matrix_ComplexSparse(int i, int j);
     Matrix_ComplexSparse(int i, int j, int real_nz, int imag_nz);
     template <class Storage0, class Allocator0,
 	      class Storage1, class Allocator1,
@@ -199,7 +199,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
     Matrix(int i, int j, int real_nz, int imag_nz);
     template <class Storage0, class Allocator0,
 	      class Storage1, class Allocator1,
@@ -228,7 +228,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
     Matrix(int i, int j, int real_nz, int imag_nz);
     template <class Storage0, class Allocator0,
 	      class Storage1, class Allocator1,

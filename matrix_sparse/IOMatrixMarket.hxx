@@ -24,6 +24,41 @@
 namespace Seldon
 {
   
+  template<class T>
+  void ReadComplexValue(istream& FileStream, T& entry);
+  
+  template<class T>
+  void ReadComplexValue(istream& FileStream, complex<T>& entry);
+
+  template<class T>
+  void WriteComplexValue(ostream& FileStream, const T& entry);
+
+  template<class T>
+  void WriteComplexValue(ostream& FileStream, const complex<T>& entry);
+
+  template<class Tint, class AllocInt, class T, class Allocator>
+  void ReadCoordinateMatrix(istream& FileStream,
+                            Vector<Tint, VectFull, AllocInt>& row_numbers,
+                            Vector<Tint, VectFull, AllocInt>& col_numbers,
+                            Vector<T, VectFull, Allocator>& values,
+                            bool cplx = false);
+  
+  template<class Matrix1, class T>
+  void ReadCoordinateMatrix(Matrix1& A, istream& FileStream, T& zero,
+                            int index = 1, int nnz = -1, bool cplx = false);
+
+  template<class Tint, class AllocInt, class T, class Allocator>
+  void WriteCoordinateMatrix(ostream& FileStream,
+			     const Vector<Tint, VectFull, AllocInt>& row_numbers,
+			     const Vector<Tint, VectFull, AllocInt>& col_numbers,
+			     const Vector<T, VectFull, Allocator>& values,
+			     bool cplx = false);
+  
+  template<class T0, class Prop0, class Storage0, class Alloc0, class T>
+  void WriteCoordinateMatrix(const Matrix<T0, Prop0, Storage0, Alloc0>& A,
+                             ostream& FileStream, T& zero,
+                             int index = 1, bool cplx = false);
+
   template <class T, class Prop, class Allocator>
   void ReadHarwellBoeing(string filename,
                          Matrix<T, Prop, ColSparse, Allocator>& A);

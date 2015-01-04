@@ -56,7 +56,7 @@ namespace Seldon
   public:
     // Constructor.
     Matrix_Hermitian();
-    Matrix_Hermitian(int i, int j = 0);
+    explicit Matrix_Hermitian(int i, int j = 0);
     Matrix_Hermitian(const Matrix_Hermitian<T, Prop, Storage, Allocator>& A);
 
     // Destructor.
@@ -128,7 +128,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j = 0);
+    explicit Matrix(int i, int j = 0);
 
     template <class T0>
     Matrix<T, Prop, ColHerm, Allocator>& operator= (const T0& x);
@@ -155,7 +155,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j = 0);
+    explicit Matrix(int i, int j = 0);
 
     template <class T0>
     Matrix<T, Prop, RowHerm, Allocator>& operator= (const T0& x);

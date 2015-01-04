@@ -1,10 +1,77 @@
+// Copyright (C) 2014 INRIA
+// Author(s): Marc Duruflé
+//
+// This file is part of the linear-algebra library Seldon,
+// http://seldon.sourceforge.net/.
+//
+// Seldon is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your option)
+// any later version.
+//
+// Seldon is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+// more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with Seldon. If not, see http://www.gnu.org/licenses/.
+
 #ifndef SELDON_FILE_DISTRIBUTED_MATRIX_CXX
 
 #include "DistributedMatrix.hxx"
 
 namespace Seldon
 {
+
+  //! equality *this = X 
+  template<class T, class Prop, class Storage, class Allocator>
+  inline DistributedMatrix<T, Prop, Storage, Allocator>&
+  DistributedMatrix<T, Prop, Storage, Allocator>::
+  operator=(const DistributedMatrix<T, Prop, Storage, Allocator>& X)
+  {
+    Seldon::Copy(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(X),
+		 *this);
+    
+    dist_col = X.dist_col;
+    dist_row = X.dist_row;
+
+    proc_col = X.proc_col;
+    proc_row = X.proc_row;
+    
+    GlobalRowNumbers = X.GlobalRowNumbers;
+    OverlapProcNumbers = X.OverlapProcNumbers;
+    OverlapRowNumbers = X.OverlapRowNumbers;
+
+    ProcSharingRows = X.ProcSharingRows;
+    SharingRowNumbers = X.SharingRowNumbers;
+    
+    nodl_scalar_ = X.nodl_scalar_;
+    nb_unknowns_scal_ = X.nb_unknowns_scal_;
+    nglob_ = X.nglob_;
+    
+    comm_ = X.comm_;
+    
+    global_row_to_recv = X.global_row_to_recv;
+    global_col_to_recv = X.global_col_to_recv;
+    ptr_global_row_to_recv = X.ptr_global_row_to_recv;
+    ptr_global_col_to_recv = X.ptr_global_col_to_recv;
+    
+    local_row_to_send = X.local_row_to_send;
+    local_col_to_send = X.local_col_to_send;
+    proc_col_to_recv = X.proc_col_to_recv;
+    proc_col_to_send = X.proc_col_to_send;
+    proc_row_to_recv = X.proc_row_to_recv;
+    proc_row_to_send = X.proc_row_to_send;
+    local_number_distant_values = X.local_number_distant_values;
+    
+    size_max_distant_row = X.size_max_distant_row;
+    size_max_distant_col = X.size_max_distant_col;
+    
+    return *this;
+  }
   
+    
   //! initialisation of a distributed matrix with global row numbers
   template<class T, class Prop, class Storage, class Allocator>
   void DistributedMatrix<T, Prop, Storage, Allocator>
@@ -497,6 +564,66 @@ namespace Seldon
     return size + size_int/2;
   }
   
+
+  //! adding a non-zero entry, between a local row/column
+  //! and a non-local row/column
+  /*!
+    This method is used only internally
+    \param[in] dist_col array to which entry is added
+    \param[in] proc_col processors associated with dist_col
+    \param[in] jglob global row/column number
+    \param[in] proc2 distant processor containing the global row/column
+    \param[in] val value of the non-zero entry
+  */
+  template<class T, class Allocator>
+  void AddDistantValue(Vector<T, VectSparse, Allocator>& dist_col,
+		       IVect& proc_col,
+		       int jglob, int proc2, const T& val)
+  {
+    int pos = 0;
+    int size_row = dist_col.GetM();
+    while ((pos < size_row) && (dist_col.Index(pos) < jglob))
+      pos++;
+    
+    if ((pos < size_row) && (dist_col.Index(pos) == jglob))
+      {
+        // already existing entry
+        dist_col.Value(pos) += val;
+      }
+    else
+      {
+        // new entry
+        Vector<T> value(size_row);
+        IVect index(size_row), proc(size_row);
+        for (int k = 0; k < size_row; k++)
+          {
+            index(k) = dist_col.Index(k);
+            value(k) = dist_col.Value(k);
+            proc(k) = proc_col(k);
+          }
+        
+        dist_col.Reallocate(size_row+1);
+        proc_col.Reallocate(size_row+1);
+        for (int k = 0; k < pos; k++)
+          {
+            dist_col.Index(k) = index(k);
+            dist_col.Value(k) = value(k);
+            proc_col(k) = proc(k);
+          }
+        
+        dist_col.Index(pos) = jglob;
+        dist_col.Value(pos) = val;
+        proc_col(pos) = proc2;
+        for (int k = pos+1; k <= size_row; k++)
+          {
+            dist_col.Index(k) = index(k-1);
+            dist_col.Value(k) = value(k-1);
+            proc_col(k) = proc(k-1);
+          }
+        
+      }
+  }
+
   
   //! removes non-zero entries contained in dist_vec below epsilon
   //! dist_proc is modified in the same way
@@ -613,7 +740,7 @@ namespace Seldon
   template<class T, class Prop, class Storage, class Allocator>
   void DistributedMatrix<T, Prop, Storage, Allocator>::Fill()
   {
-    int value;
+    int value(0);
     for (int i = 0; i < dist_col.GetM(); i++)
       for (int j = 0; j < dist_col(i).GetM(); j++)
         {
@@ -1478,6 +1605,178 @@ namespace Seldon
         }
   }
   
+
+  //! grouping all the local rows of the matrix into CSR form
+  /*!
+    Creation of a sparse matrix B, that will contain the local rows
+    of the current matrix. The column numbers are global.
+    Values placed on non-local rows are ignored
+  */
+  template<class T, class Prop, class Storage, class Allocator>
+  template<class T0, class Allocator0>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::GetDistributedRows(Matrix<T0, General, ArrayRowSparse,
+		       Allocator0>& B) const
+  {    
+    int m = this->GetM();
+    int n = this->GetGlobalM();
+    
+    Copy(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), B);
+    
+    // now, we are using global numbers
+    // and removing lower part of the matrix if symmetric
+    B.Resize(m, n);
+    const IVect& RowNumber = this->GetGlobalRowNumber();
+    for (int i = 0; i < m; i++)
+      {
+	int size_row = B.GetRowSize(i);
+        size_row += dist_col(i).GetM();
+	IVect index(size_row);
+	Vector<T0> value(size_row);
+	int nb = 0;
+	int num_row = RowNumber(i);
+	if (IsSymmetricMatrix(*this))
+          {
+            // local values
+            for (int j = 0; j < B.GetRowSize(i); j++)
+              {
+                int num_col = RowNumber(B.Index(i, j));
+                if (num_row <= num_col)
+                  {
+                    index(nb) = num_col;
+                    value(nb) = B.Value(i, j);
+                    nb++;
+                  }
+              }
+            
+            // distant values
+            for (int j = 0; j < dist_col(i).GetM(); j++)
+              {
+                int num_col = dist_col(i).Index(j);
+                if (this->local_number_distant_values)
+                  num_col = global_col_to_recv(num_col);
+                
+                if (num_row <= num_col)
+                  {
+                    index(nb) = num_col;
+                    value(nb) = dist_col(i).Value(j);
+                    nb++;
+                  }
+              }
+          }
+        else
+          {
+            // local values
+            for (int j = 0; j < B.GetRowSize(i); j++)
+              {
+                int num_col = RowNumber(B.Index(i, j));
+                index(nb) = num_col;
+                value(nb) = B.Value(i, j);
+                nb++;
+              }
+            
+            // distant values
+            for (int j = 0; j < dist_col(i).GetM(); j++)
+              {
+                int num_col = dist_col(i).Index(j);
+                if (this->local_number_distant_values)
+                  num_col = global_col_to_recv(num_col);
+                
+                index(nb) = num_col;
+                value(nb) = dist_col(i).Value(j);
+                nb++;
+              }
+          }
+        
+        Seldon::Assemble(nb, index, value);
+        
+	B.ReallocateRow(i, nb);
+        for (int j = 0; j < nb; j++)
+          {
+            B.Index(i, j) = index(j);
+            B.Value(i, j) = value(j);
+          }
+      }
+  }
+  
+  
+  //! grouping all the local columns of the matrix into CSC form
+  /*!
+    Creation of a sparse matrix B, that will contain the local columns
+    of the current matrix. The row numbers are global.
+    Values placed on non-local columns are ignored
+  */
+  template<class T, class Prop, class Storage, class Allocator>
+  template<class T0, class Allocator0>
+  void DistributedMatrix<T, Prop, Storage, Allocator>::
+  GetDistributedColumns(Matrix<T0, General, ArrayColSparse, Allocator0>& B,
+                        bool sym_pattern) const
+  {
+    int m = this->GetGlobalM();
+    int n = this->GetN();
+    
+    // conversion to CSC format of local part and symmetrisation of pattern
+    IVect Ptr, Ind; Vector<T0> Val;
+    Prop sym;
+    ConvertToCSC(*this, sym, Ptr, Ind, Val, sym_pattern);
+    
+    // for row numbers, we put global numbers and we add some distant entries
+    // (i.e entries with local columns,
+    // and null values by symmetry of local rows )
+    B.Clear(); B.Reallocate(m, n);
+    const IVect& RowNumber = this->GetGlobalRowNumber();
+    for (int i = 0; i < n; i++)
+      {
+	int size_col = Ptr(i+1) - Ptr(i);
+        size_col += dist_row(i).GetM();
+        if (sym_pattern)
+          size_col += dist_col(i).GetM();
+        
+	IVect index(size_col);
+	Vector<T0> value(size_col);
+	int nb = 0;
+        // local values
+        for (int j = Ptr(i); j < Ptr(i+1); j++)
+          {
+            index(nb) = RowNumber(Ind(j));
+            value(nb) = Val(j);
+            nb++;
+          }
+        
+        // distant values
+        for (int j = 0; j < dist_row(i).GetM(); j++)
+          {
+            index(nb) = dist_row(i).Index(j);
+            if (this->local_number_distant_values)    
+              index(nb) = global_row_to_recv(index(nb));
+            
+            value(nb) = dist_row(i).Value(j);
+            nb++;
+          }
+        
+        // values due to symmetrisation of pattern
+        if (sym_pattern)
+          for (int j = 0; j < dist_col(i).GetM(); j++)
+            {
+              index(nb) = dist_col(i).Index(j);
+              if (this->local_number_distant_values)    
+                index(nb) = global_col_to_recv(index(nb));
+            
+              value(nb) = 0;
+              nb++;
+            }
+        
+        Seldon::Assemble(nb, index, value);
+        
+	B.ReallocateColumn(i, nb);
+        for (int j = 0; j < nb; j++)
+          {
+            B.Index(i, j) = index(j);
+            B.Value(i, j) = value(j);
+          }
+      }
+  }
+   
   
   //! matrix vector product with a distributed matrix
   template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
@@ -4145,6 +4444,7 @@ namespace Seldon
 
       }
   }
+  
   
 }
 

@@ -63,6 +63,13 @@ namespace Seldon
 	   const Matrix<T2, Prop2, ArrayRowSparse, Allocator2>& B,
 	   Matrix<T3, Prop3, ArrayRowComplexSparse, Allocator3>& C);
 
+  template<class T, class Allocator>
+  void Add_csr_ptr(const T& alpha, int* ptr_A, int* ind_A, T* data_A,
+                   int* ptr_B, int* ind_B, T* data_B, int m,
+                   Vector<int, VectFull, CallocAlloc<int> >& Ptr,
+                   Vector<int, VectFull, CallocAlloc<int> >& Ind,
+                   Vector<T, VectFull, Allocator>& Val);
+  
   template<class T0, class T1, class Allocator1, class T2, class Allocator2>
   void Add(const T0& alpha,
 	   const Matrix<T1, Symmetric, RowSymComplexSparse, Allocator1>& A,
@@ -157,6 +164,28 @@ namespace Seldon
 			ArrayRowComplexSparse, Allocator1>& A,
 			const Vector<T2, VectFull, Allocator2>& scale);
 
+  template<class Prop, class T1, class Allocator1,
+	   class T2, class Allocator2, class T3, class Allocator3>
+  void ScaleMatrix(Matrix<T1, Prop, RowSymComplexSparse, Allocator1>& A,
+		   const Vector<T2, VectFull, Allocator2>& scale_left,
+		   const Vector<T3, VectFull, Allocator3>& scale_right);
+  
+  template<class Prop, class T1, class Allocator1,
+	   class T2, class Allocator2, class T3, class Allocator3>
+  void ScaleMatrix(Matrix<T1, Prop, RowComplexSparse, Allocator1>& A,
+		   const Vector<T2, VectFull, Allocator2>& scale_left,
+		   const Vector<T3, VectFull, Allocator3>& scale_right);
+  
+  template<class T1, class Allocator1,
+	   class Prop, class T2, class Allocator2>
+  void ScaleLeftMatrix(Matrix<T1, Prop, RowComplexSparse, Allocator1>& A,
+		       const Vector<T2, VectFull, Allocator2>& scale);
+
+  template<class T1, class Allocator1,
+	   class Prop, class T2, class Allocator2>
+  void ScaleRightMatrix(Matrix<T1, Prop, RowComplexSparse, Allocator1>& A,
+			const Vector<T2, VectFull, Allocator2>& scale);
+  
   template<class T, class Allocator>
   void Transpose(const Matrix<T, General,
 		 ArrayRowComplexSparse, Allocator>& A,
@@ -286,6 +315,14 @@ namespace Seldon
 		Matrix<T1, Prop, ArrayRowComplexSparse, Allocator>& A);
 
   template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, RowComplexSparse, Allocator>& A);
+
+  template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, RowSymComplexSparse, Allocator>& A);
+
+  template<class T1, class Prop, class Allocator>
   void EraseRow(const IVect& col_number,
 		Matrix<T1, Prop, ArrayRowSymComplexSparse, Allocator>& A);
 
@@ -293,13 +330,13 @@ namespace Seldon
   void EraseRow(const IVect& col_number,
 		Matrix<T1, Prop, ArrayRowComplexSparse, Allocator>& A);
   
-  template<class T>
-  void GetRowSum(Vector<T>& diagonal_scale_left,
-		 const Matrix<T, Symmetric, RowSymComplexSparse> & mat);
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, RowComplexSparse, Allocator>& A);
   
-  template<class T>
-  void GetRowSum(Vector<T>& diagonal_scale_left,
-		 const Matrix<T, General, RowComplexSparse>& mat);
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, RowSymComplexSparse, Allocator>& A);
   
   template<class T>
   void GetRowSum(Vector<T>& diagonal_scale_left,
@@ -308,6 +345,14 @@ namespace Seldon
   template<class T>
   void GetRowSum(Vector<T>& diagonal_scale_left,
 		 const Matrix<T, General, ArrayRowComplexSparse>& mat);
+  
+  template<class T>
+  void GetRowSum(Vector<T>& diagonal_scale_left,
+		 const Matrix<T, Symmetric, RowSymComplexSparse> & mat);
+  
+  template<class T>
+  void GetRowSum(Vector<T>& diagonal_scale_left,
+		 const Matrix<T, General, RowComplexSparse>& mat);
   
   template<class T>
   void GetColSum(Vector<T>& diagonal_scale_left,

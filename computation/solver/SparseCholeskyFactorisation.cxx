@@ -19,7 +19,6 @@
 #ifndef SELDON_FILE_SPARSE_CHOLESKY_FACTORISATION_CXX
 
 
-#include "Ordering.cxx"
 #include "SparseCholeskyFactorisation.hxx"
 
 namespace Seldon

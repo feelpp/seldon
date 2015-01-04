@@ -324,9 +324,16 @@ namespace Seldon
   template<class T, class Y>
   bool ArpackSolver<T, Y>::Continue()
   {
+#ifdef SELDON_WITH_MPI
+    int comm(0);
+    if (solver_type_ == "symmetric")
+      saupd(comm, ido_, bmat_, n_, (char *)which_.c_str(), nev_, tol_, resid_, ncv_,
+	    v_, ldv_, iparam_, ipntr_, workd_, workl_, lworkl_, info_);
+#else
     if (solver_type_ == "symmetric")
       saupd(ido_, bmat_, n_, (char *)which_.c_str(), nev_, tol_, resid_, ncv_,
 	    v_, ldv_, iparam_, ipntr_, workd_, workl_, lworkl_, info_);
+#endif
     
     return (ido_ != 99);
   }
@@ -342,10 +349,18 @@ namespace Seldon
       {
 	rvec_ = true;
 
-	seupd(int(rvec_), 'A', pselect_, eig_val_, v_, ldv_,
-	      sigma_, bmat_, n_, (char *) which_.c_str(), nev_, tol_,
-	      resid_, ncv_, v_, ldv_, iparam_, ipntr_, workd_, workl_,
-	      lworkl_, ierr_);
+#ifdef SELDON_WITH_MPI
+    int comm(0);
+    seupd(comm, int(rvec_), 'A', pselect_, eig_val_, v_, ldv_,
+	  sigma_, bmat_, n_, (char *) which_.c_str(), nev_, tol_,
+	  resid_, ncv_, v_, ldv_, iparam_, ipntr_, workd_, workl_,
+	  lworkl_, ierr_);
+#else
+    seupd(int(rvec_), 'A', pselect_, eig_val_, v_, ldv_,
+	  sigma_, bmat_, n_, (char *) which_.c_str(), nev_, tol_,
+	  resid_, ncv_, v_, ldv_, iparam_, ipntr_, workd_, workl_,
+	  lworkl_, ierr_);
+#endif    
       }
     
     bool p_success = (ierr_ == 0);

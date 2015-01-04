@@ -90,11 +90,6 @@ namespace Seldon
   };
 
 
-  // Matrix allocator.
-  template <class T, class Allocator>
-  Allocator Matrix_Base<T, Allocator>::allocator_;
-
-
   template <class T, class Prop, class Storage, class Allocator>
   ostream& operator << (ostream& out,
 			const Matrix<T, Prop, Storage, Allocator>& A);

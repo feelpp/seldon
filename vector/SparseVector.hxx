@@ -132,11 +132,6 @@ namespace Seldon
 #endif
 
 
-  template<class T, class Allocator>
-  SELDON_DEFAULT_ALLOCATOR<int>
-  Vector<T, VectSparse, Allocator>::index_allocator_;
-
-
 } // namespace Seldon.
 
 #define SELDON_FILE_SPARSE_VECTOR_HXX

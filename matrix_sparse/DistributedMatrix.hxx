@@ -1,3 +1,22 @@
+// Copyright (C) 2014 INRIA
+// Author(s): Marc Duruflé
+//
+// This file is part of the linear-algebra library Seldon,
+// http://seldon.sourceforge.net/.
+//
+// Seldon is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your option)
+// any later version.
+//
+// Seldon is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+// more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with Seldon. If not, see http://www.gnu.org/licenses/.
+
 #ifndef SELDON_FILE_DISTRIBUTED_MATRIX_HXX
 
 namespace Seldon
@@ -132,7 +151,7 @@ namespace Seldon
   public :
     // constructors
     DistributedMatrix();
-    DistributedMatrix(int m, int n);
+    explicit DistributedMatrix(int m, int n);
     
     MPI::Comm& GetCommunicator();
     const MPI::Comm& GetCommunicator() const;
@@ -276,7 +295,8 @@ namespace Seldon
     void GetDistributedColumns(Matrix<T0, General,
 			       ArrayColSparse, Allocator0>& rows,
 			       bool sym_pattern) const;
-    
+
+    // friend functions    
     template<class MatrixSparse, class Tint, class T0> friend void
     AssembleDistributed(MatrixSparse& A,
 			Symmetric& sym, const MPI::Comm& comm,
@@ -291,7 +311,6 @@ namespace Seldon
                         Vector<Tint>& PtrA, Vector<Tint>& IndA,
                         Vector<T0>& ValA, bool sym_pattern);
 
-    // friend functions
     template<class T1, class Prop1, class Storage1, class Allocator1> friend
     void MltMin(const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
 		IVect& Y, IVect& Yproc);
@@ -391,6 +410,11 @@ namespace Seldon
   };
 
 
+  template<class T, class Allocator>
+  void AddDistantValue(Vector<T, VectSparse, Allocator>& dist_col,
+		       IVect& proc_col,
+		       int jglob, int proc2, const T& val);
+  
   template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
            class T2, class Storage2, class Allocator2, class T3,
            class T4, class Storage4, class Allocator4>
@@ -486,6 +510,56 @@ namespace Seldon
 	   const Vector<T2, Storage2, Allocator2>& X,
 	   Vector<T3, Storage3, Allocator3>& Y, bool assemble = true);  
 
+  template<class T0, class T1, class Prop1, class Storage1, class Allocator1>
+  void Mlt(const T0& alpha,
+           DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A);
+
+  template<class T1, class Prop1, class Allocator1>
+  void MltMin(const Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& A,
+              const IVect& global, IVect& Y, IVect& Yproc);
+
+  template<class T1, class Prop1, class Allocator1>
+  void MltMin(const Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& A,
+              const IVect& global, IVect& Y, IVect& Yproc);
+
+#ifdef SELDON_FILE_MATRIX_ARRAY_COMPLEX_SPARSE_HXX
+  template<class T1, class Prop1, class Allocator1>
+  void MltMin(const Matrix<T1, Prop1, ArrayRowComplexSparse, Allocator1>& A,
+              const IVect& global, IVect& Y, IVect& Yproc);
+  
+  template<class T1, class Prop1, class Allocator1>
+  void MltMin(const Matrix<T1, Prop1,
+	      ArrayRowSymComplexSparse, Allocator1>& A,
+              const IVect& global, IVect& Y, IVect& Yproc);
+#endif
+  
+  template<class T1, class Prop1, class Storage1, class Allocator1>
+  void MltMin(const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
+              IVect& Y, IVect& Yproc);
+
+  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
+           class T2, class Prop2, class Storage2, class Allocator2>
+  void Add(const T0& alpha,
+	   const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A, 
+           DistributedMatrix<T2, Prop2, Storage2, Allocator2>& B);
+
+  template<class T1, class Prop1, class Storage1, class Allocator1>
+  typename ClassComplexType<T1>::Treal
+  MaxAbs(const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A);
+
+  template<class T0, class T, class Prop, class Storage, class Allocator>
+  void GetRowSum(Vector<T0>& vec_sum,
+                 const DistributedMatrix<T, Prop, Storage, Allocator>& A);
+
+  template<class T0, class T, class Prop, class Storage, class Allocator>
+  void GetColSum(Vector<T0>& vec_sum,
+                 const DistributedMatrix<T, Prop, Storage, Allocator>& A);
+
+  template<class T0, class T, class Prop, class Storage, class Allocator>
+  void GetRowColSum(Vector<T0>& sum_row,
+                    Vector<T0>& sum_col,
+                    const DistributedMatrix<T, Prop, Storage, Allocator> & A);
+
   template<class T1, class Prop1, class Storage1, class Allocator1>
   typename ClassComplexType<T1>::Treal
   Norm1(const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A);
@@ -493,6 +567,16 @@ namespace Seldon
   template<class T1, class Prop1, class Storage1, class Allocator1>
   typename ClassComplexType<T1>::Treal
   NormInf(const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A); 
+
+  template<class T1, class Prop1, class Storage1, class Allocator1>
+  void Transpose(DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A);
+
+  template<class T1, class Prop1, class Storage1, class Allocator1>
+  void Conjugate(DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A);
+
+  template<class T1, class Prop1, class Storage1, class Allocator1>
+  void Transpose(const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A,
+                 DistributedMatrix<T1, Prop1, Storage1, Allocator1>& B);
 
   template<class T, class Prop, class Storage, class Allocator>
   void TransposeConj(const DistributedMatrix<T, Prop,
@@ -611,6 +695,57 @@ namespace Seldon
   template<class T, class Prop, class Storage, class Allocator>
   typename ClassComplexType<T>::Treal
   NormFro(const DistributedMatrix<T, Prop, Storage, Allocator>& A);
+
+  template<class T, class Storage, class Allocator,
+           class T1, class Allocator1>
+  void ScaleLeftMatrix(DistributedMatrix<T, General, Storage, Allocator>& A,
+                       const Vector<T1, VectFull, Allocator1>& Drow);
+
+  template<class T, class Storage, class Allocator,
+           class T1, class Allocator1>
+  void ScaleRightMatrix(DistributedMatrix<T, General, Storage, Allocator>& A,
+                        const Vector<T1, VectFull, Allocator1>& Dcol);
+
+  template<class T, class Prop, class Storage, class Allocator,
+           class T1, class Allocator1, class T2, class Allocator2>
+  void ScaleMatrix(DistributedMatrix<T, Prop, Storage, Allocator>& A,
+                   const Vector<T1, VectFull, Allocator1>& Drow,
+                   const Vector<T2, VectFull, Allocator2>& Dcol);
+
+  template<class MatrixSparse, class Tint, class T>
+  void AssembleDistributed(MatrixSparse& A,
+			   Symmetric& sym, const MPI::Comm& comm,
+                           IVect& row_numbers, IVect& local_row_numbers,
+			   Vector<Tint>& PtrA, Vector<Tint>& IndA,
+                           Vector<T>& ValA, bool sym_pattern);
+
+  template<class MatrixSparse, class Tint, class T>
+  void AssembleDistributed(MatrixSparse& A,
+			   General& prop, const MPI::Comm& comm,
+                           IVect& col_numbers, IVect& local_col_numbers,
+                           Vector<Tint>& PtrA, Vector<Tint>& IndA,
+                           Vector<T>& ValA, bool sym_pattern);
+
+  template<class TypeDist>
+  void EraseDistantEntries(MPI::Comm& comm, const Vector<bool>& IsRowDropped,
+                           const Vector<bool>& IsRowDroppedDistant,
+                           TypeDist& dist_row, Vector<IVect>& proc_row,
+                           TypeDist& dist_col, Vector<IVect>& proc_col);
+
+  template<class T1, class Prop1, class Storage1, class Allocator1>
+  void EraseCol(const IVect& num,
+                DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A);
+
+  template<class T1, class Prop1, class Storage1, class Allocator1>
+  void EraseRow(const IVect& num,
+                DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0,
+           class T1, class Prop1, class Storage1, class Allocator1>
+  void
+  CopySubMatrix(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		const IVect& row, const IVect& col,
+                DistributedMatrix<T1, Prop1, Storage1, Allocator1>& B);
 
 }
 

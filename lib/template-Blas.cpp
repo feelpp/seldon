@@ -5,7 +5,6 @@
 
 #ifndef SELDON_WITH_COMPILED_LIBRARY
 #include "vector/Vector.cxx"
-#include "vector/SparseVector.cxx"
 #include "matrix/Matrix_Base.cxx"
 #include "matrix/Matrix_Pointers.cxx"
 #include "matrix/Matrix_Symmetric.cxx"
@@ -39,14 +38,13 @@ namespace Seldon
   SELDON_EXTERN template void Swap(Vector<@real_complex>&, Vector<@real_complex>&);
   
   SELDON_EXTERN template void Mlt(const @scalar&, Vector<@scalar>&);
-  SELDON_EXTERN template void Mlt(const double&, Vector<complex<double> >&);
   
   SELDON_EXTERN template void Copy(const Vector<@real_complex>&, Vector<@real_complex>&);
   
   SELDON_EXTERN template void Add(const @real_complex&, const Vector<@real_complex>&, Vector<@real_complex>&);
   
   SELDON_EXTERN template @real_complex DotProd(const Vector<@real_complex>&, const Vector<@real_complex>&);
-  SELDON_EXTERN template @real_complex DotProdConj(const Vector<@real_complex>&, const Vector<@real_complex>&);
+  SELDON_EXTERN template @complex DotProdConj(const Vector<@complex>&, const Vector<@complex>&);
   
   SELDON_EXTERN template float Norm1(const Vector<float>&);
   SELDON_EXTERN template double Norm1(const Vector<double>&);
@@ -59,19 +57,6 @@ namespace Seldon
   SELDON_EXTERN template double Norm2(const Vector<complexdouble>&);
   
   SELDON_EXTERN template size_t GetMaxAbsIndex(const Vector<@real_complex>&);
-
-  SELDON_EXTERN template void Mlt(const int&, Vector<double>&);
-  SELDON_EXTERN template void Add(const double&, const Vector<complex<double> >&, Vector<complex<double> >&);
-  SELDON_EXTERN template void ApplyRot(double&, double&, const double&, const double&);
-  SELDON_EXTERN template void GenRot(complex<double>&, complex<double>&, double&, complex<double>&);
-  SELDON_EXTERN template void ApplyRot(complex<double>&, complex<double>&, const double&, const complex<double>&);
-  
-  SELDON_EXTERN template void Copy(const Vector<@real_complex, VectSparse>&, Vector<@real_complex, VectSparse>&);
-  SELDON_EXTERN template void Mlt(const @real_complex&, Vector<@real_complex, VectSparse>&);
-  SELDON_EXTERN template void Mlt(const double&, Vector<complex<double>, VectSparse>&);
-  SELDON_EXTERN template void Add(const @real_complex&, const Vector<@real_complex, VectSparse>&, Vector<@real_complex, VectSparse>&);
-  SELDON_EXTERN template void Add(const double&, const Vector<complex<double>, VectSparse>&, Vector<complex<double>, VectSparse>&);
-  SELDON_EXTERN template int GetMaxAbsIndex(const Vector<@real_complex, VectSparse>&);
   
   /* Blas Level 2 */
   
@@ -79,18 +64,13 @@ namespace Seldon
   SELDON_EXTERN template void Mlt(const SeldonTranspose&, const SeldonDiag&, const Matrix<@real_complex, General, @storage_blasT>&, Vector<@real_complex>&); 
   SELDON_EXTERN template void Mlt(const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, Vector<@real_complex>&); 
   SELDON_EXTERN template void Mlt(const Matrix<@real_complex, Symmetric, @storage_blasS>&, const Vector<@real_complex>&, Vector<@real_complex>&);
-  SELDON_EXTERN template void Mlt(const Matrix<double, Symmetric, RowSymPacked>&, const Vector<complex<double> >&, Vector<complex<double> >&);
-  SELDON_EXTERN template void Mlt(const Matrix<double, Symmetric, ColSymPacked>&, const Vector<complex<double> >&, Vector<complex<double> >&);
   SELDON_EXTERN template void Mlt(const Matrix<@complex, Hermitian, @storage_blasH>&, const Vector<@complex>&, Vector<@complex>&); 
   SELDON_EXTERN template void Mlt(const @trans&, const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, Vector<@real_complex>&); 
 
   SELDON_EXTERN template void MltAdd(const @real_complex&, const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
   SELDON_EXTERN template void MltAdd(const @real_complex&, const SeldonTranspose&, const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
-  SELDON_EXTERN template void MltAdd(const @real_complex&, const class_SeldonNoTrans&, const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
   SELDON_EXTERN template void MltAdd(const @real_complex&, const class_SeldonTrans&, const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
   SELDON_EXTERN template void MltAdd(const @real_complex&, const Matrix<@real_complex, Symmetric, @storage_blasS>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
-  SELDON_EXTERN template void MltAdd(const @real_complex&, const class_SeldonNoTrans&, const Matrix<@real_complex, Symmetric, @storage_blasS>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
-  SELDON_EXTERN template void MltAdd(const @real_complex&, const class_SeldonTrans&, const Matrix<@real_complex, Symmetric, @storage_blasS>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
   SELDON_EXTERN template void MltAdd(const @complex&, const Matrix<@complex, Hermitian, @storage_blasH>&, const Vector<@complex>&, const @complex&, Vector<@complex>&);
 
   SELDON_EXTERN template void Rank1Update(const @real_complex&, const Vector<@real_complex>&, const Vector<@real_complex>&, Matrix<@real_complex, General, @storage_blasGE>&);
@@ -147,6 +127,9 @@ namespace Seldon
   SELDON_EXTERN template void TransposeConj(Matrix<@real_complex, General, @storage_blasGE>&);
   SELDON_EXTERN template void TransposeConj(Matrix<@real_complex, Symmetric, @storage_blasS>&);
   SELDON_EXTERN template void TransposeConj(Matrix<@complex, Hermitian, @storage_blasH>&);
-    
+  
+  SELDON_EXTERN template void MltAdd(const @real_complex&, const Matrix<@real_complex, General, RowSparse>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
+  SELDON_EXTERN template void MltAdd(const @real_complex&, const class_SeldonTrans&, const Matrix<@real_complex, General, RowSparse>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
+  
 }
 

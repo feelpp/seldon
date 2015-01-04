@@ -56,7 +56,7 @@ namespace Seldon
   public:
     // Constructor.
     Matrix_Triangular();
-    Matrix_Triangular(int i, int j);
+    explicit Matrix_Triangular(int i, int j);
     Matrix_Triangular(const Matrix_Triangular<T, Prop,
 		      Storage, Allocator>& A);
 
@@ -126,7 +126,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
 
     template <class T0>
     Matrix<T, Prop, ColUpTriang, Allocator>& operator= (const T0& x);
@@ -152,7 +152,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
 
     template <class T0>
     Matrix<T, Prop, ColLoTriang, Allocator>& operator= (const T0& x);
@@ -178,7 +178,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
 
     template <class T0>
     Matrix<T, Prop, RowUpTriang, Allocator>& operator= (const T0& x);
@@ -204,7 +204,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
 
     template <class T0>
     Matrix<T, Prop, RowLoTriang, Allocator>& operator= (const T0& x);

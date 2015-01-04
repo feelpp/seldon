@@ -52,6 +52,238 @@ namespace Seldon
 {
 
 
+  //////////////////////////
+  // ReadCoordinateMatrix //
+  //////////////////////////
+  
+
+  //! reads a real or complex value in a file
+  template<class T>
+  void ReadComplexValue(istream& FileStream, T& entry)
+  {
+    FileStream >> entry;
+  }
+  
+  
+  //! reads a real or complex value in a file
+  template<class T>
+  void ReadComplexValue(istream& FileStream, complex<T>& entry)
+  {
+    T a, b;
+    FileStream >> a >> b;
+    entry = complex<T>(a, b);
+  }
+  
+
+  //! reads a real or complex value in a file
+  template<class T>
+  void WriteComplexValue(ostream& FileStream, const T& entry)
+  {
+    FileStream << entry;
+  }
+  
+  
+  //! reads a real or complex value in a file
+  template<class T>
+  void WriteComplexValue(ostream& FileStream, const complex<T>& entry)
+  {
+    FileStream << real(entry) << " " << imag(entry);
+  }
+  
+    
+  //! Reading of matrix in coordinate format
+  /*!
+    \param FileStream stream where the matrix is read
+    \param row_numbers row indices
+    \param col_numbers column indices
+    \param values
+    \param cplx if true, imaginary and real part are in
+                two separate columns
+   */  
+  template<class Tint, class AllocInt, class T, class Allocator>
+  void ReadCoordinateMatrix(istream& FileStream,
+                            Vector<Tint, VectFull, AllocInt>& row_numbers,
+                            Vector<Tint, VectFull, AllocInt>& col_numbers,
+                            Vector<T, VectFull, Allocator>& values,
+                            bool cplx)
+  {
+#ifdef SELDON_CHECK_IO
+    // Checks if the stream is ready.
+    if (!FileStream.good())
+      throw IOError("ReadCoordinateMatrix", "Stream is not ready.");
+#endif
+
+    T entry; int row = 0, col = 0;
+    int nb_elt = 0;
+    SetComplexZero(entry);
+
+    while (!FileStream.eof())
+      {
+	// new entry is read (1-index)
+	FileStream >> row >> col;
+        if (cplx)
+          ReadComplexValue(FileStream, entry);
+        else
+          FileStream >> entry;
+        
+	if (FileStream.fail())
+	  break;
+	else
+	  {
+#ifdef SELDON_CHECK_IO
+	    if (row < 1)
+	      throw IOError(string("ReadCoordinateMatrix"),
+			    string("Error : Row number should be greater ")
+			    + "than 0 but is equal to " + to_str(row));
+
+	    if (col < 1)
+	      throw IOError(string("ReadCoordinateMatrix"),
+			    string("Error : Column number should be greater")
+			    + " than 0 but is equal to " + to_str(col));
+#endif
+
+	    nb_elt++;
+
+	    // inserting new element
+	    if (nb_elt > values.GetM())
+	      {
+		values.Resize(2*nb_elt);
+		row_numbers.Resize(2*nb_elt);
+		col_numbers.Resize(2*nb_elt);
+	      }
+
+	    values(nb_elt-1) = entry;
+	    row_numbers(nb_elt-1) = row;
+	    col_numbers(nb_elt-1) = col;
+	  }
+      }
+    
+    if (nb_elt > 0)
+      {
+	row_numbers.Resize(nb_elt);
+	col_numbers.Resize(nb_elt);
+	values.Resize(nb_elt);
+      }
+  }
+  
+
+  //! Reading of matrix in coordinate format
+  /*!
+    \param A output matrix
+    \param FileStream stream where the matrix is read
+    \param zero type of value to read (double or complex<double>)
+    \param index starting index (usually 0 or 1)
+    \param nnz number of non-zero entries
+    \param cplx if true, imaginary and real part are in
+                two separate columns
+    If nnz is equal to -1, we consider that the number of non-zero entries
+    is unknown and is deduced from the number of lines present in the stream
+   */
+  template<class Matrix1, class T>
+  void ReadCoordinateMatrix(Matrix1& A, istream& FileStream, T& zero,
+                            int index, int nnz, bool cplx)
+  {
+    // previous elements are removed
+    A.Clear();
+    
+    Vector<int> row_numbers, col_numbers;
+    Vector<T> values;
+    if (nnz >= 0)
+      {
+        values.Reallocate(nnz);
+        row_numbers.Reallocate(nnz);
+        col_numbers.Reallocate(nnz);
+      }
+    
+    ReadCoordinateMatrix(FileStream, row_numbers, col_numbers, values, cplx);
+    
+    if (row_numbers.GetM() > 0)
+      ConvertMatrix_from_Coordinates(row_numbers, col_numbers, values,
+                                     A, index);
+    
+  }
+
+
+  //! Writes a matrix in coordinate format
+  /*!
+    \param FileStream stream where the matrix is read
+    \param row_numbers row indices
+    \param col_numbers column indices
+    \param values
+    \param cplx if true, imaginary and real part are written in
+                two separate columns
+   */    
+  template<class Tint, class AllocInt, class T, class Allocator>
+  void WriteCoordinateMatrix(ostream& FileStream,
+                             const Vector<Tint, VectFull, AllocInt>& row_numbers,
+                             const Vector<Tint, VectFull, AllocInt>& col_numbers,
+                             const Vector<T, VectFull, Allocator>& values,
+                             bool cplx)
+  {
+    if (cplx)
+      {
+        for (int i = 0; i < row_numbers.GetM(); i++)
+          {
+            FileStream << row_numbers(i) << " " << col_numbers(i) << " ";
+            WriteComplexValue(FileStream, values(i));
+            FileStream << '\n';    
+          }
+      }
+    else
+      {
+        for (int i = 0; i < row_numbers.GetM(); i++)
+          FileStream << row_numbers(i) << " " << col_numbers(i)
+                     << " " << values(i) << '\n';
+      }
+  }
+  
+  
+  //! Writes matrix in coordinate format
+  /*!
+    \param A output matrix
+    \param FileStream stream where the matrix is read
+    \param zero type of value to read (double or complex<double>)
+    \param index starting index (usually 0 or 1)
+    \param cplx if true, imaginary and real part are in
+                two separate columns
+  */
+  template<class T0, class Prop0, class Storage0, class Alloc0, class T>
+  void WriteCoordinateMatrix(const Matrix<T0, Prop0, Storage0, Alloc0>& A,
+                             ostream& FileStream, T& zero,
+                             int index, bool cplx)
+  {
+    // conversion to coordinate format (if symmetric part, lower and upper part
+    // are recovered)
+    Vector<int, VectFull, CallocAlloc<int> > IndRow, IndCol;
+    Vector<T> Value;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol,
+                                 Value, index, true);
+    
+    WriteCoordinateMatrix(FileStream, IndRow, IndCol, Value, cplx);
+    
+    // if last element is not present, 0 is printed
+    int N = IndRow.GetM()-1;
+    if (N >= 0)
+      {
+        int m = A.GetM()-1, n = A.GetN()-1;
+        SetComplexZero(zero);
+        if ( (IndRow(N) != m+index) || (IndCol(N) != n+index))
+          {
+            if (A(m, n) == zero)
+              {
+                FileStream << m+index << " " << n+index << " ";
+                if (cplx)
+                  WriteComplexValue(FileStream, zero);
+                else
+                  FileStream << zero;
+                
+                FileStream << '\n';
+              }          
+          }
+      }
+  }
+  
+  
   //! Reads a sparse matrix in a file in Harwell-Boeing format.
   /*! This functions was written to read the files in Harwell-Boeing format as
     distributed on the Matrix Market, http://math.nist.gov/MatrixMarket/. A

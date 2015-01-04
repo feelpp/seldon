@@ -21,37 +21,6 @@
 
 namespace Seldon
 {
-  
-  template <class T>
-  class SorPreconditioner
-  {
-  protected :
-    bool symmetric_precond; //!< true for Symmetric relaxation
-    int nb_iter; //!< number of iterations
-    typename ClassComplexType<T>::Treal omega; //!< relaxation parameter
-
-  public :
-    SorPreconditioner();
-    inline ~SorPreconditioner(){}
-
-    inline void InitSymmetricPreconditioning() { symmetric_precond = true; }
-    inline void InitUnSymmetricPreconditioning() { symmetric_precond = false; }
-    inline void 
-    SetParameterRelaxation(const typename ClassComplexType<T>::Treal& param)
-    { omega = param; }
-    
-    inline void SetNumberIterations(int nb_iterations) { nb_iter = nb_iterations; }
-
-    template<class Vector1, class Matrix1>
-    void Solve(const Matrix1& A, const Vector1& r, Vector1& z,
-	       bool init_guess_null = true);
-
-    template<class Vector1, class Matrix1>
-    void TransSolve(const Matrix1& A, const Vector1& r, Vector1& z,
-		    bool init_guess_null = true);
-
-  };
-
 
   //! Default constructor
   template<class T>
@@ -62,6 +31,41 @@ namespace Seldon
   }
 
 
+  //! if called forward and backward sweep will be applied such that
+  //! the preconditioning is symmetric
+  template<class T>
+  inline void SorPreconditioner<T>::InitSymmetricPreconditioning()
+  {
+    symmetric_precond = true;
+  }
+  
+  
+  //! if called, forward sweep is applied when calling Solve
+  //! backward sweep is applied when calling TransSolve
+  template<class T>
+  inline void SorPreconditioner<T>::InitUnSymmetricPreconditioning()
+  {
+    symmetric_precond = false;
+  }
+  
+  
+  //! sets the relaxation parameter omega
+  template<class T>
+  inline void SorPreconditioner<T>
+  ::SetParameterRelaxation(const typename ClassComplexType<T>::Treal& param)
+  {
+    omega = param;
+  }
+  
+  
+  //! sets the number of SOR sweeps to perform when calling Solve/TransSolve
+  template<class T>
+  inline void SorPreconditioner<T>::SetNumberIterations(int nb_iterations)
+  {
+    nb_iter = nb_iterations;
+  }
+
+  
   //! Solves M z = r
   template<class T> template<class Vector1, class Matrix1>
   inline void SorPreconditioner<T>::

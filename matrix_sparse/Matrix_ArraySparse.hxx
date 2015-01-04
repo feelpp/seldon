@@ -61,7 +61,7 @@ namespace Seldon
   public:
     // Constructors.
     Matrix_ArraySparse();
-    Matrix_ArraySparse(int i, int j);
+    explicit Matrix_ArraySparse(int i, int j);
 
     // Destructor.
     ~Matrix_ArraySparse();
@@ -147,7 +147,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
 
     // Memory management.
     void ClearColumn(int i);
@@ -189,7 +189,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
 
     // Memory management.
     void ClearRow(int i);
@@ -231,7 +231,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
     
     // access operator
 #ifdef SELDON_WITH_MODIFIABLE_PARENTHESIS_OPERATOR
@@ -286,7 +286,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
 
     // access operator
 #ifdef SELDON_WITH_MODIFIABLE_PARENTHESIS_OPERATOR

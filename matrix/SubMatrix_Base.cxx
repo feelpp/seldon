@@ -189,7 +189,7 @@ namespace Seldon
     tabulations.
   */
   template <class T, class Prop, class M, class Allocator>
-  void SubMatrix_Base<T, Prop, M, Allocator>::Print() const
+  inline void SubMatrix_Base<T, Prop, M, Allocator>::Print() const
   {
     for (int i = 0; i < this->GetM(); i++)
       {

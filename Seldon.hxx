@@ -21,37 +21,7 @@
 
 
 #include "SeldonHeader.hxx"
-
-namespace Seldon
-{
-
-
-  // Vector class - specialized for each used type.
-  template <class T, class Storage, class Allocator>
-  class Vector
-  {
-    // Nothing in it: no default vector is supplied so as to avoid suprises!
-  };
-
-
-  // Matrix class - specialized for each used type.
-  template <class T, class Prop, class Storage, class Allocator>
-  class Matrix
-  {
-    // Nothing in it: no default matrix is supplied so as to avoid suprises!
-  };
-
-
-} // namespace Seldon.
-
-
-#include "share/Common.cxx"
-
-// Memory management.
-#include "share/Allocator.cxx"
-
-// Storage type.
-#include "share/Storage.cxx"
+#include "SeldonInline.hxx"
 
 #ifndef SELDON_WITH_COMPILED_LIBRARY
 #include "share/MatrixFlag.cxx"
@@ -76,13 +46,11 @@ namespace Seldon
 #include "vector/Functions_Arrays.cxx"
 #include "vector/SparseVector.cxx"
 #include "matrix/Functions.cxx"
+#include "matrix_sparse/IOMatrixMarket.cxx"
 #include "matrix_sparse/Matrix_Conversions.cxx"
 #include "computation/basic_functions/Functions_Matrix.cxx"
 #include "computation/basic_functions/Functions_Vector.cxx"
 #include "computation/basic_functions/Functions_MatVect.cxx"
-
-#include "matrix/SubMatrix_Base.cxx"
-#include "matrix/SubMatrix.cxx"
 
 // Blas interface.
 #ifdef SELDON_WITH_BLAS
@@ -102,15 +70,6 @@ namespace Seldon
 #ifdef SELDON_WITH_MKL
 #include "computation/interfaces/Mkl_Sparse.cxx"
 #endif
-
-#include "share/Common.cxx"
-
-#ifdef SELDON_WITH_COMPILED_LIBRARY
-#include "lib/Common.cpp"
-#include "lib/Vector.cpp"
-#include "lib/MatrixPointers.cpp"
-#endif
-
 
 #define SELDON_FILE_SELDON_HXX
 #endif

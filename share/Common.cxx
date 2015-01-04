@@ -34,7 +34,7 @@ namespace Seldon
 
 
   //! Default constructor.
-  Str::Str()
+  inline Str::Str()
   {
   }
 
@@ -43,14 +43,14 @@ namespace Seldon
   /*!
     \param[in] s 'Str' instance to be copied.
   */
-  Str::Str(const Str& s)
+  inline Str::Str(const Str& s)
   {
     output_ << s;
   }
 
 
   //! Conversion to string.
-  Str::operator std::string() const
+  inline Str::operator std::string() const
   {
     return output_.str();
   }
@@ -61,7 +61,7 @@ namespace Seldon
     \param[in] input element added at the end of the string.
   */
   template <class T>
-  Str& Str::operator << (const T& input)
+  inline Str& Str::operator << (const T& input)
   {
     output_ << input;
     return *this;
@@ -74,7 +74,7 @@ namespace Seldon
     \param[in] input element added at the end of the string.
   */
   template <class T>
-  Str operator + (const Str& s, const T& input)
+  inline Str operator + (const Str& s, const T& input)
   {
     string s_input = s;
     Str output;
@@ -84,7 +84,7 @@ namespace Seldon
 
 
   //! Converts a 'str' instance to an 'ostream' instance.
-  ostream& operator << (ostream& out, Str& in)
+  inline ostream& operator << (ostream& out, Str& in)
   {
     string output = in;
     out << output;
@@ -93,7 +93,7 @@ namespace Seldon
 
 
   //! Converts a 'str' instance to an 'ostream' instance.
-  ostream& operator << (ostream& out, Str in)
+  inline ostream& operator << (ostream& out, Str in)
   {
     string output = in;
     out << output;
@@ -197,7 +197,7 @@ namespace Seldon
     number = T(n);
   }
   
-  
+    
   //! Sets a complex number to (n, 0).
   /*!
     \param[in,out] number complex number to be set to (n, 0).
@@ -225,7 +225,7 @@ namespace Seldon
     \param[in,out] number complex number to be set to (x, 0).
   */  
   template <class T>
-  void SetComplexReal(const T& x, complex<T>& number)
+  inline void SetComplexReal(const T& x, complex<T>& number)
   {
     number = complex<T>(x, 0);
   }
@@ -236,7 +236,7 @@ namespace Seldon
     \param[in,out] number complex number to be set to x.
   */
   template <class T0, class T1>
-  void SetComplexReal(const T0& x, T1& number)
+  inline void SetComplexReal(const T0& x, T1& number)
   {
     number = x;
   }
@@ -298,7 +298,7 @@ namespace Seldon
   
   
   //! returns extension of a string 
-  string GetExtension(const string& nom)
+  inline string GetExtension(const string& nom)
   {
     size_t index = nom.find_last_of('.');
     string extension = nom.substr(index+1, nom.size()-index);  
@@ -307,7 +307,7 @@ namespace Seldon
 
   
   //! returns base of a string
-  string GetBaseString(const string& nom)
+  inline string GetBaseString(const string& nom)
   {
     size_t index = nom.find_last_of('.');
     string base = nom.substr(0, index);
@@ -322,7 +322,7 @@ namespace Seldon
     \return HDF5 memory type of \a input.
   */
   template <class T>
-  hid_t GetH5Type(T& input)
+  inline hid_t GetH5Type(T& input)
   {
     double d;
     float f;

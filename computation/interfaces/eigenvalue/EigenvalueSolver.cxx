@@ -1481,7 +1481,7 @@ namespace Seldon
       chol_facto_mass_matrix.ShowMessages();
     
     MassValue x_test;
-    FactorizeCholeskyMass(x_test);
+    FactorizeCholeskyMass(x_test, *this->Mh);
     
     if (this->print_level < 2)
       chol_facto_mass_matrix.HideMessages();
@@ -1493,17 +1493,19 @@ namespace Seldon
   
   //! intermediary function
   template<class T, class MatStiff, class MatMass>
+  template<class Storage, class Alloc>
   void SparseEigenProblem<T, MatStiff, MatMass>::
-  FactorizeCholeskyMass(double&)
+  FactorizeCholeskyMass(double&, Matrix<double, Symmetric, Storage, Alloc>& M)
   {
-    chol_facto_mass_matrix.Factorize(*this->Mh, true);    
+    chol_facto_mass_matrix.Factorize(M, true);    
   }
 
 
   //! intermediary function
   template<class T, class MatStiff, class MatMass>
+  template<class T0, class T1, class Prop, class Storage, class Alloc>
   void SparseEigenProblem<T, MatStiff, MatMass>::
-  FactorizeCholeskyMass(complex<double>&)
+  FactorizeCholeskyMass(T0&, Matrix<T1, Prop, Storage, Alloc>& M)
   {
     cout << "Cholesky factorisation has not been implemented "
 	 << "for complex matrices" << endl;

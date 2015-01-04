@@ -31,6 +31,9 @@ namespace Seldon
     
     template<class T2>
     void AssembleVec(Vector<T2>& X) const;
+
+    template<class T2>
+    void AssembleVec(Matrix<T2, General, ColMajor>& A) const;
 #endif
 
     template<class MatrixSparse>
@@ -60,6 +63,9 @@ namespace Seldon
 
     template<class T1>
     void TransSolve(Vector<T1>& x_solution);
+
+    template<class T1>
+    void Solve(Matrix<T1, General, ColMajor>& x_solution);    
     
     template<class MatrixSparse, class MatrixFull>
     void GetSchurComplement(MatrixSparse& mat_direct,
@@ -87,6 +93,34 @@ namespace Seldon
                            Vector<complex<T> >& x, Vector<int>& global_col);
 #endif    
 
+  template<class T, class MatrixSparse>
+  void GetLU(SparseDistributedSolver<T>& mat_lu, MatrixSparse& A,
+             bool keep_matrix, bool scale_matrix, T& x_test);
+
+  template<class T, class MatrixSparse, class T0>
+  void GetLU(SparseDistributedSolver<T>& mat_lu, MatrixSparse& A,
+             bool keep_matrix, bool scale_matrix, T0& x_test);
+
+  template<class T, class MatrixSparse, class T0>
+  void GetLU(SparseDistributedSolver<T>& mat_lu, MatrixSparse& A,
+             bool keep_matrix = false, bool scale_matrix = false);
+
+  template<class T0, class T1>
+  void SolveLU(SparseDistributedSolver<T0>& mat_lu,
+	       Vector<T1>& x, const Vector<T1>& b);
+
+  template<class T>
+  void SolveLU(SparseDistributedSolver<complex<T> >& mat_lu,
+	       Vector<T>& x, const Vector<T>& b);
+
+  template<class T0, class T1>
+  void SolveLU(SparseDistributedSolver<T0>& mat_lu,
+	       Matrix<T1, General, ColMajor>& x);
+
+  template<class T>
+  void SolveLU(SparseDistributedSolver<complex<T> >& mat_lu,
+	       Matrix<T, General, ColMajor>& x);
+  
 }
 
 #define SELDON_FILE_DISTRIBUTED_SOLVER_HXX

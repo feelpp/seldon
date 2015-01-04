@@ -28,12 +28,8 @@ extern "C"
 namespace Seldon
 {
 
-  void SetComplexOne(doublecomplex& one)
-  {
-    one.r = 1.0;
-    one.i = 0.0;
-  }
-
+  void SetComplexOne(doublecomplex& one);
+  
   //! class interfacing SuperLU functions
   template<class T>
   class MatrixSuperLU_Base

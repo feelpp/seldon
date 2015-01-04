@@ -68,8 +68,8 @@ namespace Seldon
   public:
     // Constructors.
     Matrix_Sparse();
-    Matrix_Sparse(int i, int j);
-    Matrix_Sparse(int i, int j, int nz);
+    explicit Matrix_Sparse(int i, int j);
+    explicit Matrix_Sparse(int i, int j, int nz);
     template <class Storage0, class Allocator0,
 	      class Storage1, class Allocator1,
 	      class Storage2, class Allocator2>
@@ -158,8 +158,8 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
-    Matrix(int i, int j, int nz);
+    explicit Matrix(int i, int j);
+    explicit Matrix(int i, int j, int nz);
     template <class Storage0, class Allocator0,
 	      class Storage1, class Allocator1,
 	      class Storage2, class Allocator2>
@@ -184,8 +184,8 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
-    Matrix(int i, int j, int nz);
+    explicit Matrix(int i, int j);
+    explicit Matrix(int i, int j, int nz);
     template <class Storage0, class Allocator0,
 	      class Storage1, class Allocator1,
 	      class Storage2, class Allocator2>
@@ -196,29 +196,7 @@ namespace Seldon
 
   };
 
-  template<class Tint, class AllocInt, class T, class Allocator>
-  void ReadCoordinateMatrix(istream& FileStream,
-                            Vector<Tint, VectFull, AllocInt>& row_numbers,
-                            Vector<Tint, VectFull, AllocInt>& col_numbers,
-                            Vector<T, VectFull, Allocator>& values,
-                            bool cplx = false);
   
-  template<class Matrix1, class T>
-  void ReadCoordinateMatrix(Matrix1& A, istream& FileStream, T& zero,
-                            int index = 1, int nnz = -1, bool cplx = false);
-
-  template<class Tint, class AllocInt, class T, class Allocator>
-  void WriteCoordinateMatrix(ostream& FileStream,
-                            const Vector<Tint, VectFull, AllocInt>& row_numbers,
-                            const Vector<Tint, VectFull, AllocInt>& col_numbers,
-                            const Vector<T, VectFull, Allocator>& values,
-                            bool cplx = false);
-  
-  template<class T0, class Prop0, class Storage0, class Alloc0, class T>
-  void WriteCoordinateMatrix(const Matrix<T0, Prop0, Storage0, Alloc0>& A,
-                             ostream& FileStream, T& zero,
-                             int index = 1, bool cplx = false);
-
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_SPARSE_HXX

@@ -140,6 +140,12 @@ namespace Seldon
   }
 
 
+  //! Destructor (present to avoid duplicate symbols in .o files)
+  Undefined::~Undefined()
+  {
+  }
+
+
   //! Delivers information about the error.
   /*! Displays available information, i.e.
     the error description, the function and/or the comment.
@@ -180,6 +186,12 @@ namespace Seldon
   }
 
 
+  //! Destructor (present to avoid duplicate symbols in .o files)
+  WrongArgument::~WrongArgument()
+  {
+  }
+  
+  
   //! Delivers information about the error.
   /*! Displays available information, i.e.
     the error description, the function and/or the comment.
@@ -216,6 +228,11 @@ namespace Seldon
   }
 
 
+  //! Destructor (present to avoid duplicate symbols in .o files)
+  NoMemory::~NoMemory()
+  {
+  }
+
 
   //////////////
   // WRONGDIM //
@@ -236,6 +253,11 @@ namespace Seldon
 #endif
   }
 
+  
+  //! Destructor (present to avoid duplicate symbols in .o files)
+  WrongDim::~WrongDim()
+  {
+  }
 
 
   ////////////////
@@ -258,6 +280,11 @@ namespace Seldon
   }
 
 
+  //! Destructor (present to avoid duplicate symbols in .o files)
+  WrongIndex::~WrongIndex()
+  {
+  }
+
 
   //////////////
   // WRONGROW //
@@ -278,6 +305,11 @@ namespace Seldon
 #endif
   }
 
+
+  //! Destructor (present to avoid duplicate symbols in .o files)
+  WrongRow::~WrongRow()
+  {
+  }
 
 
   //////////////
@@ -300,6 +332,11 @@ namespace Seldon
   }
 
 
+  //! Destructor (present to avoid duplicate symbols in .o files)
+  WrongCol::~WrongCol()
+  {
+  }
+
 
   /////////////
   // IOERROR //
@@ -321,6 +358,11 @@ namespace Seldon
   }
 
 
+  //! Destructor (present to avoid duplicate symbols in .o files)
+  IOError::~IOError()
+  {
+  }
+
 
   /////////////////
   // LAPACKERROR //
@@ -340,6 +382,12 @@ namespace Seldon
     this->CoutWhat();
     abort();
 #endif
+  }
+
+
+  //! Destructor (present to avoid duplicate symbols in .o files)
+  LapackError::~LapackError()
+  {
   }
 
 

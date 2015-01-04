@@ -56,7 +56,7 @@ namespace Seldon
   public:
     // Constructor.
     Matrix_Symmetric();
-    Matrix_Symmetric(int i, int j);
+    explicit Matrix_Symmetric(int i, int j);
     Matrix_Symmetric(const Matrix_Symmetric<T, Prop, Storage, Allocator>& A);
 
     // Destructor.
@@ -126,7 +126,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
 
     template <class T0>
     Matrix<T, Prop, ColSym, Allocator>& operator= (const T0& x);
@@ -153,7 +153,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j);
+    explicit Matrix(int i, int j);
 
     template <class T0>
     Matrix<T, Prop, RowSym, Allocator>& operator= (const T0& x);

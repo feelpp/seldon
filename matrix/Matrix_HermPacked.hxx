@@ -55,7 +55,7 @@ namespace Seldon
   public:
     // Constructor.
     Matrix_HermPacked();
-    Matrix_HermPacked(int i, int j = 0);
+    explicit Matrix_HermPacked(int i, int j = 0);
     Matrix_HermPacked(const Matrix_HermPacked<T, Prop,
 		      Storage, Allocator>& A);
 
@@ -124,7 +124,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j = 0);
+    explicit Matrix(int i, int j = 0);
 
     template <class T0>
     Matrix<T, Prop, ColHermPacked, Allocator>& operator= (const T0& x);
@@ -153,7 +153,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j = 0);
+    explicit Matrix(int i, int j = 0);
 
     template <class T0>
     Matrix<T, Prop, RowHermPacked, Allocator>& operator= (const T0& x);

@@ -35,7 +35,7 @@ namespace Seldon
 
   //! Mumps is called in double precision
   template<>
-  inline void MatrixMumps<double>::CallMumps()
+  void MatrixMumps<double>::CallMumps()
   {
     dmumps_c(&struct_mumps);
   }
@@ -43,7 +43,7 @@ namespace Seldon
 
   //! Mumps is called in complex double precision
   template<>
-  inline void MatrixMumps<complex<double> >::CallMumps()
+  void MatrixMumps<complex<double> >::CallMumps()
   {
     zmumps_c(&struct_mumps);
   }
@@ -51,7 +51,7 @@ namespace Seldon
 
   //! initialization
   template<class T>
-  inline MatrixMumps<T>::MatrixMumps()
+  MatrixMumps<T>::MatrixMumps()
   {
     struct_mumps.comm_fortran = -987654;
 
@@ -96,7 +96,7 @@ namespace Seldon
   
   //! initialization of the computation
   template<class T> template<class MatrixSparse>
-  inline void MatrixMumps<T>
+  void MatrixMumps<T>
   ::InitMatrix(const MatrixSparse& A, bool distributed)
   {
     // we clear previous factorization
@@ -159,14 +159,14 @@ namespace Seldon
 
   //! selects another ordering scheme
   template<class T>
-  inline void MatrixMumps<T>::SelectOrdering(int num_ordering)
+  void MatrixMumps<T>::SelectOrdering(int num_ordering)
   {
     type_ordering = num_ordering;
   }
 
 
   template<class T>
-  inline void MatrixMumps<T>::SetPermutation(const IVect& permut)
+  void MatrixMumps<T>::SetPermutation(const IVect& permut)
   {
     type_ordering = 1;
     perm.Reallocate(permut.GetM());
@@ -185,7 +185,7 @@ namespace Seldon
 
   //! clears factorization
   template<class T>
-  inline void MatrixMumps<T>::Clear()
+  void MatrixMumps<T>::Clear()
   {
     if (struct_mumps.n > 0)
       {
@@ -202,7 +202,7 @@ namespace Seldon
 
   //! no display from Mumps
   template<class T>
-  inline void MatrixMumps<T>::HideMessages()
+  void MatrixMumps<T>::HideMessages()
   {
     print_level = -1;
 
@@ -216,7 +216,7 @@ namespace Seldon
 
   //! standard display
   template<class T>
-  inline void MatrixMumps<T>::ShowMessages()
+  void MatrixMumps<T>::ShowMessages()
   {
     print_level = 0;
 
@@ -230,7 +230,7 @@ namespace Seldon
 
   //! Enables writing on the disk (out of core).
   template<class T>
-  inline void MatrixMumps<T>::EnableOutOfCore()
+  void MatrixMumps<T>::EnableOutOfCore()
   {
     out_of_core = true;
   }
@@ -238,21 +238,21 @@ namespace Seldon
 
   //! Disables writing on the disk (incore).
   template<class T>
-  inline void MatrixMumps<T>::DisableOutOfCore()
+  void MatrixMumps<T>::DisableOutOfCore()
   {
     out_of_core = false;
   }
 
   
   template<class T>
-  inline void MatrixMumps<T>::SetCoefficientEstimationNeededMemory(double coef)
+  void MatrixMumps<T>::SetCoefficientEstimationNeededMemory(double coef)
   {
     coef_overestimate = coef;
   }
   
   
   template<class T>
-  inline void MatrixMumps<T>::SetMaximumCoefficientEstimationNeededMemory(double coef)
+  void MatrixMumps<T>::SetMaximumCoefficientEstimationNeededMemory(double coef)
   {
     coef_max_overestimate = coef;
   }
@@ -279,7 +279,7 @@ namespace Seldon
 
     int n = mat.GetM();
     // conversion in coordinate format
-    IVect num_row, num_col; Vector<T, VectFull, CallocAlloc<T> > values;
+    IVect num_row, num_col; Vector<T> values;
     ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
     
     int nnz = num_col.GetM();
@@ -317,7 +317,7 @@ namespace Seldon
 
     int n = mat.GetM();
     // conversion in coordinate format with fortran convention (1-index)
-    IVect num_row, num_col; Vector<T, VectFull, CallocAlloc<T> > values;
+    IVect num_row, num_col; Vector<T> values;
     ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
     if (!keep_matrix)
       mat.Clear();

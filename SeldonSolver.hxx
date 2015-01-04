@@ -20,6 +20,9 @@
 
 #ifndef SELDON_FILE_SELDON_SOLVER_HXX
 
+#include "SeldonSolverHeader.hxx"
+#include "SeldonSolverInline.hxx"
+
 // additional classes and functions for sparse matrices
 #include "matrix_sparse/Matrix_Conversions.cxx"
 #include "matrix_sparse/Matrix_ArraySparse.cxx"
@@ -53,11 +56,12 @@
 #include "SeldonPreconditioner.hxx"
 #endif
 
+#include "computation/solver/Ordering.cxx"
 #include "computation/solver/SparseSolver.cxx"
+#include "computation/interfaces/direct/SparseDirectSolver.cxx"
 
 // iterative solvers and preconditioning
 #include "computation/solver/iterative/Iterative.cxx"
-#include "computation/solver/preconditioner/Precond_Ssor.cxx"
 
 // Cholesky Solver
 #ifdef SELDON_WITH_CHOLMOD
@@ -73,11 +77,11 @@
 #endif
 
 #ifdef SELDON_WITH_ANASAZI
+#include "computation/interfaces/eigenvalue/MyMultiVec.cpp"
 #include "computation/interfaces/eigenvalue/Anasazi.cxx"
 #endif
 
 #ifdef SELDON_WITH_FEAST
-#include "computation/interfaces/eigenvalue/Feast.hxx"
 #include "computation/interfaces/eigenvalue/Feast.cxx"
 #endif
 

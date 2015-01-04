@@ -55,7 +55,7 @@ namespace Seldon
   public:
     // Constructor.
     Matrix_TriangPacked();
-    Matrix_TriangPacked(int i, int j = 0);
+    explicit Matrix_TriangPacked(int i, int j = 0);
     Matrix_TriangPacked(const Matrix_TriangPacked<T, Prop, Storage,
 			Allocator>& A);
 
@@ -124,7 +124,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j = 0);
+    explicit Matrix(int i, int j = 0);
     void Resize(int i, int j);
 
     template <class T0>
@@ -176,7 +176,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j = 0);
+    explicit Matrix(int i, int j = 0);
     void Resize(int i, int j);
 
     template <class T0>
@@ -202,7 +202,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j = 0);
+    explicit Matrix(int i, int j = 0);
     void Resize(int i, int j);
 
     template <class T0>

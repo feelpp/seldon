@@ -1,13 +1,16 @@
+#ifndef SELDON_FILE_SELDON_DISTRIBUTED_HXX
 
-#include "share/MpiCommunication.hxx"
+#include "SeldonDistributedHeader.hxx"
+#include "SeldonDistributedInline.hxx"
+
 #include "share/MpiCommunication.cxx"
-
-// including distributed vectors
-#include "vector/DistributedVector.hxx"
-#include "vector/DistributedVectorInline.cxx"
 #include "vector/DistributedVector.cxx"
-
-// including distributed sparse matrices
-#include "matrix_sparse/DistributedMatrix.hxx"
-#include "matrix_sparse/DistributedMatrixInline.cxx"
 #include "matrix_sparse/DistributedMatrix.cxx"
+
+// including distributed solver if SeldonSolver.hxx has been included
+#ifdef SELDON_FILE_SELDON_SOLVER_HXX
+#include "computation/solver/DistributedSolver.cxx"
+#endif
+
+#define SELDON_FILE_SELDON_DISTRIBUTED_HXX
+#endif

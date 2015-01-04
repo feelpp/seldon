@@ -409,10 +409,10 @@ namespace Seldon
     SparseDirectSolver<Complexe> mat_lu_cplx;
     
     //! Cholesky factorisation of mass matrix if required
-    SparseCholeskySolver<MassValue> chol_facto_mass_matrix;
+    SparseCholeskySolver<double> chol_facto_mass_matrix;
     
     //! temporary vectors for Cholesky
-    Vector<MassValue> Xchol_real, Xchol_imag;
+    Vector<double> Xchol_real, Xchol_imag;
     
     //! if true, we take imaginary part of (K - sigma M)^-1
     bool imag_solution;
@@ -423,8 +423,11 @@ namespace Seldon
     
     void FactorizeCholeskyMass();
     
-    void FactorizeCholeskyMass(double&);
-    void FactorizeCholeskyMass(complex<double>&);
+    template<class Storage, class Alloc>
+    void FactorizeCholeskyMass(double&, Matrix<double, Symmetric, Storage, Alloc>& M);
+    
+    template<class T0, class T1, class Prop, class Storage, class Alloc>
+    void FactorizeCholeskyMass(T0&, Matrix<T1, Prop, Storage, Alloc>& M);
     
     template<class TransStatus, class T0>
     void MltCholeskyMass(const TransStatus& transA, Vector<T0>& X);

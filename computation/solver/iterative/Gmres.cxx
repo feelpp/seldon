@@ -62,7 +62,7 @@ namespace Seldon
     // Upper triangular hessenberg matrix
     // we don't store the sub-diagonal
     // we apply rotations to eliminate this sub-diagonal
-    Matrix<Complexe, General, ColUpTriang> H(m+1,m+1);
+    Matrix<Complexe, General, RowUpTriang> H(m+1,m+1);
     H.Fill(zero);
 
     // s is the vector of residual norm for each inner iteration

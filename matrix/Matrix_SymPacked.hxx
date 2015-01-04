@@ -54,7 +54,7 @@ namespace Seldon
   public:
     // Constructor.
     Matrix_SymPacked();
-    Matrix_SymPacked(int i, int j = 0);
+    explicit Matrix_SymPacked(int i, int j = 0);
     Matrix_SymPacked(const Matrix_SymPacked<T, Prop, Storage, Allocator>& A);
 
     // Destructor.
@@ -122,7 +122,7 @@ namespace Seldon
 
   public:
     Matrix();
-    Matrix(int i, int j = 0);
+    explicit Matrix(int i, int j = 0);
 
     template <class T0>
     Matrix<T, Prop, ColSymPacked, Allocator>& operator= (const T0& x);
