@@ -60,6 +60,7 @@ namespace Seldon
   {
   protected :
     int type_ordering; //!< ordering scheme (AMD, Metis, etc)
+    bool parallel_ordering;
     //! object containing Mumps data structure
     typename TypeMumps<T>::data struct_mumps;
     //! double* or complex<double>*
@@ -87,6 +88,7 @@ namespace Seldon
     void Clear();
 
     void SelectOrdering(int num_ordering);
+    void SelectParallelOrdering(int num_ordering);
     void SetPermutation(const IVect& permut);
 
     void HideMessages();

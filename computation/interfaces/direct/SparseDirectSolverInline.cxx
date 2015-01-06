@@ -149,6 +149,14 @@ namespace Seldon
   {
     return threshold_matrix;
   }
+
+  
+  //! modifies threshold used for ilut
+  template<class T>
+  inline void SparseDirectSolver<T>::SetThresholdMatrix(const double& eps)
+  {
+    threshold_matrix = eps;
+  }
   
     
   /*************************

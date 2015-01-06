@@ -1538,7 +1538,7 @@ namespace Seldon
       for (int j = 0; j < dist_row(i).GetM(); j++)
         {
           int jloc = dist_row(i).Index(j);
-          Y(i) += conj(dist_row(i).Value(j))*X(jloc);
+          Y(i) += conjugate(dist_row(i).Value(j))*X(jloc);
         }
   }
 
@@ -1601,7 +1601,7 @@ namespace Seldon
       for (int j = 0; j < dist_col(i).GetM(); j++)
         {
           int jrow = dist_col(i).Index(j);
-          Y(jrow) += conj(dist_col(i).Value(j))*X(i);
+          Y(jrow) += conjugate(dist_col(i).Value(j))*X(i);
         }
   }
   
@@ -2793,11 +2793,11 @@ namespace Seldon
     
     for (int i = 0; i < A.dist_row.GetM(); i++)
       for (int j = 0; j < A.dist_row(i).GetM(); j++)
-        A.dist_row(i).Value(j) = conj(A.dist_row(i).Value(j));
+        A.dist_row(i).Value(j) = conjugate(A.dist_row(i).Value(j));
     
     for (int i = 0; i < A.dist_col.GetM(); i++)
       for (int j = 0; j < A.dist_col(i).GetM(); j++)
-        A.dist_col(i).Value(j) = conj(A.dist_col(i).Value(j));
+        A.dist_col(i).Value(j) = conjugate(A.dist_col(i).Value(j));
   }
   
   

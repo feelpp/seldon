@@ -191,10 +191,8 @@ namespace Seldon
       }    
   }
     
-  
-  //! computation of the permutation vector in order to reduce fill-in
-  template<class T> template<class MatrixSparse>
-  void SparseDirectSolver<T>::ComputeOrdering(MatrixSparse& A)
+  template<class T> 
+  bool SparseDirectSolver<T>::AffectOrdering()
   {
     bool user_ordering = false;
     // we set the ordering for each direct solver interfaced
@@ -267,6 +265,7 @@ namespace Seldon
 	}
 	break;
       case SparseMatrixOrdering::PORD :
+      case SparseMatrixOrdering::AMF :
       case SparseMatrixOrdering::QAMD :
 	{
 	  // Mumps orderings
@@ -275,6 +274,8 @@ namespace Seldon
 #ifdef SELDON_WITH_MUMPS
 	      if (type_ordering == SparseMatrixOrdering::PORD)
 		mat_mumps.SelectOrdering(4);
+	      else if (type_ordering == SparseMatrixOrdering::AMF)
+		mat_mumps.SelectOrdering(2);
 	      else
 		mat_mumps.SelectOrdering(6);
 #endif
@@ -286,12 +287,16 @@ namespace Seldon
 	}
 	break;
       case SparseMatrixOrdering::SCOTCH :
+      case SparseMatrixOrdering::PTSCOTCH :
 	{
 	  // available for Mumps and Pastix
 	  if (type_solver == MUMPS)
 	    {
 #ifdef SELDON_WITH_MUMPS
-	      mat_mumps.SelectOrdering(3);
+              if (type_ordering==SparseMatrixOrdering::PTSCOTCH)
+                mat_mumps.SelectParallelOrdering(1);
+              else
+                mat_mumps.SelectOrdering(3);
 #endif
 	    }
 	  else if (type_solver == PASTIX)
@@ -307,12 +312,16 @@ namespace Seldon
 	}
 	break;
       case SparseMatrixOrdering::METIS :
+      case SparseMatrixOrdering::PARMETIS :
 	{
 	  // available for Mumps and Pastix
 	  if (type_solver == MUMPS)
 	    {
 #ifdef SELDON_WITH_MUMPS
-	      mat_mumps.SelectOrdering(5);
+              if (type_ordering==SparseMatrixOrdering::PARMETIS)
+                mat_mumps.SelectParallelOrdering(2);
+              else
+                mat_mumps.SelectOrdering(5);
 #endif
 	    }
 	  else if (type_solver == PASTIX)
@@ -344,6 +353,12 @@ namespace Seldon
 	      mat_umf.SelectOrdering(UMFPACK_ORDERING_AMD);
 #endif
 	    }
+	  else if (type_solver == MUMPS)
+	    {
+#ifdef SELDON_WITH_MUMPS
+              mat_mumps.SelectOrdering(0);
+#endif
+            }
 	  else if (type_solver == SUPERLU)
 	    {
 #ifdef SELDON_WITH_SUPERLU
@@ -357,6 +372,15 @@ namespace Seldon
 	}
 	break;
       }
+    
+    return user_ordering;
+  }
+  
+  //! computation of the permutation vector in order to reduce fill-in
+  template<class T> template<class MatrixSparse>
+  void SparseDirectSolver<T>::ComputeOrdering(MatrixSparse& A)
+  {
+    bool user_ordering = AffectOrdering();
     
     if (user_ordering)
       {
@@ -837,6 +861,14 @@ namespace Seldon
                        Vector<Tint>& Ptr, Vector<Tint>& Row, Vector<T>& Val,
                        const IVect& glob_num, bool sym, bool keep_matrix)
   {
+    bool user_ordering = AffectOrdering();
+    if (user_ordering)
+      {
+        throw Undefined("SparseDirectSolver::FactorizeDistributed(MPI::Comm&,"
+                        " IVect&, IVect&, Vector<T>&, IVect&, bool, bool)",
+                        "user orderings not available in parallel");
+      }
+    
     n = Ptr.GetM()-1;
     if (type_solver == MUMPS)
       {

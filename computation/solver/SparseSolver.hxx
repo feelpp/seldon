@@ -55,6 +55,7 @@ namespace Seldon
     
     void HideMessages();
     void ShowMessages();
+    int GetPrintLevel() const;
     
     int64_t GetMemorySize() const;
     

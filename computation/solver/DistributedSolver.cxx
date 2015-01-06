@@ -122,6 +122,9 @@ namespace Seldon
         bool sym_matrix = IsSymmetricMatrix(A);
         
         // assembles distributed matrix
+        if ((this->mat_seldon.GetPrintLevel() >= 1) &&(comm.Get_rank() == 0))
+          cout << "Assembling the distributed matrix..." << endl;
+        
         Vector<Int_wp> Ptr, IndRow;
         Vector<T> Val; Prop0 sym;
         bool sym_pattern = false;
@@ -131,6 +134,9 @@ namespace Seldon
         AssembleDistributed(A, sym, comm, global_col_numbers,
                             local_col_numbers,
 			    Ptr, IndRow, Val, sym_pattern);
+        
+        if ((this->mat_seldon.GetPrintLevel() >= 1) &&(comm.Get_rank() == 0))
+          cout << "Factorizing the distributed matrix..." << endl;
         
         // factorizes the matrix
         this->FactorizeDistributed(comm, Ptr, IndRow, Val,

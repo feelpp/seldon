@@ -57,13 +57,13 @@ namespace std
 namespace std
 {
   template<class T>
-  T conjugate(const T& x)
+  inline T conjugate(const T& x)
   {
     return x;
   }
   
   template<class T>
-  complex<T> conjugate(const complex<T>& x)
+  inline complex<T> conjugate(const complex<T>& x)
   {
     return conj(x);
   }

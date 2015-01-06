@@ -89,6 +89,7 @@ namespace Seldon
     
     int GetTypeOrdering() const;
     void SetPermutation(const IVect&);
+    bool AffectOrdering();
     void SelectOrdering(int);
     
     void SetNumberOfThreadPerNode(int m);
@@ -109,7 +110,8 @@ namespace Seldon
     void SetIncreaseCoefficientEstimationNeededMemory(double);
     
     double GetThresholdMatrix() const;
-    
+    void SetThresholdMatrix(const double&);
+
     template<class MatrixSparse>
     void Factorize(MatrixSparse& A, bool keep_matrix = false);
     

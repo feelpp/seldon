@@ -828,7 +828,7 @@ namespace Seldon
 
     for (i = 0; i < ma; i++)
       for (j = ptr[i]; j < ptr[i + 1]; j++)
-	Y(ind[j]) += alpha * conj(data[j]) * X(i);
+	Y(ind[j]) += alpha * conjugate(data[j]) * X(i);
   }
 
   
@@ -919,7 +919,7 @@ namespace Seldon
       {
         temp = zero;
         for (j = ptr[i]; j < ptr[i + 1]; j++)
-          temp += conj(data[j]) * X(ind[j]);
+          temp += conjugate(data[j]) * X(ind[j]);
         
         Y(i) += alpha * temp;
       }
@@ -995,14 +995,14 @@ namespace Seldon
       {
 	temp = zero;
 	for (j = ptr[i]; j < ptr[i + 1]; j++)
-	  temp += conj(data[j]) * X(ind[j]);
+	  temp += conjugate(data[j]) * X(ind[j]);
 	
         Y(i) += alpha * temp;
       }
     for (i = 0; i < ma - 1; i++)
       for (j = ptr[i]; j < ptr[i + 1]; j++)
 	if (ind[j] != i)
-	  Y(ind[j]) += alpha * conj(data[j]) * X(i);
+	  Y(ind[j]) += alpha * conjugate(data[j]) * X(i);
   }
   
   
@@ -1072,13 +1072,13 @@ namespace Seldon
       {
 	temp = zero;
 	for (j = ptr[i]; j < ptr[i + 1]; j++)
-	  temp += conj(data[j]) * X(ind[j]);
+	  temp += conjugate(data[j]) * X(ind[j]);
 	
         Y(i) += alpha * temp;
         
         for (j = ptr[i]; j < ptr[i + 1]; j++)
           if (ind[j] != i)
-            Y(ind[j]) += alpha * conj(data[j]) * X(i);
+            Y(ind[j]) += alpha * conjugate(data[j]) * X(i);
       }
   }
 
@@ -1405,7 +1405,7 @@ namespace Seldon
       {
 	temp = zero;
 	for (int j = 0; j < ma; j++)
-	  temp += conj(M(j, i)) * X(j);
+	  temp += conjugate(M(j, i)) * X(j);
 	Y(i) += alpha * temp;
       }
   }
@@ -1909,11 +1909,11 @@ namespace Seldon
                                           " a non-null diagonal");
 #endif
                    
-                    Y(i) /= conj(data[j]);
+                    Y(i) /= conjugate(data[j]);
                     j--;
                     while (j >= ptr[i])
                       {
-                        Y(ind[j]) -= conj(data[j])*Y(i);
+                        Y(ind[j]) -= conjugate(data[j])*Y(i);
                         j--;
                       }
                   }
@@ -1925,7 +1925,7 @@ namespace Seldon
                     int j = ptr[i];
                     while ((j < ptr[i+1]) && (ind[j] < i))
                       {
-                        Y(ind[j]) -= conj(data[j])*Y(i);
+                        Y(ind[j]) -= conjugate(data[j])*Y(i);
                         j++;
                       }
                   }
@@ -2027,11 +2027,11 @@ namespace Seldon
                                           " a non-null diagonal");
 #endif
                     
-                    Y(i) /= conj(data[j]);
+                    Y(i) /= conjugate(data[j]);
                     j++;
                     while (j < ptr[i+1])
                       {
-                        Y(ind[j]) -= conj(data[j])*Y(i);
+                        Y(ind[j]) -= conjugate(data[j])*Y(i);
                         j++;
                       }
                   }
@@ -2043,7 +2043,7 @@ namespace Seldon
                     int j = ptr[i+1]-1;
                     while ( (j >= ptr[i]) && (ind[j] > i))
                       {
-                        Y(ind[j]) -= conj(data[j])*Y(i);
+                        Y(ind[j]) -= conjugate(data[j])*Y(i);
                         j--;
                       }         
                   }           

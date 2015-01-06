@@ -65,6 +65,13 @@ namespace Seldon
     print_level = 1;
   }
   
+
+  template<class T, class Allocator>
+  inline int SparseSeldonSolver<T, Allocator>::GetPrintLevel() const
+  {
+    return print_level;
+  }
+
   
   template<class T, class Allocator>
   inline double SparseSeldonSolver<T, Allocator>::GetPivotThreshold() const

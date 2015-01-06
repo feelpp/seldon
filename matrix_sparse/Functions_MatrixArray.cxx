@@ -913,7 +913,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.Index(i, k);
-		val = conj(A.Value(i, k));
+		val = conjugate(A.Value(i, k));
 
 		if (p == i)
 		  C(i) += val * B(i);
@@ -934,7 +934,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.Index(i, k);
-		val = conj(A.Value(i, k));
+		val = conjugate(A.Value(i, k));
 
 		if (p==i)
 		  C(i) += alpha * val * B(i);
@@ -1075,7 +1075,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.Index(i, k);
-		val = conj(A.Value(i, k));
+		val = conjugate(A.Value(i, k));
 
 		if (p == i)
 		  C(i) += val * B(i);
@@ -1096,7 +1096,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.Index(i, k);
-		val = alpha * conj(A.Value(i, k));
+		val = alpha * conjugate(A.Value(i, k));
 
 		if (p==i)
 		  C(i) += val * B(i);
@@ -1249,7 +1249,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.Index(i, k);
-		val = conj(A.Value(i, k));
+		val = conjugate(A.Value(i, k));
 		C(p) += val * B(i);
 	      }
 	  }
@@ -1262,7 +1262,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.Index(i, k);
-		val = conj(A.Value(i, k));
+		val = conjugate(A.Value(i, k));
 		C(p) += alpha * val * B(i);
 	      }
 	  }
@@ -1373,13 +1373,13 @@ namespace Seldon
       {
 	for (int i = 0 ; i < A.GetN(); i++)
           for (int k = 0; k < A.GetColumnSize(i); k++)
-            C(i) += conj(A.Value(i, k)) * B(A.Index(i, k));
+            C(i) += conjugate(A.Value(i, k)) * B(A.Index(i, k));
       }
     else // alpha != 1.
       {
 	for (int i = 0 ; i < A.GetN(); i++)
           for (int k = 0; k < A.GetColumnSize(i); k++)
-            C(i) += alpha * conj(A.Value(i, k)) * B(A.Index(i, k));
+            C(i) += alpha * conjugate(A.Value(i, k)) * B(A.Index(i, k));
       }
   }
 
@@ -1995,7 +1995,7 @@ namespace Seldon
   {
     for (int i = 0; i < A.GetM(); i++)
       for (int j = 0; j < A.GetRowSize(i); j++)
-        A.Value(i, j) = conj(A.Value(i, j));
+        A.Value(i, j) = conjugate(A.Value(i, j));
   }
 
 
@@ -2005,7 +2005,7 @@ namespace Seldon
   {
     for (int i = 0; i < A.GetN(); i++)
       for (int j = 0; j < A.GetColumnSize(i); j++)
-        A.Value(i, j) = conj(A.Value(i, j));
+        A.Value(i, j) = conjugate(A.Value(i, j));
   }
 
 
@@ -2015,7 +2015,7 @@ namespace Seldon
   {
     for (int i = 0; i < A.GetM(); i++)
       for (int j = 0; j < A.GetRowSize(i); j++)
-        A.Value(i, j) = conj(A.Value(i, j));
+        A.Value(i, j) = conjugate(A.Value(i, j));
   }
 
 
@@ -2025,7 +2025,7 @@ namespace Seldon
   {
     for (int i = 0; i < A.GetN(); i++)
       for (int j = 0; j < A.GetColumnSize(i); j++)
-        A.Value(i, j) = conj(A.Value(i, j));
+        A.Value(i, j) = conjugate(A.Value(i, j));
   }
 
   
@@ -2379,7 +2379,7 @@ namespace Seldon
             for (int k = 0; k < A.GetRowSize(i); k++)
               {
                 ind = A.Index(i, k);
-                vloc = alpha*B.Value(i, j)*conj(A.Value(i, k));
+                vloc = alpha*B.Value(i, j)*conjugate(A.Value(i, k));
                 C.AddInteraction(ind, col, vloc);
               }
           }
@@ -2435,7 +2435,7 @@ namespace Seldon
                 if (B.Index(ib, k) == col)
                   {
                     ind = ib;
-                    vloc = alpha*A.Value(i, j)*conj(B.Value(ib, k));
+                    vloc = alpha*A.Value(i, j)*conjugate(B.Value(ib, k));
                     if (Index(ind) >= 0)
                       {
                         // already existing entry, we add it
@@ -2509,7 +2509,7 @@ namespace Seldon
             for (int k = 0; k < A.GetRowSize(col); k++)
               {
                 ind = A.Index(col, k);
-                vloc = alpha*conj(B.Value(i, j))*A.Value(col, k);
+                vloc = alpha*conjugate(B.Value(i, j))*A.Value(col, k);
                 if (Index(ind) >= 0)
                   {
                     // already existing entry, we add it
@@ -2583,7 +2583,7 @@ namespace Seldon
             for (int k = 0; k < A.GetRowSize(col); k++)
               {
                 ind = A.Index(col, k);
-                vloc = alpha*B.Value(i, j)*conj(A.Value(col, k));
+                vloc = alpha*B.Value(i, j)*conjugate(A.Value(col, k));
                 if (Index(ind) >= 0)
                   {
                     // already existing entry, we add it
@@ -2657,7 +2657,7 @@ namespace Seldon
             for (int k = 0; k < A.GetRowSize(col); k++)
               {
                 ind = A.Index(col, k);
-                vloc = alpha*conj(B.Value(i, j))*conj(A.Value(col, k));
+                vloc = alpha*conjugate(B.Value(i, j))*conjugate(A.Value(col, k));
                 if (Index(ind) >= 0)
                   {
                     // already existing entry, we add it

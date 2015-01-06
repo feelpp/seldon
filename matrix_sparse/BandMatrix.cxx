@@ -468,7 +468,7 @@ namespace Seldon
             for (int k = kmin; k <= kmax; k++)
               {
                 row = j + k - d;
-                val += conj(data_(k, j))*x(row);
+                val += conjugate(data_(k, j))*x(row);
               }
             
             y(j) += alpha*val;
@@ -1135,7 +1135,7 @@ namespace Seldon
           {
             val = alpha*x(this->m_ + i);
             for (int j = 0; j < this->n_; j++)
-              y(j) += conj(last_rows_(i, j))*val;
+              y(j) += conjugate(last_rows_(i, j))*val;
           }
         
         // last columns
@@ -1143,7 +1143,7 @@ namespace Seldon
           {
             val = zero;
             for (int i = 0; i < this->m_; i++)
-              val += conj(last_columns_(i, j))*x(i);
+              val += conjugate(last_columns_(i, j))*x(i);
         
             y(this->n_+j) += alpha*val;
           }
@@ -1153,7 +1153,7 @@ namespace Seldon
           {
             val = alpha*x(this->m_+i);
             for (int j = 0; j < last_block_.GetN(); j++)
-              y(this->n_+j) += conj(last_block_(i, j))*val;
+              y(this->n_+j) += conjugate(last_block_(i, j))*val;
           }
       }
   }

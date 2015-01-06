@@ -795,7 +795,7 @@ namespace Seldon
 		{
 		  temp = zero;
 		  for (int k = 0; k < ma; k++)
-		    temp += conj(A(k, Storage4::GetFirst(i, j)))
+		    temp += conjugate(A(k, Storage4::GetFirst(i, j)))
 		      * B(k, Storage4::GetSecond(i, j));
 		  
 		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
@@ -815,7 +815,7 @@ namespace Seldon
 		  temp = zero;
 		  for (int k = 0; k < na; k++)
 		    temp += A(Storage4::GetFirst(i, j), k)
-		      * conj(B(Storage4::GetSecond(i, j), k));
+		      * conjugate(B(Storage4::GetSecond(i, j), k));
 		  
 		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 		    += alpha * temp;
@@ -831,7 +831,7 @@ namespace Seldon
 		  temp = zero;
 		  for (int k = 0; k < ma; k++)
 		    temp += A(k, Storage4::GetFirst(i, j))
-		      * conj(B(Storage4::GetSecond(i, j), k));
+		      * conjugate(B(Storage4::GetSecond(i, j), k));
 		  
 		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 		    += alpha * temp;
@@ -846,8 +846,8 @@ namespace Seldon
 		{
 		  temp = zero;
 		  for (int k = 0; k < ma; k++)
-		    temp += conj(A(k, Storage4::GetFirst(i, j)))
-		      * conj(B(Storage4::GetSecond(i, j), k));
+		    temp += conjugate(A(k, Storage4::GetFirst(i, j)))
+		      * conjugate(B(Storage4::GetSecond(i, j), k));
 		  
 		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
 		    += alpha * temp;
@@ -897,7 +897,7 @@ namespace Seldon
 		{
 		  temp = zero;
 		  for (int k = 0; k < ma; k++)
-		    temp += conj(A(k, Storage4::GetFirst(i, j)))
+		    temp += conjugate(A(k, Storage4::GetFirst(i, j)))
 		      * B(Storage4::GetSecond(i, j), k);
 		  
 		  C.Get(Storage4::GetFirst(i, j), Storage4::GetSecond(i, j))
@@ -3026,7 +3026,7 @@ namespace Seldon
   void Conjugate(Matrix<T, Prop, Storage, Allocator>& A)
   {
     for (int i = 0; i < A.GetDataSize(); i++)
-      A.GetData()[i] = conj(A.GetData()[i]);
+      A.GetData()[i] = conjugate(A.GetData()[i]);
   }
   
   

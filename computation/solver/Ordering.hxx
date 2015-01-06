@@ -30,7 +30,8 @@ namespace Seldon
   public :
     // Supported orderings.
     enum {IDENTITY, REVERSE_CUTHILL_MCKEE, PORD,
-	  SCOTCH, METIS, AMD, COLAMD, QAMD, USER, AUTO};
+	  SCOTCH, METIS, AMD, COLAMD, QAMD, USER, AUTO,
+          AMF, PARMETIS, PTSCOTCH};
   };
 
 

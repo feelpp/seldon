@@ -66,6 +66,7 @@ namespace Seldon
     print_level = -1;
     info_facto = 0;
     out_of_core = false;
+    parallel_ordering = false;
     coef_overestimate = 1.3;
     coef_increase_memory = 1.5;
     coef_max_overestimate = 50.0;
@@ -127,10 +128,19 @@ namespace Seldon
     CallMumps();
     
     struct_mumps.icntl[13] = int(100.0*(coef_overestimate-1.0));
-    struct_mumps.icntl[6] = type_ordering;
-    if (type_ordering == 1)
-      struct_mumps.perm_in = perm.GetData();
-
+    if (parallel_ordering)
+      {
+        struct_mumps.icntl[6] = 0;
+        struct_mumps.icntl[27] = 2;
+        struct_mumps.icntl[28] = type_ordering;
+      }
+    else
+      {
+        struct_mumps.icntl[6] = type_ordering;
+        if (type_ordering == 1)
+          struct_mumps.perm_in = perm.GetData();
+      }
+    
     // setting out of core parameters
     if (out_of_core)
       struct_mumps.icntl[21] = 1;
@@ -161,6 +171,15 @@ namespace Seldon
   template<class T>
   void MatrixMumps<T>::SelectOrdering(int num_ordering)
   {
+    type_ordering = num_ordering;
+  }
+
+
+  //! selects another ordering scheme (for distributed matrices)
+  template<class T>
+  void MatrixMumps<T>::SelectParallelOrdering(int num_ordering)
+  {
+    parallel_ordering = true;
     type_ordering = num_ordering;
   }
 
@@ -598,7 +617,7 @@ namespace Seldon
 
     // distributed matrix
     struct_mumps.icntl[17] = 3;
-
+    
     // finding the size of the overall system
     Tint nmax = 0, N = 0;
     for (int i = 0; i < glob_number.GetM(); i++)

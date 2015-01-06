@@ -478,7 +478,7 @@ namespace Seldon
 #endif
 
     for (int i = 0; i < X.GetM(); i++)
-      value += conj(X(i)) * Y(i);
+      value += conjugate(X(i)) * Y(i);
 
     return value;
   }
@@ -546,7 +546,7 @@ namespace Seldon
 	  ky++;
 
 	if (ky < size_y && Y.Index(ky) == pos_x)
-	  value += conj(X.Value(kx)) * Y.Value(ky);
+	  value += conjugate(X.Value(kx)) * Y.Value(ky);
 
 	kx++;
       }
@@ -565,7 +565,7 @@ namespace Seldon
     complex<T1> value(0, 0);
 
     for (int i = 0; i < X.GetM(); i++)
-      value += conj(X.Value(i))*Y(X.Index(i));
+      value += conjugate(X.Value(i))*Y(X.Index(i));
     
     return value;
   }
@@ -785,7 +785,7 @@ namespace Seldon
 
 	c_ = a / norm;
 	complex<T> alpha = a_in / a;
-	s_ = alpha * conj(b_in) / norm;
+	s_ = alpha * conjugate(b_in) / norm;
 	a_in = alpha * norm;
       }
     b_in = complex<T>(0, 0);
@@ -808,7 +808,7 @@ namespace Seldon
 		const T& c_, const complex<T>& s_)
   {
     complex<T> temp = s_ * y + c_ * x;
-    y = -conj(s_) * x + c_ * y;
+    y = -conjugate(s_) * x + c_ * y;
     x = temp;
   }
   
@@ -1104,7 +1104,7 @@ namespace Seldon
   void Conjugate(Vector<T, Prop, Allocator>& X)
   {
     for (int i = 0; i < X.GetM(); i++)
-      X(i) = conj(X(i));
+      X(i) = conjugate(X(i));
   }
 
 
@@ -1113,7 +1113,7 @@ namespace Seldon
   void Conjugate(Vector<T, VectSparse, Allocator>& X)
   {
     for (int i = 0; i < X.GetSize(); i++)
-      X.Value(i) = conj(X.Value(i));
+      X.Value(i) = conjugate(X.Value(i));
   }
 
 
