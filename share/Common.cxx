@@ -301,6 +301,9 @@ namespace Seldon
   inline string GetExtension(const string& nom)
   {
     size_t index = nom.find_last_of('.');
+    if (index == string::npos)
+      return string("");
+    
     string extension = nom.substr(index+1, nom.size()-index);  
     return extension;
   }
@@ -310,6 +313,9 @@ namespace Seldon
   inline string GetBaseString(const string& nom)
   {
     size_t index = nom.find_last_of('.');
+    if (index == string::npos)
+      return nom;
+    
     string base = nom.substr(0, index);
     return base;
   }
