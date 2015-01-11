@@ -26,7 +26,7 @@
 namespace Seldon
 {
 
-
+#ifndef SELDON_WITH_COMPILED_LIBRARY
   ////////////
   // GenRot //
 
@@ -70,6 +70,7 @@ namespace Seldon
 
   // GenModifRot //
   /////////////////
+#endif
 
 
 
