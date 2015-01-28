@@ -451,17 +451,21 @@ namespace Seldon
 #endif
 
     // not using cblas_cdotu_sub because of a bug in mkl function
-    /*complex<float> dotu;
+#ifdef SELDON_WITHOUT_CBLAS_LIB
+    complex<float> dotu;
     cblas_cdotu_sub(Y.GetLength(),
 		    reinterpret_cast<const void*>(X.GetData()), 1,
 		    reinterpret_cast<const void*>(Y.GetData()), 1,
-		    reinterpret_cast<void*>(&dotu));*/
+		    reinterpret_cast<void*>(&dotu));
+#else
     complex<float> dotu;
     int n = Y.GetLength(), inc = 1;
     cdotusub_(&n, 
               reinterpret_cast<const void*>(X.GetData()), &inc,
               reinterpret_cast<const void*>(Y.GetData()), &inc,
               reinterpret_cast<void*>(&dotu));
+#endif
+    
     return dotu;
   }
 
@@ -477,18 +481,20 @@ namespace Seldon
 #endif
     
     // not using cblas_zdotu_sub because of a bug in mkl function
-    /*complex<double> dotu;
+#ifdef SELDON_WITHOUT_CBLAS_LIB
+    complex<double> dotu;
     cblas_zdotu_sub(Y.GetLength(),
 		    reinterpret_cast<const void*>(X.GetData()), 1,
 		    reinterpret_cast<const void*>(Y.GetData()), 1,
-		    reinterpret_cast<void*>(&dotu));*/
-    
+		    reinterpret_cast<void*>(&dotu));
+#else
     complex<double> dotu;
     int n = Y.GetLength(), inc = 1;
     zdotusub_(&n, 
               reinterpret_cast<const void*>(X.GetData()), &inc,
               reinterpret_cast<const void*>(Y.GetData()), &inc,
               reinterpret_cast<void*>(&dotu));
+#endif
     
     return dotu;
   }
@@ -539,17 +545,21 @@ namespace Seldon
 #endif
 
     // not using cblas_cdotc_sub because of a bug in mkl function
-    /*complex<float> dotc;
+#ifdef SELDON_WITHOUT_CBLAS_LIB
+    complex<float> dotc;
     cblas_cdotc_sub(Y.GetLength(),
 		    reinterpret_cast<const void*>(X.GetData()), 1,
 		    reinterpret_cast<const void*>(Y.GetData()), 1,
-		    reinterpret_cast<void*>(&dotc));*/
+		    reinterpret_cast<void*>(&dotc));
+#else
     complex<float> dotc;
     int n = Y.GetLength(), inc = 1;
     cdotcsub_(&n, 
               reinterpret_cast<const void*>(X.GetData()), &inc,
               reinterpret_cast<const void*>(Y.GetData()), &inc,
               reinterpret_cast<void*>(&dotc));
+#endif
+    
     return dotc;
   }
 
@@ -565,17 +575,21 @@ namespace Seldon
 #endif
 
     // not using cblas_zdotc_sub because of a bug in mkl function
-    /*complex<double> dotc;
+#ifdef SELDON_WITHOUT_CBLAS_LIB
+    complex<double> dotc;
     cblas_zdotc_sub(Y.GetLength(),
 		    reinterpret_cast<const void*>(X.GetData()), 1,
 		    reinterpret_cast<const void*>(Y.GetData()), 1,
-		    reinterpret_cast<void*>(&dotc));*/
+		    reinterpret_cast<void*>(&dotc));
+#else
     complex<double> dotc;
     int n = Y.GetLength(), inc = 1;
     zdotcsub_(&n, 
               reinterpret_cast<const void*>(X.GetData()), &inc,
               reinterpret_cast<const void*>(Y.GetData()), &inc,
               reinterpret_cast<void*>(&dotc));
+#endif
+    
     return dotc;
   }
 
