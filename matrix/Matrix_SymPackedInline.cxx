@@ -103,7 +103,18 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_SymPacked<T, Prop, Storage, Allocator>::~Matrix_SymPacked()
   {
+    this->Clear();
+  }
 
+
+  //! Clears the matrix.
+  /*!
+    Destructs the matrix.
+    \warning On exit, the matrix is an empty 0x0 matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>::Clear()
+  {
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -125,19 +136,7 @@ namespace Seldon
 	this->data_ = NULL;
       }
 #endif
-
-  }
-
-
-  //! Clears the matrix.
-  /*!
-    Destructs the matrix.
-    \warning On exit, the matrix is an empty 0x0 matrix.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>::Clear()
-  {
-    this->~Matrix_SymPacked();
+    
     this->m_ = 0;
     this->n_ = 0;
   }

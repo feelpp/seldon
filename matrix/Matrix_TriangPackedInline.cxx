@@ -105,7 +105,19 @@ namespace Seldon
   inline Matrix_TriangPacked<T, Prop, Storage, Allocator>
   ::~Matrix_TriangPacked()
   {
+    this->Clear();
+  }
 
+
+  //! Clears the matrix.
+  /*!
+    Destructs the matrix.
+    \warning On exit, the matrix is an empty 0x0 matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_TriangPacked<T, Prop, Storage, Allocator>::Clear()
+  {
+    
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -128,18 +140,6 @@ namespace Seldon
       }
 #endif
 
-  }
-
-
-  //! Clears the matrix.
-  /*!
-    Destructs the matrix.
-    \warning On exit, the matrix is an empty 0x0 matrix.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_TriangPacked<T, Prop, Storage, Allocator>::Clear()
-  {
-    this->~Matrix_TriangPacked();
     this->m_ = 0;
     this->n_ = 0;
   }

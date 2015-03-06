@@ -65,7 +65,8 @@ namespace Seldon
 
     // Destructor.
     ~Vector_Base();
-
+    void Clear();
+    
     // Basic methods.
     int GetM() const;
     int GetLength() const;

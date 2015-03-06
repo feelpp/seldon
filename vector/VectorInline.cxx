@@ -84,7 +84,15 @@ namespace Seldon
   template <class T, class Allocator>
   inline Vector_Base<T, Allocator>::~Vector_Base()
   {
+    this->Clear();
+  }
 
+  
+  //! Releases memory used by the vector.
+  template <class T, class Allocator>
+  inline void Vector_Base<T, Allocator>::Clear()
+  {
+    
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -333,7 +341,7 @@ namespace Seldon
   template <class T, class Allocator>
   inline void Vector<T, VectFull, Allocator>::Clear()
   {
-    this->~Vector();
+    Vector_Base<T, Allocator>::Clear();
   }
 
 

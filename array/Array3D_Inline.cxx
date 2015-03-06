@@ -119,30 +119,7 @@ namespace Seldon
   template <class T, class Allocator>
   inline Array3D<T, Allocator>::~Array3D()
   {
-    length1_ = 0;
-    length2_ = 0;
-    length3_ = 0;
-    length23_ = 0;
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	if (data_ != NULL)
-	  {
-	    array3D_allocator_.deallocate(data_, length1_ * length23_);
-	    data_ = NULL;
-	  }
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	data_ = NULL;
-      }
-#endif
-
+    Clear();
   }
 
 
@@ -263,7 +240,30 @@ namespace Seldon
   template <class T, class Allocator>
   inline void Array3D<T, Allocator>::Clear()
   {
-    this->~Array3D();
+    length1_ = 0;
+    length2_ = 0;
+    length3_ = 0;
+    length23_ = 0;
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (data_ != NULL)
+	  {
+	    array3D_allocator_.deallocate(data_, length1_ * length23_);
+	    data_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	data_ = NULL;
+      }
+#endif
+
     this->length1_ = 0;
     this->length2_ = 0;
     this->length3_ = 0;

@@ -214,6 +214,17 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_Sparse<T, Prop, Storage, Allocator>::~Matrix_Sparse()
   {
+    this->Clear();
+  }
+
+
+  //! Clears the matrix.
+  /*! This methods is equivalent to the destructor. On exit, the matrix
+    is empty (0x0).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Sparse<T, Prop, Storage, Allocator>::Clear()
+  {
     this->m_ = 0;
     this->n_ = 0;
 
@@ -276,17 +287,6 @@ namespace Seldon
 #endif
 
     this->nz_ = 0;
-  }
-
-
-  //! Clears the matrix.
-  /*! This methods is equivalent to the destructor. On exit, the matrix
-    is empty (0x0).
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Sparse<T, Prop, Storage, Allocator>::Clear()
-  {
-    this->~Matrix_Sparse();
   }
 
   

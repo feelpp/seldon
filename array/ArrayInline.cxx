@@ -530,38 +530,7 @@ namespace Seldon
   template <class T, int N, class Allocator>
   inline Array<T, N, Allocator>::~Array()
   {
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	if (data_ != NULL)
-	  {
-	    array_allocator_.deallocate(data_, offset_[N-1]);
-	    data_ = NULL;
-	  }
-	if (length_ != NULL)
-	  {
-	    length_allocator_.deallocate(length_, N);
-	    length_ = NULL;
-	  }
-	if (offset_ != NULL)
-	  {
-	    length_allocator_.deallocate(offset_, N);
-	    offset_ = NULL;
-	  }
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	length_ = NULL;
-	offset_ = NULL;
-	data_ = NULL;
-      }
-#endif
-
+    Clear();
   }
 
 
@@ -1162,7 +1131,38 @@ namespace Seldon
   template <class T, int N, class Allocator>
   inline void Array<T, N, Allocator>::Clear()
   {
-    this->~Array();
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (data_ != NULL)
+	  {
+	    array_allocator_.deallocate(data_, offset_[N-1]);
+	    data_ = NULL;
+	  }
+	if (length_ != NULL)
+	  {
+	    length_allocator_.deallocate(length_, N);
+	    length_ = NULL;
+	  }
+	if (offset_ != NULL)
+	  {
+	    length_allocator_.deallocate(offset_, N);
+	    offset_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	length_ = NULL;
+	offset_ = NULL;
+	data_ = NULL;
+      }
+#endif
+    
   }
 
 

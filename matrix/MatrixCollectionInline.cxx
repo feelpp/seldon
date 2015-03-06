@@ -166,7 +166,7 @@ namespace Seldon
     for (int i = 0; i < Mmatrix_; i++)
       for (int j = 0; j < Nmatrix_; j++)
 	GetMatrix(i, j).Clear();
-    this->~MatrixCollection();
+    this->Clear();
   }
 
 

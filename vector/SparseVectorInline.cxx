@@ -107,6 +107,23 @@ namespace Seldon
   template <class T, class Allocator>
   inline Vector<T, VectSparse, Allocator>::~Vector()
   {
+    Clear();
+  }
+  
+
+  /*********************
+   * MEMORY MANAGEMENT *
+   *********************/
+
+
+  //! Clears the vector.
+  /*!
+    Destructs the vector.
+    \warning On exit, the vector is an empty vector.
+  */
+  template <class T, class Allocator>
+  inline void Vector<T, VectSparse, Allocator>::Clear()
+  {
     // 'data_' is released.
 #ifdef SELDON_CHECK_MEMORY
     try
@@ -137,23 +154,6 @@ namespace Seldon
       }
 #endif
 
-  }
-
-
-  /*********************
-   * MEMORY MANAGEMENT *
-   *********************/
-
-
-  //! Clears the vector.
-  /*!
-    Destructs the vector.
-    \warning On exit, the vector is an empty vector.
-  */
-  template <class T, class Allocator>
-  inline void Vector<T, VectSparse, Allocator>::Clear()
-  {
-    this->~Vector();
   }
 
 

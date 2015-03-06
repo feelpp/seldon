@@ -222,7 +222,7 @@ namespace Seldon
     float_sparse_c_.Deallocate();
     double_dense_c_.Deallocate();
     double_sparse_c_.Deallocate();
-    this->~HeterogeneousMatrixCollection();
+    this->Clear();
   }
 
 

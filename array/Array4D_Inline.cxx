@@ -130,32 +130,7 @@ namespace Seldon
   template <class T, class Allocator>
   inline Array4D<T, Allocator>::~Array4D()
   {
-    length1_ = 0;
-    length2_ = 0;
-    length3_ = 0;
-    length4_ = 0;
-    length34_ = 0;
-    length234_ = 0;
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	if (data_ != NULL)
-	  {
-	    array4D_allocator_.deallocate(data_, length1_ * length234_);
-	    data_ = NULL;
-	  }
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	data_ = NULL;
-      }
-#endif
-
+    Clear();
   }
 
 
@@ -233,7 +208,32 @@ namespace Seldon
   template <class T, class Allocator>
   inline void Array4D<T, Allocator>::Clear()
   {
-    this->~Array4D();
+    length1_ = 0;
+    length2_ = 0;
+    length3_ = 0;
+    length4_ = 0;
+    length34_ = 0;
+    length234_ = 0;
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (data_ != NULL)
+	  {
+	    array4D_allocator_.deallocate(data_, length1_ * length234_);
+	    data_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	data_ = NULL;
+      }
+#endif
+    
     this->length1_ = 0;
     this->length2_ = 0;
     this->length3_ = 0;
