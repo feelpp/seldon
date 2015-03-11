@@ -694,7 +694,22 @@ namespace Seldon
 
   }
 
-
+  
+  //! 64-bit interface
+  template<class T>
+  template<class Alloc1, class Alloc2, class Alloc3>
+  void MatrixMumps<T>::
+  FactorizeDistributedMatrix(MPI::Comm& comm_facto,
+                             Vector<int64_t, VectFull, Alloc1>& Ptr,
+                             Vector<int64_t, VectFull, Alloc2>& IndRow,
+                             Vector<T, VectFull, Alloc3>& Val,
+                             const Vector<int>& glob_number,
+                             bool sym, bool keep_matrix)
+  {
+    cout << "64-bit support of Mumps not implemented in Seldon" << endl;
+    abort();
+  }
+  
   //! solves linear system with parallel execution
   /*!
     \param[in] TransA we solve A x = b or A^T x = b

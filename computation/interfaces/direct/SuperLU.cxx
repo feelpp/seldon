@@ -21,73 +21,6 @@
 
 #include "SuperLU.hxx"
 
-// The function comes from the Matlab interface to SuperLU. It is part of
-// SuperLU package. Its copyright is held by University of California
-// Berkeley, Xerox Palo Alto Research Center and Lawrence Berkeley National
-// Lab. It is released under a license compatible with the GNU LGPL.
-template<class T>
-void LUextract(SuperMatrix *L, SuperMatrix *U, T *Lval, int *Lrow,
-               int *Lcol, T *Uval, int *Urow, int *Ucol, int *snnzL,
-               int *snnzU)
-{
-  int         i, j, k;
-  int         upper;
-  int         fsupc, istart, nsupr;
-  int         lastl = 0, lastu = 0;
-  SCformat    *Lstore;
-  NCformat    *Ustore;
-  T      *SNptr;
-  T one;
-
-  SetComplexOne(one);
-  Lstore = static_cast<SCformat*>(L->Store);
-  Ustore = static_cast<NCformat*>(U->Store);
-  Lcol[0] = 0;
-  Ucol[0] = 0;
-
-  /* for each supernode */
-  for (k = 0; k <= Lstore->nsuper; ++k) {
-
-    fsupc = L_FST_SUPC(k);
-    istart = L_SUB_START(fsupc);
-    nsupr = L_SUB_START(fsupc+1) - istart;
-    upper = 1;
-
-    /* for each column in the supernode */
-    for (j = fsupc; j < L_FST_SUPC(k+1); ++j) {
-      SNptr = &(static_cast<T*>(Lstore->nzval))[L_NZ_START(j)];
-
-      /* Extract U */
-      for (i = U_NZ_START(j); i < U_NZ_START(j+1); ++i) {
-        Uval[lastu] = (static_cast<T*>(Ustore->nzval))[i];
-        Urow[lastu++] = U_SUB(i);
-      }
-      for (i = 0; i < upper; ++i) { /* upper triangle in the supernode */
-        Uval[lastu] = SNptr[i];
-        Urow[lastu++] = L_SUB(istart+i);
-      }
-      Ucol[j+1] = lastu;
-
-      /* Extract L */
-      Lval[lastl] = one; /* unit diagonal */
-      Lrow[lastl++] = L_SUB(istart + upper - 1);
-      for (i = upper; i < nsupr; ++i) {
-        Lval[lastl] = SNptr[i];
-        Lrow[lastl++] = L_SUB(istart+i);
-      }
-      Lcol[j+1] = lastl;
-
-      ++upper;
-
-    } /* for j ... */
-
-  } /* for k ... */
-
-  *snnzL = lastl;
-  *snnzU = lastu;
-}
-
-
 namespace Seldon
 {
   void SetComplexOne(doublecomplex& one)
@@ -95,7 +28,75 @@ namespace Seldon
     one.r = 1.0;
     one.i = 0.0;
   }
+  
+  
+  // The function comes from the Matlab interface to SuperLU. It is part of
+  // SuperLU package. Its copyright is held by University of California
+  // Berkeley, Xerox Palo Alto Research Center and Lawrence Berkeley National
+  // Lab. It is released under a license compatible with the GNU LGPL.
+  template<class T>
+  void LUextract(SuperMatrix *L, SuperMatrix *U, T *Lval, int *Lrow,
+		 int *Lcol, T *Uval, int *Urow, int *Ucol, int *snnzL,
+		 int *snnzU)
+  {
+    int         i, j, k;
+    int         upper;
+    int         fsupc, istart, nsupr;
+    int         lastl = 0, lastu = 0;
+    SCformat    *Lstore;
+    NCformat    *Ustore;
+    T      *SNptr;
+    T one;
+    
+    SetComplexOne(one);
+    Lstore = static_cast<SCformat*>(L->Store);
+    Ustore = static_cast<NCformat*>(U->Store);
+    Lcol[0] = 0;
+    Ucol[0] = 0;
+    
+    /* for each supernode */
+    for (k = 0; k <= Lstore->nsuper; ++k) {
+      
+      fsupc = L_FST_SUPC(k);
+      istart = L_SUB_START(fsupc);
+      nsupr = L_SUB_START(fsupc+1) - istart;
+      upper = 1;
+      
+      /* for each column in the supernode */
+      for (j = fsupc; j < L_FST_SUPC(k+1); ++j) {
+	SNptr = &(static_cast<T*>(Lstore->nzval))[L_NZ_START(j)];
+	
+	/* Extract U */
+	for (i = U_NZ_START(j); i < U_NZ_START(j+1); ++i) {
+	  Uval[lastu] = (static_cast<T*>(Ustore->nzval))[i];
+	  Urow[lastu++] = U_SUB(i);
+	}
+	for (i = 0; i < upper; ++i) { /* upper triangle in the supernode */
+	  Uval[lastu] = SNptr[i];
+	  Urow[lastu++] = L_SUB(istart+i);
+	}
+	Ucol[j+1] = lastu;
+	
+	/* Extract L */
+	Lval[lastl] = one; /* unit diagonal */
+	Lrow[lastl++] = L_SUB(istart + upper - 1);
+	for (i = upper; i < nsupr; ++i) {
+	  Lval[lastl] = SNptr[i];
+	  Lrow[lastl++] = L_SUB(istart+i);
+	}
+	Lcol[j+1] = lastl;
+	
+	++upper;
+	
+      } /* for j ... */
+      
+    } /* for k ... */
+    
+    *snnzL = lastl;
+    *snnzU = lastu;
+  }
 
+  
   //! default constructor
   template<class T>
   MatrixSuperLU_Base<T>::MatrixSuperLU_Base()

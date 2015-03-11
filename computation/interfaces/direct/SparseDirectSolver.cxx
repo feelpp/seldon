@@ -872,7 +872,7 @@ namespace Seldon
     n = Ptr.GetM()-1;
     if (type_solver == MUMPS)
       {
-#ifdef SELDON_WITH_MUMPS
+#ifdef SELDON_WITH_MUMPS        
 	mat_mumps.FactorizeDistributedMatrix(comm_facto, Ptr, Row, Val, glob_num, sym, keep_matrix);
 #else
         throw Undefined("SparseDirectSolver::FactorizeDistributed(MPI::Comm&,"

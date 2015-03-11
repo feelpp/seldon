@@ -69,6 +69,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Clear()
   {
+    this->val_.Clear();
     this->m_ = 0;
     this->n_ = 0;
   }
