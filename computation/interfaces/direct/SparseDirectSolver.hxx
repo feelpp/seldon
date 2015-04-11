@@ -93,6 +93,7 @@ namespace Seldon
     void SelectOrdering(int);
     
     void SetNumberOfThreadPerNode(int m);
+    int GetNumberOfThreadPerNode() const;
     
     template<class MatrixSparse>
     void ComputeOrdering(MatrixSparse& A);

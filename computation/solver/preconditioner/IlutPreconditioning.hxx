@@ -23,7 +23,8 @@ namespace Seldon
 {
 
   template<class real, class cplx,
-           class Allocator = SELDON_DEFAULT_ALLOCATOR<cplx> >
+           class Allocator
+	   = typename SeldonDefaultAllocator<ArrayRowSparse, cplx>::allocator>
   class IlutPreconditioning
   {
   protected :

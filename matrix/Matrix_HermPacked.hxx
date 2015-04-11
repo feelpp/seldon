@@ -33,8 +33,7 @@ namespace Seldon
 
 
   //! Hermitian packed matrix class.
-  template <class T, class Prop, class Storage,
-	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, class Prop, class Storage, class Allocator>
   class Matrix_HermPacked: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.

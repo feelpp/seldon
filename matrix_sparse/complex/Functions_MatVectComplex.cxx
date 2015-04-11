@@ -58,8 +58,9 @@ namespace Seldon
 
     Mlt(beta, Y);
 
-    complex<T1> zero(0, 0);
-    complex<T1> temp;
+    typename ClassComplexType<T1>::Treal rzero(0);
+    T1 zero(0, 0);
+    T1 temp;
 
     int* real_ptr = M.GetRealPtr();
     int* imag_ptr = M.GetImagPtr();
@@ -82,7 +83,7 @@ namespace Seldon
       {
 	temp = zero;
 	for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
-	  temp += complex<T1>(T1(0), imag_data[j]) * X(imag_ind[j]);
+	  temp += T1(rzero, imag_data[j]) * X(imag_ind[j]);
 	Y(i) += alpha * temp;
       }
   }
@@ -106,6 +107,7 @@ namespace Seldon
 
     Mlt(beta, Y);
 
+    typename ClassComplexType<T1>::Treal rzero(0);
     int* real_ptr = M.GetRealPtr();
     int* imag_ptr = M.GetImagPtr();
     int* real_ind = M.GetRealInd();
@@ -121,7 +123,7 @@ namespace Seldon
           Y(real_ind[j]) += alpha * real_data[j] * X(i);
 
 	for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
-	  Y(imag_ind[j]) += alpha * complex<T1>(T1(0), imag_data[j]) * X(i);
+	  Y(imag_ind[j]) += alpha * T1(rzero, imag_data[j]) * X(i);
       }
   }
 
@@ -148,8 +150,9 @@ namespace Seldon
     Mlt(beta, Y);
 
     int i, j;
-    complex<T1> zero(0, 0);
-    complex<T1> temp;
+    typename ClassComplexType<T1>::Treal rzero(0);
+    T1 zero(0, 0);
+    T1 temp;
 
     int* real_ptr = M.GetRealPtr();
     int* imag_ptr = M.GetImagPtr();
@@ -172,9 +175,9 @@ namespace Seldon
         
         for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
 	  {
-            temp += complex<T1>(T1(0), imag_data[j]) * X(imag_ind[j]);
+            temp += T1(rzero, imag_data[j]) * X(imag_ind[j]);
             if (imag_ind[j] != i)
-              Y(imag_ind[j]) += alpha * complex<T1>(T1(0), imag_data[j]) * X(i);
+              Y(imag_ind[j]) += alpha * T1(rzero, imag_data[j]) * X(i);
           }
         
         Y(i) += alpha * temp;
@@ -201,8 +204,9 @@ namespace Seldon
     Mlt(beta, Y);
 
     int i, j;
-    complex<T1> zero(0, 0);
-    complex<T1> temp;
+    typename ClassComplexType<T1>::Treal rzero(0);
+    T1 zero(0, 0);
+    T1 temp;
 
     int* real_ptr = M.GetRealPtr();
     int* imag_ptr = M.GetImagPtr();
@@ -225,9 +229,9 @@ namespace Seldon
 
         for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
 	  {
-            temp += complex<T1>(T1(0), imag_data[j]) * X(imag_ind[j]);
+            temp += T1(rzero, imag_data[j]) * X(imag_ind[j]);
             if (imag_ind[j] != i)
-              Y(imag_ind[j]) += alpha * complex<T1>(T1(0), imag_data[j]) * X(i);
+              Y(imag_ind[j]) += alpha * T1(rzero, imag_data[j]) * X(i);
           }
         
         Y(i) += alpha * temp;
@@ -276,6 +280,7 @@ namespace Seldon
 
     Mlt(beta, Y);
 
+    typename ClassComplexType<T1>::Treal rzero(0);
     int* real_ptr = M.GetRealPtr();
     int* imag_ptr = M.GetImagPtr();
     int* real_ind = M.GetRealInd();
@@ -291,7 +296,7 @@ namespace Seldon
 
     for (i = 0; i < ma; i++)
       for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
-	Y(imag_ind[j]) += alpha * complex<T1>(T1(0), imag_data[j]) * X(i);
+	Y(imag_ind[j]) += alpha * T1(rzero, imag_data[j]) * X(i);
   }
 
 
@@ -317,6 +322,7 @@ namespace Seldon
 
     Mlt(beta, Y);
 
+    typename ClassComplexType<T1>::Treal rzero(0);
     int* real_ptr = M.GetRealPtr();
     int* imag_ptr = M.GetImagPtr();
     int* real_ind = M.GetRealInd();
@@ -332,7 +338,7 @@ namespace Seldon
 
     for (i = 0; i < ma; i++)
       for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
-	Y(imag_ind[j]) += alpha * complex<T1>(T1(0), - imag_data[j]) * X(i);
+	Y(imag_ind[j]) += alpha * T1(rzero, - imag_data[j]) * X(i);
   }
   
   
@@ -373,7 +379,8 @@ namespace Seldon
     Mlt(beta, Y);
     
     T4 temp;
-
+    typename ClassComplexType<T1>::Treal rzero(0);
+    
     int* real_ptr = M.GetRealPtr();
     int* imag_ptr = M.GetImagPtr();
     int* real_ind = M.GetRealInd();
@@ -390,7 +397,7 @@ namespace Seldon
           temp += real_data[j] * X(real_ind[j]);
         
         for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
-	 temp += complex<T1>(T1(0), imag_data[j]) * X(imag_ind[j]);
+	 temp += T1(rzero, imag_data[j]) * X(imag_ind[j]);
         
         Y(i) += alpha * temp;
       }
@@ -418,6 +425,7 @@ namespace Seldon
     Mlt(beta, Y);
     
     T4 temp;
+    typename ClassComplexType<T1>::Treal rzero(0);
     
     int* real_ptr = M.GetRealPtr();
     int* imag_ptr = M.GetImagPtr();
@@ -435,7 +443,7 @@ namespace Seldon
           temp += real_data[j] * X(real_ind[j]);
         
         for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
-	 temp += complex<T1>(T1(0), -imag_data[j]) * X(imag_ind[j]);
+	 temp += T1(rzero, -imag_data[j]) * X(imag_ind[j]);
         
         Y(i) += alpha * temp;
       }
@@ -498,8 +506,9 @@ namespace Seldon
     Mlt(beta, Y);
 
     int i, j;
-    complex<T1> zero(0, 0);
-    complex<T1> temp;
+    T1 zero(0, 0);
+    T1 temp;
+    typename ClassComplexType<T1>::Treal rzero(0);
 
     int* real_ptr = M.GetRealPtr();
     int* imag_ptr = M.GetImagPtr();
@@ -522,9 +531,9 @@ namespace Seldon
 	
         for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
 	  {
-            temp += complex<T1>(T1(0), - imag_data[j]) * X(imag_ind[j]);
+            temp += T1(rzero, - imag_data[j]) * X(imag_ind[j]);
             if (imag_ind[j] != i)
-              Y(imag_ind[j]) += alpha * complex<T1>(T1(0), - imag_data[j]) * X(i);
+              Y(imag_ind[j]) += alpha * T1(rzero, - imag_data[j]) * X(i);
           }
         
 	Y(i) += alpha * temp;
@@ -585,9 +594,10 @@ namespace Seldon
     Mlt(beta, Y);
 
     int i, j;
-    complex<T1> zero(0, 0);
-    complex<T1> temp;
-
+    T1 zero(0, 0);
+    T1 temp;
+    typename ClassComplexType<T1>::Treal rzero(0);
+    
     int* real_ptr = M.GetRealPtr();
     int* imag_ptr = M.GetImagPtr();
     int* real_ind = M.GetRealInd();
@@ -609,9 +619,9 @@ namespace Seldon
 	
         for (j = imag_ptr[i]; j < imag_ptr[i + 1]; j++)
 	  {
-            temp += complex<T1>(T1(0), - imag_data[j]) * X(imag_ind[j]);
+            temp += T1(rzero, - imag_data[j]) * X(imag_ind[j]);
             if (imag_ind[j] != i)
-              Y(imag_ind[j]) += alpha * complex<T1>(T1(0), - imag_data[j]) * X(i);
+              Y(imag_ind[j]) += alpha * T1(rzero, - imag_data[j]) * X(i);
           }
         
 	Y(i) += alpha * temp;
@@ -640,7 +650,7 @@ namespace Seldon
       Mlt(beta, C);
 
     int m = A.GetM(), n, p;
-    T1 val;
+    typename ClassComplexType<T1>::Treal val;
     T3 val_cplx;
     if (alpha == one)
       {
@@ -665,11 +675,11 @@ namespace Seldon
 		p = A.IndexImag(i, k);
 		val = A.ValueImag(i, k);
 		if (p == i)
-		  C(i) += complex<T1>(0, val) * B(i);
+		  C(i) += T1(0, val) * B(i);
 		else
 		  {
-		    C(i) += complex<T1>(0, val) * B(p);
-		    C(p) += complex<T1>(0, val) * B(i);
+		    C(i) += T1(0, val) * B(p);
+		    C(p) += T1(0, val) * B(i);
 		  }
 	      }
 	  }
@@ -682,7 +692,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
+		val_cplx = alpha * T1(A.ValueReal(i, k), 0);
 		if (p == i)
 		  C(i) += val_cplx * B(i);
 		else
@@ -695,7 +705,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexImag(i, k);
-		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		val_cplx = alpha * T1(0, A.ValueImag(i, k));
 		if (p == i)
 		  C(i) += val_cplx * B(i);
 		else
@@ -754,7 +764,7 @@ namespace Seldon
       Mlt(beta, C);
     
     int m = A.GetM(),n,p;
-    T1 val;
+    typename ClassComplexType<T1>::Treal val;
     T3 val_cplx;
     if (alpha == one)
       {
@@ -779,11 +789,11 @@ namespace Seldon
 		p = A.IndexImag(i, k);
 		val = A.ValueImag(i, k);
 		if (p == i)
-		  C(i) -= complex<T1>(0, val) * B(i);
+		  C(i) -= T1(0, val) * B(i);
 		else
 		  {
-		    C(i) -= complex<T1>(0, val) * B(p);
-		    C(p) -= complex<T1>(0, val) * B(i);
+		    C(i) -= T1(0, val) * B(p);
+		    C(p) -= T1(0, val) * B(i);
 		  }
 	      }
 	  }
@@ -797,7 +807,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
+		val_cplx = alpha * T1(A.ValueReal(i, k), 0);
 		if (p == i)
 		  C(i) += val_cplx * B(i);
 		else
@@ -810,7 +820,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexImag(i, k);
-		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		val_cplx = alpha * T1(0, A.ValueImag(i, k));
 		if (p == i)
 		  C(i) -= val_cplx * B(i);
 		else
@@ -842,7 +852,7 @@ namespace Seldon
       Mlt(beta, C);
 
     int m = A.GetM(), n, p;
-    T1 val;
+    typename ClassComplexType<T1>::Treal val;
     T3 val_cplx;
     if (alpha == one)
       {
@@ -867,11 +877,11 @@ namespace Seldon
 		p = A.IndexImag(i, k);
 		val = A.ValueImag(i, k);
 		if (p == i)
-		  C(i) += complex<T1>(0, val) * B(i);
+		  C(i) += T1(0, val) * B(i);
 		else
 		  {
-		    C(i) += complex<T1>(0, val) * B(p);
-		    C(p) += complex<T1>(0, val) * B(i);
+		    C(i) += T1(0, val) * B(p);
+		    C(p) += T1(0, val) * B(i);
 		  }
 	      }
 	  }
@@ -884,7 +894,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
+		val_cplx = alpha * T1(A.ValueReal(i, k), 0);
 		if (p == i)
 		  C(i) += val_cplx * B(i);
 		else
@@ -897,7 +907,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexImag(i, k);
-		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		val_cplx = alpha * T1(0, A.ValueImag(i, k));
 		if (p == i)
 		  C(i) += val_cplx * B(i);
 		else
@@ -956,7 +966,7 @@ namespace Seldon
       Mlt(beta, C);
     
     int m = A.GetM(),n,p;
-    T1 val;
+    typename ClassComplexType<T1>::Treal val;
     T3 val_cplx;
     if (alpha == one)
       {
@@ -981,11 +991,11 @@ namespace Seldon
 		p = A.IndexImag(i, k);
 		val = A.ValueImag(i, k);
 		if (p == i)
-		  C(i) -= complex<T1>(0, val) * B(i);
+		  C(i) -= T1(0, val) * B(i);
 		else
 		  {
-		    C(i) -= complex<T1>(0, val) * B(p);
-		    C(p) -= complex<T1>(0, val) * B(i);
+		    C(i) -= T1(0, val) * B(p);
+		    C(p) -= T1(0, val) * B(i);
 		  }
 	      }
 	  }
@@ -999,7 +1009,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
+		val_cplx = alpha * T1(A.ValueReal(i, k), 0);
 		if (p == i)
 		  C(i) += val_cplx * B(i);
 		else
@@ -1012,7 +1022,7 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexImag(i, k);
-		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		val_cplx = alpha * T1(0, A.ValueImag(i, k));
 		if (p == i)
 		  C(i) -= val_cplx * B(i);
 		else
@@ -1047,7 +1057,7 @@ namespace Seldon
       Mlt(beta, C);
     
     int m = A.GetM(), n, p;
-    T1 val;
+    typename ClassComplexType<T1>::Treal val;
     T3 val_cplx;
     if (alpha == one)
       {
@@ -1065,7 +1075,7 @@ namespace Seldon
 	      {
 		p = A.IndexImag(i, k);
 		val = A.ValueImag(i, k);
-		C(i) += complex<T1>(0, val) * B(p);
+		C(i) += T1(0, val) * B(p);
 	      }
 	  }
       }
@@ -1078,14 +1088,14 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
+		val_cplx = alpha * T1(A.ValueReal(i, k), 0);
 		C(i) += val_cplx * B(p);
 	      }
 	    n = A.GetImagRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexImag(i, k);
-		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		val_cplx = alpha * T1(0, A.ValueImag(i, k));
 		C(i) += val_cplx * B(p);
 	      }
 	  }
@@ -1125,7 +1135,7 @@ namespace Seldon
       Mlt(beta, C);
     
     int m = A.GetM(),n,p;
-    T1 val;
+    typename ClassComplexType<T1>::Treal val;
     T3 val_cplx;
     if (alpha == one)
       {
@@ -1143,7 +1153,7 @@ namespace Seldon
 	      {
 		p = A.IndexImag(i, k);
 		val = A.ValueImag(i, k);
-		C(p) += complex<T1>(0, val) * B(i);
+		C(p) += T1(0, val) * B(i);
 	      }
 	  }
       }
@@ -1156,14 +1166,14 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
+		val_cplx = alpha * T1(A.ValueReal(i, k), 0);
 		C(p) += val_cplx * B(i);
 	      }
 	    n = A.GetImagRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexImag(i, k);
-		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		val_cplx = alpha * T1(0, A.ValueImag(i, k));
 		C(p) += val_cplx * B(i);
 	      }
 	  }
@@ -1190,7 +1200,7 @@ namespace Seldon
       Mlt(beta, C);
     
     int m = A.GetM(),n,p;
-    T1 val;
+    typename ClassComplexType<T1>::Treal val;
     T3 val_cplx;
     if (alpha == one)
       {
@@ -1208,7 +1218,7 @@ namespace Seldon
 	      {
 		p = A.IndexImag(i, k);
 		val = A.ValueImag(i, k);
-		C(p) -= complex<T1>(0, val) * B(i);
+		C(p) -= T1(0, val) * B(i);
 	      }
 	  }
       }
@@ -1221,14 +1231,14 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
+		val_cplx = alpha * T1(A.ValueReal(i, k), 0);
 		C(p) += val_cplx * B(i);
 	      }
 	    n = A.GetImagRowSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexImag(i, k);
-		val_cplx = alpha * complex<T1>(0, -A.ValueImag(i, k));
+		val_cplx = alpha * T1(0, -A.ValueImag(i, k));
 		C(p) += val_cplx * B(i);
 	      }
 	  }
@@ -1254,7 +1264,7 @@ namespace Seldon
       Mlt(beta, C);
     
     int n, p;
-    T1 val;
+    typename ClassComplexType<T1>::Treal val;
     T3 val_cplx;
     if (alpha == one)
       {
@@ -1272,7 +1282,7 @@ namespace Seldon
 	      {
 		p = A.IndexImag(i, k);
 		val = A.ValueImag(i, k);
-		C(p) += complex<T1>(0, val) * B(i);
+		C(p) += T1(0, val) * B(i);
 	      }
 	  }
       }
@@ -1285,14 +1295,14 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
+		val_cplx = alpha * T1(A.ValueReal(i, k), 0);
 		C(p) += val_cplx * B(i);
 	      }
 	    n = A.GetImagColumnSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexImag(i, k);
-		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		val_cplx = alpha * T1(0, A.ValueImag(i, k));
 		C(p) += val_cplx * B(i);
 	      }
 	  }
@@ -1332,7 +1342,7 @@ namespace Seldon
       Mlt(beta, C);
     
     int n, p;
-    T1 val;
+    typename ClassComplexType<T1>::Treal val;
     T3 val_cplx;
     if (alpha == one)
       {
@@ -1350,7 +1360,7 @@ namespace Seldon
 	      {
 		p = A.IndexImag(i, k);
 		val = A.ValueImag(i, k);
-		C(i) += complex<T1>(0, val) * B(p);
+		C(i) += T1(0, val) * B(p);
 	      }
 	  }
       }
@@ -1363,14 +1373,14 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
+		val_cplx = alpha * T1(A.ValueReal(i, k), 0);
 		C(i) += val_cplx * B(p);
 	      }
 	    n = A.GetImagColumnSize(i);
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexImag(i, k);
-		val_cplx = alpha * complex<T1>(0, A.ValueImag(i, k));
+		val_cplx = alpha * T1(0, A.ValueImag(i, k));
 		C(i) += val_cplx * B(p);
 	      }
 	  }
@@ -1397,7 +1407,7 @@ namespace Seldon
       Mlt(beta, C);
     
     int n, p;
-    T1 val;
+    typename ClassComplexType<T1>::Treal val;
     T3 val_cplx;
     if (alpha == one)
       {
@@ -1415,7 +1425,7 @@ namespace Seldon
 	      {
 		p = A.IndexImag(i, k);
 		val = A.ValueImag(i, k);
-		C(i) -= complex<T1>(0, val) * B(p);
+		C(i) -= T1(0, val) * B(p);
 	      }
 	  }
       }
@@ -1428,14 +1438,14 @@ namespace Seldon
 	    for (int k = 0; k < n ; k++)
 	      {
 		p = A.IndexReal(i, k);
-		val_cplx = alpha * complex<T1>(A.ValueReal(i, k), 0);
+		val_cplx = alpha * T1(A.ValueReal(i, k), 0);
 		C(i) += val_cplx * B(p);
 	      }
 	    n = A.GetImagColumnSize(i);
 	    for (int k = 0; k < n; k++)
 	      {
 		p = A.IndexImag(i, k);
-		val_cplx = alpha * complex<T1>(0, -A.ValueImag(i, k));
+		val_cplx = alpha * T1(0, -A.ValueImag(i, k));
 		C(i) += val_cplx * B(p);
 	      }
 	  }
@@ -1483,10 +1493,10 @@ namespace Seldon
     int* ind_real = A.GetRealInd();
     int* ind_imag = A.GetImagInd();
     
-    T0* data_real = A.GetRealData();
-    T0* data_imag = A.GetImagData();
+    typename ClassComplexType<T0>::Treal* data_real = A.GetRealData();
+    typename ClassComplexType<T0>::Treal* data_imag = A.GetImagData();
     
-    complex<T0> ajj;
+    T0 ajj;
 
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
@@ -1577,7 +1587,7 @@ namespace Seldon
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
 
-    complex<T0> ajj;
+    T0 ajj;
 
     if (type_ssor%2 == 0)
       for (int i = 0; i < iter; i++)
@@ -1596,10 +1606,10 @@ namespace Seldon
             for (int k = 0; k < A.GetImagRowSize(j); k++)
               {
                 if (A.IndexImag(j, k) != j)
-                  temp += complex<T0>(0, A.ValueImag(j,k))
+                  temp += T0(0, A.ValueImag(j,k))
                     * X(A.IndexImag(j, k));
                 else
-                  ajj += complex<T0>(0, A.ValueImag(j,k));
+                  ajj += T0(0, A.ValueImag(j,k));
               }
             
 #ifdef SELDON_CHECK_BOUNDS
@@ -1628,10 +1638,10 @@ namespace Seldon
 	      for (int k = 0; k < A.GetImagRowSize(j); k++)
 		{
 		  if (A.IndexImag(j, k) != j)
-                    temp += complex<T0>(0, A.ValueImag(j,k))
+                    temp += T0(0, A.ValueImag(j,k))
                       * X(A.IndexImag(j, k));
 		  else
-		    ajj += complex<T0>(0, A.ValueImag(j,k));
+		    ajj += T0(0, A.ValueImag(j,k));
 		}
               
               X(j) = (one-omega) * X(j) + omega * (B(j) - temp) / ajj;
@@ -1672,11 +1682,11 @@ namespace Seldon
 
     int* ptr_real = A.GetRealPtr();
     int* ind_real = A.GetRealInd();
-    T0* data_real = A.GetRealData();
+    typename ClassComplexType<T0>::Treal* data_real = A.GetRealData();
 
     int* ptr_imag = A.GetImagPtr();
     int* ind_imag = A.GetImagInd();
-    T0* data_imag = A.GetImagData();
+    typename ClassComplexType<T0>::Treal* data_imag = A.GetImagData();
 
     // Let us consider the following splitting : A = D - L - U
     // D diagonal of A
@@ -1685,7 +1695,7 @@ namespace Seldon
 
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    complex<T0> ajj;
+    T0 ajj;
     T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
@@ -1706,12 +1716,12 @@ namespace Seldon
               int ki = ptr_imag[j];
               while ( (ki < ptr_imag[j+1]) && (ind_imag[ki] < j))
                 {
-                  X(ind_imag[ki]) -= complex<T0>(0, data_imag[ki])*X(j);
+                  X(ind_imag[ki]) -= T0(0, data_imag[ki])*X(j);
                   ki++;
                 }
 
               if ( (ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
-                ajj += complex<T0>(0, data_imag[ki]);
+                ajj += T0(0, data_imag[ki]);
               
 #ifdef SELDON_CHECK_BOUNDS
               if (ajj == zero)
@@ -1741,7 +1751,7 @@ namespace Seldon
               
               if ( (ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
                 {
-                  ajj += complex<T0>(0, data_imag[ki]);
+                  ajj += T0(0, data_imag[ki]);
                   ki++;
                 }
               
@@ -1754,7 +1764,7 @@ namespace Seldon
 
               while (ki < ptr_imag[j+1])
                 {
-                  X(ind_imag[ki]) -= complex<T0>(0, data_imag[ki])*X(j);
+                  X(ind_imag[ki]) -= T0(0, data_imag[ki])*X(j);
                   ki++;
                 }
             }
@@ -1781,12 +1791,12 @@ namespace Seldon
               int ki = ptr_imag[j+1]-1;
               while ( (ki >= ptr_imag[j]) && (ind_imag[ki] > j) )
                 {
-                  X(ind_imag[ki]) -= complex<T0>(0, data_imag[ki])*X(j);
+                  X(ind_imag[ki]) -= T0(0, data_imag[ki])*X(j);
                   ki--;
                 }
               
               if ( (ki >= ptr_imag[j]) && (ind_imag[ki] == j))
-                ajj += complex<T0>(0, data_imag[ki]);
+                ajj += T0(0, data_imag[ki]);
               
 #ifdef SELDON_CHECK_BOUNDS
               if (ajj == zero)
@@ -1806,7 +1816,7 @@ namespace Seldon
               
               if ( (kr >= ptr_real[j]) && (ind_real[kr] == j))
                 {
-                  ajj = complex<T0>(data_real[kr], 0);
+                  ajj = T0(data_real[kr], 0);
                   kr--;
                 }
               
@@ -1816,7 +1826,7 @@ namespace Seldon
               
               if ( (ki >= ptr_imag[j]) && (ind_imag[ki] == j))
                 {
-                  ajj += complex<T0>(0, data_imag[ki]);
+                  ajj += T0(0, data_imag[ki]);
                   ki--;
                 }
 
@@ -1829,7 +1839,7 @@ namespace Seldon
 
               while (ki >= ptr_imag[j])
                 {
-                  X(ind_imag[ki]) -= complex<T0>(0, data_imag[ki])*X(j);
+                  X(ind_imag[ki]) -= T0(0, data_imag[ki])*X(j);
                   ki--;
                 }
             }
@@ -1875,7 +1885,7 @@ namespace Seldon
 
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    complex<T0> ajj;
+    T0 ajj;
     T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
@@ -1891,17 +1901,17 @@ namespace Seldon
                 }
               
               if ( (kr < A.GetRealColumnSize(j)) && (A.IndexReal(j, kr) == j))
-                ajj = complex<T0>(A.ValueReal(j, kr), 0);
+                ajj = T0(A.ValueReal(j, kr), 0);
               
               int ki = 0;
               while ( (ki < A.GetImagColumnSize(j)) && (A.IndexImag(j, ki) < j))
                 {
-                  X(A.IndexImag(j, ki)) -= complex<T0>(0, A.ValueImag(j, ki))*X(j);
+                  X(A.IndexImag(j, ki)) -= T0(0, A.ValueImag(j, ki))*X(j);
                   ki++;
                 }
 
               if ( (ki < A.GetImagColumnSize(j)) && (A.IndexImag(j, ki) == j) )
-                ajj += complex<T0>(0, A.ValueImag(j, ki));
+                ajj += T0(0, A.ValueImag(j, ki));
               
 #ifdef SELDON_CHECK_BOUNDS
               if (ajj == zero)
@@ -1921,7 +1931,7 @@ namespace Seldon
                              
               if ( (kr < A.GetRealColumnSize(j)) && (A.IndexReal(j, kr) == j) )
                 {
-                  ajj = complex<T0>(A.ValueReal(j, kr), 0);
+                  ajj = T0(A.ValueReal(j, kr), 0);
                   kr++;
                 }
 
@@ -1931,7 +1941,7 @@ namespace Seldon
               
               if ( (ki < A.GetImagColumnSize(j)) && (A.IndexImag(j, ki) == j))
                 {
-                  ajj += complex<T0>(0, A.ValueImag(j, ki));
+                  ajj += T0(0, A.ValueImag(j, ki));
                   ki++;
                 }
               
@@ -1944,7 +1954,7 @@ namespace Seldon
 
               while (ki < A.GetImagColumnSize(j))
                 {
-                  X(A.IndexImag(j, ki)) -= complex<T0>(0, A.ValueImag(j, ki))*X(j);
+                  X(A.IndexImag(j, ki)) -= T0(0, A.ValueImag(j, ki))*X(j);
                   ki++;
                 }
             }
@@ -1966,17 +1976,17 @@ namespace Seldon
                 }
               
               if ( (kr >= 0) && (A.IndexReal(j, kr) == j))
-                ajj = complex<T0>(A.ValueReal(j, kr), 0);
+                ajj = T0(A.ValueReal(j, kr), 0);
               
               int ki = A.GetImagColumnSize(j)-1;
               while ( (ki >= 0) && (A.IndexImag(j, ki) > j) )
                 {
-                  X(A.IndexImag(j, ki)) -= complex<T0>(0, A.ValueImag(j, ki))*X(j);
+                  X(A.IndexImag(j, ki)) -= T0(0, A.ValueImag(j, ki))*X(j);
                   ki--;
                 }
               
               if ( (ki >= 0) && (A.IndexImag(j, ki) == j))
-                ajj += complex<T0>(0, A.ValueImag(j, ki));
+                ajj += T0(0, A.ValueImag(j, ki));
               
 #ifdef SELDON_CHECK_BOUNDS
               if (ajj == zero)
@@ -1996,7 +2006,7 @@ namespace Seldon
               
               if ( (kr >= 0) && (A.IndexReal(j, kr) == j))
                 {
-                  ajj = complex<T0>(A.ValueReal(j, kr), 0);
+                  ajj = T0(A.ValueReal(j, kr), 0);
                   kr--;
                 }
               
@@ -2006,7 +2016,7 @@ namespace Seldon
               
               if ( (ki >= 0) && (A.IndexImag(j, ki) == j))
                 {
-                  ajj += complex<T0>(0, A.ValueImag(j, ki));
+                  ajj += T0(0, A.ValueImag(j, ki));
                   ki--;
                 }
 
@@ -2019,7 +2029,7 @@ namespace Seldon
 
               while (ki >= 0)
                 {
-                  X(A.IndexImag(j, ki)) -= complex<T0>(0, A.ValueImag(j, ki))*X(j);
+                  X(A.IndexImag(j, ki)) -= T0(0, A.ValueImag(j, ki))*X(j);
                   ki--;
                 }
             }
@@ -2060,13 +2070,13 @@ namespace Seldon
 
     int* ptr_real = A.GetRealPtr();
     int* ind_real = A.GetRealInd();
-    T0* data_real = A.GetRealData();
+    typename ClassComplexType<T0>::Treal* data_real = A.GetRealData();
 
     int* ptr_imag = A.GetImagPtr();
     int* ind_imag = A.GetImagInd();
-    T0* data_imag = A.GetImagData();
+    typename ClassComplexType<T0>::Treal* data_imag = A.GetImagData();
 
-    complex<T0> ajj;
+    T0 ajj;
 
     // Let us consider the following splitting : A = D - L - U
     // D diagonal of A
@@ -2086,11 +2096,11 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j];
               if ((kr < ptr_real[j+1]) && (ind_real[kr] == j))
-                ajj = complex<T0>(data_real[kr++], 0);
+                ajj = T0(data_real[kr++], 0);
 
               int ki = ptr_imag[j];
               if ((ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
-                ajj += complex<T0>(0, data_imag[ki++]);
+                ajj += T0(0, data_imag[ki++]);
               
 #ifdef SELDON_CHECK_BOUNDS
               if ( ajj == zero)
@@ -2102,7 +2112,7 @@ namespace Seldon
                 temp += data_real[k] * X(ind_real[k]);
 
 	      for (int k = ki; k < ptr_imag[j+1]; k++)
-                temp += complex<T0>(0, data_imag[k]) * X(ind_imag[k]);
+                temp += T0(0, data_imag[k]) * X(ind_imag[k]);
               
 	      X(j) = coef * ajj * X(j) + B(j) - temp;
 	    }
@@ -2113,18 +2123,18 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j];
               if ((kr < ptr_real[j+1]) && (ind_real[kr] == j))
-                ajj = complex<T0>(data_real[kr++], 0);
+                ajj = T0(data_real[kr++], 0);
 
               int ki = ptr_imag[j];
               if ((ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
-                ajj += complex<T0>(0, data_imag[ki++]);
+                ajj += T0(0, data_imag[ki++]);
               
               X(j) *= omega / ajj;
 	      for (int k = kr; k < ptr_real[j+1]; k++)
                 X(ind_real[k]) -= data_real[k]*X(j);
 
 	      for (int k = ki; k < ptr_imag[j+1]; k++)
-                X(ind_imag[k]) -= complex<T0>(0, data_imag[k])*X(j);
+                X(ind_imag[k]) -= T0(0, data_imag[k])*X(j);
 	    }
 	}
 
@@ -2140,17 +2150,17 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j];
               if ((kr < ptr_real[j+1]) && (ind_real[kr] == j))
-                ajj = complex<T0>(data_real[kr++], 0);
+                ajj = T0(data_real[kr++], 0);
 
               int ki = ptr_imag[j];
               if ((ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
-                ajj += complex<T0>(0, data_imag[ki++]);
+                ajj += T0(0, data_imag[ki++]);
               
 	      for (int k = kr; k < ptr_real[j+1]; k++)
 		X(ind_real[k]) -= data_real[k]*X(j);
 
 	      for (int k = ki; k < ptr_imag[j+1]; k++)
-		X(ind_imag[k]) -= complex<T0>(0, data_imag[k])*X(j);
+		X(ind_imag[k]) -= T0(0, data_imag[k])*X(j);
               
               X(j) = B(j) + coef * ajj * X(j);
 	    }
@@ -2162,17 +2172,17 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j];
               if ((kr < ptr_real[j+1]) && (ind_real[kr] == j))
-                ajj = complex<T0>(data_real[kr++], 0);
+                ajj = T0(data_real[kr++], 0);
 
               int ki = ptr_imag[j];
               if ((ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
-                ajj += complex<T0>(0, data_imag[ki++]);
+                ajj += T0(0, data_imag[ki++]);
          
 	      for (int k = kr; k < ptr_real[j+1]; k++)
                 temp += data_real[k]*X(ind_real[k]);
 
 	      for (int k = ki; k < ptr_imag[j+1]; k++)
-                temp += complex<T0>(0, data_imag[k])*X(ind_imag[k]);
+                temp += T0(0, data_imag[k])*X(ind_imag[k]);
 	      
               X(j) = (X(j) - temp) * omega / ajj;
 	    }
@@ -2211,7 +2221,7 @@ namespace Seldon
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
 
-    complex<T0> ajj;
+    T0 ajj;
 
     // Let us consider the following splitting : A = D - L - U
     // D diagonal of A
@@ -2231,11 +2241,11 @@ namespace Seldon
               ajj = zero;
               int kr = 0;
               if ((kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j))
-                ajj = complex<T0>(A.ValueReal(j, kr++), 0);
+                ajj = T0(A.ValueReal(j, kr++), 0);
               
               int ki = 0;
               if ((ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) == j))
-                ajj += complex<T0>(0, A.ValueImag(j, ki++));
+                ajj += T0(0, A.ValueImag(j, ki++));
               
 #ifdef SELDON_CHECK_BOUNDS
               if ( ajj == zero)
@@ -2247,7 +2257,7 @@ namespace Seldon
                 temp += A.ValueReal(j, k) * X(A.IndexReal(j, k));
 
 	      for (int k = ki; k < A.GetImagRowSize(j); k++)
-                temp += complex<T0>(0, A.ValueImag(j, k)) * X(A.IndexImag(j, k));
+                temp += T0(0, A.ValueImag(j, k)) * X(A.IndexImag(j, k));
               
 	      X(j) = coef * ajj * X(j) + B(j) - temp;                            
 	    }
@@ -2258,18 +2268,18 @@ namespace Seldon
               ajj = zero;
               int kr = 0;
               if ((kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j))
-                ajj = complex<T0>(A.ValueReal(j, kr++), 0);
+                ajj = T0(A.ValueReal(j, kr++), 0);
 
               int ki = 0;
               if ((ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) == j))
-                ajj += complex<T0>(0, A.ValueImag(j, ki++));
+                ajj += T0(0, A.ValueImag(j, ki++));
               
               X(j) *= omega / ajj;
 	      for (int k = kr; k < A.GetRealRowSize(j); k++)
                 X(A.IndexReal(j, k)) -= A.ValueReal(j, k)*X(j);
 
 	      for (int k = ki; k < A.GetImagRowSize(j); k++)
-                X(A.IndexImag(j, k)) -= complex<T0>(0, A.ValueImag(j, k))*X(j);
+                X(A.IndexImag(j, k)) -= T0(0, A.ValueImag(j, k))*X(j);
 	    }
 	}
 
@@ -2285,17 +2295,17 @@ namespace Seldon
               ajj = zero;
               int kr = 0;
               if ((kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j))
-                ajj = complex<T0>(A.ValueReal(j, kr++), 0);
+                ajj = T0(A.ValueReal(j, kr++), 0);
 
               int ki = 0;
               if ((ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) == j))
-                ajj += complex<T0>(0, A.ValueImag(j, ki++));
+                ajj += T0(0, A.ValueImag(j, ki++));
               
 	      for (int k = kr; k < A.GetRealRowSize(j); k++)
 		X(A.IndexReal(j, k)) -= A.ValueReal(j, k)*X(j);
 
 	      for (int k = ki; k < A.GetImagRowSize(j); k++)
-		X(A.IndexImag(j, k)) -= complex<T0>(0, A.ValueImag(j, k))*X(j);
+		X(A.IndexImag(j, k)) -= T0(0, A.ValueImag(j, k))*X(j);
               
               X(j) = B(j) + coef * ajj * X(j);
 	    }
@@ -2307,17 +2317,17 @@ namespace Seldon
               ajj = zero;
               int kr = 0;
               if ((kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j))
-                ajj = complex<T0>(A.ValueReal(j, kr++), 0);
+                ajj = T0(A.ValueReal(j, kr++), 0);
 
               int ki = 0;
               if ((ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) == j))
-                ajj += complex<T0>(0, A.ValueImag(j, ki++));
+                ajj += T0(0, A.ValueImag(j, ki++));
          
 	      for (int k = kr; k < A.GetRealRowSize(j); k++)
                 temp += A.ValueReal(j, k)*X(A.IndexReal(j, k));
 
 	      for (int k = ki; k < A.GetImagRowSize(j); k++)
-                temp += complex<T0>(0, A.ValueImag(j, k))*X(A.IndexImag(j, k));
+                temp += T0(0, A.ValueImag(j, k))*X(A.IndexImag(j, k));
 	      
               X(j) = (X(j) - temp) * omega / ajj;
 	    }
@@ -2358,13 +2368,13 @@ namespace Seldon
     
     int* ptr_real = A.GetRealPtr();
     int* ind_real = A.GetRealInd();
-    T0* data_real = A.GetRealData();
+    typename ClassComplexType<T0>::Treal* data_real = A.GetRealData();
     
     int* ptr_imag = A.GetImagPtr();
     int* ind_imag = A.GetImagInd();
-    T0* data_imag = A.GetImagData();
+    typename ClassComplexType<T0>::Treal* data_imag = A.GetImagData();
     
-    complex<T0> ajj;
+    T0 ajj;
 
     // Let us consider the following splitting : A = D - L - U
     // D diagonal of A
@@ -2383,11 +2393,11 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j+1]-1;
               if ((kr >= ptr_real[j]) && (ind_real[kr] == j))
-                ajj = complex<T0>(data_real[kr--], 0);
+                ajj = T0(data_real[kr--], 0);
               
               int ki = ptr_imag[j+1]-1;
               if ((ki >= ptr_imag[j]) && (ind_imag[ki] == j))
-                ajj += complex<T0>(0, data_imag[ki--]);
+                ajj += T0(0, data_imag[ki--]);
               
 #ifdef SELDON_CHECK_BOUNDS
               if ( ajj == zero)
@@ -2399,7 +2409,7 @@ namespace Seldon
                 X(ind_real[k]) -= data_real[k] * X(j);
 
 	      for (int k = ptr_imag[j]; k <= ki; k++)
-                X(ind_imag[k]) -= complex<T0>(0, data_imag[k]) * X(j);
+                X(ind_imag[k]) -= T0(0, data_imag[k]) * X(j);
               
 	      X(j) = coef * ajj * X(j) + B(j);
 	    }
@@ -2410,17 +2420,17 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j+1]-1;
               if ((kr >= ptr_real[j]) && (ind_real[kr] == j))
-                ajj = complex<T0>(data_real[kr--], 0);
+                ajj = T0(data_real[kr--], 0);
 
               int ki = ptr_imag[j+1]-1;
               if ((ki >= ptr_imag[j]) && (ind_imag[ki] == j))
-                ajj += complex<T0>(0, data_imag[ki--]);
+                ajj += T0(0, data_imag[ki--]);
               
 	      for (int k = ptr_real[j]; k <= kr; k++)
                 X(j) -= data_real[k] * X(ind_real[k]);
 
 	      for (int k = ptr_imag[j]; k <= ki; k++)
-                X(j) -= complex<T0>(0, data_imag[k]) * X(ind_imag[k]);
+                X(j) -= T0(0, data_imag[k]) * X(ind_imag[k]);
               
               X(j) *= omega / ajj;
 	    }
@@ -2439,17 +2449,17 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j+1]-1;
               if ((kr >= ptr_real[j]) && (ind_real[kr] == j))
-                ajj = complex<T0>(data_real[kr--], 0);
+                ajj = T0(data_real[kr--], 0);
 
               int ki = ptr_imag[j+1]-1;
               if ((ki >= ptr_imag[j]) && (ind_imag[ki] == j))
-                ajj += complex<T0>(0, data_imag[ki--]);
+                ajj += T0(0, data_imag[ki--]);
               
               for (int k = ptr_real[j]; k <= kr; k++)
 		temp -= data_real[k] * X(ind_real[k]);
 
               for (int k = ptr_imag[j]; k <= ki; k++)
-		temp -= complex<T0>(0, data_imag[k]) * X(ind_imag[k]);
+		temp -= T0(0, data_imag[k]) * X(ind_imag[k]);
               
               X(j) = B(j) + coef * ajj * X(j) + temp;
 	    }
@@ -2461,18 +2471,18 @@ namespace Seldon
               ajj = zero;
               int kr = ptr_real[j+1]-1;
               if ((kr >= ptr_real[j]) && (ind_real[kr] == j))
-                ajj = complex<T0>(data_real[kr--], 0);
+                ajj = T0(data_real[kr--], 0);
 
               int ki = ptr_imag[j+1]-1;
               if ((ki >= ptr_imag[j]) && (ind_imag[ki] == j))
-                ajj += complex<T0>(0, data_imag[ki--]);
+                ajj += T0(0, data_imag[ki--]);
               
               X(j) *= omega / ajj;
 	      for (int k = ptr_real[j]; k <= kr; k++)
                 X(ind_real[k]) -= data_real[k] * X(j);
 
 	      for (int k = ptr_imag[j]; k <= ki; k++)
-                X(ind_imag[k]) -= complex<T0>(0, data_imag[k]) * X(j);
+                X(ind_imag[k]) -= T0(0, data_imag[k]) * X(j);
 	    }
 	}
   }
@@ -2509,7 +2519,7 @@ namespace Seldon
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
 
-    complex<T0> ajj;
+    T0 ajj;
 
     // Let us consider the following splitting : A = D - L - U
     // D diagonal of A
@@ -2528,11 +2538,11 @@ namespace Seldon
               ajj = zero;
               int kr = A.GetRealColumnSize(j)-1;
               if ((kr >= 0) && (A.IndexReal(j, kr) == j))
-                ajj = complex<T0>(A.ValueReal(j, kr--), 0);
+                ajj = T0(A.ValueReal(j, kr--), 0);
 
               int ki = A.GetImagColumnSize(j)-1;
               if ((ki >= 0) && (A.IndexImag(j, ki) == j))
-                ajj += complex<T0>(0, A.ValueImag(j, ki--));
+                ajj += T0(0, A.ValueImag(j, ki--));
               
 #ifdef SELDON_CHECK_BOUNDS
               if ( ajj == zero)
@@ -2544,7 +2554,7 @@ namespace Seldon
                 X(A.IndexReal(j, k)) -= A.ValueReal(j, k) * X(j);
 
 	      for (int k = 0; k <= ki; k++)
-                X(A.IndexImag(j, k)) -= complex<T0>(0, A.ValueImag(j, k)) * X(j);
+                X(A.IndexImag(j, k)) -= T0(0, A.ValueImag(j, k)) * X(j);
               
 	      X(j) = coef * ajj * X(j) + B(j);
 	    }
@@ -2555,17 +2565,17 @@ namespace Seldon
               ajj = zero;
               int kr = A.GetRealColumnSize(j)-1;
               if ((kr >= 0) && (A.IndexReal(j, kr) == j))
-                ajj = complex<T0>(A.ValueReal(j, kr--), 0);
+                ajj = T0(A.ValueReal(j, kr--), 0);
 
               int ki = A.GetImagColumnSize(j)-1;
               if ((ki >= 0) && (A.IndexImag(j, ki) == j))
-                ajj += complex<T0>(0, A.ValueImag(j, ki--));
+                ajj += T0(0, A.ValueImag(j, ki--));
               
 	      for (int k = 0; k <= kr; k++)
                 X(j) -= A.ValueReal(j, k) * X(A.IndexReal(j, k));
 
 	      for (int k = 0; k <= ki; k++)
-                X(j) -= complex<T0>(0, A.ValueImag(j, k)) * X(A.IndexImag(j, k));
+                X(j) -= T0(0, A.ValueImag(j, k)) * X(A.IndexImag(j, k));
               
               X(j) *= omega / ajj;
 	    }
@@ -2584,17 +2594,17 @@ namespace Seldon
               ajj = zero;
               int kr = A.GetRealColumnSize(j)-1;
               if ((kr >= 0) && (A.IndexReal(j, kr) == j))
-                ajj = complex<T0>(A.ValueReal(j, kr--), 0);
+                ajj = T0(A.ValueReal(j, kr--), 0);
 
               int ki = A.GetImagColumnSize(j)-1;
               if ((ki >= 0) && (A.IndexImag(j, ki) == j))
-                ajj += complex<T0>(0, A.ValueImag(j, ki--));
+                ajj += T0(0, A.ValueImag(j, ki--));
               
               for (int k = 0; k <= kr; k++)
 		temp -= A.ValueReal(j, k) * X(A.IndexReal(j, k));
 
               for (int k = 0; k <= ki; k++)
-		temp -= complex<T0>(0, A.ValueImag(j, k)) * X(A.IndexImag(j, k));
+		temp -= T0(0, A.ValueImag(j, k)) * X(A.IndexImag(j, k));
               
               X(j) = B(j) + coef * ajj * X(j) + temp;
 	    }
@@ -2606,18 +2616,18 @@ namespace Seldon
               ajj = zero;
               int kr = A.GetRealColumnSize(j)-1;
               if ((kr >= 0) && (A.IndexReal(j, kr) == j))
-                ajj = complex<T0>(A.ValueReal(j, kr--), 0);
+                ajj = T0(A.ValueReal(j, kr--), 0);
 
               int ki = A.GetImagColumnSize(j)-1;
               if ((ki >= 0) && (A.IndexImag(j, ki) == j))
-                ajj += complex<T0>(0, A.ValueImag(j, ki--));
+                ajj += T0(0, A.ValueImag(j, ki--));
               
               X(j) *= omega / ajj;
 	      for (int k = 0; k <= kr; k++)
                 X(A.IndexReal(j, k)) -= A.ValueReal(j, k) * X(j);
 
 	      for (int k = 0; k <= ki; k++)
-                X(A.IndexImag(j, k)) -= complex<T0>(0, A.ValueImag(j, k)) * X(j);
+                X(A.IndexImag(j, k)) -= T0(0, A.ValueImag(j, k)) * X(j);
 	    }
 	}
   }
@@ -2660,10 +2670,10 @@ namespace Seldon
     int* ind_real = A.GetRealInd();
     int* ind_imag = A.GetImagInd();
     
-    T0* data_real = A.GetRealData();
-    T0* data_imag = A.GetImagData();
+    typename ClassComplexType<T0>::Treal* data_real = A.GetRealData();
+    typename ClassComplexType<T0>::Treal* data_imag = A.GetImagData();
     
-    complex<T0> ajj;
+    T0 ajj;
 
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
@@ -2676,7 +2686,7 @@ namespace Seldon
                 if (ind_real[k] != j)
                   temp += data_real[k] * X(ind_real[k]);
                 else
-                  ajj = complex<T0>(data_real[k], 0);
+                  ajj = T0(data_real[k], 0);
               }
 
 	    for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
@@ -2707,7 +2717,7 @@ namespace Seldon
                 if (ind_real[k] != j)
                   temp += data_real[k] * X(ind_real[k]);
                 else
-                  ajj = complex<T0>(data_real[k], 0);
+                  ajj = T0(data_real[k], 0);
               }
 
 	    for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
@@ -2755,7 +2765,7 @@ namespace Seldon
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
 
-    complex<T0> ajj;
+    T0 ajj;
 
     if (type_ssor%2 == 0)
       for (int i = 0; i < iter; i++)
@@ -2774,10 +2784,10 @@ namespace Seldon
             for (int k = 0; k < A.GetImagColumnSize(j); k++)
               {
                 if (A.IndexImag(j, k) != j)
-                  temp += complex<T0>(0, A.ValueImag(j,k))
+                  temp += T0(0, A.ValueImag(j,k))
                     * X(A.IndexImag(j, k));
                 else
-                  ajj += complex<T0>(0, A.ValueImag(j,k));
+                  ajj += T0(0, A.ValueImag(j,k));
               }
             
 #ifdef SELDON_CHECK_BOUNDS
@@ -2806,10 +2816,10 @@ namespace Seldon
 	      for (int k = 0; k < A.GetImagColumnSize(j); k++)
 		{
 		  if (A.IndexImag(j, k) != j)
-                    temp += complex<T0>(0, A.ValueImag(j,k))
+                    temp += T0(0, A.ValueImag(j,k))
                       * X(A.IndexImag(j, k));
 		  else
-		    ajj += complex<T0>(0, A.ValueImag(j,k));
+		    ajj += T0(0, A.ValueImag(j,k));
 		}
               
               X(j) = (one-omega) * X(j) + omega * (B(j) - temp) / ajj;
@@ -2851,11 +2861,11 @@ namespace Seldon
 
     int* ptr_real = A.GetRealPtr();
     int* ind_real = A.GetRealInd();
-    T0* data_real = A.GetRealData();
+    typename ClassComplexType<T0>::Treal* data_real = A.GetRealData();
 
     int* ptr_imag = A.GetImagPtr();
     int* ind_imag = A.GetImagInd();
-    T0* data_imag = A.GetImagData();
+    typename ClassComplexType<T0>::Treal* data_imag = A.GetImagData();
 
     // Let us consider the following splitting : A = D - L - U
     // D diagonal of A
@@ -2864,7 +2874,7 @@ namespace Seldon
 
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    complex<T0> ajj;
+    T0 ajj;
     T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
@@ -2880,17 +2890,17 @@ namespace Seldon
                 }
               
               if ( (kr < ptr_real[j+1]) && (ind_real[kr] == j))
-                ajj = complex<T0>(data_real[kr], 0);
+                ajj = T0(data_real[kr], 0);
 
               int ki = ptr_imag[j];
               while ( (ki < ptr_imag[j+1]) && (ind_imag[ki] < j))
                 {
-                  X(ind_imag[ki]) -= complex<T0>(0, data_imag[ki])*X(j);
+                  X(ind_imag[ki]) -= T0(0, data_imag[ki])*X(j);
                   ki++;
                 }
 
               if ( (ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
-                ajj += complex<T0>(0, data_imag[ki]);
+                ajj += T0(0, data_imag[ki]);
               
 #ifdef SELDON_CHECK_BOUNDS
               if (ajj == zero)
@@ -2910,7 +2920,7 @@ namespace Seldon
                              
               if ( (kr < ptr_real[j+1]) && (ind_real[kr] == j))
                 {
-                  ajj = complex<T0>(data_real[kr], 0);
+                  ajj = T0(data_real[kr], 0);
                   kr++;
                 }
 
@@ -2920,7 +2930,7 @@ namespace Seldon
               
               if ( (ki < ptr_imag[j+1]) && (ind_imag[ki] == j))
                 {
-                  ajj += complex<T0>(0, data_imag[ki]);
+                  ajj += T0(0, data_imag[ki]);
                   ki++;
                 }
               
@@ -2933,7 +2943,7 @@ namespace Seldon
 
               while (ki < ptr_imag[j+1])
                 {
-                  X(ind_imag[ki]) -= complex<T0>(0, data_imag[ki])*X(j);
+                  X(ind_imag[ki]) -= T0(0, data_imag[ki])*X(j);
                   ki++;
                 }
             }
@@ -2955,17 +2965,17 @@ namespace Seldon
                 }
               
               if ( (kr >= ptr_real[j]) && (ind_real[kr] == j))
-                ajj = complex<T0>(data_real[kr], 0);
+                ajj = T0(data_real[kr], 0);
               
               int ki = ptr_imag[j+1]-1;
               while ( (ki >= ptr_imag[j]) && (ind_imag[ki] > j) )
                 {
-                  X(ind_imag[ki]) -= complex<T0>(0, data_imag[ki])*X(j);
+                  X(ind_imag[ki]) -= T0(0, data_imag[ki])*X(j);
                   ki--;
                 }
               
               if ( (ki >= ptr_imag[j]) && (ind_imag[ki] == j))
-                ajj += complex<T0>(0, data_imag[ki]);
+                ajj += T0(0, data_imag[ki]);
               
 #ifdef SELDON_CHECK_BOUNDS
               if (ajj == zero)
@@ -2976,7 +2986,7 @@ namespace Seldon
               X(j) = B(j) + coef * ajj * X(j);
             }
                     
-          // Then we solve (D/omega - U) X = X.
+          // sThen we solve (D/omega - U) X = X.
           for (int j = ma-1; j >= 0; j--)
             {
               int kr = ptr_real[j+1]-1;
@@ -2985,7 +2995,7 @@ namespace Seldon
               
               if ( (kr >= ptr_real[j]) && (ind_real[kr] == j))
                 {
-                  ajj = complex<T0>(data_real[kr], 0);
+                  ajj = T0(data_real[kr], 0);
                   kr--;
                 }
               
@@ -2995,7 +3005,7 @@ namespace Seldon
               
               if ( (ki >= ptr_imag[j]) && (ind_imag[ki] == j))
                 {
-                  ajj += complex<T0>(0, data_imag[ki]);
+                  ajj += T0(0, data_imag[ki]);
                   ki--;
                 }
 
@@ -3008,7 +3018,7 @@ namespace Seldon
 
               while (ki >= ptr_imag[j])
                 {
-                  X(ind_imag[ki]) -= complex<T0>(0, data_imag[ki])*X(j);
+                  X(ind_imag[ki]) -= T0(0, data_imag[ki])*X(j);
                   ki--;
                 }
             }
@@ -3055,7 +3065,7 @@ namespace Seldon
 
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
-    complex<T0> ajj;
+    T0 ajj;
     T3 coef = (one - omega) / omega;
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
@@ -3071,17 +3081,17 @@ namespace Seldon
                 }
               
               if ( (kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j))
-                ajj = complex<T0>(A.ValueReal(j, kr), 0);
+                ajj = T0(A.ValueReal(j, kr), 0);
               
               int ki = 0;
               while ( (ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) < j))
                 {
-                  X(A.IndexImag(j, ki)) -= complex<T0>(0, A.ValueImag(j, ki))*X(j);
+                  X(A.IndexImag(j, ki)) -= T0(0, A.ValueImag(j, ki))*X(j);
                   ki++;
                 }
 
               if ( (ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) == j) )
-                ajj += complex<T0>(0, A.ValueImag(j, ki));
+                ajj += T0(0, A.ValueImag(j, ki));
               
 #ifdef SELDON_CHECK_BOUNDS
               if (ajj == zero)
@@ -3101,7 +3111,7 @@ namespace Seldon
                              
               if ( (kr < A.GetRealRowSize(j)) && (A.IndexReal(j, kr) == j) )
                 {
-                  ajj = complex<T0>(A.ValueReal(j, kr), 0);
+                  ajj = T0(A.ValueReal(j, kr), 0);
                   kr++;
                 }
 
@@ -3111,7 +3121,7 @@ namespace Seldon
               
               if ( (ki < A.GetImagRowSize(j)) && (A.IndexImag(j, ki) == j))
                 {
-                  ajj += complex<T0>(0, A.ValueImag(j, ki));
+                  ajj += T0(0, A.ValueImag(j, ki));
                   ki++;
                 }
               
@@ -3124,7 +3134,7 @@ namespace Seldon
 
               while (ki < A.GetImagRowSize(j))
                 {
-                  X(A.IndexImag(j, ki)) -= complex<T0>(0, A.ValueImag(j, ki))*X(j);
+                  X(A.IndexImag(j, ki)) -= T0(0, A.ValueImag(j, ki))*X(j);
                   ki++;
                 }
             }
@@ -3146,17 +3156,17 @@ namespace Seldon
                 }
               
               if ( (kr >= 0) && (A.IndexReal(j, kr) == j))
-                ajj = complex<T0>(A.ValueReal(j, kr), 0);
+                ajj = T0(A.ValueReal(j, kr), 0);
               
               int ki = A.GetImagRowSize(j)-1;
               while ( (ki >= 0) && (A.IndexImag(j, ki) > j) )
                 {
-                  X(A.IndexImag(j, ki)) -= complex<T0>(0, A.ValueImag(j, ki))*X(j);
+                  X(A.IndexImag(j, ki)) -= T0(0, A.ValueImag(j, ki))*X(j);
                   ki--;
                 }
               
               if ( (ki >= 0) && (A.IndexImag(j, ki) == j))
-                ajj += complex<T0>(0, A.ValueImag(j, ki));
+                ajj += T0(0, A.ValueImag(j, ki));
               
 #ifdef SELDON_CHECK_BOUNDS
               if (ajj == zero)
@@ -3176,7 +3186,7 @@ namespace Seldon
               
               if ( (kr >= 0) && (A.IndexReal(j, kr) == j))
                 {
-                  ajj = complex<T0>(A.ValueReal(j, kr), 0);
+                  ajj = T0(A.ValueReal(j, kr), 0);
                   kr--;
                 }
               
@@ -3186,7 +3196,7 @@ namespace Seldon
               
               if ( (ki >= 0) && (A.IndexImag(j, ki) == j))
                 {
-                  ajj += complex<T0>(0, A.ValueImag(j, ki));
+                  ajj += T0(0, A.ValueImag(j, ki));
                   ki--;
                 }
 
@@ -3199,7 +3209,7 @@ namespace Seldon
 
               while (ki >= 0)
                 {
-                  X(A.IndexImag(j, ki)) -= complex<T0>(0, A.ValueImag(j, ki))*X(j);
+                  X(A.IndexImag(j, ki)) -= T0(0, A.ValueImag(j, ki))*X(j);
                   ki--;
                 }
             }

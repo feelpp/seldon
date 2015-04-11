@@ -196,40 +196,52 @@ namespace Seldon
                  Matrix<T, General, RowComplexSparse, Allocator>& B);
 
   template <class T, class Prop, class Allocator>
-  T MaxAbs(const Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A);
+  typename ClassComplexType<T>::Treal
+  MaxAbs(const Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
-  T MaxAbs(const Matrix<T, Prop, RowComplexSparse, Allocator>& A);
+  typename ClassComplexType<T>::Treal
+  MaxAbs(const Matrix<T, Prop, RowComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
-  T Norm1(const Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A);
+  typename ClassComplexType<T>::Treal
+  Norm1(const Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
-  T Norm1(const Matrix<T, Prop, RowComplexSparse, Allocator>& A);
+  typename ClassComplexType<T>::Treal
+  Norm1(const Matrix<T, Prop, RowComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
-  T NormInf(const Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A);
+  typename ClassComplexType<T>::Treal
+  NormInf(const Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
-  T NormInf(const Matrix<T, Prop, RowComplexSparse, Allocator>& A);
+  typename ClassComplexType<T>::Treal
+  NormInf(const Matrix<T, Prop, RowComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
-  T MaxAbs(const Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A);
+  typename ClassComplexType<T>::Treal
+  MaxAbs(const Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
-  T MaxAbs(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A);
+  typename ClassComplexType<T>::Treal
+  MaxAbs(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
-  T Norm1(const Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A);
+  typename ClassComplexType<T>::Treal
+  Norm1(const Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
-  T Norm1(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A);
+  typename ClassComplexType<T>::Treal
+  Norm1(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
-  T NormInf(const Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A);
+  typename ClassComplexType<T>::Treal
+  NormInf(const Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A);
 
   template <class T, class Prop, class Allocator>
-  T NormInf(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A);
+  typename ClassComplexType<T>::Treal
+  NormInf(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A);
 
   template<class T, class Prop, class Allocator>
   void Conjugate(Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A);
@@ -267,36 +279,6 @@ namespace Seldon
   template<class T, class Allocator>
   void Transpose(Matrix<T, Symmetric,
                  RowSymComplexSparse, Allocator>& A);
-
-  template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop, RowComplexSparse, Allocator>& A);
-
-  template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop, ColComplexSparse, Allocator>& A);
-  
-  template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop,
-		       RowSymComplexSparse, Allocator>& A);
-  
-  template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop,
-		       ColSymComplexSparse, Allocator>& A);
-  
-  template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop,
-		       ArrayRowComplexSparse, Allocator>& A);
-  
-  template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop,
-		       ArrayColComplexSparse, Allocator>& A);
-
-  template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop,
-		       ArrayRowSymComplexSparse, Allocator>& A);
-  
-  template<class T, class Prop, class Allocator>
-  bool IsComplexMatrix(const Matrix<T, Prop,
-		       ArrayColSymComplexSparse, Allocator>& A);
 
   template<class T, class Prop, class Allocator, class T0>
   void RemoveSmallEntry(Matrix<T, Prop,
@@ -339,55 +321,55 @@ namespace Seldon
 		Matrix<T1, Prop, RowSymComplexSparse, Allocator>& A);
   
   template<class T>
-  void GetRowSum(Vector<T>& diagonal_scale_left,
+  void GetRowSum(Vector<typename ClassComplexType<T>::Treal>& diagonal_scale_left,
 		 const Matrix<T, Symmetric, ArrayRowSymComplexSparse> & mat);
   
   template<class T>
-  void GetRowSum(Vector<T>& diagonal_scale_left,
+  void GetRowSum(Vector<typename ClassComplexType<T>::Treal>& diagonal_scale_left,
 		 const Matrix<T, General, ArrayRowComplexSparse>& mat);
   
   template<class T>
-  void GetRowSum(Vector<T>& diagonal_scale_left,
+  void GetRowSum(Vector<typename ClassComplexType<T>::Treal>& diagonal_scale_left,
 		 const Matrix<T, Symmetric, RowSymComplexSparse> & mat);
   
   template<class T>
-  void GetRowSum(Vector<T>& diagonal_scale_left,
+  void GetRowSum(Vector<typename ClassComplexType<T>::Treal>& diagonal_scale_left,
 		 const Matrix<T, General, RowComplexSparse>& mat);
   
   template<class T>
-  void GetColSum(Vector<T>& diagonal_scale_left,
+  void GetColSum(Vector<typename ClassComplexType<T>::Treal>& diagonal_scale_left,
 		 const Matrix<T, Symmetric, ArrayRowSymComplexSparse> & mat);
   
   template<class T>
-  void GetColSum(Vector<T>& diagonal_scale_left,
+  void GetColSum(Vector<typename ClassComplexType<T>::Treal>& diagonal_scale_left,
 		 const Matrix<T, General, ArrayRowComplexSparse>& mat);
 
   template<class T>
-  void GetColSum(Vector<T>& diagonal_scale_left,
+  void GetColSum(Vector<typename ClassComplexType<T>::Treal>& diagonal_scale_left,
 		 const Matrix<T, Symmetric, RowSymComplexSparse> & mat);
   
   template<class T>
-  void GetColSum(Vector<T>& diagonal_scale_left,
+  void GetColSum(Vector<typename ClassComplexType<T>::Treal>& diagonal_scale_left,
 		 const Matrix<T, General, RowComplexSparse>& mat);
   
   template<class T>
-  void GetRowColSum(Vector<T>& sum_row,
-                    Vector<T>& sum_col,
+  void GetRowColSum(Vector<typename ClassComplexType<T>::Treal>& sum_row,
+                    Vector<typename ClassComplexType<T>::Treal>& sum_col,
                     const Matrix<T, General, ArrayRowComplexSparse> & A);
   
   template<class T>
-  void GetRowColSum(Vector<T>& sum_row,
-                    Vector<T>& sum_col,
+  void GetRowColSum(Vector<typename ClassComplexType<T>::Treal>& sum_row,
+                    Vector<typename ClassComplexType<T>::Treal>& sum_col,
                     const Matrix<T, Symmetric, ArrayRowSymComplexSparse> & A);
 
   template<class T>
-  void GetRowColSum(Vector<T>& sum_row,
-                    Vector<T>& sum_col,
+  void GetRowColSum(Vector<typename ClassComplexType<T>::Treal>& sum_row,
+                    Vector<typename ClassComplexType<T>::Treal>& sum_col,
                     const Matrix<T, General, RowComplexSparse> & A);
   
   template<class T>
-  void GetRowColSum(Vector<T>& sum_row,
-                    Vector<T>& sum_col,
+  void GetRowColSum(Vector<typename ClassComplexType<T>::Treal>& sum_row,
+                    Vector<typename ClassComplexType<T>::Treal>& sum_col,
                     const Matrix<T, Symmetric, RowSymComplexSparse> & A);
 
   template<class T0, class Prop0, class Allocator0,

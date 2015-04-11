@@ -28,7 +28,8 @@ namespace Seldon
     are shared by several processors. Functions DotProd, DotProdConj
     and Norm2 are overloaded in order to take into account this overlap.
    */
-  template<class T, class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template<class T, class Allocator
+	   = typename SeldonDefaultAllocator<VectFull, T>::allocator>
   class DistributedVector : public Vector<T, Vect_Full, Allocator>
   {
   protected :

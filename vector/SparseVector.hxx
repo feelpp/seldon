@@ -40,7 +40,7 @@ namespace Seldon
     typedef VectSparse storage;
 
   protected :
-    static SELDON_DEFAULT_ALLOCATOR<int> index_allocator_;
+    static typename SeldonDefaultAllocator<VectFull, int>::allocator index_allocator_;
 
     // Attributes.
   private:

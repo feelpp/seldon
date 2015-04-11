@@ -28,7 +28,7 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
 
@@ -39,7 +39,7 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
   
   
@@ -50,7 +50,7 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
 
@@ -61,7 +61,7 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
   
   
@@ -72,7 +72,7 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
   
   
@@ -83,7 +83,7 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
 
   
@@ -94,7 +94,7 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
   
   
@@ -105,7 +105,7 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index = 0, bool sym = false);
   
   
@@ -114,7 +114,7 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, RowComplexSparse,
 				 Allocator4>& A,
 				 int index = 0);
@@ -125,7 +125,7 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ColComplexSparse,
 				 Allocator4>& A,
 				 int index = 0);
@@ -136,7 +136,7 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, RowSymComplexSparse,
 				 Allocator4>& A,
 				 int index = 0);
@@ -147,7 +147,7 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ColSymComplexSparse,
 				 Allocator4>& A,
 				 int index = 0);
@@ -158,7 +158,7 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayRowComplexSparse,
 				 Allocator4>& A,
 				 int index = 0);
@@ -169,7 +169,7 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayColComplexSparse,
 				 Allocator4>& A,
 				 int index = 0);
@@ -180,7 +180,7 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayRowSymComplexSparse,
 				 Allocator4>& A,
 				 int index = 0);
@@ -191,7 +191,7 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayColSymComplexSparse,
 				 Allocator4>& A,
 				 int index = 0);  
@@ -202,7 +202,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, RowComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value);
+                    Vector<T, VectFull, Alloc4>& Value);
   
   
   template<class T, class Prop, class Alloc1,
@@ -210,7 +210,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ColComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val);
+                    Vector<T, VectFull, Alloc4>& Val);
 
 
   template<class T, class Prop, class Alloc1,
@@ -218,7 +218,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val);
+                    Vector<T, VectFull, Alloc4>& Val);
 
 
   template<class T, class Prop, class Alloc1,
@@ -226,7 +226,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val);
+                    Vector<T, VectFull, Alloc4>& Val);
 
   
   template<class T, class Prop, class Alloc1,
@@ -234,7 +234,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val);
+                    Vector<T, VectFull, Alloc4>& Val);
 
 
   template<class T, class Prop, class Alloc1,
@@ -242,7 +242,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val);
+                    Vector<T, VectFull, Alloc4>& Val);
 
   
   template<class T, class Prop, class Alloc1,
@@ -250,7 +250,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ArrayRowComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value);
+                    Vector<T, VectFull, Alloc4>& Value);
   
   
   template<class T, class Prop, class Alloc1,
@@ -258,7 +258,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ArrayColComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val);
+                    Vector<T, VectFull, Alloc4>& Val);
 
 
   template<class T, class Prop, class Alloc1,
@@ -266,7 +266,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val);
+                    Vector<T, VectFull, Alloc4>& Val);
 
   
   template<class T, class Prop, class Alloc1,
@@ -274,7 +274,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value);
+                    Vector<T, VectFull, Alloc4>& Value);
 
   
   template<class T, class Prop, class Alloc1,
@@ -282,7 +282,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val);
+                    Vector<T, VectFull, Alloc4>& Val);
 
 
   template<class T, class Prop, class Alloc1,
@@ -290,7 +290,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val);
+                    Vector<T, VectFull, Alloc4>& Val);
 
   
   template<class T, class Prop, class Alloc1,
@@ -298,7 +298,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, RowComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val,
+                    Vector<T, VectFull, Alloc4>& Val,
                     bool sym_pat = false);
 
   
@@ -307,7 +307,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ColComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    Vector<T, VectFull, Alloc4>& Value,
                     bool sym_pat = false);
 
 
@@ -316,7 +316,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val,
+                    Vector<T, VectFull, Alloc4>& Val,
                     bool sym_pat = false);
 
 
@@ -325,7 +325,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val,
+                    Vector<T, VectFull, Alloc4>& Val,
                     bool sym_pat = false);
   
   
@@ -334,7 +334,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    Vector<T, VectFull, Alloc4>& Value,
                     bool sym_pat = false);
 
 
@@ -343,7 +343,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    Vector<T, VectFull, Alloc4>& Value,
                     bool sym_pat = false);
   
   
@@ -352,7 +352,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayRowComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val,
+                    Vector<T, VectFull, Alloc4>& Val,
                     bool sym_pat = false);
 
   
@@ -361,7 +361,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayColComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    Vector<T, VectFull, Alloc4>& Value,
                     bool sym_pat = false);
 
 
@@ -370,7 +370,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val,
+                    Vector<T, VectFull, Alloc4>& Val,
                     bool sym_pat = false);
 
   
@@ -379,7 +379,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val,
+                    Vector<T, VectFull, Alloc4>& Val,
                     bool sym_pat = false);
 
   template<class T, class Prop, class Alloc1,
@@ -387,7 +387,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    Vector<T, VectFull, Alloc4>& Value,
                     bool sym_pat = false);
 
 
@@ -396,7 +396,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    Vector<T, VectFull, Alloc4>& Value,
                     bool sym_pat = false);
 
   template<class T0, class Prop0, class Allocator0,

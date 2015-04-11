@@ -30,7 +30,8 @@ namespace Seldon
 {
   
   //! Default solver in Seldon
-  template<class T, class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template<class T, class Allocator 
+	   = typename SeldonDefaultAllocator<ArrayRowSparse, T>::allocator>
   class SparseSeldonSolver
   {
   protected :

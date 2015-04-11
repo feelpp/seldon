@@ -566,8 +566,8 @@ int main(int argc, char** argv)
   
   {
     // testing conversion to coordinate matrix
-    Matrix<Real_wp, General, ColComplexSparse> B;
-    Matrix<Real_wp, General, ColComplexSparse> A;
+    Matrix<Complex_wp, General, ColComplexSparse> B;
+    Matrix<Complex_wp, General, ColComplexSparse> A;
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A);
     
     IVect IndRow, IndCol; VectComplex_wp Val;
@@ -582,24 +582,8 @@ int main(int argc, char** argv)
 
   {
     // testing conversion to coordinate matrix
-    Matrix<Real_wp, General, RowComplexSparse> B;
-    Matrix<Real_wp, General, RowComplexSparse> A;
-    ReadHarwellBoeing("matrix/market/mhd1280a.cua", A);
-    
-    IVect IndRow, IndCol; VectComplex_wp Val;
-    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
-    ConvertMatrix_from_Coordinates(IndRow, IndCol, Val, B);
-    if (!EqualMatrix(A, B))
-      {
-	cout << "ConvertMatrix_to_Coordinates incorrect" << endl;
-	abort();
-      }
-  }    
-  
-  {
-    // testing conversion to coordinate matrix
-    Matrix<Real_wp, General, ArrayColComplexSparse> B;
-    Matrix<Real_wp, General, ArrayColComplexSparse> A;
+    Matrix<Complex_wp, General, RowComplexSparse> B;
+    Matrix<Complex_wp, General, RowComplexSparse> A;
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A);
     
     IVect IndRow, IndCol; VectComplex_wp Val;
@@ -614,8 +598,24 @@ int main(int argc, char** argv)
   
   {
     // testing conversion to coordinate matrix
-    Matrix<Real_wp, General, ArrayRowComplexSparse> B;
-    Matrix<Real_wp, General, ArrayRowComplexSparse> A;
+    Matrix<Complex_wp, General, ArrayColComplexSparse> B;
+    Matrix<Complex_wp, General, ArrayColComplexSparse> A;
+    ReadHarwellBoeing("matrix/market/mhd1280a.cua", A);
+    
+    IVect IndRow, IndCol; VectComplex_wp Val;
+    ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
+    ConvertMatrix_from_Coordinates(IndRow, IndCol, Val, B);
+    if (!EqualMatrix(A, B))
+      {
+	cout << "ConvertMatrix_to_Coordinates incorrect" << endl;
+	abort();
+      }
+  }    
+  
+  {
+    // testing conversion to coordinate matrix
+    Matrix<Complex_wp, General, ArrayRowComplexSparse> B;
+    Matrix<Complex_wp, General, ArrayRowComplexSparse> A;
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A);
     
     IVect IndRow, IndCol; VectComplex_wp Val;
@@ -630,8 +630,8 @@ int main(int argc, char** argv)
 
   {
     // testing conversion to coordinate matrix
-    Matrix<Real_wp, Symmetric, ArrayColSymComplexSparse> B;
-    Matrix<Real_wp, Symmetric, ArrayColSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ArrayColSymComplexSparse> B;
+    Matrix<Complex_wp, Symmetric, ArrayColSymComplexSparse> A;
     ReadHarwellBoeing("matrix/market/dwg961a.csa", A);
     
     B.Reallocate(A.GetM(), A.GetN());
@@ -647,8 +647,8 @@ int main(int argc, char** argv)
 
   {
     // testing conversion to coordinate matrix
-    Matrix<Real_wp, Symmetric, ArrayRowSymComplexSparse> B;
-    Matrix<Real_wp, Symmetric, ArrayRowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ArrayRowSymComplexSparse> B;
+    Matrix<Complex_wp, Symmetric, ArrayRowSymComplexSparse> A;
     ReadHarwellBoeing("matrix/market/dwg961a.csa", A);
     
     B.Reallocate(A.GetM(), A.GetN());
@@ -664,8 +664,8 @@ int main(int argc, char** argv)
 
   {
     // testing conversion to coordinate matrix
-    Matrix<Real_wp, Symmetric, ColSymComplexSparse> B;
-    Matrix<Real_wp, Symmetric, ColSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ColSymComplexSparse> B;
+    Matrix<Complex_wp, Symmetric, ColSymComplexSparse> A;
     ReadHarwellBoeing("matrix/market/dwg961a.csa", A);
     
     B.Reallocate(A.GetM(), A.GetN());
@@ -681,8 +681,8 @@ int main(int argc, char** argv)
 
   {
     // testing conversion to coordinate matrix
-    Matrix<Real_wp, Symmetric, RowSymComplexSparse> B;
-    Matrix<Real_wp, Symmetric, RowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, RowSymComplexSparse> B;
+    Matrix<Complex_wp, Symmetric, RowSymComplexSparse> A;
     ReadHarwellBoeing("matrix/market/dwg961a.csa", A);
     
     B.Reallocate(A.GetM(), A.GetN());
@@ -1197,7 +1197,7 @@ int main(int argc, char** argv)
 
   {
     // testing ConvertToCSC for complex matrices
-    Matrix<Real_wp, General, RowComplexSparse> A;
+    Matrix<Complex_wp, General, RowComplexSparse> A;
     Matrix<Complex_wp, General, ColSparse> B, B2;
     
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A);
@@ -1216,7 +1216,7 @@ int main(int argc, char** argv)
 	abort();
       }
     
-    Matrix<Real_wp, General, ArrayRowComplexSparse> A2;
+    Matrix<Complex_wp, General, ArrayRowComplexSparse> A2;
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A2);
     
     B.Clear(); B2.Clear();
@@ -1230,7 +1230,7 @@ int main(int argc, char** argv)
 	abort();
       }
 
-    Matrix<Real_wp, General, ColComplexSparse> A3;
+    Matrix<Complex_wp, General, ColComplexSparse> A3;
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A3);
     
     B.Clear(); B2.Clear();
@@ -1244,7 +1244,7 @@ int main(int argc, char** argv)
 	abort();
       }
 
-    Matrix<Real_wp, General, ArrayColComplexSparse> A4;
+    Matrix<Complex_wp, General, ArrayColComplexSparse> A4;
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A4);
     
     B.Clear(); B2.Clear();
@@ -1261,7 +1261,7 @@ int main(int argc, char** argv)
   
   {
     // testing ConvertToCSC for symmetric complex matrices
-    Matrix<Real_wp, Symmetric, RowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, RowSymComplexSparse> A;
     Matrix<Complex_wp, Symmetric, ColSymSparse> B, B2;
     Matrix<Complex_wp, General, ColSparse> C, C2;
     
@@ -1285,7 +1285,7 @@ int main(int argc, char** argv)
 	abort();
       }
     
-    Matrix<Real_wp, Symmetric, ArrayRowSymComplexSparse> A2;
+    Matrix<Complex_wp, Symmetric, ArrayRowSymComplexSparse> A2;
     ReadHarwellBoeing("matrix/market/dwg961a.csa", A2);
     
     B.Clear(); C.Clear(); B2.Clear(); C2.Clear();
@@ -1303,7 +1303,7 @@ int main(int argc, char** argv)
 	abort();
       }
 
-    Matrix<Real_wp, Symmetric, ColSymComplexSparse> A3;
+    Matrix<Complex_wp, Symmetric, ColSymComplexSparse> A3;
     ReadHarwellBoeing("matrix/market/dwg961a.csa", A3);
     
     B.Clear(); C.Clear(); B2.Clear(); C2.Clear();
@@ -1321,7 +1321,7 @@ int main(int argc, char** argv)
 	abort();
       }
 
-    Matrix<Real_wp, Symmetric, ArrayColSymComplexSparse> A4;
+    Matrix<Complex_wp, Symmetric, ArrayColSymComplexSparse> A4;
     ReadHarwellBoeing("matrix/market/dwg961a.csa", A4);
     
     B.Clear(); C.Clear(); B2.Clear(); C2.Clear();
@@ -1342,7 +1342,7 @@ int main(int argc, char** argv)
 
   {
     // testing ConvertToCSR for unsymmetric matrices
-    Matrix<Real_wp, General, RowComplexSparse> A;
+    Matrix<Complex_wp, General, RowComplexSparse> A;
     Matrix<Complex_wp, General, RowSparse> B, B2;
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A);
     int m = A.GetM(), n = A.GetN();
@@ -1360,7 +1360,7 @@ int main(int argc, char** argv)
 	abort();
       }
     
-    Matrix<Real_wp, General, ArrayRowComplexSparse> A2;
+    Matrix<Complex_wp, General, ArrayRowComplexSparse> A2;
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A2);
     
     B.Clear(); B2.Clear();
@@ -1374,7 +1374,7 @@ int main(int argc, char** argv)
 	abort();
       }
 
-    Matrix<Real_wp, General, ColComplexSparse> A3;
+    Matrix<Complex_wp, General, ColComplexSparse> A3;
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A3);
     
     B.Clear(); B2.Clear();
@@ -1388,7 +1388,7 @@ int main(int argc, char** argv)
 	abort();
       }
 
-    Matrix<Real_wp, General, ArrayColComplexSparse> A4;
+    Matrix<Complex_wp, General, ArrayColComplexSparse> A4;
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A4);
     
     B.Clear(); B2.Clear();
@@ -1405,7 +1405,7 @@ int main(int argc, char** argv)
 
   {
     // testing ConvertToCSR for symmetric matrices
-    Matrix<Real_wp, Symmetric, RowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, RowSymComplexSparse> A;
     Matrix<Complex_wp, Symmetric, RowSymSparse> B, B2;
     Matrix<Complex_wp, General, RowSparse> C, C2;
         
@@ -1429,7 +1429,7 @@ int main(int argc, char** argv)
 	abort();
       }
         
-    Matrix<Real_wp, Symmetric, ArrayRowSymComplexSparse> A2;
+    Matrix<Complex_wp, Symmetric, ArrayRowSymComplexSparse> A2;
     ReadHarwellBoeing("matrix/market/dwg961a.csa", A2);
     
     B.Clear(); C.Clear(); B2.Clear(); C2.Clear();
@@ -1447,7 +1447,7 @@ int main(int argc, char** argv)
 	abort();
       }
 
-    Matrix<Real_wp, Symmetric, ColSymComplexSparse> A3;
+    Matrix<Complex_wp, Symmetric, ColSymComplexSparse> A3;
     ReadHarwellBoeing("matrix/market/dwg961a.csa", A3);
     
     B.Clear(); C.Clear(); B2.Clear(); C2.Clear();
@@ -1465,7 +1465,7 @@ int main(int argc, char** argv)
 	abort();
       }
 
-    Matrix<Real_wp, Symmetric, ArrayColSymComplexSparse> A4;
+    Matrix<Complex_wp, Symmetric, ArrayColSymComplexSparse> A4;
     ReadHarwellBoeing("matrix/market/dwg961a.csa", A4);
     
     B.Clear(); C.Clear(); B2.Clear(); C2.Clear();
@@ -1501,8 +1501,8 @@ int main(int argc, char** argv)
   
   {
     // testing other conversions with complex matrices (function Copy)
-    Matrix<Real_wp, General, ArrayRowComplexSparse> A;
-    Matrix<Real_wp, General, RowComplexSparse> B;
+    Matrix<Complex_wp, General, ArrayRowComplexSparse> A;
+    Matrix<Complex_wp, General, RowComplexSparse> B;
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A);
     
     Copy(A, B);
@@ -1520,8 +1520,8 @@ int main(int argc, char** argv)
 	abort();
       }
 
-    Matrix<Real_wp, Symmetric, ArrayRowSymComplexSparse> As;
-    Matrix<Real_wp, Symmetric, RowSymComplexSparse> Bs;
+    Matrix<Complex_wp, Symmetric, ArrayRowSymComplexSparse> As;
+    Matrix<Complex_wp, Symmetric, RowSymComplexSparse> Bs;
     ReadHarwellBoeing("matrix/market/dwg961a.csa", As);
     
     Copy(As, Bs);
@@ -1548,7 +1548,7 @@ int main(int argc, char** argv)
 	abort();
       }
 
-    Matrix<Real_wp, Symmetric, RowSymComplexSparse> As2;
+    Matrix<Complex_wp, Symmetric, RowSymComplexSparse> As2;
     ReadHarwellBoeing("matrix/market/dwg961a.csa", As2);
     
     Ba.Clear();
@@ -1567,7 +1567,7 @@ int main(int argc, char** argv)
 	abort();
       }
 
-    Matrix<Real_wp, General, RowComplexSparse> Aunsym;
+    Matrix<Complex_wp, General, RowComplexSparse> Aunsym;
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", Aunsym);
     
     Ba.Clear();
@@ -1678,49 +1678,49 @@ int main(int argc, char** argv)
 
   {
     cout << "Testing RowComplexSparse..." << endl;
-    Matrix<Real_wp, General, RowComplexSparse> A;
+    Matrix<Complex_wp, General, RowComplexSparse> A;
     CheckComplexUnsymmetric(A);
   }
 
   {
     cout << "Testing ColComplexSparse..." << endl;
-    Matrix<Real_wp, General, ColComplexSparse> A;
+    Matrix<Complex_wp, General, ColComplexSparse> A;
     CheckComplexUnsymmetric(A);
   }
 
   {
     cout << "Testing RowSymComplexSparse..." << endl;
-    Matrix<Real_wp, Symmetric, RowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, RowSymComplexSparse> A;
     CheckComplexSymmetric(A);
   }
 
   {
     cout << "Testing ColSymComplexSparse..." << endl;
-    Matrix<Real_wp, Symmetric, ColSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ColSymComplexSparse> A;
     CheckComplexSymmetric(A);
   }
 
   {
     cout << "Testing ArrayRowComplexSparse..." << endl;
-    Matrix<Real_wp, General, ArrayRowComplexSparse> A;
+    Matrix<Complex_wp, General, ArrayRowComplexSparse> A;
     CheckComplexUnsymmetric(A);
   }
 
   {
     cout << "Testing ArrayColComplexSparse..." << endl;
-    Matrix<Real_wp, General, ArrayColComplexSparse> A;
+    Matrix<Complex_wp, General, ArrayColComplexSparse> A;
     CheckComplexUnsymmetric(A);
   }
 
   {
     cout << "Testing ArrayRowSymComplexSparse..." << endl;
-    Matrix<Real_wp, Symmetric, ArrayRowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ArrayRowSymComplexSparse> A;
     CheckComplexSymmetric(A);
   }
 
   {
     cout << "Testing ArrayColSymComplexSparse..." << endl;
-    Matrix<Real_wp, Symmetric, ArrayColSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ArrayColSymComplexSparse> A;
     CheckComplexSymmetric(A);
   }
   

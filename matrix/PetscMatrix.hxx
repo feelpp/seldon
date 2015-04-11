@@ -35,8 +35,8 @@ namespace Seldon
 
 
   //! Matrix class based on PETSc matrix.
-  template <class T, class Prop, class Storage,
-            class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, class Prop, class Storage, class Allocator
+	    = typename SeldonDefaultAllocator<VectFull, T>::allocator>
   class PetscMatrix: public Matrix_Base<T, Allocator>
   {
     // Typedef declaration.

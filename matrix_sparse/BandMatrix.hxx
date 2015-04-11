@@ -31,8 +31,7 @@ namespace Seldon
   
   
   //! base class for a banded-matrix
-  template <class T, class Prop, class Storage,
-            class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, class Prop, class Storage, class Allocator>
   class Matrix_Band
   {
   public :
@@ -126,8 +125,7 @@ namespace Seldon
 
   
   //! base class for arrow matrix (banded matrix + dense columns/rows)
-  template <class T, class Prop, class Storage,
-            class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, class Prop, class Storage, class Allocator>
   class Matrix_Arrow : public Matrix_Band<T, Prop, Storage, Allocator>
   {
     // Attributes.

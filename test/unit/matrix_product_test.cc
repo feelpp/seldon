@@ -1602,25 +1602,25 @@ int main(int argc, char** argv)
 
   // testing hermitian matrices
   {
-    Matrix<Complex_wp, General, RowHerm> A;
+    Matrix<Complex_wp, Hermitian, RowHerm> A;
     Matrix<Complex_wp, General, RowMajor> B;
     CheckHermMatrix(A, B);
   }
 
   {
-    Matrix<Complex_wp, General, ColHerm> A;
+    Matrix<Complex_wp, Hermitian, ColHerm> A;
     Matrix<Complex_wp, General, RowMajor> B;
     CheckHermMatrix(A, B);
   }
 
   {
-    Matrix<Complex_wp, General, RowHermPacked> A;
+    Matrix<Complex_wp, Hermitian, RowHermPacked> A;
     Matrix<Complex_wp, General, RowMajor> B;
     CheckHermMatrix(A, B);
   }
 
   {
-    Matrix<Complex_wp, General, ColHermPacked> A;
+    Matrix<Complex_wp, Hermitian, ColHermPacked> A;
     Matrix<Complex_wp, General, RowMajor> B;
     CheckHermMatrix(A, B);
   }

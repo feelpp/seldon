@@ -144,9 +144,9 @@ void CheckArray3D(Array3D<T>& A)
   for (int i = 0; i < A.GetLength1(); i++)
     for (int j = 0; j < A.GetLength2(); j++)
       for (int k = 0; k < A.GetLength3(); k++)
-        if ((C(i, j, k) != x) || isnan(C(i, j, k)))
+	if ((abs(C(i, j, k)-x) > threshold) || isnan(C(i, j, k)))
           {
-            cout << "Fill incorrect" << endl;
+            cout << "Fill incorrect " << endl;
             abort();
           }
   

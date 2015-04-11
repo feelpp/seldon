@@ -139,7 +139,7 @@ void GenerateRandomMatrix(Matrix<T, Prop, Storage, Allocator>& A,
 
 template<class T, class Prop, class Storage, class Allocator,
          class Prop2, class Storage2, class Allocator2>
-void CheckGeneralMatrix(Matrix<T, Prop, Storage, Allocator>& A,
+void CheckGeneralMatrix(Matrix<complex<T>, Prop, Storage, Allocator>& A,
                         Matrix<complex<T>, Prop2, Storage2, Allocator2>& Bcplx)
 {
   int m = 70, n = 36, nnz = 200;
@@ -152,7 +152,7 @@ void CheckGeneralMatrix(Matrix<T, Prop, Storage, Allocator>& A,
   IVect row_perm;
   GenerateRandomPermutation(m, row_perm);
   
-  Matrix<T, Prop, Storage, Allocator> B(A);
+  Matrix<complex<T>, Prop, Storage, Allocator> B(A);
   ApplyInversePermutation(A, row_perm, col_perm);
   
   for (int i = 0; i < m; i++)
@@ -239,7 +239,7 @@ void CheckGeneralMatrix(Matrix<T, Prop, Storage, Allocator>& A,
   
   B.FillRand();
   Mlt(Real_wp(1)/RAND_MAX, B);
-  Matrix<T, Prop, Storage, Allocator> C;
+  Matrix<complex<T>, Prop, Storage, Allocator> C;
   C = A;
   Add(alpha, B, A);
   for (int i = 0; i < m; i++)
@@ -396,7 +396,7 @@ void CheckGeneralMatrix(Matrix<T, Prop, Storage, Allocator>& A,
 
 template<class T, class Prop, class Storage, class Allocator,
          class Prop2, class Storage2, class Allocator2>
-void CheckSymmetricMatrix(Matrix<T, Prop, Storage, Allocator>& A,
+void CheckSymmetricMatrix(Matrix<complex<T>, Prop, Storage, Allocator>& A,
                           Matrix<complex<T>, Prop2, Storage2, Allocator2>& Bcplx)
 {
   int m = 48, n = 48, nnz = 200;
@@ -406,7 +406,7 @@ void CheckSymmetricMatrix(Matrix<T, Prop, Storage, Allocator>& A,
   IVect row_perm;
   GenerateRandomPermutation(m, row_perm);
   
-  Matrix<T, Prop, Storage, Allocator> B(A);
+  Matrix<complex<T>, Prop, Storage, Allocator> B(A);
   ApplyInversePermutation(A, row_perm, row_perm);
   
   for (int i = 0; i < m; i++)
@@ -472,7 +472,7 @@ void CheckSymmetricMatrix(Matrix<T, Prop, Storage, Allocator>& A,
   
   B.FillRand();
   Mlt(Real_wp(1)/RAND_MAX, B);
-  Matrix<T, Prop, Storage, Allocator> C;
+  Matrix<complex<T>, Prop, Storage, Allocator> C;
   C = A;
   Add(alpha, B, A);
   for (int i = 0; i < m; i++)
@@ -628,7 +628,7 @@ void CheckSymmetricMatrix(Matrix<T, Prop, Storage, Allocator>& A,
 
 
 template<class T, class Prop, class Storage, class Allocator>
-void CheckGeneralMatrix(Matrix<T, Prop, Storage, Allocator>& A)
+void CheckGeneralMatrix(Matrix<complex<T>, Prop, Storage, Allocator>& A)
 {
   int m = 70, n = 36, nnz = 200;
 
@@ -640,7 +640,7 @@ void CheckGeneralMatrix(Matrix<T, Prop, Storage, Allocator>& A)
   IVect row_perm;
   GenerateRandomPermutation(m, row_perm);
   
-  Matrix<T, Prop, Storage, Allocator> B(A);
+  Matrix<complex<T>, Prop, Storage, Allocator> B(A);
   /* ApplyInversePermutation(A, row_perm, col_perm);
   
   for (int i = 0; i < m; i++)
@@ -727,7 +727,7 @@ void CheckGeneralMatrix(Matrix<T, Prop, Storage, Allocator>& A)
   
   GenerateRandomMatrix(B, m, n, nnz+23);
   
-  Matrix<T, Prop, Storage, Allocator> C;
+  Matrix<complex<T>, Prop, Storage, Allocator> C;
   C = A;
   Add(alpha, B, A);
   for (int i = 0; i < m; i++)
@@ -845,7 +845,7 @@ void CheckGeneralMatrix(Matrix<T, Prop, Storage, Allocator>& A)
 }
 
 template<class T, class Prop, class Storage, class Allocator>
-void CheckSymmetricMatrix(Matrix<T, Prop, Storage, Allocator>& A)
+void CheckSymmetricMatrix(Matrix<complex<T>, Prop, Storage, Allocator>& A)
 {
   int m = 48, n = 48, nnz = 200;
   
@@ -854,7 +854,7 @@ void CheckSymmetricMatrix(Matrix<T, Prop, Storage, Allocator>& A)
   IVect row_perm;
   GenerateRandomPermutation(m, row_perm);
   
-  Matrix<T, Prop, Storage, Allocator> B(A);
+  Matrix<complex<T>, Prop, Storage, Allocator> B(A);
   /* ApplyInversePermutation(A, row_perm, row_perm);
   
   for (int i = 0; i < m; i++)
@@ -921,7 +921,7 @@ void CheckSymmetricMatrix(Matrix<T, Prop, Storage, Allocator>& A)
   
   GenerateRandomMatrix(B, m, n, nnz+23);
   
-  Matrix<T, Prop, Storage, Allocator> C(A);
+  Matrix<complex<T>, Prop, Storage, Allocator> C(A);
   Add(alpha, B, A);
   for (int i = 0; i < m; i++)
     for (int j = 0; j < n; j++)
@@ -1032,7 +1032,7 @@ int main(int argc, char** argv)
   //srand(time(NULL));
 
   {
-    Matrix<Real_wp, General, RowComplexSparse> A;
+    Matrix<Complex_wp, General, RowComplexSparse> A;
     if (!IsComplexMatrix(A))
       {
         cout << "IsComplexMatrix incorrect" << endl;
@@ -1049,7 +1049,7 @@ int main(int argc, char** argv)
   }
 
   {
-    Matrix<Real_wp, General, ColComplexSparse> A;
+    Matrix<Complex_wp, General, ColComplexSparse> A;
     if (!IsComplexMatrix(A))
       {
         cout << "IsComplexMatrix incorrect" << endl;
@@ -1064,7 +1064,7 @@ int main(int argc, char** argv)
   }
 
   {
-    Matrix<Real_wp, General, ArrayRowComplexSparse> A;
+    Matrix<Complex_wp, General, ArrayRowComplexSparse> A;
     Matrix<Complex_wp, General, ArrayRowSparse> B;
     CheckGeneralMatrix(A, B);
     if (!IsComplexMatrix(A))
@@ -1081,7 +1081,7 @@ int main(int argc, char** argv)
   }
 
   {
-    Matrix<Real_wp, General, ArrayColComplexSparse> A;
+    Matrix<Complex_wp, General, ArrayColComplexSparse> A;
     if (!IsComplexMatrix(A))
       {
         cout << "IsComplexMatrix incorrect" << endl;
@@ -1096,7 +1096,7 @@ int main(int argc, char** argv)
   }
 
   {
-    Matrix<Real_wp, Symmetric, RowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, RowSymComplexSparse> A;
     if (!IsComplexMatrix(A))
       {
         cout << "IsComplexMatrix incorrect" << endl;
@@ -1113,7 +1113,7 @@ int main(int argc, char** argv)
   }
 
   {
-    Matrix<Real_wp, Symmetric, ColSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ColSymComplexSparse> A;
     if (!IsComplexMatrix(A))
       {
         cout << "IsComplexMatrix incorrect" << endl;
@@ -1128,7 +1128,7 @@ int main(int argc, char** argv)
   }
 
   {
-    Matrix<Real_wp, Symmetric, ArrayRowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ArrayRowSymComplexSparse> A;
     Matrix<Complex_wp, Symmetric, ArrayRowSymSparse> B;
     CheckSymmetricMatrix(A, B);
     if (!IsComplexMatrix(A))
@@ -1145,7 +1145,7 @@ int main(int argc, char** argv)
   }
 
   {
-    Matrix<Real_wp, Symmetric, ArrayColSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ArrayColSymComplexSparse> A;
     if (!IsComplexMatrix(A))
       {
         cout << "IsComplexMatrix incorrect" << endl;

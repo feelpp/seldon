@@ -29,7 +29,7 @@ namespace Seldon
   /*!
     This class implements multi-dimensional arrays.
   */
-  template <class T, int N, class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, int N, class Allocator>
   class Array
   {
     // typdef declarations.
@@ -40,12 +40,12 @@ namespace Seldon
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
 
-    typedef typename SELDON_DEFAULT_ALLOCATOR<int>::pointer length_pointer;
+    typedef typename SeldonDefaultAllocator<VectFull, int>::allocator::pointer length_pointer;
 
     // Static attributes.
   protected:
     static Allocator array_allocator_;
-    static SELDON_DEFAULT_ALLOCATOR<int> length_allocator_;
+    static SeldonDefaultAllocator<VectFull, int>::allocator length_allocator_;
 
     // Attributes.
   protected:
@@ -141,7 +141,8 @@ namespace Seldon
 
   // Array length allocator.
   template <class T, int N, class Allocator>
-  SELDON_DEFAULT_ALLOCATOR<int> Array<T, N, Allocator>::length_allocator_;
+  typename SeldonDefaultAllocator<VectFull, int>::allocator
+  Array<T, N, Allocator>::length_allocator_;
 
   template <class T, int N, class Allocator>
   ostream& operator << (ostream& out,

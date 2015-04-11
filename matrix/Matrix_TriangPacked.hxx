@@ -33,8 +33,7 @@ namespace Seldon
 
 
   //! Triangular packed matrix class.
-  template <class T, class Prop, class Storage,
-	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, class Prop, class Storage, class Allocator>
   class Matrix_TriangPacked: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.

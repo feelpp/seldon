@@ -167,6 +167,16 @@ namespace Seldon
     void memorycpy(pointer datat, pointer datas, size_t num);
   };
 
+  
+  //! Selection of default allocator depending on storage and value type
+  template<class Storage, class T>
+  class SeldonDefaultAllocator
+  {
+  public :
+    // default choice : SELDON_DEFAULT_ALLOCATOR
+    typedef SELDON_DEFAULT_ALLOCATOR<T> allocator;
+    
+  };
 
 } // namespace Seldon.
 

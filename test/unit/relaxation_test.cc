@@ -297,22 +297,22 @@ int main(int argc, char** argv)
   }
 
   {
-    Matrix<Real_wp, General, RowComplexSparse> A;
+    Matrix<Complex_wp, General, RowComplexSparse> A;
     CheckSorFunction(A);
   }
 
   {
-    Matrix<Real_wp, General, ColComplexSparse> A;
+    Matrix<Complex_wp, General, ColComplexSparse> A;
     CheckSorFunction(A);
   }
 
   {
-    Matrix<Real_wp, General, ArrayRowComplexSparse> A;
+    Matrix<Complex_wp, General, ArrayRowComplexSparse> A;
     CheckSorFunction(A);
   }
 
   {
-    Matrix<Real_wp, General, ArrayColComplexSparse> A;
+    Matrix<Complex_wp, General, ArrayColComplexSparse> A;
     CheckSorFunction(A);
   }
 
@@ -357,22 +357,22 @@ int main(int argc, char** argv)
   }
 
   {
-    Matrix<Real_wp, Symmetric, RowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, RowSymComplexSparse> A;
     CheckSorSymFunction(A);
   }
 
   {
-    Matrix<Real_wp, Symmetric, ArrayRowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ArrayRowSymComplexSparse> A;
     CheckSorSymFunction(A);
   }
   
   {
-    Matrix<Real_wp, Symmetric, ColSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ColSymComplexSparse> A;
     CheckSorSymFunction(A);
   }
 
   {
-    Matrix<Real_wp, Symmetric, ArrayColSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ArrayColSymComplexSparse> A;
     CheckSorSymFunction(A);
   }
   

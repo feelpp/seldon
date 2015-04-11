@@ -406,6 +406,17 @@ namespace Seldon
   }
 
 
+  //! Adds values to several non-zero entries on a given row
+  template <class T, class Prop, class Storage, class Allocator>
+  template<class Alloc1>
+  inline void Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::AddInteractionRow(int i, int nb, const Vector<int>& col,
+		      const Vector<T, VectFull, Alloc1>& val)
+  {
+    throw Undefined("AddInteractionRow", "Not implemented");
+  }
+
+
   //! Sets an element (i, j) to a value
   /*! This function sets \a val to the element (\a i, \a j)
     \param[in] i row index.

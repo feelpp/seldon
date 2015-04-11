@@ -189,7 +189,8 @@ namespace Seldon
 
   // Vector class - specialized for each used type.
   template <class T, class Storage = VectFull,
-	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+	    class Allocator = typename
+	    SeldonDefaultAllocator<Storage, T>::allocator >
   class Vector;
 
   // Full vector.
@@ -207,7 +208,8 @@ namespace Seldon
   // Matrix class - specialized for each used type.
   template <class T, class Prop = General,
 	    class Storage = RowMajor,
-	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+	    class Allocator = typename
+	    SeldonDefaultAllocator<Storage, T>::allocator >
   class Matrix;
 
   // column-major matrix.
@@ -275,15 +277,18 @@ namespace Seldon
   class Matrix<T, Prop, ArrayRowSymSparse, Allocator>;
 
   // 3D array.
-  template <class T, int N, class Allocator>
+  template <class T, int N, class Allocator
+	    = typename SeldonDefaultAllocator<VectFull, T>::allocator>
   class Array;
 
   // 3D array.
-  template <class T, class Allocator>
+  template <class T, class Allocator
+	    = typename SeldonDefaultAllocator<VectFull, T>::allocator>
   class Array3D;
 
   // 4D array.
-  template <class T, class Allocator>
+  template <class T, class Allocator
+	    = typename SeldonDefaultAllocator<VectFull, T>::allocator>
   class Array4D;
 
 
@@ -373,58 +378,36 @@ extern "C"
 namespace Seldon
 {
 
-  typedef Array3D<int, SELDON_DEFAULT_ALLOCATOR<int> > IArr3D;
-  typedef Vector<int, VectFull, SELDON_DEFAULT_ALLOCATOR<int> > IVect;
-  typedef Vector<float, VectFull, SELDON_DEFAULT_ALLOCATOR<float> > SVect;
-  typedef Vector<double, VectFull, SELDON_DEFAULT_ALLOCATOR<double> > DVect;
-  typedef Vector<complex<float>, VectFull,
-		 SELDON_DEFAULT_ALLOCATOR<complex<float> > > CVect;
-  typedef Vector<complex<double>, VectFull,
-		 SELDON_DEFAULT_ALLOCATOR<complex<double> > > ZVect;
+  typedef Array3D<int> IArr3D;
+  typedef Vector<int, VectFull> IVect;
+  typedef Vector<float, VectFull> SVect;
+  typedef Vector<double, VectFull> DVect;
+  typedef Vector<complex<float>, VectFull> CVect;
+  typedef Vector<complex<double>, VectFull> ZVect;
 
-  typedef Matrix<int, General, ColMajor,
-		 SELDON_DEFAULT_ALLOCATOR<int> > IGCMat;
-  typedef Matrix<float, General, ColMajor,
-		 SELDON_DEFAULT_ALLOCATOR<float> > SGCMat;
-  typedef Matrix<double, General, ColMajor,
-		 SELDON_DEFAULT_ALLOCATOR<double> > DGCMat;
-  typedef Matrix<complex<float>, General, ColMajor,
-		 SELDON_DEFAULT_ALLOCATOR<complex<float> > > CGCMat;
-  typedef Matrix<complex<double>, General, ColMajor,
-		 SELDON_DEFAULT_ALLOCATOR<complex<double> > > ZGCMat;
+  typedef Matrix<int, General, ColMajor> IGCMat;
+  typedef Matrix<float, General, ColMajor> SGCMat;
+  typedef Matrix<double, General, ColMajor> DGCMat;
+  typedef Matrix<complex<float>, General, ColMajor> CGCMat;
+  typedef Matrix<complex<double>, General, ColMajor> ZGCMat;
 
-  typedef Matrix<int, General, RowMajor,
-		 SELDON_DEFAULT_ALLOCATOR<int> > IGRMat;
-  typedef Matrix<float, General, RowMajor,
-		 SELDON_DEFAULT_ALLOCATOR<float> > SGRMat;
-  typedef Matrix<double, General, RowMajor,
-		 SELDON_DEFAULT_ALLOCATOR<double> > DGRMat;
-  typedef Matrix<complex<float>, General, RowMajor,
-		 SELDON_DEFAULT_ALLOCATOR<complex<float> > > CGRMat;
-  typedef Matrix<complex<double>, General, RowMajor,
-		 SELDON_DEFAULT_ALLOCATOR<complex<double> > > ZGRMat;
+  typedef Matrix<int, General, RowMajor> IGRMat;
+  typedef Matrix<float, General, RowMajor> SGRMat;
+  typedef Matrix<double, General, RowMajor> DGRMat;
+  typedef Matrix<complex<float>, General, RowMajor> CGRMat;
+  typedef Matrix<complex<double>, General, RowMajor> ZGRMat;
 
-  typedef Matrix<int, General, RowSparse,
-		 SELDON_DEFAULT_ALLOCATOR<int> > IGRSMat;
-  typedef Matrix<float, General, RowSparse,
-		 SELDON_DEFAULT_ALLOCATOR<float> > SGRSMat;
-  typedef Matrix<double, General, RowSparse,
-		 SELDON_DEFAULT_ALLOCATOR<double> > DGRSMat;
-  typedef Matrix<complex<float>, General, RowSparse,
-		 SELDON_DEFAULT_ALLOCATOR<complex<float> > > CGRSMat;
-  typedef Matrix<complex<double>, General, RowSparse,
-		 SELDON_DEFAULT_ALLOCATOR<complex<double> > > ZGRSMat;
+  typedef Matrix<int, General, RowSparse> IGRSMat;
+  typedef Matrix<float, General, RowSparse> SGRSMat;
+  typedef Matrix<double, General, RowSparse> DGRSMat;
+  typedef Matrix<complex<float>, General, RowSparse> CGRSMat;
+  typedef Matrix<complex<double>, General, RowSparse> ZGRSMat;
 
-  typedef Matrix<int, General, ColSparse,
-		 SELDON_DEFAULT_ALLOCATOR<int> > IGCSMat;
-  typedef Matrix<float, General, ColSparse,
-		 SELDON_DEFAULT_ALLOCATOR<float> > SGCSMat;
-  typedef Matrix<double, General, ColSparse,
-		 SELDON_DEFAULT_ALLOCATOR<double> > DGCSMat;
-  typedef Matrix<complex<float>, General, ColSparse,
-		 SELDON_DEFAULT_ALLOCATOR<complex<float> > > CGCSMat;
-  typedef Matrix<complex<double>, General, ColSparse,
-		 SELDON_DEFAULT_ALLOCATOR<complex<double> > > ZGCSMat;
+  typedef Matrix<int, General, ColSparse> IGCSMat;
+  typedef Matrix<float, General, ColSparse> SGCSMat;
+  typedef Matrix<double, General, ColSparse> DGCSMat;
+  typedef Matrix<complex<float>, General, ColSparse> CGCSMat;
+  typedef Matrix<complex<double>, General, ColSparse> ZGCSMat;
 
   // Vector class - specialized for each used type.
   template <class T, class Storage, class Allocator>

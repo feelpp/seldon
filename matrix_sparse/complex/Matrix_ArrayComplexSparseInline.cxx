@@ -229,7 +229,7 @@ namespace Seldon
   inline int64_t Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
   ::GetMemorySize() const
   {
-    int coef = sizeof(T) + sizeof(int); // for each non-zero entry
+    int coef = sizeof(value_type) + sizeof(int); // for each non-zero entry
     // 1 int (=4bytes) and 2 int* (=16 bytes) per row
     int64_t taille = 20*(val_real_.GetM() + val_imag_.GetM());
     for (int i = 0; i < val_real_.GetM(); i++)
@@ -261,7 +261,8 @@ namespace Seldon
     \param[in] i row number.
     \return The array of values of non-zero entries of row i.
   */
-  template <class T, class Prop, class Storage, class Allocator> inline T*
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Allocator::value_type*
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::GetRealData(int i)
     const
   {
@@ -288,7 +289,8 @@ namespace Seldon
     \param[in] i row number.
     \return The array of values of non-zero entries of row i.
   */
-  template <class T, class Prop, class Storage, class Allocator> inline T*
+  template <class T, class Prop, class Storage, class Allocator>
+  inline typename Allocator::value_type*
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::GetImagData(int i)
     const
   {
@@ -309,7 +311,8 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline const complex<T>
+  inline const typename 
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::entry_type
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::operator()
     (int i, int j) const
   {
@@ -326,7 +329,7 @@ namespace Seldon
 		     + to_str(j) + ".");
 #endif
 
-    return complex<T>(this->val_real_(Storage::GetFirst(i, j))
+    return entry_type(this->val_real_(Storage::GetFirst(i, j))
 		      (Storage::GetSecond(i, j)),
 		      this->val_imag_(Storage::GetFirst(i, j))
 		      (Storage::GetSecond(i, j)) );
@@ -341,7 +344,8 @@ namespace Seldon
     \return Raises an exception.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline complex<T>&
+  inline typename
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::entry_type&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
   ::Val(int i, int j)
   {
@@ -357,7 +361,8 @@ namespace Seldon
     \return Raises an exception.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline const complex<T>&
+  inline const typename
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::entry_type&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
   ::Val(int i, int j) const
   {
@@ -373,7 +378,8 @@ namespace Seldon
     \return Raises an exception.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline complex<T>&
+  inline typename
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::entry_type&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
   ::Get(int i, int j)
   {
@@ -389,7 +395,8 @@ namespace Seldon
     \return Raises an exception.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline const complex<T>&
+  inline const typename
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::entry_type&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
   ::Get(int i, int j) const
   {
@@ -404,7 +411,7 @@ namespace Seldon
     \return real part of A(i, j)
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline T&
+  inline typename Allocator::value_type&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
   ::ValReal(int i, int j)
   {
@@ -419,7 +426,7 @@ namespace Seldon
     \return real part of A(i, j)
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline const T&
+  inline const typename Allocator::value_type&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
   ::ValReal(int i, int j) const
   {
@@ -434,7 +441,7 @@ namespace Seldon
     \return imaginary part of A(i, j)
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline T&
+  inline typename Allocator::value_type&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
   ::ValImag(int i, int j)
   {
@@ -449,7 +456,7 @@ namespace Seldon
     \return imaginary part of A(i, j)
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline const T&
+  inline const typename Allocator::value_type&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
   ::ValImag(int i, int j) const
   {
@@ -464,7 +471,7 @@ namespace Seldon
     \return real part of A(i, j)
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline T&
+  inline typename Allocator::value_type&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
   ::GetReal(int i, int j)
   {
@@ -479,7 +486,7 @@ namespace Seldon
     \return real part of A(i, j)
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline const T&
+  inline const typename Allocator::value_type&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
   ::GetReal(int i, int j) const
   {
@@ -494,7 +501,7 @@ namespace Seldon
     \return imaginary part of A(i, j)
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline T&
+  inline typename Allocator::value_type&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
   ::GetImag(int i, int j)
   {
@@ -509,7 +516,7 @@ namespace Seldon
     \return imaginary part of A(i, j)
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline const T&
+  inline const typename Allocator::value_type&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
   ::GetImag(int i, int j) const
   {
@@ -526,22 +533,22 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline void
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
-  ::Set(int i, int j, const complex<T>& x)
+  ::Set(int i, int j, const entry_type& x)
   {
-    if (real(x) != T(0))
+    if (real(x) != value_type(0))
       val_real_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = real(x);
     else
       {
-        if (val_real_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j)) != T(0))
-          val_real_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = T(0);
+        if (val_real_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j)) != value_type(0))
+          val_real_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = value_type(0);
       }
     
-    if (imag(x) != T(0))
+    if (imag(x) != value_type(0))
       val_imag_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = imag(x);
     else
       {
-        if (val_imag_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j)) != T(0))
-          val_imag_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = T(0);
+        if (val_imag_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j)) != value_type(0))
+          val_imag_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = value_type(0);
       }
 
   }
@@ -554,7 +561,8 @@ namespace Seldon
     \return j-th non-zero entry of row i.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline const T& Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
+  inline const typename Allocator::value_type&
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ValueReal(int i, int j) const
   {
 
@@ -581,7 +589,7 @@ namespace Seldon
     \return j-th non-zero entry of row i.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline T&
+  inline typename Allocator::value_type&
   Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ValueReal(int i, int j)
   {
@@ -662,7 +670,8 @@ namespace Seldon
     \return j-th non-zero entry of row i.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline const T& Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
+  inline const typename Allocator::value_type&
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ValueImag(int i, int j) const
   {
 
@@ -689,7 +698,8 @@ namespace Seldon
     \return j-th non-zero entry of row i.
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline T& Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
+  inline typename Allocator::value_type&
+  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   ValueImag (int i, int j)
   {
 
@@ -773,7 +783,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
-  SetRealData(int i, int n, T* val, int* ind)
+  SetRealData(int i, int n, value_type* val, int* ind)
   {
     val_real_(i).SetData(n, val, ind);
   }
@@ -788,7 +798,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
-  SetImagData(int i, int n, T* val, int* ind)
+  SetImagData(int i, int n, value_type* val, int* ind)
   {
     val_imag_(i).SetData(n, val, ind);
   }
@@ -826,7 +836,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
-  SetRealData(int m, int n, Vector<T, VectSparse, Allocator>* val)
+  SetRealData(int m, int n, Vector<value_type, VectSparse, Allocator>* val)
   {
     m_ = m;
     n_ = n;
@@ -842,7 +852,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
-  SetImagData(int m, int n, Vector<T, VectSparse, Allocator>* val)
+  SetImagData(int m, int n, Vector<value_type, VectSparse, Allocator>* val)
   {
     m_ = m;
     n_ = n;
@@ -1112,12 +1122,12 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::
-  AddInteraction(int i, int j, const complex<T>& val)
+  AddInteraction(int i, int j, const entry_type& val)
   {
-    if (real(val) != T(0))
+    if (real(val) != value_type(0))
       this->val_real_(j).AddInteraction(i, real(val));
 
-    if (imag(val) != T(0))
+    if (imag(val) != value_type(0))
       this->val_imag_(j).AddInteraction(i, imag(val));
   }
 
@@ -1360,12 +1370,12 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::
-  AddInteraction(int i, int j, const complex<T>& val)
+  AddInteraction(int i, int j, const entry_type& val)
   {
-    if (real(val) != T(0))
+    if (real(val) != value_type(0))
       this->val_real_(i).AddInteraction(j, real(val));
 
-    if (imag(val) != T(0))
+    if (imag(val) != value_type(0))
       this->val_imag_(i).AddInteraction(j, imag(val));
   }
 
@@ -1412,7 +1422,8 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline const complex<T>
+  inline const typename 
+  Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::entry_type
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::operator() (int i, int j)
     const
   {
@@ -1428,9 +1439,9 @@ namespace Seldon
 #endif
 
     if (i <= j)
-      return complex<T>(this->val_real_(j)(i), this->val_imag_(j)(i));
+      return entry_type(this->val_real_(j)(i), this->val_imag_(j)(i));
 
-    return complex<T>(this->val_real_(i)(j), this->val_imag_(i)(j));
+    return entry_type(this->val_real_(i)(j), this->val_imag_(i)(j));
   }
 
   
@@ -1441,7 +1452,7 @@ namespace Seldon
     \return real part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline T&
+  inline typename Allocator::value_type&
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::ValReal(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
@@ -1470,7 +1481,7 @@ namespace Seldon
     \return real part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline const T&
+  inline const typename Allocator::value_type&
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>
   ::ValReal(int i, int j) const
   {    
@@ -1500,7 +1511,7 @@ namespace Seldon
     \return real part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline T&
+  inline typename Allocator::value_type&
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::GetReal(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
@@ -1529,7 +1540,7 @@ namespace Seldon
     \return real part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline const T&
+  inline const typename Allocator::value_type&
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>
   ::GetReal(int i, int j) const
   {    
@@ -1559,7 +1570,7 @@ namespace Seldon
     \return imaginary part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline T&
+  inline typename Allocator::value_type&
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::ValImag(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
@@ -1587,7 +1598,7 @@ namespace Seldon
     \return imaginary part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline const T&
+  inline const typename Allocator::value_type&
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>
   ::ValImag(int i, int j) const
   {    
@@ -1615,7 +1626,7 @@ namespace Seldon
     \return imaginary part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline T&
+  inline typename Allocator::value_type&
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::GetImag(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
@@ -1643,7 +1654,7 @@ namespace Seldon
     \return imaginary part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline const T&
+  inline const typename Allocator::value_type&
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>
   ::GetImag(int i, int j) const
   {    
@@ -1673,42 +1684,42 @@ namespace Seldon
    */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>
-  ::Set(int i, int j, const complex<T>& x)
+  ::Set(int i, int j, const entry_type& x)
   {
     if (i <= j)
       {
-        if (real(x) != T(0))
+        if (real(x) != value_type(0))
           this->val_real_(j).Get(i) = real(x);
         else
           {
-            if (this->val_real_(j)(i) != T(0))
-              this->val_real_(j).Get(i) = T(0);
+            if (this->val_real_(j)(i) != value_type(0))
+              this->val_real_(j).Get(i) = value_type(0);
           }
         
-        if (imag(x) != T(0))
+        if (imag(x) != value_type(0))
           this->val_imag_(j).Get(i) = imag(x);
         else
           {
-            if (this->val_imag_(j)(i) != T(0))
-              this->val_imag_(j).Get(i) = T(0);
+            if (this->val_imag_(j)(i) != value_type(0))
+              this->val_imag_(j).Get(i) = value_type(0);
           }
       }
     else
       {
-        if (real(x) != T(0))
+        if (real(x) != value_type(0))
           this->val_real_(i).Get(j) = real(x);
         else
           {
-            if (this->val_real_(i)(j) != T(0))
-              this->val_real_(i).Get(j) = T(0);
+            if (this->val_real_(i)(j) != value_type(0))
+              this->val_real_(i).Get(j) = value_type(0);
           }
         
-        if (imag(x) != T(0))
+        if (imag(x) != value_type(0))
           this->val_imag_(i).Get(j) = imag(x);
         else
           {
-            if (this->val_imag_(i)(j) != T(0))
-              this->val_imag_(i).Get(j) = T(0);
+            if (this->val_imag_(i)(j) != value_type(0))
+              this->val_imag_(i).Get(j) = value_type(0);
           }
       }
   }
@@ -1918,14 +1929,14 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::
-  AddInteraction(int i, int j, const complex<T>& val)
+  AddInteraction(int i, int j, const entry_type& val)
   {
     if (i <= j)
       {
-	if (real(val) != T(0))
+	if (real(val) != value_type(0))
 	  this->val_real_(j).AddInteraction(i, real(val));
 
-	if (imag(val) != T(0))
+	if (imag(val) != value_type(0))
 	  this->val_imag_(j).AddInteraction(i, imag(val));
       }
   }
@@ -1974,7 +1985,8 @@ namespace Seldon
     \return Element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline const complex<T>
+  inline const typename 
+  Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::entry_type
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::operator() (int i, int j)
     const
   {
@@ -1991,9 +2003,9 @@ namespace Seldon
 #endif
 
     if (i <= j)
-      return complex<T>(this->val_real_(i)(j), this->val_imag_(i)(j));
+      return entry_type(this->val_real_(i)(j), this->val_imag_(i)(j));
 
-    return complex<T>(this->val_real_(j)(i), this->val_imag_(j)(i));
+    return entry_type(this->val_real_(j)(i), this->val_imag_(j)(i));
   }
 
   
@@ -2004,7 +2016,7 @@ namespace Seldon
     \return real part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline T&
+  inline typename Allocator::value_type&
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::ValReal(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
@@ -2033,7 +2045,7 @@ namespace Seldon
     \return real part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline const T&
+  inline const typename Allocator::value_type&
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
   ::ValReal(int i, int j) const
   {    
@@ -2062,7 +2074,7 @@ namespace Seldon
     \return real part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline T&
+  inline typename Allocator::value_type&
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::GetReal(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
@@ -2091,7 +2103,7 @@ namespace Seldon
     \return real part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline const T&
+  inline const typename Allocator::value_type&
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
   ::GetReal(int i, int j) const
   {    
@@ -2121,7 +2133,7 @@ namespace Seldon
     \return imaginary part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline T&
+  inline typename Allocator::value_type&
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::ValImag(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
@@ -2148,7 +2160,7 @@ namespace Seldon
     \return imaginary part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline const T&
+  inline const typename Allocator::value_type&
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
   ::ValImag(int i, int j) const
   {    
@@ -2177,7 +2189,7 @@ namespace Seldon
     \return imaginary part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline T&
+  inline typename Allocator::value_type&
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::GetImag(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
@@ -2205,7 +2217,7 @@ namespace Seldon
     \return imaginary part of element (i, j) of the matrix.
   */
   template <class T, class Prop, class Allocator>
-  inline const T&
+  inline const typename Allocator::value_type&
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
   ::GetImag(int i, int j) const
   {    
@@ -2235,42 +2247,42 @@ namespace Seldon
    */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
-  ::Set(int i, int j, const complex<T>& x)
+  ::Set(int i, int j, const entry_type& x)
   {
     if (i <= j)
       {
-        if (real(x) != T(0))
+        if (real(x) != value_type(0))
           this->val_real_(i).Get(j) = real(x);
         else
           {
-            if (this->val_real_(i)(j) != T(0))
-              this->val_real_(i).Get(j) = T(0);
+            if (this->val_real_(i)(j) != value_type(0))
+              this->val_real_(i).Get(j) = value_type(0);
           }
         
-        if (imag(x) != T(0))
+        if (imag(x) != value_type(0))
           this->val_imag_(i).Get(j) = imag(x);
         else
           {
-            if (this->val_imag_(i)(j) != T(0))
-              this->val_imag_(i).Get(j) = T(0);
+            if (this->val_imag_(i)(j) != value_type(0))
+              this->val_imag_(i).Get(j) = value_type(0);
           }
       }
     else
       {
-        if (real(x) != T(0))
+        if (real(x) != value_type(0))
           this->val_real_(j).Get(i) = real(x);
         else
           {
-            if (this->val_real_(j)(i) != T(0))
-              this->val_real_(j).Get(i) = T(0);
+            if (this->val_real_(j)(i) != value_type(0))
+              this->val_real_(j).Get(i) = value_type(0);
           }
         
-        if (imag(x) != T(0))
+        if (imag(x) != value_type(0))
           this->val_imag_(j).Get(i) = imag(x);
         else
           {
-            if (this->val_imag_(j)(i) != T(0))
-              this->val_imag_(j).Get(i) = T(0);
+            if (this->val_imag_(j)(i) != value_type(0))
+              this->val_imag_(j).Get(i) = value_type(0);
           }
       }
   }
@@ -2481,14 +2493,14 @@ namespace Seldon
   */
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::
-  AddInteraction(int i, int j, const complex<T>& val)
+  AddInteraction(int i, int j, const entry_type& val)
   {
     if (i <= j)
       {
-	if (real(val) != T(0))
+	if (real(val) != value_type(0))
 	  this->val_real_(i).AddInteraction(j, real(val));
 
-	if (imag(val) != T(0))
+	if (imag(val) != value_type(0))
 	  this->val_imag_(i).AddInteraction(j, imag(val));
       }
   }

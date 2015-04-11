@@ -33,8 +33,7 @@ namespace Seldon
     (4) an array of vectors val : val(i) is a vector, which contains values of
     the row i
   */
-  template <class T, class Prop, class Storage,
-	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, class Prop, class Storage, class Allocator>
   class Matrix_ArraySparse
   {
     // typedef declaration.

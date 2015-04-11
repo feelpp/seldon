@@ -40,6 +40,42 @@ namespace Seldon
   {
   };
 
+
+  //! for complex sparse matrix, the allocator involves real numbers
+  template<class T>
+  class SeldonDefaultAllocator<ArrayColComplexSparse, T>
+  {
+  public :
+    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+  };
+
+
+  //! for complex sparse matrix, the allocator involves real numbers
+  template<class T>
+  class SeldonDefaultAllocator<ArrayRowComplexSparse, T>
+  {
+  public :
+    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+  };
+
+
+  //! for complex sparse matrix, the allocator involves real numbers
+  template<class T>
+  class SeldonDefaultAllocator<ArrayColSymComplexSparse, T>
+  {
+  public :
+    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+  };
+
+
+  //! for complex sparse matrix, the allocator involves real numbers
+  template<class T>
+  class SeldonDefaultAllocator<ArrayRowSymComplexSparse, T>
+  {
+  public :
+    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+  };
+
   
   //! Sparse Array-matrix class.
   /*!
@@ -49,8 +85,7 @@ namespace Seldon
     (4) an array of vectors val : val(i) is a vector, which contains values of
     the row i
   */
-  template <class T, class Prop, class Storage,
-	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, class Prop, class Storage, class Allocator>
   class Matrix_ArrayComplexSparse
   {
     // typedef declaration.
@@ -60,9 +95,9 @@ namespace Seldon
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
-    typedef complex<T> entry_type;
-    typedef complex<T> access_type;
-    typedef complex<T> const_access_type;
+    typedef complex<value_type> entry_type;
+    typedef complex<value_type> access_type;
+    typedef complex<value_type> const_access_type;
 
     // Attributes.
   protected:
@@ -71,11 +106,11 @@ namespace Seldon
     //! Number of columns.
     int n_;
     //! real part rows or columns
-    Vector<Vector<T, VectSparse, Allocator>, VectFull,
-	   NewAlloc<Vector<T, VectSparse, Allocator> > > val_real_;
+    Vector<Vector<value_type, VectSparse, Allocator>, VectFull,
+	   NewAlloc<Vector<value_type, VectSparse, Allocator> > > val_real_;
     //! imaginary part rows or columns
-    Vector<Vector<T, VectSparse, Allocator>, VectFull,
-	   NewAlloc<Vector<T, VectSparse, Allocator> > > val_imag_;
+    Vector<Vector<value_type, VectSparse, Allocator>, VectFull,
+	   NewAlloc<Vector<value_type, VectSparse, Allocator> > > val_imag_;
 
     // Methods.
   public:
@@ -104,42 +139,42 @@ namespace Seldon
     int64_t GetMemorySize() const;
     int* GetRealInd(int i) const;
     int* GetImagInd(int i) const;
-    T* GetRealData(int i) const;
-    T* GetImagData(int i) const;
-    Vector<T, VectSparse, Allocator>* GetRealData() const;
-    Vector<T, VectSparse, Allocator>* GetImagData() const;
+    value_type* GetRealData(int i) const;
+    value_type* GetImagData(int i) const;
+    Vector<value_type, VectSparse, Allocator>* GetRealData() const;
+    Vector<value_type, VectSparse, Allocator>* GetImagData() const;
 
     // Element acess and affectation.
-    const complex<T> operator() (int i, int j) const;
-    complex<T>& Val(int i, int j);
-    const complex<T>& Val(int i, int j) const;
-    complex<T>& Get(int i, int j);
-    const complex<T>& Get(int i, int j) const;
+    const entry_type operator() (int i, int j) const;
+    entry_type& Val(int i, int j);
+    const entry_type& Val(int i, int j) const;
+    entry_type& Get(int i, int j);
+    const entry_type& Get(int i, int j) const;
 
-    T& ValReal(int i, int j);
-    const T& ValReal(int i, int j) const;
-    T& ValImag(int i, int j);
-    const T& ValImag(int i, int j) const;
-    T& GetReal(int i, int j);
-    const T& GetReal(int i, int j) const;
-    T& GetImag(int i, int j);
-    const T& GetImag(int i, int j) const;    
+    value_type& ValReal(int i, int j);
+    const value_type& ValReal(int i, int j) const;
+    value_type& ValImag(int i, int j);
+    const value_type& ValImag(int i, int j) const;
+    value_type& GetReal(int i, int j);
+    const value_type& GetReal(int i, int j) const;
+    value_type& GetImag(int i, int j);
+    const value_type& GetImag(int i, int j) const;    
     
-    void Set(int i, int j, const complex<T>& x);
+    void Set(int i, int j, const entry_type& x);
     
-    const T& ValueReal(int num_row,int i) const;
-    T& ValueReal(int num_row,int i);
+    const value_type& ValueReal(int num_row,int i) const;
+    value_type& ValueReal(int num_row,int i);
     int IndexReal(int num_row,int i) const;
     int& IndexReal(int num_row,int i);
-    const T& ValueImag(int num_row,int i) const;
-    T& ValueImag(int num_row,int i);
+    const value_type& ValueImag(int num_row,int i) const;
+    value_type& ValueImag(int num_row,int i);
     int IndexImag(int num_row,int i) const;
     int& IndexImag(int num_row,int i);
 
-    void SetRealData(int, int, Vector<T, VectSparse, Allocator>*);
-    void SetImagData(int, int, Vector<T, VectSparse, Allocator>*);
-    void SetRealData(int, int, T*, int*);
-    void SetImagData(int, int, T*, int*);
+    void SetRealData(int, int, Vector<value_type, VectSparse, Allocator>*);
+    void SetImagData(int, int, Vector<value_type, VectSparse, Allocator>*);
+    void SetRealData(int, int, value_type*, int*);
+    void SetImagData(int, int, value_type*, int*);
     void NullifyReal(int i);
     void NullifyImag(int i);
     void NullifyReal();
@@ -185,7 +220,8 @@ namespace Seldon
     typedef Prop property;
     typedef ArrayColComplexSparse storage;
     typedef Allocator allocator;
-
+    typedef complex<value_type> entry_type;
+    
   public:
     Matrix();
     explicit Matrix(int i, int j);
@@ -209,14 +245,14 @@ namespace Seldon
     void AssembleRealColumn(int i);
     void AssembleImagColumn(int i);
 
-    void AddInteraction(int i, int j, const complex<T>& val);
+    void AddInteraction(int i, int j, const entry_type& val);
 
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<complex<T>, VectFull, Alloc1>& val);
+			   const Vector<entry_type, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<complex<T>, VectFull,
+			      const Vector<entry_type, VectFull,
 			      Alloc1>& val);
   };
 
@@ -232,7 +268,8 @@ namespace Seldon
     typedef Prop property;
     typedef ArrayRowComplexSparse storage;
     typedef Allocator allocator;
-
+    typedef complex<value_type> entry_type;
+    
   public:
     Matrix();
     explicit Matrix(int i, int j);
@@ -256,14 +293,14 @@ namespace Seldon
     void AssembleRealRow(int i);
     void AssembleImagRow(int i);
 
-    void AddInteraction(int i, int j, const complex<T>& val);
+    void AddInteraction(int i, int j, const entry_type& val);
 
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<complex<T>, VectFull, Alloc1>& val);
+			   const Vector<entry_type, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<complex<T>, VectFull,
+			      const Vector<entry_type, VectFull,
 			      Alloc1>& val);
   };
 
@@ -279,23 +316,24 @@ namespace Seldon
     typedef Prop property;
     typedef ArrayColSymComplexSparse storage;
     typedef Allocator allocator;
-
+    typedef complex<value_type> entry_type;
+    
   public:
     Matrix();
     explicit Matrix(int i, int j);
 
-    const complex<T> operator() (int i, int j) const;
+    const entry_type operator() (int i, int j) const;
     
-    T& ValReal(int i, int j);
-    const T& ValReal(int i, int j) const;
-    T& ValImag(int i, int j);
-    const T& ValImag(int i, int j) const;
-    T& GetReal(int i, int j);
-    const T& GetReal(int i, int j) const;
-    T& GetImag(int i, int j);
-    const T& GetImag(int i, int j) const;    
+    value_type& ValReal(int i, int j);
+    const value_type& ValReal(int i, int j) const;
+    value_type& ValImag(int i, int j);
+    const value_type& ValImag(int i, int j) const;
+    value_type& GetReal(int i, int j);
+    const value_type& GetReal(int i, int j) const;
+    value_type& GetImag(int i, int j);
+    const value_type& GetImag(int i, int j) const;    
     
-    void Set(int i, int j, const complex<T>& x);
+    void Set(int i, int j, const entry_type& x);
 
     // Memory management.
     void ClearRealColumn(int i);
@@ -316,14 +354,14 @@ namespace Seldon
     void AssembleRealColumn(int i);
     void AssembleImagColumn(int i);
 
-    void AddInteraction(int i, int j, const complex<T>& val);
+    void AddInteraction(int i, int j, const entry_type& val);
 
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<complex<T>, VectFull, Alloc1>& val);
+			   const Vector<entry_type, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<complex<T>, VectFull,
+			      const Vector<entry_type, VectFull,
 			      Alloc1>& val);
   };
 
@@ -339,23 +377,24 @@ namespace Seldon
     typedef Prop property;
     typedef ArrayRowSymComplexSparse storage;
     typedef Allocator allocator;
-
+    typedef complex<value_type> entry_type;
+    
   public:
     Matrix();
     explicit Matrix(int i, int j);
 
-    const complex<T> operator() (int i, int j) const;
+    const entry_type operator() (int i, int j) const;
     
-    T& ValReal(int i, int j);
-    const T& ValReal(int i, int j) const;
-    T& ValImag(int i, int j);
-    const T& ValImag(int i, int j) const;
-    T& GetReal(int i, int j);
-    const T& GetReal(int i, int j) const;
-    T& GetImag(int i, int j);
-    const T& GetImag(int i, int j) const;    
+    value_type& ValReal(int i, int j);
+    const value_type& ValReal(int i, int j) const;
+    value_type& ValImag(int i, int j);
+    const value_type& ValImag(int i, int j) const;
+    value_type& GetReal(int i, int j);
+    const value_type& GetReal(int i, int j) const;
+    value_type& GetImag(int i, int j);
+    const value_type& GetImag(int i, int j) const;    
     
-    void Set(int i, int j, const complex<T>& x);
+    void Set(int i, int j, const entry_type& x);
 
     // Memory management.
     void ClearRealRow(int i);
@@ -376,14 +415,14 @@ namespace Seldon
     void AssembleRealRow(int i);
     void AssembleImagRow(int i);
 
-    void AddInteraction(int i, int j, const complex<T>& val);
+    void AddInteraction(int i, int j, const entry_type& val);
 
     template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<complex<T>, VectFull, Alloc1>& val);
+			   const Vector<entry_type, VectFull, Alloc1>& val);
     template<class Alloc1>
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<complex<T>, VectFull,
+			      const Vector<entry_type, VectFull,
 			      Alloc1>& val);
   };
   

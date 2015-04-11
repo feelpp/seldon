@@ -338,7 +338,7 @@ int main(int argc, char** argv)
       source.SetData(x_sol);
       sol.Reallocate(N);
 
-      Preconditioner_Base prec;
+      Preconditioner_Base<double> prec;
       Iteration<double> iter(10000, 1e-6);
       iter.HideMessages();
       if (rank_processor == 0)

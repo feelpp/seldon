@@ -41,8 +41,7 @@ namespace Seldon
     of each non-zero entry; (5) values of non-zero entries.\par
     Only values of the upper part are stored.
   */
-  template <class T, class Prop, class Storage,
-	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, class Prop, class Storage, class Allocator>
   class Matrix_SymSparse: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
@@ -116,6 +115,11 @@ namespace Seldon
     const value_type& Get(int i, int j) const;
     void Set(int i, int j, const T& x);
     void AddInteraction(int i, int j, const T& x);
+
+    template<class Alloc1>
+    void AddInteractionRow(int i, int nb, const Vector<int>& col,
+			   const Vector<T, VectFull, Alloc1>& val);
+
     Matrix_SymSparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_SymSparse<T, Prop, Storage, Allocator>& A);
 

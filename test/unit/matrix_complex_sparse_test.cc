@@ -86,7 +86,7 @@ void CheckRowMatrix(Matrix<T, Prop, ColComplexSparse>& A,
 }
 
 template<class T, class Prop, class T2, class Prop2, class Storage2>
-void CheckRowMatrix(Matrix<T, Prop, ArrayRowComplexSparse>& A,
+void CheckRowMatrix(Matrix<complex<T>, Prop, ArrayRowComplexSparse>& A,
                     Matrix<T2, Prop2, Storage2>& Ad)
 
 {
@@ -226,7 +226,7 @@ void CheckRowMatrix(Matrix<T, Prop, ArrayRowComplexSparse>& A,
 
 
 template<class T, class Prop, class T2, class Prop2, class Storage2>
-void CheckRowMatrix(Matrix<T, Prop, ArrayColComplexSparse>& A,
+void CheckRowMatrix(Matrix<complex<T>, Prop, ArrayColComplexSparse>& A,
                     Matrix<T2, Prop2, Storage2>& Ad)
 
 {
@@ -391,7 +391,7 @@ void CheckRowMatrix(Matrix<T, Prop, ArrayColComplexSparse>& A,
 }
 
 template<class T, class Prop, class Storage, class T2, class Prop2, class Storage2>
-void CheckAddMatrix(Matrix<T, Prop, Storage>& B, Matrix<T2, Prop2, Storage2>& Ad)
+void CheckAddMatrix(Matrix<complex<T>, Prop, Storage>& B, Matrix<T2, Prop2, Storage2>& Ad)
 {
   T zero;
   SetComplexZero(zero);
@@ -431,17 +431,17 @@ void CheckAddMatrix(Matrix<T, Prop, Storage>& B, Matrix<T2, Prop2, Storage2>& Ad
 }
 
 template<class T, class Prop, class T2, class Prop2, class Storage2>
-void CheckAddMatrix(Matrix<T, Prop, RowComplexSparse>& B, Matrix<T2, Prop2, Storage2>& Ad)
+void CheckAddMatrix(Matrix<complex<T>, Prop, RowComplexSparse>& B, Matrix<T2, Prop2, Storage2>& Ad)
 {
 }
 
 template<class T, class Prop, class T2, class Prop2, class Storage2>
-void CheckAddMatrix(Matrix<T, Prop, ColComplexSparse>& B, Matrix<T2, Prop2, Storage2>& Ad)
+void CheckAddMatrix(Matrix<complex<T>, Prop, ColComplexSparse>& B, Matrix<T2, Prop2, Storage2>& Ad)
 {
 }
 
 template<class T, class Prop, class Storage>
-void CheckMatrix(Matrix<T, Prop, Storage>& A)
+void CheckMatrix(Matrix<complex<T>, Prop, Storage>& A)
 {
   if (!Storage::Sparse)
     {
@@ -460,7 +460,7 @@ void CheckMatrix(Matrix<T, Prop, Storage>& A)
       abort();
     }
 
-  Matrix<T, Prop, Storage> B(4, 7);
+  Matrix<complex<T>, Prop, Storage> B(4, 7);
   if ( (B.GetM() != 4) || (B.GetN() != 7) || (B.GetDataSize() != 0) || (B.GetRealDataSize() != 0) || (B.GetImagDataSize() != 0))
     {
       cout << "Reallocate incorrect " << endl;
@@ -535,7 +535,7 @@ void CheckMatrix(Matrix<T, Prop, Storage>& A)
       abort();
     }
 
-  Matrix<T, Prop, Storage> C(A);
+  Matrix<complex<T>, Prop, Storage> C(A);
 
   if (!EqualMatrix(A, C))
     {
@@ -625,7 +625,7 @@ void CheckMatrix(Matrix<T, Prop, Storage>& A)
 
 
 template<class T, class Prop, class Prop2, class Storage2>
-void CheckRowMatrix(Matrix<T, Prop, ArrayRowSymComplexSparse>& A,
+void CheckRowMatrix(Matrix<complex<T>, Prop, ArrayRowSymComplexSparse>& A,
                     Matrix<complex<T>, Prop2, Storage2>& Ad)
 
 {
@@ -745,19 +745,19 @@ void CheckRowMatrix(Matrix<T, Prop, ArrayRowSymComplexSparse>& A,
 
 
 template<class T, class Prop, class Prop2, class Storage2>
-void CheckRowMatrix(Matrix<T, Prop, RowSymComplexSparse>& A,
+void CheckRowMatrix(Matrix<complex<T>, Prop, RowSymComplexSparse>& A,
                     Matrix<complex<T>, Prop2, Storage2>& Ad)
 {
 }
 
 template<class T, class Prop, class Prop2, class Storage2>
-void CheckRowMatrix(Matrix<T, Prop, ColSymComplexSparse>& A,
+void CheckRowMatrix(Matrix<complex<T>, Prop, ColSymComplexSparse>& A,
                     Matrix<complex<T>, Prop2, Storage2>& Ad)
 {
 }
 
 template<class T, class Prop, class Prop2, class Storage2>
-void CheckRowMatrix(Matrix<T, Prop, ArrayColSymComplexSparse>& A,
+void CheckRowMatrix(Matrix<complex<T>, Prop, ArrayColSymComplexSparse>& A,
                     Matrix<complex<T>, Prop2, Storage2>& Ad)
 
 {
@@ -873,7 +873,7 @@ void CheckRowMatrix(Matrix<T, Prop, ArrayColSymComplexSparse>& A,
 }
 
 template<class T, class Prop, class Storage, class T2, class Prop2, class Storage2>
-void CheckAddMatrixSym(Matrix<T, Prop, Storage>& B, Matrix<T2, Prop2, Storage2>& Ad)
+void CheckAddMatrixSym(Matrix<complex<T>, Prop, Storage>& B, Matrix<T2, Prop2, Storage2>& Ad)
 {
   T zero;
   SetComplexZero(zero);
@@ -917,19 +917,19 @@ void CheckAddMatrixSym(Matrix<T, Prop, Storage>& B, Matrix<T2, Prop2, Storage2>&
 }
 
 template<class T, class Prop, class T2, class Prop2, class Storage2>
-void CheckAddMatrixSym(Matrix<T, Prop, RowSymComplexSparse>& B,
+void CheckAddMatrixSym(Matrix<complex<T>, Prop, RowSymComplexSparse>& B,
                        Matrix<T2, Prop2, Storage2>& Ad)
 {
 }
 
 template<class T, class Prop, class T2, class Prop2, class Storage2>
-void CheckAddMatrixSym(Matrix<T, Prop, ColSymComplexSparse>& B,
+void CheckAddMatrixSym(Matrix<complex<T>, Prop, ColSymComplexSparse>& B,
                        Matrix<T2, Prop2, Storage2>& Ad)
 {
 }
 
 template<class T, class Prop, class Storage>
-void CheckMatrixSym(Matrix<T, Prop, Storage>& A)
+void CheckMatrixSym(Matrix<complex<T>, Prop, Storage>& A)
 {
   if (!Storage::Sparse)
     {
@@ -948,7 +948,7 @@ void CheckMatrixSym(Matrix<T, Prop, Storage>& A)
       abort();
     }
   
-  Matrix<T, Prop, Storage> B(7, 7);
+  Matrix<complex<T>, Prop, Storage> B(7, 7);
   if ( (B.GetM() != 7) || (B.GetN() != 7) || (B.GetDataSize() != 0))
     {
       cout << "Constructor incorrect " << endl;
@@ -1034,7 +1034,7 @@ void CheckMatrixSym(Matrix<T, Prop, Storage>& A)
       abort();
     }
 
-  Matrix<T, Prop, Storage> C(A);
+  Matrix<complex<T>, Prop, Storage> C(A);
 
   if (!EqualMatrix(A, C))
     {
@@ -1128,42 +1128,42 @@ int main(int argc, char** argv)
   cout.precision(15);
   
   {
-    Matrix<Real_wp, General, ArrayRowComplexSparse> A;
+    Matrix<Complex_wp, General, ArrayRowComplexSparse> A;
     CheckMatrix(A);
   }
 
   {
-    Matrix<Real_wp, General, ArrayColComplexSparse> A;
+    Matrix<Complex_wp, General, ArrayColComplexSparse> A;
     CheckMatrix(A);
   }
 
   {
-    Matrix<Real_wp, Symmetric, ArrayRowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ArrayRowSymComplexSparse> A;
     CheckMatrixSym(A);
   }
 
   {
-    Matrix<Real_wp, Symmetric, ArrayColSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ArrayColSymComplexSparse> A;
     CheckMatrixSym(A);
   }
 
   {
-    Matrix<Real_wp, General, RowComplexSparse> A;
+    Matrix<Complex_wp, General, RowComplexSparse> A;
     CheckMatrix(A);
   }
 
   {
-    Matrix<Real_wp, General, ColComplexSparse> A;
+    Matrix<Complex_wp, General, ColComplexSparse> A;
     CheckMatrix(A);
   }
 
   {
-    Matrix<Real_wp, Symmetric, RowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, RowSymComplexSparse> A;
     CheckMatrixSym(A);
   }
 
   {
-    Matrix<Real_wp, Symmetric, ColSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ColSymComplexSparse> A;
     CheckMatrixSym(A);
   }
 

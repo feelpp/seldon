@@ -44,6 +44,24 @@ namespace Seldon
     static const bool Sparse = true;
   };
 
+
+  //! for complex sparse matrix, the allocator involves real numbers
+  template<class T>
+  class SeldonDefaultAllocator<ColSymComplexSparse, T>
+  {
+  public :
+    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+  };
+
+
+  //! for complex sparse matrix, the allocator involves real numbers
+  template<class T>
+  class SeldonDefaultAllocator<RowSymComplexSparse, T>
+  {
+  public :
+    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+  };
+
   
   //! Symmetric complex sparse-matrix class.
   /*!
@@ -58,8 +76,7 @@ namespace Seldon
     'imag_ptr_', 'imag_ind_' and 'imag_data_'.\par
     Finally, since the matrix is symmetric, only its upper part is stored.
   */
-  template <class T, class Prop, class Storage,
-	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, class Prop, class Storage, class Allocator>
   class Matrix_SymComplexSparse: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
@@ -86,8 +103,8 @@ namespace Seldon
     int* imag_ind_;
 
     // Data.
-    T* real_data_;
-    T* imag_data_;
+    value_type* real_data_;
+    value_type* imag_data_;
 
     // Methods.
   public:
@@ -99,10 +116,10 @@ namespace Seldon
 	      class Storage1, class Allocator1,
 	      class Storage2, class Allocator2>
     Matrix_SymComplexSparse(int i, int j,
-			    Vector<T, Storage0, Allocator0>& real_values,
+			    Vector<value_type, Storage0, Allocator0>& real_values,
 			    Vector<int, Storage1, Allocator1>& real_ptr,
 			    Vector<int, Storage2, Allocator2>& real_ind,
-			    Vector<T, Storage0, Allocator0>& imag_values,
+			    Vector<value_type, Storage0, Allocator0>& imag_values,
 			    Vector<int, Storage1, Allocator1>& imag_ptr,
 			    Vector<int, Storage2, Allocator2>& imag_ind);
     Matrix_SymComplexSparse(const Matrix_SymComplexSparse<T, Prop, Storage,
@@ -117,10 +134,10 @@ namespace Seldon
 	      class Storage1, class Allocator1,
 	      class Storage2, class Allocator2>
     void SetData(int i, int j,
-		 Vector<T, Storage0, Allocator0>& real_values,
+		 Vector<value_type, Storage0, Allocator0>& real_values,
 		 Vector<int, Storage1, Allocator1>& real_ptr,
 		 Vector<int, Storage2, Allocator2>& real_ind,
-		 Vector<T, Storage0, Allocator0>& imag_values,
+		 Vector<value_type, Storage0, Allocator0>& imag_values,
 		 Vector<int, Storage1, Allocator1>& imag_ptr,
 		 Vector<int, Storage2, Allocator2>& imag_ind);
     void SetData(int i, int j,
@@ -148,8 +165,8 @@ namespace Seldon
     int GetImagIndSize() const;
     int GetRealDataSize() const;
     int GetImagDataSize() const;
-    T* GetRealData() const;
-    T* GetImagData() const;
+    value_type* GetRealData() const;
+    value_type* GetImagData() const;
 
     // Element acess and affectation.
     const complex<value_type> operator() (int i, int j) const;
@@ -161,8 +178,13 @@ namespace Seldon
     const value_type& GetReal(int i, int j) const;
     value_type& GetImag(int i, int j);
     const value_type& GetImag(int i, int j) const;
-    void Set(int i, int j, const complex<T>& x);
-    void AddInteraction(int i, int j, const complex<T>& x);
+    void Set(int i, int j, const entry_type& x);
+    void AddInteraction(int i, int j, const entry_type& x);
+
+    template<class Alloc1>
+    void AddInteractionRow(int i, int nb, const IVect& col,
+			   const Vector<entry_type, VectFull, Alloc1>& val);
+    
     Matrix_SymComplexSparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_SymComplexSparse<T, Prop, Storage, Allocator>& A);
 
@@ -170,7 +192,7 @@ namespace Seldon
     void Zero();
     void SetIdentity();
     void Fill();
-    void Fill(const complex<T>& x);
+    void Fill(const entry_type& x);
     void FillRand();
 
     void Print() const;
@@ -205,10 +227,10 @@ namespace Seldon
 	      class Storage1, class Allocator1,
 	      class Storage2, class Allocator2>
     Matrix(int i, int j,
-	   Vector<T, Storage0, Allocator0>& real_values,
+	   Vector<value_type, Storage0, Allocator0>& real_values,
 	   Vector<int, Storage1, Allocator1>& real_ptr,
 	   Vector<int, Storage2, Allocator2>& real_ind,
-	   Vector<T, Storage0, Allocator0>& imag_values,
+	   Vector<value_type, Storage0, Allocator0>& imag_values,
 	   Vector<int, Storage1, Allocator1>& imag_ptr,
 	   Vector<int, Storage2, Allocator2>& imag_ind);
   };
@@ -234,10 +256,10 @@ namespace Seldon
 	      class Storage1, class Allocator1,
 	      class Storage2, class Allocator2>
     Matrix(int i, int j,
-	   Vector<T, Storage0, Allocator0>& values,
+	   Vector<value_type, Storage0, Allocator0>& values,
 	   Vector<int, Storage1, Allocator1>& ptr,
 	   Vector<int, Storage2, Allocator2>& ind,
-	   Vector<T, Storage0, Allocator0>& imag_values,
+	   Vector<value_type, Storage0, Allocator0>& imag_values,
 	   Vector<int, Storage1, Allocator1>& imag_ptr,
 	   Vector<int, Storage2, Allocator2>& imag_ind);
   };

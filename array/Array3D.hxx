@@ -34,7 +34,7 @@ namespace Seldon
   /*!
     This class implements 3D arrays.
   */
-  template <class T, class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, class Allocator>
   class Array3D
   {
     // typdef declarations.

@@ -40,8 +40,7 @@ namespace Seldon
     on the storage); (4) an array 'ind_' of column or row indices of each
     non-zero entry; (5) values of non-zero entries.
   */
-  template <class T, class Prop, class Storage,
-	    class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, class Prop, class Storage, class Allocator>
   class Matrix_Sparse: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
@@ -116,6 +115,11 @@ namespace Seldon
     const value_type& Get(int i, int j) const;
 #endif
     void AddInteraction(int i, int j, const T& val);
+    
+    template<class Alloc1>
+    void AddInteractionRow(int i, int nb, const Vector<int>& col,
+			   const Vector<T, VectFull, Alloc1>& val);
+
     void Set(int i, int j, const T& x);
 #ifndef SWIG
     Matrix_Sparse<T, Prop, Storage, Allocator>&

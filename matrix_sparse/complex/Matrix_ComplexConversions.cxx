@@ -38,9 +38,10 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index, bool sym)
   {
+    typedef typename ClassComplexType<T>::Treal Treal;
     int m = A.GetM();
     int nnz = A.GetRealDataSize() + A.GetImagDataSize();
     // Allocating arrays.
@@ -52,9 +53,9 @@ namespace Seldon
     int* imag_ptr = A.GetImagPtr();
     int* real_ind = A.GetRealInd();
     int* imag_ind = A.GetImagInd();
-    T* real_data = A.GetRealData();
-    T* imag_data = A.GetImagData();
-    IVect col; Vector<complex<T> > value;
+    Treal* real_data = A.GetRealData();
+    Treal* imag_data = A.GetImagData();
+    IVect col; Vector<T> value;
     for (int i = 0; i < m; i++)
       {
         int nb_r = real_ptr[i+1] - real_ptr[i];
@@ -70,14 +71,14 @@ namespace Seldon
         for (int j = real_ptr[i]; j < real_ptr[i+1]; j++)
           {
             col(nb) = real_ind[j] + index;
-            value(nb) = complex<T>(real_data[j], 0);
+            value(nb) = T(real_data[j], 0);
             nb++;
           }
 
         for (int j = imag_ptr[i]; j < imag_ptr[i+1]; j++)
           {
             col(nb) = imag_ind[j] + index;
-            value(nb) = complex<T>(0, imag_data[j]);
+            value(nb) = T(0, imag_data[j]);
             nb++;
           }
         
@@ -106,9 +107,10 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index, bool sym)
   {
+    typedef typename ClassComplexType<T>::Treal Treal;
     int n = A.GetN();
     int nnz = A.GetRealDataSize() + A.GetImagDataSize();
     // Allocating arrays.
@@ -120,9 +122,9 @@ namespace Seldon
     int* imag_ptr = A.GetImagPtr();
     int* real_ind = A.GetRealInd();
     int* imag_ind = A.GetImagInd();
-    T* real_data = A.GetRealData();
-    T* imag_data = A.GetImagData();
-    IVect col; Vector<complex<T> > value;
+    Treal* real_data = A.GetRealData();
+    Treal* imag_data = A.GetImagData();
+    IVect col; Vector<T> value;
     for (int i = 0; i < n; i++)
       {
         int nb_r = real_ptr[i+1] - real_ptr[i];
@@ -138,14 +140,14 @@ namespace Seldon
         for (int j = real_ptr[i]; j < real_ptr[i+1]; j++)
           {
             col(nb) = real_ind[j] + index;
-            value(nb) = complex<T>(real_data[j], 0);
+            value(nb) = T(real_data[j], 0);
             nb++;
           }
 
         for (int j = imag_ptr[i]; j < imag_ptr[i+1]; j++)
           {
             col(nb) = imag_ind[j] + index;
-            value(nb) = complex<T>(0, imag_data[j]);
+            value(nb) = T(0, imag_data[j]);
             nb++;
           }
         
@@ -174,17 +176,18 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index, bool sym)
   {
+    typedef typename ClassComplexType<T>::Treal Treal;
     int m = A.GetM();
     int nnz = A.GetDataSize();
     int* real_ptr = A.GetRealPtr();
     int* imag_ptr = A.GetImagPtr();
     int* real_ind = A.GetRealInd();
     int* imag_ind = A.GetImagInd();
-    T* real_data = A.GetRealData();
-    T* imag_data = A.GetImagData();
+    Treal* real_data = A.GetRealData();
+    Treal* imag_data = A.GetImagData();
     
     if (sym)
       {
@@ -195,7 +198,7 @@ namespace Seldon
 	Vector<int> Ptr(m);
 	Ptr.Zero();
         nnz = 0;
-        IVect col; Vector<complex<T> > value;
+        IVect col; Vector<T> value;
 	for (int i = 0; i < m; i++)
 	  {
             int nb_r = real_ptr[i+1] - real_ptr[i];
@@ -211,14 +214,14 @@ namespace Seldon
             for (int j = real_ptr[i]; j < real_ptr[i+1]; j++)
               {
                 col(nb) = real_ind[j];
-                value(nb) = complex<T>(real_data[j], 0);
+                value(nb) = T(real_data[j], 0);
                 nb++;
               }
             
             for (int j = imag_ptr[i]; j < imag_ptr[i+1]; j++)
               {
                 col(nb) = imag_ind[j];
-                value(nb) = complex<T>(0, imag_data[j]);
+                value(nb) = T(0, imag_data[j]);
                 nb++;
               }
             
@@ -264,7 +267,7 @@ namespace Seldon
 	IndCol.Reallocate(nnz);
 	Val.Reallocate(nnz);
         nnz = 0;
-        IVect col; Vector<complex<T> > value;
+        IVect col; Vector<T> value;
 	for (int i = 0; i < m; i++)
 	  {
             int nb_r = real_ptr[i+1] - real_ptr[i];
@@ -280,14 +283,14 @@ namespace Seldon
             for (int j = real_ptr[i]; j < real_ptr[i+1]; j++)
               {
                 col(nb) = real_ind[j] + index;
-                value(nb) = complex<T>(real_data[j], 0);
+                value(nb) = T(real_data[j], 0);
                 nb++;
               }
             
             for (int j = imag_ptr[i]; j < imag_ptr[i+1]; j++)
               {
                 col(nb) = imag_ind[j] + index;
-                value(nb) = complex<T>(0, imag_data[j]);
+                value(nb) = T(0, imag_data[j]);
                 nb++;
               }
             
@@ -317,17 +320,18 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index, bool sym)
   {
+    typedef typename ClassComplexType<T>::Treal Treal;
     int m = A.GetM();
     int nnz = A.GetDataSize();
     int* real_ptr = A.GetRealPtr();
     int* imag_ptr = A.GetImagPtr();
     int* real_ind = A.GetRealInd();
     int* imag_ind = A.GetImagInd();
-    T* real_data = A.GetRealData();
-    T* imag_data = A.GetImagData();
+    Treal* real_data = A.GetRealData();
+    Treal* imag_data = A.GetImagData();
     
     if (sym)
       {
@@ -338,7 +342,7 @@ namespace Seldon
 	Vector<int> Ptr(m);
 	Ptr.Zero();
         nnz = 0;
-        IVect row; Vector<complex<T> > value;
+        IVect row; Vector<T> value;
 	for (int i = 0; i < m; i++)
 	  {
             int nb_r = real_ptr[i+1] - real_ptr[i];
@@ -354,14 +358,14 @@ namespace Seldon
             for (int j = real_ptr[i]; j < real_ptr[i+1]; j++)
               {
                 row(nb) = real_ind[j];
-                value(nb) = complex<T>(real_data[j], 0);
+                value(nb) = T(real_data[j], 0);
                 nb++;
               }
             
             for (int j = imag_ptr[i]; j < imag_ptr[i+1]; j++)
               {
                 row(nb) = imag_ind[j];
-                value(nb) = complex<T>(0, imag_data[j]);
+                value(nb) = T(0, imag_data[j]);
                 nb++;
               }
             
@@ -407,7 +411,7 @@ namespace Seldon
 	IndCol.Reallocate(nnz);
 	Val.Reallocate(nnz);
         nnz = 0;
-        IVect row; Vector<complex<T> > value;
+        IVect row; Vector<T> value;
 	for (int i = 0; i < m; i++)
 	  {
             int nb_r = real_ptr[i+1] - real_ptr[i];
@@ -423,14 +427,14 @@ namespace Seldon
             for (int j = real_ptr[i]; j < real_ptr[i+1]; j++)
               {
                 row(nb) = real_ind[j] + index;
-                value(nb) = complex<T>(real_data[j], 0);
+                value(nb) = T(real_data[j], 0);
                 nb++;
               }
             
             for (int j = imag_ptr[i]; j < imag_ptr[i+1]; j++)
               {
                 row(nb) = imag_ind[j] + index;
-                value(nb) = complex<T>(0, imag_data[j]);
+                value(nb) = T(0, imag_data[j]);
                 nb++;
               }
             
@@ -460,7 +464,7 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index, bool sym)
   {
     int m = A.GetM();
@@ -470,7 +474,7 @@ namespace Seldon
     IndCol.Reallocate(nnz);
     Val.Reallocate(nnz);
     nnz = 0;
-    IVect col; Vector<complex<T> > value;
+    IVect col; Vector<T> value;
     for (int i = 0; i < m; i++)
       {
         int size_row = A.GetRealRowSize(i) + A.GetImagRowSize(i);
@@ -484,14 +488,14 @@ namespace Seldon
         for (int j = 0; j < A.GetRealRowSize(i); j++)
           {
             col(nb) = A.IndexReal(i, j) + index;
-            value(nb) = complex<T>(A.ValueReal(i, j), 0);
+            value(nb) = T(A.ValueReal(i, j), 0);
             nb++;
           }
 
         for (int j = 0; j < A.GetImagRowSize(i); j++)
           {
             col(nb) = A.IndexImag(i, j) + index;
-            value(nb) = complex<T>(0, A.ValueImag(i, j));
+            value(nb) = T(0, A.ValueImag(i, j));
             nb++;
           }
         
@@ -520,7 +524,7 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index, bool sym)
   {
     int nnz = A.GetRealDataSize() + A.GetImagDataSize();
@@ -529,7 +533,7 @@ namespace Seldon
     IndCol.Reallocate(nnz);
     Val.Reallocate(nnz);
     nnz = 0;
-    IVect row; Vector<complex<T> > value;
+    IVect row; Vector<T> value;
     for (int i = 0; i < A.GetN(); i++)
       {
         int size_col = A.GetRealColumnSize(i) + A.GetImagColumnSize(i);
@@ -543,14 +547,14 @@ namespace Seldon
         for (int j = 0; j < A.GetRealColumnSize(i); j++)
           {
             row(nb) = A.IndexReal(i, j) + index;
-            value(nb) = complex<T>(A.ValueReal(i, j), 0);
+            value(nb) = T(A.ValueReal(i, j), 0);
             nb++;
           }
 
         for (int j = 0; j < A.GetImagColumnSize(i); j++)
           {
             row(nb) = A.IndexImag(i, j) + index;
-            value(nb) = complex<T>(0, A.ValueImag(i, j));
+            value(nb) = T(0, A.ValueImag(i, j));
             nb++;
           }
         
@@ -579,7 +583,7 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index, bool sym)
   {
     int m = A.GetM();
@@ -593,7 +597,7 @@ namespace Seldon
 	Vector<int> Ptr(m);
 	Ptr.Zero();
         nnz = 0;
-        IVect col; Vector<complex<T> > value;
+        IVect col; Vector<T> value;
 	for (int i = 0; i < m; i++)
 	  {
             int size_row = A.GetRealRowSize(i) + A.GetImagRowSize(i);
@@ -607,14 +611,14 @@ namespace Seldon
             for (int j = 0; j < A.GetRealRowSize(i); j++)
               {
                 col(nb) = A.IndexReal(i, j);
-                value(nb) = complex<T>(A.ValueReal(i, j), 0);
+                value(nb) = T(A.ValueReal(i, j), 0);
                 nb++;
               }
             
             for (int j = 0; j < A.GetImagRowSize(i); j++)
               {
                 col(nb) = A.IndexImag(i, j);
-                value(nb) = complex<T>(0, A.ValueImag(i, j));
+                value(nb) = T(0, A.ValueImag(i, j));
                 nb++;
               }
             
@@ -660,7 +664,7 @@ namespace Seldon
 	IndCol.Reallocate(nnz);
 	Val.Reallocate(nnz);
         nnz = 0;
-        IVect col; Vector<complex<T> > value;
+        IVect col; Vector<T> value;
 	for (int i = 0; i < m; i++)
 	  {
             int size_row = A.GetRealRowSize(i) + A.GetImagRowSize(i);
@@ -674,14 +678,14 @@ namespace Seldon
             for (int j = 0; j < A.GetRealRowSize(i); j++)
               {
                 col(nb) = A.IndexReal(i, j) + index;
-                value(nb) = complex<T>(A.ValueReal(i, j), 0);
+                value(nb) = T(A.ValueReal(i, j), 0);
                 nb++;
               }
             
             for (int j = 0; j < A.GetImagRowSize(i); j++)
               {
                 col(nb) = A.IndexImag(i, j) + index;
-                value(nb) = complex<T>(0, A.ValueImag(i, j));
+                value(nb) = T(0, A.ValueImag(i, j));
                 nb++;
               }
             
@@ -711,7 +715,7 @@ namespace Seldon
 			       Allocator1>& A,
 			       Vector<Tint, VectFull, Allocator2>& IndRow,
 			       Vector<Tint, VectFull, Allocator3>& IndCol,
-			       Vector<complex<T>, VectFull, Allocator4>& Val,
+			       Vector<T, VectFull, Allocator4>& Val,
 			       int index, bool sym)
   {
     int m = A.GetM();
@@ -725,7 +729,7 @@ namespace Seldon
 	Vector<int> Ptr(m);
 	Ptr.Zero();
         nnz = 0;
-        IVect row; Vector<complex<T> > value;
+        IVect row; Vector<T> value;
 	for (int i = 0; i < m; i++)
 	  {
             int size_col = A.GetRealColumnSize(i) + A.GetImagColumnSize(i);
@@ -739,14 +743,14 @@ namespace Seldon
             for (int j = 0; j < A.GetRealColumnSize(i); j++)
               {
                 row(nb) = A.IndexReal(i, j);
-                value(nb) = complex<T>(A.ValueReal(i, j), 0);
+                value(nb) = T(A.ValueReal(i, j), 0);
                 nb++;
               }
             
             for (int j = 0; j < A.GetImagColumnSize(i); j++)
               {
                 row(nb) = A.IndexImag(i, j);
-                value(nb) = complex<T>(0, A.ValueImag(i, j));
+                value(nb) = T(0, A.ValueImag(i, j));
                 nb++;
               }
             
@@ -792,7 +796,7 @@ namespace Seldon
 	IndCol.Reallocate(nnz);
 	Val.Reallocate(nnz);
         nnz = 0;
-        IVect row; Vector<complex<T> > value;
+        IVect row; Vector<T> value;
 	for (int i = 0; i < m; i++)
 	  {
             int size_col = A.GetRealColumnSize(i) + A.GetImagColumnSize(i);
@@ -806,14 +810,14 @@ namespace Seldon
             for (int j = 0; j < A.GetRealColumnSize(i); j++)
               {
                 row(nb) = A.IndexReal(i, j) + index;
-                value(nb) = complex<T>(A.ValueReal(i, j), 0);
+                value(nb) = T(A.ValueReal(i, j), 0);
                 nb++;
               }
             
             for (int j = 0; j < A.GetImagColumnSize(i); j++)
               {
                 row(nb) = A.IndexImag(i, j) + index;
-                value(nb) = complex<T>(0, A.ValueImag(i, j));
+                value(nb) = T(0, A.ValueImag(i, j));
                 nb++;
               }
             
@@ -841,12 +845,13 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, RowComplexSparse,
 				 Allocator4>& A,
 				 int index)
   {
-    T zero(0);
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
@@ -882,7 +887,7 @@ namespace Seldon
     
     // Fills matrix 'A'.
     Vector<int, VectFull, CallocAlloc<int> > IndReal(real_nz), IndImag(imag_nz);
-    Vector<T, VectFull, Allocator4> ValReal(real_nz), ValImag(imag_nz);
+    Vector<Treal, VectFull, Allocator4> ValReal(real_nz), ValImag(imag_nz);
     int offset = 0;
     for (int i = 0; i < m; i++)
       {
@@ -922,12 +927,13 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ColComplexSparse,
 				 Allocator4>& A,
 				 int index)
   {
-    T zero(0);
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
@@ -963,7 +969,7 @@ namespace Seldon
     
     // Fills matrix 'A'.
     Vector<int, VectFull, CallocAlloc<int> > IndReal(real_nz), IndImag(imag_nz);
-    Vector<T, VectFull, Allocator4> ValReal(real_nz), ValImag(imag_nz);
+    Vector<Treal, VectFull, Allocator4> ValReal(real_nz), ValImag(imag_nz);
     int offset = 0;
     for (int i = 0; i < n; i++)
       {
@@ -1003,12 +1009,13 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, RowSymComplexSparse,
 				 Allocator4>& A,
 				 int index)
   {
-    T zero(0);
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
@@ -1047,7 +1054,7 @@ namespace Seldon
     
     // Fills matrix 'A'.
     Vector<int, VectFull, CallocAlloc<int> > IndReal(real_nz), IndImag(imag_nz);
-    Vector<T, VectFull, Allocator4> ValReal(real_nz), ValImag(imag_nz);
+    Vector<Treal, VectFull, Allocator4> ValReal(real_nz), ValImag(imag_nz);
     int offset = 0;
     for (int i = 0; i < m; i++)
       {
@@ -1089,12 +1096,13 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ColSymComplexSparse,
 				 Allocator4>& A,
 				 int index)
   {
-    T zero(0);
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
@@ -1133,7 +1141,7 @@ namespace Seldon
     
     // Fills matrix 'A'.
     Vector<int, VectFull, CallocAlloc<int> > IndReal(real_nz), IndImag(imag_nz);
-    Vector<T, VectFull, Allocator4> ValReal(real_nz), ValImag(imag_nz);
+    Vector<Treal, VectFull, Allocator4> ValReal(real_nz), ValImag(imag_nz);
     int offset = 0;
     for (int i = 0; i < n; i++)
       {
@@ -1175,12 +1183,13 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayRowComplexSparse,
 				 Allocator4>& A,
 				 int index)
   {
-    T zero(0);
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
@@ -1251,12 +1260,13 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayColComplexSparse,
 				 Allocator4>& A,
 				 int index)
   {
-    T zero(0);
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
@@ -1327,11 +1337,12 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayRowSymComplexSparse,
 				 Allocator4>& A, int index)
   {
-    T zero(0);
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
@@ -1411,11 +1422,12 @@ namespace Seldon
   void
   ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
 				 Vector<int, VectFull, Allocator2>& IndCol,
-				 Vector<complex<T>, VectFull, Allocator3>& Val,
+				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, ArrayColSymComplexSparse,
 				 Allocator4>& A, int index)
   {
-    T zero(0);
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;
@@ -1495,7 +1507,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, RowComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value)
+                    Vector<T, VectFull, Alloc4>& Value)
   {
     int m = A.GetM();
     if (m <= 0)
@@ -1505,15 +1517,16 @@ namespace Seldon
 	Value.Clear();
 	return;
       }
-    
-    T zero(0);
+
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     int* real_ptr_ = A.GetRealPtr();
     int* real_ind_ = A.GetRealInd();
-    T* real_data_ = A.GetRealData();
+    Treal* real_data_ = A.GetRealData();
 
     int* imag_ptr_ = A.GetImagPtr();
     int* imag_ind_ = A.GetImagInd();
-    T* imag_data_ = A.GetImagData();
+    Treal* imag_data_ = A.GetImagData();
     
     int real_nnz = A.GetRealDataSize();
     int imag_nnz = A.GetImagDataSize();
@@ -1524,7 +1537,7 @@ namespace Seldon
     int nnz = 0;
     Ptr(0) = 0;
     IVect col;
-    Vector<complex<T> > val;
+    Vector<T> val;
     for (int i = 0; i < m; i++)
       {
         int size_real = real_ptr_[i+1] - real_ptr_[i];
@@ -1539,14 +1552,14 @@ namespace Seldon
         int nb = 0;
         for (int j = real_ptr_[i]; j < real_ptr_[i+1]; j++)
           {
-            val(nb) = complex<T>(real_data_[j], zero);
+            val(nb) = T(real_data_[j], zero);
             col(nb) = real_ind_[j];
             nb++;
           }
         
         for (int j = imag_ptr_[i]; j < imag_ptr_[i+1]; j++)
           {
-            val(nb) = complex<T>(zero, imag_data_[j]);
+            val(nb) = T(zero, imag_data_[j]);
             col(nb) = imag_ind_[j];
             nb++;
           }
@@ -1574,7 +1587,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ColComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Val)
+                    Vector<T, VectFull, Alloc4>& Val)
   {
     // Matrix (m,n) with nnz entries.
     int m = A.GetN();
@@ -1608,7 +1621,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value)
+                    Vector<T, VectFull, Alloc4>& Value)
   {
     int m = A.GetM();
     if (m <= 0)
@@ -1618,15 +1631,16 @@ namespace Seldon
 	Value.Clear();
 	return;
       }
-    
-    T zero(0);
+
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     int* real_ptr_ = A.GetRealPtr();
     int* real_ind_ = A.GetRealInd();
-    T* real_data_ = A.GetRealData();
+    Treal* real_data_ = A.GetRealData();
 
     int* imag_ptr_ = A.GetImagPtr();
     int* imag_ind_ = A.GetImagInd();
-    T* imag_data_ = A.GetImagData();
+    Treal* imag_data_ = A.GetImagData();
     
     int real_nnz = A.GetRealDataSize();
     int imag_nnz = A.GetImagDataSize();
@@ -1637,7 +1651,7 @@ namespace Seldon
     int nnz = 0;
     Ptr(0) = 0;
     IVect col;
-    Vector<complex<T> > val;
+    Vector<T> val;
     for (int i = 0; i < m; i++)
       {
         int size_real = real_ptr_[i+1] - real_ptr_[i];
@@ -1652,14 +1666,14 @@ namespace Seldon
         int nb = 0;
         for (int j = real_ptr_[i]; j < real_ptr_[i+1]; j++)
           {
-            val(nb) = complex<T>(real_data_[j], zero);
+            val(nb) = T(real_data_[j], zero);
             col(nb) = real_ind_[j];
             nb++;
           }
         
         for (int j = imag_ptr_[i]; j < imag_ptr_[i+1]; j++)
           {
-            val(nb) = complex<T>(zero, imag_data_[j]);
+            val(nb) = T(zero, imag_data_[j]);
             col(nb) = imag_ind_[j];
             nb++;
           }
@@ -1687,7 +1701,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Val)
+                    Vector<T, VectFull, Alloc4>& Val)
   {
     // Matrix (m,n) with nnz entries.
     int m = A.GetN();
@@ -1720,7 +1734,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Val)
+                    Vector<T, VectFull, Alloc4>& Val)
   {
     // Matrix (m,n) with nnz entries.
     int m = A.GetN();
@@ -1754,7 +1768,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Val)
+                    Vector<T, VectFull, Alloc4>& Val)
   {
     // Matrix (m,n) with nnz entries.
     int m = A.GetN();
@@ -1787,7 +1801,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ArrayRowComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value)
+                    Vector<T, VectFull, Alloc4>& Value)
   {
     int m = A.GetM();
     if (m <= 0)
@@ -1798,7 +1812,8 @@ namespace Seldon
 	return;
       }
     
-    T zero(0);
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     
     int real_nnz = A.GetRealDataSize();
     int imag_nnz = A.GetImagDataSize();
@@ -1809,7 +1824,7 @@ namespace Seldon
     int nnz = 0;
     Ptr(0) = 0;
     IVect col;
-    Vector<complex<T> > val;
+    Vector<T> val;
     for (int i = 0; i < m; i++)
       {
         int size_row = A.GetRealRowSize(i) + A.GetImagRowSize(i);
@@ -1822,14 +1837,14 @@ namespace Seldon
         int nb = 0;
         for (int j = 0; j < A.GetRealRowSize(i); j++)
           {
-            val(nb) = complex<T>(A.ValueReal(i, j), zero);
+            val(nb) = T(A.ValueReal(i, j), zero);
             col(nb) = A.IndexReal(i, j);
             nb++;
           }
         
         for (int j = 0; j < A.GetImagRowSize(i); j++)
           {
-            val(nb) = complex<T>(zero, A.ValueImag(i, j));
+            val(nb) = T(zero, A.ValueImag(i, j));
             col(nb) = A.IndexImag(i, j);
             nb++;
           }
@@ -1857,7 +1872,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ArrayColComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Val)
+                    Vector<T, VectFull, Alloc4>& Val)
   {
     // Matrix (m,n) with nnz entries.
     int m = A.GetN();
@@ -1891,7 +1906,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value)
+                    Vector<T, VectFull, Alloc4>& Value)
   {
     int m = A.GetM();
     if (m <= 0)
@@ -1902,7 +1917,8 @@ namespace Seldon
 	return;
       }
     
-    T zero(0);
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     int real_nnz = A.GetRealDataSize();
     int imag_nnz = A.GetImagDataSize();
     
@@ -1912,7 +1928,7 @@ namespace Seldon
     int nnz = 0;
     Ptr(0) = 0;
     IVect col;
-    Vector<complex<T> > val;
+    Vector<T> val;
     for (int i = 0; i < m; i++)
       {
         int size_row = A.GetRealRowSize(i) + A.GetImagRowSize(i);
@@ -1925,14 +1941,14 @@ namespace Seldon
         int nb = 0;
         for (int j = 0; j < A.GetRealRowSize(i); j++)
           {
-            val(nb) = complex<T>(A.ValueReal(i, j), zero);
+            val(nb) = T(A.ValueReal(i, j), zero);
             col(nb) = A.IndexReal(i, j);
             nb++;
           }
         
         for (int j = 0; j < A.GetImagRowSize(i); j++)
           {
-            val(nb) = complex<T>(zero, A.ValueImag(i, j));
+            val(nb) = T(zero, A.ValueImag(i, j));
             col(nb) = A.IndexImag(i, j);
             nb++;
           }
@@ -1960,7 +1976,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value)
+                    Vector<T, VectFull, Alloc4>& Value)
   {
     Vector<Tint, VectFull, Alloc3> IndRow;
     
@@ -1988,7 +2004,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Val)
+                    Vector<T, VectFull, Alloc4>& Val)
   {
     // Matrix (m,n) with nnz entries.
     int m = A.GetN();
@@ -2022,7 +2038,7 @@ namespace Seldon
   void ConvertToCSR(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Val)
+                    Vector<T, VectFull, Alloc4>& Val)
   {
     // Matrix (m,n) with nnz entries.
     int m = A.GetN();
@@ -2060,7 +2076,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, RowComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val, bool sym_pat)
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
     if (sym_pat)
       throw Undefined("ConvertToCSC", "Symmetrization of pattern not"
@@ -2098,7 +2114,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ColComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    Vector<T, VectFull, Alloc4>& Value,
                     bool sym_pat)
   {
     if (sym_pat)
@@ -2113,15 +2129,16 @@ namespace Seldon
 	Value.Clear();
 	return;
       }
-    
-    T zero(0);
+
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     int* real_ptr_ = A.GetRealPtr();
     int* real_ind_ = A.GetRealInd();
-    T* real_data_ = A.GetRealData();
+    Treal* real_data_ = A.GetRealData();
 
     int* imag_ptr_ = A.GetImagPtr();
     int* imag_ind_ = A.GetImagInd();
-    T* imag_data_ = A.GetImagData();
+    Treal* imag_data_ = A.GetImagData();
     
     int real_nnz = A.GetRealDataSize();
     int imag_nnz = A.GetImagDataSize();
@@ -2132,7 +2149,7 @@ namespace Seldon
     int nnz = 0;
     Ptr(0) = 0;
     IVect col;
-    Vector<complex<T> > val;
+    Vector<T> val;
     for (int i = 0; i < n; i++)
       {
         int size_real = real_ptr_[i+1] - real_ptr_[i];
@@ -2147,14 +2164,14 @@ namespace Seldon
         int nb = 0;
         for (int j = real_ptr_[i]; j < real_ptr_[i+1]; j++)
           {
-            val(nb) = complex<T>(real_data_[j], zero);
+            val(nb) = T(real_data_[j], zero);
             col(nb) = real_ind_[j];
             nb++;
           }
         
         for (int j = imag_ptr_[i]; j < imag_ptr_[i+1]; j++)
           {
-            val(nb) = complex<T>(zero, imag_data_[j]);
+            val(nb) = T(zero, imag_data_[j]);
             col(nb) = imag_ind_[j];
             nb++;
           }
@@ -2182,7 +2199,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val, bool sym_pat)
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
     // Matrix (m,n) with nnz entries.
     int n = A.GetN();
@@ -2216,7 +2233,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, RowSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val, bool sym_pat)
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
     // Matrix (m,n) with nnz entries.
     int n = A.GetN();
@@ -2250,7 +2267,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    Vector<T, VectFull, Alloc4>& Value,
                     bool sym_pat)
   {
     int n = A.GetN();
@@ -2262,14 +2279,15 @@ namespace Seldon
 	return;
       }
     
-    T zero(0);
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     int* real_ptr_ = A.GetRealPtr();
     int* real_ind_ = A.GetRealInd();
-    T* real_data_ = A.GetRealData();
+    Treal* real_data_ = A.GetRealData();
 
     int* imag_ptr_ = A.GetImagPtr();
     int* imag_ind_ = A.GetImagInd();
-    T* imag_data_ = A.GetImagData();
+    Treal* imag_data_ = A.GetImagData();
     
     int real_nnz = A.GetRealDataSize();
     int imag_nnz = A.GetImagDataSize();
@@ -2280,7 +2298,7 @@ namespace Seldon
     int nnz = 0;
     Ptr(0) = 0;
     IVect col;
-    Vector<complex<T> > val;
+    Vector<T> val;
     for (int i = 0; i < n; i++)
       {
         int size_real = real_ptr_[i+1] - real_ptr_[i];
@@ -2295,14 +2313,14 @@ namespace Seldon
         int nb = 0;
         for (int j = real_ptr_[i]; j < real_ptr_[i+1]; j++)
           {
-            val(nb) = complex<T>(real_data_[j], zero);
+            val(nb) = T(real_data_[j], zero);
             col(nb) = real_ind_[j];
             nb++;
           }
         
         for (int j = imag_ptr_[i]; j < imag_ptr_[i+1]; j++)
           {
-            val(nb) = complex<T>(zero, imag_data_[j]);
+            val(nb) = T(zero, imag_data_[j]);
             col(nb) = imag_ind_[j];
             nb++;
           }
@@ -2330,7 +2348,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ColSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val, bool sym_pat)
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
     // Matrix (m,n) with nnz entries.
     int n = A.GetN();
@@ -2368,7 +2386,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayRowComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val, bool sym_pat)
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
     if (sym_pat)
       throw Undefined("ConvertToCSC", "Symmetrization of pattern not"
@@ -2406,7 +2424,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayColComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    Vector<T, VectFull, Alloc4>& Value,
                     bool sym_pat)
   {
     if (sym_pat)
@@ -2422,7 +2440,8 @@ namespace Seldon
 	return;
       }
     
-    T zero(0);
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     
     int real_nnz = A.GetRealDataSize();
     int imag_nnz = A.GetImagDataSize();
@@ -2433,7 +2452,7 @@ namespace Seldon
     int nnz = 0;
     Ptr(0) = 0;
     IVect col;
-    Vector<complex<T> > val;
+    Vector<T> val;
     for (int i = 0; i < n; i++)
       {
         int size_real = A.GetRealColumnSize(i);
@@ -2448,14 +2467,14 @@ namespace Seldon
         int nb = 0;
         for (int j = 0; j < size_real; j++)
           {
-            val(nb) = complex<T>(A.ValueReal(i, j), zero);
+            val(nb) = T(A.ValueReal(i, j), zero);
             col(nb) = A.IndexReal(i, j);
             nb++;
           }
         
         for (int j = 0; j < size_imag; j++)
           {
-            val(nb) = complex<T>(zero, A.ValueImag(i, j));
+            val(nb) = T(zero, A.ValueImag(i, j));
             col(nb) = A.IndexImag(i, j);
             nb++;
           }
@@ -2483,7 +2502,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val, bool sym_pat)
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
     // Matrix (m,n) with nnz entries.
     int n = A.GetN();
@@ -2517,7 +2536,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayRowSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val, bool sym_pat)
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
     // Matrix (m,n) with nnz entries.
     int n = A.GetN();
@@ -2551,7 +2570,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
                     Symmetric& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndCol,
-                    Vector<complex<T>, VectFull, Alloc4>& Value,
+                    Vector<T, VectFull, Alloc4>& Value,
                     bool sym_pat)
   {
     int n = A.GetN();
@@ -2563,7 +2582,8 @@ namespace Seldon
 	return;
       }
     
-    T zero(0);
+    typedef typename ClassComplexType<T>::Treal Treal;
+    Treal zero(0);
     
     int real_nnz = A.GetRealDataSize();
     int imag_nnz = A.GetImagDataSize();
@@ -2574,7 +2594,7 @@ namespace Seldon
     int nnz = 0;
     Ptr(0) = 0;
     IVect col;
-    Vector<complex<T> > val;
+    Vector<T> val;
     for (int i = 0; i < n; i++)
       {
         int size_real = A.GetRealColumnSize(i);
@@ -2589,14 +2609,14 @@ namespace Seldon
         int nb = 0;
         for (int j = 0; j < size_real; j++)
           {
-            val(nb) = complex<T>(A.ValueReal(i, j), zero);
+            val(nb) = T(A.ValueReal(i, j), zero);
             col(nb) = A.IndexReal(i, j);
             nb++;
           }
         
         for (int j = 0; j < size_imag; j++)
           {
-            val(nb) = complex<T>(zero, A.ValueImag(i, j));
+            val(nb) = T(zero, A.ValueImag(i, j));
             col(nb) = A.IndexImag(i, j);
             nb++;
           }
@@ -2624,7 +2644,7 @@ namespace Seldon
   void ConvertToCSC(const Matrix<T, Prop, ArrayColSymComplexSparse, Alloc1>& A,
                     General& sym, Vector<Tint, VectFull, Alloc2>& Ptr,
                     Vector<Tint, VectFull, Alloc3>& IndRow,
-                    Vector<complex<T>, VectFull, Alloc4>& Val, bool sym_pat)
+                    Vector<T, VectFull, Alloc4>& Val, bool sym_pat)
   {
     // Matrix (m,n) with nnz entries.
     int n = A.GetN();
@@ -3195,8 +3215,9 @@ namespace Seldon
     ConvertToCSR(A, sym, Ptr, Ind, Value);
     
     // counting number of non-zero elements
+    typedef typename ClassComplexType<T1>::Treal Treal;
     int imag_nnz = 0, real_nnz = 0;
-    T1 zero(0);
+    Treal zero(0);
     for (int i = 0; i < Value.GetM(); i++)
       {
         if (real(Value(i)) != zero)
@@ -3208,7 +3229,7 @@ namespace Seldon
     
     Vector<int, VectFull, CallocAlloc<int> > Ptr_real(m+1), Ptr_imag(m+1),
       Ind_real(real_nnz), Ind_imag(imag_nnz);
-    Vector<T1, VectFull, Allocator1> Val_real(real_nnz), Val_imag(imag_nnz);
+    Vector<Treal, VectFull, Allocator1> Val_real(real_nnz), Val_imag(imag_nnz);
     
     // filling arrays Ind_real, Ind_imag, Val_real, Val_imag
     Ptr_real(0) = 0; Ptr_imag(0) = 0;
@@ -3259,7 +3280,8 @@ namespace Seldon
     
     // counting number of non-zero elements
     int imag_nnz = 0, real_nnz = 0;
-    T1 zero(0);
+    typedef typename ClassComplexType<T1>::Treal Treal;
+    Treal zero(0);
     for (int i = 0; i < nnz; i++)
       {
         if (real(data_[i]) != zero)
@@ -3272,7 +3294,7 @@ namespace Seldon
     Vector<int, VectFull, CallocAlloc<int> > Ptr_real(n+1), Ptr_imag(n+1),
       Ind_real(real_nnz), Ind_imag(imag_nnz);
     
-    Vector<T1, VectFull, Allocator1> Val_real(real_nnz), Val_imag(imag_nnz);
+    Vector<Treal, VectFull, Allocator1> Val_real(real_nnz), Val_imag(imag_nnz);
     
     // filling arrays Ind_real, Ind_imag, Val_real, Val_imag
     Ptr_real(0) = 0; Ptr_imag(0) = 0;
@@ -3323,7 +3345,8 @@ namespace Seldon
     
     // counting number of non-zero elements
     int imag_nnz = 0, real_nnz = 0;
-    T1 zero(0);
+    typedef typename ClassComplexType<T1>::Treal Treal;
+    Treal zero(0);
     for (int i = 0; i < Value.GetM(); i++)
       {
         if (real(Value(i)) != zero)
@@ -3336,7 +3359,7 @@ namespace Seldon
     Vector<int, VectFull, CallocAlloc<int> > Ptr_real(m+1), Ptr_imag(m+1),
       Ind_real(real_nnz), Ind_imag(imag_nnz);
     
-    Vector<T1, VectFull, Allocator1> Val_real(real_nnz), Val_imag(imag_nnz);
+    Vector<Treal, VectFull, Allocator1> Val_real(real_nnz), Val_imag(imag_nnz);
     
     // filling arrays Ind_real, Ind_imag, Val_real, Val_imag
     Ptr_real(0) = 0; Ptr_imag(0) = 0;
@@ -3387,7 +3410,8 @@ namespace Seldon
     
     // counting number of non-zero elements
     int imag_nnz = 0, real_nnz = 0;
-    T1 zero(0);
+    typedef typename ClassComplexType<T1>::Treal Treal;
+    Treal zero(0);
     for (int i = 0; i < nnz; i++)
       {
         if (real(data_[i]) != zero)
@@ -3400,7 +3424,7 @@ namespace Seldon
     Vector<int, VectFull, CallocAlloc<int> > Ptr_real(n+1), Ptr_imag(n+1),
       Ind_real(real_nnz), Ind_imag(imag_nnz);
     
-    Vector<T1, VectFull, Allocator1> Val_real(real_nnz), Val_imag(imag_nnz);
+    Vector<Treal, VectFull, Allocator1> Val_real(real_nnz), Val_imag(imag_nnz);
     
     // filling arrays Ind_real, Ind_imag, Val_real, Val_imag
     Ptr_real(0) = 0; Ptr_imag(0) = 0;
@@ -3446,7 +3470,8 @@ namespace Seldon
     Matrix<T0, Prop0, ArrayRowSparse, Allocator0> Ar;
     Copy(A, Ar);
 
-    T1 zero(0);    
+    typedef typename ClassComplexType<T1>::Treal Treal;
+    Treal zero(0);    
     B.Reallocate(m, n);
     for (int i = 0; i < m; i++)
       {
@@ -3499,7 +3524,8 @@ namespace Seldon
     int* ind_ = A.GetInd();
     T0* data_ = A.GetData();
     
-    T1 zero(0);
+    typedef typename ClassComplexType<T1>::Treal Treal;
+    Treal zero(0);
     B.Reallocate(m, n);
     for (int i = 0; i < n; i++)
       {
@@ -3548,7 +3574,8 @@ namespace Seldon
     Matrix<T0, Prop0, ArrayColSymSparse, Allocator0> Ar;
     Copy(A, Ar);
 
-    T1 zero(0);    
+    typedef typename ClassComplexType<T1>::Treal Treal;
+    Treal zero(0);    
     B.Reallocate(m, n);
     for (int i = 0; i < m; i++)
       {
@@ -3601,7 +3628,8 @@ namespace Seldon
     int* ind_ = A.GetInd();
     T0* data_ = A.GetData();
     
-    T1 zero(0);
+    typedef typename ClassComplexType<T1>::Treal Treal;
+    Treal zero(0);
     B.Reallocate(m, n);
     for (int i = 0; i < n; i++)
       {
@@ -3654,7 +3682,8 @@ namespace Seldon
     int m = mat_array.GetM();
 
     // Allocation of arrays for CSR.
-    Vector<T0, VectFull, Allocator1> Val_real(nnz_real), Val_imag(nnz_imag);
+    typedef typename ClassComplexType<T1>::Treal Treal;
+    Vector<Treal, VectFull, Allocator1> Val_real(nnz_real), Val_imag(nnz_imag);
     Vector<int, VectFull, CallocAlloc<int> > IndRow_real(m + 1);
     Vector<int, VectFull, CallocAlloc<int> > IndRow_imag(m + 1);
     Vector<int, VectFull, CallocAlloc<int> > IndCol_real(nnz_real);
@@ -3705,7 +3734,8 @@ namespace Seldon
     int m = mat_array.GetM();
 
     // Allocation of arrays for CSR.
-    Vector<T0, VectFull, Allocator1> Val_real(nnz_real), Val_imag(nnz_imag);
+    typedef typename ClassComplexType<T1>::Treal Treal;
+    Vector<Treal, VectFull, Allocator1> Val_real(nnz_real), Val_imag(nnz_imag);
     Vector<int, VectFull, CallocAlloc<int> > IndRow_real(m + 1);
     Vector<int, VectFull, CallocAlloc<int> > IndRow_imag(m + 1);
     Vector<int, VectFull, CallocAlloc<int> > IndCol_real(nnz_real);
@@ -3792,7 +3822,7 @@ namespace Seldon
     int m = A.GetM();
     int n = A.GetN();
     B.Reallocate(m, n);
-    Vector<complex<T0> > value(n);
+    Vector<T0> value(n);
     Vector<int> col_num(n);
     for (int i = 0; i < m; i++)
       {
@@ -3806,21 +3836,21 @@ namespace Seldon
             while ((ji < size_imag) && (A.IndexImag(i, ji) < col))
               {
                 col_num(size_row) = A.IndexImag(i, ji);
-                value(size_row) = complex<T0>(0, A.ValueImag(i, ji));
+                value(size_row) = T0(0, A.ValueImag(i, ji));
                 ji++; size_row++;
               }
             
             if ((ji < size_imag) && (A.IndexImag(i, ji) == col))
               {
                 col_num(size_row) = col;
-                value(size_row) = complex<T0>(A.ValueReal(i, jr),
-                                              A.ValueImag(i, ji));
+                value(size_row) = T0(A.ValueReal(i, jr),
+				     A.ValueImag(i, ji));
                 ji++; size_row++;
               }
             else
               {
                 col_num(size_row) = col;
-                value(size_row) = complex<T0>(A.ValueReal(i, jr), 0);
+                value(size_row) = T0(A.ValueReal(i, jr), 0);
                 size_row++;
               }
             
@@ -3830,7 +3860,7 @@ namespace Seldon
         while (ji < size_imag)
           {
             col_num(size_row) = A.IndexImag(i, ji);
-            value(size_row) = complex<T0>(0, A.ValueImag(i, ji));
+            value(size_row) = T0(0, A.ValueImag(i, ji));
             ji++; size_row++;
           }
         
@@ -3854,7 +3884,7 @@ namespace Seldon
     int m = A.GetM();
     int n = A.GetN();
     B.Reallocate(m, n);
-    Vector<complex<T0> > value(n);
+    Vector<T0> value(n);
     Vector<int> col_num(n);
     for (int i = 0; i < m; i++)
       {
@@ -3868,21 +3898,21 @@ namespace Seldon
             while ((ji < size_imag) && (A.IndexImag(i, ji) < col))
               {
                 col_num(size_row) = A.IndexImag(i, ji);
-                value(size_row) = complex<T0>(0, A.ValueImag(i, ji));
+                value(size_row) = T0(0, A.ValueImag(i, ji));
                 ji++; size_row++;
               }
             
             if ((ji < size_imag) && (A.IndexImag(i, ji) == col))
               {
                 col_num(size_row) = col;
-                value(size_row) = complex<T0>(A.ValueReal(i, jr),
-                                              A.ValueImag(i, ji));
+                value(size_row) = T0(A.ValueReal(i, jr),
+				     A.ValueImag(i, ji));
                 ji++; size_row++;
               }
             else
               {
                 col_num(size_row) = col;
-                value(size_row) = complex<T0>(A.ValueReal(i, jr), 0);
+                value(size_row) = T0(A.ValueReal(i, jr), 0);
                 size_row++;
               }
             
@@ -3892,7 +3922,7 @@ namespace Seldon
         while (ji < size_imag)
           {
             col_num(size_row) = A.IndexImag(i, ji);
-            value(size_row) = complex<T0>(0, A.ValueImag(i, ji));
+            value(size_row) = T0(0, A.ValueImag(i, ji));
             ji++; size_row++;
           }
         
@@ -3953,17 +3983,18 @@ namespace Seldon
   void
   Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& B)
-  {    
+  {  
+    typedef typename ClassComplexType<T0>::Treal Treal;  
     int m = A.GetM();
     int n = A.GetN();
     int* ptr_real = A.GetRealPtr();
     int* ind_real = A.GetRealInd();
-    T0* data_real = A.GetRealData();
+    Treal* data_real = A.GetRealData();
     int* ptr_imag = A.GetImagPtr();
     int* ind_imag = A.GetImagInd();
-    T0* data_imag = A.GetImagData();
+    Treal* data_imag = A.GetImagData();
     B.Reallocate(m, n);
-    Vector<complex<T0> > value(n);
+    Vector<T0> value(n);
     Vector<int> col_num(n);
     for (int i = 0; i < m; i++)
       {
@@ -3975,21 +4006,21 @@ namespace Seldon
             while ((ji < ptr_imag[i+1]) && (ind_imag[ji] < col))
               {
                 col_num(size_row) = ind_imag[ji];
-                value(size_row) = complex<T0>(0, data_imag[ji]);
+                value(size_row) = T0(0, data_imag[ji]);
                 ji++; size_row++;
               }
             
             if ((ji < ptr_imag[i+1]) && (ind_imag[ji] == col))
               {
                 col_num(size_row) = col;
-                value(size_row) = complex<T0>(data_real[jr],
-                                              data_imag[ji]);
+                value(size_row) = T0(data_real[jr],
+				     data_imag[ji]);
                 ji++; size_row++;
               }
             else
               {
                 col_num(size_row) = col;
-                value(size_row) = complex<T0>(data_real[jr], 0);
+                value(size_row) = T0(data_real[jr], 0);
                 size_row++;
               }
             
@@ -3999,7 +4030,7 @@ namespace Seldon
         while (ji < ptr_imag[i+1])
           {
             col_num(size_row) = ind_imag[ji];
-            value(size_row) = complex<T0>(0, data_imag[ji]);
+            value(size_row) = T0(0, data_imag[ji]);
             ji++; size_row++;
           }
         
@@ -4019,17 +4050,18 @@ namespace Seldon
   void
   Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& B)
-  {    
+  { 
+    typedef typename ClassComplexType<T0>::Treal Treal;   
     int m = A.GetM();
     int n = A.GetN();
     int* ptr_real = A.GetRealPtr();
     int* ind_real = A.GetRealInd();
-    T0* data_real = A.GetRealData();
+    Treal* data_real = A.GetRealData();
     int* ptr_imag = A.GetImagPtr();
     int* ind_imag = A.GetImagInd();
-    T0* data_imag = A.GetImagData();
+    Treal* data_imag = A.GetImagData();
     B.Reallocate(m, n);
-    Vector<complex<T0> > value(n);
+    Vector<T0> value(n);
     Vector<int> col_num(n);
     for (int i = 0; i < m; i++)
       {
@@ -4041,21 +4073,21 @@ namespace Seldon
             while ((ji < ptr_imag[i+1]) && (ind_imag[ji] < col))
               {
                 col_num(size_row) = ind_imag[ji];
-                value(size_row) = complex<T0>(0, data_imag[ji]);
+                value(size_row) = T0(0, data_imag[ji]);
                 ji++; size_row++;
               }
             
             if ((ji < ptr_imag[i+1]) && (ind_imag[ji] == col))
               {
                 col_num(size_row) = col;
-                value(size_row) = complex<T0>(data_real[jr],
-                                              data_imag[ji]);
+                value(size_row) = T0(data_real[jr],
+				     data_imag[ji]);
                 ji++; size_row++;
               }
             else
               {
                 col_num(size_row) = col;
-                value(size_row) = complex<T0>(data_real[jr], 0);
+                value(size_row) = T0(data_real[jr], 0);
                 size_row++;
               }
             
@@ -4065,7 +4097,7 @@ namespace Seldon
         while (ji < ptr_imag[i+1])
           {
             col_num(size_row) = ind_imag[ji];
-            value(size_row) = complex<T0>(0, data_imag[ji]);
+            value(size_row) = T0(0, data_imag[ji]);
             ji++; size_row++;
           }
         

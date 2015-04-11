@@ -23,8 +23,8 @@ namespace Seldon
 {
   
   //! matrix distributed over all the processors
-  template<class T, class Prop, class Storage,
-           class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template<class T, class Prop, class Storage, class Allocator
+	   = typename SeldonDefaultAllocator<Storage, T>::allocator>
   class DistributedMatrix : public Matrix<T, Prop, Storage, Allocator>
   {
     template<class T0, class Prop0, class Storage0, class Allocator0>

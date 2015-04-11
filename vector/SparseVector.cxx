@@ -615,7 +615,7 @@ namespace Seldon
   
   // allocator for integer array in sparse vector
   template<class T, class Allocator>
-  SELDON_DEFAULT_ALLOCATOR<int>
+  typename SeldonDefaultAllocator<VectFull, int>::allocator
   Vector<T, VectSparse, Allocator>::index_allocator_;
   
   

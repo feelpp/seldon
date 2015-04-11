@@ -894,13 +894,13 @@ int main(int argc, char** argv)
   }
 
   {
-    DistributedMatrix<Real_wp, General, ArrayRowComplexSparse> A;
+    DistributedMatrix<Complex_wp, General, ArrayRowComplexSparse> A;
     
     CheckDistributedMatrix(A, true);
   }
 
   {
-    DistributedMatrix<Real_wp, Symmetric, ArrayRowSymComplexSparse> A;
+    DistributedMatrix<Complex_wp, Symmetric, ArrayRowSymComplexSparse> A;
 
     CheckDistributedMatrix(A, true);
   }
@@ -930,13 +930,13 @@ int main(int argc, char** argv)
   }
 
   {
-    DistributedMatrix<Real_wp, General, RowComplexSparse> A;
+    DistributedMatrix<Complex_wp, General, RowComplexSparse> A;
 
     CheckDistributedMatrix(A, true);
   }
 
   {
-    DistributedMatrix<Real_wp, Symmetric, RowSymComplexSparse> A;
+    DistributedMatrix<Complex_wp, Symmetric, RowSymComplexSparse> A;
 
     CheckDistributedMatrix(A, true);
   }

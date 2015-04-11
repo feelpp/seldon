@@ -69,6 +69,14 @@ namespace Seldon
     nb_threads_per_node = p;
   }
   
+
+  //! modifies the number of threads per node (for Pastix only)
+  template<class T>
+  inline int SparseDirectSolver<T>::GetNumberOfThreadPerNode() const
+  {
+    return nb_threads_per_node;
+  }
+  
   
   //! modifies the direct solver to use
   template<class T>

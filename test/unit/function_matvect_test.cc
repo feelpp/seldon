@@ -2094,42 +2094,42 @@ int main(int argc, char** argv)
   
 
   {
-    Matrix<Real_wp, General, RowComplexSparse> A;
+    Matrix<Complex_wp, General, RowComplexSparse> A;
     CheckComplexMatrix(A, non_herm, triang, false);
   }
   
   {
-    Matrix<Real_wp, General, ColComplexSparse> A;
+    Matrix<Complex_wp, General, ColComplexSparse> A;
     CheckComplexMatrix(A, non_herm, triang, false);
   }
 
   {
-    Matrix<Real_wp, Symmetric, RowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, RowSymComplexSparse> A;
     CheckComplexMatrix(A, non_herm, triang, false);
   }
 
   {
-    Matrix<Real_wp, Symmetric, ColSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ColSymComplexSparse> A;
     CheckComplexMatrix(A, non_herm, triang, false);
   }
 
   {
-    Matrix<Real_wp, General, ArrayRowComplexSparse> A;
+    Matrix<Complex_wp, General, ArrayRowComplexSparse> A;
     CheckComplexMatrix(A, non_herm, triang, false);
   }
 
   {
-    Matrix<Real_wp, General, ArrayColComplexSparse> A;
+    Matrix<Complex_wp, General, ArrayColComplexSparse> A;
     CheckComplexMatrix(A, non_herm, triang, false);
   }
 
   {
-    Matrix<Real_wp, Symmetric, ArrayRowSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ArrayRowSymComplexSparse> A;
     CheckComplexMatrix(A, non_herm, triang, false);
   }
 
   {
-    Matrix<Real_wp, Symmetric, ArrayColSymComplexSparse> A;
+    Matrix<Complex_wp, Symmetric, ArrayColSymComplexSparse> A;
     CheckComplexMatrix(A, non_herm, triang, false);
   }
   

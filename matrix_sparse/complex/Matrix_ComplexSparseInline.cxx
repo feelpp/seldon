@@ -155,10 +155,10 @@ namespace Seldon
 	    class Storage2, class Allocator2>
   inline Matrix_ComplexSparse<T, Prop, Storage, Allocator>::
   Matrix_ComplexSparse(int i, int j,
-		       Vector<T, Storage0, Allocator0>& real_values,
+		       Vector<value_type, Storage0, Allocator0>& real_values,
 		       Vector<int, Storage1, Allocator1>& real_ptr,
 		       Vector<int, Storage2, Allocator2>& real_ind,
-		       Vector<T, Storage0, Allocator0>& imag_values,
+		       Vector<value_type, Storage0, Allocator0>& imag_values,
 		       Vector<int, Storage1, Allocator1>& imag_ptr,
 		       Vector<int, Storage2, Allocator2>& imag_ind):
     Matrix_Base<T, Allocator>(i, j)
@@ -505,7 +505,7 @@ namespace Seldon
   ::GetMemorySize() const
   {
     int64_t taille = 2*this->GetRealPtrSize()*sizeof(int);
-    int coef = sizeof(T) + sizeof(int); // for each non-zero entry
+    int coef = sizeof(value_type) + sizeof(int); // for each non-zero entry
     taille += coef*int64_t(this->real_nz_ + this->imag_nz_);
     return taille;
   }
@@ -671,7 +671,8 @@ namespace Seldon
     \return The array 'real_data_' of values of the real part..
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline T* Matrix_ComplexSparse<T, Prop, Storage, Allocator>::GetRealData() const
+  inline typename Allocator::value_type*
+  Matrix_ComplexSparse<T, Prop, Storage, Allocator>::GetRealData() const
   {
     return real_data_;
   }
@@ -682,7 +683,8 @@ namespace Seldon
     \return The array 'imag_data_' of values of the imaginary part..
   */
   template <class T, class Prop, class Storage, class Allocator>
-  inline T* Matrix_ComplexSparse<T, Prop, Storage, Allocator>::GetImagData() const
+  inline typename Allocator::value_type*
+  Matrix_ComplexSparse<T, Prop, Storage, Allocator>::GetImagData() const
   {
     return imag_data_;
   }
@@ -737,16 +739,27 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
-  ::AddInteraction(int i, int j, const complex<T>& val)
+  ::AddInteraction(int i, int j, const entry_type& val)
   {
-    if (real(val) != T(0))
+    if (real(val) != value_type(0))
       GetReal(i, j) += real(val);
 
-    if (imag(val) != T(0))
+    if (imag(val) != value_type(0))
       GetImag(i, j) += imag(val);
   }
 
-  
+
+  //! Adds values to several non-zero entries on a given row
+  template <class T, class Prop, class Storage, class Allocator>
+  template<class Alloc1>
+  inline void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+  ::AddInteractionRow(int i, int nb, const Vector<int>& col,
+		      const Vector<entry_type, VectFull, Alloc1>& val)
+  {
+    throw Undefined("AddInteractionRow", "Not implemented");
+  }
+
+
   //! Sets an element (i, j) to a value
   /*! This function sets \a val to the element (\a i, \a j)
     \param[in] i row index.
@@ -755,7 +768,7 @@ namespace Seldon
   */  
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
-  ::Set(int i, int j, const complex<T>& val)
+  ::Set(int i, int j, const entry_type& val)
   {
     GetReal(i, j) = real(val);
     GetImag(i, j) = imag(val);
@@ -856,10 +869,10 @@ namespace Seldon
 	    class Storage2, class Allocator2>
   inline Matrix<T, Prop, ColComplexSparse, Allocator>::
   Matrix(int i, int j,
-	 Vector<T, Storage0, Allocator0>& real_values,
+	 Vector<value_type, Storage0, Allocator0>& real_values,
 	 Vector<int, Storage1, Allocator1>& real_ptr,
 	 Vector<int, Storage2, Allocator2>& real_ind,
-	 Vector<T, Storage0, Allocator0>& imag_values,
+	 Vector<value_type, Storage0, Allocator0>& imag_values,
 	 Vector<int, Storage1, Allocator1>& imag_ptr,
 	 Vector<int, Storage2, Allocator2>& imag_ind):
     Matrix_ComplexSparse<T, Prop, ColComplexSparse, Allocator>(i, j,
@@ -950,10 +963,10 @@ namespace Seldon
 	    class Storage2, class Allocator2>
   inline Matrix<T, Prop, RowComplexSparse, Allocator>::
   Matrix(int i, int j,
-	 Vector<T, Storage0, Allocator0>& real_values,
+	 Vector<value_type, Storage0, Allocator0>& real_values,
 	 Vector<int, Storage1, Allocator1>& real_ptr,
 	 Vector<int, Storage2, Allocator2>& real_ind,
-	 Vector<T, Storage0, Allocator0>& imag_values,
+	 Vector<value_type, Storage0, Allocator0>& imag_values,
 	 Vector<int, Storage1, Allocator1>& imag_ptr,
 	 Vector<int, Storage2, Allocator2>& imag_ind):
     Matrix_ComplexSparse<T, Prop, RowComplexSparse, Allocator>(i, j,

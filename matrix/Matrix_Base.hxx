@@ -36,7 +36,8 @@ namespace Seldon
     It stores some data and matrix dimensions. It defines basic
     methods as well.
   */
-  template <class T, class Allocator = SELDON_DEFAULT_ALLOCATOR<T> >
+  template <class T, class Allocator 
+	    = typename SeldonDefaultAllocator<VectFull, T>::allocator>
   class Matrix_Base
   {
     // typdef declarations.

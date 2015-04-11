@@ -56,10 +56,10 @@ namespace Seldon
 	    class Storage2, class Allocator2>
   void Matrix_SymComplexSparse<T, Prop, Storage, Allocator>::
   SetData(int i, int j,
-	  Vector<T, Storage0, Allocator0>& real_values,
+	  Vector<value_type, Storage0, Allocator0>& real_values,
 	  Vector<int, Storage1, Allocator1>& real_ptr,
 	  Vector<int, Storage2, Allocator2>& real_ind,
-	  Vector<T, Storage0, Allocator0>& imag_values,
+	  Vector<value_type, Storage0, Allocator0>& imag_values,
 	  Vector<int, Storage1, Allocator1>& imag_ptr,
 	  Vector<int, Storage2, Allocator2>& imag_ind)
   {
@@ -950,7 +950,7 @@ namespace Seldon
     
     if (real_nz != real_nz_)
       {
-        Vector<T, VectFull, Allocator> val;
+        Vector<value_type, VectFull, Allocator> val;
         val.SetData(real_nz_, real_data_);
         val.Resize(real_nz);
         
@@ -960,7 +960,7 @@ namespace Seldon
 
     if (imag_nz != imag_nz_)
       {
-        Vector<T, VectFull, Allocator> val;
+        Vector<value_type, VectFull, Allocator> val;
         val.SetData(imag_nz_, imag_data_);
         val.Resize(imag_nz);
         
@@ -1384,22 +1384,22 @@ namespace Seldon
 	    if (real_ind_[real_k] == l)
 	      {
 		if (imag_ind_[imag_k] == l)
-		  return complex<T>(real_data_[real_k], imag_data_[imag_k]);
+		  return entry_type(real_data_[real_k], imag_data_[imag_k]);
 		else
-		  return complex<T>(real_data_[real_k], T(0));
+		  return entry_type(real_data_[real_k], value_type(0));
 	      }
 	    else
 	      if (imag_ind_[imag_k] == l)
-		return complex<T>(T(0), imag_data_[imag_k]);
+		return entry_type(value_type(0), imag_data_[imag_k]);
 	      else
-		return complex<T>(T(0), T(0));
+		return entry_type(value_type(0), value_type(0));
 	  }
 	else
 	  {
 	    if (real_ind_[real_k] == l)
-	      return complex<T>(real_data_[real_k], T(0));
+	      return entry_type(real_data_[real_k], value_type(0));
 	    else
-	      return complex<T>(T(0), T(0));
+	      return entry_type(value_type(0), value_type(0));
 	  }
       }
     else
@@ -1411,12 +1411,12 @@ namespace Seldon
 		 (imag_k < imag_b - 1) && (imag_ind_[imag_k] < l);
 		 imag_k++);
 	    if (imag_ind_[imag_k] == l)
-	      return complex<T>(T(0), imag_data_[imag_k]);
+	      return entry_type(value_type(0), imag_data_[imag_k]);
 	    else
-	      return complex<T>(T(0), T(0));
+	      return entry_type(value_type(0), value_type(0));
 	  }
 	else
-	  return complex<T>(T(0), T(0));
+	  return entry_type(value_type(0), value_type(0));
       }
   }
 
@@ -1840,13 +1840,13 @@ namespace Seldon
 
     Clear();
 
-    Vector<T, VectFull, Allocator> real_values(nz), imag_values;
+    Vector<value_type, VectFull, Allocator> real_values(nz), imag_values;
     Vector<int, VectFull, CallocAlloc<int> > real_ptr(m + 1);
     Vector<int, VectFull, CallocAlloc<int> > real_ind(nz);
     Vector<int, VectFull, CallocAlloc<int> > imag_ptr(real_ptr);
     Vector<int, VectFull, CallocAlloc<int> > imag_ind;
     
-    real_values.Fill(T(1));
+    real_values.Fill(value_type(1));
     real_ind.Fill();
     imag_ind.Zero();
     real_ptr.Fill();
@@ -1867,7 +1867,7 @@ namespace Seldon
       this->real_data_[i] = i;
 
     for (int i = 0; i < this->imag_nz_; i++)
-      this->imag_data_[i] = T(0);
+      this->imag_data_[i] = value_type(0);
   }
 
 
@@ -1877,7 +1877,7 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
-  ::Fill(const complex<T>& x)
+  ::Fill(const entry_type& x)
   {
     for (int i = 0; i < this->real_nz_; i++)
       this->real_data_[i] = real(x);
@@ -1978,14 +1978,14 @@ namespace Seldon
     FileStream.write(reinterpret_cast<char*>(this->real_ind_),
 		     sizeof(int)*this->real_nz_);
     FileStream.write(reinterpret_cast<char*>(this->real_data_),
-		     sizeof(T)*this->real_nz_);
+		     sizeof(value_type)*this->real_nz_);
 
     FileStream.write(reinterpret_cast<char*>(this->imag_ptr_),
 		     sizeof(int)*(Storage::GetFirst(this->m_, this->n_)+1));
     FileStream.write(reinterpret_cast<char*>(this->imag_ind_),
 		     sizeof(int)*this->imag_nz_);
     FileStream.write(reinterpret_cast<char*>(this->imag_data_),
-		     sizeof(T)*this->imag_nz_);
+		     sizeof(value_type)*this->imag_nz_);
   }
   
   
@@ -2042,7 +2042,7 @@ namespace Seldon
     const Matrix<T, Prop, Storage, Allocator>& leaf_class =
       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this);
 
-    complex<T> zero; int index = 1;
+    entry_type zero; int index = 1;
     WriteCoordinateMatrix(leaf_class, FileStream, zero, index, cplx);
   }
   
@@ -2100,12 +2100,12 @@ namespace Seldon
     FileStream.read(reinterpret_cast<char*>(real_ptr_),
                     sizeof(int)*(Storage::GetFirst(m, n)+1));
     FileStream.read(reinterpret_cast<char*>(real_ind_), sizeof(int)*real_nz);
-    FileStream.read(reinterpret_cast<char*>(this->real_data_), sizeof(T)*real_nz);
+    FileStream.read(reinterpret_cast<char*>(this->real_data_), sizeof(value_type)*real_nz);
 
     FileStream.read(reinterpret_cast<char*>(imag_ptr_),
                     sizeof(int)*(Storage::GetFirst(m, n)+1));
     FileStream.read(reinterpret_cast<char*>(imag_ind_), sizeof(int)*imag_nz);
-    FileStream.read(reinterpret_cast<char*>(this->imag_data_), sizeof(T)*imag_nz);
+    FileStream.read(reinterpret_cast<char*>(this->imag_data_), sizeof(value_type)*imag_nz);
     
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.
@@ -2156,7 +2156,7 @@ namespace Seldon
     Matrix<T, Prop, Storage, Allocator>& leaf_class =
       static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
     
-    complex<T> zero; int index = 1;
+    entry_type zero; int index = 1;
     ReadCoordinateMatrix(leaf_class, FileStream, zero, index, -1, cplx);
   }
 

@@ -34,9 +34,8 @@ namespace Seldon
   T1 DotProd(const DistributedVector<T1, Allocator1>& X,
 	     const DistributedVector<T1, Allocator1>& Y)
   {
-    Vector<int64_t> xtmp;
-    T1 value, sum;
-    SetComplexZero(value); SetComplexZero(sum);
+    T1 value;
+    SetComplexZero(value);
     for (int i = 0; i < X.GetNbOverlap(); i++)
       value += X(X.GetOverlapRow(i)) * Y(Y.GetOverlapRow(i));
     
@@ -48,6 +47,8 @@ namespace Seldon
     const MPI::Comm& comm = X.GetCommunicator();
     if (comm.Get_size() > 1)
       {
+	T1 sum; SetComplexZero(sum);
+	Vector<int64_t> xtmp;
         MpiAllreduce(comm, &value, xtmp, &sum, 1, MPI::SUM);
 	return sum;
       }
@@ -66,9 +67,8 @@ namespace Seldon
   T1 DotProdConj(const DistributedVector<T1, Allocator1>& X,
 		 const DistributedVector<T1, Allocator1>& Y)
   {
-    Vector<int64_t> xtmp;
-    T1 value, sum;
-    SetComplexZero(value); SetComplexZero(sum);
+    T1 value;
+    SetComplexZero(value);
     for (int i = 0; i < X.GetNbOverlap(); i++)
       value += conjugate(X(X.GetOverlapRow(i))) * Y(Y.GetOverlapRow(i));
     
@@ -79,6 +79,8 @@ namespace Seldon
     const MPI::Comm& comm = X.GetCommunicator();
     if (comm.Get_size() > 1)
       {
+	T1 sum; SetComplexZero(sum);
+	Vector<int64_t> xtmp;
         MpiAllreduce(comm, &value, xtmp, &sum, 1, MPI::SUM);
 	return sum;
       }
