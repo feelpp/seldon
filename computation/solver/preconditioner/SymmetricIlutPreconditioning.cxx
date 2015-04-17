@@ -23,16 +23,16 @@ namespace Seldon
 {
 
   //! Incomplete Factorization without pivot for symmetric matrix.
-  template<class real, class cplx, class Allocator1, class Allocator2>
-  void GetIlut(const IlutPreconditioning<real, cplx, Allocator1>& param,
+  template<class cplx, class Allocator1, class Allocator2>
+  void GetIlut(const IlutPreconditioning<cplx, Allocator1>& param,
                Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator2>& A)
   {
     int size_row;
     int n = A.GetN();
     int lfil = param.GetFillLevel();
-    real zero = 0.0;
-    real droptol = param.GetDroppingThreshold();
-    real alpha = param.GetDiagonalCoefficient();
+    typename ClassComplexType<cplx>::Treal zero = 0.0;
+    typename ClassComplexType<cplx>::Treal droptol = param.GetDroppingThreshold();
+    typename ClassComplexType<cplx>::Treal alpha = param.GetDiagonalCoefficient();
     bool variable_fill = false;
     bool standard_dropping = true;
     int type_factorization = param.GetFactorisationType();
@@ -63,7 +63,8 @@ namespace Seldon
         return;
       }
 
-    cplx fact, s, t; real tnorm, one(1);
+    cplx fact, s, t;
+    typename ClassComplexType<cplx>::Treal tnorm, one(1);
     int length_lower, length_upper, jpos, jrow;
     int i_row, j_col, index_lu, length;
     int i, j, k;
@@ -117,7 +118,7 @@ namespace Seldon
           }
 
         // tnorm is the sum of absolute value of coefficients of row i_row
-	tnorm /= real(size_row);
+	tnorm /= typename ClassComplexType<cplx>::Treal(size_row);
 	if (variable_fill)
 	  lfil = size_row + additional_fill;
 

@@ -42,9 +42,16 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int Symmlq(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	     Preconditioner_Base<T>& M,
+	     Iteration<typename ClassComplexType<T>::Treal>& iter)
+#else
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
-  int Symmlq(Matrix1& A, Vector1& x, const Vector1& b,
+  int Symmlq(const Matrix1& A, Vector1& x, const Vector1& b,
 	     Preconditioner& M, Iteration<Titer> & iter)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -61,7 +68,8 @@ namespace Seldon
     
     Vector1 r(b), z(b), u(b), v(b), w(b), u_old(b), v_old(b), w_bar(b);
 
-    Titer np, s_prod;
+    typedef typename ClassComplexType<Complexe>::Treal Treal;
+    Treal np, s_prod;
     u_old.Fill(zero); v_old.Fill(zero); w.Fill(zero); w_bar.Fill(zero);
 
     int success_init = iter.Init(b);
@@ -71,7 +79,7 @@ namespace Seldon
     Copy(b, r);
     // r = b - A x
     if (!iter.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, r);
+      iter.MltAdd(-one, A, x, one, r);
     else
       x.Fill(zero);
 
@@ -114,7 +122,7 @@ namespace Seldon
 	  }
 
 	// product matrix vector r = A u
-	Mlt(A, u, r);
+	iter.Mlt(A, u, r);
 	alpha = DotProd(u, r);
 	// preconditioning
 	M.Solve(A, r, z);

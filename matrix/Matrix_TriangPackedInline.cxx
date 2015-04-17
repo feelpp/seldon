@@ -161,6 +161,15 @@ namespace Seldon
   }
 
 
+  //! Returns size of A in bytes used to store the matrix.
+  template <class T, class Prop, class Storage, class Allocator>
+  inline int64_t Matrix_TriangPacked<T, Prop, Storage, Allocator>::GetMemorySize() const
+  {
+    int64_t taille = int64_t(GetDataSize())*sizeof(T);
+    return taille;
+  }
+
+
   /*********************
    * MEMORY MANAGEMENT *
    *********************/

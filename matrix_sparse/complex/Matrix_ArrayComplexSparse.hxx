@@ -86,7 +86,7 @@ namespace Seldon
     the row i
   */
   template <class T, class Prop, class Storage, class Allocator>
-  class Matrix_ArrayComplexSparse
+  class Matrix_ArrayComplexSparse : public VirtualMatrix<T>
   {
     // typedef declaration.
   public:
@@ -101,10 +101,6 @@ namespace Seldon
 
     // Attributes.
   protected:
-    //! Number of rows.
-    int m_;
-    //! Number of columns.
-    int n_;
     //! real part rows or columns
     Vector<Vector<value_type, VectSparse, Allocator>, VectFull,
 	   NewAlloc<Vector<value_type, VectSparse, Allocator> > > val_real_;
@@ -127,10 +123,6 @@ namespace Seldon
     void Resize(int i, int j);
 
     // Basic methods.
-    int GetM() const;
-    int GetN() const;
-    int GetM(const SeldonTranspose& status) const;
-    int GetN(const SeldonTranspose& status) const;
     int GetRealNonZeros() const;
     int GetImagNonZeros() const;
     int GetRealDataSize() const;
@@ -205,6 +197,25 @@ namespace Seldon
     Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>& operator=
     (const complex<T0>& x);
     void FillRand();
+
+#ifdef SELDON_WITH_VIRTUAL
+    // methods used for iterative solvers
+    virtual void ApplySor(Vector<T>& x, const Vector<T>& r,
+			  const typename ClassComplexType<T>::Treal& omega,
+			  int nb_iter, int stage_ssor) const;
+
+    virtual void ApplySor(const class_SeldonTrans&, Vector<T>& x, const Vector<T>& r,
+			  const typename ClassComplexType<T>::Treal& omega,
+			  int nb_iter, int stage_ssor) const;
+    
+    virtual void MltAddVector(const T& alpha, const Vector<T>& x,
+			      const T& beta, Vector<T>& y) const;
+    
+    virtual void MltVector(const Vector<T>& x, Vector<T>& y) const;
+    
+    virtual void MltVector(const class_SeldonTrans&,
+			   const Vector<T>& x, Vector<T>& y) const;
+#endif
 
   };
 

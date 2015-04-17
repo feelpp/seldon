@@ -40,9 +40,16 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int BiCgStab(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	       Preconditioner_Base<T>& M,
+	       Iteration<typename ClassComplexType<T>::Treal>& iter)
+#else
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
-  int BiCgStab(Matrix1& A, Vector1& x, const Vector1& b,
+  int BiCgStab(const Matrix1& A, Vector1& x, const Vector1& b,
 	       Preconditioner& M, Iteration<Titer> & iter)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -64,7 +71,7 @@ namespace Seldon
     // we compute the residual r = b - Ax
     Copy(b, r);
     if (!iter.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, r);
+      iter.MltAdd(-one, A, x, one, r);
     else
       x.Fill(zero);
 
@@ -102,7 +109,7 @@ namespace Seldon
 	M.Solve(A, p, phat);
 
 	// product matrix vector  v = A*phat
-	Mlt(A, phat, v);
+	iter.Mlt(A, phat, v);
 
 	// s=r-alpha*v  where alpha = rho_i / (v,rtilde)
 	sigma = DotProdConj(rtilde, v);
@@ -128,7 +135,7 @@ namespace Seldon
 	M.Solve(A, s, shat);
 
 	// product matrix vector t = A*shat
-	Mlt(A, shat, t);
+	iter.Mlt(A, shat, t);
 
 	omega = DotProdConj(t, s) / DotProdConj(t, t);
 

@@ -386,6 +386,17 @@ namespace Seldon
   }
   
   
+  //! adds non-zero entries in a row of the matrix
+  template<class T, class Prop, class Storage, class Allocator>
+  inline void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::AddInteractionRow(int i, int num_val, const Vector<int>& col,
+		      const Vector<entry_type>& val)
+  {
+    Matrix<T, Prop, Storage, Allocator>::
+      AddInteractionRow(i, num_val, col, val);
+  }
+  
+
   //! returns the maximum number of values in dist_col to exchange
   template<class T, class Prop, class Storage, class Allocator>
   inline int DistributedMatrix<T, Prop, Storage, Allocator>

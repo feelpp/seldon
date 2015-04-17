@@ -215,6 +215,16 @@ namespace Seldon
   }
 
 
+  //! Returns size of A in bytes used to store the matrix.
+  template<class T, class Prop, class Storage, class Allocator>
+  inline int64_t Matrix_Pointers<T, Prop, Storage, Allocator>::GetMemorySize() const
+  {
+    int64_t taille = int64_t(this->GetDataSize())*sizeof(T);
+    taille += int64_t(Storage::GetFirst(this->m_, this->n_))*sizeof(pointer);
+    return taille;
+  }
+  
+
   //! Returns the pointer 'me_'.
   /*! Returns the pointer 'me_' that defines an array pointing to the first
     row or column elements, so that 'me_[1]' points to the first element of

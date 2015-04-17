@@ -72,6 +72,12 @@ namespace Seldon
     int GetM(const SeldonTranspose& status) const;
     int GetN(const SeldonTranspose& status) const;
     void Print() const;
+
+#ifdef SELDON_WITH_VIRTUAL
+    void Reallocate(int, int) {}
+    int64_t GetMemorySize() const { return 0; }
+#endif
+    
   };
 
 

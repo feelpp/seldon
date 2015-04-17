@@ -77,6 +77,8 @@ namespace Seldon
     Mat& GetPetscMatrix();
     const Mat& GetPetscMatrix() const;
 
+    int64_t GetMemorySize() const;
+    
     // Memory management.
     void Resize(int i, int j);
     void SetData(int i, int j, pointer data);

@@ -63,6 +63,7 @@ namespace Seldon
 
     // Basic methods.
     int GetDataSize() const;
+    int64_t GetMemorySize() const;
     pointer* GetMe() const;
 
     // Memory management.

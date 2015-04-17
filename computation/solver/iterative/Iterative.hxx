@@ -22,12 +22,19 @@
 namespace Seldon
 {
   //! Base class for preconditioners
+  template<class T>
   class Preconditioner_Base
   {
   public :
 
     Preconditioner_Base();
 
+#ifdef SELDON_WITH_VIRTUAL
+    virtual void Solve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>& z);
+    virtual void TransSolve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>& z);
+    
+    virtual void SetInputPreconditioning(string, const Vector<string>&);
+#else
     // solving M z = r
     template<class Matrix1, class Vector1>
     void Solve(const Matrix1& A, const Vector1 & r, Vector1 & z);
@@ -35,6 +42,7 @@ namespace Seldon
     // solving M^t z = r
     template<class Matrix1, class Vector1>
     void TransSolve(const Matrix1& A, const Vector1& r, Vector1 & z);
+#endif
 
   };
 
@@ -106,6 +114,17 @@ namespace Seldon
     Iteration& operator ++ (void);
 
     int ErrorCode();
+
+    template<class T1, class Matrix1, class Vector1>
+    void MltAdd(const T1& alpha, const Matrix1& A, const Vector1& x,
+                const T1& beta, Vector1& y);
+    
+    template<class Matrix1, class Vector1>
+    void Mlt(const Matrix1& A, const Vector1& x, Vector1& y);
+    
+    template<class Matrix1, class Vector1>
+    void Mlt(const class_SeldonTrans& trans,
+	     const Matrix1& A, const Vector1& x, Vector1& y);
 
   };
 

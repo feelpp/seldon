@@ -29,6 +29,52 @@ namespace Seldon
   Allocator Matrix_Base<T, Allocator>::allocator_;
 
 
+#ifdef SELDON_WITH_VIRTUAL
+  //! Applies S.O.R method to solve A x = r.
+  template<class T> void VirtualMatrix<T>
+  ::ApplySor(Vector<T>& x, const Vector<T>& r,
+	     const typename ClassComplexType<T>::Treal& omega,
+	     int nb_iter, int stage_ssor) const
+  {
+    throw Undefined("ApplySOR", "Not implemented");
+  }
+  
+
+  //! Applies S.O.R method to solve A x = r or A^T x = r.
+  template<class T> void VirtualMatrix<T>
+  ::ApplySor(const class_SeldonTrans&, Vector<T>& x, const Vector<T>& r,
+	     const typename ClassComplexType<T>::Treal& omega,
+	     int nb_iter, int stage_ssor) const
+  {
+    throw Undefined("ApplySOR", "Not implemented");
+  }
+
+
+  //! Computes y = beta + alpha A x.
+  template<class T> void VirtualMatrix<T>
+  ::MltAddVector(const T& alpha, const Vector<T>& x,
+		 const T& beta, Vector<T>& y) const
+  {
+    throw Undefined("MltAddVector", "Not implemented");
+  }
+
+
+  //! Computes y = A x
+  template<class T> void VirtualMatrix<T>
+  ::MltVector(const Vector<T>& x, Vector<T>& y) const
+  {
+    throw Undefined("MltVector", "Not implemented");
+  }
+  
+
+  //! Computes y = A^T x
+  template<class T> void VirtualMatrix<T>
+  ::MltVector(const class_SeldonTrans&, const Vector<T>& x, Vector<T>& y) const
+  {
+    throw Undefined("MltVector", "Not implemented");
+  }
+#endif
+
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_BASE_CXX

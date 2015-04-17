@@ -169,7 +169,7 @@ void CheckSymmetricPreconditioning(Matrix<T, Prop, Storage, Allocator>& A)
     }
 
   
-  IlutPreconditioning<Real_wp, T> ilut;
+  IlutPreconditioning<T> ilut;
   ilut.SetFactorisationType(ilut.ILUT);
   if (ilut.GetFactorisationType() != ilut.ILUT)
     {
@@ -528,7 +528,7 @@ void CheckGeneralPreconditioning(Matrix<T, Prop, Storage, Allocator>& A)
   
   
   iter.SetMaxNumberIteration(50);
-  IlutPreconditioning<Real_wp, T> ilut;
+  IlutPreconditioning<T> ilut;
   ilut.SetFactorisationType(ilut.ILUT);
   if (ilut.GetFactorisationType() != ilut.ILUT)
     {

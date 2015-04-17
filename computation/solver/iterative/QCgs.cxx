@@ -43,9 +43,16 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int QCgs(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	   Preconditioner_Base<T>& M,
+	   Iteration<typename ClassComplexType<T>::Treal>& iter)
+#else
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
-  int QCgs(Matrix1& A, Vector1& x, const Vector1& b,
+  int QCgs(const Matrix1& A, Vector1& x, const Vector1& b,
 	   Preconditioner& M, Iteration<Titer> & iter)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -68,7 +75,7 @@ namespace Seldon
     // we compute the residual r = b - Ax
     Copy(b,r);
     if (!iter.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, r);
+      iter.MltAdd(-one, A, x, one, r);
     else
       x.Fill(zero);
 
@@ -105,7 +112,7 @@ namespace Seldon
 	M.Solve(A, p, phat);
 
 	// product matrix vector vhat = A*phat
-	Mlt(A, phat, v); ++iter;
+	iter.Mlt(A, phat, v); ++iter;
 	sigma = DotProd(rtilde, v);
 	if (sigma == zero)
 	  {
@@ -124,7 +131,7 @@ namespace Seldon
 	// preconditioning phat = M^{-1} u
 	M.Solve(A, u, phat);
 	// product matrix vector q = A*phat
-	Mlt(A, phat, u);
+	iter.Mlt(A, phat, u);
 
 	// r = r - alpha u
 	Add(-alpha, u, r);

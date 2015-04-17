@@ -65,7 +65,7 @@ namespace Seldon
   void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   Resize(int i, int j)
   {
-    int n = Storage::GetFirst(this->m_, n_);
+    int n = Storage::GetFirst(this->m_, this->n_);
     int new_n = Storage::GetFirst(i, j);
     if (n != new_n)
       {

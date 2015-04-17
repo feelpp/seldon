@@ -101,6 +101,7 @@ namespace Seldon
     int GetN(int j) const;
     int GetSize() const;
     int GetDataSize() const;
+    int64_t GetMemorySize() const;
 
     // Memory management.
     void Reallocate(int i, int j);

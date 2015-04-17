@@ -145,6 +145,26 @@ namespace Seldon
     void Read(istream& FileStream);
     void ReadText(string FileName, bool cplx = false);
     void ReadText(istream& FileStream, bool cplx = false);
+
+#ifdef SELDON_WITH_VIRTUAL
+    // methods used for iterative solvers
+    virtual void ApplySor(Vector<T>& x, const Vector<T>& r,
+			  const typename ClassComplexType<T>::Treal& omega,
+			  int nb_iter, int stage_ssor) const;
+
+    virtual void ApplySor(const class_SeldonTrans&, Vector<T>& x, const Vector<T>& r,
+			  const typename ClassComplexType<T>::Treal& omega,
+			  int nb_iter, int stage_ssor) const;
+    
+    virtual void MltAddVector(const T& alpha, const Vector<T>& x,
+			      const T& beta, Vector<T>& y) const;
+    
+    virtual void MltVector(const Vector<T>& x, Vector<T>& y) const;
+    
+    virtual void MltVector(const class_SeldonTrans&,
+			   const Vector<T>& x, Vector<T>& y) const;
+#endif
+    
   };
 
 

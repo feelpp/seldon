@@ -41,9 +41,16 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] outer Iteration parameters
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int Gmres(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	    Preconditioner_Base<T>& M,
+	    Iteration<typename ClassComplexType<T>::Treal>& outer)
+#else
   template <class Titer, class MatrixSparse, class Vector1, class Preconditioner>
-  int Gmres(MatrixSparse& A, Vector1& x, const Vector1& b,
+  int Gmres(const MatrixSparse& A, Vector1& x, const Vector1& b,
 	    Preconditioner& M, Iteration<Titer> & outer)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -76,21 +83,22 @@ namespace Seldon
     for (int i = 0; i < m+1; i++)
       V[i].Fill(zero);
 
+    typedef typename ClassComplexType<Complexe>::Treal Treal;
     Vector<Complexe> rotations_sin(m+1);
     rotations_sin.Fill(zero);
-    Vector<Titer> rotations_cos(m+1);
-    rotations_cos.Fill(Titer(0));
+    Vector<Treal> rotations_cos(m+1);
+    rotations_cos.Fill(Treal(0));
 
     // we compute residual
     Copy(b, w);
     if (!outer.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, w);
+      outer.MltAdd(-one, A, x, one, w);
     else
       x.Fill(zero);
 
     // preconditioning
     M.Solve(A, w, r);
-    Titer beta = Norm2(r);
+    Treal beta = Norm2(r);
 
     // we initialize outer
     int success_init = outer.Init(r);
@@ -114,14 +122,14 @@ namespace Seldon
 
 	// we initialize the iter iteration
 	// m is the maximum number of inner iterations
-	Iteration<Titer> inner(outer);
+	Iteration<Treal> inner(outer);
 	inner.SetNumberIteration(outer.GetNumberIteration());
 	inner.SetMaxNumberIteration(outer.GetNumberIteration()+m);
 
 	do
 	  {
 	    // product matrix vector u=A*V(i)
-	    Mlt(A, V[i], u);
+	    outer.Mlt(A, V[i], u);
 
 	    // preconditioning
 	    M.Solve(A, u, w);
@@ -174,7 +182,7 @@ namespace Seldon
 
 	// we compute the new residual
 	Copy(b, w);
-	MltAdd(-one, A, x, one, w);
+	outer.MltAdd(-one, A, x, one, w);
 	M.Solve(A, w, r);
 
 	// residual norm

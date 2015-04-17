@@ -24,8 +24,8 @@
 namespace Seldon
 {
 
-  template<class real, class cplx, class Allocator>
-  IlutPreconditioning<real, cplx, Allocator>::IlutPreconditioning()
+  template<class cplx, class Allocator>
+  IlutPreconditioning<cplx, Allocator>::IlutPreconditioning()
   {
     print_level = 0;
     symmetric_algorithm = false;
@@ -39,8 +39,8 @@ namespace Seldon
   }
 
 
-  template<class real, class cplx, class Allocator>
-  void IlutPreconditioning<real, cplx, Allocator>::Clear()
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>::Clear()
   {
     permutation_row.Clear();
     mat_sym.Clear();
@@ -48,44 +48,44 @@ namespace Seldon
   }
 
 
-  template<class real, class cplx, class Allocator>
-  int IlutPreconditioning<real, cplx, Allocator>::GetFactorisationType() const
+  template<class cplx, class Allocator>
+  int IlutPreconditioning<cplx, Allocator>::GetFactorisationType() const
   {
     return type_ilu;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  int IlutPreconditioning<real, cplx, Allocator>::GetFillLevel() const
+  template<class cplx, class Allocator>
+  int IlutPreconditioning<cplx, Allocator>::GetFillLevel() const
   {
     return fill_level;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  int IlutPreconditioning<real, cplx, Allocator>::GetAdditionalFillNumber()
+  template<class cplx, class Allocator>
+  int IlutPreconditioning<cplx, Allocator>::GetAdditionalFillNumber()
     const
   {
     return additional_fill;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  int IlutPreconditioning<real, cplx, Allocator>::GetPrintLevel() const
+  template<class cplx, class Allocator>
+  int IlutPreconditioning<cplx, Allocator>::GetPrintLevel() const
   {
     return print_level;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  int IlutPreconditioning<real, cplx, Allocator>::GetPivotBlockInteger() const
+  template<class cplx, class Allocator>
+  int IlutPreconditioning<cplx, Allocator>::GetPivotBlockInteger() const
   {
     return mbloc;
   }
 
   
-  template<class real, class cplx, class Allocator>
-  int64_t IlutPreconditioning<real, cplx, Allocator>::GetMemorySize() const
+  template<class cplx, class Allocator>
+  int64_t IlutPreconditioning<cplx, Allocator>::GetMemorySize() const
   {
     int64_t taille = sizeof(int)*(permutation_row.GetM() + permutation_col.GetM());
     taille += mat_sym.GetMemorySize() + mat_unsym.GetMemorySize();
@@ -93,106 +93,108 @@ namespace Seldon
   }
   
   
-  template<class real, class cplx, class Allocator>
-  void IlutPreconditioning<real, cplx, Allocator>
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>
   ::SetFactorisationType(int type)
   {
     type_ilu = type;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  void IlutPreconditioning<real, cplx, Allocator>::SetFillLevel(int level)
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>::SetFillLevel(int level)
   {
     fill_level = level;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  void IlutPreconditioning<real, cplx, Allocator>
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>
   ::SetAdditionalFillNumber(int level)
   {
     additional_fill = level;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  void IlutPreconditioning<real, cplx, Allocator>::SetPrintLevel(int level)
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>::SetPrintLevel(int level)
   {
     print_level = level;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  void IlutPreconditioning<real, cplx, Allocator>::SetPivotBlockInteger(int i)
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>::SetPivotBlockInteger(int i)
   {
     mbloc = i;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  real IlutPreconditioning<real, cplx, Allocator>
+  template<class cplx, class Allocator>
+  typename ClassComplexType<cplx>::Treal IlutPreconditioning<cplx, Allocator>
   ::GetDroppingThreshold() const
   {
     return droptol;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  real IlutPreconditioning<real, cplx, Allocator>
+  template<class cplx, class Allocator>
+  typename ClassComplexType<cplx>::Treal IlutPreconditioning<cplx, Allocator>
   ::GetDiagonalCoefficient() const
   {
     return alpha;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  real IlutPreconditioning<real, cplx, Allocator>::GetPivotThreshold() const
+  template<class cplx, class Allocator>
+  typename ClassComplexType<cplx>::Treal IlutPreconditioning<cplx, Allocator>
+  ::GetPivotThreshold() const
   {
     return permtol;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  void IlutPreconditioning<real, cplx, Allocator>
-  ::SetDroppingThreshold(real tol)
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>
+  ::SetDroppingThreshold(typename ClassComplexType<cplx>::Treal tol)
   {
     droptol = tol;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  void IlutPreconditioning<real, cplx, Allocator>
-  ::SetDiagonalCoefficient(real beta)
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>
+  ::SetDiagonalCoefficient(typename ClassComplexType<cplx>::Treal beta)
   {
     alpha = beta;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  void IlutPreconditioning<real, cplx, Allocator>::SetPivotThreshold(real tol)
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>
+  ::SetPivotThreshold(typename ClassComplexType<cplx>::Treal tol)
   {
     permtol = tol;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  void IlutPreconditioning<real, cplx, Allocator>::SetSymmetricAlgorithm()
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>::SetSymmetricAlgorithm()
   {
     symmetric_algorithm = true;
   }
 
 
-  template<class real, class cplx, class Allocator>
-  void IlutPreconditioning<real, cplx, Allocator>::SetUnsymmetricAlgorithm()
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>::SetUnsymmetricAlgorithm()
   {
     symmetric_algorithm = false;
   }
 
 
-  template<class real, class cplx, class Allocator>
+  template<class cplx, class Allocator>
   template<class T0, class Storage0, class Allocator0>
-  void IlutPreconditioning<real, cplx, Allocator>::
+  void IlutPreconditioning<cplx, Allocator>::
   FactorizeMatrix(const IVect& perm,
                   Matrix<T0, General, Storage0, Allocator0>& mat,
                   bool keep_matrix)
@@ -207,9 +209,9 @@ namespace Seldon
   }
 
 
-  template<class real, class cplx, class Allocator>
+  template<class cplx, class Allocator>
   template<class T0, class Storage0, class Allocator0>
-  void IlutPreconditioning<real, cplx, Allocator>::
+  void IlutPreconditioning<cplx, Allocator>::
   FactorizeMatrix(const IVect& perm,
                   Matrix<T0, Symmetric, Storage0, Allocator0>& mat,
                   bool keep_matrix)
@@ -221,9 +223,9 @@ namespace Seldon
   }
 
 
-  template<class real, class cplx, class Allocator>
+  template<class cplx, class Allocator>
   template<class MatrixSparse>
-  void IlutPreconditioning<real, cplx, Allocator>::
+  void IlutPreconditioning<cplx, Allocator>::
   FactorizeSymMatrix(const IVect& perm, MatrixSparse& mat, bool keep_matrix)
   {
     IVect inv_permutation;
@@ -268,9 +270,9 @@ namespace Seldon
   }
 
 
-  template<class real, class cplx, class Allocator>
+  template<class cplx, class Allocator>
   template<class MatrixSparse>
-  void IlutPreconditioning<real, cplx, Allocator>::
+  void IlutPreconditioning<cplx, Allocator>::
   FactorizeUnsymMatrix(const IVect& perm, MatrixSparse& mat, bool keep_matrix)
   {
     IVect inv_permutation;
@@ -328,10 +330,64 @@ namespace Seldon
   }
 
 
-  template<class real, class cplx, class Allocator>
+#ifdef SELDON_WITH_VIRTUAL
+  //! Applies ilut preconditioning
+  template<class T, class Allocator>
+  void IlutPreconditioning<T, Allocator>
+  ::Solve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>& z)
+  {
+    if (symmetric_algorithm)
+      {
+	Vector<T> xtmp(z);
+        for (int i = 0; i < r.GetM(); i++)
+          xtmp(permutation_row(i)) = r(i);
+	
+        SolveLU(mat_sym, xtmp);
+	
+        for (int i = 0; i < r.GetM(); i++)
+          z(i) = xtmp(permutation_row(i));
+      }
+    else
+      {
+	Vector<T> xtmp(z);
+        for (int i = 0; i < r.GetM(); i++)
+          xtmp(permutation_row(i)) = r(i);
+
+        SolveLU(mat_unsym, xtmp);
+
+        for (int i = 0; i < r.GetM(); i++)
+          z(permutation_col(i)) = xtmp(i);
+      }
+  }
+  
+  
+  //! Applies transpose of ilut preconditioning
+  template<class T, class Allocator>
+  void IlutPreconditioning<T, Allocator>
+  ::TransSolve(const VirtualMatrix<T>& A, const Vector<T>& r, Vector<T>& z)
+  {
+    if (symmetric_algorithm)
+      Solve(A, r, z);
+    else
+      {
+	Vector<T> xtmp(z);
+        for (int i = 0; i < r.GetM(); i++)
+          xtmp(i) = r(permutation_col(i));
+
+        SolveLU(SeldonTrans, mat_unsym, xtmp);
+
+        for (int i = 0; i < r.GetM(); i++)
+          z(i) = xtmp(permutation_row(i));
+      }
+  }
+
+#else
+  
+  //! Applies ilut preconditioning
+  template<class cplx, class Allocator>
   template<class Matrix1, class Vector1>
-  void IlutPreconditioning<real, cplx, Allocator>::
-  Solve(const Matrix1& A, const Vector1& r, Vector1& z)
+  void IlutPreconditioning<cplx, Allocator>
+  ::Solve(const Matrix1& A, const Vector1& r, Vector1& z)
   {
     if (symmetric_algorithm)
       {
@@ -358,10 +414,11 @@ namespace Seldon
   }
 
 
-  template<class real, class cplx, class Allocator>
+  //! Applies transpose of ilut preconditioning
+  template<class cplx, class Allocator>
   template<class Matrix1, class Vector1>
-  void IlutPreconditioning<real, cplx, Allocator>::
-  TransSolve(const Matrix1& A, const Vector1& r, Vector1& z)
+  void IlutPreconditioning<cplx, Allocator>
+  ::TransSolve(const Matrix1& A, const Vector1& r, Vector1& z)
   {
     if (symmetric_algorithm)
       Solve(A, r, z);
@@ -377,11 +434,12 @@ namespace Seldon
           z(i) = xtmp(permutation_row(i));
       }
   }
+#endif
 
 
-  template<class real, class cplx, class Allocator>
+  template<class cplx, class Allocator>
   template<class Vector1>
-  void IlutPreconditioning<real, cplx, Allocator>::Solve(Vector1& z)
+  void IlutPreconditioning<cplx, Allocator>::Solve(Vector1& z)
   {
     if (symmetric_algorithm)
       {
@@ -408,9 +466,9 @@ namespace Seldon
   }
 
 
-  template<class real, class cplx, class Allocator>
+  template<class cplx, class Allocator>
   template<class Vector1>
-  void IlutPreconditioning<real, cplx, Allocator>::TransSolve(Vector1& z)
+  void IlutPreconditioning<cplx, Allocator>::TransSolve(Vector1& z)
   {
     if (symmetric_algorithm)
       Solve(z);
@@ -428,9 +486,9 @@ namespace Seldon
   }
 
   
-  template<class real, class cplx, class Allocator>
+  template<class cplx, class Allocator>
   template<class TransStatus, class Vector1>
-  void IlutPreconditioning<real, cplx, Allocator>
+  void IlutPreconditioning<cplx, Allocator>
   ::Solve(const TransStatus& transA, Vector1& z)
   {
     if (transA.Trans())
@@ -507,8 +565,8 @@ namespace Seldon
 
 
   //! Incomplete factorization with pivot for unsymmetric matrix.
-  template<class real, class cplx, class Allocator1, class Allocator2>
-  void GetIlut(const IlutPreconditioning<real, cplx, Allocator1>& param,
+  template<class cplx, class Allocator1, class Allocator2>
+  void GetIlut(const IlutPreconditioning<cplx, Allocator1>& param,
                Matrix<cplx, General, ArrayRowSparse, Allocator2>& A,
                IVect& iperm, IVect& rperm)
   {
@@ -516,14 +574,14 @@ namespace Seldon
     int n = A.GetN();
     int type_factorization = param.GetFactorisationType();
     int lfil = param.GetFillLevel();
-    real zero(0);
-    real droptol = param.GetDroppingThreshold();
-    real alpha = param.GetDiagonalCoefficient();
+    typename ClassComplexType<cplx>::Treal zero(0);
+    typename ClassComplexType<cplx>::Treal droptol = param.GetDroppingThreshold();
+    typename ClassComplexType<cplx>::Treal alpha = param.GetDiagonalCoefficient();
     bool variable_fill = false;
     bool standard_dropping = true;
     int additional_fill = param.GetAdditionalFillNumber();
     int mbloc = param.GetPivotBlockInteger();
-    real permtol = param.GetPivotThreshold();
+    typename ClassComplexType<cplx>::Treal permtol = param.GetPivotThreshold();
     int print_level = param.GetPrintLevel();
 
     if (type_factorization == param.ILUT)
@@ -552,7 +610,7 @@ namespace Seldon
       }
 
     cplx fact, s, t;
-    real tnorm;
+    typename ClassComplexType<cplx>::Treal tnorm;
     int length_lower, length_upper, jpos, jrow, i_row, j_col;
     int i, j, k, index_lu, length;
 
@@ -609,7 +667,7 @@ namespace Seldon
           }
 
         // tnorm is the sum of absolute value of coefficients of row i_row.
-	tnorm /= real(size_row);
+	tnorm /= typename ClassComplexType<cplx>::Treal(size_row);
 	if (variable_fill)
 	  lfil = size_row + additional_fill;
 
@@ -820,8 +878,8 @@ namespace Seldon
 
 	// Determines next pivot.
         int imax = i_row;
-        real xmax = abs(Row_Val(imax));
-        real xmax0 = xmax;
+        typename ClassComplexType<cplx>::Treal xmax = abs(Row_Val(imax));
+        typename ClassComplexType<cplx>::Treal xmax0 = xmax;
         int icut = i_row + mbloc - 1 - i_row%mbloc;
         for ( k = i_row + 1; k <= i_row + length - 1; k++)
           {
@@ -865,7 +923,8 @@ namespace Seldon
 	  Row_Val(i_row) += alpha*dropsum;
 
 	if (Row_Val(i_row) == czero)
-          Row_Val(i_row) = (droptol + real(1e-4)) * tnorm;
+          Row_Val(i_row) = (droptol + typename
+			    ClassComplexType<cplx>::Treal(1e-4)) * tnorm;
 
 	A.Value(i_row, index_diag) = cone / Row_Val(i_row);
 
@@ -1249,16 +1308,16 @@ namespace Seldon
   }
   
   
-  template<class MatrixSparse, class Treal, class T, class Alloc2>
-  void GetLU(MatrixSparse& A, IlutPreconditioning<Treal, T, Alloc2>& mat_lu,
+  template<class MatrixSparse, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, IlutPreconditioning<T, Alloc2>& mat_lu,
 	     IVect& permut, bool keep_matrix, T& x)
   {
     mat_lu.FactorizeMatrix(permut, A, keep_matrix);
   }
   
   
-  template<class MatrixSparse, class Treal, class T, class Alloc2>
-  void GetLU(MatrixSparse& A, IlutPreconditioning<Treal, T, Alloc2>& mat_lu,
+  template<class MatrixSparse, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, IlutPreconditioning<T, Alloc2>& mat_lu,
 	     IVect& permut, bool keep_matrix, complex<T>& x)
   {
     throw WrongArgument("GetLU(Matrix<complex<T> >& A, IlutPreconditioning<T>& mat_lu, bool)",
@@ -1266,8 +1325,8 @@ namespace Seldon
   }
   
   
-  template<class MatrixSparse, class Treal, class T, class Alloc2>
-  void GetLU(MatrixSparse& A, IlutPreconditioning<Treal, complex<T>, Alloc2>& mat_lu,
+  template<class MatrixSparse, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, IlutPreconditioning<complex<T>, Alloc2>& mat_lu,
 	     IVect& permut, bool keep_matrix, T& x)
   {
     throw WrongArgument("GetLU(Matrix<T>& A, IlutPreconditioning<complex<T> >& mat_lu, bool)",
@@ -1276,9 +1335,9 @@ namespace Seldon
   
   
   template<class T0, class Prop, class Storage, class Allocator,
-	   class Treal, class T, class Alloc2>
+	   class T, class Alloc2>
   void GetLU(Matrix<T0, Prop, Storage, Allocator>& A,
-	     IlutPreconditioning<Treal, T, Alloc2>& mat_lu,
+	     IlutPreconditioning<T, Alloc2>& mat_lu,
 	     IVect& permut, bool keep_matrix)
   {
     typename Matrix<T0, Prop, Storage, Allocator>::entry_type x;

@@ -38,10 +38,8 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   Matrix_ArrayComplexSparse()
-    : val_real_(), val_imag_()
+    : VirtualMatrix<T>(), val_real_(), val_imag_()
   {
-    this->m_ = 0;
-    this->n_ = 0;
   }
 
 
@@ -53,11 +51,9 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
-  Matrix_ArrayComplexSparse(int i, int j):
+  Matrix_ArrayComplexSparse(int i, int j): VirtualMatrix<T>(i, j),
     val_real_(Storage::GetFirst(i, j)), val_imag_(Storage::GetFirst(i, j))
   {
-    this->m_ = i;
-    this->n_ = j;
   }
 
 
@@ -92,62 +88,6 @@ namespace Seldon
   /*******************
    * BASIC FUNCTIONS *
    *******************/
-
-
-  //! Returns the number of rows.
-  /*!
-    \return the number of rows.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
-  ::GetM() const
-  {
-    return m_;
-  }
-
-
-  //! Returns the number of columns.
-  /*!
-    \return the number of columns.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
-  ::GetN() const
-  {
-    return n_;
-  }
-
-
-  //! Returns the number of rows of the matrix possibly transposed.
-  /*!
-    \param status assumed status about the transposition of the matrix.
-    \return The number of rows of the possibly-transposed matrix.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
-  ::GetM(const SeldonTranspose& status) const
-  {
-    if (status.NoTrans())
-      return m_;
-    else
-      return n_;
-  }
-
-
-  //! Returns the number of columns of the matrix possibly transposed.
-  /*!
-    \param status assumed status about the transposition of the matrix.
-    \return The number of columns of the possibly-transposed matrix.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
-  ::GetN(const SeldonTranspose& status) const
-  {
-    if (status.NoTrans())
-      return n_;
-    else
-      return m_;
-  }
 
 
   //! Returns the number of non-zero elements (real part).
@@ -838,8 +778,8 @@ namespace Seldon
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   SetRealData(int m, int n, Vector<value_type, VectSparse, Allocator>* val)
   {
-    m_ = m;
-    n_ = n;
+    this->m_ = m;
+    this->n_ = n;
     val_real_.SetData(Storage::GetFirst(m, n), val);
   }
 
@@ -854,8 +794,8 @@ namespace Seldon
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
   SetImagData(int m, int n, Vector<value_type, VectSparse, Allocator>* val)
   {
-    m_ = m;
-    n_ = n;
+    this->m_ = m;
+    this->n_ = n;
     val_imag_.SetData(Storage::GetFirst(m, n), val);
   }
 
@@ -868,8 +808,8 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::NullifyReal()
   {
-    m_ = 0;
-    n_ = 0;
+    this->m_ = 0;
+    this->n_ = 0;
     val_real_.Nullify();
   }
 
@@ -882,10 +822,60 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::NullifyImag()
   {
-    m_ = 0;
-    n_ = 0;
+    this->m_ = 0;
+    this->n_ = 0;
     val_imag_.Nullify();
   }
+
+
+#ifdef SELDON_WITH_VIRTUAL
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::ApplySor(Vector<T>& x, const Vector<T>& r,
+	     const typename ClassComplexType<T>::Treal& omega,
+	     int nb_iter, int stage_ssor) const
+  {
+    SOR(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	x, r, omega, nb_iter, stage_ssor);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::ApplySor(const class_SeldonTrans& trans, Vector<T>& x, const Vector<T>& r,
+	     const typename ClassComplexType<T>::Treal& omega,
+	     int nb_iter, int stage_ssor) const
+  {
+    SOR(trans,
+	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	x, r, omega, nb_iter, stage_ssor);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::MltAddVector(const T& alpha, const Vector<T>& x,
+		 const T& beta, Vector<T>& y) const
+  {
+    MltAdd(alpha,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::MltVector(const Vector<T>& x, Vector<T>& y) const
+  {
+    Mlt(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>  
+  ::MltVector(const class_SeldonTrans& trans,
+	      const Vector<T>& x, Vector<T>& y) const
+  {
+    Mlt(trans,
+	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+#endif
 
   
   ////////////////////////////////////

@@ -180,7 +180,7 @@ int main(int argc, char **argv)
     Mlt(A, x_sol, b_rhs);
     DISP(b_rhs);
     x_sol.Zero();
-    Preconditioner_Base prec;
+    Preconditioner_Base<double> prec;
 
     Iteration<double> iter(nb_max_iter, stopping_criterion);
     iter.ShowFullHistory();
@@ -224,7 +224,7 @@ int main(int argc, char **argv)
     Mlt(A, x_sol, b_rhs);
     DISP(b_rhs);
     x_sol.Zero();
-    Preconditioner_Base prec;
+    Preconditioner_Base<complex<double> > prec;
 
     Iteration<double> iter(nb_max_iter, stopping_criterion);
     iter.ShowFullHistory();
@@ -268,7 +268,7 @@ int main(int argc, char **argv)
     Mlt(A, x_sol, b_rhs);
     DISP(b_rhs);
     x_sol.Zero();
-    Preconditioner_Base prec;
+    Preconditioner_Base<double> prec;
 
     Iteration<double> iter(nb_max_iter, stopping_criterion);
     iter.ShowFullHistory();
@@ -305,7 +305,7 @@ int main(int argc, char **argv)
     Mlt(A, x_sol, b_rhs);
     DISP(b_rhs);
     x_sol.Zero();
-    Preconditioner_Base prec;
+    Preconditioner_Base<complex<double> > prec;
 
     Iteration<double> iter(nb_max_iter, stopping_criterion);
     iter.ShowFullHistory();

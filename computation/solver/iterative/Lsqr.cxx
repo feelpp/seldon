@@ -37,9 +37,16 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int Lsqr(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	   Preconditioner_Base<T>& M,
+	   Iteration<typename ClassComplexType<T>::Treal>& iter)
+#else
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
-  int Lsqr(Matrix1& A, Vector1& x, const Vector1& b,
+  int Lsqr(const Matrix1& A, Vector1& x, const Vector1& b,
 	   Preconditioner& M, Iteration<Titer> & iter)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -47,7 +54,7 @@ namespace Seldon
 
     typedef typename Vector1::value_type Complexe;
     Complexe rho, rho_bar, phi, phi_bar, theta, c, s, tmp;
-    Titer beta, alpha, rnorm;
+    typename ClassComplexType<Complexe>::Treal beta, alpha, rnorm;
     Vector1 v(b), v1(b), u(b), u1(b), w(b);
     Complexe zero, one;
     SetComplexZero(zero);
@@ -59,7 +66,7 @@ namespace Seldon
 
     Copy(b, u);
     if (!iter.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, u);
+      iter.MltAdd(-one, A, x, one, u);
     else
       x.Fill(zero);
 
@@ -69,7 +76,7 @@ namespace Seldon
     beta = Norm2(u);
     tmp = one/beta; Mlt(tmp, u);
     // matrix vector product
-    Mlt(SeldonTrans, A, u, v);
+    iter.Mlt(SeldonTrans, A, u, v);
     alpha = Norm2(v);
     tmp = one/alpha; Mlt(tmp, v);
 
@@ -82,7 +89,7 @@ namespace Seldon
     while (! iter.Finished(rnorm))
       {
 	// matrix vector product u1 = A*v
-	Mlt(A, v, u1);
+	iter.Mlt(A, v, u1);
 	// u1 = u1 - alpha*u
 	Add(-alpha, u, u1);
 	beta = Norm2(u1);
@@ -94,7 +101,7 @@ namespace Seldon
 	tmp = one/beta; Mlt(tmp, u1);
 
 	// matrix vector  product v1 = A^t u1
-	Mlt(SeldonTrans, A, u1, v1);
+	iter.Mlt(SeldonTrans, A, u1, v1);
 	// v1 = v1 - beta*v
 	Add(-beta, v, v1);
 	alpha = Norm2(v1);

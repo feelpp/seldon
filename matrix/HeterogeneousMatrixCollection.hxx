@@ -122,6 +122,7 @@ namespace Seldon
     int GetN(int j) const;
     int GetSize() const;
     int GetDataSize() const;
+    int64_t GetMemorySize() const;
     int GetType(int i, int j) const;
 
     float_dense_c& GetFloatDense();

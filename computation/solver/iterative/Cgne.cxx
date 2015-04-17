@@ -40,9 +40,16 @@ namespace Seldon
     You should avoid this function since A A^T is often bad-conditioned,
     and prefer another iterative algorithm
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int Cgne(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	   Preconditioner_Base<T>& M,
+	   Iteration<typename ClassComplexType<T>::Treal>& iter)
+#else
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
-  int Cgne(Matrix1& A, Vector1& x, const Vector1& b,
+  int Cgne(const Matrix1& A, Vector1& x, const Vector1& b,
 	   Preconditioner& M, Iteration<Titer> & iter)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -63,11 +70,11 @@ namespace Seldon
 
     // q = A^t (b - A x)
     if (!iter.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, r);
+      iter.MltAdd(-one, A, x, one, r);
     else
       x.Fill(zero);
     
-    Mlt(SeldonTrans, A, r, q);
+    iter.Mlt(SeldonTrans, A, r, q);
     Copy(q, r);
     
     // we initialize iter
@@ -100,8 +107,8 @@ namespace Seldon
 	  }
 	
 	// instead of q = A*p, we compute q = A^t A *p
-	Mlt(A, p, q);
-	Mlt(SeldonTrans, A, q, z);
+	iter.Mlt(A, p, q);
+	iter.Mlt(SeldonTrans, A, q, z);
 	
 	delta = DotProd(p, z);
 	if (delta == zero)

@@ -40,9 +40,16 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int BiCgStabl(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+		Preconditioner_Base<T>& M,
+		Iteration<typename ClassComplexType<T>::Treal>& iter)
+#else
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
-  int BiCgStabl(Matrix1& A, Vector1& x, const Vector1& b,
+  int BiCgStabl(const Matrix1& A, Vector1& x, const Vector1& b,
 		Preconditioner& M, Iteration<Titer> & iter)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -73,7 +80,7 @@ namespace Seldon
     // we compute the residual r = (b - Ax)
     Copy(b, r[0]);
     if (!iter.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, r[0]);
+      iter.MltAdd(-one, A, x, one, r[0]);
     else
       x.Fill(zero);
 
@@ -107,10 +114,12 @@ namespace Seldon
 	    rho_0 = rho_1;
 	    for (int i = 0; i <= j; i++)
 	      {
-		Mlt(-beta, u[i]); Add(one, r[i], u[i]);
+		Mlt(-beta, u[i]);
+                Add(one, r[i], u[i]);
 	      }
+            
 	    M.Solve(A, u[j], q); // preconditioning
-	    Mlt(A, q, u[j+1]); // product Matrix Vector
+            iter.Mlt(A, q, u[j+1]); // product Matrix Vector
 
 	    ++iter;
 	    sigma = DotProd(u[j+1], r0);
@@ -125,7 +134,7 @@ namespace Seldon
 	      Add(-alpha, u[i+1], r[i]);
 
 	    M.Solve(A, r[j], q); // preconditioning
-	    Mlt(A, q, r[j+1]); // product matrix vector
+	    iter.Mlt(A, q, r[j+1]); // product matrix vector
 
 	    ++iter;
 	  }

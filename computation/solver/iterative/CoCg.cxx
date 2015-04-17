@@ -41,9 +41,16 @@ namespace Seldon
     \param[in] M Left preconditioner
     \param[in] iter Iteration parameters
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int CoCg(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	   Preconditioner_Base<T>& M,
+	   Iteration<typename ClassComplexType<T>::Treal>& iter)
+#else
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
-  int CoCg(Matrix1& A, Vector1& x, const Vector1& b,
+  int CoCg(const Matrix1& A, Vector1& x, const Vector1& b,
 	   Preconditioner& M, Iteration<Titer> & iter)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -68,7 +75,7 @@ namespace Seldon
 
     Copy(b, r);
     if (!iter.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, r);
+      iter.MltAdd(-one, A, x, one, r);
     else
       x.Fill(zero);
 
@@ -97,8 +104,9 @@ namespace Seldon
 	    Mlt(beta, p);
 	    Add(one, z, p);
 	  }
+        
 	// product matrix vector
-	Mlt(A, p, q);
+	iter.Mlt(A, p, q);
 
 	delta = DotProd(p, q);
 	if (delta == zero)

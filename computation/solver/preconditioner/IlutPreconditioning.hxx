@@ -22,10 +22,9 @@
 namespace Seldon
 {
 
-  template<class real, class cplx,
-           class Allocator
-	   = typename SeldonDefaultAllocator<ArrayRowSparse, cplx>::allocator>
-  class IlutPreconditioning
+  template<class T, class Allocator
+	   = typename SeldonDefaultAllocator<ArrayRowSparse, T>::allocator>
+  class IlutPreconditioning : public Preconditioner_Base<T>
   {
   protected :
     //! Verbosity level.
@@ -45,17 +44,17 @@ namespace Seldon
     //! Size of block where the pivot is searched.
     int mbloc;
     //! Diagonal compensation parameter (alpha = 0 -> ILU, alpha = 1 -> MILU).
-    real alpha;
+    typename ClassComplexType<T>::Treal alpha;
     //! Threshold used for dropping small terms.
-    real droptol;
+    typename ClassComplexType<T>::Treal droptol;
     //! Threshold for pivoting.
-    real permtol;
+    typename ClassComplexType<T>::Treal permtol;
     //! Permutation arrays.
     IVect permutation_row, permutation_col;
     //! Symmetric matrix.
-    Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator> mat_sym;
+    Matrix<T, Symmetric, ArrayRowSymSparse, Allocator> mat_sym;
     //! Unsymmetric matrix.
-    Matrix<cplx, General, ArrayRowSparse, Allocator> mat_unsym;
+    Matrix<T, General, ArrayRowSparse, Allocator> mat_unsym;
 
   public :
 
@@ -81,13 +80,13 @@ namespace Seldon
     void SetSymmetricAlgorithm();
     void SetUnsymmetricAlgorithm();
 
-    real GetDroppingThreshold() const;
-    real GetDiagonalCoefficient() const;
-    real GetPivotThreshold() const;
+    typename ClassComplexType<T>::Treal GetDroppingThreshold() const;
+    typename ClassComplexType<T>::Treal GetDiagonalCoefficient() const;
+    typename ClassComplexType<T>::Treal GetPivotThreshold() const;
 
-    void SetDroppingThreshold(real);
-    void SetDiagonalCoefficient(real);
-    void SetPivotThreshold(real);
+    void SetDroppingThreshold(typename ClassComplexType<T>::Treal);
+    void SetDiagonalCoefficient(typename ClassComplexType<T>::Treal);
+    void SetPivotThreshold(typename ClassComplexType<T>::Treal);
 
     template<class MatrixSparse>
     void FactorizeSymMatrix(const IVect& perm,
@@ -107,11 +106,16 @@ namespace Seldon
                          Matrix<T0, Symmetric, Storage0, Allocator0>& mat,
                          bool keep_matrix = false);
 
+#ifdef SELDON_WITH_VIRTUAL
+    void Solve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>& z);
+    void TransSolve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>&);
+#else
     template<class Matrix1, class Vector1>
     void TransSolve(const Matrix1& A, const Vector1& r, Vector1& z);
 
     template<class Matrix1, class Vector1>
     void Solve(const Matrix1& A, const Vector1& r, Vector1& z);
+#endif
 
     template<class Vector1>
     void TransSolve(Vector1& z);
@@ -128,8 +132,8 @@ namespace Seldon
   void qsplit_ilut(Vector<cplx, Storage, Allocator>& a, IVect& ind, int first,
                    int n, int ncut, const real& abs_ncut);
 
-  template<class real, class cplx, class Allocator1, class Allocator2>
-  void GetIlut(const IlutPreconditioning<real, cplx, Allocator1>& param,
+  template<class cplx, class Allocator1, class Allocator2>
+  void GetIlut(const IlutPreconditioning<cplx, Allocator1>& param,
                Matrix<cplx, General, ArrayRowSparse, Allocator2>& A,
                IVect& iperm, IVect& rperm);
 
@@ -142,8 +146,8 @@ namespace Seldon
   template<class cplx, class Allocator>
   void GetMilu0(Matrix<cplx, General, ArrayRowSparse, Allocator>& A);
 
-  template<class real, class cplx, class Allocator1, class Allocator2>
-  void GetIlut(const IlutPreconditioning<real, cplx, Allocator1>& param,
+  template<class cplx, class Allocator1, class Allocator2>
+  void GetIlut(const IlutPreconditioning<cplx, Allocator1>& param,
                Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator2>& A);
   
   template<class cplx, class Allocator>
@@ -156,10 +160,23 @@ namespace Seldon
   template<class cplx, class Allocator>
   void GetMilu0(Matrix<cplx, Symmetric, ArrayRowSymSparse, Allocator>& A);
   
-  template<class T0, class Prop, class Storage, class Allocator, class Treal, class T, class Alloc2>
+  template<class MatrixSparse, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, IlutPreconditioning<T, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix, T& x);
+  
+  template<class MatrixSparse, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, IlutPreconditioning<T, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix, complex<T>& x);
+  
+  template<class MatrixSparse, class T, class Alloc2>
+  void GetLU(MatrixSparse& A, IlutPreconditioning<complex<T>, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix, T& x);
+  
+  template<class T0, class Prop, class Storage, class Allocator,
+	   class T, class Alloc2>
   void GetLU(Matrix<T0, Prop, Storage, Allocator>& A,
-	     IlutPreconditioning<Treal, T, Alloc2>& mat_lu, IVect& permut,
-	     bool keep_matrix = false);
+	     IlutPreconditioning<T, Alloc2>& mat_lu,
+	     IVect& permut, bool keep_matrix = false);
 
 }
 

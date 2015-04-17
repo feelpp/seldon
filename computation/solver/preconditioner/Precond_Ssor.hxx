@@ -23,7 +23,7 @@ namespace Seldon
 {
   
   template <class T>
-  class SorPreconditioner
+  class SorPreconditioner : public Preconditioner_Base<T>
   {
   protected :
     bool symmetric_precond; //!< true for Symmetric relaxation
@@ -40,6 +40,10 @@ namespace Seldon
     
     void SetNumberIterations(int nb_iterations);
 
+#ifdef SELDON_WITH_VIRTUAL
+    void Solve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>& z);
+    void TransSolve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>&);
+#else
     template<class Vector1, class Matrix1>
     void Solve(const Matrix1& A, const Vector1& r, Vector1& z,
 	       bool init_guess_null = true);
@@ -47,6 +51,7 @@ namespace Seldon
     template<class Vector1, class Matrix1>
     void TransSolve(const Matrix1& A, const Vector1& r, Vector1& z,
 		    bool init_guess_null = true);
+#endif
 
   };
 

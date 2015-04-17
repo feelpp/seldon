@@ -65,7 +65,35 @@ namespace Seldon
     nb_iter = nb_iterations;
   }
 
+
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T>
+  inline void SorPreconditioner<T>
+  ::Solve(const VirtualMatrix<T>& A, const Vector<T>& r, Vector<T>& z)
+  {
+    z.Fill(0);
+   
+    if (symmetric_precond)
+      A.ApplySor(z, r, omega, nb_iter, 0);
+    else
+      A.ApplySor(z, r, omega, nb_iter, 2);
   
+  }
+  
+  template<class T>
+  inline void SorPreconditioner<T>
+  ::TransSolve(const VirtualMatrix<T>& A, const Vector<T>& r, Vector<T>& z)
+  {
+    z.Fill(0);
+    
+    if (symmetric_precond)
+      A.ApplySor(SeldonTrans, z, r, omega, nb_iter, 0);
+    else
+      A.ApplySor(SeldonTrans, z, r, omega, nb_iter, 3);
+  }
+  
+#else
+
   //! Solves M z = r
   template<class T> template<class Vector1, class Matrix1>
   inline void SorPreconditioner<T>::
@@ -96,6 +124,8 @@ namespace Seldon
       SOR(SeldonTrans, A, z, r, omega, nb_iter, 3);
     
   }
+
+#endif
 
 }
 

@@ -367,6 +367,20 @@ namespace Seldon
   }
 
 
+  //! Returns size of A in bytes used to store the matrix.
+  template <class Prop0, class Storage0,
+	    class Prop1, class Storage1,
+	    template <class U> class Allocator>
+  inline int64_t 
+  HeterogeneousMatrixCollection<Prop0, Storage0, Prop1, Storage1, Allocator>
+  ::GetMemorySize() const
+  {
+    // to implement
+    return 0;
+  }
+
+
+
   //! Returns the type of a given underlying matrix.
   /*!
     Type 0 refers to a float dense matrice.

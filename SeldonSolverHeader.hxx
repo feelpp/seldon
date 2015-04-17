@@ -27,6 +27,8 @@
 #include "matrix_sparse/Relaxation_MatVect.hxx"
 #include "matrix_sparse/Functions_MatrixArray.hxx"
 
+// iterative solvers and preconditioning
+#include "computation/solver/iterative/Iterative.hxx"
 
 // interfaces with direct solvers
 #ifdef SELDON_WITH_MUMPS
@@ -49,15 +51,12 @@
 #include "computation/interfaces/direct/Pardiso.hxx"
 #endif
 
-#ifdef SELDON_WITH_PRECONDITIONING
-#include "SeldonPreconditionerHeader.hxx"
-#endif
-
 #include "computation/solver/SparseSolver.hxx"
 #include "computation/interfaces/direct/SparseDirectSolver.hxx"
 
-// iterative solvers and preconditioning
-#include "computation/solver/iterative/Iterative.hxx"
+#ifdef SELDON_WITH_PRECONDITIONING
+#include "SeldonPreconditionerHeader.hxx"
+#endif
 
 // Cholesky Solver
 #ifdef SELDON_WITH_CHOLMOD

@@ -41,9 +41,16 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int TfQmr(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	    Preconditioner_Base<T>& M,
+	    Iteration<typename ClassComplexType<T>::Treal>& iter)
+#else
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
-  int TfQmr(Matrix1& A, Vector1& x, const Vector1& b,
+  int TfQmr(const Matrix1& A, Vector1& x, const Vector1& b,
 	    Preconditioner& M, Iteration<Titer> & iter)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -54,7 +61,8 @@ namespace Seldon
 
     typedef typename Vector1::value_type Complexe;
     Complexe sigma, alpha, beta, eta, rho, rho0;
-    Titer c, kappa, tau, theta;
+    typedef typename ClassComplexType<Complexe>::Treal Treal;
+    Treal c, kappa, tau, theta;
     Complexe zero, one;
     SetComplexZero(zero);
     SetComplexOne(one);
@@ -64,7 +72,7 @@ namespace Seldon
     // 1. r0 = M^{-1} (b - A x)
     Copy(b, tmp);
     if (!iter.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, tmp);
+      iter.MltAdd(-one, A, x, one, tmp);
     else
       x.Fill(zero);
 
@@ -81,7 +89,7 @@ namespace Seldon
 
     // 3. g=v=M^{-1}Ay
     Copy(y1, v);
-    Mlt(A, v, tmp);
+    iter.Mlt(A, v, tmp);
     M.Solve(A, tmp, v);
     ++iter;
 
@@ -94,7 +102,7 @@ namespace Seldon
     tau = Norm2(r0);
 
     // 6. theta = eta = 0
-    theta = Titer(0);
+    theta = Treal(0);
     eta = zero;
 
     // 7. rtilde = r
@@ -127,7 +135,7 @@ namespace Seldon
 
 	// 12. h=M^{-1}*A*y
 	Copy(y0, h);
-	Mlt(A, h, tmp);
+	iter.Mlt(A, h, tmp);
 	M.Solve(A, tmp, h);
 	//split the loop of "for m = 2k-1, 2k"
 
@@ -146,7 +154,7 @@ namespace Seldon
 	Add(one, y1, d);
 
 	// 14. theta=||w||_2/tau0       //need check breakdown
-	if (tau == Titer(0))
+	if (tau == Treal(0))
 	  {
 	    iter.Fail(3, "Tfqmr breakdown: tau=0");
 	    break;
@@ -154,7 +162,7 @@ namespace Seldon
         theta  = Norm2(w) / tau;
 
 	// 15. c = 1/sqrt(1+theta^2)
-	c = Titer(1) / sqrt(Titer(1) + theta * theta);
+	c = Treal(1) / sqrt(Treal(1) + theta * theta);
 
 	// 16. tau = tau0*theta*c
 	tau = tau * c * theta;
@@ -165,7 +173,7 @@ namespace Seldon
 	// 19. x = x+eta*d
 	Add(eta, d, x);
 	// 20. kappa = tau*sqrt(m+1)
-	kappa = tau * sqrt( Titer(2)* (iter.GetNumberIteration()+1) );
+	kappa = tau * sqrt( Treal(2)* (iter.GetNumberIteration()+1) );
 
 	// 21. check stopping criterion
 	if ( iter.Finished(kappa) )
@@ -184,7 +192,7 @@ namespace Seldon
 	Mlt(theta * theta * eta / alpha,d);
 	Add(one, y0, d);
 	// 14. theta=||w||_2/tau0
-	if (tau == Titer(0))
+	if (tau == Treal(0))
 	  {
 	    iter.Fail(4, "Tfqmr breakdown: tau=0");
 	    break;
@@ -192,7 +200,7 @@ namespace Seldon
 	theta = Norm2(w) / tau;
 
 	// 15. c = 1/sqrt(1+theta^2)
-	c = Titer(1) / sqrt(Titer(1) + theta * theta);
+	c = Treal(1) / sqrt(Treal(1) + theta * theta);
 
 	// 16. tau = tau0*theta*c
 	tau = tau * c * theta;
@@ -204,7 +212,7 @@ namespace Seldon
 	Add(eta, d, x);
 
 	// 20. kappa = tau*sqrt(m+1)
-	kappa = tau * sqrt(Titer(2)* (iter.GetNumberIteration()+1)  + Titer(1));
+	kappa = tau * sqrt(Treal(2)* (iter.GetNumberIteration()+1)  + Treal(1));
 
 	// 21. check stopping criterion
 	if ( iter.Finished(kappa) )
@@ -230,7 +238,7 @@ namespace Seldon
 
 	// 25. g=M^{-1} A y
 	Copy(y1, g);
-	Mlt(A, g, tmp);
+	iter.Mlt(A, g, tmp);
 	M.Solve(A, tmp, g);
 
 	// 26. v = M^{-1}A y + beta*( M^{-1} A y0 + beta*v)

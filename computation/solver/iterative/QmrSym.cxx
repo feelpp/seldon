@@ -38,9 +38,16 @@ namespace Seldon
     \param[in] M Left preconditioner
     \param[in] iter Iteration parameters
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int QmrSym(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	     Preconditioner_Base<T>& M,
+	     Iteration<typename ClassComplexType<T>::Treal>& iter)
+#else
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
-  int QmrSym(Matrix1& A, Vector1& x, const Vector1& b,
+  int QmrSym(const Matrix1& A, Vector1& x, const Vector1& b,
 	     Preconditioner& M, Iteration<Titer> & iter)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -48,7 +55,8 @@ namespace Seldon
 
     typedef typename Vector1::value_type Complexe;
     Complexe delta, ep, beta;
-    Titer  rho, rho_1;
+    typedef typename ClassComplexType<Complexe>::Treal Treal;
+    Treal  rho, rho_1;
     Complexe theta_1, gamma_1;
     Complexe theta, gamma, eta;
     Complexe zero, one;
@@ -68,7 +76,7 @@ namespace Seldon
     // r = b - Ax
     Copy(b, r);
     if (!iter.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, r);
+      iter.MltAdd(-one, A, x, one, r);
     else
       x.Fill(zero);
 
@@ -82,7 +90,7 @@ namespace Seldon
     while (! iter.Finished(r))
       {
 
-	if (rho == Titer(0))
+	if (rho == Treal(0))
 	  {
 	    iter.Fail(1, "Qmr breakdown #1");
 	    break;
@@ -110,7 +118,7 @@ namespace Seldon
 	  }
 
 	// product matrix vector p_tld = A*p
-	Mlt(A, p, p_tld);
+	iter.Mlt(A, p, p_tld);
 
 	ep = DotProd(p, p_tld);
 	if (ep == zero)
@@ -139,7 +147,7 @@ namespace Seldon
 	theta = rho / (gamma_1 * beta);
 	gamma = one / sqrt(one + theta * theta);
 
-	if (gamma == Titer(0))
+	if (gamma == Treal(0))
 	  {
 	    iter.Fail(6, "Qmr breakdown #5");
 	    break;

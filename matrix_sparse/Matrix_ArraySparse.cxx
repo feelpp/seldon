@@ -40,7 +40,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Resize(int i, int j)
   {
-    int n = Storage::GetFirst(this->m_, n_);
+    int n = Storage::GetFirst(this->m_, this->n_);
     int new_n = Storage::GetFirst(i, j);
     if (n != new_n)
       {

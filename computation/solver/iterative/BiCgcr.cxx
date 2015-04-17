@@ -41,9 +41,16 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int BiCgcr(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	     Preconditioner_Base<T>& M,
+	     Iteration<typename ClassComplexType<T>::Treal>& iter)
+#else
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
-  int BiCgcr(Matrix1& A, Vector1& x, const Vector1& b,
+  int BiCgcr(const Matrix1& A, Vector1& x, const Vector1& b,
 	     Preconditioner& M, Iteration<Titer> & iter)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -67,7 +74,7 @@ namespace Seldon
     // we compute the residual v = b - Ax
     Copy(b, v);
     if (!iter.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, v);
+      iter.MltAdd(-one, A, x, one, v);
     else
       x.Fill(zero);
 
@@ -75,7 +82,7 @@ namespace Seldon
     // s = M*v   p = s
     M.Solve(A, v, s); Copy(s, p);
     // a = A*p   w = M*a
-    Mlt(A, p, a); M.Solve(A, a, w);
+    iter.Mlt(A, p, a); M.Solve(A, a, w);
     // we made one product matrix vector
     ++iter;
 
@@ -98,7 +105,7 @@ namespace Seldon
 	Add(-alpha, a, v);
 	Add(-alpha, w, s);
 
-	Mlt(A, s, z);
+	iter.Mlt(A, s, z);
 	tau = DotProd(w, z);
 
 	if (tau == zero)

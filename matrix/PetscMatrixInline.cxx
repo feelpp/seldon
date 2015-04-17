@@ -156,6 +156,15 @@ namespace Seldon
   }
 
 
+  //! Returns size of A in bytes used to store the matrix.
+  template <class T, class Prop, class Storage, class Allocator>
+  inline int64_t PetscMatrix<T, Prop, Storage, Allocator>
+  ::GetMemorySize() const
+  {
+    return 0;
+  }
+  
+
   //! Reallocates memory to resize the matrix and keeps previous entries.
   /*!
     On exit, the matrix is a i x j matrix.

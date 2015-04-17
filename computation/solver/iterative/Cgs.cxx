@@ -42,9 +42,16 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int Cgs(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	  Preconditioner_Base<T>& M,
+	  Iteration<typename ClassComplexType<T>::Treal>& iter)
+#else
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
-  int Cgs(Matrix1& A, Vector1& x, const Vector1& b,
+  int Cgs(const Matrix1& A, Vector1& x, const Vector1& b,
 	  Preconditioner& M, Iteration<Titer> & iter)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -67,7 +74,7 @@ namespace Seldon
     // we compute the initial residual r = b - Ax
     Copy(b,r);
     if (!iter.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, r);
+      iter.MltAdd(-one, A, x, one, r);
     else
       x.Fill(zero);
 
@@ -107,7 +114,7 @@ namespace Seldon
 	M.Solve(A, p, phat);
 
 	// matrix vector product vhat = A*phat
-	Mlt(A, phat, vhat); ++iter;
+	iter.Mlt(A, phat, vhat); ++iter;
 	delta = DotProd(rtilde, vhat);
 	if (delta == zero)
 	  {
@@ -124,7 +131,7 @@ namespace Seldon
 	M.Solve(A, u, uhat);
 
 	Add(alpha, uhat, x);
-	Mlt(A, uhat, qhat);
+        iter.Mlt(A, uhat, qhat);
 	Add(-alpha, qhat, r);
 
 	rho_2 = rho_1;

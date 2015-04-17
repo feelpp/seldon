@@ -21,7 +21,7 @@
 
 namespace Seldon
 {
-  
+
   //! matrix distributed over all the processors
   template<class T, class Prop, class Storage, class Allocator
 	   = typename SeldonDefaultAllocator<Storage, T>::allocator>
@@ -227,7 +227,10 @@ namespace Seldon
     
     void AddRowDistantInteraction(int iglob, int j, int proc,
                                   const entry_type& val);
-
+    
+    void AddInteractionRow(int, int, const Vector<int>&,
+			   const Vector<entry_type>&);
+    
     // functions for matrix-vector product
     int GetMaxDataSizeDistantCol() const;
     int GetMaxDataSizeDistantRow() const;

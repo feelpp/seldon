@@ -30,7 +30,73 @@
 namespace Seldon
 {
 
+  
+  //! Abstract base class for all matrices.
+  /*!
+    This class is abstract if SELDON_WITH_VIRTUAL is defined. 
+    In that case, it can be used for iterative solvers or eigenvalue
+    solvers such that a general algorithm can be written and compiled
+    with this abstract definition of a matrix.
+   */
+  template<class T>
+  class VirtualMatrix
+  {
+    // Attributes.
+  protected:
+    // Number of rows.
+    int m_;
+    // Number of columns.
+    int n_;
 
+    // Methods.
+  public:
+    // Constructors.
+    VirtualMatrix();
+    explicit VirtualMatrix(int i, int j);
+
+    // Basic methods.
+    int GetM() const;
+    int GetN() const;
+    int GetM(const Seldon::SeldonTranspose& status) const;
+    int GetN(const Seldon::SeldonTranspose& status) const;
+#ifdef SELDON_WITH_BLAS
+    int GetM(const CBLAS_TRANSPOSE& status) const;
+    int GetN(const CBLAS_TRANSPOSE& status) const;
+#endif
+    int GetSize() const;
+
+#ifdef SELDON_WITH_VIRTUAL
+    virtual ~VirtualMatrix(){}
+    
+    // basic manipulation of matrix
+    virtual void Reallocate(int, int) = 0;
+    virtual void AddInteractionRow(int, int, const Vector<int>&,
+				   const Vector<T>& val);
+    
+    virtual int64_t GetMemorySize() const = 0;
+    virtual void Clear() = 0;
+    
+    // methods used for iterative solvers
+    virtual void ApplySor(Vector<T>& x, const Vector<T>& r,
+			  const typename ClassComplexType<T>::Treal& omega,
+			  int nb_iter, int stage_ssor) const;
+
+    virtual void ApplySor(const class_SeldonTrans&, Vector<T>& x, const Vector<T>& r,
+			  const typename ClassComplexType<T>::Treal& omega,
+			  int nb_iter, int stage_ssor) const;
+    
+    virtual void MltAddVector(const T& alpha, const Vector<T>& x,
+			      const T& beta, Vector<T>& y) const;
+    
+    virtual void MltVector(const Vector<T>& x, Vector<T>& y) const;
+    
+    virtual void MltVector(const class_SeldonTrans&,
+			   const Vector<T>& x, Vector<T>& y) const;
+#endif
+    
+  };
+
+  
   //! Base class for all matrices.
   /*!
     It stores some data and matrix dimensions. It defines basic
@@ -38,7 +104,7 @@ namespace Seldon
   */
   template <class T, class Allocator 
 	    = typename SeldonDefaultAllocator<VectFull, T>::allocator>
-  class Matrix_Base
+  class Matrix_Base : public VirtualMatrix<T>
   {
     // typdef declarations.
   public:
@@ -54,10 +120,6 @@ namespace Seldon
 
     // Attributes.
   protected:
-    // Number of rows.
-    int m_;
-    // Number of columns.
-    int n_;
     // Pointer to stored elements.
     pointer data_;
 
@@ -71,16 +133,6 @@ namespace Seldon
     // Destructor.
     ~Matrix_Base();
 
-    // Basic methods.
-    int GetM() const;
-    int GetN() const;
-    int GetM(const Seldon::SeldonTranspose& status) const;
-    int GetN(const Seldon::SeldonTranspose& status) const;
-#ifdef SELDON_WITH_BLAS
-    int GetM(const CBLAS_TRANSPOSE& status) const;
-    int GetN(const CBLAS_TRANSPOSE& status) const;
-#endif
-    int GetSize() const;
     pointer GetData() const;
     const_pointer GetDataConst() const;
     void* GetDataVoid() const;

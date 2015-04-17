@@ -43,9 +43,16 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] iter Iteration parameters
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int MinRes(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	     Preconditioner_Base<T>& M,
+	     Iteration<typename ClassComplexType<T>::Treal>& iter)
+#else
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
-  int MinRes(Matrix1& A, Vector1& x, const Vector1& b,
+  int MinRes(const Matrix1& A, Vector1& x, const Vector1& b,
 	     Preconditioner& M, Iteration<Titer> & iter)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -68,7 +75,7 @@ namespace Seldon
     Copy(b,r);
     // r = b - A x
     if (!iter.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, r);
+      iter.MltAdd(-one, A, x, one, r);
     else
       x.Fill(zero);
 
@@ -85,14 +92,15 @@ namespace Seldon
     Mlt(ibeta, v); Mlt(ibeta, u);
 
     c = one; s = zero; cold = one; sold = zero;
-    Titer np = Norm2(b);
+    typedef typename ClassComplexType<Complexe>::Treal Treal;
+    Treal np = Norm2(b);
 
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
     while (!iter.Finished(np))
       {
 	// matrix-vector product r = A*u
-	Mlt(A, u, r);
+	iter.Mlt(A, u, r);
 	alpha = DotProd(r, u);
 	// preconditioning
 	M.Solve(A, r, z);

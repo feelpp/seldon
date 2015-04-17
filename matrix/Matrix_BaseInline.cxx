@@ -24,6 +24,154 @@
 namespace Seldon
 {
 
+  /*****************
+   * VirtualMatrix *
+   *****************/
+
+  
+  //! Default constructor.
+  /*!
+    On exit, the matrix is an empty 0x0 matrix.
+  */
+  template <class T>
+  inline VirtualMatrix<T>::VirtualMatrix()
+  {
+    m_ = 0;
+    n_ = 0;
+  }
+
+
+  //! Main constructor.
+  /*! Builds a i x j matrix
+    \param i number of rows.
+    \param j number of columns.
+  */
+  template <class T>
+  inline VirtualMatrix<T>::VirtualMatrix(int i, int j)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    if (i < 0 || j < 0)
+      throw WrongDim("VirtualMatrix::VirtualMatrix(int, int)",
+                     "Unable to define a matrix with size "
+                     + to_str(i) + " by " + to_str(j) + ".");
+#endif
+
+    m_ = i;
+    n_ = j;
+  }
+  
+
+  //! Returns the number of rows.
+  /*!
+    \return The number of rows.
+  */
+  template <class T>
+  inline int VirtualMatrix<T>::GetM() const
+  {
+    return m_;
+  }
+
+
+  //! Returns the number of columns.
+  /*!
+    \return The number of columns.
+  */
+  template <class T>
+  inline int VirtualMatrix<T>::GetN() const
+  {
+    return n_;
+  }
+
+
+  //! Returns the number of rows of the matrix possibly transposed.
+  /*!
+    \param status assumed status about the transposition of the matrix.
+    \return The number of rows of the possibly-transposed matrix.
+  */
+  template <class T>
+  inline int VirtualMatrix<T>::GetM(const SeldonTranspose& status) const
+  {
+    if (status.NoTrans())
+      return m_;
+    else
+      return n_;
+  }
+
+
+  //! Returns the number of columns of the matrix possibly transposed.
+  /*!
+    \param status assumed status about the transposition of the matrix.
+    \return The number of columns of the possibly-transposed matrix.
+  */
+  template <class T>
+  inline int VirtualMatrix<T>::GetN(const SeldonTranspose& status) const
+  {
+    if (status.NoTrans())
+      return n_;
+    else
+      return m_;
+  }
+
+
+#ifdef SELDON_WITH_BLAS
+  //! Returns the number of rows of the matrix possibly transposed.
+  /*!
+    \param status assumed status about the transposition of the matrix.
+    \return The number of rows of the possibly-transposed matrix.
+  */
+  template <class T>
+  inline int VirtualMatrix<T>::GetM(const CBLAS_TRANSPOSE& status) const
+  {
+    if (status == CblasNoTrans)
+      return m_;
+    else
+      return n_;
+  }
+#endif
+
+
+#ifdef SELDON_WITH_BLAS
+  //! Returns the number of columns of the matrix possibly transposed.
+  /*!
+    \param status assumed status about the transposition of the matrix.
+    \return The number of columns of the possibly-transposed matrix.
+  */
+  template <class T>
+  inline int VirtualMatrix<T>::GetN(const CBLAS_TRANSPOSE& status) const
+  {
+    if (status == CblasNoTrans)
+      return n_;
+    else
+      return m_;
+  }
+#endif
+
+
+  //! Returns the number of elements in the matrix.
+  /*!
+    Returns the number of elements in the matrix, i.e.
+    the number of rows multiplied by the number of columns.
+    \return The number of elements in the matrix.
+  */
+  template <class T>
+  inline int VirtualMatrix<T>::GetSize() const
+  {
+    return m_ * n_;
+  }
+
+
+#ifdef SELDON_WITH_VIRTUAL
+  //! Adds values to several non-zero entries of a sparse matrix.
+  template <class T>
+  inline void VirtualMatrix<T>::AddInteractionRow(int, int, const Vector<int>&,
+						  const Vector<T>& val)
+  {
+    // this method should be overloaded in sparse matrices
+    // if not overloaded, an exception is raised:
+    throw Undefined("AddInteractionRow", "Not implemented");
+  }
+#endif
+
 
   /****************
    * CONSTRUCTORS *
@@ -35,11 +183,9 @@ namespace Seldon
     On exit, the matrix is an empty 0x0 matrix.
   */
   template <class T, class Allocator>
-  inline Matrix_Base<T, Allocator>::Matrix_Base()
+  inline Matrix_Base<T, Allocator>::Matrix_Base() : VirtualMatrix<T>()
   {
-    m_ = 0;
-    n_ = 0;
-    data_ = NULL;
+    this->data_ = NULL;
   }
 
 
@@ -51,17 +197,9 @@ namespace Seldon
   */
   template <class T, class Allocator>
   inline Matrix_Base<T, Allocator>::Matrix_Base(int i, int j)
+    : VirtualMatrix<T>(i, j)
   {
-#ifdef SELDON_CHECK_DIMENSIONS
-    if (i < 0 || j < 0)
-      throw WrongDim("Matrix_Base::Matrix_Base(int, int)",
-                     "Unable to define a matrix with size "
-                     + to_str(i) + " by " + to_str(j) + ".");
-#endif
-
-    m_ = i;
-    n_ = j;
-    data_ = NULL;
+    this->data_ = NULL;
   }
 
 
@@ -74,9 +212,9 @@ namespace Seldon
   inline Matrix_Base<T, Allocator>::
   Matrix_Base(const Matrix_Base<T, Allocator>& A)
   {
-    m_ = A.GetM();
-    n_ = A.GetN();
-    data_ = NULL;
+    this->m_ = A.GetM();
+    this->n_ = A.GetN();
+    this->data_ = NULL;
   }
 
 
@@ -99,105 +237,6 @@ namespace Seldon
   /*******************
    * BASIC FUNCTIONS *
    *******************/
-
-
-  //! Returns the number of rows.
-  /*!
-    \return The number of rows.
-  */
-  template <class T, class Allocator>
-  inline int Matrix_Base<T, Allocator>::GetM() const
-  {
-    return m_;
-  }
-
-
-  //! Returns the number of columns.
-  /*!
-    \return The number of columns.
-  */
-  template <class T, class Allocator>
-  inline int Matrix_Base<T, Allocator>::GetN() const
-  {
-    return n_;
-  }
-
-
-  //! Returns the number of rows of the matrix possibly transposed.
-  /*!
-    \param status assumed status about the transposition of the matrix.
-    \return The number of rows of the possibly-transposed matrix.
-  */
-  template <class T, class Allocator>
-  inline int Matrix_Base<T, Allocator>::GetM(const SeldonTranspose& status) const
-  {
-    if (status.NoTrans())
-      return m_;
-    else
-      return n_;
-  }
-
-
-  //! Returns the number of columns of the matrix possibly transposed.
-  /*!
-    \param status assumed status about the transposition of the matrix.
-    \return The number of columns of the possibly-transposed matrix.
-  */
-  template <class T, class Allocator>
-  inline int Matrix_Base<T, Allocator>::GetN(const SeldonTranspose& status) const
-  {
-    if (status.NoTrans())
-      return n_;
-    else
-      return m_;
-  }
-
-
-#ifdef SELDON_WITH_BLAS
-  //! Returns the number of rows of the matrix possibly transposed.
-  /*!
-    \param status assumed status about the transposition of the matrix.
-    \return The number of rows of the possibly-transposed matrix.
-  */
-  template <class T, class Allocator>
-  inline int Matrix_Base<T, Allocator>::GetM(const CBLAS_TRANSPOSE& status) const
-  {
-    if (status == CblasNoTrans)
-      return m_;
-    else
-      return n_;
-  }
-#endif
-
-
-#ifdef SELDON_WITH_BLAS
-  //! Returns the number of columns of the matrix possibly transposed.
-  /*!
-    \param status assumed status about the transposition of the matrix.
-    \return The number of columns of the possibly-transposed matrix.
-  */
-  template <class T, class Allocator>
-  inline int Matrix_Base<T, Allocator>::GetN(const CBLAS_TRANSPOSE& status) const
-  {
-    if (status == CblasNoTrans)
-      return n_;
-    else
-      return m_;
-  }
-#endif
-
-
-  //! Returns the number of elements in the matrix.
-  /*!
-    Returns the number of elements in the matrix, i.e.
-    the number of rows multiplied by the number of columns.
-    \return The number of elements in the matrix.
-  */
-  template <class T, class Allocator>
-  inline int Matrix_Base<T, Allocator>::GetSize() const
-  {
-    return m_ * n_;
-  }
 
 
   //! Returns a pointer to the data array.

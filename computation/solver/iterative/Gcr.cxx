@@ -42,9 +42,16 @@ namespace Seldon
     \param[in] M Right preconditioner
     \param[in] outer Iteration parameters
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int Gcr(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	  Preconditioner_Base<T>& M,
+	  Iteration<typename ClassComplexType<T>::Treal>& outer)
+#else
   template <class Titer, class Matrix1, class Vector1, class Preconditioner>
-  int Gcr(Matrix1& A, Vector1& x, const Vector1& b,
+  int Gcr(const Matrix1& A, Vector1& x, const Vector1& b,
 	  Preconditioner& M, Iteration<Titer> & outer)
+#endif
   {
     const int N = A.GetM();
     if (N <= 0)
@@ -75,32 +82,33 @@ namespace Seldon
     // we compute initial residual
     Copy(b,u);
     if (!outer.IsInitGuess_Null())
-      MltAdd(-one, A, x, one, u);
+      outer.MltAdd(-one, A, x, one, u);
     else
       x.Fill(zero);
 
     M.Solve(A, u, r);
 
     Complexe alpha, delta;
-
-    Titer normr = Norm2(r);
+    
+    typedef typename ClassComplexType<Complexe>::Treal Treal;
+    Treal normr = Norm2(r);
     outer.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
     while (! outer.Finished(r))
       {
 	// m is the maximum number of inner iterations
-	Iteration<Titer> inner(outer);
+	Iteration<Treal> inner(outer);
 	inner.SetNumberIteration(outer.GetNumberIteration());
 	inner.SetMaxNumberIteration(outer.GetNumberIteration()+m);
 	Copy(r, p[0]);
-	Mlt(Titer(1)/normr, p[0]);
+	Mlt(Treal(1)/normr, p[0]);
 
 	int j = 0;
 
 	while (! inner.Finished(r) )
 	  {
 	    // product matrix vector u=A*p(j)
-	    Mlt(A, p[j], u);
+	    outer.Mlt(A, p[j], u);
 
 	    // preconditioning
 	    M.Solve(A, u, w[j]);
@@ -121,7 +129,7 @@ namespace Seldon
 	    ++inner;
 	    ++outer;
 	    // product Matrix vector u = A*r
-	    Mlt(A, r, u);
+	    outer.Mlt(A, r, u);
 	    M.Solve(A, u, q);
 
 	    Copy(r, p[j+1]);
