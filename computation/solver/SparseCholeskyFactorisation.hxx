@@ -47,9 +47,13 @@ namespace Seldon
     MatrixCholmod mat_chol;
 #endif
 
+#ifdef SELDON_WITH_PASTIX
+    MatrixPastix<T> mat_pastix;
+#endif
+    
   public :
     // Available solvers.
-    enum {SELDON_SOLVER, CHOLMOD};
+    enum {SELDON_SOLVER, CHOLMOD, PASTIX};
 
     SparseCholeskySolver();
 

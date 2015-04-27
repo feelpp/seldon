@@ -56,6 +56,7 @@ namespace Seldon
     
     threshold_pivot = 0.0;
     adjust_threshold_pivot = false;
+    cholesky = false;
   }
 
 
@@ -146,13 +147,15 @@ namespace Seldon
   }
 
 
+  //! selects the algorithm used for reordering
   template<class T>
   void MatrixPastix<T>::SelectOrdering(int type)
   {
     iparm[IPARM_ORDERING] = type;
   }
 
-
+  
+  //! provides a permutation array (instead of using Scotch reordering)
   template<class T>
   void MatrixPastix<T>::SetPermutation(const IVect& permut)
   {
@@ -166,6 +169,14 @@ namespace Seldon
       }
   }
 
+  
+  //! sets Cholesky factorisation
+  template<class T>
+  void MatrixPastix<T>::SetCholeskyFacto(bool chol)
+  {
+    cholesky = chol;
+  }
+  
   
   //! you can change the threshold used for static pivoting
   template<class T>
@@ -369,7 +380,11 @@ namespace Seldon
     ConvertToCSR(mat, prop, Ptr, IndRow, Val);
 
     iparm[IPARM_SYM]           = API_SYM_YES;
-    iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
+    if (cholesky)
+      iparm[IPARM_FACTORIZATION] = API_FACT_LLT;
+    else
+      iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
+    
     if (!keep_matrix)
       mat.Clear();
 
@@ -429,17 +444,30 @@ namespace Seldon
     pastix_int_t nrhs = 1;
     T* rhs_ = x.GetData();
 
-    if (TransA.Trans())
-      iparm[IPARM_TRANSPOSE_SOLVE] = API_YES;
+    if (cholesky)
+      {
+        if (TransA.Trans())
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_SOLVE_BACKWARD_ONLY;
+        else
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_SOLVE_FORWARD_ONLY;
+        
+        iparm[IPARM_END_TASK] = API_TASK_SOLVE;
+      }
     else
-      iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
+      {
+        if (TransA.Trans())
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_YES;
+        else
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
+        
+        if (refine_solution)
+          iparm[IPARM_END_TASK] = API_TASK_REFINE;
+        else
+          iparm[IPARM_END_TASK] = API_TASK_SOLVE;
+      }
     
     iparm[IPARM_START_TASK] = API_TASK_SOLVE;
-    if (refine_solution)
-      iparm[IPARM_END_TASK] = API_TASK_REFINE;
-    else
-      iparm[IPARM_END_TASK] = API_TASK_SOLVE;
-
+    
     CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
   }
 
@@ -452,28 +480,41 @@ namespace Seldon
     pastix_int_t nrhs = x.GetN();
     T* rhs_ = x.GetData();
 
-    if (TransA.Trans())
-      iparm[IPARM_TRANSPOSE_SOLVE] = API_YES;
-    else
-      iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
-    
-    iparm[IPARM_START_TASK] = API_TASK_SOLVE;
-    if (refine_solution)
-      {        
-        for (int k = 0; k < nrhs; k++)
-          {
-            iparm[IPARM_START_TASK] = API_TASK_SOLVE;
-            iparm[IPARM_END_TASK] = API_TASK_REFINE;
-            CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, &x(0, k), 1);
-          }
-        //iparm[IPARM_END_TASK] = API_TASK_REFINE;
-        //CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
+    if (cholesky)
+      {
+        if (TransA.Trans())
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_SOLVE_BACKWARD_ONLY;
+        else
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_SOLVE_FORWARD_ONLY;
+
+        iparm[IPARM_END_TASK] = API_TASK_SOLVE;
+        CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
       }
     else
       {
-        iparm[IPARM_END_TASK] = API_TASK_SOLVE;
-        CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
-      }    
+        if (TransA.Trans())
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_YES;
+        else
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
+        
+        iparm[IPARM_START_TASK] = API_TASK_SOLVE;
+        if (refine_solution)
+          {        
+            for (int k = 0; k < nrhs; k++)
+              {
+                iparm[IPARM_START_TASK] = API_TASK_SOLVE;
+                iparm[IPARM_END_TASK] = API_TASK_REFINE;
+                CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, &x(0, k), 1);
+              }
+            //iparm[IPARM_END_TASK] = API_TASK_REFINE;
+            //CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
+          }
+        else
+          {
+            iparm[IPARM_END_TASK] = API_TASK_SOLVE;
+            CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
+          }    
+      }
   }
 
 
@@ -508,7 +549,10 @@ namespace Seldon
     if (sym)
       {
         iparm[IPARM_SYM] = API_SYM_YES;
-        iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
+        if (cholesky)
+          iparm[IPARM_FACTORIZATION] = API_FACT_LLT;
+        else
+          iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
       }
     else
       {
@@ -587,16 +631,29 @@ namespace Seldon
     pastix_int_t nrhs = 1;
     T* rhs_ = x.GetData();
 
-    if (TransA.Trans())
-      iparm[IPARM_TRANSPOSE_SOLVE] = API_YES;
+    if (cholesky)
+      {
+        if (TransA.Trans())
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_SOLVE_BACKWARD_ONLY;
+        else
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_SOLVE_FORWARD_ONLY;
+
+        iparm[IPARM_END_TASK] = API_TASK_SOLVE;
+      }
     else
-      iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
+      {
+        if (TransA.Trans())
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_YES;
+        else
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
+
+        if (refine_solution)
+          iparm[IPARM_END_TASK] = API_TASK_REFINE;
+        else
+          iparm[IPARM_END_TASK] = API_TASK_SOLVE;        
+      }
     
     iparm[IPARM_START_TASK] = API_TASK_SOLVE;
-    if (refine_solution)
-      iparm[IPARM_END_TASK] = API_TASK_REFINE;
-    else
-      iparm[IPARM_END_TASK] = API_TASK_SOLVE;
 
     CallPastix(comm_facto, NULL, NULL, NULL, rhs_, nrhs);
   }
@@ -738,6 +795,37 @@ namespace Seldon
   {
     throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
 			"The result should be a complex vector");
+  }
+
+
+  template<class T, class Prop, class Storage, class Allocator>
+  void GetCholesky(Matrix<T, Prop, Storage, Allocator>& A,
+                   MatrixPastix<T>& mat_chol, bool keep_matrix)
+  {
+    mat_chol.SetCholeskyFacto(true);
+    //IVect permut(A.GetM()); permut.Fill();
+    //mat_chol.SetPermutation(permut);
+    mat_chol.FactorizeMatrix(A, keep_matrix);
+  }
+
+
+  template<class T, class Allocator, class Transpose_status>
+  void
+  SolveCholesky(const Transpose_status& TransA,
+                MatrixPastix<T>& mat_chol, Vector<T, VectFull, Allocator>& x)
+  {
+    mat_chol.Solve(TransA, x);
+  }
+
+
+  template<class T, class Allocator, class Transpose_status>
+  void
+  MltCholesky(const Transpose_status& TransA,
+              MatrixPastix<T>& mat_chol, Vector<T, VectFull, Allocator>& x)
+  {
+    cout << "Matrix-vector product y = L x not implemented in Pastix" << endl;
+    abort();
+    //mat_chol.Mlt(TransA, x);
   }
 
 } // end namespace

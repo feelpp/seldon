@@ -421,6 +421,7 @@ namespace Seldon
     
     SparseEigenProblem();
     
+    void SelectCholeskySolver(int type);
     void FactorizeCholeskyMass();
     
     template<class Storage, class Alloc>

@@ -52,6 +52,8 @@ namespace Seldon
     Vector<pastix_int_t> col_num;
     //! if true, resolution on several nodes
     bool distributed;
+    //! if true, cholesky factorisation is computed
+    bool cholesky;
     //! level of display
     int print_level;
     //! if true, solution is refined
@@ -77,7 +79,8 @@ namespace Seldon
 
     void SelectOrdering(int type);
     void SetPermutation(const IVect& permut);
-
+    void SetCholeskyFacto(bool chol);
+    
     void SetPivotThreshold(double eps);
     void RefineSolution();
     void DoNotRefineSolution();
@@ -162,6 +165,20 @@ namespace Seldon
   void SolveLU(const Transpose_status& TransA,
 	       MatrixPastix<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
 
+  template<class T, class Prop, class Storage, class Allocator>
+  void GetCholesky(Matrix<T, Prop, Storage, Allocator>& A,
+                   MatrixPastix<T>& mat_chol, bool keep_matrix);
+
+  template<class T, class Allocator, class Transpose_status>
+  void
+  SolveCholesky(const Transpose_status& TransA,
+                MatrixPastix<T>& mat_chol, Vector<T, VectFull, Allocator>& x);
+
+  template<class T, class Allocator, class Transpose_status>
+  void
+  MltCholesky(const Transpose_status& TransA,
+              MatrixPastix<T>& mat_chol, Vector<T, VectFull, Allocator>& x);
+  
 }
 
 #define SELDON_FILE_PASTIX_HXX

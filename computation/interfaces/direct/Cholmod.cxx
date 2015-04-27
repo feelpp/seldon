@@ -102,7 +102,7 @@ namespace Seldon
     A.sorted = true;
     A.packed = true;
     L = cholmod_analyze(&A, &param_chol);
-
+    
     // Cholesky factorization.
     cholmod_factorize(&A, L, &param_chol);
 

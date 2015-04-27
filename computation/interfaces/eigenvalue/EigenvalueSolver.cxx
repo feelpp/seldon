@@ -1469,6 +1469,14 @@ namespace Seldon
   }
     
   
+  //! sets Cholesky solver to use
+  template<class T, class MatStiff, class MatMass>
+  void SparseEigenProblem<T, MatStiff, MatMass>::SelectCholeskySolver(int type)
+  {
+    chol_facto_mass_matrix.SelectDirectSolver(type);
+  }
+  
+
   //! computes Cholesky factorisation of M from matrix M
   template<class T, class MatStiff, class MatMass>
   void SparseEigenProblem<T, MatStiff, MatMass>::

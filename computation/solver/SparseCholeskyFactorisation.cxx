@@ -458,6 +458,9 @@ namespace Seldon
 #ifdef SELDON_WITH_CHOLMOD
     type_solver = CHOLMOD;
 #endif
+#ifdef SELDON_WITH_PASTIX
+    type_solver = PASTIX;
+#endif
   }
   
   
@@ -469,6 +472,10 @@ namespace Seldon
     
 #ifdef SELDON_WITH_CHOLMOD
     mat_chol.HideMessages();
+#endif
+
+#ifdef SELDON_WITH_PASTIX
+    mat_pastix.HideMessages();
 #endif
     
   }
@@ -482,6 +489,10 @@ namespace Seldon
 
 #ifdef SELDON_WITH_CHOLMOD
     mat_chol.ShowMessages();
+#endif
+
+#ifdef SELDON_WITH_PASTIX
+    mat_pastix.ShowMessages();
 #endif
     
   }
@@ -497,6 +508,10 @@ namespace Seldon
     mat_chol.ShowMessages();
 #endif
     
+#ifdef SELDON_WITH_PASTIX
+    mat_pastix.ShowFullHistory();
+#endif
+
   }
     
   
@@ -512,6 +527,10 @@ namespace Seldon
 	mat_chol.Clear();
 #endif
 	
+#ifdef SELDON_WITH_PASTIX
+    mat_pastix.Clear();
+#endif
+
         mat_sym.Clear();
       }    
   }
@@ -582,10 +601,25 @@ namespace Seldon
     if (type_solver == CHOLMOD)
       {
 #ifdef SELDON_WITH_CHOLMOD
+        if (print_level >= 1)
+          cout << "Calling Cholmod to factorize the matrix" << endl;
+        
 	mat_chol.FactorizeMatrix(A, keep_matrix);
 #else
 	throw Error("SparseCholeskySolver::Factorize",
                     "Recompile with Cholmod or change solver type.");
+#endif
+      }
+    else if (type_solver == PASTIX)
+      {
+#ifdef SELDON_WITH_PASTIX
+        if (print_level >= 1)
+          cout << "Calling Pastix to factorize the matrix" << endl;
+        
+        GetCholesky(A, mat_pastix, keep_matrix);
+#else
+	throw Error("SparseCholeskySolver::Factorize",
+                    "Recompile with Pastix or change solver type.");
 #endif
       }
     else
@@ -613,8 +647,17 @@ namespace Seldon
 #ifdef SELDON_WITH_CHOLMOD
 	mat_chol.Solve(TransA, x_solution);
 #else
-	throw Error("SparseCholeskySolver::Factorize",
+	throw Error("SparseCholeskySolver::Solve",
                     "Recompile with Cholmod or change solver type.");
+#endif
+      }
+    else if (type_solver == PASTIX)
+      {
+#ifdef SELDON_WITH_PASTIX
+        SolveCholesky(TransA, mat_pastix, x_solution);
+#else
+	throw Error("SparseCholeskySolver::Solve",
+                    "Recompile with Pastix or change solver type.");
 #endif
       }
     else
@@ -649,8 +692,17 @@ namespace Seldon
 #ifdef SELDON_WITH_CHOLMOD
 	mat_chol.Mlt(TransA, x_solution);
 #else
-	throw Error("SparseCholeskySolver::Factorize",
+	throw Error("SparseCholeskySolver::Mlt",
                     "Recompile with Cholmod or change solver type.");
+#endif
+      }
+    else if (type_solver == PASTIX)
+      {
+#ifdef SELDON_WITH_PASTIX
+        MltCholesky(TransA, mat_pastix, x_solution);
+#else
+	throw Error("SparseCholeskySolver::Mlt",
+                    "Recompile with Pastix or change solver type.");
 #endif
       }
     else
