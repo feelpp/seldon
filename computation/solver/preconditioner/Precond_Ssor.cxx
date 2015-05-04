@@ -30,7 +30,15 @@ namespace Seldon
     symmetric_precond = true;
   }
 
-
+  
+  //! returns true if symmetric sor is used
+  template<class T>
+  inline bool SorPreconditioner<T>::IsSymmetric() const
+  {
+    return symmetric_precond;
+  }
+  
+  
   //! if called forward and backward sweep will be applied such that
   //! the preconditioning is symmetric
   template<class T>
@@ -69,9 +77,10 @@ namespace Seldon
 #ifdef SELDON_WITH_VIRTUAL
   template<class T>
   inline void SorPreconditioner<T>
-  ::Solve(const VirtualMatrix<T>& A, const Vector<T>& r, Vector<T>& z)
+  ::Solve(const VirtualMatrix<T>& A, const Vector<T>& r, Vector<T>& z, bool init)
   {
-    z.Fill(0);
+    if (init)
+      z.Fill(0);
    
     if (symmetric_precond)
       A.ApplySor(z, r, omega, nb_iter, 0);
@@ -82,16 +91,30 @@ namespace Seldon
   
   template<class T>
   inline void SorPreconditioner<T>
-  ::TransSolve(const VirtualMatrix<T>& A, const Vector<T>& r, Vector<T>& z)
+  ::TransSolve(const VirtualMatrix<T>& A, const Vector<T>& r, Vector<T>& z, bool init)
   {
-    z.Fill(0);
+    if (init)
+      z.Fill(0);
     
     if (symmetric_precond)
       A.ApplySor(SeldonTrans, z, r, omega, nb_iter, 0);
     else
       A.ApplySor(SeldonTrans, z, r, omega, nb_iter, 3);
   }
-  
+
+  template<class T>
+  inline void SorPreconditioner<T>
+  ::Solve(const VirtualMatrix<T>& A, const Vector<T>& r, Vector<T>& z)
+  {
+    Solve(A, r, z, true);
+  }
+
+  template<class T>
+  inline void SorPreconditioner<T>
+  ::TransSolve(const VirtualMatrix<T>& A, const Vector<T>& r, Vector<T>& z)
+  {
+    TransSolve(A, r, z, true);
+  }
 #else
 
   //! Solves M z = r

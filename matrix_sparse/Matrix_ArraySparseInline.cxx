@@ -553,6 +553,17 @@ namespace Seldon
 	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
 	   x, beta, y);
   }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>
+  ::MltAddVector(const T& alpha, const class_SeldonTrans& trans,
+		 const Vector<T>& x,
+		 const T& beta, Vector<T>& y) const
+  {
+    MltAdd(alpha, trans,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
+  }
   
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>

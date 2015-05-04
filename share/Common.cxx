@@ -244,7 +244,7 @@ namespace Seldon
   
   //! Returns true for a complex number
   template <class T>
-  inline bool IsComplexNumber(T& number)
+  inline bool IsComplexNumber(const T& number)
   {
     return false;
   }
@@ -252,7 +252,7 @@ namespace Seldon
 
   //! Returns true for a complex number
   template <class T>
-  inline bool IsComplexNumber(complex<T>& number)
+  inline bool IsComplexNumber(const complex<T>& number)
   {
     return true;
   }

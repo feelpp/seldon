@@ -160,19 +160,6 @@ namespace Seldon
   }
 
 
-#ifdef SELDON_WITH_VIRTUAL
-  //! Adds values to several non-zero entries of a sparse matrix.
-  template <class T>
-  inline void VirtualMatrix<T>::AddInteractionRow(int, int, const Vector<int>&,
-						  const Vector<T>& val)
-  {
-    // this method should be overloaded in sparse matrices
-    // if not overloaded, an exception is raised:
-    throw Undefined("AddInteractionRow", "Not implemented");
-  }
-#endif
-
-
   /****************
    * CONSTRUCTORS *
    ****************/

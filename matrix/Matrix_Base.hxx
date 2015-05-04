@@ -70,11 +70,19 @@ namespace Seldon
     
     // basic manipulation of matrix
     virtual void Reallocate(int, int) = 0;
+    virtual void AddInteraction(int, int, const T&);
     virtual void AddInteractionRow(int, int, const Vector<int>&,
 				   const Vector<T>& val);
     
+    virtual void AddDistantInteraction(int i, int jglob, int proc,
+				       const T& val);
+    
+    virtual void AddRowDistantInteraction(int iglob, int j, int proc,
+					  const T& val);
+
     virtual int64_t GetMemorySize() const = 0;
     virtual void Clear() = 0;
+    virtual void ClearRow(int i);
     
     // methods used for iterative solvers
     virtual void ApplySor(Vector<T>& x, const Vector<T>& r,
@@ -86,6 +94,10 @@ namespace Seldon
 			  int nb_iter, int stage_ssor) const;
     
     virtual void MltAddVector(const T& alpha, const Vector<T>& x,
+			      const T& beta, Vector<T>& y) const;
+
+    virtual void MltAddVector(const T& alpha, const class_SeldonTrans&,
+			      const Vector<T>& x,
 			      const T& beta, Vector<T>& y) const;
     
     virtual void MltVector(const Vector<T>& x, Vector<T>& y) const;

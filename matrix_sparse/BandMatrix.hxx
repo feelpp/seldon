@@ -32,7 +32,7 @@ namespace Seldon
   
   //! base class for a banded-matrix
   template <class T, class Prop, class Storage, class Allocator>
-  class Matrix_Band
+  class Matrix_Band : public VirtualMatrix<T>
   {
   public :
     typedef T entry_type;
@@ -43,8 +43,6 @@ namespace Seldon
     int kl_;
     //! number of extra-diagonals in upper part
     int ku_;
-    //! number of rows and columns
-    int m_, n_;
     //! values are stored in a dense matrix (in Lapack format)
     Matrix<T, General, ColMajor, Allocator> data_;
 
@@ -61,7 +59,8 @@ namespace Seldon
     void Clear();
     void Zero();
     void HideMessages();    
-    void Reallocate(int m, int n, int kl = 0, int ku = 0);
+    void Reallocate(int m, int n);
+    void Reallocate(int m, int n, int kl, int ku);
  
     T* GetData() const;
            
@@ -113,6 +112,19 @@ namespace Seldon
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
     
+#ifdef SELDON_WITH_VIRTUAL
+    void MltAddVector(const T& alpha, const Vector<T>& x,
+		      const T& beta, Vector<T>& y) const;
+    
+    void MltAddVector(const T& alpha, const class_SeldonTrans&,
+		      const Vector<T>& x, const T& beta, Vector<T>& y) const;
+    
+    void MltVector(const Vector<T>& x, Vector<T>& y) const;
+    
+    void MltVector(const class_SeldonTrans&,
+		   const Vector<T>& x, Vector<T>& y) const;
+#endif
+    
   };
 
   
@@ -150,7 +162,8 @@ namespace Seldon
     void Clear();
     void Zero();
     void HideMessages();
-    void Reallocate(int m, int n, int kl = 0, int ku = 0,
+    void Reallocate(int m, int n);
+    void Reallocate(int m, int n, int kl, int ku,
                     int nb_last_row = 0, int nb_last_col = 0);
     
     void AddInteraction(int i, int j, const T& val);
@@ -195,6 +208,19 @@ namespace Seldon
     void Write(ostream& FileStream) const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
+
+#ifdef SELDON_WITH_VIRTUAL
+    void MltAddVector(const T& alpha, const Vector<T>& x,
+		      const T& beta, Vector<T>& y) const;
+    
+    void MltAddVector(const T& alpha, const class_SeldonTrans&,
+		      const Vector<T>& x, const T& beta, Vector<T>& y) const;
+    
+    void MltVector(const Vector<T>& x, Vector<T>& y) const;
+    
+    void MltVector(const class_SeldonTrans&,
+		   const Vector<T>& x, Vector<T>& y) const;
+#endif
     
   };
 

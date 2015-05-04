@@ -211,6 +211,10 @@ namespace Seldon
     virtual void MltAddVector(const T& alpha, const Vector<T>& x,
 			      const T& beta, Vector<T>& y) const;
     
+    virtual void MltAddVector(const T& alpha, const class_SeldonTrans&,
+			      const Vector<T>& x,
+			      const T& beta, Vector<T>& y) const;
+
     virtual void MltVector(const Vector<T>& x, Vector<T>& y) const;
     
     virtual void MltVector(const class_SeldonTrans&,
@@ -258,13 +262,11 @@ namespace Seldon
 
     void AddInteraction(int i, int j, const entry_type& val);
 
-    template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<entry_type, VectFull, Alloc1>& val);
-    template<class Alloc1>
+			   const Vector<entry_type>& val);
+
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<entry_type, VectFull,
-			      Alloc1>& val);
+			      const Vector<entry_type>& val);
   };
 
 
@@ -288,6 +290,7 @@ namespace Seldon
     // Memory management.
     void ClearRealRow(int i);
     void ClearImagRow(int i);
+    void ClearRow(int i);
     void ReallocateRealRow(int i, int j);
     void ReallocateImagRow(int i, int j);
     void ResizeRealRow(int i, int j);
@@ -306,13 +309,11 @@ namespace Seldon
 
     void AddInteraction(int i, int j, const entry_type& val);
 
-    template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<entry_type, VectFull, Alloc1>& val);
-    template<class Alloc1>
+			   const Vector<entry_type>& val);
+
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<entry_type, VectFull,
-			      Alloc1>& val);
+			      const Vector<entry_type>& val);
   };
 
 
@@ -367,13 +368,10 @@ namespace Seldon
 
     void AddInteraction(int i, int j, const entry_type& val);
 
-    template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<entry_type, VectFull, Alloc1>& val);
-    template<class Alloc1>
+			   const Vector<entry_type>& val);
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<entry_type, VectFull,
-			      Alloc1>& val);
+			      const Vector<entry_type>& val);
   };
 
 
@@ -410,6 +408,7 @@ namespace Seldon
     // Memory management.
     void ClearRealRow(int i);
     void ClearImagRow(int i);
+    void ClearRow(int i);
     void ReallocateRealRow(int i, int j);
     void ReallocateImagRow(int i, int j);
     void ResizeRealRow(int i, int j);
@@ -428,13 +427,11 @@ namespace Seldon
 
     void AddInteraction(int i, int j, const entry_type& val);
 
-    template<class Alloc1>
     void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<entry_type, VectFull, Alloc1>& val);
-    template<class Alloc1>
+			   const Vector<entry_type>& val);
+    
     void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<entry_type, VectFull,
-			      Alloc1>& val);
+			      const Vector<entry_type>& val);
   };
   
 } // namespace Seldon

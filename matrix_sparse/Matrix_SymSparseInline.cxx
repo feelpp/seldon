@@ -408,10 +408,9 @@ namespace Seldon
 
   //! Adds values to several non-zero entries on a given row
   template <class T, class Prop, class Storage, class Allocator>
-  template<class Alloc1>
   inline void Matrix_SymSparse<T, Prop, Storage, Allocator>
   ::AddInteractionRow(int i, int nb, const Vector<int>& col,
-		      const Vector<T, VectFull, Alloc1>& val)
+		      const Vector<T>& val)
   {
     throw Undefined("AddInteractionRow", "Not implemented");
   }
@@ -476,6 +475,17 @@ namespace Seldon
 		 const T& beta, Vector<T>& y) const
   {
     MltAdd(alpha,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymSparse<T, Prop, Storage, Allocator>
+  ::MltAddVector(const T& alpha, const class_SeldonTrans& trans,
+		 const Vector<T>& x,
+		 const T& beta, Vector<T>& y) const
+  {
+    MltAdd(alpha, trans,
 	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
 	   x, beta, y);
   }

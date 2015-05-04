@@ -23,14 +23,20 @@
 
 namespace Seldon
 {
+
+  /***************
+   * Matrix_Band *
+   ***************/
+  
+  
   //! default constructor
   template <class T, class Prop, class Storage, class Allocator>
   Matrix_Band<T, Prop, Storage, Allocator>::Matrix_Band()
   {
     kl_ = 0;
     ku_ = 0;
-    m_ = 0;
-    n_ = 0;    
+    this->m_ = 0;
+    this->n_ = 0;    
   }
   
   
@@ -38,7 +44,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   int Matrix_Band<T, Prop, Storage, Allocator>::GetM() const
   {
-    return m_;
+    return this->m_;
   }
 
 
@@ -62,7 +68,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   int Matrix_Band<T, Prop, Storage, Allocator>::GetN() const
   {
-    return n_;
+    return this->n_;
   }
   
 
@@ -88,8 +94,8 @@ namespace Seldon
   {
     kl_ = 0;
     ku_ = 0;
-    m_ = 0;
-    n_ = 0;
+    this->m_ = 0;
+    this->n_ = 0;
     data_.Clear();
   }
   
@@ -114,14 +120,23 @@ namespace Seldon
   void Matrix_Band<T, Prop, Storage, Allocator>
   ::Reallocate(int m, int n, int kl, int ku)
   {
-    m_ = m;
-    n_ = n;
+    this->m_ = m;
+    this->n_ = n;
     kl_ = kl;
     ku_ = ku;
-    data_.Reallocate(2*kl_+ku_+1, n_);
+    data_.Reallocate(2*kl_+ku_+1, this->n_);
     data_.Fill(0);
   }
   
+
+  //! changes the size of the matrix, previous entries are lost
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Band<T, Prop, Storage, Allocator>
+  ::Reallocate(int m, int n)
+  {
+    Reallocate(m, n, 0, 0);
+  }
+
   
   //! returns a pointer to the array containing values
   template <class T, class Prop, class Storage, class Allocator>
@@ -266,7 +281,7 @@ namespace Seldon
     SetComplexOne(one);
     
     data_.Fill(zero);
-    for (int i = 0; i < n_; i++)
+    for (int i = 0; i < this->n_; i++)
       data_(kl_+ku_, i) = one;
   }
   
@@ -279,7 +294,7 @@ namespace Seldon
     data_.Fill(x);
 
     T zero; SetComplexZero(zero);
-    for (int i = 0; i < n_; i++)
+    for (int i = 0; i < this->n_; i++)
       for (int j = 0; j < kl_; j++)
 	data_(j, i) = zero;
   }
@@ -292,7 +307,7 @@ namespace Seldon
     data_.FillRand();
 
     T zero; SetComplexZero(zero);
-    for (int i = 0; i < n_; i++)
+    for (int i = 0; i < this->n_; i++)
       for (int j = 0; j < kl_; j++)
 	data_(j, i) = zero;
   }
@@ -337,15 +352,15 @@ namespace Seldon
     int d = kl_ + ku_;
     T pivot, one;
     SetComplexOne(one);
-    for (int j = 0; j < n_; j++)
+    for (int j = 0; j < this->n_; j++)
       {
         // replacing diagonal element by its inverse
         data_(d, j) = one/data_(d, j);
-        for (int p = 1; p <= min(m_ - 1 - j, kl_); p++)
+        for (int p = 1; p <= min(this->m_ - 1 - j, kl_); p++)
           {
             pivot = data_(d+p, j)*data_(d, j);
             data_(d+p, j) = pivot;
-            for (int k = 1; k <= min(n_ - 1 - j, ku_); k++)
+            for (int k = 1; k <= min(this->n_ - 1 - j, ku_); k++)
               data_(d+p-k, j+k) -= pivot*data_(d-k, j+k);
           }
       }
@@ -356,16 +371,16 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Band<T, Prop, Storage, Allocator>::Factorize(IVect& ipivot)
   {
-    ipivot.Reallocate(m_);
+    ipivot.Reallocate(this->m_);
     // position of the main diagonal
     int d = kl_ + ku_;
     T pivot, one, tmp;
     typename ClassComplexType<T>::Treal amax;
     SetComplexOne(one);
-    for (int j = 0; j < n_; j++)
+    for (int j = 0; j < this->n_; j++)
       {
 	// searching pivot
-	int pmin = min(m_ - 1 - j, kl_);
+	int pmin = min(this->m_ - 1 - j, kl_);
 	amax = abs(data_(d, j));
 	int p0 = 0;
 	for (int p = 1; p <= pmin; p++)
@@ -379,7 +394,7 @@ namespace Seldon
 	if (p0 > 0)
 	  {
 	    // interchanging row j and j + p0
-	    for (int j2 = j; j2 <= min(m_-1, kl_ + ku_ + j); j2++)
+	    for (int j2 = j; j2 <= min(this->m_-1, kl_ + ku_ + j); j2++)
 	      {
 		int k = kl_ + ku_ + j - j2;
 		tmp = data_(k, j2);
@@ -397,7 +412,7 @@ namespace Seldon
 	    pivot = data_(d+p, j)*data_(d, j);
             data_(d+p, j) = pivot;
 	    
-            for (int k = 1; k <= min(n_ - 1 - j, kl_ + ku_); k++)
+            for (int k = 1; k <= min(this->n_ - 1 - j, kl_ + ku_); k++)
 	      data_(d+p-k, j+k) -= pivot*data_(d-k, j+k);
 	  }
       }
@@ -412,7 +427,7 @@ namespace Seldon
     int kl = A.GetKL();
     int ku = A.GetKU();
     for (int i = 0; i < A.GetM(); i++)
-      for (int k = max(-i, -kl); k <= min(ku, n_-1-i); k++)
+      for (int k = max(-i, -kl); k <= min(ku, this->n_-1-i); k++)
         {
           int j = i + k;
           AddInteraction(i, j, alpha*A(i, j));
@@ -433,7 +448,7 @@ namespace Seldon
         for (int j = 0; j < GetN(); j++)
           {
             int kmin = max(kl_, d - j), row;
-            int kmax = min(kl_ + d, m_ -1 + d - j);
+            int kmax = min(kl_ + d, this->m_ -1 + d - j);
             val = alpha*x(j);
             for (int k = kmin; k <= kmax; k++)
               {
@@ -447,7 +462,7 @@ namespace Seldon
         for (int j = 0; j < GetN(); j++)
           {
             int kmin = max(kl_, d - j), row;
-            int kmax = min(kl_ + d, m_ -1 + d - j);
+            int kmax = min(kl_ + d, this->m_ -1 + d - j);
             val = T1(0);
             for (int k = kmin; k <= kmax; k++)
               {
@@ -463,7 +478,7 @@ namespace Seldon
         for (int j = 0; j < GetN(); j++)
           {
             int kmin = max(kl_, d - j), row;
-            int kmax = min(kl_ + d, m_ -1 + d - j);
+            int kmax = min(kl_ + d, this->m_ -1 + d - j);
             val = T1(0);
             for (int k = kmin; k <= kmax; k++)
               {
@@ -484,12 +499,12 @@ namespace Seldon
   {
     int d = kl_ + ku_;
     // resolution of L y = x
-    for (int j = 0; j < n_; j++)
-      for (int p = 1; p <= min(m_ - 1 - j, kl_); p++)
+    for (int j = 0; j < this->n_; j++)
+      for (int p = 1; p <= min(this->m_ - 1 - j, kl_); p++)
         x(j+p) -= data_(d+p, j)*x(j);
     
     // resolution of U x = y
-    for (int j = n_-1; j >= 0; j--)
+    for (int j = this->n_-1; j >= 0; j--)
       {        
         x(j) *= data_(d, j);
         for (int p = 1; p <= min(j, ku_); p++)
@@ -507,7 +522,7 @@ namespace Seldon
     int d = kl_ + ku_;
     T1 tmp;
     // resolution of L y = x
-    for (int j = 0; j < n_; j++)
+    for (int j = 0; j < this->n_; j++)
       {
 	// applying row interchange if needed
 	if (ipivot(j) != j)
@@ -517,12 +532,12 @@ namespace Seldon
 	    x(ipivot(j)) = tmp;
 	  }
 	
-	for (int p = 1; p <= min(m_ - 1 - j, kl_); p++)
+	for (int p = 1; p <= min(this->m_ - 1 - j, kl_); p++)
 	  x(j+p) -= data_(d+p, j)*x(j);
       }
     
     // resolution of U x = y
-    for (int j = n_-1; j >= 0; j--)
+    for (int j = this->n_-1; j >= 0; j--)
       {        
         x(j) *= data_(d, j);
         for (int p = 1; p <= min(j, kl_+ku_); p++)
@@ -602,7 +617,7 @@ namespace Seldon
       {
         int kmin = max(kl_, d - j);
 	//int kmin = max(0, d-j);
-        int kmax = min(kl_ + d, m_ -1 + d - j);
+        int kmax = min(kl_ + d, this->m_ -1 + d - j);
         for (int k = kmin; k <= kmax; k++)
           {
             int row = j + k - d;
@@ -613,6 +628,63 @@ namespace Seldon
   }
   
   
+#ifdef SELDON_WITH_VIRTUAL
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Band<T, Prop, Storage, Allocator>
+  ::MltAddVector(const T& alpha, const Vector<T>& x,
+		 const T& beta, Vector<T>& y) const
+  {
+    T zero; SetComplexZero(zero);
+    if (beta == zero)
+      y.Fill(zero);
+    else
+      Mlt(beta, y);
+    
+    this->MltAdd(alpha, SeldonNoTrans, x, y);
+  }
+    
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Band<T, Prop, Storage, Allocator>
+  ::MltAddVector(const T& alpha, const class_SeldonTrans&,
+		 const Vector<T>& x, const T& beta, Vector<T>& y) const
+  {
+    T zero; SetComplexZero(zero);
+    if (beta == zero)
+      y.Fill(zero);
+    else
+      Mlt(beta, y);
+    
+    this->MltAdd(alpha, SeldonTrans, x, y);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Band<T, Prop, Storage, Allocator>
+  ::MltVector(const Vector<T>& x, Vector<T>& y) const
+  {
+    T zero, one;
+    SetComplexZero(zero); SetComplexOne(one);
+    y.Fill(zero);
+    this->MltAdd(one, SeldonNoTrans, x, y);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Band<T, Prop, Storage, Allocator>
+  ::MltVector(const class_SeldonTrans&,
+	      const Vector<T>& x, Vector<T>& y) const
+  {
+    T zero, one;
+    SetComplexZero(zero); SetComplexOne(one);
+    y.Fill(zero);
+    this->MltAdd(one, SeldonTrans, x, y);
+  }
+#endif
+
+  
+  /****************
+   * Matrix_Arrow *
+   ****************/
+  
+
   //! default constructor
   template <class T, class Prop, class Storage, class Allocator>
   Matrix_Arrow<T, Prop, Storage, Allocator>::Matrix_Arrow()
@@ -712,6 +784,14 @@ namespace Seldon
     last_rows_.Reallocate(nb_last_row, n-nb_last_col);
     last_columns_.Reallocate(m-nb_last_row, nb_last_col);
     last_block_.Reallocate(nb_last_row, nb_last_col);
+  }
+
+
+  //! changes the size of the matrix
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Arrow<T, Prop, Storage, Allocator>::Reallocate(int m, int n)
+  {
+    Reallocate(m, n, 0, 0);
   }
   
   
@@ -1329,6 +1409,63 @@ namespace Seldon
 		     << " " << last_block_(i, j) << '\n';
       }
   }
+
+
+#ifdef SELDON_WITH_VIRTUAL
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Arrow<T, Prop, Storage, Allocator>
+  ::MltAddVector(const T& alpha, const Vector<T>& x,
+		 const T& beta, Vector<T>& y) const
+  {
+    T zero; SetComplexZero(zero);
+    if (beta == zero)
+      y.Fill(zero);
+    else
+      Mlt(beta, y);
+    
+    this->MltAdd(alpha, SeldonNoTrans, x, y);
+  }
+    
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Arrow<T, Prop, Storage, Allocator>
+  ::MltAddVector(const T& alpha, const class_SeldonTrans&,
+		 const Vector<T>& x, const T& beta, Vector<T>& y) const
+  {
+    T zero; SetComplexZero(zero);
+    if (beta == zero)
+      y.Fill(zero);
+    else
+      Mlt(beta, y);
+    
+    this->MltAdd(alpha, SeldonTrans, x, y);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Arrow<T, Prop, Storage, Allocator>
+  ::MltVector(const Vector<T>& x, Vector<T>& y) const
+  {
+    T zero, one;
+    SetComplexZero(zero); SetComplexOne(one);
+    y.Fill(zero);
+    this->MltAdd(one, SeldonNoTrans, x, y);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Arrow<T, Prop, Storage, Allocator>
+  ::MltVector(const class_SeldonTrans&,
+	      const Vector<T>& x, Vector<T>& y) const
+  {
+    T zero, one;
+    SetComplexZero(zero); SetComplexOne(one);
+    y.Fill(zero);
+    this->MltAdd(one, SeldonTrans, x, y);
+  }
+#endif
+
+  
+  /*************
+   * Functions *
+   *************/
 
 
   //! LU factorisation

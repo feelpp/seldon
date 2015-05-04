@@ -32,7 +32,8 @@ namespace Seldon
 
   public :
     SorPreconditioner();
-
+    
+    bool IsSymmetric() const;
     void InitSymmetricPreconditioning();
     void InitUnSymmetricPreconditioning();
     
@@ -43,6 +44,9 @@ namespace Seldon
 #ifdef SELDON_WITH_VIRTUAL
     void Solve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>& z);
     void TransSolve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>&);
+
+    void Solve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>& z, bool init);
+    void TransSolve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>&, bool init);
 #else
     template<class Vector1, class Matrix1>
     void Solve(const Matrix1& A, const Vector1& r, Vector1& z,

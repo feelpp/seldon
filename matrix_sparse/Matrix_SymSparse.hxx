@@ -116,9 +116,8 @@ namespace Seldon
     void Set(int i, int j, const T& x);
     void AddInteraction(int i, int j, const T& x);
 
-    template<class Alloc1>
     void AddInteractionRow(int i, int nb, const Vector<int>& col,
-			   const Vector<T, VectFull, Alloc1>& val);
+			   const Vector<T>& val);
 
     Matrix_SymSparse<T, Prop, Storage, Allocator>&
     operator= (const Matrix_SymSparse<T, Prop, Storage, Allocator>& A);
@@ -152,6 +151,10 @@ namespace Seldon
 			  int nb_iter, int stage_ssor) const;
     
     virtual void MltAddVector(const T& alpha, const Vector<T>& x,
+			      const T& beta, Vector<T>& y) const;
+
+    virtual void MltAddVector(const T& alpha, const class_SeldonTrans&,
+			      const Vector<T>& x,
 			      const T& beta, Vector<T>& y) const;
     
     virtual void MltVector(const Vector<T>& x, Vector<T>& y) const;

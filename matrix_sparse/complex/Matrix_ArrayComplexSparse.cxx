@@ -492,10 +492,10 @@ namespace Seldon
     \param[in] col column numbers of coefficients.
     \param[in] val values of coefficients.
   */
-  template <class T, class Prop, class Allocator> template <class Alloc1>
+  template <class T, class Prop, class Allocator>
   void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<entry_type, VectFull, Alloc1>& val)
+		    const Vector<entry_type>& val)
   {
     for (int j = 0; j < nb; j++)
       AddInteraction(i, col(j), val(j));
@@ -509,10 +509,10 @@ namespace Seldon
     \param[in] row row numbers of coefficients.
     \param[in] val values of coefficients.
   */
-  template <class T, class Prop, class Allocator> template <class Alloc1>
+  template <class T, class Prop, class Allocator>
   void Matrix<T, Prop, ArrayColComplexSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<entry_type, VectFull, Alloc1>& val)
+		       const Vector<entry_type>& val)
   {
     int nb_real = 0;
     int nb_imag = 0;
@@ -552,10 +552,10 @@ namespace Seldon
     \param[in] col column numbers of coefficients.
     \param[in] val values of coefficients.
   */
-  template <class T, class Prop, class Allocator> template <class Alloc1>
+  template <class T, class Prop, class Allocator>
   void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<entry_type, VectFull, Alloc1>& val)
+		    const Vector<entry_type>& val)
   {
     if (nb <= 0)
       return;
@@ -593,10 +593,10 @@ namespace Seldon
     \param[in] row row numbers of coefficients.
     \param[in] val values of coefficients.
   */
-  template <class T, class Prop, class Allocator> template <class Alloc1>
+  template <class T, class Prop, class Allocator>
   void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<entry_type, VectFull, Alloc1>& val)
+		       const Vector<entry_type>& val)
   {
     for (int j = 0; j < nb; j++)
       AddInteraction(row(j), i, val(j));
@@ -615,10 +615,10 @@ namespace Seldon
     \param[in] col column numbers of coefficients.
     \param[in] val values of coefficients.
   */
-  template <class T, class Prop, class Allocator> template <class Alloc1>
+  template <class T, class Prop, class Allocator>
   void Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<entry_type, VectFull, Alloc1>& val)
+		    const Vector<entry_type>& val)
   {
     for (int j = 0; j < nb; j++)
       AddInteraction(i, col(j), val(j));
@@ -632,10 +632,10 @@ namespace Seldon
     \param[in] row row numbers of coefficients.
     \param[in] val values of coefficients.
   */
-  template <class T, class Prop, class Allocator> template <class Alloc1>
+  template <class T, class Prop, class Allocator>
   void Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<entry_type, VectFull, Alloc1>& val)
+		       const Vector<entry_type>& val)
   {
     int nb_real = 0;
     int nb_imag = 0;
@@ -676,10 +676,10 @@ namespace Seldon
     \param[in] col column numbers of coefficients.
     \param[in] val values of coefficients.
   */
-  template <class T, class Prop, class Allocator> template <class Alloc1>
+  template <class T, class Prop, class Allocator>
   void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::
   AddInteractionRow(int i, int nb, const IVect& col,
-		    const Vector<entry_type, VectFull, Alloc1>& val)
+		    const Vector<entry_type>& val)
   {
     int nb_real = 0;
     int nb_imag = 0;
@@ -715,10 +715,10 @@ namespace Seldon
     \param[in] row row numbers of coefficients.
     \param[in] val values of coefficients.
   */
-  template <class T, class Prop, class Allocator> template <class Alloc1>
+  template <class T, class Prop, class Allocator>
   void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::
   AddInteractionColumn(int i, int nb, const IVect& row,
-		       const Vector<entry_type, VectFull, Alloc1>& val)
+		       const Vector<entry_type>& val)
   {
     for (int j = 0; j < nb; j++)
       AddInteraction(row(j), i, val(j));

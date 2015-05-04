@@ -423,6 +423,58 @@ namespace Seldon
     return local_number_distant_values;
   }
 
+
+#ifdef SELDON_WITH_VIRTUAL
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::ApplySor(Vector<T>& x, const Vector<T>& r,
+	     const typename ClassComplexType<T>::Treal& omega,
+	     int nb_iter, int stage_ssor) const
+  {
+    SOR(*this, x, r, omega, nb_iter, stage_ssor);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::ApplySor(const class_SeldonTrans& trans, Vector<T>& x, const Vector<T>& r,
+	     const typename ClassComplexType<T>::Treal& omega,
+	     int nb_iter, int stage_ssor) const
+  {
+    SOR(trans,*this, x, r, omega, nb_iter, stage_ssor);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::MltAddVector(const T& alpha, const Vector<T>& x,
+		 const T& beta, Vector<T>& y) const
+  {
+    MltAdd(alpha,*this, x, beta, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::MltAddVector(const T& alpha, const class_SeldonTrans& trans,
+		 const Vector<T>& x,
+		 const T& beta, Vector<T>& y) const
+  {
+    MltAdd(alpha, trans, *this, x, beta, y);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::MltVector(const Vector<T>& x, Vector<T>& y) const
+  {
+    Mlt(*this, x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void DistributedMatrix<T, Prop, Storage, Allocator>  
+  ::MltVector(const class_SeldonTrans& trans,
+	      const Vector<T>& x, Vector<T>& y) const
+  {
+    Mlt(trans,*this, x, y);
+  }
+#endif
   
 }
 

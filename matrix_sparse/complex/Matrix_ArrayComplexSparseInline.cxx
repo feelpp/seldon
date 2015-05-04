@@ -859,6 +859,17 @@ namespace Seldon
 	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
 	   x, beta, y);
   }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
+  ::MltAddVector(const T& alpha, const class_SeldonTrans& trans,
+		 const Vector<T>& x,
+		 const T& beta, Vector<T>& y) const
+  {
+    MltAdd(alpha, trans,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
+  }
   
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
@@ -1167,6 +1178,16 @@ namespace Seldon
   ::ClearImagRow(int i)
   {
     this->val_imag_(i).Clear();
+  }
+
+
+  //! Clears a row
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowComplexSparse, Allocator>
+  ::ClearRow(int i)
+  {
+    ClearRealRow(i);
+    ClearImagRow(i);
   }
 
 
@@ -2293,6 +2314,16 @@ namespace Seldon
     this->val_imag_(i).Clear();
   }
 
+
+  //! Clears a row
+  template <class T, class Prop, class Allocator>
+  inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
+  ::ClearRow(int i)
+  {
+    ClearRealRow(i);
+    ClearImagRow(i);
+  }
+  
 
   //! Reallocates row i.
   /*!

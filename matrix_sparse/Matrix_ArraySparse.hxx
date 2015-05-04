@@ -133,6 +133,10 @@ namespace Seldon
     
     virtual void MltAddVector(const T& alpha, const Vector<T>& x,
 			      const T& beta, Vector<T>& y) const;
+
+    virtual void MltAddVector(const T& alpha, const class_SeldonTrans&,
+			      const Vector<T>& x,
+			      const T& beta, Vector<T>& y) const;
     
     virtual void MltVector(const Vector<T>& x, Vector<T>& y) const;
     
@@ -175,13 +179,13 @@ namespace Seldon
     void AddInteractionRow(int, int, int*, T*);
     void AddInteractionColumn(int, int, int*, T*, bool already_sorted = false);
 
-    template<class Alloc1>
-    void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<T, VectFull, Alloc1>& val);
-    template<class Alloc1>
-    void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<T, VectFull, Alloc1>& val,
+    void AddInteractionRow(int i, int nb, const Vector<int>& col,
+			   const Vector<T>& val);
+    
+    void AddInteractionColumn(int i, int nb, const Vector<int>& row,
+			      const Vector<T>& val,
                               bool already_sorted = false);
+    
   };
 
 
@@ -217,14 +221,14 @@ namespace Seldon
     void AddInteractionRow(int, int, int*, T*, bool already_sorted = false);
     void AddInteractionColumn(int, int, int*, T*);
 
-    template<class Alloc1>
-    void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<T, VectFull, Alloc1>& val,
-                           bool already_sorted = false);
+    void AddInteractionRow(int i, int nb, const Vector<int>& col,
+			   const Vector<T>& val, bool already_sorted);
+
+    void AddInteractionRow(int i, int nb, const Vector<int>& col,
+			   const Vector<T>& val);
     
-    template<class Alloc1>
-    void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<T, VectFull, Alloc1>& val);
+    void AddInteractionColumn(int i, int nb, const Vector<int>& row,
+			      const Vector<T>& val);
   };
 
   //! Column-major symmetric sparse-matrix class.
@@ -272,12 +276,11 @@ namespace Seldon
     void AddInteractionColumn(int, int, int*, T*,
                               bool already_sorted = false);
 
-    template<class Alloc1>
-    void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<T, VectFull, Alloc1>& val);
-    template<class Alloc1>
-    void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<T, VectFull, Alloc1>& val,
+    void AddInteractionRow(int i, int nb, const Vector<int>& col,
+			   const Vector<T>& val);
+
+    void AddInteractionColumn(int i, int nb, const Vector<int>& row,
+			      const Vector<T>& val,
                               bool already_sorted = false);
   };
 
@@ -326,14 +329,15 @@ namespace Seldon
     void AddInteractionRow(int, int, int*, T*, bool already_sorted = false);
     void AddInteractionColumn(int, int, int*, T*);
 
-    template<class Alloc1>
-    void AddInteractionRow(int i, int nb, const IVect& col,
-			   const Vector<T, VectFull, Alloc1>& val,
-                           bool already_sorted = false);
+    void AddInteractionRow(int i, int nb, const Vector<int>& col,
+			   const Vector<T>& val, bool already_sorted);
     
-    template<class Alloc1>
-    void AddInteractionColumn(int i, int nb, const IVect& row,
-			      const Vector<T, VectFull, Alloc1>& val);
+    void AddInteractionRow(int i, int nb, const Vector<int>& col,
+			   const Vector<T>& val);
+    
+    void AddInteractionColumn(int i, int nb, const Vector<int>& row,
+			      const Vector<T>& val);
+    
   };
 
 } // namespace Seldon
