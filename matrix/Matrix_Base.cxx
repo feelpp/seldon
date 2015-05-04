@@ -30,6 +30,16 @@ namespace Seldon
 
 
 #ifdef SELDON_WITH_VIRTUAL
+  //! reallocates the matrix
+  template <class T>
+  void VirtualMatrix<T>::Reallocate(int m, int n)
+  {
+    // this method should be overloaded
+    // if not overloaded, an exception is raised:
+    throw Undefined("Reallocate", "Not implemented"); 
+  }
+
+
   //! Adds values to several non-zero entries of a sparse matrix.
   template <class T>
   void VirtualMatrix<T>::AddInteractionRow(int, int, const Vector<int>&,
@@ -88,6 +98,26 @@ namespace Seldon
     throw Undefined("AddRowDistantInteraction", "Not implemented");
   }
   
+
+  //! reallocates the matrix
+  template <class T>
+  int64_t VirtualMatrix<T>::GetMemorySize() const
+  {
+    // this method should be overloaded
+    // if not overloaded, an exception is raised:
+    throw Undefined("GetMemorySize", "Not implemented"); 
+  }
+  
+  
+  //! Clears the matrix (the memory is released)
+  template <class T>
+  void VirtualMatrix<T>::Clear()
+  {
+    // this method should be overloaded
+    // if not overloaded, an exception is raised:
+    throw Undefined("Clear", "Not implemented"); 
+  }
+
   
   //! Clears row i
   template <class T>
@@ -121,8 +151,8 @@ namespace Seldon
 
   //! Computes y = beta + alpha A x.
   template<class T> void VirtualMatrix<T>
-  ::MltAddVector(const T& alpha, const Vector<T>& x,
-		 const T& beta, Vector<T>& y) const
+  ::MltAddVector(const Treal& alpha, const Vector<Treal>& x,
+		 const Treal& beta, Vector<Treal>& y) const
   {
     throw Undefined("MltAddVector", "Not implemented");
   }
@@ -130,9 +160,28 @@ namespace Seldon
 
   //! Computes y = beta + alpha A x.
   template<class T> void VirtualMatrix<T>
-  ::MltAddVector(const T& alpha, const class_SeldonTrans&,
-		 const Vector<T>& x,
-		 const T& beta, Vector<T>& y) const
+  ::MltAddVector(const Tcplx& alpha, const Vector<Tcplx>& x,
+		 const Tcplx& beta, Vector<Tcplx>& y) const
+  {
+    throw Undefined("MltAddVector", "Not implemented");
+  }
+
+
+  //! Computes y = beta + alpha A x.
+  template<class T> void VirtualMatrix<T>
+  ::MltAddVector(const Treal& alpha, const SeldonTranspose&,
+		 const Vector<Treal>& x,
+		 const Treal& beta, Vector<Treal>& y) const
+  {
+    throw Undefined("MltAddVector", "Not implemented");
+  }
+
+
+  //! Computes y = beta + alpha A x.
+  template<class T> void VirtualMatrix<T>
+  ::MltAddVector(const Tcplx& alpha, const SeldonTranspose&,
+		 const Vector<Tcplx>& x,
+		 const Tcplx& beta, Vector<Tcplx>& y) const
   {
     throw Undefined("MltAddVector", "Not implemented");
   }
@@ -140,7 +189,15 @@ namespace Seldon
 
   //! Computes y = A x
   template<class T> void VirtualMatrix<T>
-  ::MltVector(const Vector<T>& x, Vector<T>& y) const
+  ::MltVector(const Vector<Treal>& x, Vector<Treal>& y) const
+  {
+    throw Undefined("MltVector", "Not implemented");
+  }
+
+
+  //! Computes y = A x
+  template<class T> void VirtualMatrix<T>
+  ::MltVector(const Vector<Tcplx>& x, Vector<Tcplx>& y) const
   {
     throw Undefined("MltVector", "Not implemented");
   }
@@ -148,9 +205,33 @@ namespace Seldon
 
   //! Computes y = A^T x
   template<class T> void VirtualMatrix<T>
-  ::MltVector(const class_SeldonTrans&, const Vector<T>& x, Vector<T>& y) const
+  ::MltVector(const SeldonTranspose&,
+	      const Vector<Treal>& x, Vector<Treal>& y) const
   {
     throw Undefined("MltVector with transpose", "Not implemented");
+  }
+
+
+  //! Computes y = A^T x
+  template<class T> void VirtualMatrix<T>
+  ::MltVector(const SeldonTranspose&,
+	      const Vector<Tcplx>& x, Vector<Tcplx>& y) const
+  {
+    throw Undefined("MltVector with transpose", "Not implemented");
+  }
+  
+  
+  //! returns true if the matrix is symmetric
+  template<class T> bool VirtualMatrix<T>::IsSymmetric() const
+  {
+    return false;
+  }
+  
+  
+  //! returns true if the matrix is complex
+  template<class T> bool VirtualMatrix<T>::IsComplex() const
+  {
+    return IsComplexNumber(T(0));
   }
 #endif
 

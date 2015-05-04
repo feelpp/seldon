@@ -89,7 +89,11 @@
 #include "computation/interfaces/eigenvalue/Feast.cxx"
 #endif
 
+#ifdef SELDON_WITH_VIRTUAL
+#include "computation/interfaces/eigenvalue/VirtualEigenvalueSolver.cxx"
+#else
 #include "computation/interfaces/eigenvalue/EigenvalueSolver.cxx"
+#endif
 
 #define SELDON_FILE_SELDON_SOLVER_HXX
 #endif

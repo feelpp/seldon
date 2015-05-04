@@ -825,7 +825,7 @@ namespace Seldon
 
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
-  ::MltAddVector(const T& alpha, const class_SeldonTrans& trans,
+  ::MltAddVector(const T& alpha, const SeldonTranspose& trans,
 		 const Vector<T>& x,
 		 const T& beta, Vector<T>& y) const
   {
@@ -843,11 +843,18 @@ namespace Seldon
 
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ComplexSparse<T, Prop, Storage, Allocator>  
-  ::MltVector(const class_SeldonTrans& trans,
+  ::MltVector(const SeldonTranspose& trans,
 	      const Vector<T>& x, Vector<T>& y) const
   {
     Mlt(trans,
 	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline bool Matrix_ComplexSparse<T, Prop, Storage, Allocator>  
+  ::IsSymmetric() const
+  {
+    return false;
   }
 #endif
 

@@ -111,18 +111,43 @@ namespace Seldon
     void Write(ostream& FileStream) const;
     void WriteText(string FileName) const;
     void WriteText(ostream& FileStream) const;
-    
+
 #ifdef SELDON_WITH_VIRTUAL
-    void MltAddVector(const T& alpha, const Vector<T>& x,
-		      const T& beta, Vector<T>& y) const;
+    typedef typename ClassComplexType<T>::Treal Treal;
+    typedef typename ClassComplexType<T>::Tcplx Tcplx;
     
-    void MltAddVector(const T& alpha, const class_SeldonTrans&,
-		      const Vector<T>& x, const T& beta, Vector<T>& y) const;
+    virtual void ApplySor(Vector<T>& x, const Vector<T>& r,
+			  const typename ClassComplexType<T>::Treal& omega,
+			  int nb_iter, int stage_ssor) const;
     
-    void MltVector(const Vector<T>& x, Vector<T>& y) const;
+    virtual void ApplySor(const class_SeldonTrans&, Vector<T>& x, const Vector<T>& r,
+			  const typename ClassComplexType<T>::Treal& omega,
+			  int nb_iter, int stage_ssor) const;
     
-    void MltVector(const class_SeldonTrans&,
-		   const Vector<T>& x, Vector<T>& y) const;
+    virtual void MltAddVector(const Treal& alpha, const Vector<Treal>& x,
+			      const Treal& beta, Vector<Treal>& y) const;
+
+    virtual void MltAddVector(const Tcplx& alpha, const Vector<Tcplx>& x,
+			      const Tcplx& beta, Vector<Tcplx>& y) const;
+
+    virtual void MltAddVector(const Treal& alpha, const SeldonTranspose&,
+			      const Vector<Treal>& x,
+			      const Treal& beta, Vector<Treal>& y) const;
+
+    virtual void MltAddVector(const Tcplx& alpha, const SeldonTranspose&,
+			      const Vector<Tcplx>& x,
+			      const Tcplx& beta, Vector<Tcplx>& y) const;
+    
+    virtual void MltVector(const Vector<Treal>& x, Vector<Treal>& y) const;
+    virtual void MltVector(const Vector<Tcplx>& x, Vector<Tcplx>& y) const;
+    
+    virtual void MltVector(const SeldonTranspose&,
+			   const Vector<Treal>& x, Vector<Treal>& y) const;
+
+    virtual void MltVector(const SeldonTranspose&,
+			   const Vector<Tcplx>& x, Vector<Tcplx>& y) const;
+
+    virtual bool IsSymmetric() const;
 #endif
     
   };

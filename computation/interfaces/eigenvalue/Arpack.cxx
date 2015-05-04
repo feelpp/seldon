@@ -29,12 +29,20 @@ namespace Seldon
     \param[out] eigen_values eigenvalue
     \param[out] eigen_vectors eigenvectors
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T>
+  void FindEigenvaluesArpack(EigenProblem_Base<T>& var,
+                             Vector<T>& eigen_values,
+                             Vector<T>& lambda_imag,
+                             Matrix<T, General, ColMajor>& eigen_vectors)
+#else
   template<class EigenProblem, class T, class Allocator1,
            class Allocator2, class Allocator3>
   void FindEigenvaluesArpack(EigenProblem& var,
                              Vector<T, VectFull, Allocator1>& eigen_values,
                              Vector<T, VectFull, Allocator2>& lambda_imag,
                              Matrix<T, General, ColMajor, Allocator3>& eigen_vectors)
+#endif
   {
     // declaration (and initialization) of all the variables needed by CallArpack
     int ido = 0, n = var.GetM();
@@ -42,18 +50,18 @@ namespace Seldon
     string which("LM");
     switch (var.GetTypeSorting())
       {
-      case EigenProblem::SORTED_REAL : which = "LR"; break;
-      case EigenProblem::SORTED_IMAG : which = "LI"; break;
-      case EigenProblem::SORTED_MODULUS : which = "LM"; break;
+      case EigenProblem_Base<T>::SORTED_REAL : which = "LR"; break;
+      case EigenProblem_Base<T>::SORTED_IMAG : which = "LI"; break;
+      case EigenProblem_Base<T>::SORTED_MODULUS : which = "LM"; break;
       }
     
     if (var.GetTypeSpectrum() == var.SMALL_EIGENVALUES)
       {
         switch (var.GetTypeSorting())
           {
-          case EigenProblem::SORTED_REAL : which = "SR"; break;
-          case EigenProblem::SORTED_IMAG : which = "SI"; break;
-          case EigenProblem::SORTED_MODULUS : which = "SM"; break;
+          case EigenProblem_Base<T>::SORTED_REAL : which = "SR"; break;
+          case EigenProblem_Base<T>::SORTED_IMAG : which = "SI"; break;
+          case EigenProblem_Base<T>::SORTED_MODULUS : which = "SM"; break;
           }
       }
     
@@ -65,7 +73,7 @@ namespace Seldon
     
     Vector<T> resid;
     int ncv = var.GetNbArnoldiVectors();
-    Matrix<T, General, ColMajor, Allocator2> v;
+    Matrix<T, General, ColMajor> v;
     int ldv = n;
 		
     IVect iparam(11), ipntr(14);
@@ -74,7 +82,6 @@ namespace Seldon
     bool sym = var.IsSymmetricProblem();
     bool non_sym = false;
     bool sym_mode = sym;
-    typedef typename EigenProblem::MassValue Tmass;
     iparam(0) = ishift;
     iparam(2) = nb_max_iter;
     iparam(3) = 1;
@@ -82,18 +89,24 @@ namespace Seldon
     int lworkl = 3*ncv*ncv + 6*ncv, info(0);
     Vector<T> workd, workl, Xh, Yh, Zh;
     Vector<double> rwork;
+
+    T shiftr = var.GetShiftValue(), shifti = var.GetImagShiftValue();
     
-    T shiftr = var.GetShiftValue(), shifti = var.GetImagShiftValue();    
+#ifdef SELDON_WITH_VIRTUAL
+    typename ClassComplexType<T>::Tcplx shift_complex, cone;
+    SetComplexOne(cone);
+    var.GetComplexShift(shiftr, shifti, shift_complex);
+#endif    
+
     T zero, one;
     SetComplexZero(zero);
     SetComplexOne(one);
         
     // mass matrix for diagonal case, and Cholesky case
-    Vector<Tmass> Dh_diag;
     int print_level = var.GetPrintLevel();
 
 #ifdef SELDON_WITH_MPI
-    MPI::Intracomm& comm = var.GetCommunicator();
+    MPI::Comm& comm = var.GetCommunicator();
     int comm_f = MPI_Comm_c2f(comm);
 #else
     int comm_f(0);
@@ -113,7 +126,8 @@ namespace Seldon
       }
     else
       {
-        if ((var.GetTypeSpectrum() != var.CENTERED_EIGENVALUES) && (var.GetComputationalMode() != var.INVERT_MODE))
+        if ((var.GetTypeSpectrum() != var.CENTERED_EIGENVALUES) &&
+      (var.GetComputationalMode() != var.INVERT_MODE))
           {
             cout << "To find large or small eigenvalues, use a regular mode" << endl;
             abort();
@@ -185,11 +199,10 @@ namespace Seldon
         if (var.DiagonalMass())
           {
             // computation of M
-            var.ComputeDiagonalMass(Dh_diag);
+            var.ComputeDiagonalMass();
 	    
             // computation of M^{-1/2}
-            var.FactorizeDiagonalMass(Dh_diag);
-            Dh_diag.Clear();
+            var.FactorizeDiagonalMass();
           }
         else 
           {
@@ -511,6 +524,17 @@ namespace Seldon
             // computation and factorization of (K - sigma M)^-1
             if (shifti != zero)
               {
+#ifdef SELDON_WITH_VIRTUAL
+                if (var.GetComputationalMode() == var.SHIFTED_MODE)
+                  var.ComputeAndFactorizeStiffnessMatrix(-shift_complex, cone,
+							 EigenProblem_Base<T>::REAL_PART);
+                else
+                  {
+                    iparam(6) = 4;
+                    var.ComputeAndFactorizeStiffnessMatrix(-shift_complex, cone,
+							   EigenProblem_Base<T>::IMAG_PART);
+                  }
+#else
                 if (var.GetComputationalMode() == var.SHIFTED_MODE)
                   var.ComputeAndFactorizeStiffnessMatrix(-complex<T>(shiftr, shifti),
                                                          complex<T>(one, zero), true);
@@ -520,6 +544,7 @@ namespace Seldon
                     var.ComputeAndFactorizeStiffnessMatrix(-complex<T>(shiftr, shifti),
                                                            complex<T>(one, zero), false);
                   }
+#endif
                 
                 var.ComputeStiffnessMatrix();
               }

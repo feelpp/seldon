@@ -534,6 +534,110 @@ namespace Seldon
     this->allocator_.memorycpy(this->data_, A.GetData(), this->GetDataSize());
   }
   
+
+#ifdef SELDON_WITH_VIRTUAL
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::ApplySor(Vector<T>& x, const Vector<T>& r,
+	     const typename ClassComplexType<T>::Treal& omega,
+	     int nb_iter, int stage_ssor) const
+  {
+    SOR(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	x, r, omega, nb_iter, stage_ssor);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::ApplySor(const class_SeldonTrans& trans, Vector<T>& x, const Vector<T>& r,
+	     const typename ClassComplexType<T>::Treal& omega,
+	     int nb_iter, int stage_ssor) const
+  {
+    SOR(trans,
+	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	x, r, omega, nb_iter, stage_ssor);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::MltAddVector(const Treal& alpha, const Vector<Treal>& x,
+		 const Treal& beta, Vector<Treal>& y) const
+  {
+    MltAddComplex(alpha,
+		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+		  x, beta, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::MltAddVector(const Tcplx& alpha, const Vector<Tcplx>& x,
+		 const Tcplx& beta, Vector<Tcplx>& y) const
+  {
+    MltAddComplex(alpha,
+		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+		  x, beta, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::MltAddVector(const Treal& alpha, const SeldonTranspose& trans,
+		 const Vector<Treal>& x,
+		 const Treal& beta, Vector<Treal>& y) const
+  {
+    MltAddComplex(alpha, trans,
+		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+		  x, beta, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::MltAddVector(const Tcplx& alpha, const SeldonTranspose& trans,
+		 const Vector<Tcplx>& x,
+		 const Tcplx& beta, Vector<Tcplx>& y) const
+  {
+    MltAddComplex(alpha, trans,
+		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+		  x, beta, y);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::MltVector(const Vector<Treal>& x, Vector<Treal>& y) const
+  {
+    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::MltVector(const Vector<Tcplx>& x, Vector<Tcplx>& y) const
+  {
+    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>  
+  ::MltVector(const SeldonTranspose& trans,
+	      const Vector<Treal>& x, Vector<Treal>& y) const
+  {
+    MltComplex(trans,
+	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>  
+  ::MltVector(const SeldonTranspose& trans,
+	      const Vector<Tcplx>& x, Vector<Tcplx>& y) const
+  {
+    MltComplex(trans,
+	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline bool Matrix_SymPacked<T, Prop, Storage, Allocator>  
+  ::IsSymmetric() const
+  {
+    return true;
+  }
+#endif
   
   //////////////////////////
   // MATRIX<COLSYMPACKED> //

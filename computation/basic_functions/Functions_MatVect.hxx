@@ -113,7 +113,25 @@ namespace Seldon
 	   const Vector<T2, Storage2, Allocator2>& X,
 	   Vector<T3, Storage3, Allocator3>& Y);
   
+  template<class T1, class Prop1, class Storage1, class Allocator1,
+	   class T2, class Storage2, class Allocator2,
+	   class T3, class Storage3, class Allocator3>
+  void Mlt(const SeldonTranspose& Trans,
+	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+	   const Vector<T2, Storage2, Allocator2>& X,
+	   Vector<T3, Storage3, Allocator3>& Y);
 
+  template<class T0,
+	   class T1, class Prop1, class Storage1, class Allocator1,
+	   class T2, class Storage2, class Allocator2,
+	   class T3,
+	   class T4, class Storage4, class Allocator4>
+  void MltAdd(const T0& alpha, const SeldonTranspose& Trans,
+	      const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3& beta,
+	      Vector<T4, Storage4, Allocator4>& Y);
+  
   // MLT //
   /////////
 
@@ -647,6 +665,144 @@ namespace Seldon
   // CHECKDIM //
   //////////////
 
+
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const Matrix<T0, Prop0, Storage0, Allocator0>&,
+		  const Vector<T0>& X, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const Matrix<complex<T0>, Prop0, Storage0, Allocator0>&,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const Matrix<T0, Prop0, Storage0, Allocator0>&,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const Matrix<complex<T0>, Prop0, Storage0, Allocator0>&,
+		  const Vector<T0>& X, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha,
+		     const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha,
+		     const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha,
+		     const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha,
+		     const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha, const SeldonTranspose& trans,
+		     const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha, const SeldonTranspose& trans,
+		     const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha, const SeldonTranspose& trans,
+		     const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha, const SeldonTranspose& trans,
+		     const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void SolveComplexLU(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<T0>& x);
+  
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void SolveComplexLU(const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<complex<T0> >& x);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void SolveComplexLU(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<complex<T0> >& x);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void SolveComplexLU(const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<T0>& x);
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<T0, Symmetric, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<T0>& x);
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<T0, General, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<T0>& x);
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<complex<T0>, Symmetric, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<complex<T0> >& x);
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<complex<T0>, General, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<complex<T0> >& x);
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<T0, Symmetric, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<complex<T0> >& x);
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<T0, General, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<complex<T0> >& x);
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<complex<T0>, Symmetric, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<T0>& x);
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<complex<T0>, General, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<T0>& x);
+#endif
 
 }  // namespace Seldon.
 

@@ -286,7 +286,17 @@ namespace Seldon
 {
   // file used to interface arpack with Seldon
   // to compute eigenvalues and eigenvectors
+
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T>
+  class EigenProblem_Base;
   
+  template<class T>
+  void FindEigenvaluesArpack(EigenProblem_Base<T>& var,
+                             Vector<T>& eigen_values,
+                             Vector<T>& lambda_imag,
+                             Matrix<T, General, ColMajor>& eigen_vectors);
+#else  
   // main function to find eigenvalues and eigenvectors with Arpack
   template<class EigenProblem, class T, class Allocator1,
 	   class Allocator2, class Allocator3>
@@ -294,7 +304,7 @@ namespace Seldon
                              Vector<T, VectFull, Allocator1>& eigen_values,
                              Vector<T, VectFull, Allocator2>& lambda_imag,
                              Matrix<T, General, ColMajor, Allocator3>& eigen_vectors);
-  
+#endif
   
   /*************************************************************************
    * Overload of CallArpack function to call the correct Arpack subroutine *

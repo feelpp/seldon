@@ -1,4 +1,4 @@
-#ifndef SELDON_FILE_EIGENVALUE_SOLVER_HXX
+#ifndef SELDON_FILE_VIRTUAL_EIGENVALUE_SOLVER_HXX
 
 namespace Seldon
 {
@@ -13,8 +13,7 @@ namespace Seldon
     This class should not be instantiated directly, but rather derived classes
     like DenseEigenProblem, SparseEigenProblem, MatrixFreeEigenProblem.
   */
-  template<class T, class MatStiff = Matrix<T>,
-           class MatMass = Matrix<double> >
+  template<class T>
   class EigenProblem_Base
   {
   public :
@@ -48,6 +47,9 @@ namespace Seldon
 
     //! different sorting strategies
     enum {SORTED_REAL, SORTED_IMAG, SORTED_MODULUS};
+
+    //! real part, imaginary part or complex solution
+    enum { REAL_PART, IMAG_PART, COMPLEX_PART};
     
     //! different solvers (Anasazi)
     /*!
@@ -59,11 +61,11 @@ namespace Seldon
     
     //! orthogonalization managers (Anasazi)
     enum {ORTHO_DGKS, ORTHO_SVQB};
-    
-    //! type for number stored in mass matrix
-    typedef typename MatMass::value_type MassValue;
         
   protected :
+    typedef typename ClassComplexType<T>::Tcplx Tcplx;
+    typedef typename ClassComplexType<T>::Treal Treal;
+    
     //! mode used to find eigenvalues (regular, shifted, Cayley, etc)
     int eigenvalue_computation_mode;
     
@@ -98,7 +100,7 @@ namespace Seldon
     bool diagonal_mass;
       
     //! threshold for Arpack's iterative process
-    double stopping_criterion;
+    Treal stopping_criterion;
     
     //! Maximal number of iterations
     int nb_maximum_iterations;
@@ -120,26 +122,18 @@ namespace Seldon
     
     int print_level; //!< print level
     
-    //! diagonal D^1/2 if the mass matrix is diagonal positive
-    Vector<MassValue> sqrt_diagonal_mass;
-
     //! if true consider Real( (a M + bK)^-1) or Imag( (a M + b K)^-1 )
     //! or the whole system, a and/or b being complex
-    bool complex_system;    
+    bool complex_system; int selected_part;    
     
-    //! mass matrix
-    MatMass* Mh;
-
-    //! stiffness matrix
-    MatStiff* Kh;
-
 #ifdef SELDON_WITH_MPI
     //! communicator used to compute eigenvalues
-    MPI::Intracomm comm;
+    MPI::Comm* comm;
 #endif
 
     //! which solver ?
     int type_solver;
+    
     
     /************************** 
      * Parameters for Anasazi *
@@ -159,7 +153,7 @@ namespace Seldon
      ************************/
     
     //! interval where eigenvalues are searched
-    double emin_interval, emax_interval;
+    Treal emin_interval, emax_interval;
     
   public :
 
@@ -168,16 +162,13 @@ namespace Seldon
     // initialization
     void Init(int n);
     
-    void InitMatrix(MatStiff&);
-    void InitMatrix(MatStiff&, MatMass& );
-    
     // basic functions
     int GetComputationalMode() const;
     void SetComputationalMode(int mode);
     
 #ifdef SELDON_WITH_MPI
     void SetCommunicator(MPI::Comm& comm_);
-    MPI::Intracomm& GetCommunicator();
+    MPI::Comm& GetCommunicator();
 #endif
     
     int GetNbAskedEigenvalues() const;
@@ -202,16 +193,19 @@ namespace Seldon
     void SetShiftValue(const T&);
     void SetImagShiftValue(const T&);
 
+    void GetComplexShift(const Treal&, const Treal&, Tcplx&) const;
+    void GetComplexShift(const Tcplx&, const Tcplx&, Tcplx&) const;
+
     void SetTypeSpectrum(int type, const T& val,
                          int type_sort = SORTED_MODULUS);
     
     void SetTypeSpectrum(int type, const complex<T>& val,
                          int type_sort = SORTED_MODULUS);
 
-    double GetLowerBoundInterval() const;
-    double GetUpperBoundInterval() const;
+    Treal GetLowerBoundInterval() const;
+    Treal GetUpperBoundInterval() const;
 
-    void SetIntervalSpectrum(double, double);
+    void SetIntervalSpectrum(Treal, Treal);
             
     void SetCholeskyFactoForMass(bool chol = true);
     bool UseCholeskyFactoForMass() const;
@@ -219,8 +213,8 @@ namespace Seldon
     void SetDiagonalMass(bool diag = true);
     bool DiagonalMass() const;
     
-    void SetStoppingCriterion(double eps);
-    double GetStoppingCriterion() const;
+    void SetStoppingCriterion(Treal eps);
+    Treal GetStoppingCriterion() const;
     void SetNbMaximumIterations(int n);
     int GetNbMaximumIterations() const;
     
@@ -238,152 +232,209 @@ namespace Seldon
     void IncrementProdMatVect();
     
     void PrintErrorInit() const;
-    bool IsSymmetricProblem() const;
-    bool IsHermitianProblem() const;
+    virtual bool IsSymmetricProblem() const = 0;
+    virtual bool IsHermitianProblem() const = 0;
     
     // mass matrix stuff
-    void FactorizeDiagonalMass();
-    template<class T0> void MltInvSqrtDiagonalMass(Vector<T0>& X);
-    template<class T0> void MltSqrtDiagonalMass(Vector<T0>& X);
+    virtual void ComputeDiagonalMass() = 0;
+    virtual void FactorizeDiagonalMass() = 0;
+    virtual void GetSqrtDiagonal(Vector<T>&) = 0;
     
-    void ComputeDiagonalMass();
-    void ComputeMassForCholesky();
+    virtual void MltInvSqrtDiagonalMass(Vector<T>& X) = 0;
+    virtual void MltSqrtDiagonalMass(Vector<T>& X) = 0;
     
-    void ComputeMassMatrix();
-    void MltMass(const Vector<T>& X, Vector<T>& Y);
+    virtual void ComputeMassForCholesky();
     
+    virtual void ComputeMassMatrix();
+    virtual void MltMass(const Vector<T>& X, Vector<T>& Y) = 0;
+
     // stiffness matrix stuff
-    void ComputeStiffnessMatrix();    
-    void ComputeStiffnessMatrix(const T& a, const T& b);
+    virtual void ComputeStiffnessMatrix();    
+    virtual void ComputeStiffnessMatrix(const T& a, const T& b);
     
-    void MltStiffness(const Vector<T>& X, Vector<T>& Y);
-    void MltStiffness(const T& a, const T& b, const Vector<T>& X, Vector<T>& Y);
-        
+    virtual void MltStiffness(const Vector<T>& X, Vector<T>& Y) = 0;
+    virtual void MltStiffness(const T& a, const T& b,
+			      const Vector<T>& X, Vector<T>& Y) = 0;
+    
     // functions to overload (factorisation of mass and/or stiffness matrix)
-    void ComputeAndFactorizeStiffnessMatrix(const T& a, const T& b);
-    void ComputeAndFactorizeStiffnessMatrix(const complex<T>& a,
-                                            const complex<T>& b,
-                                            bool real_p = true);
+    virtual void ComputeAndFactorizeStiffnessMatrix(const Treal& a, const Treal& b,
+						    int real_p = COMPLEX_PART);
     
-    template<class T0>
-    void ComputeSolution(const Vector<T0>& X, Vector<T0>& Y);
+    virtual void ComputeAndFactorizeStiffnessMatrix(const Tcplx& a, const Tcplx& b,
+						    int real_p = COMPLEX_PART);
     
-    template<class TransA, class T0>
-    void ComputeSolution(const TransA& transA,
-                         const Vector<T0>& X, Vector<T0>& Y);
+    virtual void ComputeSolution(const Vector<Treal>& X, Vector<Treal>& Y);
+    virtual void ComputeSolution(const Vector<Tcplx>& X, Vector<Tcplx>& Y);
     
-    void FactorizeCholeskyMass();
+    virtual void ComputeSolution(const SeldonTranspose&,
+				 const Vector<Treal>& X, Vector<Treal>& Y);
+
+    virtual void ComputeSolution(const SeldonTranspose&,
+				 const Vector<Tcplx>& X, Vector<Tcplx>& Y);
     
-    template<class TransStatus>
-    void MltCholeskyMass(const TransStatus& transA, Vector<T>& X);
+    virtual void FactorizeCholeskyMass();
     
-    template<class TransStatus>
-    void SolveCholeskyMass(const TransStatus& transA, Vector<T>& X);
+    virtual void MltCholeskyMass(const SeldonTranspose& transA, Vector<Treal>& X);
+    virtual void MltCholeskyMass(const SeldonTranspose& transA, Vector<Tcplx>& X);
     
-    void Clear();
+    virtual void SolveCholeskyMass(const SeldonTranspose& transA, Vector<Treal>& X);
+    virtual void SolveCholeskyMass(const SeldonTranspose& transA, Vector<Tcplx>& X);
+    
+    virtual void Clear();
     
     // modification of eigenvectors to take into account 
     // the use of matrix D^-1/2 K D^-1/2 or L^-1 K L^-T instead of K
     // => eigenvectors are recovered by multiplying them by matrix D^1/2 or by L^T
-    template<class EigenPb, class Vector1, class Matrix1, class T0>
-    friend void ApplyScalingEigenvec(EigenPb& var,
-                                     Vector1& eigen_values,
-                                     Vector1& lambda_imag,
-                                     Matrix1& eigen_vectors,
+    template<class T0, class Prop, class Storage>
+    friend void ApplyScalingEigenvec(EigenProblem_Base<T0>& var,
+                                     Vector<T0>& eigen_values,
+                                     Vector<T0>& lambda_imag,
+                                     Matrix<T0, Prop, Storage>& eigen_vectors,
                                      const T0& shiftr, const T0& shifti);
 
-    template<class EigenPb, class Vector1, class Matrix1, class T0>
-    friend void ApplyScalingEigenvec(EigenPb& var,
-                                     Vector1& eigen_values,
-                                     Vector1& lambda_imag,
-                                     Matrix1& eigen_vectors,
+    template<class T0, class Prop, class Storage>
+    friend void ApplyScalingEigenvec(EigenProblem_Base<complex<T0> >& var,
+                                     Vector<complex<T0> >& eigen_values,
+                                     Vector<complex<T0> >& lambda_imag,
+                                     Matrix<complex<T0>, Prop, Storage>& eigen_vectors,
                                      const complex<T0>& shiftr,
                                      const complex<T0>& shifti);
     
   };    
+
+  
+  //! base class for eigenvalue problems
+  template<class T, class StiffValue = T,
+	   class MassValue = typename ClassComplexType<T>::Treal>  
+  class VirtualEigenProblem : public EigenProblem_Base<T>
+  {
+  protected:
+    //! mass matrix
+    VirtualMatrix<MassValue>* Mh;
+
+    //! stiffness matrix
+    VirtualMatrix<StiffValue>* Kh;
+
+    //! diagonal D^1/2 if the mass matrix is diagonal positive
+    Vector<MassValue> sqrt_diagonal_mass;
+
+    typedef typename ClassComplexType<T>::Tcplx Tcplx;
+    typedef typename ClassComplexType<T>::Treal Treal;
+
+  public:    
+    VirtualEigenProblem();
+    
+    void InitMatrix(VirtualMatrix<StiffValue>& K);
+    void InitMatrix(VirtualMatrix<StiffValue>& K, VirtualMatrix<MassValue>& M);
+
+    void SetTypeSpectrum(int type, const T& val,
+                         int type_sort = EigenProblem_Base<T>::SORTED_MODULUS);
+
+    void SetTypeSpectrum(int type, const complex<T>& val,
+                         int type_sort = EigenProblem_Base<T>::SORTED_MODULUS);
+
+    bool IsSymmetricProblem() const;
+    bool IsHermitianProblem() const;
+
+    void ComputeDiagonalMass();
+    void FactorizeDiagonalMass();
+    void GetSqrtDiagonal(Vector<T>&);
+    
+    void MltInvSqrtDiagonalMass(Vector<T>& X);
+    void MltSqrtDiagonalMass(Vector<T>& X);
+    
+    void MltMass(const Vector<T>& X, Vector<T>& Y);    
+    
+    void MltStiffness(const Vector<T>& X, Vector<T>& Y);
+    void MltStiffness(const T& coef_mass, const T& coef_stiff,
+		      const Vector<T>& X, Vector<T>& Y);
+    void Clear();
+    
+  };
   
   
   // sorting eigenvalues
-  template<class T, class Storage1, class Storage2,
-           class Alloc1, class Alloc2>
+  template<class T, class Storage1, class Storage2>
   void SortEigenvalues(Vector<T>& lambda_r, Vector<T>& lambda_i,
-                       Matrix<T, General, Storage1, Alloc1>& eigen_old,
-                       Matrix<T, General, Storage2, Alloc2>& eigen_new,
+                       Matrix<T, General, Storage1>& eigen_old,
+                       Matrix<T, General, Storage2>& eigen_new,
                        int type_spectrum, int type_sort,
                        const T& shift_r, const T& shift_i);
   
   // sorting eigenvalues
-  template<class T, class Storage1, class Storage2,
-           class Alloc1, class Alloc2>
+  template<class T, class Storage1, class Storage2>
   void SortEigenvalues(Vector<complex<T> >& lambda_r,
                        Vector<complex<T> >& lambda_i,
-                       Matrix<complex<T>, General, Storage1, Alloc1>& eigen_old,
-                       Matrix<complex<T>, General, Storage2, Alloc2>& eigen_new,
+                       Matrix<complex<T>, General, Storage1>& eigen_old,
+                       Matrix<complex<T>, General, Storage2>& eigen_new,
                        int type_spectrum, int type_sort,
                        const complex<T>& shift_r, const complex<T>& shift_i);
   
   
   //! computation of a few eigenvalues for dense matrices
-  template<class T, class Prop, class Storage,
-           class Tmass = double, class PropM = Symmetric,
-           class StorageM = RowSymPacked>
-  class DenseEigenProblem
-    : public EigenProblem_Base<T, Matrix<T, Prop, Storage>,
-                               Matrix<Tmass, PropM, StorageM> >
+  template<class T, class Tstiff, class Prop, class Storage,
+           class Tmass = typename ClassComplexType<T>::Treal,
+	   class PropM = Symmetric, class StorageM = RowSymPacked>
+  class DenseEigenProblem : public VirtualEigenProblem<T, Tstiff, Tmass>
   {
   protected :
-    //! LU factorisation of matrix
-    Matrix<T, Prop, Storage> mat_lu;
+    typedef typename ClassComplexType<T>::Tcplx Tcplx;
+    typedef typename ClassComplexType<T>::Treal Treal;
+
+    //! LU factorisation of a real matrix
+    Matrix<Treal, Prop, Storage> mat_lu_real;
+
+    //! LU factorisation of a complex matrix
+    Matrix<Tcplx, Prop, Storage> mat_lu_cplx;
+
+    //! mass matrix
+    Matrix<Tmass, PropM, StorageM>* Mh;
+
+    //! stiffness matrix
+    Matrix<Tstiff, Prop, Storage>* Kh;
     
     //! pivot used by the LU factorisation
     Vector<int> pivot;
-
+    
     //! Cholesky factorisation of mass matrix
-    Matrix<Tmass, PropM, StorageM> mat_chol;
+    Matrix<Treal, PropM, StorageM> mat_chol;
     
     //! temporary vectors for Cholesky
-    Vector<Tmass> Xchol_real, Xchol_imag;
+    Vector<Treal> Xchol_real, Xchol_imag;
     
   public :
 
     DenseEigenProblem();
 
+    void InitMatrix(Matrix<Tstiff, Prop, Storage>&);
+    void InitMatrix(Matrix<Tstiff, Prop, Storage>&, Matrix<Tmass, PropM, StorageM>& );
+
+    void ComputeDiagonalMass();
     void FactorizeCholeskyMass();
     
-    template<class TransStatus, class T0>
-    void MltCholeskyMass(const TransStatus& transA, Vector<T0>& X);
+    void MltCholeskyMass(const SeldonTranspose& transA, Vector<Treal>& X);
+    void MltCholeskyMass(const SeldonTranspose& transA, Vector<Tcplx>& X);
     
-    template<class TransStatus, class T0>
-    void SolveCholeskyMass(const TransStatus& transA, Vector<T0>& X);
+    void SolveCholeskyMass(const SeldonTranspose& transA, Vector<Treal>& X);
+    void SolveCholeskyMass(const SeldonTranspose& transA, Vector<Tcplx>& X);
 
-    template<class TransStatus>
-    void MltCholeskyMass(const TransStatus& transA,
-                         Vector<complex<double> >& X);
+    void ComputeAndFactoRealMatrix(const Treal&, const Treal& a, const Treal& b, int which);
+    void ComputeAndFactoRealMatrix(const Tcplx&, const Treal& a, const Treal& b, int which);
+
+    void ComputeAndFactorizeStiffnessMatrix(const Treal& a, const Treal& b,
+					    int which_part = EigenProblem_Base<T>::COMPLEX_PART);
     
-    template<class TransStatus>
-    void SolveCholeskyMass(const TransStatus& transA,
-                           Vector<complex<double> >& X);
+    void ComputeAndFactorizeStiffnessMatrix(const Tcplx& a, const Tcplx& b,
+                                            int which_part = EigenProblem_Base<T>::COMPLEX_PART);
     
-    void ComputeAndFactorizeStiffnessMatrix(const T& a, const T& b);
-    void ComputeAndFactorizeStiffnessMatrix(const complex<T>& a,
-                                            const complex<T>& b,
-                                            bool real_p = true);
-    
-    template<class T0>
-    void ComputeAndFactorizeComplexMatrix(const complex<T0>& a,
-                                          const complex<T0>& b,
-                                          bool real_p = true);
+    void ComputeSolution(const Vector<Treal>& X, Vector<Treal>& Y);
+    void ComputeSolution(const Vector<Tcplx>& X, Vector<Tcplx>& Y);
 
-    void ComputeAndFactorizeComplexMatrix(const complex<double>& a,
-                                          const complex<double>& b,
-                                            bool real_p = true);
+    void ComputeSolution(const SeldonTranspose& transA,
+                         const Vector<Treal>& X, Vector<Treal>& Y);
 
-    template<class T0>
-    void ComputeSolution(const Vector<T0>& X, Vector<T0>& Y);
-
-    template<class TransA, class T0>
-    void ComputeSolution(const TransA& transA,
-                         const Vector<T0>& X, Vector<T0>& Y);
+    void ComputeSolution(const SeldonTranspose& transA,
+                         const Vector<Tcplx>& X, Vector<Tcplx>& Y);
     
     void Clear();
     
@@ -392,122 +443,78 @@ namespace Seldon
 	
   //! computation of a few eigenvalues for sparse matrices
   template<class T, class MatStiff,
-           class MatMass = Matrix<double, Symmetric, ArrayRowSymSparse> >
+           class MatMass = Matrix<typename ClassComplexType<T>::Treal,
+				  Symmetric, ArrayRowSymSparse> >
   class SparseEigenProblem
-    : public EigenProblem_Base<T, MatStiff, MatMass>
+    : public VirtualEigenProblem<T, typename MatStiff::entry_type,
+				 typename MatMass::entry_type>
   {
-  public :
-    typedef typename MatMass::value_type MassValue;
-    
   protected :
-    typedef typename ClassComplexType<T>::Tcplx Complexe;
+    typedef typename ClassComplexType<T>::Tcplx Tcplx;
+    typedef typename ClassComplexType<T>::Treal Treal;
     
     //! LU factorisation of sparse matrix
-    SparseDirectSolver<T> mat_lu;
+    SparseDirectSolver<Treal> mat_lu_real;
     
     //! factorisation of complex system
-    SparseDirectSolver<Complexe> mat_lu_cplx;
+    SparseDirectSolver<Tcplx> mat_lu_cplx;
     
     //! Cholesky factorisation of mass matrix if required
-    SparseCholeskySolver<double> chol_facto_mass_matrix;
+    SparseCholeskySolver<Treal> chol_facto_mass_matrix;
     
     //! temporary vectors for Cholesky
-    Vector<double> Xchol_real, Xchol_imag;
-    
-    //! if true, we take imaginary part of (K - sigma M)^-1
-    bool imag_solution;
+    Vector<Treal> Xchol_real, Xchol_imag;
+
+    MatMass* Mh;
+    MatStiff* Kh;
     
   public :
     
     SparseEigenProblem();
     
     void SelectCholeskySolver(int type);
+    
+    void InitMatrix(MatStiff&);
+    void InitMatrix(MatStiff&, MatMass&);
+
+    void ComputeDiagonalMass();
     void FactorizeCholeskyMass();
     
-    template<class Storage, class Alloc>
-    void FactorizeCholeskyMass(double&, Matrix<double, Symmetric, Storage, Alloc>& M);
+    template<class Storage>
+    void FactorizeCholeskyMass(Matrix<Treal, Symmetric, Storage>& M);
     
-    template<class T0, class T1, class Prop, class Storage, class Alloc>
-    void FactorizeCholeskyMass(T0&, Matrix<T1, Prop, Storage, Alloc>& M);
+    template<class T0, class Prop, class Storage>
+    void FactorizeCholeskyMass(Matrix<T0, Prop, Storage>& M);
     
-    template<class TransStatus, class T0>
-    void MltCholeskyMass(const TransStatus& transA, Vector<T0>& X);
+    void MltCholeskyMass(const SeldonTranspose& transA, Vector<Treal>& X);
+    void MltCholeskyMass(const SeldonTranspose& transA, Vector<Tcplx>& X);
     
-    template<class TransStatus, class T0>
-    void SolveCholeskyMass(const TransStatus& transA, Vector<T0>& X);
+    void SolveCholeskyMass(const SeldonTranspose& transA, Vector<Treal>& X);
+    void SolveCholeskyMass(const SeldonTranspose& transA, Vector<Tcplx>& X);
 
-    template<class TransStatus>
-    void MltCholeskyMass(const TransStatus& transA,
-                         Vector<complex<double> >& X);
-
-    template<class TransStatus>
-    void MltCholeskyMass(const TransStatus& transA,
-                         Vector<complex<double> >& X, double&);
-
-    template<class TransStatus>
-    void MltCholeskyMass(const TransStatus& transA,
-                         Vector<complex<double> >& X, complex<double>&);
-
-    template<class TransStatus>
-    void SolveCholeskyMass(const TransStatus& transA,
-			   Vector<complex<double> >& X);
+    void ComputeAndFactoRealMatrix(const Treal&, const Treal& a, const Treal& b, int which);
+    void ComputeAndFactoRealMatrix(const Tcplx&, const Treal& a, const Treal& b, int which);
     
-    template<class TransStatus>
-    void SolveCholeskyMass(const TransStatus& transA,
-                           Vector<complex<double> >& X, double&);
+    void ComputeAndFactorizeStiffnessMatrix(const Treal& a, const Treal& b,
+					    int which = EigenProblem_Base<T>::COMPLEX_PART);
+    
+    void ComputeAndFactorizeStiffnessMatrix(const Tcplx& a, const Tcplx& b,
+                                            int which = EigenProblem_Base<T>::COMPLEX_PART);
+    
+    void ComputeSolution(const Vector<Treal>& X, Vector<Treal>& Y);
+    void ComputeSolution(const Vector<Tcplx>& X, Vector<Tcplx>& Y);
+    
+    void ComputeSolution(const SeldonTranspose& transA,
+                         const Vector<Treal>& X, Vector<Treal>& Y);
 
-    template<class TransStatus>
-    void SolveCholeskyMass(const TransStatus& transA,
-                           Vector<complex<double> >& X, complex<double>&);
-    
-    void ComputeAndFactorizeStiffnessMatrix(const T& a, const T& b);
-    void ComputeAndFactorizeStiffnessMatrix(const complex<T>& a,
-                                            const complex<T>& b,
-                                            bool real_p = true);
-    
-    template<class T0>
-    void ComputeAndFactorizeComplexMatrix(const complex<T0>& a,
-                                          const complex<T0>& b,
-                                          bool real_p = true);
-
-    void ComputeAndFactorizeComplexMatrix(const complex<double>& a,
-                                          const complex<double>& b,
-                                            bool real_p = true);
-
-    template<class T0>
-    void ComputeSolution(const Vector<T0>& X, Vector<T0>& Y);
-    
-    template<class TransA, class T0>
-    void ComputeSolution(const TransA& transA,
-                         const Vector<T0>& X, Vector<T0>& Y);
-    
-    template<class TransA>
-    void ComputeComplexSolution(const TransA&,
-                                const Vector<double>& X, Vector<double>& Y);
-    
-    template<class TransA>
-    void ComputeComplexSolution(const TransA&,
-                                const Vector<complex<double> >& X,
-                                Vector<complex<double> >& Y);
+    void ComputeSolution(const SeldonTranspose& transA,
+                         const Vector<Tcplx>& X, Vector<Tcplx>& Y);
     
     void Clear();
     
   };
  
-  
-  //! computation of a few eigenvalues with only matrix-vector product
-  template<class T, class MatStiff>
-  class MatrixFreeEigenProblem
-    : public EigenProblem_Base<T, MatStiff,
-                               Matrix<double, Symmetric, ArrayRowSymSparse> >
-  {
-  public :
-
-    MatrixFreeEigenProblem();
     
-  };
-  
-  
   //! list of availables eigenvalue solvers
   class TypeEigenvalueSolver
   {
@@ -535,11 +542,10 @@ namespace Seldon
     
   };
   
-  template<class EigenPb, class Vector1, class Vector2,
-            class T, class Prop, class Storage, class Alloc3>
-  inline void GetEigenvaluesEigenvectors(EigenPb& var_eig, Vector1& lambda,
-                                         Vector2& lambda_imag,
-                                         Matrix<T, Prop, Storage, Alloc3>& eigen_vec)
+  template<class T, class Prop, class Storage>
+  inline void GetEigenvaluesEigenvectors(EigenProblem_Base<T>& var_eig,
+					 Vector<T>& lambda, Vector<T>& lambda_imag,
+                                         Matrix<T, Prop, Storage>& eigen_vec)
   {
     int type_solver = TypeEigenvalueSolver::default_solver;
     if (type_solver == TypeEigenvalueSolver::DEFAULT)
@@ -549,7 +555,7 @@ namespace Seldon
       {
 #ifdef SELDON_WITH_ARPACK
         T zero; SetComplexZero(zero);
-        Matrix<T, General, ColMajor, Alloc3> eigen_old;
+        Matrix<T, General, ColMajor> eigen_old;
         FindEigenvaluesArpack(var_eig, lambda, lambda_imag, eigen_old);
         
         // eigenvalues are sorted by ascending order
@@ -565,7 +571,7 @@ namespace Seldon
       {
 #ifdef SELDON_WITH_ANASAZI
 	T zero; SetComplexZero(zero);
-        Matrix<T, General, ColMajor, Alloc3> eigen_old;
+        Matrix<T, General, ColMajor> eigen_old;
         FindEigenvaluesAnasazi(var_eig, lambda, lambda_imag, eigen_old);
         
         // eigenvalues are sorted by ascending order
@@ -581,7 +587,7 @@ namespace Seldon
       {
 #ifdef SELDON_WITH_FEAST
         T zero; SetComplexZero(zero);
-        Matrix<T, General, ColMajor, Alloc3> eigen_old;
+        Matrix<T, General, ColMajor> eigen_old;
         FindEigenvaluesFeast(var_eig, lambda, lambda_imag, eigen_old);
         
         // eigenvalues are sorted by ascending order
@@ -602,6 +608,6 @@ namespace Seldon
   }
 }
 
-#define SELDON_FILE_EIGENVALUE_SOLVER_HXX
+#define SELDON_FILE_VIRTUAL_EIGENVALUE_SOLVER_HXX
 #endif
 

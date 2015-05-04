@@ -546,39 +546,84 @@ namespace Seldon
   
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>
-  ::MltAddVector(const T& alpha, const Vector<T>& x,
-		 const T& beta, Vector<T>& y) const
+  ::MltAddVector(const Treal& alpha, const Vector<Treal>& x,
+		 const Treal& beta, Vector<Treal>& y) const
   {
-    MltAdd(alpha,
-	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-	   x, beta, y);
+    MltAddComplex(alpha,
+		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+		  x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>
-  ::MltAddVector(const T& alpha, const class_SeldonTrans& trans,
-		 const Vector<T>& x,
-		 const T& beta, Vector<T>& y) const
+  ::MltAddVector(const Tcplx& alpha, const Vector<Tcplx>& x,
+		 const Tcplx& beta, Vector<Tcplx>& y) const
   {
-    MltAdd(alpha, trans,
-	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-	   x, beta, y);
+    MltAddComplex(alpha,
+		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+		  x, beta, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>
+  ::MltAddVector(const Treal& alpha, const SeldonTranspose& trans,
+		 const Vector<Treal>& x,
+		 const Treal& beta, Vector<Treal>& y) const
+  {
+    MltAddComplex(alpha, trans,
+		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+		  x, beta, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>
+  ::MltAddVector(const Tcplx& alpha, const SeldonTranspose& trans,
+		 const Vector<Tcplx>& x,
+		 const Tcplx& beta, Vector<Tcplx>& y) const
+  {
+    MltAddComplex(alpha, trans,
+		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+		  x, beta, y);
   }
   
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>
-  ::MltVector(const Vector<T>& x, Vector<T>& y) const
+  ::MltVector(const Vector<Treal>& x, Vector<Treal>& y) const
   {
-    Mlt(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>
+  ::MltVector(const Vector<Tcplx>& x, Vector<Tcplx>& y) const
+  {
+    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>  
-  ::MltVector(const class_SeldonTrans& trans,
-	      const Vector<T>& x, Vector<T>& y) const
+  ::MltVector(const SeldonTranspose& trans,
+	      const Vector<Treal>& x, Vector<Treal>& y) const
   {
-    Mlt(trans,
-	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    MltComplex(trans,
+	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>  
+  ::MltVector(const SeldonTranspose& trans,
+	      const Vector<Tcplx>& x, Vector<Tcplx>& y) const
+  {
+    MltComplex(trans,
+	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline bool Matrix_ArraySparse<T, Prop, Storage, Allocator>  
+  ::IsSymmetric() const
+  {
+    return IsSymmetricMatrix(static_cast<const Matrix<T, Prop, Storage,
+			     Allocator>& >(*this));
   }
 #endif
 

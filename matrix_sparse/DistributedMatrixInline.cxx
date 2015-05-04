@@ -440,40 +440,201 @@ namespace Seldon
 	     const typename ClassComplexType<T>::Treal& omega,
 	     int nb_iter, int stage_ssor) const
   {
-    SOR(trans,*this, x, r, omega, nb_iter, stage_ssor);
+    SOR(trans, *this, x, r, omega, nb_iter, stage_ssor);
   }
   
   template <class T, class Prop, class Storage, class Allocator>
   inline void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::MltAddVector(const T& alpha, const Vector<T>& x,
-		 const T& beta, Vector<T>& y) const
+  ::MltAddVector(const Treal& alpha, const Vector<Treal>& x,
+		 const Treal& beta, Vector<Treal>& y) const
   {
-    MltAdd(alpha,*this, x, beta, y);
+    MltAddComplex(alpha, *this, x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
   inline void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::MltAddVector(const T& alpha, const class_SeldonTrans& trans,
-		 const Vector<T>& x,
-		 const T& beta, Vector<T>& y) const
+  ::MltAddVector(const Tcplx& alpha, const Vector<Tcplx>& x,
+		 const Tcplx& beta, Vector<Tcplx>& y) const
   {
-    MltAdd(alpha, trans, *this, x, beta, y);
+    MltAddComplex(alpha, *this, x, beta, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::MltAddVector(const Treal& alpha, const SeldonTranspose& trans,
+		 const Vector<Treal>& x,
+		 const Treal& beta, Vector<Treal>& y) const
+  {
+    MltAddComplex(alpha, trans, *this, x, beta, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::MltAddVector(const Tcplx& alpha, const SeldonTranspose& trans,
+		 const Vector<Tcplx>& x,
+		 const Tcplx& beta, Vector<Tcplx>& y) const
+  {
+    MltAddComplex(alpha, trans, *this, x, beta, y);
   }
   
   template <class T, class Prop, class Storage, class Allocator>
   inline void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::MltVector(const Vector<T>& x, Vector<T>& y) const
+  ::MltVector(const Vector<Treal>& x, Vector<Treal>& y) const
   {
-    Mlt(*this, x, y);
+    MltComplex(*this, x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::MltVector(const Vector<Tcplx>& x, Vector<Tcplx>& y) const
+  {
+    MltComplex(*this, x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
   inline void DistributedMatrix<T, Prop, Storage, Allocator>  
-  ::MltVector(const class_SeldonTrans& trans,
-	      const Vector<T>& x, Vector<T>& y) const
+  ::MltVector(const SeldonTranspose& trans,
+	      const Vector<Treal>& x, Vector<Treal>& y) const
   {
-    Mlt(trans,*this, x, y);
+    MltComplex(trans, *this, x, y);
   }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void DistributedMatrix<T, Prop, Storage, Allocator>  
+  ::MltVector(const SeldonTranspose& trans,
+	      const Vector<Tcplx>& x, Vector<Tcplx>& y) const
+  {
+    MltComplex(trans, *this, x, y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y)
+  {
+    Mlt(A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
+  {
+    Mlt(A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
+  {
+    Mlt(A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y)
+  {
+    throw WrongArgument("MltComplex", "Incompatible matrix-vector product");			
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y)
+  {
+    Mlt(trans, A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
+  {
+    Mlt(trans, A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
+  {
+    Mlt(trans, A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y)
+  {
+    throw WrongArgument("MltComplex", "Incompatible matrix-vector product");			
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha,
+		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y)
+  {
+    MltAdd(alpha, A, X, beta, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha,
+		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y)
+  {
+    MltAdd(alpha, A, X, beta, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha,
+		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y)
+  {
+    MltAdd(alpha, A, X, beta, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha,
+		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y)
+  {
+    throw WrongArgument("MltAddComplex", "Incompatible matrix-vector product");			
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha, const SeldonTranspose& trans,
+		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y)
+  {
+    MltAdd(alpha, trans, A, X, beta, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha, const SeldonTranspose& trans,
+		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y)
+  {
+    MltAdd(alpha, trans, A, X, beta, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha, const SeldonTranspose& trans,
+		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y)
+  {
+    MltAdd(alpha, trans, A, X, beta, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha, const SeldonTranspose& trans,
+		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y)
+  {
+    throw WrongArgument("MltAddComplex", "Incompatible matrix-vector product");			
+  }
+
 #endif
   
 }

@@ -41,7 +41,8 @@ namespace Seldon
     int status_;
 
   public:
-    SeldonTranspose(int status);
+    explicit SeldonTranspose(int status);
+    
 #ifdef SELDON_WITH_BLAS
     SeldonTranspose(const enum CBLAS_TRANSPOSE status);
     operator CBLAS_TRANSPOSE() const;
@@ -97,7 +98,8 @@ namespace Seldon
     int status_;
 
   public:
-    SeldonDiag(int status);
+    explicit SeldonDiag(int status);
+    
 #ifdef SELDON_WITH_BLAS
     operator CBLAS_DIAG() const;
 #endif
@@ -142,7 +144,7 @@ namespace Seldon
     int status_;
 
   public:
-    SeldonUplo(int status);
+    explicit SeldonUplo(int status);
 #ifdef SELDON_WITH_BLAS
     operator CBLAS_UPLO() const;
 #endif
@@ -170,7 +172,7 @@ namespace Seldon
     int status_;
 
   public:
-    SeldonNorm(int status);
+    explicit SeldonNorm(int status);
     operator char() const;
     char Char() const;
     char RevChar() const;
@@ -193,7 +195,7 @@ namespace Seldon
     bool status_;
 
   public:
-    SeldonConjugate(bool status);
+    explicit SeldonConjugate(bool status);
     bool Conj() const;
   };
 
@@ -219,7 +221,7 @@ namespace Seldon
     int status_;
 
   public:
-    SeldonSide(int status);
+    explicit SeldonSide(int status);
 #ifdef SELDON_WITH_BLAS
     SeldonSide(const enum CBLAS_SIDE status);
     operator CBLAS_SIDE() const;

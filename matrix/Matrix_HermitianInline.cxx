@@ -706,6 +706,74 @@ namespace Seldon
     this->allocator_.memorycpy(this->data_, A.GetData(), this->GetDataSize());
   }
 
+
+#ifdef SELDON_WITH_VIRTUAL
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Hermitian<T, Prop, Storage, Allocator>
+  ::ApplySor(Vector<T>& x, const Vector<T>& r,
+	     const typename ClassComplexType<T>::Treal& omega,
+	     int nb_iter, int stage_ssor) const
+  {
+    SOR(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	x, r, omega, nb_iter, stage_ssor);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Hermitian<T, Prop, Storage, Allocator>
+  ::ApplySor(const class_SeldonTrans& trans, Vector<T>& x, const Vector<T>& r,
+	     const typename ClassComplexType<T>::Treal& omega,
+	     int nb_iter, int stage_ssor) const
+  {
+    SOR(trans,
+	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	x, r, omega, nb_iter, stage_ssor);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Hermitian<T, Prop, Storage, Allocator>
+  ::MltAddVector(const T& alpha, const Vector<T>& x,
+		 const T& beta, Vector<T>& y) const
+  {
+    MltAdd(alpha,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Hermitian<T, Prop, Storage, Allocator>
+  ::MltAddVector(const T& alpha, const SeldonTranspose& trans,
+		 const Vector<T>& x,
+		 const T& beta, Vector<T>& y) const
+  {
+    MltAdd(alpha, trans,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Hermitian<T, Prop, Storage, Allocator>
+  ::MltVector(const Vector<T>& x, Vector<T>& y) const
+  {
+    Mlt(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Hermitian<T, Prop, Storage, Allocator>  
+  ::MltVector(const SeldonTranspose& trans,
+	      const Vector<T>& x, Vector<T>& y) const
+  {
+    Mlt(trans,
+	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline bool Matrix_Hermitian<T, Prop, Storage, Allocator>  
+  ::IsSymmetric() const
+  {
+    return false;
+  }
+#endif
+
   
   ////////////////////
   // MATRIX<COLHERM> //

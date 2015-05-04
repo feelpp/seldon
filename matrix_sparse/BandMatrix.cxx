@@ -630,56 +630,109 @@ namespace Seldon
   
 #ifdef SELDON_WITH_VIRTUAL
   template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Band<T, Prop, Storage, Allocator>
-  ::MltAddVector(const T& alpha, const Vector<T>& x,
-		 const T& beta, Vector<T>& y) const
+  inline void Matrix_Band<T, Prop, Storage, Allocator>
+  ::ApplySor(Vector<T>& x, const Vector<T>& r,
+	     const typename ClassComplexType<T>::Treal& omega,
+	     int nb_iter, int stage_ssor) const
   {
-    T zero; SetComplexZero(zero);
-    if (beta == zero)
-      y.Fill(zero);
-    else
-      Mlt(beta, y);
-    
-    this->MltAdd(alpha, SeldonNoTrans, x, y);
-  }
-    
-  template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Band<T, Prop, Storage, Allocator>
-  ::MltAddVector(const T& alpha, const class_SeldonTrans&,
-		 const Vector<T>& x, const T& beta, Vector<T>& y) const
-  {
-    T zero; SetComplexZero(zero);
-    if (beta == zero)
-      y.Fill(zero);
-    else
-      Mlt(beta, y);
-    
-    this->MltAdd(alpha, SeldonTrans, x, y);
+    SOR(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	x, r, omega, nb_iter, stage_ssor);
   }
   
   template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Band<T, Prop, Storage, Allocator>
-  ::MltVector(const Vector<T>& x, Vector<T>& y) const
+  inline void Matrix_Band<T, Prop, Storage, Allocator>
+  ::ApplySor(const class_SeldonTrans& trans, Vector<T>& x, const Vector<T>& r,
+	     const typename ClassComplexType<T>::Treal& omega,
+	     int nb_iter, int stage_ssor) const
   {
-    T zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    this->MltAdd(one, SeldonNoTrans, x, y);
+    SOR(trans,
+	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	x, r, omega, nb_iter, stage_ssor);
   }
   
   template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Band<T, Prop, Storage, Allocator>
-  ::MltVector(const class_SeldonTrans&,
-	      const Vector<T>& x, Vector<T>& y) const
+  inline void Matrix_Band<T, Prop, Storage, Allocator>
+  ::MltAddVector(const Treal& alpha, const Vector<Treal>& x,
+		 const Treal& beta, Vector<Treal>& y) const
   {
-    T zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    this->MltAdd(one, SeldonTrans, x, y);
+    MltAddComplex(alpha,
+		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+		  x, beta, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Band<T, Prop, Storage, Allocator>
+  ::MltAddVector(const Tcplx& alpha, const Vector<Tcplx>& x,
+		 const Tcplx& beta, Vector<Tcplx>& y) const
+  {
+    MltAddComplex(alpha,
+		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+		  x, beta, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Band<T, Prop, Storage, Allocator>
+  ::MltAddVector(const Treal& alpha, const SeldonTranspose& trans,
+		 const Vector<Treal>& x,
+		 const Treal& beta, Vector<Treal>& y) const
+  {
+    MltAddComplex(alpha, trans,
+		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+		  x, beta, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Band<T, Prop, Storage, Allocator>
+  ::MltAddVector(const Tcplx& alpha, const SeldonTranspose& trans,
+		 const Vector<Tcplx>& x,
+		 const Tcplx& beta, Vector<Tcplx>& y) const
+  {
+    MltAddComplex(alpha, trans,
+		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+		  x, beta, y);
+  }
+  
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Band<T, Prop, Storage, Allocator>
+  ::MltVector(const Vector<Treal>& x, Vector<Treal>& y) const
+  {
+    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Band<T, Prop, Storage, Allocator>
+  ::MltVector(const Vector<Tcplx>& x, Vector<Tcplx>& y) const
+  {
+    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Band<T, Prop, Storage, Allocator>  
+  ::MltVector(const SeldonTranspose& trans,
+	      const Vector<Treal>& x, Vector<Treal>& y) const
+  {
+    MltComplex(trans,
+	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline void Matrix_Band<T, Prop, Storage, Allocator>  
+  ::MltVector(const SeldonTranspose& trans,
+	      const Vector<Tcplx>& x, Vector<Tcplx>& y) const
+  {
+    MltComplex(trans,
+	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+  }
+
+  template <class T, class Prop, class Storage, class Allocator>
+  inline bool Matrix_Band<T, Prop, Storage, Allocator>  
+  ::IsSymmetric() const
+  {
+    return false;
   }
 #endif
 
-  
+
   /****************
    * Matrix_Arrow *
    ****************/

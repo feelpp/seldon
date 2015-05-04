@@ -303,22 +303,33 @@ namespace Seldon
     virtual void ApplySor(Vector<T>& x, const Vector<T>& r,
 			  const typename ClassComplexType<T>::Treal& omega,
 			  int nb_iter, int stage_ssor) const;
-
+    
     virtual void ApplySor(const class_SeldonTrans&, Vector<T>& x, const Vector<T>& r,
 			  const typename ClassComplexType<T>::Treal& omega,
 			  int nb_iter, int stage_ssor) const;
     
-    virtual void MltAddVector(const T& alpha, const Vector<T>& x,
-			      const T& beta, Vector<T>& y) const;
+    virtual void MltAddVector(const Treal& alpha, const Vector<Treal>& x,
+			      const Treal& beta, Vector<Treal>& y) const;
 
-    virtual void MltAddVector(const T& alpha, const class_SeldonTrans&,
-			      const Vector<T>& x,
-			      const T& beta, Vector<T>& y) const;
+    virtual void MltAddVector(const Tcplx& alpha, const Vector<Tcplx>& x,
+			      const Tcplx& beta, Vector<Tcplx>& y) const;
+
+    virtual void MltAddVector(const Treal& alpha, const SeldonTranspose&,
+			      const Vector<Treal>& x,
+			      const Treal& beta, Vector<Treal>& y) const;
+
+    virtual void MltAddVector(const Tcplx& alpha, const SeldonTranspose&,
+			      const Vector<Tcplx>& x,
+			      const Tcplx& beta, Vector<Tcplx>& y) const;
     
-    virtual void MltVector(const Vector<T>& x, Vector<T>& y) const;
+    virtual void MltVector(const Vector<Treal>& x, Vector<Treal>& y) const;
+    virtual void MltVector(const Vector<Tcplx>& x, Vector<Tcplx>& y) const;
     
-    virtual void MltVector(const class_SeldonTrans&,
-			   const Vector<T>& x, Vector<T>& y) const;
+    virtual void MltVector(const SeldonTranspose&,
+			   const Vector<Treal>& x, Vector<Treal>& y) const;
+
+    virtual void MltVector(const SeldonTranspose&,
+			   const Vector<Tcplx>& x, Vector<Tcplx>& y) const;
 #endif
 
     // friend functions    
@@ -772,6 +783,88 @@ namespace Seldon
 		const IVect& row, const IVect& col,
                 DistributedMatrix<T1, Prop1, Storage1, Allocator1>& B);
 
+#endif
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>&,
+		  const Vector<T0>& X, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>&,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>&,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>&,
+		  const Vector<T0>& X, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha,
+		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha,
+		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha,
+		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha,
+		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha, const SeldonTranspose& trans,
+		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha, const SeldonTranspose& trans,
+		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha, const SeldonTranspose& trans,
+		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y);
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha, const SeldonTranspose& trans,
+		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y);
+
+#endif
 }
 
 #define SELDON_FILE_DISTRIBUTED_MATRIX_HXX

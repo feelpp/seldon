@@ -111,6 +111,30 @@ namespace Seldon
     void ReadText(string FileName);
     void ReadText(istream& FileStream);
 
+#ifdef SELDON_WITH_VIRTUAL
+    virtual void ApplySor(Vector<T>& x, const Vector<T>& r,
+			  const typename ClassComplexType<T>::Treal& omega,
+			  int nb_iter, int stage_ssor) const;
+
+    virtual void ApplySor(const class_SeldonTrans&, Vector<T>& x, const Vector<T>& r,
+			  const typename ClassComplexType<T>::Treal& omega,
+			  int nb_iter, int stage_ssor) const;
+    
+    virtual void MltAddVector(const T& alpha, const Vector<T>& x,
+			      const T& beta, Vector<T>& y) const;
+
+    virtual void MltAddVector(const T& alpha, const SeldonTranspose&,
+			      const Vector<T>& x,
+			      const T& beta, Vector<T>& y) const;
+    
+    virtual void MltVector(const Vector<T>& x, Vector<T>& y) const;
+    
+    virtual void MltVector(const SeldonTranspose&,
+			   const Vector<T>& x, Vector<T>& y) const;
+
+    virtual bool IsSymmetric() const;
+#endif
+
   };
 
 

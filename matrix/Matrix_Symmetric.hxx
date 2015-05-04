@@ -109,6 +109,44 @@ namespace Seldon
     void ReadText(string FileName);
     void ReadText(istream& FileStream);
 
+#ifdef SELDON_WITH_VIRTUAL
+    typedef typename ClassComplexType<T>::Treal Treal;
+    typedef typename ClassComplexType<T>::Tcplx Tcplx;
+
+    virtual void ApplySor(Vector<T>& x, const Vector<T>& r,
+			  const typename ClassComplexType<T>::Treal& omega,
+			  int nb_iter, int stage_ssor) const;
+
+    virtual void ApplySor(const class_SeldonTrans&, Vector<T>& x, const Vector<T>& r,
+			  const typename ClassComplexType<T>::Treal& omega,
+			  int nb_iter, int stage_ssor) const;
+        
+    virtual void MltAddVector(const Treal& alpha, const Vector<Treal>& x,
+			      const Treal& beta, Vector<Treal>& y) const;
+
+    virtual void MltAddVector(const Tcplx& alpha, const Vector<Tcplx>& x,
+			      const Tcplx& beta, Vector<Tcplx>& y) const;
+
+    virtual void MltAddVector(const Treal& alpha, const SeldonTranspose&,
+			      const Vector<Treal>& x,
+			      const Treal& beta, Vector<Treal>& y) const;
+
+    virtual void MltAddVector(const Tcplx& alpha, const SeldonTranspose&,
+			      const Vector<Tcplx>& x,
+			      const Tcplx& beta, Vector<Tcplx>& y) const;
+    
+    virtual void MltVector(const Vector<Treal>& x, Vector<Treal>& y) const;
+    virtual void MltVector(const Vector<Tcplx>& x, Vector<Tcplx>& y) const;
+    
+    virtual void MltVector(const SeldonTranspose&,
+			   const Vector<Treal>& x, Vector<Treal>& y) const;
+
+    virtual void MltVector(const SeldonTranspose&,
+			   const Vector<Tcplx>& x, Vector<Tcplx>& y) const;
+    
+    virtual bool IsSymmetric() const;
+#endif
+
   };
 
 

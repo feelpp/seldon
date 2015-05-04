@@ -1066,7 +1066,7 @@ namespace Seldon
       Mlt(beta, C);
 
     int m = A.GetM(), n, p;
-    T1 val;
+    T3 val;
     if (alpha == one)
       {
 	for (int i = 0 ; i < m ; i++)

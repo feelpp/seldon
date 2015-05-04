@@ -204,6 +204,43 @@ namespace Seldon
   }
 
 
+  template<class T1, class Prop1, class Storage1, class Allocator1,
+	   class T2, class Storage2, class Allocator2,
+	   class T3, class Storage3, class Allocator3>
+  void Mlt(const SeldonTranspose& Trans,
+	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+	   const Vector<T2, Storage2, Allocator2>& X,
+	   Vector<T3, Storage3, Allocator3>& Y)
+  {
+    if (Trans.NoTrans())
+      Mlt(M, X, Y);
+    else if (Trans.Trans())
+      Mlt(SeldonTrans, M, X, Y);
+    else
+      Mlt(SeldonConjTrans, M, X, Y);
+  }
+
+
+  template<class T0,
+	   class T1, class Prop1, class Storage1, class Allocator1,
+	   class T2, class Storage2, class Allocator2,
+	   class T3,
+	   class T4, class Storage4, class Allocator4>
+  void MltAdd(const T0& alpha, const SeldonTranspose& Trans,
+	      const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3& beta,
+	      Vector<T4, Storage4, Allocator4>& Y)
+  {
+    if (Trans.NoTrans())
+      MltAdd(alpha, M, X, beta, Y);
+    else if (Trans.Trans())
+      MltAdd(alpha, SeldonTrans, M, X, beta, Y);
+    else
+      MltAdd(alpha, SeldonConjTrans, M, X, beta, Y);
+  }
+  
+
   // MLT //
   /////////
 
@@ -2287,6 +2324,251 @@ namespace Seldon
 
   // CHECKDIM //
   //////////////
+
+
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y)
+  {
+    Mlt(A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
+  {
+    Mlt(A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
+  {
+    Mlt(A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y)
+  {
+    throw WrongArgument("MltComplex", "Incompatible matrix-vector product");			
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y)
+  {
+    Mlt(trans, A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
+  {
+    Mlt(trans, A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
+  {
+    Mlt(trans, A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltComplex(const SeldonTranspose& trans,
+		  const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y)
+  {
+    throw WrongArgument("MltComplex", "Incompatible matrix-vector product");			
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha,
+		     const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y)
+  {
+    MltAdd(alpha, A, X, beta, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha,
+		     const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y)
+  {
+    MltAdd(alpha, A, X, beta, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha,
+		     const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y)
+  {
+    MltAdd(alpha, A, X, beta, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha,
+		     const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y)
+  {
+    throw WrongArgument("MltAddComplex", "Incompatible matrix-vector product");			
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha, const SeldonTranspose& trans,
+		     const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y)
+  {
+    MltAdd(alpha, trans, A, X, beta, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha, const SeldonTranspose& trans,
+		     const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y)
+  {
+    MltAdd(alpha, trans, A, X, beta, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const complex<T0>& alpha, const SeldonTranspose& trans,
+		     const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y)
+  {
+    MltAdd(alpha, trans, A, X, beta, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void MltAddComplex(const T0& alpha, const SeldonTranspose& trans,
+		     const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y)
+  {
+    throw WrongArgument("MltAddComplex", "Incompatible matrix-vector product");			
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void SolveComplexLU(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<T0>& x)
+  {
+    SolveLU(A, pivot, x);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void SolveComplexLU(const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<complex<T0> >& x)
+  {
+    SolveLU(A, pivot, x);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void SolveComplexLU(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<complex<T0> >& x)
+  {
+    Vector<T0> xr(x.GetM()), xi(x.GetM());
+    for (int i = 0; i < x.GetM(); i++)
+      {
+	xr = real(x(i));
+	xi = imag(x(i));
+      }
+    
+    SolveLU(A, pivot, xr);
+    SolveLU(A, pivot, xi);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      x(i) = complex<T0>(xr(i), xi(i));
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void SolveComplexLU(const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<T0>& x)
+  {
+    throw WrongArgument("SolveComplexLU", "incompatible types");
+  }
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<T0, Symmetric, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<T0>& x)
+  {
+    SolveLU(A, pivot, x);
+  }
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<T0, General, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<T0>& x)
+  {
+    SolveLU(trans, A, pivot, x);
+  }
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<complex<T0>, Symmetric, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<complex<T0> >& x)
+  {
+    SolveLU(A, pivot, x);
+  }
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<complex<T0>, General, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<complex<T0> >& x)
+  {
+    SolveLU(trans, A, pivot, x);
+  }
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<T0, Symmetric, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<complex<T0> >& x)
+  {
+    SolveComplexLU(A, pivot, x);
+  }
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<T0, General, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<complex<T0> >& x)
+  {
+    Vector<T0> xr(x.GetM()), xi(x.GetM());
+    for (int i = 0; i < x.GetM(); i++)
+      {
+	xr = real(x(i));
+	xi = imag(x(i));
+      }
+    
+    SolveLU(trans, A, pivot, xr);
+    SolveLU(trans, A, pivot, xi);
+    
+    for (int i = 0; i < x.GetM(); i++)
+      x(i) = complex<T0>(xr(i), xi(i));
+  }
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<complex<T0>, Symmetric, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<T0>& x)
+  {
+    throw WrongArgument("SolveComplexLU", "incompatible types");
+  }
+
+  template<class T0, class Storage0, class Allocator0>
+  void SolveComplexLU(const SeldonTranspose& trans,
+		      const Matrix<complex<T0>, General, Storage0, Allocator0>& A,
+		      const Vector<int>& pivot, Vector<T0>& x)
+  {
+    throw WrongArgument("SolveComplexLU", "incompatible types");
+  }
+#endif
 
 
 }  // namespace Seldon.

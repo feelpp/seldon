@@ -217,14 +217,16 @@ namespace Seldon
     virtual void MltAddVector(const T& alpha, const Vector<T>& x,
 			      const T& beta, Vector<T>& y) const;
     
-    virtual void MltAddVector(const T& alpha, const class_SeldonTrans&,
+    virtual void MltAddVector(const T& alpha, const SeldonTranspose&,
 			      const Vector<T>& x,
 			      const T& beta, Vector<T>& y) const;
 
     virtual void MltVector(const Vector<T>& x, Vector<T>& y) const;
     
-    virtual void MltVector(const class_SeldonTrans&,
+    virtual void MltVector(const SeldonTranspose&,
 			   const Vector<T>& x, Vector<T>& y) const;
+
+    virtual bool IsSymmetric() const;
 #endif
 
   };
