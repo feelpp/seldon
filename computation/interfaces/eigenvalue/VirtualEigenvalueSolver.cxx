@@ -709,7 +709,21 @@ namespace Seldon
     this->Init(K.GetM());
   }
   
-
+  
+  //! sets pointers to the stiffness and mass matrix
+  /*!
+    Pointers for mass and stiffness are set, but not the number of rows
+    Init(n) must be called thereafter
+   */
+  template<class T, class StiffValue, class MassValue>
+  void VirtualEigenProblem<T, StiffValue, MassValue>
+  ::SetMatrix(VirtualMatrix<StiffValue>& K, VirtualMatrix<MassValue>& M)
+  {
+    Kh = &K;
+    Mh = &M;
+  }
+  
+		  
   //! sets which eigenvalues are searched
   /*!
     You can ask small eigenvalues, large, or eigenvalues
@@ -1440,6 +1454,63 @@ namespace Seldon
 
     for (int i = 0; i < X.GetM(); i++)
       X(i) = complex<Treal>(Xchol_real(i), Xchol_imag(i));
+  }
+  
+
+  //! matrix-vector product Y = M X where M is the mass matrix
+  template<class T, class Tstiff, class Prop, class Storage,
+           class Tmass, class PropM, class StorageM>
+  void DenseEigenProblem<T, Tstiff, Prop, Storage, Tmass, PropM, StorageM>
+  ::MltMass(const Vector<T>& X, Vector<T>& Y)
+  {
+    if (Mh == NULL)
+      {
+        // default : mass matrix is identity (standard eigenvalue problem)
+        Seldon::Copy(X, Y);
+      }
+    else
+      Mlt(*Mh, X, Y);
+  }
+    
+
+  //! matrix-vector product Y = K X where K is the stiffness matrix
+  template<class T, class Tstiff, class Prop, class Storage,
+           class Tmass, class PropM, class StorageM>
+  void DenseEigenProblem<T, Tstiff, Prop, Storage, Tmass, PropM, StorageM>
+  ::MltStiffness(const Vector<T>& X, Vector<T>& Y)
+  {
+    if (Kh == NULL)
+      this->PrintErrorInit();
+    else
+      Mlt(*Kh, X, Y);
+  }
+  
+
+  //! matrix-vector product Y = (coef_mas M + coef_stiff K) X
+  template<class T, class Tstiff, class Prop, class Storage,
+           class Tmass, class PropM, class StorageM>
+  void DenseEigenProblem<T, Tstiff, Prop, Storage, Tmass, PropM, StorageM>
+  ::MltStiffness(const T& coef_mass, const T& coef_stiff,
+		 const Vector<T>& X, Vector<T>& Y)
+  {
+    if (Kh == NULL)
+      this->PrintErrorInit();
+    else
+      Mlt(*Kh, X, Y);
+    
+    if (coef_mass != T(0))
+      {
+        if (Mh == NULL)
+          for (int i = 0; i < Y.GetM(); i++)
+            Y(i) += coef_mass*X(i);
+        else
+          MltAddComplex(coef_mass, *Mh, X, coef_stiff, Y);
+      }
+    else
+      {
+        if (coef_stiff != T(1))
+          Mlt(coef_stiff, Y);
+      }
   }
   
   

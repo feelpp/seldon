@@ -32,7 +32,6 @@ namespace Seldon
     
     // initialization of computation
     int n = var.GetM();
-    var.Init(n);
 
     typedef typename ClassComplexType<T>::Tcplx Tcplx;
     typedef typename ClassComplexType<T>::Treal Treal;

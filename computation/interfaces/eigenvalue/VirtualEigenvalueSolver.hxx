@@ -327,6 +327,8 @@ namespace Seldon
     void InitMatrix(VirtualMatrix<StiffValue>& K);
     void InitMatrix(VirtualMatrix<StiffValue>& K, VirtualMatrix<MassValue>& M);
 
+    void SetMatrix(VirtualMatrix<StiffValue>& K, VirtualMatrix<MassValue>& M);
+    
     void SetTypeSpectrum(int type, const T& val,
                          int type_sort = EigenProblem_Base<T>::SORTED_MODULUS);
 
@@ -417,6 +419,12 @@ namespace Seldon
     
     void SolveCholeskyMass(const SeldonTranspose& transA, Vector<Treal>& X);
     void SolveCholeskyMass(const SeldonTranspose& transA, Vector<Tcplx>& X);
+
+    void MltMass(const Vector<T>& X, Vector<T>& Y);    
+    
+    void MltStiffness(const Vector<T>& X, Vector<T>& Y);
+    void MltStiffness(const T& coef_mass, const T& coef_stiff,
+		      const Vector<T>& X, Vector<T>& Y);
 
     void ComputeAndFactoRealMatrix(const Treal&, const Treal& a, const Treal& b, int which);
     void ComputeAndFactoRealMatrix(const Tcplx&, const Treal& a, const Treal& b, int which);

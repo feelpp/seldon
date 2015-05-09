@@ -65,9 +65,7 @@ namespace Seldon
           }
       }
     
-    // initializaing of computation
-    var.Init(n);
-    
+    // initializing of computation
     int nev = var.GetNbAskedEigenvalues();
     double tol = var.GetStoppingCriterion();
     

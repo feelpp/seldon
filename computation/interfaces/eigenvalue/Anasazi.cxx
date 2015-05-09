@@ -198,8 +198,6 @@ namespace Seldon
       }
 
     // initializaing of computation
-    var.Init(n);
-    
     T shiftr = var.GetShiftValue(), shifti = var.GetImagShiftValue();    
     T zero, one;
     SetComplexZero(zero);
