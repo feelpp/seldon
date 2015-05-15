@@ -397,8 +397,8 @@ namespace Seldon
     else
       {
         int nodl = row_num.GetM();
-        comm.Send(&nodl, 1, MPI::INTEGER, 0, 13);
-        comm.Send(row_num.GetData(), nodl, MPI::INTEGER, 0, 14);
+        comm.Ssend(&nodl, 1, MPI::INTEGER, 0, 13);
+        comm.Ssend(row_num.GetData(), nodl, MPI::INTEGER, 0, 14);
       }
     
     // then calling Init with all_rows

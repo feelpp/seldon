@@ -89,32 +89,33 @@ namespace Seldon
   void GetCholesky(Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A,
                    int print_level = 0);
 
-  template<class classTrans, 
-           class T0, class T1, class Prop, class Storage,
-           class Allocator1, class Allocator2>
+  template<class classTrans,
+           class T0, class Prop, class Allocator0,
+           class T1, class Storage, class Allocator1>
   void SolveCholesky(const classTrans& TransA,
-                     const Matrix<T0, Prop, ArrayRowSymSparse, Allocator1>& A,
-                     Vector<T1, Storage, Allocator2>& x);
+                     const Matrix<T0, Prop, ArrayRowSymSparse, Allocator0>& A,
+                     Vector<T1, Storage, Allocator1>& x);
 
   template<class classTrans,
-	   class T0, class T1, class Prop, class Allocator>
+	   class T0, class Prop, class Alloc0,
+	   class T1, class Storage, class Allocator1>
   void SolveCholesky(const classTrans& TransA,
-		     const Matrix<T0, Prop, RowSymSparse>& A,
-                     Vector<T1, VectFull, Allocator>& X);
-
+		     const Matrix<T0, Prop, RowSymSparse, Alloc0>& A,
+                     Vector<T1, Storage, Allocator1>& X);
+  
   template<class classTrans, 
-           class T0, class T1, class Prop, class Storage,
-           class Allocator1, class Allocator2>
+           class T0, class Prop, class Allocator0,
+           class T1, class Storage, class Allocator1>
   void MltCholesky(const classTrans& TransA,
-                   const Matrix<T0, Prop, ArrayRowSymSparse, Allocator1>& A,
-                   Vector<T1, Storage, Allocator2>& x);
-
+                   const Matrix<T0, Prop, ArrayRowSymSparse, Allocator0>& A,
+                   Vector<T1, Storage, Allocator1>& x);
+  
   template<class classTrans, 
-           class T0, class T1, class Prop, class Storage,
-           class Allocator1, class Allocator2>
+           class T0, class Prop, class Allocator0,
+           class T1, class Storage, class Allocator1>
   void MltCholesky(const classTrans& TransA,
-                   const Matrix<T0, Prop, RowSymSparse, Allocator1>& A,
-                   Vector<T1, Storage, Allocator2>& x);
+                   const Matrix<T0, Prop, RowSymSparse, Allocator0>& A,
+                   Vector<T1, Storage, Allocator1>& x);
   
 } // namespace Seldon.
 

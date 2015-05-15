@@ -730,7 +730,7 @@ namespace Seldon
         rhs.Reallocate(struct_mumps.n);
         rhs.Zero();
       }
-
+ 
     int nb_procs = comm_facto.Get_size();
     MPI::Status status;
     
@@ -758,15 +758,15 @@ namespace Seldon
 
                     comm_facto.Recv(xp.GetDataVoid(), cplx*nb_dof,
                                     MPI::DOUBLE, i, 35, status);
-
+                    
 		    comm_facto.Recv(nump(i).GetData(), nb_dof, MPI::INTEGER,
-                                    i, 36, status);
+                                    i, 36, status);                    
 		  }
 		else
 		  {
 		    xp = x; nump(i) = glob_num;
 		  }
-
+                
 		for (int j = 0; j < nump(i).GetM(); j++)
 		  rhs(nump(i)(j)) = xp(j);
 	      }
@@ -780,9 +780,9 @@ namespace Seldon
       {
 	// On other processors, we send right hand side.
 	int nb = x.GetM();
-	comm_facto.Send(&nb, 1, MPI::INTEGER, 0, 34);
-	comm_facto.Send(x.GetDataVoid(), cplx*nb, MPI::DOUBLE, 0, 35);
-	comm_facto.Send(glob_num.GetData(), nb, MPI::INTEGER, 0, 36);
+	comm_facto.Ssend(&nb, 1, MPI::INTEGER, 0, 34);
+	comm_facto.Ssend(x.GetDataVoid(), cplx*nb, MPI::DOUBLE, 0, 35);
+	comm_facto.Ssend(glob_num.GetData(), nb, MPI::INTEGER, 0, 36);
       }
 
     // we solve system
@@ -809,8 +809,8 @@ namespace Seldon
                     for (int j = 0; j < nb_dof; j++)
                       xp(j) = rhs(nump(i)(j));
                     
-                    comm_facto.Send(xp.GetDataVoid(), cplx*nb_dof,
-                                    MPI::DOUBLE, i, 41);
+                    comm_facto.Ssend(xp.GetDataVoid(), cplx*nb_dof,
+                                     MPI::DOUBLE, i, 41);
                   }
                 else
                   {
@@ -891,8 +891,8 @@ namespace Seldon
         else
           {
             int nb = glob_num.GetM();
-            comm_facto.Send(&nb, 1, MPI::INTEGER, 0, 33);
-            comm_facto.Send(glob_num.GetData(), nb, MPI::INTEGER, 0, 38);
+            comm_facto.Ssend(&nb, 1, MPI::INTEGER, 0, 33);
+            comm_facto.Ssend(glob_num.GetData(), nb, MPI::INTEGER, 0, 38);
           }
       }
     
@@ -947,7 +947,7 @@ namespace Seldon
           {
             // On other processors, we send right hand side.
             int nb_dof = x.GetM();
-            comm_facto.Send(&x(0, num_rhs), cplx*nb_dof*nrhs_p, MPI::DOUBLE, 0, 37);
+            comm_facto.Ssend(&x(0, num_rhs), cplx*nb_dof*nrhs_p, MPI::DOUBLE, 0, 37);
           }
     
         // we solve system
@@ -976,8 +976,8 @@ namespace Seldon
                           for (int k = 0; k < nrhs_p; k++)
                             xp(j, k) = rhs(nump(i)(j), k);
                         
-                        comm_facto.Send(xp.GetDataVoid(), cplx*nb_dof*nrhs_p,
-                                        MPI::DOUBLE, i, 40);
+                        comm_facto.Ssend(xp.GetDataVoid(), cplx*nb_dof*nrhs_p,
+                                         MPI::DOUBLE, i, 40);
                       }
                     else
                       {

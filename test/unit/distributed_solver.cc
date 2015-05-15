@@ -356,9 +356,9 @@ int main(int argc, char** argv)
     {
       IVect num(4);
       num(0) = i0_proc; num(1) = i1_proc; num(2) = j0_proc; num(3) = j1_proc;
-      comm.Send(num.GetData(), 4, MPI::INTEGER, 0, 2);
+      comm.Ssend(num.GetData(), 4, MPI::INTEGER, 0, 2);
       
-      comm.Send(x_sol.GetData(), x_sol.GetM(), MPI::DOUBLE, 0, 3);
+      comm.Ssend(x_sol.GetData(), x_sol.GetM(), MPI::DOUBLE, 0, 3);
     }
   else
     {

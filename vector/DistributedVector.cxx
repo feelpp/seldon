@@ -491,7 +491,7 @@ namespace Seldon
 		    xsend(nb_u*k+m) = X(DofNumber(i)(k) + m*Nvol);
             
 		// sending the value to the corresponding processor
-		MpiSend(comm, xsend, xsend_tmp, nb*nb_u, j, tag);
+		MpiSsend(comm, xsend, xsend_tmp, nb*nb_u, j, tag);
 	      }
 	  }
       }

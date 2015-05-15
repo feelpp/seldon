@@ -540,7 +540,12 @@ namespace Seldon
 		  const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
 		  const Vector<T0>& X, Vector<T0>& Y)
   {
-    Mlt(trans, A, X, Y);
+    if (trans.NoTrans())
+      Mlt(A, X, Y);
+    else if (trans.Trans())
+      Mlt(SeldonTrans, A, X, Y);
+    else
+      Mlt(SeldonConjTrans, A, X, Y);
   }
 
   template<class T0, class Prop0, class Storage0, class Allocator0>
@@ -548,7 +553,12 @@ namespace Seldon
 		  const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
 		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
   {
-    Mlt(trans, A, X, Y);
+    if (trans.NoTrans())
+      Mlt(A, X, Y);
+    else if (trans.Trans())
+      Mlt(SeldonTrans, A, X, Y);
+    else
+      Mlt(SeldonConjTrans, A, X, Y);
   }
 
   template<class T0, class Prop0, class Storage0, class Allocator0>
@@ -556,7 +566,12 @@ namespace Seldon
 		  const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
 		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
   {
-    Mlt(trans, A, X, Y);
+    if (trans.NoTrans())
+      Mlt(A, X, Y);
+    else if (trans.Trans())
+      Mlt(SeldonTrans, A, X, Y);
+    else
+      Mlt(SeldonConjTrans, A, X, Y);
   }
 
   template<class T0, class Prop0, class Storage0, class Allocator0>
@@ -606,7 +621,12 @@ namespace Seldon
 		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
 		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y, bool assemble)
   {
-    MltAdd(alpha, trans, A, X, beta, Y, assemble);
+    if (trans.NoTrans())
+      MltAdd(alpha, SeldonNoTrans, A, X, beta, Y, assemble);
+    else if (trans.Trans())
+      MltAdd(alpha, SeldonTrans, A, X, beta, Y, assemble);
+    else
+      MltAdd(alpha, SeldonConjTrans, A, X, beta, Y, assemble);
   }
 
   template<class T0, class Prop0, class Storage0, class Allocator0>
@@ -615,7 +635,12 @@ namespace Seldon
 		     const Vector<complex<T0> >& X, const complex<T0>& beta,
 		     Vector<complex<T0> >& Y, bool assemble)
   {
-    MltAdd(alpha, trans, A, X, beta, Y, assemble);
+    if (trans.NoTrans())
+      MltAdd(alpha, SeldonNoTrans, A, X, beta, Y, assemble);
+    else if (trans.Trans())
+      MltAdd(alpha, SeldonTrans, A, X, beta, Y, assemble);
+    else
+      MltAdd(alpha, SeldonConjTrans, A, X, beta, Y, assemble);
   }
 
   template<class T0, class Prop0, class Storage0, class Allocator0>
@@ -624,7 +649,12 @@ namespace Seldon
 		     const Vector<complex<T0> >& X, const complex<T0>& beta,
 		     Vector<complex<T0> >& Y, bool assemble)
   {
-    MltAdd(alpha, trans, A, X, beta, Y, assemble);
+    if (trans.NoTrans())
+      MltAdd(alpha, SeldonNoTrans, A, X, beta, Y, assemble);
+    else if (trans.Trans())
+      MltAdd(alpha, SeldonTrans, A, X, beta, Y, assemble);
+    else
+      MltAdd(alpha, SeldonConjTrans, A, X, beta, Y, assemble);
   }
 
   template<class T0, class Prop0, class Storage0, class Allocator0>

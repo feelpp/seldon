@@ -300,6 +300,9 @@ namespace Seldon
 			       bool sym_pattern) const;
 
 #ifdef SELDON_WITH_VIRTUAL
+    typedef typename ClassComplexType<T>::Treal Treal;
+    typedef typename ClassComplexType<T>::Tcplx Tcplx;
+    
     virtual void ApplySor(Vector<T>& x, const Vector<T>& r,
 			  const typename ClassComplexType<T>::Treal& omega,
 			  int nb_iter, int stage_ssor) const;
@@ -783,7 +786,7 @@ namespace Seldon
 		const IVect& row, const IVect& col,
                 DistributedMatrix<T1, Prop1, Storage1, Allocator1>& B);
 
-#endif
+#ifdef SELDON_WITH_VIRTUAL
   template<class T0, class Prop0, class Storage0, class Allocator0>
   void MltComplex(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>&,
 		  const Vector<T0>& X, Vector<T0>& Y);

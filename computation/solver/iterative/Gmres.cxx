@@ -125,7 +125,9 @@ namespace Seldon
 	Iteration<Treal> inner(outer);
 	inner.SetNumberIteration(outer.GetNumberIteration());
 	inner.SetMaxNumberIteration(outer.GetNumberIteration()+m);
-
+        H.Reallocate(m+1, m+1);
+        H.Fill(zero);
+        
 	do
 	  {
 	    // product matrix vector u=A*V(i)
