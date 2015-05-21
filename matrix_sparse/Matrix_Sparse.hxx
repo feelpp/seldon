@@ -40,7 +40,8 @@ namespace Seldon
     on the storage); (4) an array 'ind_' of column or row indices of each
     non-zero entry; (5) values of non-zero entries.
   */
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Prop, class Storage, class Allocator
+	    = typename SeldonDefaultAllocator<Storage, T>::allocator>
   class Matrix_Sparse: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
@@ -50,6 +51,7 @@ namespace Seldon
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
+    typedef typename SeldonDefaultAllocator<VectFull, int>::allocator AllocatorInt;
     typedef value_type entry_type;
     typedef value_type access_type;
     typedef value_type const_access_type;

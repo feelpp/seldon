@@ -69,13 +69,13 @@ namespace Seldon
   
   // returns X.Y
   template<class T1, class Allocator1>
-  T1 DotProd(const DistributedVector<T1, Allocator1>& X,
-	     const DistributedVector<T1, Allocator1>& Y);
+  T1 DotProdVector(const DistributedVector<T1, Allocator1>& X,
+		   const DistributedVector<T1, Allocator1>& Y);
   
   // returns X' . Y
   template<class T1, class Allocator1>
-  T1 DotProdConj(const DistributedVector<T1, Allocator1>& X,
-		 const DistributedVector<T1, Allocator1>& Y);  
+  T1 DotProdConjVector(const DistributedVector<T1, Allocator1>& X,
+		       const DistributedVector<T1, Allocator1>& Y);  
   
   // returns euclidian norm of x
   template<class T, class Allocator>
@@ -118,6 +118,32 @@ namespace Seldon
 			   const Vector<IVect>& DofNumber,
 			   const MPI::Comm& comm, int Nvol, int nb_u, int tag);
 
+  template<class T>
+  T DotProd(const DistributedVector<T>& X, DistributedVector<T>& Y);
+
+  template<class T>
+  complex<T> DotProd(const DistributedVector<complex<T> >& X,
+                     DistributedVector<T>& Y);
+
+  template<class T>
+  complex<T> DotProd(const DistributedVector<T>& X,
+                     DistributedVector<complex<T> >& Y);
+
+  template<class T>
+  T DotProdConj(const DistributedVector<T>& X, DistributedVector<T>& Y);
+
+  template<class T>
+  complex<T> DotProdConj(const DistributedVector<complex<T> >& X,
+			 DistributedVector<complex<T> >& Y);
+
+  template<class T>
+  complex<T> DotProdConj(const DistributedVector<complex<T> >& X,
+			 DistributedVector<T>& Y);
+
+  template<class T>
+  complex<T> DotProdConj(const DistributedVector<T>& X,
+			 DistributedVector<complex<T> >& Y);
+  
 }
 
 #define SELDON_FILE_DISTRIBUTED_VECTOR_HXX

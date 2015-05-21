@@ -191,12 +191,12 @@ namespace Seldon
     int n = U.ncol;
 
     Vector<double, VectFull, Allocator> Lval(Lnnz);
-    Vector<int, VectFull, CallocAlloc<int> > Lrow(Lnnz);
-    Vector<int, VectFull, CallocAlloc<int> > Lcol(n + 1);
+    Vector<int> Lrow(Lnnz);
+    Vector<int> Lcol(n + 1);
 
     Vector<double, VectFull, Allocator> Uval(Unnz);
-    Vector<int, VectFull, CallocAlloc<int> > Urow(Unnz);
-    Vector<int, VectFull, CallocAlloc<int> > Ucol(n + 1);
+    Vector<int> Urow(Unnz);
+    Vector<int> Ucol(n + 1);
 
     int Lsnnz;
     int Usnnz;
@@ -328,7 +328,7 @@ namespace Seldon
 
     // conversion in CSC format
     n = mat.GetN();
-    Matrix<double, General, ColSparse, CallocAlloc<double> > Acsr;
+    Matrix<double, General, ColSparse> Acsr;
     Copy(mat, Acsr);
     if (!keep_matrix)
       mat.Clear();
@@ -410,8 +410,8 @@ namespace Seldon
 
 
   //! resolution of linear system A x = b or A^T x = b
-  template<class TransStatus, class Allocator2>
-  void MatrixSuperLU<double>::Solve(const TransStatus& TransA,
+  template<class Allocator2>
+  void MatrixSuperLU<double>::Solve(const SeldonTranspose& TransA,
                                     Vector<double, VectFull, Allocator2>& x)
   {
     if (TransA.NoTrans())
@@ -450,8 +450,8 @@ namespace Seldon
 
 
   //! resolution of linear system A x = b or A^T x = b
-  template<class TransStatus, class Allocator2>
-  void MatrixSuperLU<double>::Solve(const TransStatus& TransA,
+  template<class Allocator2>
+  void MatrixSuperLU<double>::Solve(const SeldonTranspose& TransA,
                                     Matrix<double, General, ColMajor, Allocator2>& x)
   {
     if (TransA.NoTrans())
@@ -514,12 +514,12 @@ namespace Seldon
     int n = U.ncol;
 
     Vector<complex<double>, VectFull, Allocator> Lval(Lnnz);
-    Vector<int, VectFull, CallocAlloc<int> > Lrow(Lnnz);
-    Vector<int, VectFull, CallocAlloc<int> > Lcol(n + 1);
+    Vector<int> Lrow(Lnnz);
+    Vector<int> Lcol(n + 1);
 
     Vector<complex<double>, VectFull, Allocator> Uval(Unnz);
-    Vector<int, VectFull, CallocAlloc<int> > Urow(Unnz);
-    Vector<int, VectFull, CallocAlloc<int> > Ucol(n + 1);
+    Vector<int> Urow(Unnz);
+    Vector<int> Ucol(n + 1);
 
     int Lsnnz;
     int Usnnz;
@@ -594,8 +594,7 @@ namespace Seldon
 
     // conversion in CSR format
     n = mat.GetN();
-    Matrix<complex<double>, General, ColSparse,
-      CallocAlloc<complex<double> > > Acsr;
+    Matrix<complex<double>, General, ColSparse> Acsr;
     Copy(mat, Acsr);
     if (!keep_matrix)
       mat.Clear();
@@ -672,9 +671,9 @@ namespace Seldon
 
 
   //! resolution of linear system A x = b or A^T x = b
-  template<class TransStatus, class Allocator2>
+  template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
-  Solve(const TransStatus& TransA,
+  Solve(const SeldonTranspose& TransA,
         Vector<complex<double>, VectFull, Allocator2>& x)
   {
     if (TransA.NoTrans())
@@ -715,9 +714,9 @@ namespace Seldon
 
 
   //! resolution of linear system A x = b or A^T x = b
-  template<class TransStatus, class Allocator2>
+  template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
-  Solve(const TransStatus& TransA,
+  Solve(const SeldonTranspose& TransA,
         Matrix<complex<double>, General, ColMajor, Allocator2>& x)
   {
     if (TransA.NoTrans())
@@ -810,8 +809,8 @@ namespace Seldon
 
   //! LU resolution with a matrix whose type is the same as for SuperLU object
   //! Solves transpose system A^T x = b or A x = b depending on TransA
-  template<class T, class Prop, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Prop, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixSuperLU<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
@@ -839,8 +838,8 @@ namespace Seldon
   
 
   //! Solves A x = b or A^T x = b, where A is real and x is complex
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixSuperLU<double>& mat_lu,
                Vector<complex<double>, VectFull, Allocator>& x)
   {
@@ -871,8 +870,8 @@ namespace Seldon
 
 
   //! Solves A x = b or A^T x = b, where A is complex and x is real => Forbidden  
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixSuperLU<complex<double> >& mat_lu,
                Vector<double, VectFull, Allocator>& x)
   {

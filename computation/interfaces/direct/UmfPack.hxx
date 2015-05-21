@@ -91,8 +91,8 @@ namespace Seldon
     template<class Allocator2>
     void Solve(Vector<double, VectFull, Allocator2>& x);
 
-    template<class StatusTrans, class Allocator2>
-    void Solve(const StatusTrans&, Vector<double, VectFull, Allocator2>& x);
+    template<class Allocator2>
+    void Solve(const SeldonTranspose&, Vector<double, VectFull, Allocator2>& x);
 
   };
 
@@ -124,8 +124,8 @@ namespace Seldon
     template<class Allocator2>
     void Solve(Vector<complex<double>, VectFull, Allocator2>& x);
 
-    template<class StatusTrans, class Allocator2>
-    void Solve(const StatusTrans&, Vector<complex<double>, VectFull, Allocator2>& x);
+    template<class Allocator2>
+    void Solve(const SeldonTranspose&, Vector<complex<double>, VectFull, Allocator2>& x);
 
   };
 
@@ -144,16 +144,16 @@ namespace Seldon
   void SolveLU(MatrixUmfPack<T>& mat_lu,
                Matrix<T, Prop, ColMajor, Allocator>& x);
 
-  template<class T, class Prop, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Prop, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixUmfPack<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x);
   
   template<class Allocator>
   void SolveLU(MatrixUmfPack<double>& mat_lu,
                Vector<complex<double>, VectFull, Allocator>& x);
 
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixUmfPack<double>& mat_lu,
                Vector<complex<double>, VectFull, Allocator>& x);
 
@@ -161,8 +161,8 @@ namespace Seldon
   void SolveLU(MatrixUmfPack<complex<double> >& mat_lu,
                Vector<double, VectFull, Allocator>& x);
 
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixUmfPack<complex<double> >& mat_lu,
                Vector<double, VectFull, Allocator>& x);
 

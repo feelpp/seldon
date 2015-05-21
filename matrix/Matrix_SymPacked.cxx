@@ -25,7 +25,194 @@
 namespace Seldon
 {
 
+
+  //! Main constructor.
+  /*! Builds a i x j hermitian matrix in packed form.
+    \param i number of rows.
+    \param j number of columns.
+    \note 'j' is assumed to be equal to 'i' and is therefore discarded.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::Matrix_SymPacked(int i, int j): Matrix_Base<T, Allocator>(i, i)
+  {
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	this->data_ = Allocator::allocate((i * (i + 1)) / 2, this);
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	this->data_ = NULL;
+	return;
+      }
+    if (this->data_ == NULL)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	return;
+      }
+#endif
+
+  }
+
+
+  //! Copy constructor.
+  template <class T, class Prop, class Storage, class Allocator>
+  Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::Matrix_SymPacked(const Matrix_SymPacked<T, Prop, Storage, Allocator>& A)
+    : Matrix_Base<T, Allocator>()
+  {
+    this->m_ = 0;
+    this->n_ = 0;
+    this->data_ = NULL;
+
+    this->Copy(A);
+  }
+
   
+  //! Clears the matrix.
+  /*!
+    Destructs the matrix.
+    \warning On exit, the matrix is an empty 0x0 matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymPacked<T, Prop, Storage, Allocator>::Clear()
+  {
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (this->data_ != NULL)
+	  {
+	    Allocator::deallocate(this->data_,
+					(this->m_ * (this->m_ + 1)) / 2);
+	    this->data_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	this->data_ = NULL;
+      }
+#endif
+    
+    this->m_ = 0;
+    this->n_ = 0;
+  }
+
+
+  /*********************
+   * MEMORY MANAGEMENT *
+   *********************/
+
+
+  //! Reallocates memory to resize the matrix.
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i new number of rows.
+    \param j new number of columns.
+    \warning Depending on your allocator, data may be lost.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymPacked<T, Prop, Storage, Allocator>::Reallocate(int i,
+									int j)
+  {
+
+    if (i != this->m_)
+      {
+	this->m_ = i;
+	this->n_ = i;
+
+#ifdef SELDON_CHECK_MEMORY
+	try
+	  {
+#endif
+
+	    this->data_ =
+	      reinterpret_cast<pointer>(Allocator::
+					reallocate(this->data_,
+						   (i * (i + 1)) / 2, this));
+
+#ifdef SELDON_CHECK_MEMORY
+	  }
+	catch (...)
+	  {
+	    this->m_ = 0;
+	    this->n_ = 0;
+	    this->data_ = NULL;
+	    throw NoMemory("Matrix_SymPacked::Reallocate(int, int)",
+			   "Unable to reallocate memory for data_.");
+	  }
+	if (this->data_ == NULL)
+	  {
+	    this->m_ = 0;
+	    this->n_ = 0;
+	    throw NoMemory("Matrix_SymPacked::Reallocate(int, int)",
+			   "Unable to reallocate memory for data_.");
+	  }
+#endif
+
+      }
+  }
+
+
+  //! Changes the size of the matrix and sets its data array
+  //! (low level method).
+  /*!
+    The matrix is first cleared (memory is freed). The matrix is then resized
+    to a i x j matrix, and the data array of the matrix is set to 'data'.
+    'data' elements are not duplicated: the new data array of the matrix is
+    the 'data' array. It is useful to create a matrix from pre-existing data.
+    \param i new number of rows.
+    \param j new number of columns.
+    \param data new array storing elements.
+    \warning 'data' has to be used carefully outside the object.
+    Unless you use 'Nullify', 'data' will be freed by the destructor,
+    which means that 'data' must have been allocated carefully. The matrix
+    allocator should be compatible.
+    \note This method should only be used by advanced users.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymPacked<T, Prop, Storage, Allocator>
+  ::SetData(int i, int j,
+	    typename Matrix_SymPacked<T, Prop, Storage, Allocator>
+	    ::pointer data)
+  {
+    this->Clear();
+
+    this->m_ = i;
+    this->n_ = i;
+
+    this->data_ = data;
+  }
+
+
+  //! Clears the matrix without releasing memory.
+  /*!
+    On exit, the matrix is empty and the memory has not been released.
+    It is useful for low level manipulations on a Matrix instance.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymPacked<T, Prop, Storage, Allocator>::Nullify()
+  {
+    this->data_ = NULL;
+    this->m_ = 0;
+    this->n_ = 0;
+  }
+
+
   /************************
    * CONVENIENT FUNCTIONS *
    ************************/
@@ -39,8 +226,8 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymPacked<T, Prop, Storage, Allocator>::Zero()
   {
-    this->allocator_.memoryset(this->data_, char(0),
-			       this->GetDataSize() * sizeof(value_type));
+    Allocator::memoryset(this->data_, char(0),
+			 this->GetDataSize() * sizeof(value_type));
   }
 
 

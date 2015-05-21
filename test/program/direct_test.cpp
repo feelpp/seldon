@@ -122,7 +122,7 @@ int main(int argc, char **argv)
     int rowptr_[] = {0, 2, 4, 6, 8, 9};
     double values_[] = {2.0, -1.5, 3.0, 1.0, 4.0, -2.0, 1.5, -0.5, 2.5};
     int nnz = rowptr_[n];
-    Vector<int, VectFull, CallocAlloc<int> > Col(nnz), Row(n+1);
+    Vector<int> Col(nnz), Row(n+1);
     DVect Values(nnz);
     for (int i = 0; i < nnz; i++)
       {
@@ -156,7 +156,7 @@ int main(int argc, char **argv)
 				 cpx(1.0,0.0), cpx(4.0,2.0), cpx(-2.0,1.0),
 				 cpx(1.5,-1.0), cpx(-0.5,0.0), cpx(2.5,5.0)};
     int nnz = rowptr_[n];
-    Vector<int, VectFull, CallocAlloc<int> > Col(nnz), Row(n+1);
+    Vector<int> Col(nnz), Row(n+1);
     ZVect Values(nnz);
     for (int i = 0; i < nnz; i++)
       {
@@ -187,7 +187,7 @@ int main(int argc, char **argv)
     double values_[] = {2.0, -1.5, 3.0, 1.0, 4.0, -2.0, 1.5, -0.5, 2.5};
 
     int nnz = colptr_[n];
-    Vector<int, VectFull, CallocAlloc<int> > Col(n+1), Row(nnz);
+    Vector<int> Col(n+1), Row(nnz);
     DVect Values(nnz);
     for (int i = 0; i < nnz; i++)
       {
@@ -221,7 +221,7 @@ int main(int argc, char **argv)
 		     cpx(1.5,-1.0), cpx(-0.5,0.0), cpx(2.5,5.0)};
 
     int nnz = colptr_[n];
-    Vector<int, VectFull, CallocAlloc<int> > Col(n+1), Row(nnz);
+    Vector<int> Col(n+1), Row(nnz);
     ZVect Values(nnz);
     for (int i = 0; i < nnz; i++)
       {
@@ -256,7 +256,7 @@ int main(int argc, char **argv)
 			1.3, 4.0, -2.0, 0.5, 1.5, -0.5, -0.8, 2.5};
 
     int nnz = rowptr_[n];
-    Vector<int, VectFull, CallocAlloc<int> > Col(nnz), Row(n+1);
+    Vector<int> Col(nnz), Row(n+1);
     DVect Values(nnz);
     for (int i = 0; i < nnz; i++)
       {
@@ -297,7 +297,7 @@ int main(int argc, char **argv)
 		     cpx(2.5,5.0)};
 
     int nnz = rowptr_[n];
-    Vector<int, VectFull, CallocAlloc<int> > Col(nnz), Row(n+1);
+    Vector<int> Col(nnz), Row(n+1);
     ZVect Values(nnz);
     for (int i = 0; i < nnz; i++)
       {
@@ -332,7 +332,7 @@ int main(int argc, char **argv)
     double values_[] = {2.0, -1.0, -2.0, -1.5, 3.0, 1.3, 0.4, 1.0,
 			4.0, 0.5, -2.0, 1.5, -0.8, -0.5, 2.5};
     int nnz = colptr_[n];
-    Vector<int, VectFull, CallocAlloc<int> > Col(n+1), Row(nnz);
+    Vector<int> Col(n+1), Row(nnz);
     DVect Values(nnz);
     for (int i = 0; i < nnz; i++)
       {
@@ -371,7 +371,7 @@ int main(int argc, char **argv)
 		     cpx(-0.5,0.0), cpx(2.5,5.0)};
 
     int nnz = colptr_[n];
-    Vector<int, VectFull, CallocAlloc<int> > Col(n+1), Row(nnz);
+    Vector<int> Col(n+1), Row(nnz);
     ZVect Values(nnz);
     for (int i = 0; i < nnz; i++)
       {

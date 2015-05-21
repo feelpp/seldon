@@ -70,13 +70,13 @@ namespace Seldon
     //! Number of columns of matrices.
     int Nmatrix_;
     //! Number of rows in the underlying matrices.
-    Vector<int, VectFull, CallocAlloc<int> > Mlocal_;
+    Vector<int> Mlocal_;
     //! Cumulative number of rows in the underlying matrices.
-    Vector<int, VectFull, CallocAlloc<int> > Mlocal_sum_;
+    Vector<int> Mlocal_sum_;
     //! Number of columns in the underlying matrices.
-    Vector<int, VectFull, CallocAlloc<int> > Nlocal_;
+    Vector<int> Nlocal_;
     //! Cumulative number of columns in the underlying matrices.
-    Vector<int, VectFull, CallocAlloc<int> > Nlocal_sum_;
+    Vector<int> Nlocal_sum_;
 
     //! Type of the underlying matrices.
     /*!
@@ -85,7 +85,7 @@ namespace Seldon
       Type 2 refers to double dense matrices.
       Type 3 refers to double sparse matrices.
     */
-    Matrix<int, General, RowMajor, CallocAlloc<int> > collection_;
+    Matrix<int, General, RowMajor> collection_;
 
     //! Pointers of the underlying float dense matrices.
     float_dense_c float_dense_c_;
@@ -113,7 +113,7 @@ namespace Seldon
     void Nullify(int i, int j);
     void Deallocate();
 
-    // Basic methods.
+    // Basic methods. (inline)
     int GetM() const;
     int GetMmatrix() const;
     int GetM(int i) const;

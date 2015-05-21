@@ -24,7 +24,7 @@ namespace Seldon
 
   //! Default constructor
   template<class T>
-  inline SorPreconditioner<T>::SorPreconditioner()
+  SorPreconditioner<T>::SorPreconditioner()
   {
     nb_iter = 1; omega = 1;
     symmetric_precond = true;
@@ -33,7 +33,7 @@ namespace Seldon
   
   //! returns true if symmetric sor is used
   template<class T>
-  inline bool SorPreconditioner<T>::IsSymmetric() const
+  bool SorPreconditioner<T>::IsSymmetric() const
   {
     return symmetric_precond;
   }
@@ -42,7 +42,7 @@ namespace Seldon
   //! if called forward and backward sweep will be applied such that
   //! the preconditioning is symmetric
   template<class T>
-  inline void SorPreconditioner<T>::InitSymmetricPreconditioning()
+  void SorPreconditioner<T>::InitSymmetricPreconditioning()
   {
     symmetric_precond = true;
   }
@@ -51,7 +51,7 @@ namespace Seldon
   //! if called, forward sweep is applied when calling Solve
   //! backward sweep is applied when calling TransSolve
   template<class T>
-  inline void SorPreconditioner<T>::InitUnSymmetricPreconditioning()
+  void SorPreconditioner<T>::InitUnSymmetricPreconditioning()
   {
     symmetric_precond = false;
   }
@@ -59,7 +59,7 @@ namespace Seldon
   
   //! sets the relaxation parameter omega
   template<class T>
-  inline void SorPreconditioner<T>
+  void SorPreconditioner<T>
   ::SetParameterRelaxation(const typename ClassComplexType<T>::Treal& param)
   {
     omega = param;
@@ -68,7 +68,7 @@ namespace Seldon
   
   //! sets the number of SOR sweeps to perform when calling Solve/TransSolve
   template<class T>
-  inline void SorPreconditioner<T>::SetNumberIterations(int nb_iterations)
+  void SorPreconditioner<T>::SetNumberIterations(int nb_iterations)
   {
     nb_iter = nb_iterations;
   }
@@ -76,7 +76,7 @@ namespace Seldon
 
 #ifdef SELDON_WITH_VIRTUAL
   template<class T>
-  inline void SorPreconditioner<T>
+  void SorPreconditioner<T>
   ::Solve(const VirtualMatrix<T>& A, const Vector<T>& r, Vector<T>& z, bool init)
   {
     if (init)
@@ -90,7 +90,7 @@ namespace Seldon
   }
   
   template<class T>
-  inline void SorPreconditioner<T>
+  void SorPreconditioner<T>
   ::TransSolve(const VirtualMatrix<T>& A, const Vector<T>& r, Vector<T>& z, bool init)
   {
     if (init)
@@ -103,14 +103,14 @@ namespace Seldon
   }
 
   template<class T>
-  inline void SorPreconditioner<T>
+  void SorPreconditioner<T>
   ::Solve(const VirtualMatrix<T>& A, const Vector<T>& r, Vector<T>& z)
   {
     Solve(A, r, z, true);
   }
 
   template<class T>
-  inline void SorPreconditioner<T>
+  void SorPreconditioner<T>
   ::TransSolve(const VirtualMatrix<T>& A, const Vector<T>& r, Vector<T>& z)
   {
     TransSolve(A, r, z, true);
@@ -119,7 +119,7 @@ namespace Seldon
 
   //! Solves M z = r
   template<class T> template<class Vector1, class Matrix1>
-  inline void SorPreconditioner<T>::
+  void SorPreconditioner<T>::
   Solve(const Matrix1& A, const Vector1& r, Vector1& z, bool init_guess_null)
   {
     if (init_guess_null)
@@ -134,7 +134,7 @@ namespace Seldon
 
   //! Solves M^t z = r
   template<class T> template<class Vector1, class Matrix1>
-  inline void SorPreconditioner<T>::
+  void SorPreconditioner<T>::
   TransSolve(const Matrix1& A, const Vector1& r,
 	     Vector1& z, bool init_guess_null)
   {

@@ -32,6 +32,10 @@
 // iterative solvers and preconditioning
 #include "computation/solver/iterative/IterativeInline.cxx"
 
+#ifdef SELDON_WITH_ARPACK
+#include "computation/interfaces/eigenvalue/ArpackInline.cxx"
+#endif
+
 #ifdef SELDON_WITH_ANASAZI
 #include "computation/interfaces/eigenvalue/MyMultiVecInline.cpp"
 #endif

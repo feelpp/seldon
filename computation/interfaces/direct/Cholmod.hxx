@@ -51,12 +51,12 @@ namespace Seldon
     void FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
                          bool keep_matrix = false);
 
-    template<class Transpose_status, class Allocator>
-    void Solve(const Transpose_status& TransA,
+    template<class Allocator>
+    void Solve(const SeldonTranspose& TransA,
                Vector<double, VectFull, Allocator>& x);
 
-    template<class Transpose_status, class Allocator>
-    void Mlt(const Transpose_status& TransA,
+    template<class Allocator>
+    void Mlt(const SeldonTranspose& TransA,
              Vector<double, VectFull, Allocator>& x);
 
   };
@@ -65,14 +65,14 @@ namespace Seldon
   void GetCholesky(Matrix<T, Prop, Storage, Allocator>& A,
                    MatrixCholmod& mat_chol, bool keep_matrix = false);
 
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Allocator>
   void
-  SolveCholesky(const Transpose_status& TransA,
+  SolveCholesky(const SeldonTranspose& TransA,
                 MatrixCholmod& mat_chol, Vector<T, VectFull, Allocator>& x);
 
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Allocator>
   void
-  MltCholesky(const Transpose_status& TransA,
+  MltCholesky(const SeldonTranspose& TransA,
 	      MatrixCholmod& mat_chol, Vector<T, VectFull, Allocator>& x);
   
 }

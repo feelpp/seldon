@@ -25,6 +25,236 @@
 namespace Seldon
 {
 
+  /****************
+   * CONSTRUCTORS *
+   ****************/
+
+
+  //! Default constructor.
+  /*!
+    On exit, the array is an empty 0x0x0 3D array.
+  */
+  template <class T, class Allocator>
+  Array3D<T, Allocator>::Array3D()
+  {
+    length1_ = 0;
+    length2_ = 0;
+    length3_ = 0;
+
+    length23_ = 0;
+
+    data_ = NULL;
+  }
+
+
+  //! Main constructor.
+  /*! Builds a i x j x k 3D array, but data is not initialized.
+    \param i length in dimension #1.
+    \param j length in dimension #2.
+    \param k length in dimension #3.
+  */
+  template <class T, class Allocator>
+  Array3D<T, Allocator>::Array3D(int i, int j, int k)
+  {
+    length1_ = i;
+    length2_ = j;
+    length3_ = k;
+
+    length23_ = length2_ * length3_;
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	data_ = Allocator::allocate(i*j*k, this);
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	length1_ = 0;
+	length2_ = 0;
+	length3_ = 0;
+	length23_ = 0;
+	data_ = NULL;
+      }
+    if (data_ == NULL && i != 0 && j != 0 && k != 0)
+      throw NoMemory("Array3D::Array3D(int, int, int)",
+		     string("Unable to allocate memory for an array of size ")
+		     + to_str(static_cast<long int>(i)
+			      * static_cast<long int>(j)
+			      * static_cast<long int>(k)
+			      * static_cast<long int>(sizeof(T)))
+		     + " bytes (" + to_str(i) + " x " + to_str(j)
+		     + " x " + to_str(k) + " elements).");
+#endif
+
+  }
+
+
+  //! Copy constructor.
+  template <class T, class Allocator>
+  Array3D<T, Allocator>::Array3D(const Array3D<T, Allocator>& A)
+  {
+    length1_ = 0;
+    length2_ = 0;
+    length3_ = 0;
+
+    length23_ = 0;
+
+    data_ = NULL;
+
+    Copy(A);
+  }
+
+
+  /*********************
+   * MEMORY MANAGEMENT *
+   *********************/
+
+
+  //! Reallocates memory to resize the 3D array.
+  /*!
+    On exit, the array is a i x j x k 3D array.
+    \param i length in dimension #1.
+    \param j length in dimension #2.
+    \param k length in dimension #3.
+    \warning Depending on your allocator, data may be lost.
+  */
+  template <class T, class Allocator>
+  void Array3D<T, Allocator>::Reallocate(int i, int j, int k)
+  {
+    if (i != length1_ || j != length2_ || k != length3_)
+      {
+	length1_ = i;
+	length2_ = j;
+	length3_ = k;
+
+	length23_ = j * k;
+
+#ifdef SELDON_CHECK_MEMORY
+	try
+	  {
+#endif
+            
+	    data_ =
+	      reinterpret_cast<pointer>(Allocator::reallocate(data_,
+							      i*j*k, this));
+
+#ifdef SELDON_CHECK_MEMORY
+	  }
+	catch (...)
+	  {
+	    length1_ = 0;
+	    length2_ = 0;
+	    length3_ = 0;
+	    length23_ = 0;
+	    data_ = NULL;
+	  }
+	if (data_ == NULL && i != 0 && j != 0 && k != 0)
+	  throw NoMemory("Array3D::Reallocate(int, int, int)",
+			 string("Unable to reallocate memory")
+			 + " for an array of size "
+			 + to_str(static_cast<long int>(i)
+				  * static_cast<long int>(j)
+				  * static_cast<long int>(k)
+				  * static_cast<long int>(sizeof(T)))
+			 + " bytes (" + to_str(i) + " x " + to_str(j)
+			 + " x " + to_str(k) + " elements).");
+#endif
+
+      }
+  }
+
+
+  //! Changes the size of the array and sets its data array
+  //! (low level method).
+  /*!
+    The 3D array is first cleared (memory is freed). The 3D array is then
+    resized to a i x j x k, and the data array of the 3D array is set to
+    'data'.  'data' elements are not duplicated: the new data array of the 3D
+    array is the 'data' array. It is useful to create a 3D array from
+    pre-existing data.
+    \param i length in dimension #1.
+    \param j length in dimension #2.
+    \param k length in dimension #3.
+    \param data new array storing elements.
+    \warning 'data' has to be used carefully outside the object.
+    Unless you use 'Nullify', 'data' will be freed by the destructor,
+    which means that 'data' must have been allocated carefully. The matrix
+    allocator should be compatible.
+    \note This method should only be used by advanced users.
+  */
+  template <class T, class Allocator>
+  void Array3D<T, Allocator>::SetData(int i, int j, int k, 
+				      typename Array3D<T, Allocator>
+					     ::pointer data)
+  {
+    Clear();
+    
+    length1_ = i;
+    length2_ = j;
+    length3_ = k;
+    length23_ = j * k;
+    data_ = data;
+  }
+
+
+  //! Clears the 3D array without releasing memory.
+  /*!
+    On exit, the 3D array is empty and the memory has not been released.
+    It is useful for low level manipulations on a 3D arrat instance.
+  */
+  template <class T, class Allocator>
+  void Array3D<T, Allocator>::Nullify()
+  {
+    length1_ = 0;
+    length2_ = 0;
+    length3_ = 0;
+    length23_ = 0;
+    data_ = NULL;
+  }
+
+
+  //! Clears the array.
+  /*!
+    Destructs the array.
+    \warning On exit, the 3D array is empty.
+  */
+  template <class T, class Allocator>
+  void Array3D<T, Allocator>::Clear()
+  {
+    length1_ = 0;
+    length2_ = 0;
+    length3_ = 0;
+    length23_ = 0;
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (data_ != NULL)
+	  {
+	    Allocator::deallocate(data_, length1_ * length23_);
+	    data_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	data_ = NULL;
+      }
+#endif
+
+    this->length1_ = 0;
+    this->length2_ = 0;
+    this->length3_ = 0;
+  }
+
+
   /************************
    * CONVENIENT FUNCTIONS *
    ************************/
@@ -38,8 +268,8 @@ namespace Seldon
   template <class T, class Allocator>
   void Array3D<T, Allocator>::Zero()
   {
-    array3D_allocator_.memoryset(data_, char(0),
-				 GetDataSize()*sizeof(value_type));
+    Allocator::memoryset(data_, char(0),
+			 GetDataSize()*sizeof(value_type));
   }
 
 
@@ -289,7 +519,7 @@ namespace Seldon
     \param[in,out] A the array to be multiplied by \a alpha.
   */
   template <class T0, class T, class Allocator>
-  void Mlt(const T0& alpha, Array3D<T, Allocator>& A)
+  void MltScalar(const T0& alpha, Array3D<T, Allocator>& A)
   {
     T* data = A.GetData();
     for (int i = 0; i < A.GetDataSize(); i++)

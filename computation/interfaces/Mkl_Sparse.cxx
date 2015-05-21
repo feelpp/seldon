@@ -663,166 +663,22 @@ namespace Seldon
   }
 
 
-  //! Y = A X
+  //! Y = A X or A^T X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonNoTrans& trans,
+  void Mlt(const SeldonTranspose& trans,
            const Matrix<float, General, RowSparse, Alloc1>& A,
            const Vector<float, VectFull, Alloc2>& X,
            Vector<float, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(trans, A, X, Y, "Mlt(A, X, Y)");
 #endif
 
-    char transA('N');
+    char transA(trans.Char());
     int ma = A.GetM();
-    mkl_cspblas_scsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                         X.GetData(), Y.GetData());
-  }
-
-
-  //! Y = A X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonNoTrans& trans,
-           const Matrix<double, General, RowSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
-#endif
-
-    char transA('N');
-    int ma = A.GetM();
-    mkl_cspblas_dcsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                         X.GetData(), Y.GetData());
-  }
-
-
-  //! Y = A X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonNoTrans& trans,
-           const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
-#endif
-
-    char transA('N');
-    int ma = A.GetM();
-    mkl_cspblas_ccsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                         X.GetDataVoid(), Y.GetDataVoid());
-  }
-
-
-  //! Y = A X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonNoTrans& trans,
-           const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
-#endif
-
-    char transA('N');
-    int ma = A.GetM();
-    mkl_cspblas_zcsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                         X.GetDataVoid(), Y.GetDataVoid());
-  }
-
-
-  //! Y = A X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonNoTrans& trans,
-           const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
-#endif
-
-    char uplo('U');
-    int ma = A.GetM();
-    mkl_cspblas_scsrsymv(&uplo, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                         X.GetData(), Y.GetData());
-  }
-
-
-  //! Y = A X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonNoTrans& trans,
-           const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
-#endif
-
-    char uplo('U');
-    int ma = A.GetM();
-    mkl_cspblas_dcsrsymv(&uplo, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                         X.GetData(), Y.GetData());
-  }
-
-
-  //! Y = A X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonNoTrans& trans,
-           const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
-#endif
-
-    char uplo('U');
-    int ma = A.GetM();
-    mkl_cspblas_ccsrsymv(&uplo, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                         X.GetDataVoid(), Y.GetDataVoid());
-  }
-
-
-  //! Y = A X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonNoTrans& trans,
-           const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
-#endif
-
-    char uplo('U');
-    int ma = A.GetM();
-    mkl_cspblas_zcsrsymv(&uplo, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                         X.GetDataVoid(), Y.GetDataVoid());
-  }
-  
-  
-  //! Y = A^T X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonTrans& trans,
-           const Matrix<float, General, RowSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
-#endif
-
-    char transA('T');
-    int ma = A.GetM();
-    if (ma == A.GetN())
+    if ( (ma == A.GetN()) || (trans.NoTrans()))
       mkl_cspblas_scsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                           X.GetData(), Y.GetData());
+			   X.GetData(), Y.GetData());
     else
       {
         Y.Zero();
@@ -835,22 +691,22 @@ namespace Seldon
   }
 
 
-  //! Y = A^T X
+  //! Y = A X or A^T X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonTrans& trans,
+  void Mlt(const SeldonTranspose& trans,
            const Matrix<double, General, RowSparse, Alloc1>& A,
            const Vector<double, VectFull, Alloc2>& X,
            Vector<double, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
+    CheckDim(trans, A, X, Y, "Mlt(A, X, Y)");
 #endif
-    
-    char transA('T');
+
+    char transA(trans.Char());
     int ma = A.GetM();
-    if (ma == A.GetN())
+    if ( (ma == A.GetN()) || (trans.NoTrans()))
       mkl_cspblas_dcsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                           X.GetData(), Y.GetData());
+			   X.GetData(), Y.GetData());
     else
       {
         Y.Zero();
@@ -863,22 +719,22 @@ namespace Seldon
   }
 
 
-  //! Y = A^T X
+  //! Y = A X or A^T X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonTrans& trans,
+  void Mlt(const SeldonTranspose& trans,
            const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
            const Vector<complex<float>, VectFull, Alloc2>& X,
            Vector<complex<float>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
+    CheckDim(trans, A, X, Y, "Mlt(A, X, Y)");
 #endif
 
-    char transA('T');
+    char transA(trans.Char());
     int ma = A.GetM();
-    if (ma == A.GetN())
+    if ( (ma == A.GetN()) || (trans.NoTrans()))
       mkl_cspblas_ccsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                           X.GetDataVoid(), Y.GetDataVoid());
+			   X.GetDataVoid(), Y.GetDataVoid());
     else
       {
         Y.Zero();
@@ -891,22 +747,22 @@ namespace Seldon
   }
 
 
-  //! Y = A^T X
+  //! Y = A X or A^T X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonTrans& trans,
+  void Mlt(const SeldonTranspose& trans,
            const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
            const Vector<complex<double>, VectFull, Alloc2>& X,
            Vector<complex<double>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
+    CheckDim(trans, A, X, Y, "Mlt(A, X, Y)");
 #endif
 
-    char transA('T');
+    char transA(trans.Char());
     int ma = A.GetM();
-    if (ma == A.GetN())
+    if ( (ma == A.GetN()) || (trans.NoTrans()))
       mkl_cspblas_zcsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                           X.GetDataVoid(), Y.GetDataVoid());
+			   X.GetDataVoid(), Y.GetDataVoid());
     else
       {
         Y.Zero();
@@ -921,13 +777,13 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonTrans& trans,
+  void Mlt(const SeldonTranspose& trans,
            const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
            const Vector<float, VectFull, Alloc2>& X,
            Vector<float, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
+    CheckDim(A, X, Y, "Mlt(A, X, Y)");
 #endif
 
     char uplo('U');
@@ -939,13 +795,13 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonTrans& trans,
+  void Mlt(const SeldonTranspose& trans,
            const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
            const Vector<double, VectFull, Alloc2>& X,
            Vector<double, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
+    CheckDim(A, X, Y, "Mlt(A, X, Y)");
 #endif
 
     char uplo('U');
@@ -957,235 +813,63 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonTrans& trans,
+  void Mlt(const SeldonTranspose& trans,
            const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
            const Vector<complex<float>, VectFull, Alloc2>& X,
            Vector<complex<float>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
-#endif
-
-    char uplo('U');
-    int ma = A.GetM();
-    mkl_cspblas_ccsrsymv(&uplo, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                         X.GetDataVoid(), Y.GetDataVoid());
-  }
-
-
-  //! Y = A X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonTrans& trans,
-           const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
-#endif
-
-    char uplo('U');
-    int ma = A.GetM();
-    mkl_cspblas_zcsrsymv(&uplo, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                         X.GetDataVoid(), Y.GetDataVoid());
-  }
-
-
-  //! Y = A^T X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonConjTrans& trans,
-           const Matrix<float, General, RowSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
-#endif
-
-    char transA('T');
-    int ma = A.GetM();
-    if (ma == A.GetN())
-      mkl_cspblas_scsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                           X.GetData(), Y.GetData());
-    else
-      {
-        Y.Zero();
-        int na = A.GetN(); float one(1), zero(0);
-        char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-        mkl_scsrmv(&transA, &ma, &na, &one, matdescra, A.GetData(), 
-                   A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-                   X.GetData(), &zero, Y.GetData());
-      }
-  }
-
-
-  //! Y = A^T X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonConjTrans& trans,
-           const Matrix<double, General, RowSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
-#endif
-
-    char transA('T');
-    int ma = A.GetM();
-    if (ma == A.GetN())
-      mkl_cspblas_dcsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                           X.GetData(), Y.GetData());
-    else
-      {
-        Y.Zero();
-        int na = A.GetN(); double one(1), zero(0);
-        char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-        mkl_dcsrmv(&transA, &ma, &na, &one, matdescra, A.GetData(), 
-                   A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-                   X.GetData(), &zero, Y.GetData());        
-      }
-  }
-
-
-  //! Y = A^H X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonConjTrans& trans,
-           const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
-#endif
-
-    char transA('C');
-    int ma = A.GetM();
-    if (ma == A.GetN())
-      mkl_cspblas_ccsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                           X.GetDataVoid(), Y.GetDataVoid());
-    else
-      {
-        Y.Zero();
-        int na = A.GetN(); complex<float> one(1, 0), zero(0, 0);
-        char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-        mkl_ccsrmv(&transA, &ma, &na, &one, matdescra, A.GetDataVoid(), 
-                   A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-                   X.GetDataVoid(), &zero, Y.GetDataVoid());        
-      }
-  }
-
-
-  //! Y = A^H X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonConjTrans& trans,
-           const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
-#endif
-
-    char transA('C');
-    int ma = A.GetM();
-    if (ma == A.GetN())
-      mkl_cspblas_zcsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
-                           X.GetDataVoid(), Y.GetDataVoid());
-    else
-      {
-        Y.Zero();
-        int na = A.GetN(); complex<double> one(1, 0), zero(0, 0);
-        char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-        mkl_zcsrmv(&transA, &ma, &na, &one, matdescra, A.GetDataVoid(), 
-                   A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-                   X.GetDataVoid(), &zero, Y.GetDataVoid());        
-      }
-  }
-
-
-  //! Y = A X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonConjTrans& trans,
-           const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
-#endif
-
-    char uplo('U');
-    int ma = A.GetM();
-    mkl_cspblas_scsrsymv(&uplo, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                         X.GetData(), Y.GetData());
-  }
-
-
-  //! Y = A X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonConjTrans& trans,
-           const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
-#endif
-
-    char uplo('U');
-    int ma = A.GetM();
-    mkl_cspblas_dcsrsymv(&uplo, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
-                         X.GetData(), Y.GetData());
-  }
-
-
-  //! Y = A^H X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonConjTrans& trans,
-           const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
+    CheckDim(A, X, Y, "Mlt(A, X, Y)");
 #endif
 
     Vector<complex<float>, VectFull, Alloc2>& Xv
       = const_cast<Vector<complex<float>, VectFull, Alloc2>& >(X);
     
-    Conjugate(Xv);
+    if (trans.ConjTrans())
+      Conjugate(Xv);
+
     char uplo('U');
     int ma = A.GetM();
     mkl_cspblas_ccsrsymv(&uplo, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
                          X.GetDataVoid(), Y.GetDataVoid());
-    
-    Conjugate(Xv); Conjugate(Y);
+
+    if (trans.ConjTrans())
+      {
+	Conjugate(Xv);
+	Conjugate(Y);
+      }
   }
 
 
-  //! Y = A^H X
+  //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const class_SeldonConjTrans& trans,
+  void Mlt(const SeldonTranspose& trans,
            const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
            const Vector<complex<double>, VectFull, Alloc2>& X,
            Vector<complex<double>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(trans, A, X, Y)");
+    CheckDim(A, X, Y, "Mlt(A, X, Y)");
 #endif
 
     Vector<complex<double>, VectFull, Alloc2>& Xv
       = const_cast<Vector<complex<double>, VectFull, Alloc2>& >(X);
 
-    Conjugate(Xv);
+    if (trans.ConjTrans())
+      Conjugate(Xv);
+
     char uplo('U');
     int ma = A.GetM();
     mkl_cspblas_zcsrsymv(&uplo, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
                          X.GetDataVoid(), Y.GetDataVoid());
 
-    Conjugate(Xv); Conjugate(Y);
+    if (trans.ConjTrans())
+      {
+	Conjugate(Xv);
+	Conjugate(Y);
+      }
   }
-
+  
 
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
@@ -1359,7 +1043,7 @@ namespace Seldon
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
   void MltAdd(const float& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<float, General, RowSparse, Alloc1>& A,
               const Vector<float, VectFull, Alloc2>& X,
               const float& beta,
@@ -1369,7 +1053,7 @@ namespace Seldon
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
 #endif
 
-    char transa('N');
+    char transa(TransA.Char());
     int m = A.GetM(), n = A.GetN();
     char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
     mkl_scsrmv(&transa, &m, &n, &alpha, matdescra, A.GetData(), 
@@ -1381,7 +1065,7 @@ namespace Seldon
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
   void MltAdd(const double& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<double, General, RowSparse, Alloc1>& A,
               const Vector<double, VectFull, Alloc2>& X,
               const double& beta,
@@ -1391,7 +1075,7 @@ namespace Seldon
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
 #endif
 
-    char transa('N');
+    char transa(TransA.Char());
     int m = A.GetM(), n = A.GetN();
     char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
     mkl_dcsrmv(&transa, &m, &n, &alpha, matdescra, A.GetData(), 
@@ -1403,7 +1087,7 @@ namespace Seldon
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
   void MltAdd(const complex<float>& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
               const Vector<complex<float>, VectFull, Alloc2>& X,
               const complex<float>& beta,
@@ -1413,7 +1097,7 @@ namespace Seldon
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
 #endif
 
-    char transa('N');
+    char transa(TransA.Char());
     int m = A.GetM(), n = A.GetN();
     char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
     mkl_ccsrmv(&transa, &m, &n, &alpha, matdescra, A.GetDataVoid(), 
@@ -1425,7 +1109,7 @@ namespace Seldon
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
   void MltAdd(const complex<double>& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
               const Vector<complex<double>, VectFull, Alloc2>& X,
               const complex<double>& beta,
@@ -1435,7 +1119,7 @@ namespace Seldon
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
 #endif
 
-    char transa('N');
+    char transa(TransA.Char());
     int m = A.GetM(), n = A.GetN();
     char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
     mkl_zcsrmv(&transa, &m, &n, &alpha, matdescra, A.GetDataVoid(), 
@@ -1447,7 +1131,7 @@ namespace Seldon
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
   void MltAdd(const float& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
               const Vector<float, VectFull, Alloc2>& X,
               const float& beta,
@@ -1457,7 +1141,7 @@ namespace Seldon
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
 #endif
 
-    char transa('N');
+    char transa(TransA.Char());
     int m = A.GetM(), n = A.GetN();
     char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
     mkl_scsrmv(&transa, &m, &n, &alpha, matdescra, A.GetData(), 
@@ -1469,7 +1153,7 @@ namespace Seldon
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
   void MltAdd(const double& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
               const Vector<double, VectFull, Alloc2>& X,
               const double& beta,
@@ -1479,7 +1163,7 @@ namespace Seldon
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
 #endif
 
-    char transa('N');
+    char transa(TransA.Char());
     int m = A.GetM(), n = A.GetN();
     char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
     mkl_dcsrmv(&transa, &m, &n, &alpha, matdescra, A.GetData(), 
@@ -1492,7 +1176,7 @@ namespace Seldon
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
   void MltAdd(const complex<float>& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
               const Vector<complex<float>, VectFull, Alloc2>& X,
               const complex<float>& beta,
@@ -1502,7 +1186,7 @@ namespace Seldon
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
 #endif
 
-    char transa('N');
+    char transa(TransA.Char());
     int m = A.GetM(), n = A.GetN();
     char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
     mkl_ccsrmv(&transa, &m, &n, &alpha, matdescra, A.GetDataVoid(), 
@@ -1514,7 +1198,7 @@ namespace Seldon
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
   void MltAdd(const complex<double>& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
               const Vector<complex<double>, VectFull, Alloc2>& X,
               const complex<double>& beta,
@@ -1524,361 +1208,7 @@ namespace Seldon
     CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
 #endif
 
-    char transa('N');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_zcsrmv(&transa, &m, &n, &alpha, matdescra, A.GetDataVoid(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetDataVoid(), &beta, Y.GetDataVoid());
-  }
-
-
-  //! Y = beta Y + alpha A^T X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const float& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<float, General, RowSparse, Alloc1>& A,
-              const Vector<float, VectFull, Alloc2>& X,
-              const float& beta,
-              Vector<float, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_scsrmv(&transa, &m, &n, &alpha, matdescra, A.GetData(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetData(), &beta, Y.GetData());
-  }
-  
-  
-  //! Y = beta Y + alpha A^T X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const double& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<double, General, RowSparse, Alloc1>& A,
-              const Vector<double, VectFull, Alloc2>& X,
-              const double& beta,
-              Vector<double, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_dcsrmv(&transa, &m, &n, &alpha, matdescra, A.GetData(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetData(), &beta, Y.GetData());
-  }
-
-
-  //! Y = beta Y + alpha A^T X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<float>& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-              const Vector<complex<float>, VectFull, Alloc2>& X,
-              const complex<float>& beta,
-              Vector<complex<float>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_ccsrmv(&transa, &m, &n, &alpha, matdescra, A.GetDataVoid(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetDataVoid(), &beta, Y.GetDataVoid());
-  }
-  
-  
-  //! Y = beta Y + alpha A^T X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<double>& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-              const Vector<complex<double>, VectFull, Alloc2>& X,
-              const complex<double>& beta,
-              Vector<complex<double>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_zcsrmv(&transa, &m, &n, &alpha, matdescra, A.GetDataVoid(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetDataVoid(), &beta, Y.GetDataVoid());
-  }
-
-
-  //! Y = beta Y + alpha A^T X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const float& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<float, VectFull, Alloc2>& X,
-              const float& beta,
-              Vector<float, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_scsrmv(&transa, &m, &n, &alpha, matdescra, A.GetData(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetData(), &beta, Y.GetData());
-  }
-  
-  
-  //! Y = beta Y + alpha A^T X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const double& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<double, VectFull, Alloc2>& X,
-              const double& beta,
-              Vector<double, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_dcsrmv(&transa, &m, &n, &alpha, matdescra, A.GetData(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetData(), &beta, Y.GetData());
-
-  }
-
-
-  //! Y = beta Y + alpha A^T X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<float>& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<complex<float>, VectFull, Alloc2>& X,
-              const complex<float>& beta,
-              Vector<complex<float>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_ccsrmv(&transa, &m, &n, &alpha, matdescra, A.GetDataVoid(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetDataVoid(), &beta, Y.GetDataVoid());
-  }
-  
-  
-  //! Y = beta Y + alpha A^T X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<double>& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<complex<double>, VectFull, Alloc2>& X,
-              const complex<double>& beta,
-              Vector<complex<double>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_zcsrmv(&transa, &m, &n, &alpha, matdescra, A.GetDataVoid(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetDataVoid(), &beta, Y.GetDataVoid());
-  }
-
-
-  //! Y = beta Y + alpha A^H X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const float& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<float, General, RowSparse, Alloc1>& A,
-              const Vector<float, VectFull, Alloc2>& X,
-              const float& beta,
-              Vector<float, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_scsrmv(&transa, &m, &n, &alpha, matdescra, A.GetData(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetData(), &beta, Y.GetData());
-  }
-  
-  
-  //! Y = beta Y + alpha A^H X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const double& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<double, General, RowSparse, Alloc1>& A,
-              const Vector<double, VectFull, Alloc2>& X,
-              const double& beta,
-              Vector<double, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_dcsrmv(&transa, &m, &n, &alpha, matdescra, A.GetData(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetData(), &beta, Y.GetData());
-  }
-
-
-  //! Y = beta Y + alpha A^H X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<float>& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-              const Vector<complex<float>, VectFull, Alloc2>& X,
-              const complex<float>& beta,
-              Vector<complex<float>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_ccsrmv(&transa, &m, &n, &alpha, matdescra, A.GetDataVoid(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetDataVoid(), &beta, Y.GetDataVoid());
-  }
-  
-  
-  //! Y = beta Y + alpha A^H X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<double>& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-              const Vector<complex<double>, VectFull, Alloc2>& X,
-              const complex<double>& beta,
-              Vector<complex<double>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_zcsrmv(&transa, &m, &n, &alpha, matdescra, A.GetDataVoid(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetDataVoid(), &beta, Y.GetDataVoid());
-  }
-
-
-  //! Y = beta Y + alpha A^H X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const float& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<float, VectFull, Alloc2>& X,
-              const float& beta,
-              Vector<float, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_scsrmv(&transa, &m, &n, &alpha, matdescra, A.GetData(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetData(), &beta, Y.GetData());
-  }
-  
-  
-  //! Y = beta Y + alpha A^H X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const double& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<double, VectFull, Alloc2>& X,
-              const double& beta,
-              Vector<double, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_dcsrmv(&transa, &m, &n, &alpha, matdescra, A.GetData(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetData(), &beta, Y.GetData());
-
-  }
-
-
-  //! Y = beta Y + alpha A^H X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<float>& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<complex<float>, VectFull, Alloc2>& X,
-              const complex<float>& beta,
-              Vector<complex<float>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_ccsrmv(&transa, &m, &n, &alpha, matdescra, A.GetDataVoid(), 
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1,
-               X.GetDataVoid(), &beta, Y.GetDataVoid());
-  }
-  
-  
-  //! Y = beta Y + alpha A^H X
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<double>& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<complex<double>, VectFull, Alloc2>& X,
-              const complex<double>& beta,
-              Vector<complex<double>, VectFull, Alloc3>& Y)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
-#endif
-
-    char transa('C');
+    char transa(TransA.Char());
     int m = A.GetM(), n = A.GetN();
     char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
     mkl_zcsrmv(&transa, &m, &n, &alpha, matdescra, A.GetDataVoid(), 
@@ -2067,41 +1397,54 @@ namespace Seldon
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
   void MltAdd(const float& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<float, General, RowSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
+              const SeldonTranspose& TransB,
               const Matrix<float, General, RowMajor, Alloc1>& B,
               const float& beta,
               Matrix<float, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, B, C, "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('N');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_scsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetData(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetData(),
-               &n, &beta, C.GetData(), &n);
-  }
-
-
-  //! C = alpha A B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const double& alpha,
-              const class_SeldonNoTrans& TransA,
-              const Matrix<double, General, RowSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<double, General, RowMajor, Alloc1>& B,
-              const double& beta,
-              Matrix<double, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, B, C, "MltAdd(alpha, transA, A, transB, B, beta, C)");
+    CheckDim(TransA, A, TransB, B, C, "MltAdd(alpha, transA, A, transB, B, beta, C)");
 #endif
     
-    char transa('N');
+    if (!B.NoTrans())
+      {
+	cout << "Only product with non-tranpose B is available" << endl;
+	abort();
+      }
+
+    char transa(TransA.Char());
+    int m = A.GetM(), n = C.GetN(), k = A.GetN();
+    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
+    mkl_scsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetData(),
+               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetData(),
+               &n, &beta, C.GetData(), &n);
+  }
+
+
+  //! C = alpha A B + beta C
+  template<class Alloc0, class Alloc1, class Alloc2>
+  void MltAdd(const double& alpha,
+              const SeldonTranspose& TransA,
+              const Matrix<double, General, RowSparse, Alloc0>& A,
+              const SeldonTranspose& TransB,
+              const Matrix<double, General, RowMajor, Alloc1>& B,
+              const double& beta,
+              Matrix<double, General, RowMajor, Alloc2>& C)
+  {
+#ifdef SELDON_CHECK_DIMENSIONS
+    CheckDim(TransA, A, TransB, B, C,
+	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
+#endif
+
+    if (!B.NoTrans())
+      {
+	cout << "Only product with non-tranpose B is available" << endl;
+	abort();
+      }
+    
+    char transa(TransA.Char());
     int m = A.GetM(), n = C.GetN(), k = A.GetN();
     char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
     mkl_dcsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetData(),
@@ -2113,18 +1456,25 @@ namespace Seldon
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
   void MltAdd(const complex<float>& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
+              const SeldonTranspose& TransB,
               const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
               const complex<float>& beta,
               Matrix<complex<float>, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, B, C, "MltAdd(alpha, transA, A, transB, B, beta, C)");
+    CheckDim(TransA, A, TransB, B, C,
+	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
 #endif
 
-    char transa('N');
+    if (!B.NoTrans())
+      {
+	cout << "Only product with non-tranpose B is available" << endl;
+	abort();
+      }
+
+    char transa(TransA.Char());
     int m = A.GetM(), n = C.GetN(), k = A.GetN();
     char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
     mkl_ccsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetDataVoid(),
@@ -2136,18 +1486,25 @@ namespace Seldon
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
   void MltAdd(const complex<double>& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
+              const SeldonTranspose& TransB,
               const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
               const complex<double>& beta,
               Matrix<complex<double>, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, B, C, "MltAdd(alpha, transA, A, transB, B, beta, C)");
+    CheckDim(TransA, A, TransB, B, C,
+	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
 #endif
 
-    char transa('N');
+    if (!B.NoTrans())
+      {
+	cout << "Only product with non-tranpose B is available" << endl;
+	abort();
+      }
+
+    char transa(TransA.Char());
     int m = A.GetM(), n = C.GetN(), k = A.GetN();
     char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
     mkl_zcsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetDataVoid(),
@@ -2159,18 +1516,25 @@ namespace Seldon
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
   void MltAdd(const float& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<float, Symmetric, RowSymSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
+              const SeldonTranspose& TransB,
               const Matrix<float, General, RowMajor, Alloc1>& B,
               const float& beta,
               Matrix<float, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, B, C, "MltAdd(alpha, transA, A, transB, B, beta, C)");
+    CheckDim(TransA, A, TransB, B, C,
+	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
 #endif
 
-    char transa('N');
+    if (!B.NoTrans())
+      {
+	cout << "Only product with non-tranpose B is available" << endl;
+	abort();
+      }
+
+    char transa(TransA.Char());
     int m = A.GetM(), n = C.GetN(), k = A.GetN();
     char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
     mkl_scsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetData(),
@@ -2182,18 +1546,25 @@ namespace Seldon
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
   void MltAdd(const double& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<double, Symmetric, RowSymSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
+              const SeldonTranspose& TransB,
               const Matrix<double, General, RowMajor, Alloc1>& B,
               const double& beta,
               Matrix<double, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, B, C, "MltAdd(alpha, transA, A, transB, B, beta, C)");
+    CheckDim(TransA, A, TransB, B, C,
+	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
 #endif
     
-    char transa('N');
+    if (!B.NoTrans())
+      {
+	cout << "Only product with non-tranpose B is available" << endl;
+	abort();
+      }
+
+    char transa(TransA.Char());
     int m = A.GetM(), n = C.GetN(), k = A.GetN();
     char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
     mkl_dcsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetData(),
@@ -2205,18 +1576,25 @@ namespace Seldon
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
   void MltAdd(const complex<float>& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
+              const SeldonTranspose& TransB,
               const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
               const complex<float>& beta,
               Matrix<complex<float>, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, B, C, "MltAdd(alpha, transA, A, transB, B, beta, C)");
+    CheckDim(TransA, A, TransB, B, C,
+	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
 #endif
 
-    char transa('N');
+    if (!B.NoTrans())
+      {
+	cout << "Only product with non-tranpose B is available" << endl;
+	abort();
+      }
+
+    char transa(TransA.Char());
     int m = A.GetM(), n = C.GetN(), k = A.GetN();
     char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
     mkl_ccsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetDataVoid(),
@@ -2228,402 +1606,25 @@ namespace Seldon
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
   void MltAdd(const complex<double>& alpha,
-              const class_SeldonNoTrans& TransA,
+              const SeldonTranspose& TransA,
               const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
-              const complex<double>& beta,
-              Matrix<complex<double>, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, B, C, "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('N');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_zcsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetDataVoid(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetDataVoid(),
-               &n, &beta, C.GetDataVoid(), &n);
-  }
-
-
-  //! C = alpha A^T B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const float& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<float, General, RowSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<float, General, RowMajor, Alloc1>& B,
-              const float& beta,
-              Matrix<float, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_scsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetData(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetData(),
-               &n, &beta, C.GetData(), &n);
-  }
-
-
-  //! C = alpha A^T B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const double& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<double, General, RowSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<double, General, RowMajor, Alloc1>& B,
-              const double& beta,
-              Matrix<double, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_dcsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetData(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetData(),
-               &n, &beta, C.GetData(), &n);
-  }
-
-
-  //! C = alpha A^T B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<float>& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
-              const complex<float>& beta,
-              Matrix<complex<float>, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_ccsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetDataVoid(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetDataVoid(),
-               &n, &beta, C.GetDataVoid(), &n);
-  }
-
-
-  //! C = alpha A^T B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<double>& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
+              const SeldonTranspose& TransB,
               const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
               const complex<double>& beta,
               Matrix<complex<double>, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
+	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
 #endif
 
-    char transa('T');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_zcsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetDataVoid(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetDataVoid(),
-               &n, &beta, C.GetDataVoid(), &n);
-  }
+    if (!B.NoTrans())
+      {
+	cout << "Only product with non-tranpose B is available" << endl;
+	abort();
+      }
 
-
-  //! C = alpha A^T B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const float& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<float, Symmetric, RowSymSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<float, General, RowMajor, Alloc1>& B,
-              const float& beta,
-              Matrix<float, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_scsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetData(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetData(),
-               &n, &beta, C.GetData(), &n);
-  }
-
-
-  //! C = alpha A^T B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const double& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<double, Symmetric, RowSymSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<double, General, RowMajor, Alloc1>& B,
-              const double& beta,
-              Matrix<double, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_dcsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetData(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetData(),
-               &n, &beta, C.GetData(), &n);
-  }
-
-
-  //! C = alpha A^T B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<float>& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
-              const complex<float>& beta,
-              Matrix<complex<float>, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_ccsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetDataVoid(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetDataVoid(),
-               &n, &beta, C.GetDataVoid(), &n);
-  }
-
-
-  //! C = alpha A^T B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<double>& alpha,
-              const class_SeldonTrans& TransA,
-              const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
-              const complex<double>& beta,
-              Matrix<complex<double>, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('T');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_zcsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetDataVoid(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetDataVoid(),
-               &n, &beta, C.GetDataVoid(), &n);
-  }
-  
-
-  //! C = alpha A^H B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const float& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<float, General, RowSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<float, General, RowMajor, Alloc1>& B,
-              const float& beta,
-              Matrix<float, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_scsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetData(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetData(),
-               &n, &beta, C.GetData(), &n);
-  }
-
-
-  //! C = alpha A^H B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const double& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<double, General, RowSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<double, General, RowMajor, Alloc1>& B,
-              const double& beta,
-              Matrix<double, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_dcsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetData(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetData(),
-               &n, &beta, C.GetData(), &n);
-  }
-
-
-  //! C = alpha A^H B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<float>& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
-              const complex<float>& beta,
-              Matrix<complex<float>, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_ccsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetDataVoid(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetDataVoid(),
-               &n, &beta, C.GetDataVoid(), &n);
-  }
-
-
-  //! C = alpha A^H B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<double>& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
-              const complex<double>& beta,
-              Matrix<complex<double>, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'G', '0', '0', 'C', '0', '0'};
-    mkl_zcsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetDataVoid(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetDataVoid(),
-               &n, &beta, C.GetDataVoid(), &n);
-  }
-
-
-  //! C = alpha A^H B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const float& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<float, Symmetric, RowSymSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<float, General, RowMajor, Alloc1>& B,
-              const float& beta,
-              Matrix<float, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_scsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetData(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetData(),
-               &n, &beta, C.GetData(), &n);
-  }
-
-
-  //! C = alpha A^H B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const double& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<double, Symmetric, RowSymSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<double, General, RowMajor, Alloc1>& B,
-              const double& beta,
-              Matrix<double, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_dcsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetData(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetData(),
-               &n, &beta, C.GetData(), &n);
-  }
-
-
-  //! C = alpha A^H B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<float>& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
-              const complex<float>& beta,
-              Matrix<complex<float>, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('C');
-    int m = A.GetM(), n = C.GetN(), k = A.GetN();
-    char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
-    mkl_ccsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetDataVoid(),
-               A.GetInd(), A.GetPtr(), A.GetPtr()+1, B.GetDataVoid(),
-               &n, &beta, C.GetDataVoid(), &n);
-  }
-
-
-  //! C = alpha A^H B + beta C
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<double>& alpha,
-              const class_SeldonConjTrans& TransA,
-              const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc0>& A,
-              const class_SeldonNoTrans& TransB,
-              const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
-              const complex<double>& beta,
-              Matrix<complex<double>, General, RowMajor, Alloc2>& C)
-  {
-#ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C,
-             "MltAdd(alpha, transA, A, transB, B, beta, C)");
-#endif
-
-    char transa('C');
+    char transa(TransA.Char());
     int m = A.GetM(), n = C.GetN(), k = A.GetN();
     char matdescra[6] = {'S', 'U', 'N', 'C', '0', '0'};
     mkl_zcsrmm(&transa, &m, &n, &k, &alpha, matdescra, A.GetDataVoid(),
@@ -2845,7 +1846,7 @@ namespace Seldon
       indB[i]++;
 
     char transa('N');
-    Vector<int, VectFull, CallocAlloc<int> > PtrC(m+1);
+    Vector<int> PtrC(m+1);
     
     // mkl_?csradd is called a first time to know the number of non-zero entries
     int request = 1, sort = 0, nz = 0, ierr = 0; 
@@ -2855,7 +1856,7 @@ namespace Seldon
     
     nz = PtrC(m)-1;
     Vector<float, VectFull, Alloc1> DataC(nz);
-    Vector<int, VectFull, CallocAlloc<int> > IndC(nz);
+    Vector<int> IndC(nz);
     
     // computes C = A + alpha B
     request = 2;
@@ -2915,7 +1916,7 @@ namespace Seldon
       indB[i]++;
 
     char transa('N');
-    Vector<int, VectFull, CallocAlloc<int> > PtrC(m+1);
+    Vector<int> PtrC(m+1);
     
     // mkl_?csradd is called a first time to know the number of non-zero entries
     int request = 1, sort = 0, nz = 0, ierr = 0; 
@@ -2925,7 +1926,7 @@ namespace Seldon
     
     nz = PtrC(m)-1;
     Vector<double, VectFull, Alloc1> DataC(nz);
-    Vector<int, VectFull, CallocAlloc<int> > IndC(nz);
+    Vector<int> IndC(nz);
     
     // computes C = A + alpha B
     request = 2;
@@ -2985,7 +1986,7 @@ namespace Seldon
       indB[i]++;
 
     char transa('N');
-    Vector<int, VectFull, CallocAlloc<int> > PtrC(m+1);
+    Vector<int> PtrC(m+1);
     
     // mkl_?csradd is called a first time to know the number of non-zero entries
     int request = 1, sort = 0, nz = 0, ierr = 0; 
@@ -2995,7 +1996,7 @@ namespace Seldon
     
     nz = PtrC(m)-1;
     Vector<complex<float>, VectFull, Alloc1> DataC(nz);
-    Vector<int, VectFull, CallocAlloc<int> > IndC(nz);
+    Vector<int> IndC(nz);
     
     // computes C = A + alpha B
     request = 2;
@@ -3055,7 +2056,7 @@ namespace Seldon
       indB[i]++;
 
     char transa('N');
-    Vector<int, VectFull, CallocAlloc<int> > PtrC(m+1);
+    Vector<int> PtrC(m+1);
     
     // mkl_?csradd is called a first time to know the number of non-zero entries
     int request = 1, sort = 0, nz = 0, ierr = 0; 
@@ -3065,7 +2066,7 @@ namespace Seldon
     
     nz = PtrC(m)-1;
     Vector<complex<double>, VectFull, Alloc1> DataC(nz);
-    Vector<int, VectFull, CallocAlloc<int> > IndC(nz);
+    Vector<int> IndC(nz);
     
     // computes C = A + alpha B
     request = 2;
@@ -3117,7 +2118,7 @@ namespace Seldon
     // mkl_?csrmultcsr is called a first time to know the number
     // of non-zero entries of the matrix C
     char transa('N');
-    Vector<int, VectFull, CallocAlloc<int> > PtrC(m+1);
+    Vector<int> PtrC(m+1);
     int request = 1, sort = 0, nz = 0, info;
     mkl_scsrmultcsr(&transa, &request, &sort, &m, &n, &k, A.GetData(),
                     A.GetInd(), A.GetPtr(), B.GetData(), B.GetInd(), B.GetPtr(),
@@ -3126,7 +2127,7 @@ namespace Seldon
     // computes product A B
     nz = PtrC(m)-1;
     Vector<float, VectFull, Alloc2> DataC(nz);
-    Vector<int, VectFull, CallocAlloc<int> > IndC(nz);
+    Vector<int> IndC(nz);
     
     request = 2;
     mkl_scsrmultcsr(&transa, &request, &sort, &m, &n, &k, A.GetData(),
@@ -3182,7 +2183,7 @@ namespace Seldon
     // mkl_?csrmultcsr is called a first time to know the number
     // of non-zero entries of the matrix C
     char transa('N');
-    Vector<int, VectFull, CallocAlloc<int> > PtrC(m+1);
+    Vector<int> PtrC(m+1);
     int request = 1, sort = 0, nz = 0, info;
     mkl_dcsrmultcsr(&transa, &request, &sort, &m, &n, &k, A.GetData(),
                     A.GetInd(), A.GetPtr(), B.GetData(), B.GetInd(), B.GetPtr(),
@@ -3191,7 +2192,7 @@ namespace Seldon
     // computes product A B
     nz = PtrC(m)-1;
     Vector<double, VectFull, Alloc2> DataC(nz);
-    Vector<int, VectFull, CallocAlloc<int> > IndC(nz);
+    Vector<int> IndC(nz);
     
     request = 2;
     mkl_dcsrmultcsr(&transa, &request, &sort, &m, &n, &k, A.GetData(),
@@ -3247,7 +2248,7 @@ namespace Seldon
     // mkl_?csrmultcsr is called a first time to know the number
     // of non-zero entries of the matrix C
     char transa('N');
-    Vector<int, VectFull, CallocAlloc<int> > PtrC(m+1);
+    Vector<int> PtrC(m+1);
     int request = 1, sort = 0, nz = 0, info;
     mkl_ccsrmultcsr(&transa, &request, &sort, &m, &n, &k, A.GetDataVoid(),
                     A.GetInd(), A.GetPtr(), B.GetDataVoid(), B.GetInd(),
@@ -3256,7 +2257,7 @@ namespace Seldon
     // computes product A B
     nz = PtrC(m)-1;
     Vector<complex<float>, VectFull, Alloc2> DataC(nz);
-    Vector<int, VectFull, CallocAlloc<int> > IndC(nz);
+    Vector<int> IndC(nz);
     
     request = 2;
     mkl_ccsrmultcsr(&transa, &request, &sort, &m, &n, &k, A.GetDataVoid(),
@@ -3312,7 +2313,7 @@ namespace Seldon
     // mkl_?csrmultcsr is called a first time to know the number
     // of non-zero entries of the matrix C
     char transa('N');
-    Vector<int, VectFull, CallocAlloc<int> > PtrC(m+1);
+    Vector<int> PtrC(m+1);
     int request = 1, sort = 0, nz = 0, info;
     mkl_zcsrmultcsr(&transa, &request, &sort, &m, &n, &k, A.GetDataVoid(),
                     A.GetInd(), A.GetPtr(), B.GetDataVoid(), B.GetInd(),
@@ -3321,7 +2322,7 @@ namespace Seldon
     // computes product A B
     nz = PtrC(m)-1;
     Vector<complex<double>, VectFull, Alloc2> DataC(nz);
-    Vector<int, VectFull, CallocAlloc<int> > IndC(nz);
+    Vector<int> IndC(nz);
     
     request = 2;
     mkl_zcsrmultcsr(&transa, &request, &sort, &m, &n, &k, A.GetDataVoid(),

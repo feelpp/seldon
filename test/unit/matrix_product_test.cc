@@ -1338,7 +1338,7 @@ int main(int argc, char** argv)
   }
   
   {
-    Matrix<Real_wp, General, RowSparse, CallocAlloc<Real_wp> > A;
+    Matrix<Real_wp, General, RowSparse> A;
     CheckRealMatrix(A, sparse, false);
   }
   
@@ -1422,7 +1422,7 @@ int main(int argc, char** argv)
   }
   
   {
-    Matrix<Complex_wp, General, RowSparse, CallocAlloc<Complex_wp> > A;
+    Matrix<Complex_wp, General, RowSparse> A;
     CheckComplexMatrix(A, sparse, false);
   }
 

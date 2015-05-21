@@ -20,13 +20,13 @@
 #ifndef SELDON_FILE_SELDON_INLINE_HXX
 
 
-#include "share/Common.cxx"
+#include "share/CommonInline.cxx"
 
 // Memory management.
-#include "share/Allocator.cxx"
+#include "share/AllocatorInline.cxx"
 
 // Storage type.
-#include "share/Storage.cxx"
+#include "share/StorageInline.cxx"
 #include "share/MatrixFlagInline.cxx"
 
 #include "array/Array3D_Inline.cxx"
@@ -46,8 +46,10 @@
 #include "vector/VectorCollectionInline.cxx"
 #include "vector/SparseVectorInline.cxx"
 
-#include "matrix/SubMatrix_Base.cxx"
-#include "matrix/SubMatrix.cxx"
+#include "matrix/SubMatrix_BaseInline.cxx"
+#include "matrix/SubMatrixInline.cxx"
+
+#include "computation/basic_functions/Functions_BaseInline.cxx"
 
 #define SELDON_FILE_SELDON_INLINE_HXX
 #endif

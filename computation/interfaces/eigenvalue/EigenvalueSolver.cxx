@@ -1602,7 +1602,8 @@ namespace Seldon
   SolveCholeskyMass(const TransStatus& TransA, Vector<complex<double> >& X,
 		    complex<double>&)
   {
-    cout << "Cholesky factorisation has not been implemented for complex matrices" << endl;
+    cout << "Cholesky factorisation has not been "
+	 << "implemented for complex matrices" << endl;
     abort();
   }
   
@@ -1627,7 +1628,8 @@ namespace Seldon
   }
   
   
-  //! computes and factorizes a M + b K where M is the mass matrix and K the stiffness matrix
+  //! computes and factorizes a M + b K
+  //! where M is the mass matrix and K the stiffness matrix
   template<class T, class MatStiff, class MatMass>
   void SparseEigenProblem<T, MatStiff, MatMass>::
   ComputeAndFactorizeStiffnessMatrix(const T& a, const T& b)
@@ -1929,7 +1931,92 @@ namespace Seldon
 #ifndef SELDON_WITH_COMPILED_LIBRARY
   int TypeEigenvalueSolver::default_solver(0);  
 #endif
+
+
+  int TypeEigenvalueSolver::GetDefaultSolver()
+  {
+#ifdef SELDON_WITH_ANASAZI
+    return ANASAZI;
+#endif
+    
+#ifdef SELDON_WITH_FEAST
+    return FEAST;
+#endif
+    
+#ifdef SELDON_WITH_ARPACK
+    return ARPACK;
+#endif
+    
+    return -1;
+  }
   
+
+  template<class EigenPb, class Vector1, class Vector2,
+            class T, class Prop, class Storage, class Alloc3>
+  void GetEigenvaluesEigenvectors(EigenPb& var_eig, Vector1& lambda,
+				  Vector2& lambda_imag,
+				  Matrix<T, Prop, Storage, Alloc3>& eigen_vec);
+  {
+    int type_solver = TypeEigenvalueSolver::default_solver;
+    if (type_solver == TypeEigenvalueSolver::DEFAULT)
+      type_solver = TypeEigenvalueSolver::GetDefaultSolver();
+    
+    if (type_solver == TypeEigenvalueSolver::ARPACK)
+      {
+#ifdef SELDON_WITH_ARPACK
+        T zero; SetComplexZero(zero);
+        Matrix<T, General, ColMajor> eigen_old;
+        FindEigenvaluesArpack(var_eig, lambda, lambda_imag, eigen_old);
+        
+        // eigenvalues are sorted by ascending order
+        SortEigenvalues(lambda, lambda_imag, eigen_old,
+                        eigen_vec, var_eig.LARGE_EIGENVALUES,
+                        var_eig.GetTypeSorting(), zero, zero);
+#else
+        cout << "Recompile with Arpack" << endl;
+        abort();
+#endif
+      }
+    else if (type_solver == TypeEigenvalueSolver::ANASAZI)
+      {
+#ifdef SELDON_WITH_ANASAZI
+	T zero; SetComplexZero(zero);
+        Matrix<T, General, ColMajor> eigen_old;
+        FindEigenvaluesAnasazi(var_eig, lambda, lambda_imag, eigen_old);
+        
+        // eigenvalues are sorted by ascending order
+        SortEigenvalues(lambda, lambda_imag, eigen_old,
+                        eigen_vec, var_eig.LARGE_EIGENVALUES,
+                        var_eig.GetTypeSorting(), zero, zero);
+#else
+        cout << "Recompile with Anasazi" << endl;
+        abort();
+#endif
+      }
+    else if (type_solver == TypeEigenvalueSolver::FEAST)
+      {
+#ifdef SELDON_WITH_FEAST
+        T zero; SetComplexZero(zero);
+        Matrix<T, General, ColMajor> eigen_old;
+        FindEigenvaluesFeast(var_eig, lambda, lambda_imag, eigen_old);
+        
+        // eigenvalues are sorted by ascending order
+        SortEigenvalues(lambda, lambda_imag, eigen_old,
+                        eigen_vec, var_eig.LARGE_EIGENVALUES,
+                        var_eig.GetTypeSorting(), zero, zero);
+#else
+        cout << "Recompile with MKL" << endl;
+        abort();
+#endif
+      }
+    else
+      {
+        cout << "Recompile with eigenvalue solver" << endl;
+        abort();
+      }
+    
+  }
+
 }
 
 #define SELDON_FILE_EIGENVALUE_SOLVER_CXX

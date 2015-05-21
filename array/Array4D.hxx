@@ -46,10 +46,6 @@ namespace Seldon
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
 
-    // Static attributes.
-  protected:
-    static Allocator array4D_allocator_;
-
     // Attributes.
   protected:
     // Length along dimension #1.
@@ -76,10 +72,10 @@ namespace Seldon
     explicit Array4D(int i, int j, int k, int l);
     Array4D(const Array4D<T, Allocator>& A);
 
-    // Destructor.
+    // Destructor. (inline)
     ~Array4D();
 
-    // Basic methods.
+    // Basic methods. (inline)
     int GetLength1() const;
     int GetLength2() const;
     int GetLength3() const;
@@ -93,7 +89,7 @@ namespace Seldon
     void Reallocate(int i, int j, int k, int l);
     void Clear();
 
-    // Element access and affectation.
+    // Element access and affectation. (inline)
     reference operator() (int i, int j, int k, int l);
 #ifndef SWIG
     const_reference operator() (int i, int j, int k, int l) const;
@@ -118,10 +114,6 @@ namespace Seldon
 
 
 #ifndef SWIG
-  // 4D array allocator.
-  template <class T, class Allocator>
-  Allocator Array4D<T, Allocator>::array4D_allocator_;
-
 
   template <class T, class Allocator>
   ostream& operator << (ostream& out,

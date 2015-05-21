@@ -353,7 +353,8 @@ namespace Seldon
         if (var.GetComputationalMode() == var.INVERT_MODE)
           {
             // we consider standard problem M^-1 K U = lambda U
-            // drawback : the matrix is non-symmetric even if K and M are symmetric            
+            // drawback : the matrix is non-symmetric
+	    //           even if K and M are symmetric            
             bmat = 'I';
             
             if (var.GetTypeSpectrum() != var.CENTERED_EIGENVALUES)
@@ -784,7 +785,8 @@ namespace Seldon
           }
         else
           {
-            cout << "Error during the computation of eigenvalues, info = " << info << endl;
+            cout << "Error during the computation of eigenvalues, info = "
+		 << info << endl;
             cout << "Look at documentation of ARPACK " << endl;
             abort();
           }
@@ -837,6 +839,179 @@ namespace Seldon
                          shiftr, shifti);
 
     var.Clear();
+  }
+
+
+  /*************************************************************************
+   * Overload of CallArpack function to call the correct Arpack subroutine *
+   *************************************************************************/
+  
+  
+  //! calling arpack routine
+  template<class T, class Allocator1, class Allocator2,
+	   class Allocator3, class Allocator4, class Alloc5>
+  void CallArpack(int comm, int& ido, char& bmat, int& n, string& which, int& nev,
+		  T& tol, Vector<T, VectFull, Allocator1>& resid,
+		  int& ncv, Matrix<T, General, ColMajor, Allocator2>& v,
+		  int& ldv, Vector<int>& iparam, Vector<int>& ipntr, bool sym,
+		  Vector<T, VectFull, Allocator3>& workd,
+		  Vector<T, VectFull, Allocator4>& workl,
+		  int& lworkl, Vector<T, VectFull, Alloc5>& rwork, int& info)
+  {
+    if (sym)
+      {
+        if ((which == "SR") || (which == "SI"))
+          which = "SA";
+        
+        if ((which == "LR") || (which == "LI"))
+          which = "LA";
+        
+        // real symmetric
+        // call of dsaupd/ssaupd
+#ifdef SELDON_WITH_MPI
+        saupd(comm, ido, bmat, n, &which[0], nev, tol, resid.GetData(),
+	      ncv, v.GetData(), ldv, iparam.GetData(), ipntr.GetData(), 
+	      workd.GetData(), workl.GetData(), lworkl, info);
+#else
+        saupd(ido, bmat, n, &which[0], nev, tol, resid.GetData(),
+	      ncv, v.GetData(), ldv, iparam.GetData(), ipntr.GetData(), 
+	      workd.GetData(), workl.GetData(), lworkl, info);
+#endif
+      }
+    else
+      {
+        // real non-symmetric
+        // call of dnaupd/snaupd
+#ifdef SELDON_WITH_MPI
+        naupd(comm, ido, bmat, n, &which[0], nev, tol, resid.GetData(),
+	      ncv, v.GetData(), ldv, iparam.GetData(), ipntr.GetData(), 
+	      workd.GetData(), workl.GetData(), lworkl, info);
+#else
+        naupd(ido, bmat, n, &which[0], nev, tol, resid.GetData(),
+	      ncv, v.GetData(), ldv, iparam.GetData(), ipntr.GetData(), 
+	      workd.GetData(), workl.GetData(), lworkl, info);
+#endif
+      }
+  }
+  
+  
+  //! calling arpack routine
+  template<class Allocator1, class Allocator2,
+	   class Allocator3, class Allocator4, class Alloc5>
+  void CallArpack(int comm, int& ido, char& bmat, int& n,
+		  string& which, int& nev, double& tol,
+		  Vector<complex<double>, VectFull, Allocator1>& resid, int& ncv,
+		  Matrix<complex<double>, General, ColMajor, Allocator2>& v,
+		  int& ldv, Vector<int>& iparam, Vector<int>& ipntr, bool sym,
+		  Vector<complex<double>, VectFull, Allocator3>& workd,
+		  Vector<complex<double>, VectFull, Allocator4>& workl,
+		  int& lworkl, Vector<double, VectFull, Alloc5>& rwork, int& info)
+  {
+    // complex
+    // call of znaupd
+#ifdef SELDON_WITH_MPI
+    pznaupd_(&comm, &ido, &bmat, &n, &which[0], &nev, &tol, resid.GetDataVoid(),
+            &ncv, v.GetDataVoid(), &ldv, iparam.GetData(), ipntr.GetData(), 
+            workd.GetDataVoid(), workl.GetDataVoid(), &lworkl, rwork.GetData(), &info);
+#else
+    znaupd_(&ido, &bmat, &n, &which[0], &nev, &tol, resid.GetDataVoid(),
+            &ncv, v.GetDataVoid(), &ldv, iparam.GetData(), ipntr.GetData(), 
+            workd.GetDataVoid(), workl.GetDataVoid(), &lworkl, rwork.GetData(), &info);
+#endif
+  }
+  
+  
+  //! calling Arpack routine
+  template<class T, class Allocator1, class Allocator2,
+	   class Allocator3, class Allocator4, class Allocator5,
+	   class Allocator6, class Allocator7, class Alloc8>
+  void CallArpack(int comm, int& rvec, char& howmny, Vector<int>& selec,
+		  Vector<T, VectFull, Allocator1>& lambda,
+		  Vector<T, VectFull, Allocator2>& lambda_i,
+		  Matrix<T, General, ColMajor, Allocator3>& eigen_vec,
+		  int& ldz, T& shiftr, T& shifti, char& bmat, int& n,
+		  string& which, int& nev, T& tol,
+		  Vector<T, VectFull, Allocator4>& resid,
+		  int& ncv, Matrix<T, General, ColMajor, Allocator5>&v,
+		  int& ldv, Vector<int>& iparam, Vector<int>& ipntr,
+		  bool sym, Vector<T, VectFull, Allocator6>& workd,
+		  Vector<T, VectFull, Allocator7>& workl,
+		  int& lworkl, Vector<T, VectFull, Alloc8>& rwork, int& info)
+  {
+    if (sym)
+      {
+        // real symmetric
+        // call of dseupd
+#ifdef SELDON_WITH_MPI
+        seupd(comm, rvec, howmny, selec.GetData(), lambda.GetData(), eigen_vec.GetData(),
+	      ldz, shiftr, bmat, n, &which[0], nev, tol, resid.GetData(), ncv,
+	      v.GetData(), ldv, iparam.GetData(), ipntr.GetData(),
+	      workd.GetData(), workl.GetData(), lworkl, info);
+#else
+        seupd(rvec, howmny, selec.GetData(), lambda.GetData(), eigen_vec.GetData(),
+	      ldz, shiftr, bmat, n, &which[0], nev, tol, resid.GetData(), ncv,
+	      v.GetData(), ldv, iparam.GetData(), ipntr.GetData(),
+	      workd.GetData(), workl.GetData(), lworkl, info);
+#endif
+      }
+    else
+      {
+        Vector<double> workev(3*ncv);
+        // real non-symmetric
+        // call of dneupd
+#ifdef SELDON_WITH_MPI
+        neupd(comm, rvec, howmny, selec.GetData(), lambda.GetData(),
+	      lambda_i.GetData(), eigen_vec.GetData(), ldz, shiftr, shifti,
+	      workev.GetData(), bmat, n, &which[0], nev, tol,
+	      resid.GetData(), ncv, v.GetData(), ldv, iparam.GetData(),
+	      ipntr.GetData(), workd.GetData(), workl.GetData(), lworkl, info);
+#else
+        neupd(rvec, howmny, selec.GetData(), lambda.GetData(),
+              lambda_i.GetData(), eigen_vec.GetData(), ldz, shiftr, shifti,
+	      workev.GetData(), bmat, n, &which[0], nev, tol,
+	      resid.GetData(), ncv, v.GetData(), ldv, iparam.GetData(),
+	      ipntr.GetData(), workd.GetData(), workl.GetData(), lworkl, info);
+#endif
+      }
+  }
+  
+  
+  //! calling arpack routine
+  template<class Allocator1, class Allocator2, class Allocator3,
+	   class Allocator4, class Allocator5, class Allocator6,
+	   class Allocator7, class Alloc8>
+  void CallArpack(int comm, int& rvec, char& howmny, Vector<int>& selec,
+		  Vector<complex<double>, VectFull, Allocator1>& lambda,
+		  Vector<complex<double>, VectFull, Allocator2>& lambda_i,
+		  Matrix<complex<double>, General, ColMajor, Allocator3>& eigen_vectors,
+		  int& ldz, complex<double>& shiftr, complex<double>& shifti,
+		  char& bmat, int& n, string& which, int& nev, double& tol,
+		  Vector<complex<double>, VectFull, Allocator4>& resid,
+		  int& ncv, Matrix<complex<double>, General, ColMajor, Allocator5>& v,
+		  int& ldv, Vector<int>& iparam, Vector<int>& ipntr, bool sym,
+		  Vector<complex<double>, VectFull, Allocator6>& workd,
+		  Vector<complex<double>, VectFull, Allocator7>& workl,
+		  int& lworkl, Vector<double, VectFull, Alloc8>& rwork, int& info)
+  {
+    // complex
+    // call of zneupd
+    Vector<complex<double> > workev(2*ncv);
+    workev.Zero();
+#ifdef SELDON_WITH_MPI
+    pzneupd_(&comm, &rvec, &howmny, selec.GetData(), lambda.GetDataVoid(),
+             eigen_vectors.GetDataVoid(), &ldz, &shiftr, workev.GetDataVoid(),
+             &bmat, &n, &which[0], &nev, &tol, resid.GetDataVoid(),
+             &ncv, v.GetDataVoid(), &ldv, iparam.GetData(),
+             ipntr.GetData(), workd.GetDataVoid(), workl.GetDataVoid(),
+             &lworkl, rwork.GetData(), &info);
+#else
+    zneupd_(&rvec, &howmny, selec.GetData(), lambda.GetDataVoid(),
+	    eigen_vectors.GetDataVoid(), &ldz, &shiftr, workev.GetDataVoid(),
+	    &bmat, &n, &which[0], &nev, &tol, resid.GetDataVoid(),
+	    &ncv, v.GetDataVoid(), &ldv, iparam.GetData(),
+	    ipntr.GetData(), workd.GetDataVoid(), workl.GetDataVoid(),
+	    &lworkl, rwork.GetData(), &info);
+#endif
   }
   
 }

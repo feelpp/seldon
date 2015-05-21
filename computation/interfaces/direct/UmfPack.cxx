@@ -138,12 +138,18 @@ namespace Seldon
   //! we clear present factorization if any
   void MatrixUmfPack<double>::Clear()
   {
+    typedef typename SeldonDefaultAllocator<VectFull, int>::
+      allocator AllocatorInt;
+
+    typedef typename SeldonDefaultAllocator<VectFull, double>::
+      allocator Allocator;
+
     if (this->n > 0)
       {
         // memory used for matrix is released
-        free(ptr_);
-        free(ind_);
-        free(data_);
+	AllocatorInt::deallocate(ptr_, this->n+1);
+	AllocatorInt::deallocate(ind_, this->n+1);
+	Allocator::deallocate(data_, this->n+1);
 
 	// memory for numbering scheme is released
 	umfpack_di_free_symbolic(&this->Symbolic) ;
@@ -171,13 +177,19 @@ namespace Seldon
   //! we clear present factorization if any
   void MatrixUmfPack<complex<double> >::Clear()
   {
+    typedef typename SeldonDefaultAllocator<VectFull, int>::
+      allocator AllocatorInt;
+
+    typedef typename SeldonDefaultAllocator<VectFull, double>::
+      allocator Allocator;
+    
     if (this->n > 0)
       {
         // memory used for matrix is released
-        free(ptr_);
-        free(ind_);
-        free(data_real_);
-        free(data_imag_);
+	AllocatorInt::dealloate(ptr_, this->n+1);
+	AllocatorInt::deallocate(ind_, this->n+1);
+	Allocator::deallocate(data_real_, this->n+1);
+	Allocator::deallocate(data_imag_, this->n+1);
 
 	// memory for numbering scheme is released
 	umfpack_zi_free_symbolic(&this->Symbolic) ;
@@ -207,7 +219,7 @@ namespace Seldon
     Clear();
 
     // conversion to unsymmetric matrix in Column Sparse Column Format
-    Matrix<double, General, ColSparse, MallocAlloc<double> > Acsc;
+    Matrix<double, General, ColSparse> Acsc;
     transpose = false;
 
     this->n = mat.GetM();
@@ -259,7 +271,7 @@ namespace Seldon
     Clear();
 
     // conversion to unsymmetric matrix in Column Sparse Row Format
-    Matrix<double, General, RowSparse, MallocAlloc<double> > Acsr;
+    Matrix<double, General, RowSparse> Acsr;
     transpose = true;
 
     Copy(mat, Acsr);
@@ -324,8 +336,8 @@ namespace Seldon
   }
 
 
-  template<class StatusTrans, class Allocator2>
-  void MatrixUmfPack<double>::Solve(const StatusTrans& TransA,
+  template<class Allocator2>
+  void MatrixUmfPack<double>::Solve(const SeldonTranspose& TransA,
 				    Vector<double, VectFull, Allocator2>& x)
   {
     if (TransA.NoTrans())
@@ -362,8 +374,7 @@ namespace Seldon
 
     this->n = mat.GetM();
     // conversion to CSC format
-    Matrix<complex<double>, General, ColSparse,
-      MallocAlloc<complex<double> > > Acsc;
+    Matrix<complex<double>, General, ColSparse> Acsc;
     transpose = false;
 
     Copy(mat, Acsc);
@@ -374,10 +385,8 @@ namespace Seldon
     complex<double>* data = Acsc.GetData();
     int* ptr = Acsc.GetPtr();
     int* ind = Acsc.GetInd();
-    Vector<double, VectFull, MallocAlloc<double> >
-      ValuesReal(nnz), ValuesImag(nnz);
-
-    Vector<int, VectFull, MallocAlloc<int> > Ptr(this->n+1), Ind(nnz);
+    Vector<double> ValuesReal(nnz), ValuesImag(nnz);
+    Vector<int> Ptr(this->n+1), Ind(nnz);
 
     for (int i = 0; i < nnz; i++)
       {
@@ -439,9 +448,9 @@ namespace Seldon
 
 
   //! Solves linear system in complex double precision using UmfPack.
-  template<class StatusTrans, class Allocator2>
+  template<class Allocator2>
   void MatrixUmfPack<complex<double> >::
-  Solve(const StatusTrans& TransA,
+  Solve(const SeldonTranspose& TransA,
 	Vector<complex<double>, VectFull, Allocator2>& x)
   {
     int m = x.GetM();
@@ -556,8 +565,8 @@ namespace Seldon
 
   //! LU resolution with a matrix whose type is the same as for UmfPack object
   //! Solves transpose system A^T x = b or A x = b depending on TransA
-  template<class T, class Prop, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Prop, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixUmfPack<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
   {
     Vector<T> v;
@@ -591,8 +600,8 @@ namespace Seldon
   
 
   //! Solves A x = b or A^T x = b, where A is real and x is complex
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixUmfPack<double>& mat_lu,
                Vector<complex<double>, VectFull, Allocator>& x)
   {
@@ -623,8 +632,8 @@ namespace Seldon
 
 
   //! Solves A x = b or A^T x = b, where A is complex and x is real => Forbidden  
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixUmfPack<complex<double> >& mat_lu,
                Vector<double, VectFull, Allocator>& x)
   {

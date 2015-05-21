@@ -28,10 +28,11 @@ namespace Seldon
     Solves the symmetric linear system Ax = b using the
     BiConjugate Gradient Conjugate Residual method.
 
-    See Iterative Methods for the Solution of Very Large Complex Symmetric Linear Systems of
-    Equations in Electrodynamics,
+    See Iterative Methods for the Solution of Very Large Complex Symmetric
+    Linear Systems of Equations in Electrodynamics,
     Markus Clemens, Thomas Weiland
-    Fachbereich 18 Elektrische Nachrichtentechnik, Fachgebiet Theorie Elektromagnetischer Felder,
+    Fachbereich 18 Elektrische Nachrichtentechnik,
+    Fachgebiet Theorie Elektromagnetischer Felder,
     Technische Hochschule Darmstadt, Schlossgartenstr. 8, D-64289 Darmstadt, Germany
 
     \param[in] A  Complex Symmetric Matrix

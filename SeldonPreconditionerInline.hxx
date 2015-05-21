@@ -20,8 +20,5 @@
 #ifndef SELDON_FILE_SELDON_PRECONDITIONER_INLINE_HXX
 
 
-#include "computation/solver/preconditioner/Precond_Ssor.cxx"
-
-
 #define SELDON_FILE_SELDON_PRECONDITIONER_INLINE_HXX
 #endif

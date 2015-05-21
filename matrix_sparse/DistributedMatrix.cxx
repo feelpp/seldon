@@ -24,54 +24,662 @@
 namespace Seldon
 {
 
-  //! equality *this = X 
+  /********************
+   * Internal methods *
+   ********************/
+
+
+  //! erases any array used for MltAdd
   template<class T, class Prop, class Storage, class Allocator>
-  inline DistributedMatrix<T, Prop, Storage, Allocator>&
-  DistributedMatrix<T, Prop, Storage, Allocator>::
-  operator=(const DistributedMatrix<T, Prop, Storage, Allocator>& X)
+  void DistributedMatrix<T, Prop, Storage, Allocator>::EraseArrayForMltAdd()
   {
-    Seldon::Copy(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(X),
-		 *this);
+    global_row_to_recv.Clear(); global_col_to_recv.Clear();
+    ptr_global_row_to_recv.Clear(); ptr_global_col_to_recv.Clear();
+    local_row_to_send.Clear(); local_col_to_send.Clear();
     
-    dist_col = X.dist_col;
-    dist_row = X.dist_row;
+    proc_col_to_recv.Clear(); proc_col_to_send.Clear();
+    proc_row_to_recv.Clear(); proc_row_to_send.Clear();
+    
+    local_number_distant_values = false;
+    size_max_distant_row = 0;
+    size_max_distant_col = 0;
+  }
+  
 
-    proc_col = X.proc_col;
-    proc_row = X.proc_row;
+  //! erases informations for matrix-vector product
+  //! and reverts dist_row/dist_col to global numbers
+  template<class T, class Prop, class Storage, class Allocator>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::SwitchToGlobalNumbers()
+  {
+    if (!local_number_distant_values)
+      return;
     
-    GlobalRowNumbers = X.GlobalRowNumbers;
-    OverlapProcNumbers = X.OverlapProcNumbers;
-    OverlapRowNumbers = X.OverlapRowNumbers;
+    // changing row numbers
+    for (int i = 0; i < dist_row.GetM(); i++)
+      for (int j = 0; j < dist_row(i).GetM(); j++)
+        dist_row(i).Index(j) = global_row_to_recv(dist_row(i).Index(j));
+    
+    // then col numbers
+    for (int i = 0; i < dist_col.GetM(); i++)
+      for (int j = 0; j < dist_col(i).GetM(); j++)
+        dist_col(i).Index(j) = global_col_to_recv(dist_col(i).Index(j));
+    
+    // erasing datas needed for matrix-vector product
+    EraseArrayForMltAdd();
+  }
+  
 
-    ProcSharingRows = X.ProcSharingRows;
-    SharingRowNumbers = X.SharingRowNumbers;
+  //! changes global numbers in proc_row to local numbers
+  /*!
+    \param[in] dist_val list of distant non-zero entries. the distant row
+    numbers are contained in dist_val(i).Index(j) for each column i
+    \param[in] dist_proc processor rank for each distant non-zero entry
+    \param[out] glob_num list of distant row numbers, sorted by processor rank
+    it will contain row numbers for processor proc_glob(0),
+    then processor proc_glob(1), etc
+    \param[out] ptr_glob_num beginning of index for each processor
+    in array glob_num the row numbers of processor proc_glob(i)
+    in array glob_num are stored 
+    in glob_num(ptr_glob_num(i):ptr_glob_num(i+1))
+    \param[out] proc_glob list of distant processors involved
+    in array dist_num
+    \param[out] local_num for each processor proc_local(i)
+    local_num(i) will store the local row numbers that should be sent
+    to processor proc_local(i) (since these local
+    rows will be distant in distant processor proc_local(i)),
+    somehow glob_num stores the distants rows that will be received,
+    whereas local_num stores the local rows that will be sent
+    \param[out] proc_local list of distant processors that will receive
+    local row numbers
+   */
+  template<class T, class Prop, class Storage, class Allocator>
+  template<class TypeDist>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::SortAndAssembleDistantInteractions(TypeDist& dist_val,
+				       Vector<IVect>& dist_proc,
+                                       IVect& glob_num,
+				       IVect& ptr_glob_num, IVect& proc_glob,
+                                       Vector<IVect>& local_num,
+				       IVect& proc_local)
+  {
+    MPI::Comm& comm = *comm_;
+    // counting the number of distant interactions
+    int N = 0;
+    for (int i = 0; i < dist_proc.GetM(); i++)
+      N += dist_proc(i).GetM();
     
-    nodl_scalar_ = X.nodl_scalar_;
-    nb_unknowns_scal_ = X.nb_unknowns_scal_;
-    nglob_ = X.nglob_;
+    // sorting distant interactions by processor number
+    IVect all_proc(N), all_num(N), permut(N);
+    IVect nb_inter_per_proc(comm.Get_size());
+    permut.Fill(); int nb = 0;
+    nb_inter_per_proc.Fill(0);
+    for (int i = 0; i < dist_proc.GetM(); i++)
+      for (int j = 0; j < dist_proc(i).GetM(); j++)
+        {
+          all_proc(nb) = dist_proc(i)(j);
+          all_num(nb) = dist_val(i).Index(j);
+          nb_inter_per_proc(dist_proc(i)(j))++;
+          nb++;
+        }
     
-    comm_ = X.comm_;
+    Sort(all_proc, all_num, permut);
     
-    global_row_to_recv = X.global_row_to_recv;
-    global_col_to_recv = X.global_col_to_recv;
-    ptr_global_row_to_recv = X.ptr_global_row_to_recv;
-    ptr_global_col_to_recv = X.ptr_global_col_to_recv;
+    // number of processors involved ?
+    int nb_global_proc = 0;
+    for (int i = 0; i < nb_inter_per_proc.GetM(); i++)
+      if (nb_inter_per_proc(i) > 0)
+        nb_global_proc++;
     
-    local_row_to_send = X.local_row_to_send;
-    local_col_to_send = X.local_col_to_send;
-    proc_col_to_recv = X.proc_col_to_recv;
-    proc_col_to_send = X.proc_col_to_send;
-    proc_row_to_recv = X.proc_row_to_recv;
-    proc_row_to_send = X.proc_row_to_send;
-    local_number_distant_values = X.local_number_distant_values;
+    proc_glob.Reallocate(nb_global_proc);
     
-    size_max_distant_row = X.size_max_distant_row;
-    size_max_distant_col = X.size_max_distant_col;
+    // for each processor, sorting numbers,
+    // and counting how many different numbers there are
+    int offset = 0;
+    int nb_glob = 0;
+    IVect nb_num_per_proc(comm.Get_size());
+    nb_num_per_proc.Fill(0);
+    nb_global_proc = 0;
+    for (int p = 0; p < nb_inter_per_proc.GetM(); p++)
+      if (nb_inter_per_proc(p) > 0)
+        {
+          int size = nb_inter_per_proc(p);
+          Sort(offset, offset+size-1, all_num, permut);
+          int prec = all_num(offset);
+          int nb_glob_p = 1;
+          for (int j = 1; j < size; j++)
+            if (all_num(offset+j) != prec)
+              {
+                prec = all_num(offset+j);
+                nb_glob_p++;
+              }
+          
+          nb_num_per_proc(p) = nb_glob_p;
+          nb_glob += nb_glob_p;
+          proc_glob(nb_global_proc) = p;
+          nb_global_proc++;
+          offset += size;
+        }
     
-    return *this;
+    // grouping global numbers    
+    all_proc.Clear(); IVect local(N);
+    offset = 0; glob_num.Reallocate(nb_glob);
+    ptr_glob_num.Reallocate(nb_global_proc+1);
+    nb_glob = 0; nb_global_proc = 0; ptr_glob_num(0) = 0;
+    for (int p = 0; p < nb_inter_per_proc.GetM(); p++)
+      if (nb_inter_per_proc(p) > 0)
+        {
+          int size = nb_inter_per_proc(p);
+          int prec = all_num(offset);
+          ptr_glob_num(nb_global_proc+1) = ptr_glob_num(nb_global_proc)
+	    + nb_num_per_proc(p);
+          
+	  glob_num(nb_glob) = prec; nb_glob++;
+          int nb_glob_p = 1;
+          for (int j = 0; j < size; j++)
+            {
+              if (all_num(offset+j) != prec)
+                {
+                  prec = all_num(offset+j);
+                  glob_num(nb_glob) = prec;
+                  nb_glob_p++; nb_glob++;
+                }
+              
+              local(offset+j) = nb_glob-1;
+            }
+          
+          nb_global_proc++;
+          offset += size;
+        }
+    
+    // changing numbers in dist_val
+    IVect inv_permut(N);
+    for (int i = 0; i < N; i++)
+      inv_permut(permut(i)) = i;
+    
+    nb_glob = 0;
+    for (int i = 0; i < dist_val.GetM(); i++)
+      for (int j = 0; j < dist_val(i).GetM(); j++)
+        {
+          int n = inv_permut(nb_glob);
+          dist_val(i).Index(j) = local(n);
+          nb_glob++;
+        }
+    
+    // exchanging nb_num_per_proc
+    IVect nb_num_send(comm.Get_size());
+    comm.Alltoall(nb_num_per_proc.GetData(), 1, MPI::INTEGER,
+                  nb_num_send.GetData(), 1, MPI::INTEGER);
+    
+    // sending numbers
+    Vector<MPI::Request> request_send(comm.Get_size()),
+      request_recv(comm.Get_size());
+    
+    nb_global_proc = 0;
+    for (int p = 0; p < comm.Get_size(); p++)
+      if (nb_num_per_proc(p) > 0)
+        {
+          int size = nb_num_per_proc(p);
+          request_send(p)
+	    = comm.Isend(&glob_num(ptr_glob_num(nb_global_proc)), size,
+			 MPI::INTEGER, p, 17);
+          
+          nb_global_proc++;
+        }
+        
+    int nb_local_proc = 0;
+    for (int p = 0; p < comm.Get_size(); p++)
+      if (nb_num_send(p) > 0)
+        nb_local_proc++;
+    
+    local_num.Reallocate(nb_local_proc);
+    proc_local.Reallocate(nb_local_proc);
+    
+    // receiving numbers
+    MPI::Status status; nb_local_proc = 0;
+    for (int p = 0; p < comm.Get_size(); p++)
+      if (nb_num_send(p) > 0)
+        {
+          proc_local(nb_local_proc) = p;
+          local_num(nb_local_proc).Reallocate(nb_num_send(p));
+          comm.Recv(local_num(nb_local_proc).GetData(), nb_num_send(p),
+                    MPI::INTEGER, p, 17, status);
+          
+          nb_local_proc++;
+        }
+
+    for (int i = 0; i < request_send.GetM(); i++)
+      if (nb_num_send(i) > 0)
+        request_send(i).Wait(status);
+    
+    // global to local conversion
+    IVect Glob_to_local(this->GetGlobalM());
+    const IVect& RowNumber = this->GetGlobalRowNumber();
+    Glob_to_local.Fill(-1);
+    for (int i = 0; i < RowNumber.GetM(); i++)
+      Glob_to_local(RowNumber(i)) = i;
+    
+    // replacing global numbers with local numbers
+    for (int i = 0; i < local_num.GetM(); i++)
+      for (int j = 0; j < local_num(i).GetM(); j++)
+        local_num(i)(j) = Glob_to_local(local_num(i)(j));    
+  }
+  
+
+  //! internal function
+  template<class T, class Prop, class Storage, class Allocator>
+  template<class T2>
+  void DistributedMatrix<T, Prop, Storage, Allocator>::
+  ScatterValues(const Vector<T2>& X, const IVect& num_recv,
+                const IVect& ptr_num_recv, const IVect& proc_recv,
+                const Vector<IVect>& num_send, const IVect& proc_send,
+		Vector<T2>& Xcol) const
+  {
+    // sending datas
+    MPI::Comm& comm = *comm_;
+    Vector<Vector<T2> > xsend(proc_send.GetM()), xrecv(proc_recv.GetM());
+    Vector<Vector<int64_t> > xsend_tmp(proc_send.GetM()),
+      xrecv_tmp(proc_recv.GetM());
+    
+    int tag = 30;
+    Vector<MPI::Request> request_send(proc_send.GetM());
+    for (int i = 0; i < proc_send.GetM(); i++)
+      {
+        int nb = num_send(i).GetM();
+        xsend(i).Reallocate(nb);
+        for (int j = 0; j < nb; j++)
+          xsend(i)(j) = X(num_send(i)(j));
+        
+        request_send(i) =
+          MpiIsend(comm, xsend(i), xsend_tmp(i), nb, proc_send(i), tag);
+      }
+    
+    // receiving datas
+    Vector<MPI::Request> request_recv(proc_recv.GetM());
+    int N = 0;
+    for (int i = 0; i < proc_recv.GetM(); i++)
+      {
+        int nb = ptr_num_recv(i+1) - ptr_num_recv(i); N += nb;
+        xrecv(i).Reallocate(nb);
+        request_recv(i) =
+          MpiIrecv(comm, xrecv(i), xrecv_tmp(i), nb, proc_recv(i), tag);
+      }
+    
+    // waiting that transfers are effective
+    MPI::Status status;
+    for (int i = 0; i < request_send.GetM(); i++)
+      request_send(i).Wait(status);
+
+    for (int i = 0; i < request_recv.GetM(); i++)
+      request_recv(i).Wait(status);
+    
+    xsend.Clear();
+    // completing receives
+    for (int i = 0; i < request_recv.GetM(); i++)
+      MpiCompleteIrecv(xrecv(i), xrecv_tmp(i), xrecv(i).GetM());
+    
+    // values are stored in Xcol
+    Xcol.Reallocate(N); N = 0;
+    for (int i = 0; i < proc_recv.GetM(); i++)
+      for (int j = 0; j < ptr_num_recv(i+1) - ptr_num_recv(i); j++)
+        Xcol(N++) = xrecv(i)(j);
+  }
+
+
+  //! internal function
+  template<class T, class Prop, class Storage, class Allocator>
+  template<class T2>
+  void DistributedMatrix<T, Prop, Storage, Allocator>::
+  AssembleValues(const Vector<T2>& Xcol, const IVect& num_recv,
+                 const IVect& ptr_num_recv, const IVect& proc_recv,
+                 const Vector<IVect>& num_send, const IVect& proc_send,
+		 Vector<T2>& X) const
+  {
+    // sending datas
+    MPI::Comm& comm = *comm_;
+    Vector<Vector<T2> > xsend(proc_recv.GetM()), xrecv(proc_send.GetM());    
+    Vector<Vector<int64_t> > xsend_tmp(proc_recv.GetM()),
+      xrecv_tmp(proc_send.GetM());
+    
+    int tag = 32, N = 0;
+    Vector<MPI::Request> request_send(proc_recv.GetM());
+    for (int i = 0; i < proc_recv.GetM(); i++)
+      {
+        int nb = ptr_num_recv(i+1) - ptr_num_recv(i);
+        xsend(i).Reallocate(nb);
+        for (int j = 0; j < nb; j++)
+          xsend(i)(j) = Xcol(N++);
+        
+        request_send(i) =
+          MpiIsend(comm, xsend(i), xsend_tmp(i), nb, proc_recv(i), tag);
+      }
+    
+    // receiving datas
+    Vector<MPI::Request> request_recv(proc_send.GetM());
+    for (int i = 0; i < proc_send.GetM(); i++)
+      {
+        int nb = num_send(i).GetM();
+        xrecv(i).Reallocate(nb);
+        request_recv(i) =
+          MpiIrecv(comm, xrecv(i), xrecv_tmp(i), nb, proc_send(i), tag);
+      }
+    
+    // waiting that transfers are effective
+    MPI::Status status;
+    for (int i = 0; i < request_send.GetM(); i++)
+      request_send(i).Wait(status);
+
+    for (int i = 0; i < request_recv.GetM(); i++)
+      request_recv(i).Wait(status);
+    
+    xsend.Clear();
+    // completing receives
+    for (int i = 0; i < request_recv.GetM(); i++)
+      MpiCompleteIrecv(xrecv(i), xrecv_tmp(i), xrecv(i).GetM());
+    
+    // values are added to X
+    for (int i = 0; i < num_send.GetM(); i++)
+      for (int j = 0; j < num_send(i).GetM(); j++)
+        X(num_send(i)(j)) += xrecv(i)(j);
+  }
+
+  
+  //! assembles the results for each row, by taking the minimum of Yproc
+  //! then the minimum of Y
+  /*!
+    Instead of summing values as in function AssembleRowValues,
+    the minimum is taken for Yproc, and if there is equality in Yproc,
+    the minimum is taken for Y
+   */
+  template<class T, class Prop, class Storage, class Allocator>
+  void DistributedMatrix<T, Prop, Storage, Allocator>::
+  AssembleValuesMin(const IVect& Xcol, const IVect& Xcol_proc,
+                    const IVect& num_recv, const IVect& ptr_num_recv,
+		    const IVect& proc_recv,
+                    const Vector<IVect>& num_send, const IVect& proc_send,
+                    IVect& Y, IVect& Yproc) const
+  {
+    // sending datas
+    MPI::Comm& comm = *comm_;
+    Vector<Vector<int> > xsend(proc_recv.GetM()), xrecv(proc_send.GetM());    
+    int tag = 35, N = 0;
+    Vector<MPI::Request> request_send(proc_recv.GetM());
+    for (int i = 0; i < proc_recv.GetM(); i++)
+      {
+        int nb = ptr_num_recv(i+1) - ptr_num_recv(i);
+        xsend(i).Reallocate(2*nb);
+        for (int j = 0; j < nb; j++)
+          {
+            xsend(i)(j) = Xcol(N);
+            xsend(i)(nb+j) = Xcol_proc(N);
+            N++;
+          }
+        
+        request_send(i) = comm.Isend(xsend(i).GetDataVoid(), 2*nb,
+                                     GetMpiDataType(Xcol), proc_recv(i), tag);
+      }
+    
+    // receiving datas
+    Vector<MPI::Request> request_recv(proc_send.GetM());
+    for (int i = 0; i < proc_send.GetM(); i++)
+      {
+        int nb = num_send(i).GetM();
+        xrecv(i).Reallocate(2*nb);
+        request_recv(i) = comm.Irecv(xrecv(i).GetDataVoid(), 2*nb,
+                                     GetMpiDataType(Xcol), proc_send(i), tag);
+      }
+    
+    // waiting that transfers are effective
+    MPI::Status status;
+    for (int i = 0; i < request_send.GetM(); i++)
+      request_send(i).Wait(status);
+
+    for (int i = 0; i < request_recv.GetM(); i++)
+      request_recv(i).Wait(status);
+    
+    xsend.Clear();
+    // values are assembled in X
+    for (int i = 0; i < num_send.GetM(); i++)
+      for (int j = 0; j < num_send(i).GetM(); j++)
+        {
+          int nb = num_send(i).GetM();
+          int proc = xrecv(i)(nb+j);
+          int col = xrecv(i)(j);
+          if (proc < Yproc(num_send(i)(j)))
+            {
+              Yproc(num_send(i)(j)) = proc;
+              Y(num_send(i)(j)) = col;
+            }
+          else if (proc == Yproc(num_send(i)(j)))
+            {
+              if (col < Y(num_send(i)(j)))
+                Y(num_send(i)(j)) = col;
+            }
+        }
+  }
+
+
+  //! assembles the vector (by taking the minimum instead 
+  //! of summing for AssembleVec
+  /*!
+    The minimal Xproc is search, if equality the minimal X is searched
+   */
+  template<class T, class Prop, class Storage, class Allocator>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::AssembleVecMin(Vector<int>& X, Vector<int>& Xproc) const
+  {
+    AssembleVectorMin(X, Xproc, *ProcSharingRows, *SharingRowNumbers,
+                      *comm_, nodl_scalar_, nb_unknowns_scal_, 13);
   }
   
     
+  //! removes non-zero entries contained in dist_vec below epsilon
+  //! dist_proc is modified in the same way
+  template<class T, class Prop, class Storage, class Allocator>
+  template<class T0, class TypeDist>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::RemoveSmallEntryDistant(const T0& epsilon,
+                            TypeDist& dist_vec, Vector<IVect>& dist_proc)
+  {
+    for (int i = 0; i < dist_vec.GetM(); i++)
+      {
+        int nb = 0, size = dist_vec(i).GetM();
+        for (int j = 0; j < size; j++)
+          if (abs(dist_vec(i).Value(j)) > epsilon)
+            nb++;
+        
+        if (nb < size)
+          {
+            IVect num(size), proc(size); Vector<entry_type> val(size);
+            for (int j = 0; j < size; j++)
+              {
+                num(j) = dist_vec(i).Index(j);
+                val(j) = dist_vec(i).Value(j);
+                proc(j) = dist_proc(i)(j);
+              }
+            
+            dist_vec(i).Reallocate(nb);
+            dist_proc(i).Reallocate(nb);
+            nb = 0;
+            for (int j = 0; j < size; j++)
+              if (abs(val(j)) > epsilon)
+                {
+                  dist_vec(i).Index(nb) = num(j);
+                  dist_vec(i).Value(nb) = val(j);
+                  dist_proc(i)(nb) = proc(j);
+                  nb++;
+                }
+          }
+      }
+  }
+  
+
+  //! adds contribution of dist_col for GetRowSum
+  template<class T, class Prop, class Storage, class Allocator>
+  template<class T0>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::GetRowSumDistantCol(Vector<T0>& vec_sum) const
+  {
+    for (int i = 0; i < dist_col.GetM(); i++)
+      for (int j = 0; j < dist_col(i).GetM(); j++)
+        vec_sum(i) += abs(dist_col(i).Value(j));
+  }
+  
+  
+  //! adds contribution of dist_row for GetRowSum
+  template<class T, class Prop, class Storage, class Allocator>
+  template<class T0>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::GetRowSumDistantRow(Vector<T0>& vec_sum) const
+  {
+    T0 zero; SetComplexZero(zero);
+    Vector<T0> Y(global_row_to_recv.GetM());
+    Y.Fill(zero);
+    for (int i = 0; i < dist_row.GetM(); i++)
+      for (int j = 0; j < dist_row(i).GetM(); j++)
+        {
+          int jrow = dist_row(i).Index(j);
+          Y(jrow) += abs(dist_row(i).Value(j));
+        }
+    
+    AssembleRowValues(Y, vec_sum);
+  }
+  
+  
+  //! adds contribution of dist_col for GetColSum
+  template<class T, class Prop, class Storage, class Allocator>
+  template<class T0>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::GetColSumDistantCol(Vector<T0>& vec_sum) const
+  {
+    T0 zero; SetComplexZero(zero);
+    Vector<T0> Y(global_col_to_recv.GetM());
+    Y.Fill(zero);
+    for (int i = 0; i < dist_col.GetM(); i++)
+      for (int j = 0; j < dist_col(i).GetM(); j++)
+        {
+          int jrow = dist_col(i).Index(j);
+          Y(jrow) += abs(dist_col(i).Value(j));
+        }
+    
+    AssembleColValues(Y, vec_sum);
+  }
+  
+  
+  //! adds contribution of dist_row for GetColSum
+  template<class T, class Prop, class Storage, class Allocator>
+  template<class T0>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::GetColSumDistantRow(Vector<T0>& vec_sum) const
+  {
+    for (int i = 0; i < dist_row.GetM(); i++)
+      for (int j = 0; j < dist_row(i).GetM(); j++)
+        vec_sum(i) += abs(dist_row(i).Value(j));
+  }
+  
+  
+  /****************
+   * Constructors *
+   ****************/
+
+  
+  //! default constructor
+  template<class T, class Prop, class Storage, class Allocator>
+  DistributedMatrix<T, Prop, Storage, Allocator>::DistributedMatrix()
+    : Matrix<T, Prop, Storage, Allocator>()
+  {
+    GlobalRowNumbers = NULL;
+    OverlapProcNumbers = NULL;
+    OverlapRowNumbers = NULL;
+    ProcSharingRows = NULL;
+    SharingRowNumbers = NULL;
+    nodl_scalar_ = 0;
+    nb_unknowns_scal_ = 1;
+    nglob_ = 0;
+    comm_ = &MPI::COMM_SELF;
+    
+    local_number_distant_values = false;
+    size_max_distant_row = 0;
+    size_max_distant_col = 0;
+  }
+  
+  
+  //! construction of an m by n matrix
+  /*!
+    Here m and n are the number of rows and columns of the local matrix
+  */
+  template<class T, class Prop, class Storage, class Allocator>
+  DistributedMatrix<T, Prop, Storage, Allocator>::
+  DistributedMatrix(int m, int n)
+    : Matrix<T, Prop, Storage, Allocator>(m, n)
+  {
+    GlobalRowNumbers = NULL;
+    OverlapProcNumbers = NULL;
+    OverlapRowNumbers = NULL;
+    ProcSharingRows = NULL;
+    SharingRowNumbers = NULL;
+    nglob_ = m;
+    nodl_scalar_ = 0;
+    nb_unknowns_scal_ = 1;
+    comm_ = &MPI::COMM_SELF;
+    
+    dist_col.Reallocate(m);
+    dist_row.Reallocate(n);
+    proc_col.Reallocate(m);
+    proc_row.Reallocate(n);
+
+    local_number_distant_values = false;
+    size_max_distant_row = 0;
+    size_max_distant_col = 0;
+  }
+
+
+  //! Initialisation of pointers
+  /*!
+    This method is mandatory, otherwise pointers are set to NULL
+    \param[in] n global number of rows (as if it was on a single processor)
+    \param[in] row_num local to global numbering
+    \param[in] overlap_num rows already counted in another processor
+    \param[in] proc_num original processor for overlapped rows
+  */
+  template<class T, class Prop, class Storage, class Allocator>
+  void DistributedMatrix<T, Prop, Storage, Allocator>::
+  Init(int n, IVect* row_num, IVect* overlap_num, IVect* proc_num,
+       int Nvol, int nb_u, IVect* MatchingProc,
+       Vector<IVect>* MatchingDofNumber, MPI::Comm& comm)
+  {
+    nglob_ = n;
+    GlobalRowNumbers = row_num;
+    OverlapRowNumbers = overlap_num;
+    OverlapProcNumbers = proc_num;
+    
+    nodl_scalar_ = Nvol;
+    nb_unknowns_scal_ = nb_u;
+    ProcSharingRows = MatchingProc;
+    SharingRowNumbers = MatchingDofNumber;
+    
+    comm_ = &comm;    
+  }
+  
+  
+  //! inits pointers with those of A
+  template<class T, class Prop, class Storage, class Allocator>
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::Init(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A)
+  {
+    OverlapRowNumbers = A.OverlapRowNumbers;
+    OverlapProcNumbers = A.OverlapProcNumbers;
+    GlobalRowNumbers = A.GlobalRowNumbers;
+    ProcSharingRows = A.ProcSharingRows;
+    SharingRowNumbers = A.SharingRowNumbers;
+    nodl_scalar_ = A.nodl_scalar_;
+    nb_unknowns_scal_ = A.nb_unknowns_scal_;
+    nglob_ = A.nglob_;
+    comm_ = A.comm_;
+  }
+  
+
   //! initialisation of a distributed matrix with global row numbers
   template<class T, class Prop, class Storage, class Allocator>
   void DistributedMatrix<T, Prop, Storage, Allocator>
@@ -405,8 +1013,127 @@ namespace Seldon
     Init(all_rows, row_num, overlap_num, proc_num, Nvol, nb_u,
          MatchingProc, MatchingDofNumber, comm, false);
   }
+
+
+
+  /*********************
+   * Memory Management *
+   *********************/
+    
+
+  //! changing the size of the local matrix, previous values are lost
+  template<class T, class Prop, class Storage, class Allocator>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::Reallocate(int m, int n)
+  {
+    // previous values are erased for simplicity
+    Clear();
+    
+    Matrix<T, Prop, Storage, Allocator>::Reallocate(m, n);
+    
+    dist_col.Reallocate(m);
+    dist_row.Reallocate(n);
+    proc_col.Reallocate(m);
+    proc_row.Reallocate(n);
+  }
   
   
+  //! changing the size of the local matrix, previous values are kept
+  template<class T, class Prop, class Storage, class Allocator>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::Resize(int m, int n)
+  {
+    if (this->m_ != m)
+      {
+        dist_col.Resize(m);
+        proc_col.Resize(m);
+      }
+
+    if (this->n_ != n)
+      {
+        dist_row.Resize(n);
+        proc_row.Resize(n);
+      }
+    
+    Matrix<T, Prop, Storage, Allocator>::Resize(m, n);    
+  }
+  
+
+  //! matrix is cleared
+  template<class T, class Prop, class Storage, class Allocator>
+  void DistributedMatrix<T, Prop, Storage, Allocator>::Clear()
+  {
+    Matrix<T, Prop, Storage, Allocator>::Clear();
+    
+    dist_col.Clear();
+    proc_col.Clear();
+    dist_row.Clear();
+    proc_row.Clear();
+    
+    global_row_to_recv.Clear(); global_col_to_recv.Clear();
+    ptr_global_row_to_recv.Clear(); ptr_global_col_to_recv.Clear();
+    local_row_to_send.Clear(); local_col_to_send.Clear();
+    proc_col_to_recv.Clear(); proc_col_to_send.Clear();
+    proc_row_to_recv.Clear(); proc_row_to_send.Clear();
+    size_max_distant_row = 0;
+    size_max_distant_col = 0;
+    local_number_distant_values = false;
+  }
+  
+    
+  /*******************
+   * Basic functions *
+   *******************/
+  
+
+  //! equality *this = X 
+  template<class T, class Prop, class Storage, class Allocator>
+  DistributedMatrix<T, Prop, Storage, Allocator>&
+  DistributedMatrix<T, Prop, Storage, Allocator>::
+  operator=(const DistributedMatrix<T, Prop, Storage, Allocator>& X)
+  {
+    Seldon::Copy(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(X),
+		 *this);
+    
+    dist_col = X.dist_col;
+    dist_row = X.dist_row;
+
+    proc_col = X.proc_col;
+    proc_row = X.proc_row;
+    
+    GlobalRowNumbers = X.GlobalRowNumbers;
+    OverlapProcNumbers = X.OverlapProcNumbers;
+    OverlapRowNumbers = X.OverlapRowNumbers;
+
+    ProcSharingRows = X.ProcSharingRows;
+    SharingRowNumbers = X.SharingRowNumbers;
+    
+    nodl_scalar_ = X.nodl_scalar_;
+    nb_unknowns_scal_ = X.nb_unknowns_scal_;
+    nglob_ = X.nglob_;
+    
+    comm_ = X.comm_;
+    
+    global_row_to_recv = X.global_row_to_recv;
+    global_col_to_recv = X.global_col_to_recv;
+    ptr_global_row_to_recv = X.ptr_global_row_to_recv;
+    ptr_global_col_to_recv = X.ptr_global_col_to_recv;
+    
+    local_row_to_send = X.local_row_to_send;
+    local_col_to_send = X.local_col_to_send;
+    proc_col_to_recv = X.proc_col_to_recv;
+    proc_col_to_send = X.proc_col_to_send;
+    proc_row_to_recv = X.proc_row_to_recv;
+    proc_row_to_send = X.proc_row_to_send;
+    local_number_distant_values = X.local_number_distant_values;
+    
+    size_max_distant_row = X.size_max_distant_row;
+    size_max_distant_col = X.size_max_distant_col;
+    
+    return *this;
+  }
+  
+    
   //! multiplication by a scalar
   template<class T, class Prop, class Storage, class Allocator>
   template<class T0>
@@ -424,48 +1151,127 @@ namespace Seldon
     return *this;
   }
   
-
-  //! erases any array used for MltAdd
-  template<class T, class Prop, class Storage, class Allocator>
-  void DistributedMatrix<T, Prop, Storage, Allocator>::EraseArrayForMltAdd()
-  {
-    global_row_to_recv.Clear(); global_col_to_recv.Clear();
-    ptr_global_row_to_recv.Clear(); ptr_global_col_to_recv.Clear();
-    local_row_to_send.Clear(); local_col_to_send.Clear();
-    
-    proc_col_to_recv.Clear(); proc_col_to_send.Clear();
-    proc_row_to_recv.Clear(); proc_row_to_send.Clear();
-    
-    local_number_distant_values = false;
-    size_max_distant_row = 0;
-    size_max_distant_col = 0;
-  }
   
-
-  //! erases informations for matrix-vector product
-  //! and reverts dist_row/dist_col to global numbers
+  //! returns local to global numbering
   template<class T, class Prop, class Storage, class Allocator>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::SwitchToGlobalNumbers()
+  const IVect& DistributedMatrix<T, Prop, Storage, Allocator>::
+  GetGlobalRowNumber() const
   {
-    if (!local_number_distant_values)
-      return;
-    
-    // changing row numbers
-    for (int i = 0; i < dist_row.GetM(); i++)
-      for (int j = 0; j < dist_row(i).GetM(); j++)
-        dist_row(i).Index(j) = global_row_to_recv(dist_row(i).Index(j));
-    
-    // then col numbers
-    for (int i = 0; i < dist_col.GetM(); i++)
-      for (int j = 0; j < dist_col(i).GetM(); j++)
-        dist_col(i).Index(j) = global_col_to_recv(dist_col(i).Index(j));
-    
-    // erasing datas needed for matrix-vector product
-    EraseArrayForMltAdd();
+    if (this->GlobalRowNumbers == NULL)
+      {
+        cout << "You should call Init of DistributedMatrix" << endl;
+        abort();
+      }    
+
+    return *GlobalRowNumbers;
   }
   
   
+  //! returns local to global numbering
+  template<class T, class Prop, class Storage, class Allocator>
+  IVect& DistributedMatrix<T, Prop, Storage, Allocator>
+  ::GetGlobalRowNumber()
+  {
+    if (this->GlobalRowNumbers == NULL)
+      {
+        cout << "You should call Init of DistributedMatrix" << endl;
+        abort();
+      }    
+
+    return *GlobalRowNumbers;
+  }
+
+
+  //! returns rows already counted in another processor
+  template<class T, class Prop, class Storage, class Allocator>
+  const IVect& DistributedMatrix<T, Prop, Storage, Allocator>::
+  GetOverlapRowNumber() const
+  {
+    if (this->OverlapRowNumbers == NULL)
+      {
+        cout << "You should call Init of DistributedMatrix" << endl;
+        abort();
+      }    
+
+    return *OverlapRowNumbers;
+  }
+  
+
+  //! returns rows already counted in another processor
+  template<class T, class Prop, class Storage, class Allocator>
+  IVect& DistributedMatrix<T, Prop, Storage, Allocator>
+  ::GetOverlapRowNumber()
+  {
+    if (this->OverlapRowNumbers == NULL)
+      {
+        cout << "You should call Init of DistributedMatrix" << endl;
+        abort();
+      }    
+
+    return *OverlapRowNumbers;
+  }
+
+  
+  //! returns processor numbers of the original rows
+  template<class T, class Prop, class Storage, class Allocator>
+  const IVect& DistributedMatrix<T, Prop, Storage, Allocator>::
+  GetOverlapProcNumber() const
+  {
+    if (this->OverlapProcNumbers == NULL)
+      {
+        cout << "You should call Init of DistributedMatrix" << endl;
+        abort();
+      }    
+
+    return *OverlapProcNumbers;
+  }
+  
+
+  //! returns processor numbers of the original rows
+  template<class T, class Prop, class Storage, class Allocator>
+  IVect& DistributedMatrix<T, Prop, Storage, Allocator>
+  ::GetOverlapProcNumber()
+  {
+    if (this->OverlapProcNumbers == NULL)
+      {
+        cout << "You should call Init of DistributedMatrix" << endl;
+        abort();
+      }    
+
+    return *OverlapProcNumbers;
+  }
+
+
+  //! returns processor numbers for each set of shared rows
+  template<class T, class Prop, class Storage, class Allocator>
+  IVect& DistributedMatrix<T, Prop, Storage, Allocator>
+  ::GetProcessorSharingRows()
+  {
+    if (this->ProcSharingRows == NULL)
+      {
+        cout << "You should call Init of DistributedMatrix" << endl;
+        abort();
+      }    
+
+    return *ProcSharingRows;
+  }
+  
+  
+  //! returns row numbers for each set of shared rows
+  template<class T, class Prop, class Storage, class Allocator>
+  Vector<IVect>& DistributedMatrix<T, Prop, Storage, Allocator>
+  ::GetSharingRowNumbers()
+  {
+    if (this->SharingRowNumbers == NULL)
+      {
+        cout << "You should call Init of DistributedMatrix" << endl;
+        abort();
+      }    
+
+    return *SharingRowNumbers;
+  }
+  
+      
   //! returns the size of memory used to store the matrix
   template<class T, class Prop, class Storage, class Allocator>
   int64_t DistributedMatrix<T, Prop, Storage, Allocator>
@@ -503,6 +1309,11 @@ namespace Seldon
     
     return taille;
   }
+
+  
+  /**********************
+   * Convenient methods *
+   **********************/
   
   
   //! returns the number of non-zero entries stored in the matrix
@@ -562,107 +1373,6 @@ namespace Seldon
       2*(local_row_to_send.GetM() + local_col_to_send.GetM()) + 25;
     
     return size + size_int/2;
-  }
-  
-
-  //! adding a non-zero entry, between a local row/column
-  //! and a non-local row/column
-  /*!
-    This method is used only internally
-    \param[in] dist_col array to which entry is added
-    \param[in] proc_col processors associated with dist_col
-    \param[in] jglob global row/column number
-    \param[in] proc2 distant processor containing the global row/column
-    \param[in] val value of the non-zero entry
-  */
-  template<class T, class Allocator>
-  void AddDistantValue(Vector<T, VectSparse, Allocator>& dist_col,
-		       IVect& proc_col,
-		       int jglob, int proc2, const T& val)
-  {
-    int pos = 0;
-    int size_row = dist_col.GetM();
-    while ((pos < size_row) && (dist_col.Index(pos) < jglob))
-      pos++;
-    
-    if ((pos < size_row) && (dist_col.Index(pos) == jglob))
-      {
-        // already existing entry
-        dist_col.Value(pos) += val;
-      }
-    else
-      {
-        // new entry
-        Vector<T> value(size_row);
-        IVect index(size_row), proc(size_row);
-        for (int k = 0; k < size_row; k++)
-          {
-            index(k) = dist_col.Index(k);
-            value(k) = dist_col.Value(k);
-            proc(k) = proc_col(k);
-          }
-        
-        dist_col.Reallocate(size_row+1);
-        proc_col.Reallocate(size_row+1);
-        for (int k = 0; k < pos; k++)
-          {
-            dist_col.Index(k) = index(k);
-            dist_col.Value(k) = value(k);
-            proc_col(k) = proc(k);
-          }
-        
-        dist_col.Index(pos) = jglob;
-        dist_col.Value(pos) = val;
-        proc_col(pos) = proc2;
-        for (int k = pos+1; k <= size_row; k++)
-          {
-            dist_col.Index(k) = index(k-1);
-            dist_col.Value(k) = value(k-1);
-            proc_col(k) = proc(k-1);
-          }
-        
-      }
-  }
-
-  
-  //! removes non-zero entries contained in dist_vec below epsilon
-  //! dist_proc is modified in the same way
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T0, class TypeDist>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::RemoveSmallEntryDistant(const T0& epsilon,
-                            TypeDist& dist_vec, Vector<IVect>& dist_proc)
-  {
-    for (int i = 0; i < dist_vec.GetM(); i++)
-      {
-        int nb = 0, size = dist_vec(i).GetM();
-        for (int j = 0; j < size; j++)
-          if (abs(dist_vec(i).Value(j)) > epsilon)
-            nb++;
-        
-        if (nb < size)
-          {
-            IVect num(size), proc(size); Vector<entry_type> val(size);
-            for (int j = 0; j < size; j++)
-              {
-                num(j) = dist_vec(i).Index(j);
-                val(j) = dist_vec(i).Value(j);
-                proc(j) = dist_proc(i)(j);
-              }
-            
-            dist_vec(i).Reallocate(nb);
-            dist_proc(i).Reallocate(nb);
-            nb = 0;
-            for (int j = 0; j < size; j++)
-              if (abs(val(j)) > epsilon)
-                {
-                  dist_vec(i).Index(nb) = num(j);
-                  dist_vec(i).Value(nb) = val(j);
-                  dist_proc(i)(nb) = proc(j);
-                  nb++;
-                }
-          }
-      }
   }
   
 
@@ -866,7 +1576,7 @@ namespace Seldon
 #endif
     
     // converting local part into coordinate form
-    Vector<int, VectFull, CallocAlloc<int> > IndRow, IndCol;
+    Vector<int> IndRow, IndCol;
     Vector<entry_type> Value;
     ConvertMatrix_to_Coordinates(*this, IndRow, IndCol, Value, 0, true);
     
@@ -971,204 +1681,13 @@ namespace Seldon
 
     abort();
   }
-  
-  
-  //! changes global numbers in proc_row to local numbers
-  /*!
-    \param[in] dist_val list of distant non-zero entries. the distant row
-    numbers are contained in dist_val(i).Index(j) for each column i
-    \param[in] dist_proc processor rank for each distant non-zero entry
-    \param[out] glob_num list of distant row numbers, sorted by processor rank
-    it will contain row numbers for processor proc_glob(0),
-    then processor proc_glob(1), etc
-    \param[out] ptr_glob_num beginning of index for each processor
-    in array glob_num the row numbers of processor proc_glob(i)
-    in array glob_num are stored 
-    in glob_num(ptr_glob_num(i):ptr_glob_num(i+1))
-    \param[out] proc_glob list of distant processors involved
-    in array dist_num
-    \param[out] local_num for each processor proc_local(i)
-    local_num(i) will store the local row numbers that should be sent
-    to processor proc_local(i) (since these local
-    rows will be distant in distant processor proc_local(i)),
-    somehow glob_num stores the distants rows that will be received,
-    whereas local_num stores the local rows that will be sent
-    \param[out] proc_local list of distant processors that will receive
-    local row numbers
-   */
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class TypeDist>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::SortAndAssembleDistantInteractions(TypeDist& dist_val,
-				       Vector<IVect>& dist_proc,
-                                       IVect& glob_num,
-				       IVect& ptr_glob_num, IVect& proc_glob,
-                                       Vector<IVect>& local_num,
-				       IVect& proc_local)
-  {
-    MPI::Comm& comm = *comm_;
-    // counting the number of distant interactions
-    int N = 0;
-    for (int i = 0; i < dist_proc.GetM(); i++)
-      N += dist_proc(i).GetM();
-    
-    // sorting distant interactions by processor number
-    IVect all_proc(N), all_num(N), permut(N);
-    IVect nb_inter_per_proc(comm.Get_size());
-    permut.Fill(); int nb = 0;
-    nb_inter_per_proc.Fill(0);
-    for (int i = 0; i < dist_proc.GetM(); i++)
-      for (int j = 0; j < dist_proc(i).GetM(); j++)
-        {
-          all_proc(nb) = dist_proc(i)(j);
-          all_num(nb) = dist_val(i).Index(j);
-          nb_inter_per_proc(dist_proc(i)(j))++;
-          nb++;
-        }
-    
-    Sort(all_proc, all_num, permut);
-    
-    // number of processors involved ?
-    int nb_global_proc = 0;
-    for (int i = 0; i < nb_inter_per_proc.GetM(); i++)
-      if (nb_inter_per_proc(i) > 0)
-        nb_global_proc++;
-    
-    proc_glob.Reallocate(nb_global_proc);
-    
-    // for each processor, sorting numbers,
-    // and counting how many different numbers there are
-    int offset = 0;
-    int nb_glob = 0;
-    IVect nb_num_per_proc(comm.Get_size());
-    nb_num_per_proc.Fill(0);
-    nb_global_proc = 0;
-    for (int p = 0; p < nb_inter_per_proc.GetM(); p++)
-      if (nb_inter_per_proc(p) > 0)
-        {
-          int size = nb_inter_per_proc(p);
-          Sort(offset, offset+size-1, all_num, permut);
-          int prec = all_num(offset);
-          int nb_glob_p = 1;
-          for (int j = 1; j < size; j++)
-            if (all_num(offset+j) != prec)
-              {
-                prec = all_num(offset+j);
-                nb_glob_p++;
-              }
-          
-          nb_num_per_proc(p) = nb_glob_p;
-          nb_glob += nb_glob_p;
-          proc_glob(nb_global_proc) = p;
-          nb_global_proc++;
-          offset += size;
-        }
-    
-    // grouping global numbers    
-    all_proc.Clear(); IVect local(N);
-    offset = 0; glob_num.Reallocate(nb_glob);
-    ptr_glob_num.Reallocate(nb_global_proc+1);
-    nb_glob = 0; nb_global_proc = 0; ptr_glob_num(0) = 0;
-    for (int p = 0; p < nb_inter_per_proc.GetM(); p++)
-      if (nb_inter_per_proc(p) > 0)
-        {
-          int size = nb_inter_per_proc(p);
-          int prec = all_num(offset);
-          ptr_glob_num(nb_global_proc+1) = ptr_glob_num(nb_global_proc)
-	    + nb_num_per_proc(p);
-          
-	  glob_num(nb_glob) = prec; nb_glob++;
-          int nb_glob_p = 1;
-          for (int j = 0; j < size; j++)
-            {
-              if (all_num(offset+j) != prec)
-                {
-                  prec = all_num(offset+j);
-                  glob_num(nb_glob) = prec;
-                  nb_glob_p++; nb_glob++;
-                }
-              
-              local(offset+j) = nb_glob-1;
-            }
-          
-          nb_global_proc++;
-          offset += size;
-        }
-    
-    // changing numbers in dist_val
-    IVect inv_permut(N);
-    for (int i = 0; i < N; i++)
-      inv_permut(permut(i)) = i;
-    
-    nb_glob = 0;
-    for (int i = 0; i < dist_val.GetM(); i++)
-      for (int j = 0; j < dist_val(i).GetM(); j++)
-        {
-          int n = inv_permut(nb_glob);
-          dist_val(i).Index(j) = local(n);
-          nb_glob++;
-        }
-    
-    // exchanging nb_num_per_proc
-    IVect nb_num_send(comm.Get_size());
-    comm.Alltoall(nb_num_per_proc.GetData(), 1, MPI::INTEGER,
-                  nb_num_send.GetData(), 1, MPI::INTEGER);
-    
-    // sending numbers
-    Vector<MPI::Request> request_send(comm.Get_size()),
-      request_recv(comm.Get_size());
-    
-    nb_global_proc = 0;
-    for (int p = 0; p < comm.Get_size(); p++)
-      if (nb_num_per_proc(p) > 0)
-        {
-          int size = nb_num_per_proc(p);
-          request_send(p)
-	    = comm.Isend(&glob_num(ptr_glob_num(nb_global_proc)), size,
-			 MPI::INTEGER, p, 17);
-          
-          nb_global_proc++;
-        }
-        
-    int nb_local_proc = 0;
-    for (int p = 0; p < comm.Get_size(); p++)
-      if (nb_num_send(p) > 0)
-        nb_local_proc++;
-    
-    local_num.Reallocate(nb_local_proc);
-    proc_local.Reallocate(nb_local_proc);
-    
-    // receiving numbers
-    MPI::Status status; nb_local_proc = 0;
-    for (int p = 0; p < comm.Get_size(); p++)
-      if (nb_num_send(p) > 0)
-        {
-          proc_local(nb_local_proc) = p;
-          local_num(nb_local_proc).Reallocate(nb_num_send(p));
-          comm.Recv(local_num(nb_local_proc).GetData(), nb_num_send(p),
-                    MPI::INTEGER, p, 17, status);
-          
-          nb_local_proc++;
-        }
 
-    for (int i = 0; i < request_send.GetM(); i++)
-      if (nb_num_send(i) > 0)
-        request_send(i).Wait(status);
-    
-    // global to local conversion
-    IVect Glob_to_local(this->GetGlobalM());
-    const IVect& RowNumber = this->GetGlobalRowNumber();
-    Glob_to_local.Fill(-1);
-    for (int i = 0; i < RowNumber.GetM(); i++)
-      Glob_to_local(RowNumber(i)) = i;
-    
-    // replacing global numbers with local numbers
-    for (int i = 0; i < local_num.GetM(); i++)
-      for (int j = 0; j < local_num(i).GetM(); j++)
-        local_num(i)(j) = Glob_to_local(local_num(i)(j));    
-  }
   
+  /*************************************
+   * Methods for matrix-vector product *
+   *************************************/
   
+
   //! prepares a matrix vector product with the distributed matrix
   /*!
     This method prepares the matrix-vector, such that a call to MltAdd
@@ -1214,199 +1733,6 @@ namespace Seldon
   }
   
   
-  //! internal function
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T2>
-  void DistributedMatrix<T, Prop, Storage, Allocator>::
-  ScatterValues(const Vector<T2>& X, const IVect& num_recv,
-                const IVect& ptr_num_recv, const IVect& proc_recv,
-                const Vector<IVect>& num_send, const IVect& proc_send,
-		Vector<T2>& Xcol) const
-  {
-    // sending datas
-    MPI::Comm& comm = *comm_;
-    Vector<Vector<T2> > xsend(proc_send.GetM()), xrecv(proc_recv.GetM());
-    Vector<Vector<int64_t> > xsend_tmp(proc_send.GetM()),
-      xrecv_tmp(proc_recv.GetM());
-    
-    int tag = 30;
-    Vector<MPI::Request> request_send(proc_send.GetM());
-    for (int i = 0; i < proc_send.GetM(); i++)
-      {
-        int nb = num_send(i).GetM();
-        xsend(i).Reallocate(nb);
-        for (int j = 0; j < nb; j++)
-          xsend(i)(j) = X(num_send(i)(j));
-        
-        request_send(i) =
-          MpiIsend(comm, xsend(i), xsend_tmp(i), nb, proc_send(i), tag);
-      }
-    
-    // receiving datas
-    Vector<MPI::Request> request_recv(proc_recv.GetM());
-    int N = 0;
-    for (int i = 0; i < proc_recv.GetM(); i++)
-      {
-        int nb = ptr_num_recv(i+1) - ptr_num_recv(i); N += nb;
-        xrecv(i).Reallocate(nb);
-        request_recv(i) =
-          MpiIrecv(comm, xrecv(i), xrecv_tmp(i), nb, proc_recv(i), tag);
-      }
-    
-    // waiting that transfers are effective
-    MPI::Status status;
-    for (int i = 0; i < request_send.GetM(); i++)
-      request_send(i).Wait(status);
-
-    for (int i = 0; i < request_recv.GetM(); i++)
-      request_recv(i).Wait(status);
-    
-    xsend.Clear();
-    // completing receives
-    for (int i = 0; i < request_recv.GetM(); i++)
-      MpiCompleteIrecv(xrecv(i), xrecv_tmp(i), xrecv(i).GetM());
-    
-    // values are stored in Xcol
-    Xcol.Reallocate(N); N = 0;
-    for (int i = 0; i < proc_recv.GetM(); i++)
-      for (int j = 0; j < ptr_num_recv(i+1) - ptr_num_recv(i); j++)
-        Xcol(N++) = xrecv(i)(j);
-  }
-
-
-  //! internal function
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T2>
-  void DistributedMatrix<T, Prop, Storage, Allocator>::
-  AssembleValues(const Vector<T2>& Xcol, const IVect& num_recv,
-                 const IVect& ptr_num_recv, const IVect& proc_recv,
-                 const Vector<IVect>& num_send, const IVect& proc_send,
-		 Vector<T2>& X) const
-  {
-    // sending datas
-    MPI::Comm& comm = *comm_;
-    Vector<Vector<T2> > xsend(proc_recv.GetM()), xrecv(proc_send.GetM());    
-    Vector<Vector<int64_t> > xsend_tmp(proc_recv.GetM()),
-      xrecv_tmp(proc_send.GetM());
-    
-    int tag = 32, N = 0;
-    Vector<MPI::Request> request_send(proc_recv.GetM());
-    for (int i = 0; i < proc_recv.GetM(); i++)
-      {
-        int nb = ptr_num_recv(i+1) - ptr_num_recv(i);
-        xsend(i).Reallocate(nb);
-        for (int j = 0; j < nb; j++)
-          xsend(i)(j) = Xcol(N++);
-        
-        request_send(i) =
-          MpiIsend(comm, xsend(i), xsend_tmp(i), nb, proc_recv(i), tag);
-      }
-    
-    // receiving datas
-    Vector<MPI::Request> request_recv(proc_send.GetM());
-    for (int i = 0; i < proc_send.GetM(); i++)
-      {
-        int nb = num_send(i).GetM();
-        xrecv(i).Reallocate(nb);
-        request_recv(i) =
-          MpiIrecv(comm, xrecv(i), xrecv_tmp(i), nb, proc_send(i), tag);
-      }
-    
-    // waiting that transfers are effective
-    MPI::Status status;
-    for (int i = 0; i < request_send.GetM(); i++)
-      request_send(i).Wait(status);
-
-    for (int i = 0; i < request_recv.GetM(); i++)
-      request_recv(i).Wait(status);
-    
-    xsend.Clear();
-    // completing receives
-    for (int i = 0; i < request_recv.GetM(); i++)
-      MpiCompleteIrecv(xrecv(i), xrecv_tmp(i), xrecv(i).GetM());
-    
-    // values are added to X
-    for (int i = 0; i < num_send.GetM(); i++)
-      for (int j = 0; j < num_send(i).GetM(); j++)
-        X(num_send(i)(j)) += xrecv(i)(j);
-  }
-
-  
-  //! assembles the results for each row, by taking the minimum of Yproc
-  //! then the minimum of Y
-  /*!
-    Instead of summing values as in function AssembleRowValues,
-    the minimum is taken for Yproc, and if there is equality in Yproc,
-    the minimum is taken for Y
-   */
-  template<class T, class Prop, class Storage, class Allocator>
-  void DistributedMatrix<T, Prop, Storage, Allocator>::
-  AssembleValuesMin(const IVect& Xcol, const IVect& Xcol_proc,
-                    const IVect& num_recv, const IVect& ptr_num_recv,
-		    const IVect& proc_recv,
-                    const Vector<IVect>& num_send, const IVect& proc_send,
-                    IVect& Y, IVect& Yproc) const
-  {
-    // sending datas
-    MPI::Comm& comm = *comm_;
-    Vector<Vector<int> > xsend(proc_recv.GetM()), xrecv(proc_send.GetM());    
-    int tag = 35, N = 0;
-    Vector<MPI::Request> request_send(proc_recv.GetM());
-    for (int i = 0; i < proc_recv.GetM(); i++)
-      {
-        int nb = ptr_num_recv(i+1) - ptr_num_recv(i);
-        xsend(i).Reallocate(2*nb);
-        for (int j = 0; j < nb; j++)
-          {
-            xsend(i)(j) = Xcol(N);
-            xsend(i)(nb+j) = Xcol_proc(N);
-            N++;
-          }
-        
-        request_send(i) = comm.Isend(xsend(i).GetDataVoid(), 2*nb,
-                                     GetMpiDataType(Xcol), proc_recv(i), tag);
-      }
-    
-    // receiving datas
-    Vector<MPI::Request> request_recv(proc_send.GetM());
-    for (int i = 0; i < proc_send.GetM(); i++)
-      {
-        int nb = num_send(i).GetM();
-        xrecv(i).Reallocate(2*nb);
-        request_recv(i) = comm.Irecv(xrecv(i).GetDataVoid(), 2*nb,
-                                     GetMpiDataType(Xcol), proc_send(i), tag);
-      }
-    
-    // waiting that transfers are effective
-    MPI::Status status;
-    for (int i = 0; i < request_send.GetM(); i++)
-      request_send(i).Wait(status);
-
-    for (int i = 0; i < request_recv.GetM(); i++)
-      request_recv(i).Wait(status);
-    
-    xsend.Clear();
-    // values are assembled in X
-    for (int i = 0; i < num_send.GetM(); i++)
-      for (int j = 0; j < num_send(i).GetM(); j++)
-        {
-          int nb = num_send(i).GetM();
-          int proc = xrecv(i)(nb+j);
-          int col = xrecv(i)(j);
-          if (proc < Yproc(num_send(i)(j)))
-            {
-              Yproc(num_send(i)(j)) = proc;
-              Y(num_send(i)(j)) = col;
-            }
-          else if (proc == Yproc(num_send(i)(j)))
-            {
-              if (col < Y(num_send(i)(j)))
-                Y(num_send(i)(j)) = col;
-            }
-        }
-  }
-
-
   //! Sends/receives values of X on distant rows (similar to ScatterColValues)
   template<class T, class Prop, class Storage, class Allocator>
   template<class T2>
@@ -1475,20 +1801,6 @@ namespace Seldon
   }
 
 
-  //! assembles the vector (by taking the minimum instead 
-  //! of summing for AssembleVec
-  /*!
-    The minimal Xproc is search, if equality the minimal X is searched
-   */
-  template<class T, class Prop, class Storage, class Allocator>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::AssembleVecMin(Vector<int>& X, Vector<int>& Xproc) const
-  {
-    AssembleVectorMin(X, Xproc, *ProcSharingRows, *SharingRowNumbers,
-                      *comm_, nodl_scalar_, nb_unknowns_scal_, 13);
-  }
-  
-  
   //! Y = Y + alpha A X with only distant columns of A
   template<class T, class Prop, class Storage, class Allocator>
   template<class T2, class Storage2, class Allocator2,
@@ -1506,6 +1818,48 @@ namespace Seldon
         }
   }
 
+
+  //! Y = Y + alpha A^T X with only distant columns of A
+  template<class T, class Prop, class Storage, class Allocator>
+  template<class T2, class Storage2, class Allocator2,
+           class T4, class Storage4, class Allocator4>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::MltAddCol(const class_SeldonTrans& Trans,
+              const Vector<T2, Storage2, Allocator2>& X,
+              Vector<T4, Storage4, Allocator4>& Y) const
+  {
+    T4 zero; SetComplexZero(zero);
+    Y.Reallocate(global_col_to_recv.GetM());
+    Y.Fill(zero);
+    for (int i = 0; i < dist_col.GetM(); i++)
+      for (int j = 0; j < dist_col(i).GetM(); j++)
+        {
+          int jrow = dist_col(i).Index(j);
+          Y(jrow) += dist_col(i).Value(j)*X(i);
+        }
+  }
+
+
+  //! Y = Y + alpha A^H X with only distant columns of A
+  template<class T, class Prop, class Storage, class Allocator>
+  template<class T2, class Storage2, class Allocator2,
+           class T4, class Storage4, class Allocator4>
+  void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::MltAddCol(const class_SeldonConjTrans& Trans,
+              const Vector<T2, Storage2, Allocator2>& X,
+              Vector<T4, Storage4, Allocator4>& Y) const
+  {
+    T4 zero; SetComplexZero(zero);
+    Y.Reallocate(global_col_to_recv.GetM());
+    Y.Fill(zero);
+    for (int i = 0; i < dist_col.GetM(); i++)
+      for (int j = 0; j < dist_col(i).GetM(); j++)
+        {
+          int jrow = dist_col(i).Index(j);
+          Y(jrow) += conjugate(dist_col(i).Value(j))*X(i);
+        }
+  }
+  
 
   //! Y = Y + alpha A^T X with only distant rows of A
   template<class T, class Prop, class Storage, class Allocator>
@@ -1564,47 +1918,10 @@ namespace Seldon
   }
 
 
-  //! Y = Y + alpha A^T X with only distant columns of A
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T2, class Storage2, class Allocator2,
-           class T4, class Storage4, class Allocator4>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::MltAddCol(const class_SeldonTrans& Trans,
-              const Vector<T2, Storage2, Allocator2>& X,
-              Vector<T4, Storage4, Allocator4>& Y) const
-  {
-    T4 zero; SetComplexZero(zero);
-    Y.Reallocate(global_col_to_recv.GetM());
-    Y.Fill(zero);
-    for (int i = 0; i < dist_col.GetM(); i++)
-      for (int j = 0; j < dist_col(i).GetM(); j++)
-        {
-          int jrow = dist_col(i).Index(j);
-          Y(jrow) += dist_col(i).Value(j)*X(i);
-        }
-  }
+  /******************************
+   * Methods to assemble matrix *
+   ******************************/
 
-
-  //! Y = Y + alpha A^H X with only distant columns of A
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T2, class Storage2, class Allocator2,
-           class T4, class Storage4, class Allocator4>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::MltAddCol(const class_SeldonConjTrans& Trans,
-              const Vector<T2, Storage2, Allocator2>& X,
-              Vector<T4, Storage4, Allocator4>& Y) const
-  {
-    T4 zero; SetComplexZero(zero);
-    Y.Reallocate(global_col_to_recv.GetM());
-    Y.Fill(zero);
-    for (int i = 0; i < dist_col.GetM(); i++)
-      for (int j = 0; j < dist_col(i).GetM(); j++)
-        {
-          int jrow = dist_col(i).Index(j);
-          Y(jrow) += conjugate(dist_col(i).Value(j))*X(i);
-        }
-  }
-  
 
   //! grouping all the local rows of the matrix into CSR form
   /*!
@@ -1776,17 +2093,87 @@ namespace Seldon
           }
       }
   }
-   
+
   
+  /*************
+   * Functions *
+   *************/
+  
+  
+  //! adding a non-zero entry, between a local row/column
+  //! and a non-local row/column
+  /*!
+    This method is used only internally
+    \param[in] dist_col array to which entry is added
+    \param[in] proc_col processors associated with dist_col
+    \param[in] jglob global row/column number
+    \param[in] proc2 distant processor containing the global row/column
+    \param[in] val value of the non-zero entry
+  */
+  template<class T, class Allocator>
+  void AddDistantValue(Vector<T, VectSparse, Allocator>& dist_col,
+		       IVect& proc_col,
+		       int jglob, int proc2, const T& val)
+  {
+    int pos = 0;
+    int size_row = dist_col.GetM();
+    while ((pos < size_row) && (dist_col.Index(pos) < jglob))
+      pos++;
+    
+    if ((pos < size_row) && (dist_col.Index(pos) == jglob))
+      {
+        // already existing entry
+        dist_col.Value(pos) += val;
+      }
+    else
+      {
+        // new entry
+        Vector<T> value(size_row);
+        IVect index(size_row), proc(size_row);
+        for (int k = 0; k < size_row; k++)
+          {
+            index(k) = dist_col.Index(k);
+            value(k) = dist_col.Value(k);
+            proc(k) = proc_col(k);
+          }
+        
+        dist_col.Reallocate(size_row+1);
+        proc_col.Reallocate(size_row+1);
+        for (int k = 0; k < pos; k++)
+          {
+            dist_col.Index(k) = index(k);
+            dist_col.Value(k) = value(k);
+            proc_col(k) = proc(k);
+          }
+        
+        dist_col.Index(pos) = jglob;
+        dist_col.Value(pos) = val;
+        proc_col(pos) = proc2;
+        for (int k = pos+1; k <= size_row; k++)
+          {
+            dist_col.Index(k) = index(k-1);
+            dist_col.Value(k) = value(k-1);
+            proc_col(k) = proc(k-1);
+          }
+        
+      }
+  }
+
+  
+  /*************************
+   * Matrix vector product *
+   *************************/
+
+    
   //! matrix vector product with a distributed matrix
   template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
            class T2, class Storage2, class Allocator2, class T3,
            class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-              const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-              const Vector<T2, Storage2, Allocator2>& X,
-              const T3& beta,
-              Vector<T4, Storage4, Allocator4>& Yres, bool assemble)
+  void MltAddVector(const T0& alpha,
+		    const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta,
+		    Vector<T4, Storage4, Allocator4>& Yres, bool assemble)
   {
     const MPI::Comm& comm = M.GetCommunicator();
     bool proceed_distant_row = true, proceed_distant_col = true;
@@ -1832,8 +2219,8 @@ namespace Seldon
       M.ScatterColValues(X, Xcol);
     
     // local matrix
-    Mlt(static_cast<const Matrix<T1, Prop1, Storage1, Allocator1>& >(M),
-	X, Y);
+    MltVector(static_cast<const Matrix<T1, Prop1, Storage1, Allocator1>& >(M),
+	      X, Y);
     
     // adding contributions of distant columns
     if (proceed_distant_col)
@@ -1870,14 +2257,14 @@ namespace Seldon
 	   class Allocator1,
            class T2, class Storage2, class Allocator2, class T3,
            class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-              const class_SeldonNoTrans& Trans,
-              const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-              const Vector<T2, Storage2, Allocator2>& X,
-              const T3& beta,
-              Vector<T4, Storage4, Allocator4>& Y, bool assemble)
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonNoTrans& Trans,
+		    const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta,
+		    Vector<T4, Storage4, Allocator4>& Y, bool assemble)
   {
-    MltAdd(alpha, M, X, beta, Y, assemble);
+    MltAddVector(alpha, M, X, beta, Y, assemble);
   }
 
 
@@ -1885,12 +2272,12 @@ namespace Seldon
   template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
            class T2, class Storage2, class Allocator2, class T3,
            class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-              const class_SeldonTrans& Trans,
-              const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-              const Vector<T2, Storage2, Allocator2>& X,
-              const T3& beta,
-              Vector<T4, Storage4, Allocator4>& Yres, bool assemble)
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonTrans& Trans,
+		    const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta,
+		    Vector<T4, Storage4, Allocator4>& Yres, bool assemble)
   {
     const MPI::Comm& comm = M.GetCommunicator();
     bool proceed_distant_row = true, proceed_distant_col = true;
@@ -1936,8 +2323,8 @@ namespace Seldon
       M.ScatterRowValues(X, Xrow);
     
     // local matrix
-    Mlt(Trans, static_cast<const Matrix<T1, Prop1,
-	Storage1, Allocator1>& >(M), X, Y);
+    MltVector(Trans, static_cast<const Matrix<T1, Prop1,
+	      Storage1, Allocator1>& >(M), X, Y);
 
     // adding contributions of distant rows
     if (proceed_distant_row)
@@ -1973,12 +2360,12 @@ namespace Seldon
   template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
            class T2, class Storage2, class Allocator2, class T3,
            class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-              const class_SeldonConjTrans& Trans,
-              const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-              const Vector<T2, Storage2, Allocator2>& X,
-              const T3& beta,
-              Vector<T4, Storage4, Allocator4>& Yres, bool assemble)
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonConjTrans& Trans,
+		    const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta,
+		    Vector<T4, Storage4, Allocator4>& Yres, bool assemble)
   {
     const MPI::Comm& comm = M.GetCommunicator();
     bool proceed_distant_row = true, proceed_distant_col = true;
@@ -2024,9 +2411,9 @@ namespace Seldon
     Y.Fill(zero);
             
     // local matrix
-    Mlt(Trans, static_cast<const Matrix<T1, Prop1,
-	Storage1, Allocator1>& >(M), X, Y);
-
+    MltVector(Trans, static_cast<const Matrix<T1, Prop1,
+	      Storage1, Allocator1>& >(M), X, Y);
+    
     // adding contributions of distant rows
     if (proceed_distant_row)
       M.MltAddRow(SeldonConjTrans, Xrow, Y);
@@ -2061,15 +2448,15 @@ namespace Seldon
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
-  void Mlt(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& M,
-	   const Vector<T1, Storage1, Allocator1>& X,
-	   Vector<T2, Storage2, Allocator2>& Y, bool assemble)
+  void MltVector(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& M,
+		 const Vector<T1, Storage1, Allocator1>& X,
+		 Vector<T2, Storage2, Allocator2>& Y, bool assemble)
   {
     T2 one, zero;
     SetComplexOne(one);
     SetComplexZero(zero);
     Y.Fill(zero);
-    MltAdd(one, M, X, zero, Y, assemble);
+    MltAddVector(one, M, X, zero, Y, assemble);
   }
 
   
@@ -2077,48 +2464,15 @@ namespace Seldon
   template <class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3, class Storage3, class Allocator3>
-  void Mlt(const T3& alpha,
-	   const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-	   const Vector<T2, Storage2, Allocator2>& X,
-	   Vector<T3, Storage3, Allocator3>& Y, bool assemble)
+  void MltVector(const T3& alpha,
+		 const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T3, Storage3, Allocator3>& Y, bool assemble)
   {
     T3 zero;
     SetComplexZero(zero);
     Y.Fill(zero);
-    MltAdd(alpha, M, X, zero, Y, assemble);
-  }
-
-  
-  // case where alpha = real and Y is a complex vector
-  // if this method is not present, Mlt with SeldonTranspose is called
-  template <class T1, class Prop1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2,
-	    class T3, class Storage3, class Allocator3>
-  void Mlt(const T3& alpha,
-	   const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-	   const Vector<T2, Storage2, Allocator2>& X,
-	   Vector<complex<T3>, Storage3, Allocator3>& Y, bool assemble)
-  {
-    complex<T3> zero;
-    SetComplexZero(zero);
-    Y.Fill(zero);
-    MltAdd(complex<T3>(alpha, 0), M, X, zero, Y, assemble);
-  }
-
-  
-  //! computes Y = alpha M X
-  template <class T1, class Prop1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2,
-	    class T3, class Storage3, class Allocator3>
-  void Mlt(int alpha,
-	   const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-	   const Vector<T2, Storage2, Allocator2>& X,
-	   Vector<T3, Storage3, Allocator3>& Y, bool assemble)
-  {
-    T3 zero;
-    SetComplexZero(zero);
-    Y.Fill(zero);
-    MltAdd(double(alpha), M, X, zero, Y, assemble);
+    MltAddVector(alpha, M, X, zero, Y, assemble);
   }
 
   
@@ -2126,16 +2480,16 @@ namespace Seldon
   template <class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3, class Storage3, class Allocator3>
-  void Mlt(const class_SeldonNoTrans& Trans,
-	   const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-	   const Vector<T2, Storage2, Allocator2>& X,
-	   Vector<T3, Storage3, Allocator3>& Y, bool assemble)
+  void MltVector(const class_SeldonNoTrans& Trans,
+		 const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T3, Storage3, Allocator3>& Y, bool assemble)
   {
     T3 one, zero;
     SetComplexOne(one);
     SetComplexZero(zero);
     Y.Fill(zero);
-    MltAdd(one, Trans, M, X, zero, Y, assemble);
+    MltAddVector(one, Trans, M, X, zero, Y, assemble);
   }
 
   
@@ -2143,16 +2497,16 @@ namespace Seldon
   template <class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3, class Storage3, class Allocator3>
-  void Mlt(const class_SeldonTrans& Trans,
-	   const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-	   const Vector<T2, Storage2, Allocator2>& X,
-	   Vector<T3, Storage3, Allocator3>& Y, bool assemble)
+  void MltVector(const class_SeldonTrans& Trans,
+		 const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T3, Storage3, Allocator3>& Y, bool assemble)
   {
     T3 one, zero;
     SetComplexOne(one);
     SetComplexZero(zero);
     Y.Fill(zero);
-    MltAdd(one, Trans, M, X, zero, Y, assemble);
+    MltAddVector(one, Trans, M, X, zero, Y, assemble);
   }
 
   
@@ -2160,23 +2514,23 @@ namespace Seldon
   template <class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3, class Storage3, class Allocator3>
-  void Mlt(const class_SeldonConjTrans& Trans,
-	   const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-	   const Vector<T2, Storage2, Allocator2>& X,
-	   Vector<T3, Storage3, Allocator3>& Y, bool assemble)
+  void MltVector(const class_SeldonConjTrans& Trans,
+		 const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T3, Storage3, Allocator3>& Y, bool assemble)
   {
     T3 one, zero;
     SetComplexOne(one);
     SetComplexZero(zero);
     Y.Fill(zero);
-    MltAdd(one, Trans, M, X, zero, Y, assemble);
+    MltAddVector(one, Trans, M, X, zero, Y, assemble);
   }
 
 
   //! multiplication by a scalar
   template<class T0, class T1, class Prop1, class Storage1, class Allocator1>
-  void Mlt(const T0& alpha,
-           DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A)
+  void MltScalar(const T0& alpha,
+		 DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A)
   {
     A *= alpha;
   }
@@ -2471,17 +2825,22 @@ namespace Seldon
   }
 
   
+  /**************************
+   * Functions for matrices *
+   **************************/
+
+  
   //! Adds two distributed matrices (B = B + alpha A)
   template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
            class T2, class Prop2, class Storage2, class Allocator2>
-  void Add(const T0& alpha,
-	   const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A, 
-           DistributedMatrix<T2, Prop2, Storage2, Allocator2>& B)
+  void AddMatrix(const T0& alpha,
+		 const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A, 
+		 DistributedMatrix<T2, Prop2, Storage2, Allocator2>& B)
   {
     // adding local part
-    Add(alpha,
-	static_cast<const Matrix<T1, Prop1, Storage1, Allocator1>& >(A),
-        static_cast<Matrix<T2, Prop2, Storage2, Allocator2>& >(B));
+    AddMatrix(alpha,
+	      static_cast<const Matrix<T1, Prop1, Storage1, Allocator1>& >(A),
+	      static_cast<Matrix<T2, Prop2, Storage2, Allocator2>& >(B));
     
     const_cast<DistributedMatrix<T1, Prop1, Storage1, Allocator1>& >(A)
       .SwitchToGlobalNumbers();
@@ -2537,38 +2896,6 @@ namespace Seldon
   }
 
   
-  //! adds contribution of dist_col for GetRowSum
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T0>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetRowSumDistantCol(Vector<T0>& vec_sum) const
-  {
-    for (int i = 0; i < dist_col.GetM(); i++)
-      for (int j = 0; j < dist_col(i).GetM(); j++)
-        vec_sum(i) += abs(dist_col(i).Value(j));
-  }
-  
-  
-  //! adds contribution of dist_row for GetRowSum
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T0>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetRowSumDistantRow(Vector<T0>& vec_sum) const
-  {
-    T0 zero; SetComplexZero(zero);
-    Vector<T0> Y(global_row_to_recv.GetM());
-    Y.Fill(zero);
-    for (int i = 0; i < dist_row.GetM(); i++)
-      for (int j = 0; j < dist_row(i).GetM(); j++)
-        {
-          int jrow = dist_row(i).Index(j);
-          Y(jrow) += abs(dist_row(i).Value(j));
-        }
-    
-    AssembleRowValues(Y, vec_sum);
-  }
-  
-  
   //! For each row of the matrix, computation of the sum of absolute values
   /*!
     The result is different from a sequential execution (because 
@@ -2600,39 +2927,6 @@ namespace Seldon
   }
   
 
-
-  //! adds contribution of dist_col for GetColSum
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T0>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetColSumDistantCol(Vector<T0>& vec_sum) const
-  {
-    T0 zero; SetComplexZero(zero);
-    Vector<T0> Y(global_col_to_recv.GetM());
-    Y.Fill(zero);
-    for (int i = 0; i < dist_col.GetM(); i++)
-      for (int j = 0; j < dist_col(i).GetM(); j++)
-        {
-          int jrow = dist_col(i).Index(j);
-          Y(jrow) += abs(dist_col(i).Value(j));
-        }
-    
-    AssembleColValues(Y, vec_sum);
-  }
-  
-  
-  //! adds contribution of dist_row for GetColSum
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T0>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetColSumDistantRow(Vector<T0>& vec_sum) const
-  {
-    for (int i = 0; i < dist_row.GetM(); i++)
-      for (int j = 0; j < dist_row(i).GetM(); j++)
-        vec_sum(i) += abs(dist_row(i).Value(j));
-  }
-  
-  
   //! For each column of the matrix, computation of 
   //! the sum of absolute values
   /*!
@@ -2853,22 +3147,27 @@ namespace Seldon
     Transpose(A);
     Conjugate(A);
   }
+
+  
+  /**************************
+   * Matrix-matrix products *
+   **************************/
   
 
   //! computes C = A B
   template<class T1, class Prop1, class Storage1, class Allocator1,
            class T2, class Prop2, class Storage2, class Allocator2,
            class T4, class Prop4, class Storage4, class Allocator4>
-  void Mlt(const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A,
-           const DistributedMatrix<T2, Prop2, Storage2, Allocator2>& B,
-           DistributedMatrix<T4, Prop4, Storage4, Allocator4>& C)
+  void MltMatrix(const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A,
+		 const DistributedMatrix<T2, Prop2, Storage2, Allocator2>& B,
+		 DistributedMatrix<T4, Prop4, Storage4, Allocator4>& C)
   {
     const MPI::Comm& comm = A.GetCommunicator();
     if (comm.Get_size() == 1)
       return
-	Mlt(static_cast<const Matrix<T1, Prop1, Storage1, Allocator1>& >(A),
-	    static_cast<const Matrix<T2, Prop2, Storage2, Allocator2>& >(B),
-	    static_cast<Matrix<T4, Prop4, Storage4, Allocator4>& >(C));
+	MltMatrix(static_cast<const Matrix<T1, Prop1, Storage1, Allocator1>& >(A),
+		  static_cast<const Matrix<T2, Prop2, Storage2, Allocator2>& >(B),
+		  static_cast<Matrix<T4, Prop4, Storage4, Allocator4>& >(C));
     
     cout << "Mlt not implemented for distributed matrices" << endl;
     abort();
@@ -2881,20 +3180,20 @@ namespace Seldon
            class T2, class Prop2, class Storage2, class Allocator2,
            class T3,
            class T4, class Prop4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-              const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A,
-              const DistributedMatrix<T2, Prop2, Storage2, Allocator2>& B,
-              const T3& beta,
-              DistributedMatrix<T4, Prop4, Storage4, Allocator4>& C)
+  void MltAddMatrix(const T0& alpha,
+		    const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A,
+		    const DistributedMatrix<T2, Prop2, Storage2, Allocator2>& B,
+		    const T3& beta,
+		    DistributedMatrix<T4, Prop4, Storage4, Allocator4>& C)
   {
     const MPI::Comm& comm = A.GetCommunicator();
     if (comm.Get_size() == 1)
       return
-	MltAdd(alpha,
-	       static_cast<const Matrix<T1, Prop1,Storage1,Allocator1>& >(A),
-	       static_cast<const Matrix<T2, Prop2,Storage2,Allocator2>& >(B),
-	       beta,
-	       static_cast<Matrix<T4, Prop4, Storage4, Allocator4>& >(C));
+	MltAddMatrix(alpha,
+		     static_cast<const Matrix<T1, Prop1,Storage1,Allocator1>& >(A),
+		     static_cast<const Matrix<T2, Prop2,Storage2,Allocator2>& >(B),
+		     beta,
+		     static_cast<Matrix<T4, Prop4, Storage4, Allocator4>& >(C));
     
     cout << "MltAdd not implemented for distributed matrices" << endl;
     abort();
@@ -2902,36 +3201,40 @@ namespace Seldon
 
   
   //! computes C = beta C + alpha A B (with transposes)
-  template<class T0, class TransA,
+  template<class T0,
            class T1, class Prop1, class Storage1, class Allocator1,
-           class TransB,
-	   class T2, class Prop2, class Storage2, class Allocator2,
+           class T2, class Prop2, class Storage2, class Allocator2,
            class T3,
            class T4, class Prop4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha, const TransA& transA,
-              const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A,
-              const TransB& transB,
-              const DistributedMatrix<T2, Prop2, Storage2, Allocator2>& B,
-              const T3& beta,
-              DistributedMatrix<T4, Prop4, Storage4, Allocator4>& C)
+  void MltAddMatrix(const T0& alpha, const SeldonTranspose& transA,
+		    const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A,
+		    const SeldonTranspose& transB,
+		    const DistributedMatrix<T2, Prop2, Storage2, Allocator2>& B,
+		    const T3& beta,
+		    DistributedMatrix<T4, Prop4, Storage4, Allocator4>& C)
   {
     const MPI::Comm& comm = A.GetCommunicator();
     if (comm.Get_size() == 1)
-      return MltAdd(alpha, transA,
-                    static_cast<const Matrix<T1, Prop1,
-		    Storage1, Allocator1>& >(A),
-                    transB,
-                    static_cast<const Matrix<T2, Prop2,
-		    Storage2, Allocator2>& >(B),
-                    beta,
-                    static_cast<Matrix<T4, Prop4,
-		    Storage4, Allocator4>& >(C));
+      return MltAddMatrix(alpha, transA,
+			  static_cast<const Matrix<T1, Prop1,
+			  Storage1, Allocator1>& >(A),
+			  transB,
+			  static_cast<const Matrix<T2, Prop2,
+			  Storage2, Allocator2>& >(B),
+			  beta,
+			  static_cast<Matrix<T4, Prop4,
+			  Storage4, Allocator4>& >(C));
     
     cout << "MltAdd not implemented for distributed matrices" << endl;
     abort();
   }
   
 
+  /********************
+   * Matrix functions *
+   ********************/
+
+  
   //! X = M(i, :)
   template<class T0, class Prop0, class Storage0, class Allocator0,
            class T1, class Allocator1>
@@ -3037,16 +3340,16 @@ namespace Seldon
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor)
+  void SorVector(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor)
   {
     const MPI::Comm& comm = A.GetCommunicator();
     if (comm.Get_size() == 1)
-      return SOR(static_cast<const Matrix<T0, Prop0,
-		 Storage0, Allocator0>& >(A),
-                 X, B, omega, iter, type_ssor);
+      return SorVector(static_cast<const Matrix<T0, Prop0,
+		       Storage0, Allocator0>& >(A),
+		       X, B, omega, iter, type_ssor);
     
     cout << "SOR not implemented for distributed matrices" << endl;
     abort();    
@@ -3057,11 +3360,11 @@ namespace Seldon
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const class_SeldonTrans& transM,
-	   const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor)
+  void SorVector(const class_SeldonTrans& transM,
+		 const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor)
   {
     const MPI::Comm& comm = A.GetCommunicator();
     if (comm.Get_size() == 1)
@@ -4444,7 +4747,6 @@ namespace Seldon
 
       }
   }
-  
   
 }
 

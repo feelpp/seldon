@@ -26,139 +26,139 @@ namespace Seldon
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 2);
+  void SorVector(const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor = 2);
   
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const Matrix<T0, Prop0, ArrayRowSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega,
-	   int iter, int type_ssor = 2);
-
-  template <class T0, class Prop0, class Allocator0,
-	    class T1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 2);
+  void SorVector(const Matrix<T0, Prop0, ArrayRowSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega,
+		 int iter, int type_ssor = 2);
   
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 2);
-
-  template <class T0, class Prop0, class Allocator0,
-	    class T1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega,int iter, int type_ssor = 2);
-
-  template <class T0, class Prop0, class Allocator0,
-	    class T1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const Matrix<T0, Prop0, ArrayColSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega,int iter, int type_ssor = 2);
-
-  template <class T0, class Prop0, class Allocator0,
-	    class T1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const Matrix<T0, Prop0, ColSymSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 2);
-
-  template <class T0, class Prop0, class Allocator0,
-	    class T1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const Matrix<T0, Prop0, ArrayColSymSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 2);
+  void SorVector(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor = 2);
   
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const class_SeldonTrans& transM,
-	   const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 3);
+  void SorVector(const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor = 2);
   
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const class_SeldonTrans& transM,
-	   const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 3);
+  void SorVector(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega,int iter, int type_ssor = 2);
   
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const class_SeldonTrans& transM,
-	   const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 3);
-
+  void SorVector(const Matrix<T0, Prop0, ArrayColSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega,int iter, int type_ssor = 2);
+  
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const class_SeldonTrans& transM,
-	   const Matrix<T0, Prop0, ColSymSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 3);
-
+  void SorVector(const Matrix<T0, Prop0, ColSymSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor = 2);
+  
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const class_SeldonTrans& transM,
-	   const Matrix<T0, Prop0, ArrayRowSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 3);
-
+  void SorVector(const Matrix<T0, Prop0, ArrayColSymSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor = 2);
+  
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const class_SeldonTrans& transM,
-	   const Matrix<T0, Prop0, ArrayColSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 3);
-
+  void SorVector(const class_SeldonTrans& transM,
+		 const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor = 3);
+  
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const class_SeldonTrans& transM,
-	   const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 3);
-
+  void SorVector(const class_SeldonTrans& transM,
+		 const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor = 3);
+  
   template <class T0, class Prop0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2, class T3>
-  void SOR(const class_SeldonTrans& transM,
-	   const Matrix<T0, Prop0, ArrayColSymSparse, Allocator0>& A,
-	   Vector<T2, Storage2, Allocator2>& X,
-	   const Vector<T1, Storage1, Allocator1>& B,
-	   const T3& omega, int iter, int type_ssor = 3);
+  void SorVector(const class_SeldonTrans& transM,
+		 const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor = 3);
+  
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SorVector(const class_SeldonTrans& transM,
+		 const Matrix<T0, Prop0, ColSymSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor = 3);
+  
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SorVector(const class_SeldonTrans& transM,
+		 const Matrix<T0, Prop0, ArrayRowSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor = 3);
+  
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SorVector(const class_SeldonTrans& transM,
+		 const Matrix<T0, Prop0, ArrayColSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor = 3);
+  
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SorVector(const class_SeldonTrans& transM,
+		 const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor = 3);
+  
+  template <class T0, class Prop0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2, class T3>
+  void SorVector(const class_SeldonTrans& transM,
+		 const Matrix<T0, Prop0, ArrayColSymSparse, Allocator0>& A,
+		 Vector<T2, Storage2, Allocator2>& X,
+		 const Vector<T1, Storage1, Allocator1>& B,
+		 const T3& omega, int iter, int type_ssor = 3);
 
 } // end namespace
 

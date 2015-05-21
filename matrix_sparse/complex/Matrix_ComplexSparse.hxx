@@ -25,32 +25,30 @@
 namespace Seldon
 {
 
-  class ColComplexSparse
-  {
-  public:
-    static int GetFirst(int i, int j);
-    static int GetSecond(int i, int j);
-    static int GetBeginLoop(int i);
-    static const bool Sparse = true;
-  };
-
-
-  class RowComplexSparse
-  {
-  public:
-    static int GetFirst(int i, int j);
-    static int GetSecond(int i, int j);
-    static int GetBeginLoop(int i);
-    static const bool Sparse = true;
-  };
-
-
   //! for complex sparse matrix, the allocator involves real numbers
   template<class T>
   class SeldonDefaultAllocator<ColComplexSparse, T>
   {
   public :
-    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+    typedef typename
+    SeldonDefaultAllocator<VectFull, typename ClassComplexType<T>::Treal>
+    ::allocator allocator;    
+  };
+
+  template<>
+  class SeldonDefaultAllocator<ColComplexSparse, complex<float> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, float>::allocator allocator;
+  };
+
+  template<>
+  class SeldonDefaultAllocator<ColComplexSparse, complex<double> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, double>::allocator allocator;
   };
 
 
@@ -59,9 +57,27 @@ namespace Seldon
   class SeldonDefaultAllocator<RowComplexSparse, T>
   {
   public :
-    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+    typedef typename
+    SeldonDefaultAllocator<VectFull, typename ClassComplexType<T>::Treal>
+    ::allocator allocator;    
   };
   
+  template<>
+  class SeldonDefaultAllocator<RowComplexSparse, complex<float> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, float>::allocator allocator;
+  };
+
+  template<>
+  class SeldonDefaultAllocator<RowComplexSparse, complex<double> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, double>::allocator allocator;
+  };
+
   
   //! Complex sparse-matrix class.
   /*!
@@ -75,7 +91,8 @@ namespace Seldon
     There are therefore 6 arrays: 'real_ptr_', 'real_ind_', 'real_data_',
     'imag_ptr_', 'imag_ind_' and 'imag_data_'.
   */
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Prop, class Storage, class Allocator
+	    = typename SeldonDefaultAllocator<Storage, T>::allocator>
   class Matrix_ComplexSparse: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
@@ -85,6 +102,7 @@ namespace Seldon
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
+    typedef typename SeldonDefaultAllocator<VectFull, int>::allocator AllocatorInt;
     typedef complex<value_type> entry_type;
     typedef complex<value_type> access_type;
     typedef complex<value_type> const_access_type;

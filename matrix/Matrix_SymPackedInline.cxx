@@ -42,58 +42,6 @@ namespace Seldon
   }
 
 
-  //! Main constructor.
-  /*! Builds a i x j hermitian matrix in packed form.
-    \param i number of rows.
-    \param j number of columns.
-    \note 'j' is assumed to be equal to 'i' and is therefore discarded.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline Matrix_SymPacked<T, Prop, Storage, Allocator>
-  ::Matrix_SymPacked(int i, int j): Matrix_Base<T, Allocator>(i, i)
-  {
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	this->data_ = this->allocator_.allocate((i * (i + 1)) / 2, this);
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	this->data_ = NULL;
-	return;
-      }
-    if (this->data_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	return;
-      }
-#endif
-
-  }
-
-
-  //! Copy constructor.
-  template <class T, class Prop, class Storage, class Allocator>
-  inline Matrix_SymPacked<T, Prop, Storage, Allocator>
-  ::Matrix_SymPacked(const Matrix_SymPacked<T, Prop, Storage, Allocator>& A)
-    : Matrix_Base<T, Allocator>()
-  {
-    this->m_ = 0;
-    this->n_ = 0;
-    this->data_ = NULL;
-
-    this->Copy(A);
-  }
-
-
   /**************
    * DESTRUCTOR *
    **************/
@@ -104,41 +52,6 @@ namespace Seldon
   inline Matrix_SymPacked<T, Prop, Storage, Allocator>::~Matrix_SymPacked()
   {
     this->Clear();
-  }
-
-
-  //! Clears the matrix.
-  /*!
-    Destructs the matrix.
-    \warning On exit, the matrix is an empty 0x0 matrix.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>::Clear()
-  {
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	if (this->data_ != NULL)
-	  {
-	    this->allocator_.deallocate(this->data_,
-					(this->m_ * (this->m_ + 1)) / 2);
-	    this->data_ = NULL;
-	  }
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	this->data_ = NULL;
-      }
-#endif
-    
-    this->m_ = 0;
-    this->n_ = 0;
   }
 
 
@@ -164,107 +77,6 @@ namespace Seldon
   {
     int64_t taille = int64_t(GetDataSize())*sizeof(T);
     return taille;
-  }
-
-
-  /*********************
-   * MEMORY MANAGEMENT *
-   *********************/
-
-
-  //! Reallocates memory to resize the matrix.
-  /*!
-    On exit, the matrix is a i x j matrix.
-    \param i new number of rows.
-    \param j new number of columns.
-    \warning Depending on your allocator, data may be lost.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>::Reallocate(int i,
-									int j)
-  {
-
-    if (i != this->m_)
-      {
-	this->m_ = i;
-	this->n_ = i;
-
-#ifdef SELDON_CHECK_MEMORY
-	try
-	  {
-#endif
-
-	    this->data_ =
-	      reinterpret_cast<pointer>(this->allocator_
-					.reallocate(this->data_,
-						    (i * (i + 1)) / 2,
-						    this));
-
-#ifdef SELDON_CHECK_MEMORY
-	  }
-	catch (...)
-	  {
-	    this->m_ = 0;
-	    this->n_ = 0;
-	    this->data_ = NULL;
-	    throw NoMemory("Matrix_SymPacked::Reallocate(int, int)",
-			   "Unable to reallocate memory for data_.");
-	  }
-	if (this->data_ == NULL)
-	  {
-	    this->m_ = 0;
-	    this->n_ = 0;
-	    throw NoMemory("Matrix_SymPacked::Reallocate(int, int)",
-			   "Unable to reallocate memory for data_.");
-	  }
-#endif
-
-      }
-  }
-
-
-  //! Changes the size of the matrix and sets its data array
-  //! (low level method).
-  /*!
-    The matrix is first cleared (memory is freed). The matrix is then resized
-    to a i x j matrix, and the data array of the matrix is set to 'data'.
-    'data' elements are not duplicated: the new data array of the matrix is
-    the 'data' array. It is useful to create a matrix from pre-existing data.
-    \param i new number of rows.
-    \param j new number of columns.
-    \param data new array storing elements.
-    \warning 'data' has to be used carefully outside the object.
-    Unless you use 'Nullify', 'data' will be freed by the destructor,
-    which means that 'data' must have been allocated carefully. The matrix
-    allocator should be compatible.
-    \note This method should only be used by advanced users.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>
-  ::SetData(int i, int j,
-	    typename Matrix_SymPacked<T, Prop, Storage, Allocator>
-	    ::pointer data)
-  {
-    this->Clear();
-
-    this->m_ = i;
-    this->n_ = i;
-
-    this->data_ = data;
-  }
-
-
-  //! Clears the matrix without releasing memory.
-  /*!
-    On exit, the matrix is empty and the memory has not been released.
-    It is useful for low level manipulations on a Matrix instance.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_SymPacked<T, Prop, Storage, Allocator>::Nullify()
-  {
-    this->data_ = NULL;
-    this->m_ = 0;
-    this->n_ = 0;
   }
 
 
@@ -531,7 +343,7 @@ namespace Seldon
   {
     this->Reallocate(A.GetM(), A.GetN());
 
-    this->allocator_.memorycpy(this->data_, A.GetData(), this->GetDataSize());
+    Allocator::memorycpy(this->data_, A.GetData(), this->GetDataSize());
   }
   
 
@@ -562,9 +374,9 @@ namespace Seldon
   ::MltAddVector(const Treal& alpha, const Vector<Treal>& x,
 		 const Treal& beta, Vector<Treal>& y) const
   {
-    MltAddComplex(alpha,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
+    MltAdd(alpha,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -572,9 +384,9 @@ namespace Seldon
   ::MltAddVector(const Tcplx& alpha, const Vector<Tcplx>& x,
 		 const Tcplx& beta, Vector<Tcplx>& y) const
   {
-    MltAddComplex(alpha,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
+    MltAdd(alpha,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -583,9 +395,9 @@ namespace Seldon
 		 const Vector<Treal>& x,
 		 const Treal& beta, Vector<Treal>& y) const
   {
-    MltAddComplex(alpha, trans,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
+    MltAdd(alpha, trans,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -594,23 +406,23 @@ namespace Seldon
 		 const Vector<Tcplx>& x,
 		 const Tcplx& beta, Vector<Tcplx>& y) const
   {
-    MltAddComplex(alpha, trans,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
+    MltAdd(alpha, trans,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
   }
   
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_SymPacked<T, Prop, Storage, Allocator>
   ::MltVector(const Vector<Treal>& x, Vector<Treal>& y) const
   {
-    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    Mlt(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_SymPacked<T, Prop, Storage, Allocator>
   ::MltVector(const Vector<Tcplx>& x, Vector<Tcplx>& y) const
   {
-    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    Mlt(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -618,8 +430,8 @@ namespace Seldon
   ::MltVector(const SeldonTranspose& trans,
 	      const Vector<Treal>& x, Vector<Treal>& y) const
   {
-    MltComplex(trans,
-	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    Mlt(trans,
+	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -627,8 +439,8 @@ namespace Seldon
   ::MltVector(const SeldonTranspose& trans,
 	      const Vector<Tcplx>& x, Vector<Tcplx>& y) const
   {
-    MltComplex(trans,
-	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    Mlt(trans,
+	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>

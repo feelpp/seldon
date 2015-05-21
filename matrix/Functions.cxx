@@ -528,7 +528,7 @@ namespace Seldon
 	return;
       }
 
-    Vector<int, VectFull, CallocAlloc<int> >
+    Vector<int>
       new_ind_vector(nnz + row_size_difference);
     for (int k = 0; k <  ptr_i0; k++)
       new_ind_vector(k) = M.GetInd()[k];
@@ -546,7 +546,7 @@ namespace Seldon
     for (int k = 0; k < nnz - ptr_i1; k++)
       new_data_vector(k + ptr_i0 + Nx) =  M.GetData()[k + ptr_i1];
 
-    Vector<int, VectFull, CallocAlloc<int> > new_ptr_vector(m + 1);
+    Vector<int> new_ptr_vector(m + 1);
     for (int j = 0; j < i + 1; j++)
       new_ptr_vector(j) = ptr_vector[j];
     for (int j = i + 1; j < m+1; j++)
@@ -614,7 +614,7 @@ namespace Seldon
     else
       {
 	// the pattern has to be modified, reallocating a new matrix
-	Vector<int, VectFull, CallocAlloc<int> > Ptr(n+1), Ind(new_nnz);
+	Vector<int> Ptr(n+1), Ind(new_nnz);
 	Vector<T0, VectFull, Allocator0> Val(new_nnz);
 	
 	// loop on first rows
@@ -746,7 +746,7 @@ namespace Seldon
     else
       {
 	// the pattern has to be modified, reallocating a new matrix
-	Vector<int, VectFull, CallocAlloc<int> > Ptr(n+1), Ind(new_nnz);
+	Vector<int> Ptr(n+1), Ind(new_nnz);
 	Vector<T0, VectFull, Allocator0> Val(new_nnz);
 	
 	// loop on first rows
@@ -899,7 +899,7 @@ namespace Seldon
     else
       {
 	// the pattern has to be modified, reallocating a new matrix
-	Vector<int, VectFull, CallocAlloc<int> > Ptr(n+1), Ind(new_nnz);
+	Vector<int> Ptr(n+1), Ind(new_nnz);
 	Vector<T0, VectFull, Allocator0> Val(new_nnz);
 	
 	// first columns of M
@@ -1252,9 +1252,9 @@ namespace Seldon
 			     column_j_mask.GetData(), true);
 
     // Built the new pointer vector.
-    Vector<int, VectFull, CallocAlloc<int> > ptr_vector;
+    Vector<int> ptr_vector;
     ptr_vector.SetData(m + 1, M.GetPtr());
-    Vector<int, VectFull, CallocAlloc<int> > new_ptr_vector(m + 1);
+    Vector<int> new_ptr_vector(m + 1);
     new_ptr_vector.Zero();
     for (int p = 0; p < X_mask.GetSize(); p++)
       new_ptr_vector(X_mask.Index(p) + 1) = X_mask.Value(p);
@@ -1264,7 +1264,7 @@ namespace Seldon
     Add(1, ptr_vector, new_ptr_vector);
 
     // Built the new index and the new data vectors row by row.
-    Vector<int, VectFull, CallocAlloc<int> >
+    Vector<int>
       new_ind_vector(nnz + column_size_difference);
     Vector<T0, VectFull, Allocator0>
       new_data_vector(nnz + column_size_difference);
@@ -1406,7 +1406,7 @@ namespace Seldon
       {
 	int new_nnz = nnz + X.GetM() - size_col;
 	// new matrix
-	Vector<int, VectFull, CallocAlloc<int> > Ptr(n+1), Ind(new_nnz);
+	Vector<int> Ptr(n+1), Ind(new_nnz);
 	Vector<T0, VectFull, Allocator0> Val(new_nnz);
 	Ptr(0) = 0;
 	for (int i = 0; i < j; i++)

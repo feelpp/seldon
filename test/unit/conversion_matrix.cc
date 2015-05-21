@@ -703,7 +703,7 @@ int main(int argc, char** argv)
     Matrix<Real_wp, General, ColSparse> B, C;
     GenerateRandomMatrix(A, m, n, nnz);
     
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<int> Ptr, IndRow;
     VectReal_wp Val;
     General sym;
     ConvertToCSC(A, sym, Ptr, IndRow, Val, true);
@@ -776,7 +776,7 @@ int main(int argc, char** argv)
     ReadHarwellBoeing("matrix/market/bcsstk14.rsa", A);
     int m = A.GetM(), n = m;
     
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<int> Ptr, IndRow;
     VectReal_wp Val;
     General unsym; Symmetric sym;
     ConvertToCSC(A, unsym, Ptr, IndRow, Val);
@@ -855,7 +855,7 @@ int main(int argc, char** argv)
     Matrix<Real_wp, General, RowSparse> B, C;
     GenerateRandomMatrix(A, m, n, nnz);
     
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<int> Ptr, IndRow;
     VectReal_wp Val;
     General sym;
     ConvertToCSR(A, sym, Ptr, IndRow, Val);
@@ -924,7 +924,7 @@ int main(int argc, char** argv)
     ReadHarwellBoeing("matrix/market/bcsstk14.rsa", A);
     int m = A.GetM(), n = m;
     
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<int> Ptr, IndRow;
     VectReal_wp Val;
     General unsym; Symmetric sym;
     ConvertToCSR(A, unsym, Ptr, IndRow, Val);    
@@ -1203,7 +1203,7 @@ int main(int argc, char** argv)
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A);
     int m = A.GetM(), n = A.GetN();
 
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<int> Ptr, IndRow;
     VectComplex_wp Val;
     General unsym;
     ConvertToCSC(A, unsym, Ptr, IndRow, Val);    
@@ -1268,7 +1268,7 @@ int main(int argc, char** argv)
     ReadHarwellBoeing("matrix/market/dwg961a.csa", A);
     int m = A.GetM(), n = m;
     
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<int> Ptr, IndRow;
     VectComplex_wp Val;
     Symmetric sym; General unsym;
     ConvertToCSC(A, sym, Ptr, IndRow, Val);    
@@ -1347,7 +1347,7 @@ int main(int argc, char** argv)
     ReadHarwellBoeing("matrix/market/mhd1280a.cua", A);
     int m = A.GetM(), n = A.GetN();
     
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<int> Ptr, IndRow;
     VectComplex_wp Val;
     General unsym;
     ConvertToCSR(A, unsym, Ptr, IndRow, Val);    
@@ -1412,7 +1412,7 @@ int main(int argc, char** argv)
     ReadHarwellBoeing("matrix/market/dwg961a.csa", A);
     int m = A.GetM(), n = m;
     
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<int> Ptr, IndRow;
     VectComplex_wp Val;
     Symmetric sym; General unsym;
     ConvertToCSR(A, sym, Ptr, IndRow, Val);    

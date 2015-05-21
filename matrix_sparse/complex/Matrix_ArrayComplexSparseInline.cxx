@@ -90,38 +90,6 @@ namespace Seldon
    *******************/
 
 
-  //! Returns the number of non-zero elements (real part).
-  /*!
-    \return The number of non-zero elements for real part of matrix.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
-  GetRealNonZeros() const
-  {
-    int nnz = 0;
-    for (int i = 0; i < this->val_real_.GetM(); i++)
-      nnz += this->val_real_(i).GetM();
-
-    return nnz;
-  }
-
-
-  //! Returns the number of non-zero elements (imaginary part).
-  /*!
-    \return The number of non-zero elements for imaginary part of matrix.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
-  GetImagNonZeros() const
-  {
-    int nnz = 0;
-    for (int i = 0; i < this->val_imag_.GetM(); i++)
-      nnz += this->val_imag_(i).GetM();
-
-    return nnz;
-  }
-
-
   //! Returns the number of elements stored in memory (real part).
   /*!
     Returns the number of elements stored in memory, i.e.
@@ -161,24 +129,6 @@ namespace Seldon
   GetDataSize() const
   {
     return (GetRealNonZeros()+GetImagNonZeros());
-  }
-
-
-  //! returns size of matrix in bytes
-  template<class T, class Prop, class Storage, class Allocator>
-  inline int64_t Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
-  ::GetMemorySize() const
-  {
-    int coef = sizeof(value_type) + sizeof(int); // for each non-zero entry
-    // 1 int (=4bytes) and 2 int* (=16 bytes) per row
-    int64_t taille = 20*(val_real_.GetM() + val_imag_.GetM());
-    for (int i = 0; i < val_real_.GetM(); i++)
-      taille += coef*int64_t(val_real_(i).GetM());
-
-    for (int i = 0; i < val_imag_.GetM(); i++)
-      taille += coef*int64_t(val_imag_(i).GetM());
-    
-    return taille;
   }
 
 
@@ -461,36 +411,6 @@ namespace Seldon
   ::GetImag(int i, int j) const
   {
     return val_imag_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j));
-  }
-  
-  
-  //! Sets element (i, j) of matrix
-  /*!
-    \param[in] i row index.
-    \param[in] j column index.
-    \param[in] x A(i, j) = x
-   */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void
-  Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>
-  ::Set(int i, int j, const entry_type& x)
-  {
-    if (real(x) != value_type(0))
-      val_real_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = real(x);
-    else
-      {
-        if (val_real_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j)) != value_type(0))
-          val_real_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = value_type(0);
-      }
-    
-    if (imag(x) != value_type(0))
-      val_imag_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = imag(x);
-    else
-      {
-        if (val_imag_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j)) != value_type(0))
-          val_imag_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j)) = value_type(0);
-      }
-
   }
   
   
@@ -1695,55 +1615,6 @@ namespace Seldon
   }
   
   
-  //! Sets element (i, j) of the matrix
-  /*!
-    \param i row index
-    \param j column index
-    \param x A(i, j) = x
-   */
-  template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>
-  ::Set(int i, int j, const entry_type& x)
-  {
-    if (i <= j)
-      {
-        if (real(x) != value_type(0))
-          this->val_real_(j).Get(i) = real(x);
-        else
-          {
-            if (this->val_real_(j)(i) != value_type(0))
-              this->val_real_(j).Get(i) = value_type(0);
-          }
-        
-        if (imag(x) != value_type(0))
-          this->val_imag_(j).Get(i) = imag(x);
-        else
-          {
-            if (this->val_imag_(j)(i) != value_type(0))
-              this->val_imag_(j).Get(i) = value_type(0);
-          }
-      }
-    else
-      {
-        if (real(x) != value_type(0))
-          this->val_real_(i).Get(j) = real(x);
-        else
-          {
-            if (this->val_real_(i)(j) != value_type(0))
-              this->val_real_(i).Get(j) = value_type(0);
-          }
-        
-        if (imag(x) != value_type(0))
-          this->val_imag_(i).Get(j) = imag(x);
-        else
-          {
-            if (this->val_imag_(i)(j) != value_type(0))
-              this->val_imag_(i).Get(j) = value_type(0);
-          }
-      }
-  }
-
-      
   //! Clears a column.
   template <class T, class Prop, class Allocator> inline
   void Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::ClearRealColumn(int i)
@@ -1937,27 +1808,6 @@ namespace Seldon
   AssembleImagColumn(int i)
   {
     this->val_imag_(i).Assemble();
-  }
-
-
-  //! Adds a coefficient in the matrix.
-  /*!
-    \param[in] i row number.
-    \param[in] j column number.
-    \param[in] val coefficient to add.
-  */
-  template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::
-  AddInteraction(int i, int j, const entry_type& val)
-  {
-    if (i <= j)
-      {
-	if (real(val) != value_type(0))
-	  this->val_real_(j).AddInteraction(i, real(val));
-
-	if (imag(val) != value_type(0))
-	  this->val_imag_(j).AddInteraction(i, imag(val));
-      }
   }
 
 
@@ -2258,55 +2108,6 @@ namespace Seldon
   }
   
   
-  //! Sets element (i, j) of the matrix
-  /*!
-    \param i row index
-    \param j column index
-    \param x A(i, j) = x
-   */
-  template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>
-  ::Set(int i, int j, const entry_type& x)
-  {
-    if (i <= j)
-      {
-        if (real(x) != value_type(0))
-          this->val_real_(i).Get(j) = real(x);
-        else
-          {
-            if (this->val_real_(i)(j) != value_type(0))
-              this->val_real_(i).Get(j) = value_type(0);
-          }
-        
-        if (imag(x) != value_type(0))
-          this->val_imag_(i).Get(j) = imag(x);
-        else
-          {
-            if (this->val_imag_(i)(j) != value_type(0))
-              this->val_imag_(i).Get(j) = value_type(0);
-          }
-      }
-    else
-      {
-        if (real(x) != value_type(0))
-          this->val_real_(j).Get(i) = real(x);
-        else
-          {
-            if (this->val_real_(j)(i) != value_type(0))
-              this->val_real_(j).Get(i) = value_type(0);
-          }
-        
-        if (imag(x) != value_type(0))
-          this->val_imag_(j).Get(i) = imag(x);
-        else
-          {
-            if (this->val_imag_(j)(i) != value_type(0))
-              this->val_imag_(j).Get(i) = value_type(0);
-          }
-      }
-  }
-  
-  
   //! Clears a row.
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::ClearRealRow(int i)
@@ -2512,28 +2313,6 @@ namespace Seldon
   {
     this->val_imag_(i).Assemble();
   }
-
-
-  //! Adds a coefficient in the matrix.
-  /*!
-    \param[in] i row number.
-    \param[in] j column number.
-    \param[in] val coefficient to add.
-  */
-  template <class T, class Prop, class Allocator>
-  inline void Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::
-  AddInteraction(int i, int j, const entry_type& val)
-  {
-    if (i <= j)
-      {
-	if (real(val) != value_type(0))
-	  this->val_real_(i).AddInteraction(j, real(val));
-
-	if (imag(val) != value_type(0))
-	  this->val_imag_(i).AddInteraction(j, imag(val));
-      }
-  }
-  
   
 } // namespace Seldon
 

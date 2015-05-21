@@ -33,7 +33,8 @@ namespace Seldon
 
 
   //! Hermitian matrix stored in a full matrix.
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Prop, class Storage, class Allocator
+	    = typename SeldonDefaultAllocator<Storage, T>::allocator>
   class Matrix_Hermitian: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.

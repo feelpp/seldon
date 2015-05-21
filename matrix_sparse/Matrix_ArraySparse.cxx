@@ -30,6 +30,28 @@ namespace Seldon
    *********************/
 
 
+  //! Reallocates memory to resize the matrix.
+  /*!
+    On exit, the matrix is a i x j matrix.
+    \param i number of rows.
+    \param j number of columns.
+    \warning Data is lost.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
+  Reallocate(int i, int j)
+  {
+    // Clears previous entries.
+    Clear();
+
+    this->m_ = i;
+    this->n_ = j;
+
+    int n = Storage::GetFirst(i, j);
+    val_.Reallocate(n);
+  }
+
+  
   //! Reallocates additional memory to resize the matrix.
   /*!
     On exit, the matrix is a i x j matrix.
@@ -61,6 +83,41 @@ namespace Seldon
     this->n_ = j;
   }
 
+
+  /*******************
+   * BASIC FUNCTIONS *
+   *******************/
+
+
+  //! Returns the number of non-zero entries.
+  /*!
+    \return The number of non-zero entries.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  int Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetNonZeros()
+    const
+  {
+    int nnz = 0;
+    for (int i = 0; i < this->val_.GetM(); i++)
+      nnz += this->val_(i).GetM();
+
+    return nnz;
+  }
+
+
+  //! returns size of matrix in bytes
+  template<class T, class Prop, class Storage, class Allocator>
+  int64_t Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetMemorySize() const
+  {
+    int coef = sizeof(T) + sizeof(int); // for each non-zero entry
+    // 1 int (=4bytes) and 2 int* (=16 bytes) per row
+    int64_t taille = 20*this->val_.GetM(); 
+    for (int i = 0; i < this->val_.GetM(); i++)
+      taille += coef*int64_t(this->val_(i).GetM());
+    
+    return taille;
+  }
+  
 
   /************************
    * CONVENIENT FUNCTIONS *

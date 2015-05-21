@@ -768,8 +768,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromQR(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonTranspose& trans,
 		   const Matrix<float, Prop0, ColMajor, Allocator0>& A,		   
 		   const Vector<float, VectFull, Allocator1>& tau,
 		   Vector<float, VectFull, Allocator2>& b,
@@ -799,8 +799,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromQR(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonTranspose& trans,
 		   const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<complex<float>, VectFull, Allocator1>& tau,
 		   Vector<complex<float>, VectFull, Allocator2>& b,
@@ -830,8 +830,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromQR(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonTranspose& trans,
 		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,		   
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
@@ -861,8 +861,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromQR(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonTranspose& trans,
 		   const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Vector<complex<double>, VectFull, Allocator2>& b,
@@ -892,8 +892,8 @@ namespace Seldon
 
   
     template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromQR(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<float, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<float, VectFull, Allocator1>& tau,
 		   Matrix<float, Prop0, ColMajor, Allocator2>& C,
@@ -925,8 +925,8 @@ namespace Seldon
 
   
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromQR(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<complex<float>, VectFull, Allocator1>& tau,
 		   Matrix<complex<float>, Prop0, ColMajor, Allocator2>& C,
@@ -958,8 +958,8 @@ namespace Seldon
 
   
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromQR(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Matrix<double, Prop0, ColMajor, Allocator2>& C,
@@ -991,8 +991,8 @@ namespace Seldon
 
   
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromQR(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Matrix<complex<double>, Prop0, ColMajor, Allocator2>& C,
@@ -1024,8 +1024,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromLQ(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonTranspose& trans,
 		   const Matrix<float, Prop0, ColMajor, Allocator0>& A,		   
 		   const Vector<float, VectFull, Allocator1>& tau,
 		   Vector<float, VectFull, Allocator2>& b,
@@ -1055,8 +1055,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromLQ(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonTranspose& trans,
 		   const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<complex<float>, VectFull, Allocator1>& tau,
 		   Vector<complex<float>, VectFull, Allocator2>& b,
@@ -1086,8 +1086,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromLQ(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonTranspose& trans,
 		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,		   
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
@@ -1117,8 +1117,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromLQ(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonTranspose& trans,
 		   const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Vector<complex<double>, VectFull, Allocator2>& b,
@@ -1148,8 +1148,8 @@ namespace Seldon
 
   
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromLQ(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<float, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<float, VectFull, Allocator1>& tau,
 		   Matrix<float, Prop0, ColMajor, Allocator2>& C,
@@ -1181,8 +1181,8 @@ namespace Seldon
 
   
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromLQ(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<complex<float>, VectFull, Allocator1>& tau,
 		   Matrix<complex<float>, Prop0, ColMajor, Allocator2>& C,
@@ -1214,8 +1214,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromLQ(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<double, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Matrix<double, Prop0, ColMajor, Allocator2>& C,
@@ -1247,8 +1247,8 @@ namespace Seldon
 
   
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromLQ(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Matrix<complex<double>, Prop0, ColMajor, Allocator2>& C,
@@ -1283,8 +1283,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromQR(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonTranspose& trans,
 		   const Matrix<float, Prop0, RowMajor, Allocator0>& A,		   
 		   const Vector<float, VectFull, Allocator1>& tau,
 		   Vector<float, VectFull, Allocator2>& b,
@@ -1314,8 +1314,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromQR(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonTranspose& trans,
 		   const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<complex<float>, VectFull, Allocator1>& tau,
 		   Vector<complex<float>, VectFull, Allocator2>& b,
@@ -1351,8 +1351,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromQR(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonTranspose& trans,
 		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,		   
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
@@ -1382,8 +1382,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromQR(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonTranspose& trans,
 		   const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Vector<complex<double>, VectFull, Allocator2>& b,
@@ -1419,8 +1419,8 @@ namespace Seldon
 
   
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromQR(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<float, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<float, VectFull, Allocator1>& tau,
 		   Matrix<float, Prop0, RowMajor, Allocator2>& C,
@@ -1452,8 +1452,8 @@ namespace Seldon
   
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromQR(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<complex<float>, VectFull, Allocator1>& tau,
 		   Matrix<complex<float>, Prop0, RowMajor, Allocator2>& C,
@@ -1485,8 +1485,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromQR(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Matrix<double, Prop0, RowMajor, Allocator2>& C,
@@ -1518,8 +1518,8 @@ namespace Seldon
   
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromQR(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromQR(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Matrix<complex<double>, Prop0, RowMajor, Allocator2>& C,
@@ -1551,8 +1551,8 @@ namespace Seldon
 
   
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromLQ(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonTranspose& trans,
 		   const Matrix<float, Prop0, RowMajor, Allocator0>& A,		   
 		   const Vector<float, VectFull, Allocator1>& tau,
 		   Vector<float, VectFull, Allocator2>& b,
@@ -1582,8 +1582,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromLQ(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonTranspose& trans,
 		   const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<complex<float>, VectFull, Allocator1>& tau,
 		   Vector<complex<float>, VectFull, Allocator2>& b,
@@ -1619,8 +1619,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromLQ(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonTranspose& trans,
 		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,		   
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Vector<double, VectFull, Allocator2>& b,
@@ -1650,8 +1650,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class IsTranspose>
-  void MltQ_FromLQ(const IsTranspose& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonTranspose& trans,
 		   const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Vector<complex<double>, VectFull, Allocator2>& b,
@@ -1687,8 +1687,8 @@ namespace Seldon
   
   
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromLQ(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<float, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<float, VectFull, Allocator1>& tau,
 		   Matrix<float, Prop0, RowMajor, Allocator2>& C,
@@ -1720,8 +1720,8 @@ namespace Seldon
   
   
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromLQ(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<complex<float>, VectFull, Allocator1>& tau,
 		   Matrix<complex<float>, Prop0, RowMajor, Allocator2>& C,
@@ -1752,8 +1752,8 @@ namespace Seldon
 
 
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromLQ(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<double, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<double, VectFull, Allocator1>& tau,
 		   Matrix<double, Prop0, RowMajor, Allocator2>& C,
@@ -1785,8 +1785,8 @@ namespace Seldon
   
   
   template<class Prop0, class Allocator0,
-	   class Allocator1, class Allocator2, class Side, class Trans>
-  void MltQ_FromLQ(const Side& side, const Trans& trans,
+	   class Allocator1, class Allocator2>
+  void MltQ_FromLQ(const SeldonSide& side, const SeldonTranspose& trans,
 		   const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
 		   const Vector<complex<double>, VectFull, Allocator1>& tau,
 		   Matrix<complex<double>, Prop0, RowMajor, Allocator2>& C,

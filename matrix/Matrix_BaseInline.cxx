@@ -159,6 +159,15 @@ namespace Seldon
     return m_ * n_;
   }
 
+  
+#ifdef SELDON_WITH_VIRTUAL
+  //! Destructor.
+  template <class T>
+  inline VirtualMatrix<T>::~VirtualMatrix()
+  {
+  }
+#endif
+
 
   /****************
    * CONSTRUCTORS *
@@ -276,42 +285,7 @@ namespace Seldon
   {
     return reinterpret_cast<const void*>(data_);
   }
-
-
-  //! Returns the allocator of the matrix.
-  /*!
-    \return The allocator.
-  */
-  template <class T, class Allocator>
-  inline Allocator& Matrix_Base<T, Allocator>::GetAllocator()
-  {
-    return allocator_;
-  }
-
-
-  // operator<< overloaded for matrices.
-  /*!
-    \param out output stream.
-    \param A matrix to be put in the stream.
-    \return The updated stream.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline ostream& operator << (ostream& out,
-			       const Matrix<T, Prop, Storage, Allocator>& A)
-  {
-
-    for (int i = 0; i < A.GetM(); i++)
-      {
-	for (int j = 0; j < A.GetN(); j++)
-	  out << A(i, j) << '\t';
-	out << endl;
-      }
-
-    return out;
-
-  }
-
-
+  
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_BASE_INLINE_CXX

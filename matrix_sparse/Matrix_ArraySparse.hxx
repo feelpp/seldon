@@ -33,7 +33,8 @@ namespace Seldon
     (4) an array of vectors val : val(i) is a vector, which contains values of
     the row i
   */
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Prop, class Storage, class Allocator
+	    = typename SeldonDefaultAllocator<Storage, T>::allocator>
   class Matrix_ArraySparse : public VirtualMatrix<T>
   {
     // typedef declaration.
@@ -54,11 +55,11 @@ namespace Seldon
 	   NewAlloc<Vector<T, VectSparse, Allocator> > > val_;
 
   public:
-    // Constructors.
+    // Constructors. (inline)
     Matrix_ArraySparse();
     explicit Matrix_ArraySparse(int i, int j);
 
-    // Destructor.
+    // Destructor. (inline)
     ~Matrix_ArraySparse();
     void Clear();
 
@@ -68,14 +69,16 @@ namespace Seldon
 
     // Basic methods.
     int GetNonZeros() const;
-    int GetDataSize() const;
     int64_t GetMemorySize() const;
+
+    // Inline methods.
+    int GetDataSize() const;
     int* GetIndex(int i) const;
     T* GetData(int i) const;
 
     Vector<T, VectSparse, Allocator>* GetData() const;
 
-    // Element acess and affectation.
+    // Element acess and affectation. (inline)
 #ifdef SELDON_WITH_MODIFIABLE_PARENTHESIS_OPERATOR
     T& operator() (int i, int j);
 #endif
@@ -122,6 +125,7 @@ namespace Seldon
     void ReadText(istream& FileStream, bool cplx = false);
 
 #ifdef SELDON_WITH_VIRTUAL
+    // Inline virtual methods
     typedef typename ClassComplexType<T>::Treal Treal;
     typedef typename ClassComplexType<T>::Tcplx Tcplx;
     

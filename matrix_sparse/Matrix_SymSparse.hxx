@@ -41,7 +41,8 @@ namespace Seldon
     of each non-zero entry; (5) values of non-zero entries.\par
     Only values of the upper part are stored.
   */
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Prop, class Storage, class Allocator
+	    = typename SeldonDefaultAllocator<Storage, T>::allocator>
   class Matrix_SymSparse: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
@@ -54,7 +55,8 @@ namespace Seldon
     typedef typename Allocator::value_type entry_type;
     typedef typename Allocator::value_type access_type;
     typedef typename Allocator::value_type const_access_type;
-
+    typedef typename SeldonDefaultAllocator<VectFull, int>::allocator AllocatorInt;
+    
     // Attributes.
   protected:
     // Number of non-zero (stored) elements.

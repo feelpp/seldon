@@ -73,11 +73,11 @@ namespace Seldon
                          Matrix<T0, Symmetric, Storage0, Allocator0>& mat,
                          bool keep_matrix = false);
 
-    template<class Vector1>
-    void Solve(Vector1& z);
-    
-    template<class TransStatus, class Vector1>
-    void Solve(const TransStatus& TransA, Vector1& z);
+    template<class T1>
+    void Solve(Vector<T1>& z);
+
+    template<class T1>
+    void Solve(const SeldonTranspose& TransA, Vector<T1>& z);
     
   };
 
@@ -86,24 +86,30 @@ namespace Seldon
 	     IVect& iperm, IVect& rperm, 
 	     const Treal& permtol, int print_level);
 
-  template<class real, class cplx,
-	   class Allocator, class Storage2, class Allocator2>
-  void SolveLU(const Matrix<real, General, ArrayRowSparse, Allocator>& A,
-               Vector<cplx, Storage2, Allocator2>& x);
+  template<class T1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  void SolveLuVector(const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
+		     Vector<T2, Storage2, Allocator2>& x);
 
-  template<class real, class cplx, class TransStatus,
-	   class Allocator, class Storage2, class Allocator2>
-  void SolveLU(const TransStatus& transA,
-               const Matrix<real, General, ArrayRowSparse, Allocator>& A,
-               Vector<cplx, Storage2, Allocator2>& x);
-
+  template<class T1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  void SolveLuVector(const SeldonTranspose& transA,
+		     const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
+		     Vector<T2, Storage2, Allocator2>& x);
+  
   template<class T, class Allocator>
   void GetLU(Matrix<T, Symmetric, ArrayRowSymSparse, Allocator>& A, int print_level);
 
-  template<class real, class cplx, class Allocator,
-           class Storage2, class Allocator2>
-  void SolveLU(const Matrix<real, Symmetric, ArrayRowSymSparse, Allocator>& A,
-               Vector<cplx, Storage2, Allocator2>& x);
+  template<class T1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  void SolveLuVector(const Matrix<T1, Symmetric, ArrayRowSymSparse, Allocator1>& A,
+		     Vector<T2, Storage2, Allocator2>& x);
+
+  template<class T1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  void SolveLuVector(const SeldonTranspose& transA,
+		     const Matrix<T1, Symmetric, ArrayRowSymSparse, Allocator1>& A,
+		     Vector<T2, Storage2, Allocator2>& x);
 
   template<class T0, class Prop, class Storage, class Allocator,
 	   class T, class Alloc2>
@@ -121,8 +127,8 @@ namespace Seldon
   void SolveLU(SparseSeldonSolver<T, Alloc2>& mat_lu,
 	       Vector<T1, VectFull, Allocator>& x);
 
-  template<class T, class Alloc2, class T1, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Alloc2, class T1, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       SparseSeldonSolver<T, Alloc2>& mat_lu,
 	       Vector<T1, VectFull, Allocator>& x);
     

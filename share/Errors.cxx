@@ -114,7 +114,10 @@ namespace Seldon
 #ifdef SELDON_WITH_MPI
     // waiting 5 seconds so that each processor should have the time
     // to display its own errors before aborting the processus
-    sleep(5);
+    //sleep(5);
+
+    // other approach : imposing a Barrier
+    MPI::COMM_WORLD.Barrier();
 #endif
   }
 

@@ -52,10 +52,10 @@ namespace Seldon
   
   //! B = B + alpha A
   template<class T0, class T1, class Allocator1, class T2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Symmetric,
-           ArrayRowSymComplexSparse, Allocator1>& A,
-	   Matrix<T2, Symmetric, ArrayRowSymComplexSparse, Allocator2>& B)
+  void AddMatrix(const T0& alpha,
+		 const Matrix<T1, Symmetric,
+		 ArrayRowSymComplexSparse, Allocator1>& A,
+		 Matrix<T2, Symmetric, ArrayRowSymComplexSparse, Allocator2>& B)
   {
     int m = B.GetM(), n, ni;
     Vector<T2> value(2*B.GetN());
@@ -84,9 +84,9 @@ namespace Seldon
   //! B = B + alpha A  
   template<class T0, class T1, class Allocator1,
            class T2, class Allocator2>
-  void Add(const T0& alpha, const Matrix<T1, Symmetric,
-	   ArrayRowSymComplexSparse, Allocator1>& A,
-	   Matrix<T2, Symmetric, ArrayRowSymSparse, Allocator2>& B)
+  void AddMatrix(const T0& alpha, const Matrix<T1, Symmetric,
+		 ArrayRowSymComplexSparse, Allocator1>& A,
+		 Matrix<T2, Symmetric, ArrayRowSymSparse, Allocator2>& B)
   {
     int m = B.GetM(), n;
     Vector<T2, VectFull, Allocator2> value(B.GetN());
@@ -110,9 +110,9 @@ namespace Seldon
   //! B = B + alpha A
   template<class T0, class T1, class Allocator1,
            class T2, class Allocator2>
-  void Add(const T0& alpha, const Matrix<T1, General,
-	   ArrayRowComplexSparse, Allocator1>& A,
-	   Matrix<T2, General, ArrayRowSparse, Allocator2>& B)
+  void AddMatrix(const T0& alpha, const Matrix<T1, General,
+		 ArrayRowComplexSparse, Allocator1>& A,
+		 Matrix<T2, General, ArrayRowSparse, Allocator2>& B)
   {
     int m = B.GetM(), n;
     Vector<T2, VectFull, Allocator2> value(B.GetN());
@@ -136,9 +136,9 @@ namespace Seldon
   //! B = B + alpha A
   template<class T0, class T1, class Allocator1,
            class T2, class Allocator2>
-  void Add(const T0& alpha, const Matrix<T1, General,
-	   ArrayRowComplexSparse, Allocator1>& A,
-	   Matrix<T2, General, ArrayRowComplexSparse, Allocator2>& B)
+  void AddMatrix(const T0& alpha, const Matrix<T1, General,
+		 ArrayRowComplexSparse, Allocator1>& A,
+		 Matrix<T2, General, ArrayRowComplexSparse, Allocator2>& B)
   {
     int m = B.GetM(), n, ni;
     Vector<T2> value(2*B.GetN()); IVect index(2*B.GetN());
@@ -167,10 +167,10 @@ namespace Seldon
   template<class T0, class T1, class Prop1, class Allocator1,
            class T2, class Prop2, class Allocator2,
            class T3, class Prop3, class Allocator3>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& A,
-	   const Matrix<T2, Prop2, ArrayRowSymSparse, Allocator2>& B,
-	   Matrix<T3, Prop3, ArrayRowSymComplexSparse, Allocator3>& C)
+  void AddMatrix(const T0& alpha,
+		 const Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& A,
+		 const Matrix<T2, Prop2, ArrayRowSymSparse, Allocator2>& B,
+		 Matrix<T3, Prop3, ArrayRowSymComplexSparse, Allocator3>& C)
   {
     int m = B.GetM(), n, ni;
     Vector<T3> value(2*B.GetN()); IVect index(2*B.GetN());
@@ -199,10 +199,10 @@ namespace Seldon
   template<class T0, class T1, class Prop1, class Allocator1,
            class T2, class Prop2, class Allocator2,
            class T3, class Prop3, class Allocator3>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& A,
-	   const Matrix<T2, Prop2, ArrayRowSparse, Allocator2>& B,
-	   Matrix<T3, Prop3, ArrayRowComplexSparse, Allocator3>& C)
+  void AddMatrix(const T0& alpha,
+		 const Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& A,
+		 const Matrix<T2, Prop2, ArrayRowSparse, Allocator2>& B,
+		 Matrix<T3, Prop3, ArrayRowComplexSparse, Allocator3>& C)
   {
     int m = B.GetM(), n, ni;
     Vector<T3> value(2*B.GetN());
@@ -231,8 +231,8 @@ namespace Seldon
   template<class T, class Allocator>
   void Add_csr_ptr(const T& alpha, int* ptr_A, int* ind_A, T* data_A,
                    int* ptr_B, int* ind_B, T* data_B, int m,
-                   Vector<int, VectFull, CallocAlloc<int> >& Ptr,
-                   Vector<int, VectFull, CallocAlloc<int> >& Ind,
+                   Vector<int>& Ptr,
+                   Vector<int>& Ind,
                    Vector<T, VectFull, Allocator>& Val)
   {
     int i = 0;
@@ -369,11 +369,11 @@ namespace Seldon
   //! B = B + alpha A
   template<class T0, class T1, class Allocator1,
            class T2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, Symmetric, RowSymComplexSparse, Allocator1>& A,
-	   Matrix<T2, Symmetric, RowSymComplexSparse, Allocator2>& B)
+  void AddMatrix(const T0& alpha,
+		 const Matrix<T1, Symmetric, RowSymComplexSparse, Allocator1>& A,
+		 Matrix<T2, Symmetric, RowSymComplexSparse, Allocator2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> >
+    Vector<int>
       PtrReal, IndReal, PtrImag, IndImag;
     
     Vector<typename ClassComplexType<T2>::Treal,
@@ -395,11 +395,11 @@ namespace Seldon
   //! B = B + alpha A
   template<class T0, class T1, class Allocator1,
            class T2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Matrix<T1, General, RowComplexSparse, Allocator1>& A,
-	   Matrix<T2, General, RowComplexSparse, Allocator2>& B)
+  void AddMatrix(const T0& alpha,
+		 const Matrix<T1, General, RowComplexSparse, Allocator1>& A,
+		 Matrix<T2, General, RowComplexSparse, Allocator2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> >
+    Vector<int>
       PtrReal, IndReal, PtrImag, IndImag;
     
     Vector<typename ClassComplexType<T2>::Treal,
@@ -421,15 +421,15 @@ namespace Seldon
   //! B = B + alpha A
   template<class T0, class T1, class Allocator1,
            class T2, class Allocator2>
-  void Add(const complex<T0>& alpha,
-	   const Matrix<T1, Symmetric, RowSymComplexSparse, Allocator1>& A,
-	   Matrix<T2, Symmetric, RowSymComplexSparse, Allocator2>& B)
+  void AddMatrix(const complex<T0>& alpha,
+		 const Matrix<T1, Symmetric, RowSymComplexSparse, Allocator1>& A,
+		 Matrix<T2, Symmetric, RowSymComplexSparse, Allocator2>& B)
   {
     if (imag(alpha) != T0(0))
       throw Undefined("Add(Matrix<RowSymComplexSparse>)",
                       "Function not implemented for complex scalars");
 
-    Vector<int, VectFull, CallocAlloc<int> >
+    Vector<int>
       PtrReal, IndReal, PtrImag, IndImag;
     
     Vector<typename ClassComplexType<T2>::Treal,
@@ -451,15 +451,15 @@ namespace Seldon
   //! B = B + alpha A
   template<class T0, class T1, class Allocator1,
            class T2, class Allocator2>
-  void Add(const complex<T0>& alpha,
-	   const Matrix<T1, General, RowComplexSparse, Allocator1>& A,
-	   Matrix<T2, General, RowComplexSparse, Allocator2>& B)
+  void AddMatrix(const complex<T0>& alpha,
+		 const Matrix<T1, General, RowComplexSparse, Allocator1>& A,
+		 Matrix<T2, General, RowComplexSparse, Allocator2>& B)
   {
     if (imag(alpha) != T0(0))
       throw Undefined("Add(Matrix<RowComplexSparse>)",
                       "Function not implemented for complex scalars");
 
-    Vector<int, VectFull, CallocAlloc<int> >
+    Vector<int>
       PtrReal, IndReal, PtrImag, IndImag;
     
     Vector<typename ClassComplexType<T2>::Treal,
@@ -480,8 +480,8 @@ namespace Seldon
 
   //! multiplication by a scalar
   template<class T0, class T, class Prop, class Allocator>
-  void Mlt(const T0& alpha,
-	   Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A)
+  void MltScalar(const T0& alpha,
+		 Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A)
   {
     for (int i = 0; i < A.GetM(); i++)
       {
@@ -497,8 +497,8 @@ namespace Seldon
 
   //! multiplication by a scalar
   template<class T0, class T, class Prop, class Allocator>
-  void Mlt(const complex<T0>& alpha,
-	   Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A)
+  void MltScalar(const complex<T0>& alpha,
+		 Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A)
   {
     if (imag(alpha) != T0(0))
       throw Undefined("Mlt(Matrix<ArrayRowComplexSparse>)",
@@ -517,8 +517,8 @@ namespace Seldon
 
   //! multiplication by a scalar
   template<class T0, class T, class Prop, class Allocator>
-  void Mlt(const T0& alpha,
-           Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A)
+  void MltScalar(const T0& alpha,
+		 Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A)
   {
     for (int i = 0; i < A.GetM(); i++)
       {
@@ -533,8 +533,8 @@ namespace Seldon
 
   //! multiplication by a scalar  
   template<class T0, class T, class Prop, class Allocator>
-  void Mlt(const complex<T0>& alpha,
-           Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A)
+  void MltScalar(const complex<T0>& alpha,
+		 Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A)
   {
     if (imag(alpha) != T0(0))
       throw Undefined("Mlt(Matrix<ArrayRowComplexSparse>)",
@@ -553,8 +553,8 @@ namespace Seldon
 
   //! multiplication by a scalar
   template<class T0, class T, class Prop, class Allocator>
-  void Mlt(const T0& alpha,
-	   Matrix<T, Prop, RowComplexSparse, Allocator>& A)
+  void MltScalar(const T0& alpha,
+		 Matrix<T, Prop, RowComplexSparse, Allocator>& A)
   {
     typename ClassComplexType<T>::Treal* data_A = A.GetRealData();
     for (int i = 0; i < A.GetRealDataSize(); i++)
@@ -568,8 +568,8 @@ namespace Seldon
 
   //! multiplication by a scalar
   template<class T0, class T, class Prop, class Allocator>
-  void Mlt(const complex<T0>& alpha,
-	   Matrix<T, Prop, RowComplexSparse, Allocator>& A)
+  void MltScalar(const complex<T0>& alpha,
+		 Matrix<T, Prop, RowComplexSparse, Allocator>& A)
   {
     if (imag(alpha) != T0(0))
       throw Undefined("Mlt(Matrix<RowComplexSparse>)",
@@ -588,8 +588,8 @@ namespace Seldon
 
   //! multiplication by a scalar
   template<class T0, class T, class Prop, class Allocator>
-  void Mlt(const T0& alpha,
-	   Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
+  void MltScalar(const T0& alpha,
+		 Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
   {
     typename ClassComplexType<T>::Treal* data_A = A.GetRealData();
     for (int i = 0; i < A.GetRealDataSize(); i++)
@@ -603,8 +603,8 @@ namespace Seldon
 
   //! multiplication by a scalar  
   template<class T0, class T, class Prop, class Allocator>
-  void Mlt(const complex<T0>& alpha,
-           Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
+  void MltScalar(const complex<T0>& alpha,
+		 Matrix<T, Prop, RowSymComplexSparse, Allocator>& A)
   {
     if (imag(alpha) != T0(0))
       throw Undefined("Mlt(Matrix<RowSymComplexSparse>)",
@@ -1058,7 +1058,7 @@ namespace Seldon
     
     int m = A.GetM();
     int n = A.GetN();
-    Vector<int, VectFull, CallocAlloc<int> > ptr_r(n), ptr_i(n);
+    Vector<int> ptr_r(n), ptr_i(n);
     
     B.Reallocate(n, m);
 
@@ -1124,7 +1124,7 @@ namespace Seldon
     int* ptr_imag = A.GetImagPtr();
     int* ind_imag = A.GetImagInd();
     typename ClassComplexType<T>::Treal* data_imag = A.GetImagData();
-    Vector<int, VectFull, CallocAlloc<int> > ptr_r(n), ptr_i(n);
+    Vector<int> ptr_r(n), ptr_i(n);
     
     // For each column j, computes number of its non-zeroes and stores it in
     // ptr_T[j].
@@ -1141,7 +1141,7 @@ namespace Seldon
     typedef typename ClassComplexType<T>::Treal Treal;
     Vector<Treal, VectFull, Allocator> ValReal(A.GetRealDataSize());
     Vector<Treal, VectFull, Allocator> ValImag(A.GetImagDataSize());
-    Vector<int, VectFull, CallocAlloc<int> > PtrReal(n+1), PtrImag(n+1),
+    Vector<int> PtrReal(n+1), PtrImag(n+1),
       IndReal(A.GetRealDataSize()), IndImag(A.GetImagDataSize());
     
     PtrReal(0) = 0; PtrImag(0) = 0;
@@ -1997,8 +1997,8 @@ namespace Seldon
     if ((nnz_real == A.GetRealIndSize()) && (nnz_imag == A.GetImagIndSize()))
       return;
     
-    Vector<int, VectFull, CallocAlloc<int> > PtrReal(m+1), IndReal(nnz_real);
-    Vector<int, VectFull, CallocAlloc<int> > PtrImag(m+1), IndImag(nnz_imag);
+    Vector<int> PtrReal(m+1), IndReal(nnz_real);
+    Vector<int> PtrImag(m+1), IndImag(nnz_imag);
     Vector<typename ClassComplexType<T1>::Treal,
 	   VectFull, Allocator> ValReal(nnz_real), ValImag(nnz_imag);
     
@@ -2077,8 +2077,8 @@ namespace Seldon
     if ((nnz_real == A.GetRealIndSize()) && (nnz_imag == A.GetImagIndSize()))
       return;
     
-    Vector<int, VectFull, CallocAlloc<int> > PtrReal(m+1), IndReal(nnz_real);
-    Vector<int, VectFull, CallocAlloc<int> > PtrImag(m+1), IndImag(nnz_imag);
+    Vector<int> PtrReal(m+1), IndReal(nnz_real);
+    Vector<int> PtrImag(m+1), IndImag(nnz_imag);
     Vector<typename ClassComplexType<T1>::Treal,
 	   VectFull, Allocator> ValReal(nnz_real), ValImag(nnz_imag);
     
@@ -2174,8 +2174,8 @@ namespace Seldon
           nnz_imag -= ptr_imag[i+1] - ptr_imag[i];
         }
     
-    Vector<int, VectFull, CallocAlloc<int> > PtrReal(m+1), IndReal(nnz_real);
-    Vector<int, VectFull, CallocAlloc<int> > PtrImag(m+1), IndImag(nnz_imag);
+    Vector<int> PtrReal(m+1), IndReal(nnz_real);
+    Vector<int> PtrImag(m+1), IndImag(nnz_imag);
     Vector<typename ClassComplexType<T1>::Treal,
 	   VectFull, Allocator> ValReal(nnz_real), ValImag(nnz_imag);
     
@@ -2554,8 +2554,8 @@ namespace Seldon
   void CopySubMatrix(const Matrix<T0, Prop0,
 		     ArrayRowComplexSparse, Allocator0>& A,
                      const IVect& row, const IVect& col,
-                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
-                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<int>& RowNum,
+                     Vector<int>& ColNum,
                      Vector<complex<T1>, VectFull, Allocator1>& Value)
   {
     int m = A.GetM(), n = A.GetN();
@@ -2680,8 +2680,8 @@ namespace Seldon
   void CopySubMatrix(const Matrix<T0, Prop0,
 		     ArrayRowSymComplexSparse, Allocator0>& A,
                      const IVect& row, const IVect& col,
-                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
-                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<int>& RowNum,
+                     Vector<int>& ColNum,
                      Vector<complex<T1>, VectFull, Allocator1>& Value)
   {
     int m = A.GetM(), n = A.GetN();
@@ -2838,8 +2838,8 @@ namespace Seldon
 	   class T1, class Allocator1>
   void CopySubMatrix(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
                      const IVect& row, const IVect& col,
-                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
-                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<int>& RowNum,
+                     Vector<int>& ColNum,
                      Vector<complex<T1>, VectFull, Allocator1>& Value)
   {
     int m = A.GetM(), n = A.GetN();
@@ -2968,8 +2968,8 @@ namespace Seldon
   void CopySubMatrix(const Matrix<T0, Prop0,
 		     RowSymComplexSparse, Allocator0>& A,
                      const IVect& row, const IVect& col,
-                     Vector<int, VectFull, CallocAlloc<int> >& RowNum,
-                     Vector<int, VectFull, CallocAlloc<int> >& ColNum,
+                     Vector<int>& RowNum,
+                     Vector<int>& ColNum,
                      Vector<complex<T1>, VectFull, Allocator1>& Value)
   {
     int m = A.GetM(), n = A.GetN();

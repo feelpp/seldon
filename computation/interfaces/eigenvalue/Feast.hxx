@@ -18,37 +18,23 @@ extern "C"
 namespace Seldon
 {
 
-  inline void CallFeast(int& ijob, int n, complex<double>& ze,
-			Matrix<double, General, ColMajor>& work,
-			Matrix<complex<double>, General, ColMajor>& workc,
-			Vector<double>& aq, Vector<double>& sq,
-			IVect& fpm, double& epsout, int& loop,
-			double emin, double emax, int m0, Vector<double>& lambda,
-			Matrix<double, General, ColMajor>& eigen_vectors,
-			int& m, Vector<double>& res, int& info)
-  {
-    dfeast_srci_(&ijob, &n, reinterpret_cast<void*>(&ze), work.GetData(),
-                 workc.GetDataVoid(), aq.GetData(), sq.GetData(),
-                 fpm.GetData(), &epsout, &loop, &emin, &emax, &m0,
-                 lambda.GetData(), eigen_vectors.GetData(), 
-                 &m, res.GetData(), &info);
-  }
+  void CallFeast(int& ijob, int n, complex<double>& ze,
+		 Matrix<double, General, ColMajor>& work,
+		 Matrix<complex<double>, General, ColMajor>& workc,
+		 Vector<double>& aq, Vector<double>& sq,
+		 IVect& fpm, double& epsout, int& loop,
+		 double emin, double emax, int m0, Vector<double>& lambda,
+		 Matrix<double, General, ColMajor>& eigen_vectors,
+		 int& m, Vector<double>& res, int& info);
   
-  inline void CallFeast(int& ijob, int n, complex<double>& ze,
-			Matrix<complex<double>, General, ColMajor>& work,
-			Matrix<complex<double>, General, ColMajor>& workc,
-			Vector<complex<double> >& aq, Vector<complex<double> >& sq,
-			IVect& fpm, double& epsout, int& loop,
-			double emin, double emax, int m0, Vector<double>& lambda,
-			Matrix<complex<double>, General, ColMajor>& eigen_vectors,
-			int& m, Vector<double>& res, int& info)
-  {
-    zfeast_hrci_(&ijob, &n, reinterpret_cast<void*>(&ze), work.GetDataVoid(),
-                 workc.GetDataVoid(), aq.GetDataVoid(), sq.GetDataVoid(),
-                 fpm.GetData(), &epsout, &loop, &emin, &emax, &m0,
-                 lambda.GetData(), eigen_vectors.GetDataVoid(), 
-                 &m, res.GetData(), &info);
-  }
+  void CallFeast(int& ijob, int n, complex<double>& ze,
+		 Matrix<complex<double>, General, ColMajor>& work,
+		 Matrix<complex<double>, General, ColMajor>& workc,
+		 Vector<complex<double> >& aq, Vector<complex<double> >& sq,
+		 IVect& fpm, double& epsout, int& loop,
+		 double emin, double emax, int m0, Vector<double>& lambda,
+		 Matrix<complex<double>, General, ColMajor>& eigen_vectors,
+		 int& m, Vector<double>& res, int& info);
  
   // main function to find eigenvalues and eigenvectors with Feast (MKL implementation)
   template<class EigenProblem, class T, class Allocator1,

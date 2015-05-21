@@ -193,6 +193,9 @@ namespace Seldon
         values.Reallocate(nnz);
         row_numbers.Reallocate(nnz);
         col_numbers.Reallocate(nnz);
+	values.Fill(0);
+	row_numbers.Zero();
+	col_numbers.Zero();
       }
     
     ReadCoordinateMatrix(FileStream, row_numbers, col_numbers, values, cplx);
@@ -254,7 +257,7 @@ namespace Seldon
   {
     // conversion to coordinate format (if symmetric part, lower and upper part
     // are recovered)
-    Vector<int, VectFull, CallocAlloc<int> > IndRow, IndCol;
+    Vector<int> IndRow, IndCol;
     Vector<T> Value;
     ConvertMatrix_to_Coordinates(A, IndRow, IndCol,
                                  Value, index, true);
@@ -305,7 +308,8 @@ namespace Seldon
   }
 
 
-  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  //! \copydoc ReadHarwellBoeing(string filename,
+  //!  Matrix<T, Prop, ColSparse, Allocator>& A)
   template <class T, class Prop, class Allocator>
   void ReadHarwellBoeing(string filename,
                          Matrix<complex<T>, Prop, ColSparse, Allocator>& A)
@@ -314,7 +318,8 @@ namespace Seldon
   }
 
   
-  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  //! \copydoc ReadHarwellBoeing(string filename,
+  //! Matrix<T, Prop, ColSparse, Allocator>& A)
   template <class T, class Prop, class Allocator>
   void ReadHarwellBoeing(string filename,
                          Matrix<T, Prop, RowSymSparse, Allocator>& A)
@@ -323,7 +328,8 @@ namespace Seldon
   }
 
   
-  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  //! \copydoc ReadHarwellBoeing(string filename,
+  //! Matrix<T, Prop, ColSparse, Allocator>& A)
   template <class T, class Prop, class Allocator>
   void ReadHarwellBoeing(string filename,
                          Matrix<complex<T>, Prop, RowSymSparse, Allocator>& A)
@@ -332,7 +338,8 @@ namespace Seldon
   }
 
   
-  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  //! \copydoc ReadHarwellBoeing(string filename,
+  //! Matrix<T, Prop, ColSparse, Allocator>& A)
   template <class T, class T2, class Storage, class Allocator>
   void ReadHarwellBoeing(string filename, const T2& val, 
                          Matrix<T, Symmetric, Storage, Allocator>& A)
@@ -343,7 +350,8 @@ namespace Seldon
   }
   
   
-  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  //! \copydoc ReadHarwellBoeing(string filename,
+  //! Matrix<T, Prop, ColSparse, Allocator>& A)
   template <class T, class T2, class Storage, class Allocator>
   void ReadHarwellBoeing(string filename, const T2& val, 
                          Matrix<T, General, Storage, Allocator>& A)
@@ -354,7 +362,8 @@ namespace Seldon
   }
   
   
-  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  //! \copydoc ReadHarwellBoeing(string filename,
+  //! Matrix<T, Prop, ColSparse, Allocator>& A)
   template <class T, class T2, class Storage, class Allocator>
   void ReadHarwellBoeing(string filename, const complex<T2>& val, 
                          Matrix<T, Symmetric, Storage, Allocator>& A)
@@ -365,7 +374,8 @@ namespace Seldon
   }
   
   
-  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  //! \copydoc ReadHarwellBoeing(string filename,
+  //! Matrix<T, Prop, ColSparse, Allocator>& A)
   template <class T, class T2, class Storage, class Allocator>
   void ReadHarwellBoeing(string filename, const complex<T2>& val, 
                          Matrix<T, General, Storage, Allocator>& A)
@@ -376,7 +386,8 @@ namespace Seldon
   }
   
   
-  //! \copydoc ReadHarwellBoeing(string filename, Matrix<T, Prop, ColSparse, Allocator>& A)
+  //! \copydoc ReadHarwellBoeing(string filename,
+  //!  Matrix<T, Prop, ColSparse, Allocator>& A)
   template <class T, class Prop, class Storage, class Allocator>
   void ReadHarwellBoeing(string filename,
                          Matrix<T, Prop, Storage, Allocator>& A)
@@ -649,7 +660,10 @@ namespace Seldon
       getline(input_stream, line);
 
     /*** Allocations ***/
-
+    
+    typedef typename SeldonDefaultAllocator<VectFull, int>::allocator
+      AllocatorInt;
+    
     // Content of output matrix A.
     int* A_ptr;
     int* A_ind;
@@ -660,7 +674,8 @@ namespace Seldon
       {
 #endif
 
-	A_ptr = reinterpret_cast<int*>(calloc(Ncol + 1, sizeof(int)));
+	A_ptr = reinterpret_cast<int*>(AllocatorInt::
+				       allocate(Ncol + 1));
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -683,9 +698,9 @@ namespace Seldon
 
         // Reallocates 'A_ind' and 'A_data' in order to append the
         // elements of the i-th row of C.
-        A_ind = reinterpret_cast<int*>(calloc(Nnonzero, sizeof(int)));
+        A_ind = reinterpret_cast<int*>(AllocatorInt::allocate(Nnonzero));
         A_data = reinterpret_cast<T*>
-          (A.GetAllocator().allocate(Nnonzero));
+          (Allocator::allocate(Nnonzero));
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -819,7 +834,7 @@ namespace Seldon
     bool complex = ( sizeof(Tcplx)/sizeof(Treal) == 2);
     
     // converting to CSC
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<int> Ptr, Ind;
     Vector<Tcplx> Val;
     Prop sym;
     if (IsSymmetricMatrix(A))
@@ -1007,7 +1022,7 @@ namespace Seldon
     size_stream >> m >> n >> nnz;
     
     // then reading i, j, val
-    Vector<int, VectFull, CallocAlloc<int> > row(nnz), col(nnz);
+    Vector<int> row(nnz), col(nnz);
     Vector<Tcplx> val(nnz);
     ReadCoordinateMatrix(input_stream, row, col, val, complex);
     
@@ -1058,7 +1073,7 @@ namespace Seldon
       file_out << "general\n";
     
     // conversion to coordinate format (with 1-index)
-    Vector<int, VectFull, CallocAlloc<int> > row, col;
+    Vector<int> row, col;
     Vector<Tcplx> val;
     ConvertMatrix_to_Coordinates(A, row, col, val, 1, false);
     

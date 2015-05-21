@@ -128,12 +128,12 @@ namespace Seldon
     template<class Allocator2>
     void Solve(Vector<T, VectFull, Allocator2>& x);
 
-    template<class Allocator2, class Transpose_status>
-    void Solve(const Transpose_status& TransA,
+    template<class Allocator2>
+    void Solve(const SeldonTranspose& TransA,
 	       Vector<T, VectFull, Allocator2>& x);
 
-    template<class Allocator2, class Transpose_status, class Prop>
-    void Solve(const Transpose_status& TransA,
+    template<class Allocator2, class Prop>
+    void Solve(const SeldonTranspose& TransA,
 	       Matrix<T, Prop, ColMajor, Allocator2>& x);
 
 #ifdef SELDON_WITH_MPI
@@ -158,9 +158,9 @@ namespace Seldon
                           Vector<T, VectFull, Allocator2>& x,
                           const Vector<Tint>& glob_num);
 
-    template<class Allocator2, class Transpose_status>
+    template<class Allocator2>
     void SolveDistributed(MPI::Comm& comm_facto,
-                          const Transpose_status& TransA,
+                          const SeldonTranspose& TransA,
 			  Vector<T, VectFull, Allocator2>& x,
 			  const IVect& glob_num);
 
@@ -169,9 +169,9 @@ namespace Seldon
                           Matrix<T, Prop, ColMajor, Allocator2>& x,
                           const Vector<Tint>& glob_num);
 
-    template<class Allocator2, class Transpose_status, class Prop>
+    template<class Allocator2, class Prop>
     void SolveDistributed(MPI::Comm& comm_facto,
-                          const Transpose_status& TransA,
+                          const SeldonTranspose& TransA,
 			  Matrix<T, Prop, ColMajor, Allocator2>& x,
 			  const IVect& glob_num);
 #endif
@@ -195,38 +195,42 @@ namespace Seldon
   template<class T, class Allocator>
   void SolveLU(MatrixMumps<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
 
-  template<class T, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixMumps<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
 
   template<class Allocator>
-  void SolveLU(MatrixMumps<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
-
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
-	       MatrixMumps<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+  void SolveLU(MatrixMumps<double>& mat_lu,
+	       Vector<complex<double>, VectFull, Allocator>& x);
 
   template<class Allocator>
-  void SolveLU(MatrixMumps<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+  void SolveLU(const SeldonTranspose& TransA,
+	       MatrixMumps<double>& mat_lu,
+	       Vector<complex<double>, VectFull, Allocator>& x);
 
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
-	       MatrixMumps<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+  template<class Allocator>
+  void SolveLU(MatrixMumps<complex<double> >& mat_lu,
+	       Vector<double, VectFull, Allocator>& x);
+
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
+	       MatrixMumps<complex<double> >& mat_lu,
+	       Vector<double, VectFull, Allocator>& x);
 
   template<class T, class Prop, class Allocator>
   void SolveLU(MatrixMumps<T>& mat_lu,
                Matrix<T, Prop, ColMajor, Allocator>& x);
 
-  template<class T, class Allocator, class Prop, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Allocator, class Prop>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixMumps<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x);
 
   template<class Prop, class Allocator>
   void SolveLU(MatrixMumps<double>& mat_lu,
 	       Matrix<complex<double>, Prop, ColMajor, Allocator>& x);
 
-  template<class Prop, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Prop, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixMumps<double>& mat_lu,
 	       Matrix<complex<double>, Prop, ColMajor, Allocator>& x);
 
@@ -234,8 +238,8 @@ namespace Seldon
   void SolveLU(MatrixMumps<complex<double> >& mat_lu,
 	       Matrix<double, Prop, ColMajor, Allocator>& x);
 
-  template<class Prop, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Prop, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixMumps<complex<double> >& mat_lu,
 	       Matrix<double, Prop, ColMajor, Allocator>& x);
   

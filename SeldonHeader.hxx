@@ -170,6 +170,7 @@ namespace Seldon
 #endif
 // Memory management.
 #include "share/Allocator.hxx"
+#include "share/DefaultAllocator.hxx"
 
 // Storage type.
 #include "share/Storage.hxx"
@@ -178,6 +179,7 @@ namespace Seldon
 
 // Properties.
 #include "share/Properties.hxx"
+
 
 namespace Seldon
 {
@@ -294,6 +296,7 @@ namespace Seldon
 
 } // namespace Seldon.
 
+
 const int ARRAY_MINRANK = 3;
 const int ARRAY_MAXRANK = 9;
 
@@ -319,6 +322,7 @@ const int ARRAY_MAXRANK = 9;
 #include "computation/basic_functions/Functions_Vector.hxx"
 #include "computation/basic_functions/Functions_MatVect.hxx"
 #include "computation/basic_functions/Functions_Matrix.hxx"
+#include "computation/basic_functions/Functions_Base.hxx"
 
 #include "matrix/SubMatrix_Base.hxx"
 #include "matrix/SubMatrix.hxx"

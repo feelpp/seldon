@@ -1504,7 +1504,7 @@ namespace Seldon
           for (int i = 0; i < Y.GetM(); i++)
             Y(i) += coef_mass*X(i);
         else
-          MltAddComplex(coef_mass, *Mh, X, coef_stiff, Y);
+          MltAdd(coef_mass, *Mh, X, coef_stiff, Y);
       }
     else
       {
@@ -1643,7 +1643,7 @@ namespace Seldon
     else
       {
         Copy(X, Y);
-        SolveComplexLU(mat_lu_real, pivot, Y);
+        SolveLU(mat_lu_real, pivot, Y);
       }
   }
 
@@ -1659,7 +1659,7 @@ namespace Seldon
 	if (this->selected_part == EigenProblem_Base<T>::COMPLEX_PART)
 	  {
 	    Copy(X, Y);
-	    SolveComplexLU(mat_lu_cplx, pivot, Y);
+	    SolveLU(mat_lu_cplx, pivot, Y);
 	  }
 	else
 	  Mlt(mat_lu_real, X, Y);
@@ -1667,7 +1667,7 @@ namespace Seldon
     else
       {
         Copy(X, Y);
-        SolveComplexLU(mat_lu_real, pivot, Y);
+        SolveLU(mat_lu_real, pivot, Y);
       }
   }
    
@@ -1692,7 +1692,7 @@ namespace Seldon
     else
       {
         Copy(X, Y);
-        SolveComplexLU(transA, mat_lu_real, pivot, Y);
+        SolveLU(transA, mat_lu_real, pivot, Y);
       }
   }
   
@@ -1709,7 +1709,7 @@ namespace Seldon
 	if (this->selected_part == EigenProblem_Base<T>::COMPLEX_PART)
 	  {
 	    Copy(X, Y);
-	    SolveComplexLU(transA, mat_lu_cplx, pivot, Y);
+	    SolveLU(transA, mat_lu_cplx, pivot, Y);
 	  }
 	else
 	  Mlt(transA, mat_lu_real, X, Y);
@@ -1717,7 +1717,7 @@ namespace Seldon
     else
       {
         Copy(X, Y);
-        SolveComplexLU(transA, mat_lu_real, pivot, Y);
+        SolveLU(transA, mat_lu_real, pivot, Y);
       }
   }
 
@@ -1902,7 +1902,8 @@ namespace Seldon
   }
   
   
-  //! computes and factorizes a M + b K where M is the mass matrix and K the stiffness matrix
+  //! computes and factorizes a M + b K
+  //! M is the mass matrix and K the stiffness matrix
   template<class T, class MatStiff, class MatMass>
   void SparseEigenProblem<T, MatStiff, MatMass>::
   ComputeAndFactorizeStiffnessMatrix(const Treal& a, const Treal& b, int which)
@@ -1911,7 +1912,8 @@ namespace Seldon
   }
 
 
-  //! computes and factorizes a M + b K where M is the mass matrix and K the stiffness matrix
+  //! computes and factorizes a M + b K
+  //! where M is the mass matrix and K the stiffness matrix
   template<class T, class MatStiff, class MatMass>
   void SparseEigenProblem<T, MatStiff, MatMass>::
   ComputeAndFactoRealMatrix(const Tcplx&, const Treal& a, const Treal& b, int which)
@@ -1921,7 +1923,8 @@ namespace Seldon
   }
 
   
-  //! computes and factorizes a M + b K where M is the mass matrix and K the stiffness matrix
+  //! computes and factorizes a M + b K
+  //! where M is the mass matrix and K the stiffness matrix
   template<class T, class MatStiff, class MatMass>
   void SparseEigenProblem<T, MatStiff, MatMass>::
   ComputeAndFactoRealMatrix(const Treal&, const Treal& a, const Treal& b, int which)
@@ -2204,6 +2207,88 @@ namespace Seldon
   int TypeEigenvalueSolver::default_solver(0);  
 #endif
   
+  int TypeEigenvalueSolver::GetDefaultSolver()
+  {
+#ifdef SELDON_WITH_ANASAZI
+    return ANASAZI;
+#endif
+    
+#ifdef SELDON_WITH_FEAST
+    return FEAST;
+#endif
+    
+#ifdef SELDON_WITH_ARPACK
+    return ARPACK;
+#endif
+    
+    return -1;
+  }
+  
+
+  template<class T, class Prop, class Storage>
+  void GetEigenvaluesEigenvectors(EigenProblem_Base<T>& var_eig,
+				  Vector<T>& lambda, Vector<T>& lambda_imag,
+				  Matrix<T, Prop, Storage>& eigen_vec)
+  {
+    int type_solver = TypeEigenvalueSolver::default_solver;
+    if (type_solver == TypeEigenvalueSolver::DEFAULT)
+      type_solver = TypeEigenvalueSolver::GetDefaultSolver();
+    
+    if (type_solver == TypeEigenvalueSolver::ARPACK)
+      {
+#ifdef SELDON_WITH_ARPACK
+        T zero; SetComplexZero(zero);
+        Matrix<T, General, ColMajor> eigen_old;
+        FindEigenvaluesArpack(var_eig, lambda, lambda_imag, eigen_old);
+        
+        // eigenvalues are sorted by ascending order
+        SortEigenvalues(lambda, lambda_imag, eigen_old,
+                        eigen_vec, var_eig.LARGE_EIGENVALUES,
+                        var_eig.GetTypeSorting(), zero, zero);
+#else
+        cout << "Recompile with Arpack" << endl;
+        abort();
+#endif
+      }
+    else if (type_solver == TypeEigenvalueSolver::ANASAZI)
+      {
+#ifdef SELDON_WITH_ANASAZI
+	T zero; SetComplexZero(zero);
+        Matrix<T, General, ColMajor> eigen_old;
+        FindEigenvaluesAnasazi(var_eig, lambda, lambda_imag, eigen_old);
+        
+        // eigenvalues are sorted by ascending order
+        SortEigenvalues(lambda, lambda_imag, eigen_old,
+                        eigen_vec, var_eig.LARGE_EIGENVALUES,
+                        var_eig.GetTypeSorting(), zero, zero);
+#else
+        cout << "Recompile with Anasazi" << endl;
+        abort();
+#endif
+      }
+    else if (type_solver == TypeEigenvalueSolver::FEAST)
+      {
+#ifdef SELDON_WITH_FEAST
+        T zero; SetComplexZero(zero);
+        Matrix<T, General, ColMajor> eigen_old;
+        FindEigenvaluesFeast(var_eig, lambda, lambda_imag, eigen_old);
+        
+        // eigenvalues are sorted by ascending order
+        SortEigenvalues(lambda, lambda_imag, eigen_old,
+                        eigen_vec, var_eig.LARGE_EIGENVALUES,
+                        var_eig.GetTypeSorting(), zero, zero);
+#else
+        cout << "Recompile with MKL" << endl;
+        abort();
+#endif
+      }
+    else
+      {
+        cout << "Recompile with eigenvalue solver" << endl;
+        abort();
+      }
+    
+  }
 }
 
 #define SELDON_FILE_VIRTUAL_EIGENVALUE_SOLVER_CXX

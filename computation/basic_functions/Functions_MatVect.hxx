@@ -26,16 +26,6 @@
 /*
   Functions defined in this file:
 
-  M X -> Y
-  Mlt(M, X, Y)
-
-  alpha M X -> Y
-  Mlt(alpha, M, X, Y)
-
-  M X -> Y
-  M^T X -> Y
-  Mlt(Trans, M, X, Y)
-
   alpha M X + beta Y -> Y
   MltAdd(alpha, M, X, beta, Y)
 
@@ -53,84 +43,165 @@
 namespace Seldon
 {
 
-
   /////////
   // MLT //
 
 
-  template <class T0, class Prop0, class Storage0, class Allocator0,
-	    class T1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2>
-  void Mlt(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
-	   const Vector<T1, Storage1, Allocator1>& X,
-	   Vector<T2, Storage2, Allocator2>& Y);
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+  
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const Matrix<T1, Prop1, ColSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+  
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+  
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const Matrix<T1, Prop1, ColSymSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonNoTrans& Trans,
+		 const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+  
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonTrans& Trans,
+		 const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+  
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonConjTrans& Trans,
+		 const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonNoTrans& Trans,
+		 const Matrix<T1, Prop1, ColSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonTrans& Trans,
+		 const Matrix<T1, Prop1, ColSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+  
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonConjTrans& Trans,
+		 const Matrix<T1, Prop1, ColSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+  
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonNoTrans& Trans,
+		 const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+  
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonTrans& Trans,
+		 const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonConjTrans& Trans,
+		 const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+  
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonNoTrans& Trans,
+		 const Matrix<T1, Prop1, ColSymSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonTrans& Trans,
+		 const Matrix<T1, Prop1, ColSymSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
+  
+  template <class T1, class Prop1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonConjTrans& Trans,
+		 const Matrix<T1, Prop1, ColSymSparse, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
 
   template <class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
-	    class T3, class Storage3, class Allocator3>
-  void Mlt(const T3& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
-	   const Vector<T2, Storage2, Allocator2>& X,
-	   Vector<T3, Storage3, Allocator3>& Y);
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
   
   template <class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
-	    class T3, class Storage3, class Allocator3>
-  void Mlt(const T3& alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
-	   const Vector<T2, Storage2, Allocator2>& X,
-	   Vector<complex<T3>, Storage3, Allocator3>& Y);
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonNoTrans& Trans,
+		 const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
 
   template <class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
-	    class T3, class Storage3, class Allocator3>
-  void Mlt(int alpha,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
-	   const Vector<T2, Storage2, Allocator2>& X,
-	   Vector<T3, Storage3, Allocator3>& Y);
-  
-  template <class T1, class Prop1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2,
-	    class T3, class Storage3, class Allocator3>
-  void Mlt(const class_SeldonNoTrans& Trans,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
-	   const Vector<T2, Storage2, Allocator2>& X,
-	   Vector<T3, Storage3, Allocator3>& Y);
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonTrans& Trans,
+		 const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
 
   template <class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
-	    class T3, class Storage3, class Allocator3>
-  void Mlt(const class_SeldonTrans& Trans,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
-	   const Vector<T2, Storage2, Allocator2>& X,
-	   Vector<T3, Storage3, Allocator3>& Y);
+	    class T4, class Storage4, class Allocator4>
+  void MltVector(const class_SeldonConjTrans& Trans,
+		 const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+		 const Vector<T2, Storage2, Allocator2>& X,
+		 Vector<T4, Storage4, Allocator4>& Y);
 
-  template <class T1, class Prop1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2,
-	    class T3, class Storage3, class Allocator3>
-  void Mlt(const class_SeldonConjTrans& Trans,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
-	   const Vector<T2, Storage2, Allocator2>& X,
-	   Vector<T3, Storage3, Allocator3>& Y);
-  
-  template<class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Storage2, class Allocator2,
-	   class T3, class Storage3, class Allocator3>
-  void Mlt(const SeldonTranspose& Trans,
-	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
-	   const Vector<T2, Storage2, Allocator2>& X,
-	   Vector<T3, Storage3, Allocator3>& Y);
-
-  template<class T0,
-	   class T1, class Prop1, class Storage1, class Allocator1,
-	   class T2, class Storage2, class Allocator2,
-	   class T3,
-	   class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha, const SeldonTranspose& Trans,
-	      const Matrix<T1, Prop1, Storage1, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta,
-	      Vector<T4, Storage4, Allocator4>& Y);
   
   // MLT //
   /////////
@@ -147,51 +218,51 @@ namespace Seldon
             class T2, class Allocator2,
             class T3,
             class T4, class Allocator4>
-  void MltAdd(const T0 alpha,
-              const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
-              const Vector<T2, PETScSeq, Allocator2>& X,
-              const T3 beta, Vector<T4, PETScSeq, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
+		    const Vector<T2, PETScSeq, Allocator2>& X,
+		    const T3& beta, Vector<T4, PETScSeq, Allocator4>& Y);
 
   template <class T0,
             class T1, class Prop1, class Allocator1,
             class T2, class Allocator2,
             class T3,
             class T4, class Allocator4>
-  void MltAdd(const T0 alpha,
-              const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
-              const Vector<T2, PETScPar, Allocator2>& X,
-              const T3 beta, Vector<T4, PETScPar, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
+		    const Vector<T2, PETScPar, Allocator2>& X,
+		    const T3& beta, Vector<T4, PETScPar, Allocator4>& Y);
+  
+  template <class T0,
+            class T1, class Prop1, class Allocator1,
+            class T2, class Allocator2,
+            class T3,
+            class T4, class Allocator4>
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
+		    const Vector<T2, VectFull, Allocator2>& X,
+		    const T3& beta, Vector<T4, PETScSeq, Allocator4>& Y);
 
   template <class T0,
             class T1, class Prop1, class Allocator1,
             class T2, class Allocator2,
             class T3,
             class T4, class Allocator4>
-  void MltAdd(const T0 alpha,
-              const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
-              const Vector<T2, VectFull, Allocator2>& X,
-              const T3 beta, Vector<T4, PETScSeq, Allocator4>& Y);
-
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
+		    const Vector<T2, VectFull, Allocator2>& X,
+		    const T3& beta, Vector<T4, PETScPar, Allocator4>& Y);
+  
   template <class T0,
             class T1, class Prop1, class Allocator1,
             class T2, class Allocator2,
             class T3,
             class T4, class Allocator4>
-  void MltAdd(const T0 alpha,
-              const Matrix<T1, Prop1, PETScMPIAIJ, Allocator1>& M,
-              const Vector<T2, VectFull, Allocator2>& X,
-              const T3 beta, Vector<T4, PETScPar, Allocator4>& Y);
-
-  template <class T0,
-            class T1, class Prop1, class Allocator1,
-            class T2, class Allocator2,
-            class T3,
-            class T4, class Allocator4>
-  void MltAdd(const T0 alpha,
-              const Matrix<T1, Prop1, PETScMPIDense, Allocator1>& M,
-              const Vector<T2, VectFull, Allocator2>& X,
-              const T3 beta, Vector<T4, PETScPar, Allocator4>& Y);
-
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, PETScMPIDense, Allocator1>& M,
+		    const Vector<T2, VectFull, Allocator2>& X,
+		    const T3& beta, Vector<T4, PETScPar, Allocator4>& Y);
+  
   /*** Sparse matrices ***/
 
 
@@ -200,21 +271,21 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
 
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Collection, Allocator4>& Y);
-
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Collection, Allocator4>& Y);
+  
   /*** Complex sparse matrices ***/
   
   template <class T0,
@@ -222,10 +293,10 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T1, Prop1, ColSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, ColSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
 
   /*** Symmetric sparse matrices ***/
 
@@ -234,40 +305,40 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
   template <class T0,
             class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T1, Prop1, ColSymSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, ColSymSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Allocator2,
 	    class T3,
 	    class T4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
-	      const Vector<T2, Collection, Allocator2>& X,
-	      const T3& beta, Vector<T4, Collection, Allocator4>& Y);
-
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
+		    const Vector<T2, Collection, Allocator2>& X,
+		    const T3& beta, Vector<T4, Collection, Allocator4>& Y);
+  
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Collection, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Collection, Allocator4>& Y);
   
 
   /*** Sparse matrices, *Trans ***/
@@ -278,11 +349,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonNoTrans& Trans,
-	      const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonNoTrans& Trans,
+		    const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
   // Trans.
   template <class T0,
@@ -290,26 +361,26 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonTrans& Trans,
-	      const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
-
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonTrans& Trans,
+		    const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  
   // ConjTrans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonConjTrans& Trans,
-	      const Matrix<complex<T1>, Prop1, RowSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonConjTrans& Trans,
+		    const Matrix<T1, Prop1, RowSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  
 
-
-  /*** Complex sparse matrices, *Trans ***/
+  /*** Column sparse matrices, *Trans ***/
 
   // NoTrans.
   template <class T0,
@@ -317,11 +388,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonNoTrans& Trans,
-	      const Matrix<T1, Prop1, ColSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonNoTrans& Trans,
+		    const Matrix<T1, Prop1, ColSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
   // Trans.
   template <class T0,
@@ -329,24 +400,24 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonTrans& Trans,
-	      const Matrix<T1, Prop1, ColSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
-
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonTrans& Trans,
+		    const Matrix<T1, Prop1, ColSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  
   // ConjTrans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonConjTrans& Trans,
-	      const Matrix<complex<T1>, Prop1, ColSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
-
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonConjTrans& Trans,
+		    const Matrix<T1, Prop1, ColSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  
   /*** Symmetric sparse matrices, *Trans ***/
 
   // NoTrans.
@@ -355,11 +426,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonNoTrans& Trans,
-	      const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonNoTrans& Trans,
+		    const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
   // Trans.
   template <class T0,
@@ -367,23 +438,23 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonTrans& Trans,
-	      const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
-
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonTrans& Trans,
+		    const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  
   // ConjTrans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonConjTrans& Trans,
-	      const Matrix<complex<T1>, Prop1, RowSymSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonConjTrans& Trans,
+		    const Matrix<T1, Prop1, RowSymSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
   // NoTrans
   template <class T0,
@@ -391,23 +462,23 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonNoTrans& Trans,
-	      const Matrix<T1, Prop1, ColSymSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
-
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonNoTrans& Trans,
+		    const Matrix<T1, Prop1, ColSymSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  
   // Trans.
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonTrans& Trans,
-	      const Matrix<T1, Prop1, ColSymSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonTrans& Trans,
+		    const Matrix<T1, Prop1, ColSymSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
   // ConjTrans.
   template <class T0,
@@ -415,11 +486,11 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonConjTrans& Trans,
-	      const Matrix<complex<T1>, Prop1, ColSymSparse, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonConjTrans& Trans,
+		    const Matrix<T1, Prop1, ColSymSparse, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta, Vector<T4, Storage4, Allocator4>& Y);
   
   // MLTADD //
   ////////////
@@ -434,80 +505,80 @@ namespace Seldon
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T1, Prop1, Storage1, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta,
-	      Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta,
+		    Vector<T4, Storage4, Allocator4>& Y);
 
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T1, Prop1, Storage1, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta,
-	      Vector<T4, Collection, Allocator4>& Y);
-
-  template <class T0,
-	    class T1, class Prop1, class Allocator1,
-	    class T2, class Allocator2,
-	    class T3,
-	    class T4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T1, Prop1, RowMajorCollection, Allocator1>& M,
-	      const Vector<T2, Collection, Allocator2>& X,
-	      const T3& beta,
-	      Vector<T4, Collection, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta,
+		    Vector<T4, Collection, Allocator4>& Y);
 
   template <class T0,
 	    class T1, class Prop1, class Allocator1,
 	    class T2, class Allocator2,
 	    class T3,
 	    class T4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T1, Prop1, ColMajorCollection, Allocator1>& M,
-	      const Vector<T2, Collection, Allocator2>& X,
-	      const T3& beta,
-	      Vector<T4, Collection, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, RowMajorCollection, Allocator1>& M,
+		    const Vector<T2, Collection, Allocator2>& X,
+		    const T3& beta,
+		    Vector<T4, Collection, Allocator4>& Y);
+
+  template <class T0,
+	    class T1, class Prop1, class Allocator1,
+	    class T2, class Allocator2,
+	    class T3,
+	    class T4, class Allocator4>
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T1, Prop1, ColMajorCollection, Allocator1>& M,
+		    const Vector<T2, Collection, Allocator2>& X,
+		    const T3& beta,
+		    Vector<T4, Collection, Allocator4>& Y);
   
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonNoTrans& Trans,
-	      const Matrix<T1, Prop1, Storage1, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta,
-	      Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonNoTrans& Trans,
+		    const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta,
+		    Vector<T4, Storage4, Allocator4>& Y);
   
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonTrans& Trans,
-	      const Matrix<T1, Prop1, Storage1, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta,
-	      Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonTrans& Trans,
+		    const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta,
+		    Vector<T4, Storage4, Allocator4>& Y);
   
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3,
 	    class T4, class Storage4, class Allocator4>
-  void MltAdd(const T0& alpha,
-	      const class_SeldonConjTrans& Trans,
-	      const Matrix<T1, Prop1, Storage1, Allocator1>& M,
-	      const Vector<T2, Storage2, Allocator2>& X,
-	      const T3& beta,
-	      Vector<T4, Storage4, Allocator4>& Y);
+  void MltAddVector(const T0& alpha,
+		    const class_SeldonConjTrans& Trans,
+		    const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+		    const Vector<T2, Storage2, Allocator2>& X,
+		    const T3& beta,
+		    Vector<T4, Storage4, Allocator4>& Y);
   
   
   // MLTADD //
@@ -553,22 +624,22 @@ namespace Seldon
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3>
-  void SOR(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
-           Vector<T2, Storage2, Allocator2>& Y,
-           const Vector<T1, Storage1, Allocator1>& X,
-           const T3& omega, int iter, int type_ssor = 2);
+  void SorVector(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
+		 Vector<T2, Storage2, Allocator2>& Y,
+		 const Vector<T1, Storage1, Allocator1>& X,
+		 const T3& omega, int iter, int type_ssor = 2);
   
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3>
-  void SOR(const class_SeldonTrans& transM,
-           const Matrix<T0, Prop0, Storage0, Allocator0>& M,
-           Vector<T2, Storage2, Allocator2>& Y,
-           const Vector<T1, Storage1, Allocator1>& X,
-           const T3& omega, int iter, int type_ssor = 3);
+  void SorVector(const class_SeldonTrans& transM,
+		 const Matrix<T0, Prop0, Storage0, Allocator0>& M,
+		 Vector<T2, Storage2, Allocator2>& Y,
+		 const Vector<T1, Storage1, Allocator1>& X,
+		 const T3& omega, int iter, int type_ssor = 3);
   
-
+  
   // S.O.R. METHOD //
   ///////////////////
 
@@ -580,10 +651,10 @@ namespace Seldon
 
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
-  void SolveLU(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
-	       Vector<T1, Storage1, Allocator1>& Y);
+  void SolveLuVector(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
+		     Vector<T1, Storage1, Allocator1>& Y);
   
-
+  
   // SOLVELU //
   /////////////
 
@@ -594,12 +665,12 @@ namespace Seldon
   
   template <class T0, class Prop0, class Allocator0,
             class T1, class Allocator1>
-  void Solve(const SeldonUplo& Uplo,
-             const SeldonTranspose& TransA,
-             const SeldonDiag& DiagA,
-             const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
-             const Vector<T1, VectFull, Allocator1>& X,
-             Vector<T1, VectFull, Allocator1>& Y);
+  void SolveTriangular(const SeldonUplo& Uplo,
+		       const SeldonTranspose& TransA,
+		       const SeldonDiag& DiagA,
+		       const Matrix<T0, Prop0, RowSparse, Allocator0>& A,
+		       const Vector<T1, VectFull, Allocator1>& X,
+		       Vector<T1, VectFull, Allocator1>& Y);
   
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
@@ -664,146 +735,7 @@ namespace Seldon
   
   // CHECKDIM //
   //////////////
-
-
-#ifdef SELDON_WITH_VIRTUAL
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const Matrix<T0, Prop0, Storage0, Allocator0>&,
-		  const Vector<T0>& X, Vector<T0>& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const Matrix<complex<T0>, Prop0, Storage0, Allocator0>&,
-		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const Matrix<T0, Prop0, Storage0, Allocator0>&,
-		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const Matrix<complex<T0>, Prop0, Storage0, Allocator0>&,
-		  const Vector<T0>& X, Vector<T0>& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const SeldonTranspose& trans,
-		  const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		  const Vector<T0>& X, Vector<T0>& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const SeldonTranspose& trans,
-		  const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const SeldonTranspose& trans,
-		  const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const SeldonTranspose& trans,
-		  const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		  const Vector<T0>& X, Vector<T0>& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const T0& alpha,
-		     const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const complex<T0>& alpha,
-		     const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		     const Vector<complex<T0> >& X, const complex<T0>& beta,
-		     Vector<complex<T0> >& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const complex<T0>& alpha,
-		     const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		     const Vector<complex<T0> >& X, const complex<T0>& beta,
-		     Vector<complex<T0> >& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const T0& alpha,
-		     const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const T0& alpha, const SeldonTranspose& trans,
-		     const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const complex<T0>& alpha, const SeldonTranspose& trans,
-		     const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		     const Vector<complex<T0> >& X, const complex<T0>& beta,
-		     Vector<complex<T0> >& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const complex<T0>& alpha, const SeldonTranspose& trans,
-		     const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		     const Vector<complex<T0> >& X, const complex<T0>& beta,
-		     Vector<complex<T0> >& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const T0& alpha, const SeldonTranspose& trans,
-		     const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void SolveComplexLU(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		      const Vector<int>& pivot, Vector<T0>& x);
   
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void SolveComplexLU(const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		      const Vector<int>& pivot, Vector<complex<T0> >& x);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void SolveComplexLU(const Matrix<T0, Prop0, Storage0, Allocator0>& A,
-		      const Vector<int>& pivot, Vector<complex<T0> >& x);
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void SolveComplexLU(const Matrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		      const Vector<int>& pivot, Vector<T0>& x);
-
-  template<class T0, class Storage0, class Allocator0>
-  void SolveComplexLU(const SeldonTranspose& trans,
-		      const Matrix<T0, Symmetric, Storage0, Allocator0>& A,
-		      const Vector<int>& pivot, Vector<T0>& x);
-
-  template<class T0, class Storage0, class Allocator0>
-  void SolveComplexLU(const SeldonTranspose& trans,
-		      const Matrix<T0, General, Storage0, Allocator0>& A,
-		      const Vector<int>& pivot, Vector<T0>& x);
-
-  template<class T0, class Storage0, class Allocator0>
-  void SolveComplexLU(const SeldonTranspose& trans,
-		      const Matrix<complex<T0>, Symmetric, Storage0, Allocator0>& A,
-		      const Vector<int>& pivot, Vector<complex<T0> >& x);
-
-  template<class T0, class Storage0, class Allocator0>
-  void SolveComplexLU(const SeldonTranspose& trans,
-		      const Matrix<complex<T0>, General, Storage0, Allocator0>& A,
-		      const Vector<int>& pivot, Vector<complex<T0> >& x);
-
-  template<class T0, class Storage0, class Allocator0>
-  void SolveComplexLU(const SeldonTranspose& trans,
-		      const Matrix<T0, Symmetric, Storage0, Allocator0>& A,
-		      const Vector<int>& pivot, Vector<complex<T0> >& x);
-
-  template<class T0, class Storage0, class Allocator0>
-  void SolveComplexLU(const SeldonTranspose& trans,
-		      const Matrix<T0, General, Storage0, Allocator0>& A,
-		      const Vector<int>& pivot, Vector<complex<T0> >& x);
-
-  template<class T0, class Storage0, class Allocator0>
-  void SolveComplexLU(const SeldonTranspose& trans,
-		      const Matrix<complex<T0>, Symmetric, Storage0, Allocator0>& A,
-		      const Vector<int>& pivot, Vector<T0>& x);
-
-  template<class T0, class Storage0, class Allocator0>
-  void SolveComplexLU(const SeldonTranspose& trans,
-		      const Matrix<complex<T0>, General, Storage0, Allocator0>& A,
-		      const Vector<int>& pivot, Vector<T0>& x);
-#endif
-
 }  // namespace Seldon.
 
 #endif

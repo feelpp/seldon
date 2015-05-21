@@ -24,57 +24,6 @@
 namespace Seldon
 {
   
-  //! default constructor
-  template<class T, class Prop, class Storage, class Allocator>
-  inline DistributedMatrix<T, Prop, Storage, Allocator>::DistributedMatrix()
-    : Matrix<T, Prop, Storage, Allocator>()
-  {
-    GlobalRowNumbers = NULL;
-    OverlapProcNumbers = NULL;
-    OverlapRowNumbers = NULL;
-    ProcSharingRows = NULL;
-    SharingRowNumbers = NULL;
-    nodl_scalar_ = 0;
-    nb_unknowns_scal_ = 1;
-    nglob_ = 0;
-    comm_ = &MPI::COMM_SELF;
-    
-    local_number_distant_values = false;
-    size_max_distant_row = 0;
-    size_max_distant_col = 0;
-  }
-  
-  
-  //! construction of an m by n matrix
-  /*!
-    Here m and n are the number of rows and columns of the local matrix
-  */
-  template<class T, class Prop, class Storage, class Allocator>
-  inline DistributedMatrix<T, Prop, Storage, Allocator>::
-  DistributedMatrix(int m, int n)
-    : Matrix<T, Prop, Storage, Allocator>(m, n)
-  {
-    GlobalRowNumbers = NULL;
-    OverlapProcNumbers = NULL;
-    OverlapRowNumbers = NULL;
-    ProcSharingRows = NULL;
-    SharingRowNumbers = NULL;
-    nglob_ = m;
-    nodl_scalar_ = 0;
-    nb_unknowns_scal_ = 1;
-    comm_ = &MPI::COMM_SELF;
-    
-    dist_col.Reallocate(m);
-    dist_row.Reallocate(n);
-    proc_col.Reallocate(m);
-    proc_row.Reallocate(n);
-
-    local_number_distant_values = false;
-    size_max_distant_row = 0;
-    size_max_distant_col = 0;
-  }
-
-  
   //! returns MPI communicator (processors that will share the matrix)
   template<class T, class Prop, class Storage, class Allocator>
   inline MPI::Comm& DistributedMatrix<T, Prop, Storage, Allocator>
@@ -93,112 +42,6 @@ namespace Seldon
   }
   
   
-  //! Initialisation of pointers
-  /*!
-    This method is mandatory, otherwise pointers are set to NULL
-    \param[in] n global number of rows (as if it was on a single processor)
-    \param[in] row_num local to global numbering
-    \param[in] overlap_num rows already counted in another processor
-    \param[in] proc_num original processor for overlapped rows
-  */
-  template<class T, class Prop, class Storage, class Allocator>
-  inline void DistributedMatrix<T, Prop, Storage, Allocator>::
-  Init(int n, IVect* row_num, IVect* overlap_num, IVect* proc_num,
-       int Nvol, int nb_u, IVect* MatchingProc,
-       Vector<IVect>* MatchingDofNumber, MPI::Comm& comm)
-  {
-    nglob_ = n;
-    GlobalRowNumbers = row_num;
-    OverlapRowNumbers = overlap_num;
-    OverlapProcNumbers = proc_num;
-    
-    nodl_scalar_ = Nvol;
-    nb_unknowns_scal_ = nb_u;
-    ProcSharingRows = MatchingProc;
-    SharingRowNumbers = MatchingDofNumber;
-    
-    comm_ = &comm;    
-  }
-  
-  
-  //! inits pointers with those of A
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  inline void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::Init(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A)
-  {
-    OverlapRowNumbers = A.OverlapRowNumbers;
-    OverlapProcNumbers = A.OverlapProcNumbers;
-    GlobalRowNumbers = A.GlobalRowNumbers;
-    ProcSharingRows = A.ProcSharingRows;
-    SharingRowNumbers = A.SharingRowNumbers;
-    nodl_scalar_ = A.nodl_scalar_;
-    nb_unknowns_scal_ = A.nb_unknowns_scal_;
-    nglob_ = A.nglob_;
-    comm_ = A.comm_;
-  }
-  
-  
-  //! changing the size of the local matrix, previous values are lost
-  template<class T, class Prop, class Storage, class Allocator>
-  inline void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::Reallocate(int m, int n)
-  {
-    // previous values are erased for simplicity
-    Clear();
-    
-    Matrix<T, Prop, Storage, Allocator>::Reallocate(m, n);
-    
-    dist_col.Reallocate(m);
-    dist_row.Reallocate(n);
-    proc_col.Reallocate(m);
-    proc_row.Reallocate(n);
-  }
-  
-  
-  //! changing the size of the local matrix, previous values are kept
-  template<class T, class Prop, class Storage, class Allocator>
-  inline void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::Resize(int m, int n)
-  {
-    if (this->m_ != m)
-      {
-        dist_col.Resize(m);
-        proc_col.Resize(m);
-      }
-
-    if (this->n_ != n)
-      {
-        dist_row.Resize(n);
-        proc_row.Resize(n);
-      }
-    
-    Matrix<T, Prop, Storage, Allocator>::Resize(m, n);    
-  }
-  
-  
-  //! matrix is cleared
-  template<class T, class Prop, class Storage, class Allocator>
-  inline void DistributedMatrix<T, Prop, Storage, Allocator>::Clear()
-  {
-    Matrix<T, Prop, Storage, Allocator>::Clear();
-    
-    dist_col.Clear();
-    proc_col.Clear();
-    dist_row.Clear();
-    proc_row.Clear();
-    
-    global_row_to_recv.Clear(); global_col_to_recv.Clear();
-    ptr_global_row_to_recv.Clear(); ptr_global_col_to_recv.Clear();
-    local_row_to_send.Clear(); local_col_to_send.Clear();
-    proc_col_to_recv.Clear(); proc_col_to_send.Clear();
-    proc_row_to_recv.Clear(); proc_row_to_send.Clear();
-    size_max_distant_row = 0;
-    size_max_distant_col = 0;
-    local_number_distant_values = false;
-  }
-  
-  
   //! returns the global number of rows
   template<class T, class Prop, class Storage, class Allocator>
   inline int DistributedMatrix<T, Prop, Storage, Allocator>
@@ -208,96 +51,6 @@ namespace Seldon
   }
   
   
-  //! returns local to global numbering
-  template<class T, class Prop, class Storage, class Allocator>
-  inline const IVect& DistributedMatrix<T, Prop, Storage, Allocator>::
-  GetGlobalRowNumber() const
-  {
-    if (this->GlobalRowNumbers == NULL)
-      {
-        cout << "You should call Init of DistributedMatrix" << endl;
-        abort();
-      }    
-
-    return *GlobalRowNumbers;
-  }
-  
-  
-  //! returns local to global numbering
-  template<class T, class Prop, class Storage, class Allocator>
-  inline IVect& DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetGlobalRowNumber()
-  {
-    if (this->GlobalRowNumbers == NULL)
-      {
-        cout << "You should call Init of DistributedMatrix" << endl;
-        abort();
-      }    
-
-    return *GlobalRowNumbers;
-  }
-
-
-  //! returns rows already counted in another processor
-  template<class T, class Prop, class Storage, class Allocator>
-  inline const IVect& DistributedMatrix<T, Prop, Storage, Allocator>::
-  GetOverlapRowNumber() const
-  {
-    if (this->OverlapRowNumbers == NULL)
-      {
-        cout << "You should call Init of DistributedMatrix" << endl;
-        abort();
-      }    
-
-    return *OverlapRowNumbers;
-  }
-  
-
-  //! returns rows already counted in another processor
-  template<class T, class Prop, class Storage, class Allocator>
-  inline IVect& DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetOverlapRowNumber()
-  {
-    if (this->OverlapRowNumbers == NULL)
-      {
-        cout << "You should call Init of DistributedMatrix" << endl;
-        abort();
-      }    
-
-    return *OverlapRowNumbers;
-  }
-
-  
-  //! returns processor numbers of the original rows
-  template<class T, class Prop, class Storage, class Allocator>
-  inline const IVect& DistributedMatrix<T, Prop, Storage, Allocator>::
-  GetOverlapProcNumber() const
-  {
-    if (this->OverlapProcNumbers == NULL)
-      {
-        cout << "You should call Init of DistributedMatrix" << endl;
-        abort();
-      }    
-
-    return *OverlapProcNumbers;
-  }
-  
-
-  //! returns processor numbers of the original rows
-  template<class T, class Prop, class Storage, class Allocator>
-  inline IVect& DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetOverlapProcNumber()
-  {
-    if (this->OverlapProcNumbers == NULL)
-      {
-        cout << "You should call Init of DistributedMatrix" << endl;
-        abort();
-      }    
-
-    return *OverlapProcNumbers;
-  }
-
-
   //! returns the number of scalar unknowns
   template<class T, class Prop, class Storage, class Allocator>
   inline int DistributedMatrix<T, Prop, Storage, Allocator>
@@ -316,36 +69,6 @@ namespace Seldon
   }
 
   
-  //! returns processor numbers for each set of shared rows
-  template<class T, class Prop, class Storage, class Allocator>
-  inline IVect& DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetProcessorSharingRows()
-  {
-    if (this->ProcSharingRows == NULL)
-      {
-        cout << "You should call Init of DistributedMatrix" << endl;
-        abort();
-      }    
-
-    return *ProcSharingRows;
-  }
-  
-  
-  //! returns row numbers for each set of shared rows
-  template<class T, class Prop, class Storage, class Allocator>
-  inline Vector<IVect>& DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetSharingRowNumbers()
-  {
-    if (this->SharingRowNumbers == NULL)
-      {
-        cout << "You should call Init of DistributedMatrix" << endl;
-        abort();
-      }    
-
-    return *SharingRowNumbers;
-  }
-  
-    
   //! adding a non-zero entry, between a local column
   //! and a non-local column
   /*!
@@ -448,7 +171,7 @@ namespace Seldon
   ::MltAddVector(const Treal& alpha, const Vector<Treal>& x,
 		 const Treal& beta, Vector<Treal>& y) const
   {
-    MltAddComplex(alpha, *this, x, beta, y);
+    MltAdd(alpha, *this, x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -456,7 +179,7 @@ namespace Seldon
   ::MltAddVector(const Tcplx& alpha, const Vector<Tcplx>& x,
 		 const Tcplx& beta, Vector<Tcplx>& y) const
   {
-    MltAddComplex(alpha, *this, x, beta, y);
+    MltAdd(alpha, *this, x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -465,7 +188,7 @@ namespace Seldon
 		 const Vector<Treal>& x,
 		 const Treal& beta, Vector<Treal>& y) const
   {
-    MltAddComplex(alpha, trans, *this, x, beta, y);
+    MltAdd(alpha, trans, *this, x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -474,21 +197,21 @@ namespace Seldon
 		 const Vector<Tcplx>& x,
 		 const Tcplx& beta, Vector<Tcplx>& y) const
   {
-    MltAddComplex(alpha, trans, *this, x, beta, y);
+    MltAdd(alpha, trans, *this, x, beta, y);
   }
   
   template <class T, class Prop, class Storage, class Allocator>
   inline void DistributedMatrix<T, Prop, Storage, Allocator>
   ::MltVector(const Vector<Treal>& x, Vector<Treal>& y) const
   {
-    MltComplex(*this, x, y);
+    Mlt(*this, x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
   inline void DistributedMatrix<T, Prop, Storage, Allocator>
   ::MltVector(const Vector<Tcplx>& x, Vector<Tcplx>& y) const
   {
-    MltComplex(*this, x, y);
+    Mlt(*this, x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -496,7 +219,7 @@ namespace Seldon
   ::MltVector(const SeldonTranspose& trans,
 	      const Vector<Treal>& x, Vector<Treal>& y) const
   {
-    MltComplex(trans, *this, x, y);
+    Mlt(trans, *this, x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -504,168 +227,154 @@ namespace Seldon
   ::MltVector(const SeldonTranspose& trans,
 	      const Vector<Tcplx>& x, Vector<Tcplx>& y) const
   {
-    MltComplex(trans, *this, x, y);
+    Mlt(trans, *this, x, y);
   }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
-		  const Vector<T0>& X, Vector<T0>& Y)
-  {
-    Mlt(A, X, Y);
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
-  {
-    Mlt(A, X, Y);
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
-		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
-  {
-    Mlt(A, X, Y);
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		  const Vector<T0>& X, Vector<T0>& Y)
-  {
-    throw WrongArgument("MltComplex", "Incompatible matrix-vector product");			
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const SeldonTranspose& trans,
-		  const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
-		  const Vector<T0>& X, Vector<T0>& Y)
-  {
-    if (trans.NoTrans())
-      Mlt(A, X, Y);
-    else if (trans.Trans())
-      Mlt(SeldonTrans, A, X, Y);
-    else
-      Mlt(SeldonConjTrans, A, X, Y);
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const SeldonTranspose& trans,
-		  const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
-  {
-    if (trans.NoTrans())
-      Mlt(A, X, Y);
-    else if (trans.Trans())
-      Mlt(SeldonTrans, A, X, Y);
-    else
-      Mlt(SeldonConjTrans, A, X, Y);
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const SeldonTranspose& trans,
-		  const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
-		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
-  {
-    if (trans.NoTrans())
-      Mlt(A, X, Y);
-    else if (trans.Trans())
-      Mlt(SeldonTrans, A, X, Y);
-    else
-      Mlt(SeldonConjTrans, A, X, Y);
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltComplex(const SeldonTranspose& trans,
-		  const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		  const Vector<T0>& X, Vector<T0>& Y)
-  {
-    throw WrongArgument("MltComplex", "Incompatible matrix-vector product");			
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const T0& alpha,
-		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
-		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y, bool assemble)
-  {
-    MltAdd(alpha, A, X, beta, Y, assemble);
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const complex<T0>& alpha,
-		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		     const Vector<complex<T0> >& X, const complex<T0>& beta,
-		     Vector<complex<T0> >& Y, bool assemble)
-  {
-    MltAdd(alpha, A, X, beta, Y, assemble);
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const complex<T0>& alpha,
-		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
-		     const Vector<complex<T0> >& X, const complex<T0>& beta,
-		     Vector<complex<T0> >& Y, bool assemble)
-  {
-    MltAdd(alpha, A, X, beta, Y, assemble);
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const T0& alpha,
-		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y, bool assemble)
-  {
-    throw WrongArgument("MltAddComplex", "Incompatible matrix-vector product");			
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const T0& alpha, const SeldonTranspose& trans,
-		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
-		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y, bool assemble)
-  {
-    if (trans.NoTrans())
-      MltAdd(alpha, SeldonNoTrans, A, X, beta, Y, assemble);
-    else if (trans.Trans())
-      MltAdd(alpha, SeldonTrans, A, X, beta, Y, assemble);
-    else
-      MltAdd(alpha, SeldonConjTrans, A, X, beta, Y, assemble);
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const complex<T0>& alpha, const SeldonTranspose& trans,
-		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		     const Vector<complex<T0> >& X, const complex<T0>& beta,
-		     Vector<complex<T0> >& Y, bool assemble)
-  {
-    if (trans.NoTrans())
-      MltAdd(alpha, SeldonNoTrans, A, X, beta, Y, assemble);
-    else if (trans.Trans())
-      MltAdd(alpha, SeldonTrans, A, X, beta, Y, assemble);
-    else
-      MltAdd(alpha, SeldonConjTrans, A, X, beta, Y, assemble);
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const complex<T0>& alpha, const SeldonTranspose& trans,
-		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
-		     const Vector<complex<T0> >& X, const complex<T0>& beta,
-		     Vector<complex<T0> >& Y, bool assemble)
-  {
-    if (trans.NoTrans())
-      MltAdd(alpha, SeldonNoTrans, A, X, beta, Y, assemble);
-    else if (trans.Trans())
-      MltAdd(alpha, SeldonTrans, A, X, beta, Y, assemble);
-    else
-      MltAdd(alpha, SeldonConjTrans, A, X, beta, Y, assemble);
-  }
-
-  template<class T0, class Prop0, class Storage0, class Allocator0>
-  void MltAddComplex(const T0& alpha, const SeldonTranspose& trans,
-		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y, bool assemble)
-  {
-    throw WrongArgument("MltAddComplex", "Incompatible matrix-vector product");			
-  }
-
 #endif
+
+
+  /****************************************
+   * Mlt, MltAdd for distributed matrices *
+   ****************************************/
+
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  inline void Mlt(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y)
+  {
+    MltVector(A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  inline void Mlt(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
+  {
+    MltVector(A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  inline void Mlt(const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y)
+  {
+    throw WrongArgument("MltComplex", "Incompatible matrix-vector product");			
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  inline void Mlt(const SeldonTranspose& trans,
+		  const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y)
+  {
+    if (trans.NoTrans())
+      MltVector(A, X, Y);
+    else if (trans.Trans())
+      MltVector(SeldonTrans, A, X, Y);
+    else
+      MltVector(SeldonConjTrans, A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  inline void Mlt(const SeldonTranspose& trans,
+		  const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y)
+  {
+    if (trans.NoTrans())
+      MltVector(A, X, Y);
+    else if (trans.Trans())
+      MltVector(SeldonTrans, A, X, Y);
+    else
+      MltVector(SeldonConjTrans, A, X, Y);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  inline void Mlt(const SeldonTranspose& trans,
+		  const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		  const Vector<T0>& X, Vector<T0>& Y)
+  {
+    throw WrongArgument("MltComplex", "Incompatible matrix-vector product");			
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  inline void MltAdd(const T0& alpha,
+		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y, bool assemble)
+  {
+    MltAddVector(alpha, A, X, beta, Y, assemble);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  inline void MltAdd(const complex<T0>& alpha,
+		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y, bool assemble)
+  {
+    MltAddVector(alpha, A, X, beta, Y, assemble);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  inline void MltAdd(const T0& alpha,
+		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y, bool assemble)
+  {
+    throw WrongArgument("MltAddComplex", "Incompatible matrix-vector product");			
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  inline void MltAdd(const T0& alpha, const SeldonTranspose& trans,
+		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y, bool assemble)
+  {
+    if (trans.NoTrans())
+      MltAddVector(alpha, SeldonNoTrans, A, X, beta, Y, assemble);
+    else if (trans.Trans())
+      MltAddVector(alpha, SeldonTrans, A, X, beta, Y, assemble);
+    else
+      MltAddVector(alpha, SeldonConjTrans, A, X, beta, Y, assemble);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  inline void MltAdd(const complex<T0>& alpha, const SeldonTranspose& trans,
+		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+		     const Vector<complex<T0> >& X, const complex<T0>& beta,
+		     Vector<complex<T0> >& Y, bool assemble)
+  {
+    if (trans.NoTrans())
+      MltAddVector(alpha, SeldonNoTrans, A, X, beta, Y, assemble);
+    else if (trans.Trans())
+      MltAddVector(alpha, SeldonTrans, A, X, beta, Y, assemble);
+    else
+      MltAddVector(alpha, SeldonConjTrans, A, X, beta, Y, assemble);
+  }
+
+  template<class T0, class Prop0, class Storage0, class Allocator0>
+  inline void MltAdd(const T0& alpha, const SeldonTranspose& trans,
+		     const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
+		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y, bool assemble)
+  {
+    throw WrongArgument("MltAddComplex", "Incompatible matrix-vector product");			
+  }
+
+  template <class T, class Prop0, class Storage0, class Allocator0,
+	    class Storage1, class Allocator1,
+	    class Storage2, class Allocator2>	    
+  inline void SOR(const DistributedMatrix<T, Prop0, Storage0, Allocator0>& M,
+		  Vector<T, Storage2, Allocator2>& Y,
+		  const Vector<T, Storage1, Allocator1>& X,
+		  const T& omega, int iter, int type_ssor)
+  {
+    SorVector(M, Y, X, omega, iter, type_ssor);
+  }
+
+
+  template <class T, class Prop0, class Storage0, class Allocator0,
+	    class Storage1, class Allocator1,
+	    class Storage2, class Allocator2>	    
+  inline void SOR(const class_SeldonTrans&,
+		  const DistributedMatrix<T, Prop0, Storage0, Allocator0>& M,
+		  Vector<T, Storage2, Allocator2>& Y,
+		  const Vector<T, Storage1, Allocator1>& X,
+		  const T& omega, int iter, int type_ssor)
+  {
+    SorVector(SeldonTrans, M, Y, X, omega, iter, type_ssor);
+  }
   
 }
 

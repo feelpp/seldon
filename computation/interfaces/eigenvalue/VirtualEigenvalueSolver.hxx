@@ -426,14 +426,19 @@ namespace Seldon
     void MltStiffness(const T& coef_mass, const T& coef_stiff,
 		      const Vector<T>& X, Vector<T>& Y);
 
-    void ComputeAndFactoRealMatrix(const Treal&, const Treal& a, const Treal& b, int which);
-    void ComputeAndFactoRealMatrix(const Tcplx&, const Treal& a, const Treal& b, int which);
+    void ComputeAndFactoRealMatrix(const Treal&, const Treal& a,
+				   const Treal& b, int which);
+    
+    void ComputeAndFactoRealMatrix(const Tcplx&, const Treal& a,
+				   const Treal& b, int which);
 
     void ComputeAndFactorizeStiffnessMatrix(const Treal& a, const Treal& b,
-					    int which_part = EigenProblem_Base<T>::COMPLEX_PART);
+					    int which_part =
+					    EigenProblem_Base<T>::COMPLEX_PART);
     
     void ComputeAndFactorizeStiffnessMatrix(const Tcplx& a, const Tcplx& b,
-                                            int which_part = EigenProblem_Base<T>::COMPLEX_PART);
+                                            int which_part =
+					    EigenProblem_Base<T>::COMPLEX_PART);
     
     void ComputeSolution(const Vector<Treal>& X, Vector<Treal>& Y);
     void ComputeSolution(const Vector<Tcplx>& X, Vector<Tcplx>& Y);
@@ -500,14 +505,19 @@ namespace Seldon
     void SolveCholeskyMass(const SeldonTranspose& transA, Vector<Treal>& X);
     void SolveCholeskyMass(const SeldonTranspose& transA, Vector<Tcplx>& X);
 
-    void ComputeAndFactoRealMatrix(const Treal&, const Treal& a, const Treal& b, int which);
-    void ComputeAndFactoRealMatrix(const Tcplx&, const Treal& a, const Treal& b, int which);
+    void ComputeAndFactoRealMatrix(const Treal&, const Treal& a,
+				   const Treal& b, int which);
+
+    void ComputeAndFactoRealMatrix(const Tcplx&, const Treal& a,
+				   const Treal& b, int which);
     
     void ComputeAndFactorizeStiffnessMatrix(const Treal& a, const Treal& b,
-					    int which = EigenProblem_Base<T>::COMPLEX_PART);
+					    int which =
+					    EigenProblem_Base<T>::COMPLEX_PART);
     
     void ComputeAndFactorizeStiffnessMatrix(const Tcplx& a, const Tcplx& b,
-                                            int which = EigenProblem_Base<T>::COMPLEX_PART);
+                                            int which =
+					    EigenProblem_Base<T>::COMPLEX_PART);
     
     void ComputeSolution(const Vector<Treal>& X, Vector<Treal>& Y);
     void ComputeSolution(const Vector<Tcplx>& X, Vector<Tcplx>& Y);
@@ -531,89 +541,15 @@ namespace Seldon
     
     static int default_solver;
     
-    static inline int GetDefaultSolver()
-    {
-#ifdef SELDON_WITH_ANASAZI
-      return ANASAZI;
-#endif
-
-#ifdef SELDON_WITH_FEAST
-      return FEAST;
-#endif
-
-#ifdef SELDON_WITH_ARPACK
-      return ARPACK;
-#endif
-
-      return -1;
-    }
+    static int GetDefaultSolver();
     
   };
   
   template<class T, class Prop, class Storage>
-  inline void GetEigenvaluesEigenvectors(EigenProblem_Base<T>& var_eig,
-					 Vector<T>& lambda, Vector<T>& lambda_imag,
-                                         Matrix<T, Prop, Storage>& eigen_vec)
-  {
-    int type_solver = TypeEigenvalueSolver::default_solver;
-    if (type_solver == TypeEigenvalueSolver::DEFAULT)
-      type_solver = TypeEigenvalueSolver::GetDefaultSolver();
-    
-    if (type_solver == TypeEigenvalueSolver::ARPACK)
-      {
-#ifdef SELDON_WITH_ARPACK
-        T zero; SetComplexZero(zero);
-        Matrix<T, General, ColMajor> eigen_old;
-        FindEigenvaluesArpack(var_eig, lambda, lambda_imag, eigen_old);
-        
-        // eigenvalues are sorted by ascending order
-        SortEigenvalues(lambda, lambda_imag, eigen_old,
-                        eigen_vec, var_eig.LARGE_EIGENVALUES,
-                        var_eig.GetTypeSorting(), zero, zero);
-#else
-        cout << "Recompile with Arpack" << endl;
-        abort();
-#endif
-      }
-    else if (type_solver == TypeEigenvalueSolver::ANASAZI)
-      {
-#ifdef SELDON_WITH_ANASAZI
-	T zero; SetComplexZero(zero);
-        Matrix<T, General, ColMajor> eigen_old;
-        FindEigenvaluesAnasazi(var_eig, lambda, lambda_imag, eigen_old);
-        
-        // eigenvalues are sorted by ascending order
-        SortEigenvalues(lambda, lambda_imag, eigen_old,
-                        eigen_vec, var_eig.LARGE_EIGENVALUES,
-                        var_eig.GetTypeSorting(), zero, zero);
-#else
-        cout << "Recompile with Anasazi" << endl;
-        abort();
-#endif
-      }
-    else if (type_solver == TypeEigenvalueSolver::FEAST)
-      {
-#ifdef SELDON_WITH_FEAST
-        T zero; SetComplexZero(zero);
-        Matrix<T, General, ColMajor> eigen_old;
-        FindEigenvaluesFeast(var_eig, lambda, lambda_imag, eigen_old);
-        
-        // eigenvalues are sorted by ascending order
-        SortEigenvalues(lambda, lambda_imag, eigen_old,
-                        eigen_vec, var_eig.LARGE_EIGENVALUES,
-                        var_eig.GetTypeSorting(), zero, zero);
-#else
-        cout << "Recompile with MKL" << endl;
-        abort();
-#endif
-      }
-    else
-      {
-        cout << "Recompile with eigenvalue solver" << endl;
-        abort();
-      }
-    
-  }
+  void GetEigenvaluesEigenvectors(EigenProblem_Base<T>& var_eig,
+				  Vector<T>& lambda, Vector<T>& lambda_imag,
+				  Matrix<T, Prop, Storage>& eigen_vec);
+  
 }
 
 #define SELDON_FILE_VIRTUAL_EIGENVALUE_SOLVER_HXX

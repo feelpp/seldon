@@ -26,6 +26,205 @@
 namespace Seldon
 {
   
+  /****************
+   * CONSTRUCTORS *
+   ****************/
+
+
+  //! Default constructor.
+  /*!
+    On exit, the array is an empty 0x0x0x0 4D array.
+  */
+  template <class T, class Allocator>
+  Array4D<T, Allocator>::Array4D()
+  {
+    length1_ = 0;
+    length2_ = 0;
+    length3_ = 0;
+    length4_ = 0;
+
+    length34_ = 0;
+    length234_ = 0;
+
+    data_ = NULL;
+  }
+
+
+  //! Main constructor.
+  /*! Builds a i x j x k x l 4D array, but data is not initialized.
+    \param i length in dimension #1.
+    \param j length in dimension #2.
+    \param k length in dimension #3.
+    \param l length in dimension #4.
+  */
+  template <class T, class Allocator>
+  Array4D<T, Allocator>::Array4D(int i, int j, int k, int l)
+  {
+    length1_ = i;
+    length2_ = j;
+    length3_ = k;
+    length4_ = l;
+
+    length34_ = length3_ * length4_;
+    length234_ = length2_ * length3_ * length4_;
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	data_ = Allocator::allocate(i*j*k*l, this);
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	length1_ = 0;
+	length2_ = 0;
+	length3_ = 0;
+	length4_ = 0;
+	length34_ = 0;
+	length234_ = 0;
+	data_ = NULL;
+      }
+    if (data_ == NULL && i != 0 && j != 0 && k != 0 && l != 0)
+      throw NoMemory("Array4D::Array4D(int, int, int, int)",
+		     string("Unable to allocate memory for an array of size ")
+		     + to_str(static_cast<long int>(i)
+			      * static_cast<long int>(j)
+			      * static_cast<long int>(k)
+			      * static_cast<long int>(l)
+			      * static_cast<long int>(sizeof(T)))
+		     + " bytes (" + to_str(i) + " x " + to_str(j)
+		     + " x " + to_str(k) + " x " + to_str(l) + " elements).");
+#endif
+
+  }
+
+
+  //! Copy constructor.
+  template <class T, class Allocator>
+  Array4D<T, Allocator>::Array4D(const Array4D<T, Allocator>& A)
+  {
+    length1_ = 0;
+    length2_ = 0;
+    length3_ = 0;
+    length4_ = 0;
+
+    length34_ = 0;
+    length234_ = 0;
+
+    data_ = NULL;
+
+    Copy(A);
+  }
+
+
+  /*********************
+   * MEMORY MANAGEMENT *
+   *********************/
+
+
+  //! Reallocates memory to resize the 4D array.
+  /*!
+    On exit, the array is a i x j x k x l 4D array.
+    \param i length in dimension #1.
+    \param j length in dimension #2.
+    \param k length in dimension #3.
+    \param k length in dimension #4.
+    \warning Depending on your allocator, data may be lost.
+  */
+  template <class T, class Allocator>
+  void Array4D<T, Allocator>::Reallocate(int i, int j, int k, int l)
+  {
+    if (i != length1_ || j != length2_ || k != length3_ || l != length4_)
+      {
+	length1_ = i;
+	length2_ = j;
+	length3_ = k;
+	length4_ = l;
+
+	length34_ = k * l;
+	length234_ = j * k * l;
+
+#ifdef SELDON_CHECK_MEMORY
+	try
+	  {
+#endif
+
+	    data_ =
+	      reinterpret_cast<pointer>(Allocator::reallocate(data_,
+							      i*j*k*l, this));
+
+#ifdef SELDON_CHECK_MEMORY
+	  }
+	catch (...)
+	  {
+	    length1_ = 0;
+	    length2_ = 0;
+	    length3_ = 0;
+	    length4_ = 0;
+	    length34_ = 0;
+	    length234_ = 0;
+	    data_ = NULL;
+	  }
+	if (data_ == NULL && i != 0 && j != 0 && k != 0 && l != 0)
+	  throw NoMemory("Array4D::Reallocate(int, int, int, int)",
+			 string("Unable to reallocate memory")
+			 + " for an array of size "
+			 + to_str(static_cast<long int>(i)
+				  * static_cast<long int>(j)
+				  * static_cast<long int>(k)
+				  * static_cast<long int>(l)
+				  * static_cast<long int>(sizeof(T)))
+			 + " bytes (" + to_str(i) + " x " + to_str(j) + " x "
+			 + to_str(k) + " x " + to_str(l) + " elements).");
+#endif
+
+      }
+  }
+
+
+  //! Clears the array.
+  /*!
+    Destructs the array.
+    \warning On exit, the 4D array is empty.
+  */
+  template <class T, class Allocator>
+  void Array4D<T, Allocator>::Clear()
+  {
+    length1_ = 0;
+    length2_ = 0;
+    length3_ = 0;
+    length4_ = 0;
+    length34_ = 0;
+    length234_ = 0;
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (data_ != NULL)
+	  {
+	    Allocator::deallocate(data_, length1_ * length234_);
+	    data_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	data_ = NULL;
+      }
+#endif
+    
+    this->length1_ = 0;
+    this->length2_ = 0;
+    this->length3_ = 0;
+    this->length4_ = 0;
+  }
+
   
   /************************
    * CONVENIENT FUNCTIONS *
@@ -40,8 +239,8 @@ namespace Seldon
   template <class T, class Allocator>
   void Array4D<T, Allocator>::Zero()
   {
-    array4D_allocator_.memoryset(data_, char(0),
-				 GetDataSize()*sizeof(value_type));
+    Allocator::memoryset(data_, char(0),
+			 GetDataSize()*sizeof(value_type));
   }
 
 

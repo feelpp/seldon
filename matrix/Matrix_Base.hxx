@@ -66,7 +66,7 @@ namespace Seldon
     int GetSize() const;
 
 #ifdef SELDON_WITH_VIRTUAL
-    virtual ~VirtualMatrix(){}
+    virtual ~VirtualMatrix();
     
   protected:
     typedef typename ClassComplexType<T>::Treal Treal;
@@ -146,10 +146,6 @@ namespace Seldon
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
 
-    // Static attributes.
-  protected:
-    static Allocator allocator_;
-
     // Attributes.
   protected:
     // Pointer to stored elements.
@@ -169,8 +165,6 @@ namespace Seldon
     const_pointer GetDataConst() const;
     void* GetDataVoid() const;
     const void* GetDataConstVoid() const;
-
-    Allocator& GetAllocator();
 
   };
 

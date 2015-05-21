@@ -486,10 +486,9 @@ namespace Seldon
   }
 
   
-  template<class cplx, class Allocator>
-  template<class TransStatus, class Vector1>
+  template<class cplx, class Allocator> template<class Vector1>
   void IlutPreconditioning<cplx, Allocator>
-  ::Solve(const TransStatus& transA, Vector1& z)
+  ::Solve(const SeldonTranspose& transA, Vector1& z)
   {
     if (transA.Trans())
       TransSolve(z);
@@ -947,7 +946,7 @@ namespace Seldon
   void GetIluk(int lfil, Matrix<cplx, General, ArrayRowSparse, Allocator>& A)
   {
     int n = A.GetM();
-    Vector<cplx, VectFull, NewAlloc<cplx> > w;
+    Vector<cplx> w;
     w.Reallocate(n+1);
     IVect jw(3*n), Index_Diag(n);
     Vector<IVect, VectFull, NewAlloc<IVect> > levs(n);
@@ -1320,7 +1319,8 @@ namespace Seldon
   void GetLU(MatrixSparse& A, IlutPreconditioning<T, Alloc2>& mat_lu,
 	     IVect& permut, bool keep_matrix, complex<T>& x)
   {
-    throw WrongArgument("GetLU(Matrix<complex<T> >& A, IlutPreconditioning<T>& mat_lu, bool)",
+    throw WrongArgument(string("GetLU(Matrix<complex<T> >& A, ") + 
+			"IlutPreconditioning<T>& mat_lu, bool)",
 			"The LU matrix must be complex");
   }
   
@@ -1329,7 +1329,8 @@ namespace Seldon
   void GetLU(MatrixSparse& A, IlutPreconditioning<complex<T>, Alloc2>& mat_lu,
 	     IVect& permut, bool keep_matrix, T& x)
   {
-    throw WrongArgument("GetLU(Matrix<T>& A, IlutPreconditioning<complex<T> >& mat_lu, bool)",
+    throw WrongArgument(string("GetLU(Matrix<T>& A, ")+
+			"IlutPreconditioning<complex<T> >& mat_lu, bool)",
 			"The sparse matrix must be complex");
   }
   

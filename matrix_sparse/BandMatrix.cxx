@@ -19,7 +19,7 @@
 
 #ifndef SELDON_FILE_BAND_MATRIX_CXX
 
-#include "BandMatrix.hxx"
+#include "BandMatrixInline.cxx"
 
 namespace Seldon
 {
@@ -40,54 +40,6 @@ namespace Seldon
   }
   
   
-  //! returns the number of rows
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Band<T, Prop, Storage, Allocator>::GetM() const
-  {
-    return this->m_;
-  }
-
-
-  //! returns the number of extra-diagonals in lower part of the matrix
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Band<T, Prop, Storage, Allocator>::GetKL() const
-  {
-    return kl_;
-  }
-
-
-  //! returns the number of extra-diagonals in upper part of the matrix
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Band<T, Prop, Storage, Allocator>::GetKU() const
-  {
-    return ku_;
-  }
-
-  
-  //! returns the number of rows
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Band<T, Prop, Storage, Allocator>::GetN() const
-  {
-    return this->n_;
-  }
-  
-
-  //! returns the number of elements stored in the matrix
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Band<T, Prop, Storage, Allocator>::GetDataSize() const
-  {
-    return data_.GetDataSize();
-  }
-  
-  
-  //! returns the memory used by the object in bytes
-  template <class T, class Prop, class Storage, class Allocator>
-  int64_t Matrix_Band<T, Prop, Storage, Allocator>::GetMemorySize() const
-  {
-    return sizeof(T)*int64_t(data_.GetDataSize());
-  }
-  
-  
   //! clears the matrix
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Band<T, Prop, Storage, Allocator>::Clear()
@@ -97,21 +49,6 @@ namespace Seldon
     this->m_ = 0;
     this->n_ = 0;
     data_.Clear();
-  }
-  
-  
-  //! fills non-zero entries with 0
-  template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Band<T, Prop, Storage, Allocator>::Zero()
-  {
-    data_.Zero();
-  }
-  
-  
-  //! present for compatibility
-  template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Band<T, Prop, Storage, Allocator>::HideMessages()
-  {
   }
   
   
@@ -129,23 +66,6 @@ namespace Seldon
   }
   
 
-  //! changes the size of the matrix, previous entries are lost
-  template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Band<T, Prop, Storage, Allocator>
-  ::Reallocate(int m, int n)
-  {
-    Reallocate(m, n, 0, 0);
-  }
-
-  
-  //! returns a pointer to the array containing values
-  template <class T, class Prop, class Storage, class Allocator>
-  T* Matrix_Band<T, Prop, Storage, Allocator>::GetData() const
-  {
-    return data_.GetData();
-  }
-  
-  
   //! sets A(i, j) = A(i, j) + val
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Band<T, Prop, Storage, Allocator>
@@ -208,16 +128,6 @@ namespace Seldon
   }  
   
   
-  //! multiplication by a scalar
-  template <class T, class Prop, class Storage, class Allocator>
-  Matrix<T, Prop, Storage, Allocator>& 
-  Matrix_Band<T, Prop, Storage, Allocator>::operator *=(const T& alpha)
-  {
-    data_ *= alpha;
-    return static_cast<Matrix<T, Prop, Storage, Allocator>& >(*this);
-  }
-  
-  
   //! returns a reference to A(i, j) 
   template <class T, class Prop, class Storage, class Allocator>
   T& Matrix_Band<T, Prop, Storage, Allocator>::Get(int i, int j)
@@ -248,31 +158,6 @@ namespace Seldon
   }
 
 
-  //! returns a reference to A(i, j) 
-  template <class T, class Prop, class Storage, class Allocator>
-  T& Matrix_Band<T, Prop, Storage, Allocator>::Val(int i, int j)
-  {
-    return Get(i, j);
-  }
-  
-  
-  //! returns a reference to A(i, j) 
-  template <class T, class Prop, class Storage, class Allocator>
-  const T& Matrix_Band<T, Prop, Storage, Allocator>::Val(int i, int j) const
-  {
-    return Get(i, j);
-  }
-  
-  
-  //! sets A(i, j)   
-  template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Band<T, Prop, Storage, Allocator>
-  ::Set(int i, int j, const T& val)
-  {
-    Get(i, j) = val;
-  }
-
-  
   //! sets the matrix to the identity matrix
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Band<T, Prop, Storage, Allocator>::SetIdentity()
@@ -437,9 +322,9 @@ namespace Seldon
   
   //! performs matrix-vector product y = y + alpha A x
   template <class T, class Prop, class Storage, class Allocator>
-  template<class StatusA, class T0, class T1>
+  template<class T0, class T1>
   void Matrix_Band<T, Prop, Storage, Allocator>
-  ::MltAdd(const T0& alpha, const StatusA& trans,
+  ::MltAdd(const T0& alpha, const SeldonTranspose& trans,
 	   const Vector<T1>& x, Vector<T1>& y) const
   {
     int d = kl_ + ku_; T1 val;
@@ -628,173 +513,11 @@ namespace Seldon
   }
   
   
-#ifdef SELDON_WITH_VIRTUAL
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Band<T, Prop, Storage, Allocator>
-  ::ApplySor(Vector<T>& x, const Vector<T>& r,
-	     const typename ClassComplexType<T>::Treal& omega,
-	     int nb_iter, int stage_ssor) const
-  {
-    SOR(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-	x, r, omega, nb_iter, stage_ssor);
-  }
-  
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Band<T, Prop, Storage, Allocator>
-  ::ApplySor(const class_SeldonTrans& trans, Vector<T>& x, const Vector<T>& r,
-	     const typename ClassComplexType<T>::Treal& omega,
-	     int nb_iter, int stage_ssor) const
-  {
-    SOR(trans,
-	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-	x, r, omega, nb_iter, stage_ssor);
-  }
-  
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Band<T, Prop, Storage, Allocator>
-  ::MltAddVector(const Treal& alpha, const Vector<Treal>& x,
-		 const Treal& beta, Vector<Treal>& y) const
-  {
-    MltAddComplex(alpha,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
-  }
-
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Band<T, Prop, Storage, Allocator>
-  ::MltAddVector(const Tcplx& alpha, const Vector<Tcplx>& x,
-		 const Tcplx& beta, Vector<Tcplx>& y) const
-  {
-    MltAddComplex(alpha,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
-  }
-
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Band<T, Prop, Storage, Allocator>
-  ::MltAddVector(const Treal& alpha, const SeldonTranspose& trans,
-		 const Vector<Treal>& x,
-		 const Treal& beta, Vector<Treal>& y) const
-  {
-    MltAddComplex(alpha, trans,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
-  }
-
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Band<T, Prop, Storage, Allocator>
-  ::MltAddVector(const Tcplx& alpha, const SeldonTranspose& trans,
-		 const Vector<Tcplx>& x,
-		 const Tcplx& beta, Vector<Tcplx>& y) const
-  {
-    MltAddComplex(alpha, trans,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
-  }
-  
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Band<T, Prop, Storage, Allocator>
-  ::MltVector(const Vector<Treal>& x, Vector<Treal>& y) const
-  {
-    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
-  }
-
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Band<T, Prop, Storage, Allocator>
-  ::MltVector(const Vector<Tcplx>& x, Vector<Tcplx>& y) const
-  {
-    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
-  }
-
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Band<T, Prop, Storage, Allocator>  
-  ::MltVector(const SeldonTranspose& trans,
-	      const Vector<Treal>& x, Vector<Treal>& y) const
-  {
-    MltComplex(trans,
-	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
-  }
-
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Band<T, Prop, Storage, Allocator>  
-  ::MltVector(const SeldonTranspose& trans,
-	      const Vector<Tcplx>& x, Vector<Tcplx>& y) const
-  {
-    MltComplex(trans,
-	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
-  }
-
-  template <class T, class Prop, class Storage, class Allocator>
-  inline bool Matrix_Band<T, Prop, Storage, Allocator>  
-  ::IsSymmetric() const
-  {
-    return false;
-  }
-#endif
-
-
   /****************
    * Matrix_Arrow *
    ****************/
   
 
-  //! default constructor
-  template <class T, class Prop, class Storage, class Allocator>
-  Matrix_Arrow<T, Prop, Storage, Allocator>::Matrix_Arrow()
-    : Matrix_Band<T, Prop, Storage, Allocator>()
-  {
-  }
-  
-  
-  //! returns the number of rows
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Arrow<T, Prop, Storage, Allocator>::GetM() const
-  {
-    return this->m_ + last_rows_.GetM();
-  }
-  
-  
-  //! returns the number of columns
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Arrow<T, Prop, Storage, Allocator>::GetN() const
-  {
-    return this->n_ + last_columns_.GetN();
-  }
-
-  
-  //! returns the number of dense rows placed at the end of the matrix
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Arrow<T, Prop, Storage, Allocator>::GetNbLastRow() const
-  {
-    return last_rows_.GetM();
-  }
-  
-  
-  //! returns the number of dense columns placed at the end of the matrix
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Arrow<T, Prop, Storage, Allocator>::GetNbLastCol() const
-  {
-    return last_columns_.GetN();
-  }
-  
-
-  //! returns the number of non-zero entries
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Arrow<T, Prop, Storage, Allocator>::GetDataSize() const
-  {
-    return this->data_.GetDataSize() + this->last_rows_.GetDataSize() 
-      + this->last_columns_.GetDataSize() + this->last_block_.GetDataSize();
-  }
-
-
-  //! returns the memory used by the object in bytes
-  template <class T, class Prop, class Storage, class Allocator>
-  int64_t Matrix_Arrow<T, Prop, Storage, Allocator>::GetMemorySize() const
-  {
-    return sizeof(T)*int64_t(GetDataSize());
-  }
-  
-  
   //! clears the matrix
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Arrow<T, Prop, Storage, Allocator>::Clear()
@@ -818,13 +541,6 @@ namespace Seldon
   }
   
   
-  //! present for compatibility
-  template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Arrow<T, Prop, Storage, Allocator>::HideMessages()
-  {
-  }
-  
-  
   //! changes the size of the matrix
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Arrow<T, Prop, Storage, Allocator>::
@@ -840,14 +556,6 @@ namespace Seldon
   }
 
 
-  //! changes the size of the matrix
-  template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Arrow<T, Prop, Storage, Allocator>::Reallocate(int m, int n)
-  {
-    Reallocate(m, n, 0, 0);
-  }
-  
-  
   //! performs the operation A(i, j) = A(i, j) + val
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Arrow<T, Prop, Storage, Allocator>
@@ -987,31 +695,6 @@ namespace Seldon
   }
 
 
-  //! returns a reference to A(i, j)   
-  template <class T, class Prop, class Storage, class Allocator>
-  T& Matrix_Arrow<T, Prop, Storage, Allocator>::Val(int i, int j)
-  {
-    return Get(i, j);
-  }
-  
-  
-  //! returns a reference to A(i, j) 
-  template <class T, class Prop, class Storage, class Allocator>
-  const T& Matrix_Arrow<T, Prop, Storage, Allocator>::Val(int i, int j) const
-  {
-    return Get(i, j);
-  }
-    
-
-  //! sets A(i, j)     
-  template <class T, class Prop, class Storage, class Allocator>
-  void Matrix_Arrow<T, Prop, Storage, Allocator>
-  ::Set(int i, int j, const T& val)
-  {
-    Get(i, j) = val;
-  }
-
-  
   //! sets the matrix to the identity matrix
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Arrow<T, Prop, Storage, Allocator>::SetIdentity()
@@ -1194,9 +877,9 @@ namespace Seldon
 
   //! performs matrix-vector product y = y + alpha A x  
   template <class T, class Prop, class Storage, class Allocator>
-  template<class StatusA, class T0, class T1>
+  template<class T0, class T1>
   void Matrix_Arrow<T, Prop, Storage, Allocator>::
-  MltAdd(const T0& alpha, const StatusA& trans,
+  MltAdd(const T0& alpha, const SeldonTranspose& trans,
 	 const Vector<T1>& x, Vector<T1>& y) const
   {
     // banded part
@@ -1295,7 +978,7 @@ namespace Seldon
   //! solves A x = b, assuming that Factorize has been previously called
   template <class T, class Prop, class Storage, class Allocator>
   template<class T1>
-  void Matrix_Arrow<T, Prop, Storage, Allocator>::Solve(Vector<T1>& x)
+  void Matrix_Arrow<T, Prop, Storage, Allocator>::Solve(Vector<T1>& x) const
   {
     int d = this->kl_ + this->ku_;
     // resolution of L y = x
@@ -1686,291 +1369,6 @@ namespace Seldon
 #endif
 
 
-  //! conversion from ArrayRowSparse to band matrix
-  template<class T, class Allocator>
-  void Copy(const Matrix<T, General, ArrayRowSparse, Allocator>& A,
-            Matrix<T, General, BandedCol, Allocator>& B)
-  {
-    B.Copy(A);
-  }
-  
-  
-  //! resolution of A x = b, once GetLU has been called
-  template<class T, class Allocator, class T1>
-  void SolveLU(Matrix<T, General, BandedCol, Allocator>& mat_lu,
-	       Vector<T1>& x)
-  {
-    mat_lu.Solve(x);
-  }
-  
-  
-  //! B = B + alpha*A
-  template<class T0, class T1, class Allocator>
-  void Add(const T0& alpha,
-	   const Matrix<T1, General, BandedCol, Allocator>& A,
-           Matrix<T1, General, BandedCol, Allocator>& B)           
-  {
-    B.Add_(alpha, A);
-  }
-  
-  
-  //! y = beta*y + alpha*A*x
-  template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T, General, BandedCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y)
-  {
-    Mlt(beta, y);
-    A.MltAdd(alpha, SeldonNoTrans, x, y);
-  }
-
-
-  //! y = beta*y + alpha*A*x
-  template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha, const class_SeldonNoTrans& trans,
-              const Matrix<T, General, BandedCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y)
-  {
-    Mlt(beta, y);
-    A.MltAdd(alpha, trans, x, y);
-  }
-
-  //! y = beta*y + alpha*A*x
-  template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha, const class_SeldonTrans& trans,
-              const Matrix<T, General, BandedCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y)
-  {
-    Mlt(beta, y);
-    A.MltAdd(alpha, trans, x, y);
-  }
-
-  //! y = beta*y + alpha*A*x
-  template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha, const class_SeldonConjTrans& trans,
-              const Matrix<T, General, BandedCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y)
-  {
-    Mlt(beta, y);
-    A.MltAdd(alpha, trans, x, y);
-  }
-
-
-  //! y = A*x
-  template<class T, class Allocator, class T1>
-  void Mlt(const Matrix<T, General, BandedCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y)
-  {
-    T1 zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    A.MltAdd(one, SeldonNoTrans, x, y);
-  }
-
-
-  //! y = A*x
-  template<class T, class Allocator, class T1>
-  void Mlt(const class_SeldonNoTrans& trans,
-	   const Matrix<T, General, BandedCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y)
-  {
-    T1 zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    A.MltAdd(one, trans, x, y);
-  }
-
-
-  //! y = A*x
-  template<class T, class Allocator, class T1>
-  void Mlt(const class_SeldonTrans& trans,
-	   const Matrix<T, General, BandedCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y)
-  {
-    T1 zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    A.MltAdd(one, trans, x, y);
-  }
-
-
-  //! y = A*x
-  template<class T, class Allocator, class T1>
-  void Mlt(const class_SeldonConjTrans& trans,
-           const Matrix<T, General, BandedCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y)
-  {
-    T1 zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    A.MltAdd(one, trans, x, y);
-  }
-
-  
-  //! A = alpha*A
-  template<class T0, class T1, class Allocator>
-  void Mlt(const T0& alpha,
-           Matrix<T1, General, BandedCol, Allocator>& A)
-  {
-    A *= alpha;
-  }
-  
-  
-  //! displays matrix
-  template<class T, class Allocator>
-  ostream& operator<<(ostream& out,
-		      const Matrix<T, General, BandedCol, Allocator>& A)
-  {
-    A.WriteText(out);
-    return out;
-  }
-
-
-  //! LU factorisation
-  template<class T, class Allocator>
-  void GetLU(Matrix<T, General, ArrowCol, Allocator>& A,
-             Matrix<T, General, ArrowCol, Allocator>& mat_lu,
-	     bool keep_matrix)
-  {
-    mat_lu = A;
-    if (!keep_matrix)
-      A.Clear();
-    
-    mat_lu.Factorize();
-  }
-  
-
-  //! LU factorisation
-  template<class T, class Allocator>
-  void GetLU(Matrix<T, General, ArrowCol, Allocator>& A)
-  {
-    A.Factorize();
-  }  
-  
-  
-  //! resolution of A x = b, once GetLU has been called
-  template<class T, class Allocator, class T1>
-  void SolveLU(Matrix<T, General, ArrowCol, Allocator>& mat_lu,
-	       Vector<T1>& x)
-  {
-    mat_lu.Solve(x);
-  }
-  
-
-  //! B = B + alpha*A
-  template<class T0, class T1, class Allocator>
-  void Add(const T0& alpha,
-	   const Matrix<T1, General, ArrowCol, Allocator>& A,
-           Matrix<T1, General, ArrowCol, Allocator>& B)           
-  {
-    B.Add_(alpha, A);
-  }
-  
-  
-  //! y = beta*y + alpha*A*x
-  template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T, General, ArrowCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y)
-  {
-    Mlt(beta, y);
-    A.MltAdd(alpha, SeldonNoTrans, x, y);
-  }
-
-
-  //! y = beta*y + alpha*A*x
-  template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha, const class_SeldonNoTrans& trans,
-              const Matrix<T, General, ArrowCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y)
-  {
-    Mlt(beta, y);
-    A.MltAdd(alpha, trans, x, y);
-  }
-
-
-  //! y = beta*y + alpha*A*x
-  template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha, const class_SeldonTrans& trans,
-              const Matrix<T, General, ArrowCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y)
-  {
-    Mlt(beta, y);
-    A.MltAdd(alpha, trans, x, y);
-  }
-
-
-  //! y = beta*y + alpha*A*x
-  template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha, const class_SeldonConjTrans& trans,
-              const Matrix<T, General, ArrowCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y)
-  {
-    Mlt(beta, y);
-    A.MltAdd(alpha, trans, x, y);
-  }
-
-
-  //! y = A*x
-  template<class T, class Allocator, class T1>
-  void Mlt(const Matrix<T, General, ArrowCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y)
-  {
-    T1 zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    A.MltAdd(one, SeldonNoTrans, x, y);
-  }
-
-
-  //! y = A*x
-  template<class T, class Allocator, class T1>
-  void Mlt(const class_SeldonNoTrans& trans,
-	   const Matrix<T, General, ArrowCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y)
-  {
-    T1 zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    A.MltAdd(one, trans, x, y);
-  }
-
-
-  //! y = A*x
-  template<class T, class Allocator, class T1>
-  void Mlt(const class_SeldonTrans& trans,
-	   const Matrix<T, General, ArrowCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y)
-  {
-    T1 zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    A.MltAdd(one, trans, x, y);
-  }
-
-
-  //! y = A*x
-  template<class T, class Allocator, class T1>
-  void Mlt(const class_SeldonConjTrans& trans,
-	   const Matrix<T, General, ArrowCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y)
-  {
-    T1 zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    A.MltAdd(one, trans, x, y);
-  }
-
-  
-  //! A = alpha*A
-  template<class T0, class T1, class Allocator>
-  void Mlt(const T0& alpha,
-           Matrix<T1, General, ArrowCol, Allocator>& A)
-  {
-    A *= alpha;
-  }
-  
-  
   //! Scaling of a matrix
   /*!
     A is replaced by Drow A Dcol
@@ -1987,15 +1385,6 @@ namespace Seldon
     for (int i = 0; i < A.GetM(); i++)
       for (int j = max(0, i-kl); j < min(n, i+ku+1); j++)
         A.Get(i, j) *= Drow(i)*Dcol(j);    
-  }
-
-  //! displays matrix
-  template<class T, class Allocator>
-  ostream& operator<<(ostream& out,
-		      const Matrix<T, General, ArrowCol, Allocator>& A)
-  {
-    A.WriteText(out);
-    return out;
   }
   
 }

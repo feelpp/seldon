@@ -121,8 +121,8 @@ namespace Seldon
     template<class Vector1>
     void Solve(Vector1& x);
     
-    template<class TransStatus, class Vector1>
-    void Solve(const TransStatus& TransA, Vector1& x);
+    template<class Vector1>
+    void Solve(const SeldonTranspose& TransA, Vector1& x);
 
     template<class T1, class Alloc1>
     void Solve(Matrix<T1, General, ColMajor, Alloc1>& x);
@@ -138,9 +138,9 @@ namespace Seldon
     void SolveDistributed(MPI::Comm& comm_facto, Vector1& x_solution,
                           const IVect& glob_number);
     
-    template<class TransStatus, class Vector1>
+    template<class Vector1>
     void SolveDistributed(MPI::Comm& comm_facto,
-			  const TransStatus& TransA, Vector1& x_solution,
+			  const SeldonTranspose& TransA, Vector1& x_solution,
                           const IVect& glob_number);
 #endif
     

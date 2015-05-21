@@ -77,18 +77,18 @@ namespace Seldon
 
 
 #ifdef SELDON_WITH_MPI
-  template<class TransA, class T>
-  void SolveLU_Distributed(MPI::Comm& comm, const TransA& transA,
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
 			   SparseDistributedSolver<T>& mat_lu,
                            Vector<T>& x, Vector<int>& global_col);
-
-  template<class TransA, class T>
-  void SolveLU_Distributed(MPI::Comm& comm, const TransA& transA,
+  
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
                            SparseDistributedSolver<complex<T> >& mat_lu,
                            Vector<T>& x, Vector<int>& global_col);
 
-  template<class TransA, class T>
-  void SolveLU_Distributed(MPI::Comm& comm, const TransA& transA,
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
 			   SparseDistributedSolver<T>& mat_lu,
                            Vector<complex<T> >& x, Vector<int>& global_col);
 #endif    

@@ -72,8 +72,8 @@ namespace Seldon
   //! Multiplication of a vector by a scalar
   template <class T0,
 	    class T1, class Storage1, class Allocator1>
-  void Mlt(const T0& alpha,
-	   Vector<T1, Storage1, Allocator1>& X)  throw()
+  void MltScalar(const T0& alpha,
+		 Vector<T1, Storage1, Allocator1>& X)  throw()
   {
     X *= alpha;
   }
@@ -91,9 +91,9 @@ namespace Seldon
   template <class T0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Vector<T1, Storage1, Allocator1>& X,
-	   Vector<T2, Storage2, Allocator2>& Y)
+  void AddVector(const T0& alpha,
+		 const Vector<T1, Storage1, Allocator1>& X,
+		 Vector<T2, Storage2, Allocator2>& Y)
   {
     T0 zero; SetComplexZero(zero);
     if (alpha != zero)
@@ -114,10 +114,10 @@ namespace Seldon
   template <class T0,
 	    class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Vector<T1, Storage1, Allocator1>& X,
-	   const T0& beta,
-           Vector<T2, Storage2, Allocator2>& Y)
+  void AddVector(const T0& alpha,
+		 const Vector<T1, Storage1, Allocator1>& X,
+		 const T0& beta,
+		 Vector<T2, Storage2, Allocator2>& Y)
   {
     T0 zero; SetComplexZero(zero);
     if (alpha != zero)
@@ -140,9 +140,9 @@ namespace Seldon
   template <class T0,
             class T1, class Allocator1,
             class T2, class Allocator2>
-  void Add(const T0 alpha,
-           const Vector<T1, PETScSeq, Allocator1>& X,
-           Vector<T2, PETScSeq, Allocator2>& Y)
+  void AddVector(const T0 alpha,
+		 const Vector<T1, PETScSeq, Allocator1>& X,
+		 Vector<T2, PETScSeq, Allocator2>& Y)
   {
     if (alpha != T0(0))
       {
@@ -160,9 +160,9 @@ namespace Seldon
   template <class T0,
             class T1, class Allocator1,
             class T2, class Allocator2>
-  void Add(const T0 alpha,
-           const Vector<T1, PETScPar, Allocator1>& X,
-           Vector<T2, PETScPar, Allocator2>& Y)
+  void AddVector(const T0 alpha,
+		 const Vector<T1, PETScPar, Allocator1>& X,
+		 Vector<T2, PETScPar, Allocator2>& Y)
   {
     if (alpha != T0(0))
       {
@@ -181,9 +181,9 @@ namespace Seldon
   template <class T0,
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Vector<T1, VectSparse, Allocator1>& X,
-	   Vector<T2, VectSparse, Allocator2>& Y)
+  void AddVector(const T0& alpha,
+		 const Vector<T1, VectSparse, Allocator1>& X,
+		 Vector<T2, VectSparse, Allocator2>& Y)
   {
     T0 zero;
     SetComplexZero(zero);
@@ -201,9 +201,9 @@ namespace Seldon
   template <class T0,
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Vector<T1, VectSparse, Allocator1>& X,
-	   Vector<T2, VectFull, Allocator2>& Y)
+  void AddVector(const T0& alpha,
+		 const Vector<T1, VectSparse, Allocator1>& X,
+		 Vector<T2, VectFull, Allocator2>& Y)
   {
     T0 zero;
     SetComplexZero(zero);
@@ -219,9 +219,9 @@ namespace Seldon
   template <class T0,
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
-  void Add(const T0& alpha,
-	   const Vector<T1, Collection, Allocator1>& X,
-	   Vector<T2, Collection, Allocator2>& Y)
+  void AddVector(const T0& alpha,
+		 const Vector<T1, Collection, Allocator1>& X,
+		 Vector<T2, Collection, Allocator2>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -236,20 +236,20 @@ namespace Seldon
   template <class T0,
 	    class T1, template <class U1> class Allocator1,
 	    class T2, template <class U2> class Allocator2>
-  void Add(const T0& alpha,
-	   const
-           Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
-	   Vector<FloatDouble, DenseSparseCollection, Allocator2<T2> >& Y)
+  void AddVector(const T0& alpha,
+		 const
+		 Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
+		 Vector<FloatDouble, DenseSparseCollection, Allocator2<T2> >& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(X, Y, "Add(X, Y)");
 #endif
 
-    Add(alpha, X.GetFloatDense(), Y.GetFloatDense());
-    Add(alpha, X.GetFloatSparse(), Y.GetFloatSparse());
-    Add(alpha, X.GetDoubleDense(), Y.GetDoubleDense());
-    Add(alpha, X.GetDoubleSparse(), Y.GetDoubleSparse());
+    AddVector(alpha, X.GetFloatDense(), Y.GetFloatDense());
+    AdVectord(alpha, X.GetFloatSparse(), Y.GetFloatSparse());
+    AddVector(alpha, X.GetDoubleDense(), Y.GetDoubleDense());
+    AddVector(alpha, X.GetDoubleSparse(), Y.GetDoubleSparse());
   }
 
 
@@ -257,10 +257,10 @@ namespace Seldon
   template <class T0,
 	    class T1, template <class U1> class Allocator1,
 	    class T2, class Storage2, class Allocator2>
-  void Add(const T0& alpha,
-	   const
-           Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
-	   Vector<T2, Storage2, Allocator2>& Y)
+  void AddVector(const T0& alpha,
+		 const
+		 Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
+		 Vector<T2, Storage2, Allocator2>& Y)
   {
     if (alpha != T0(0))
       {
@@ -290,8 +290,8 @@ namespace Seldon
   //! Y = X
   template <class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
-  void Copy(const Vector<T1, Storage1, Allocator1>& X,
-	    Vector<T2, Storage2, Allocator2>& Y)
+  void CopyVector(const Vector<T1, Storage1, Allocator1>& X,
+		  Vector<T2, Storage2, Allocator2>& Y)
   {
     Y.Copy(X);
   }
@@ -300,8 +300,8 @@ namespace Seldon
   //! Y = X
   template <class T1, class Allocator1,
 	    class T2, class Allocator2>
-  void Copy(const Vector<T1, Collection, Allocator1>& X,
-	    Vector<T2, VectFull, Allocator2>& Y)
+  void CopyVector(const Vector<T1, Collection, Allocator1>& X,
+		  Vector<T2, VectFull, Allocator2>& Y)
   {
     Y.Clear();
     for (int i = 0; i < X.GetNvector(); i++)
@@ -310,8 +310,8 @@ namespace Seldon
 
 
   template<class T, class Alloc1, class Alloc2>
-  void Copy(const Vector<T, PETScPar, Alloc1>& A,
-            Vector<T, VectFull, Alloc2>& B)
+  void CopyVector(const Vector<T, PETScPar, Alloc1>& A,
+		  Vector<T, VectFull, Alloc2>& B)
   {
     B.Reallocate(A.GetLocalM());
     T *local_data;
@@ -323,8 +323,8 @@ namespace Seldon
 
 
   template<class T, class Alloc1, class Alloc2>
-  void Copy(const Vector<T, VectFull, Alloc1>& A,
-            Vector<T, PETScPar, Alloc2>& B)
+  void CopyVector(const Vector<T, VectFull, Alloc1>& A,
+		  Vector<T, PETScPar, Alloc2>& B)
   {
     T *local_data;
     VecGetArray(B.GetPetscVector(), &local_data);
@@ -396,8 +396,8 @@ namespace Seldon
   //! Scalar product between two vectors.
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
-  T1 DotProd(const Vector<T1, Storage1, Allocator1>& X,
-	     const Vector<T2, Storage2, Allocator2>& Y)
+  T1 DotProdVector(const Vector<T1, Storage1, Allocator1>& X,
+		   const Vector<T2, Storage2, Allocator2>& Y)
   {
     T1 value;
     SetComplexZero(value);
@@ -416,8 +416,9 @@ namespace Seldon
   //! Scalar product between two vector collections.
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
-  typename T1::value_type DotProd(const Vector<T1, Collection, Allocator1>& X,
-				  const Vector<T2, Collection, Allocator2>& Y)
+  typename T1::value_type
+  DotProdVector(const Vector<T1, Collection, Allocator1>& X,
+		const Vector<T2, Collection, Allocator2>& Y)
   {
     typename T1::value_type value(0);
 
@@ -426,7 +427,7 @@ namespace Seldon
 #endif
 
     for (int i = 0; i < X.GetNvector(); i++)
-      value += DotProd(X.GetVector(i), Y.GetVector(i));
+      value += DotProdVector(X.GetVector(i), Y.GetVector(i));
     return value;
   }
 
@@ -435,10 +436,10 @@ namespace Seldon
   template<class T1, template <class U1> class Allocator1,
 	   class T2, template <class U2> class Allocator2>
   double
-  DotProd(const
-          Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
-          const
-          Vector<FloatDouble, DenseSparseCollection, Allocator2<T2> >& Y)
+  DotProdVector(const
+		Vector<FloatDouble, DenseSparseCollection, Allocator1<T1> >& X,
+		const
+		Vector<FloatDouble, DenseSparseCollection, Allocator2<T2> >& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -446,31 +447,21 @@ namespace Seldon
 #endif
 
     double value(0.);
-    value += DotProd(X.GetFloatDense(), Y.GetFloatDense());
-    value += DotProd(X.GetFloatSparse(), Y.GetFloatSparse());
-    value += DotProd(X.GetDoubleDense(), Y.GetDoubleDense());
-    value += DotProd(X.GetDoubleSparse(), Y.GetDoubleSparse());
+    value += DotProdVector(X.GetFloatDense(), Y.GetFloatDense());
+    value += DotProdVector(X.GetFloatSparse(), Y.GetFloatSparse());
+    value += DotProdVector(X.GetDoubleDense(), Y.GetDoubleDense());
+    value += DotProdVector(X.GetDoubleSparse(), Y.GetDoubleSparse());
     return value;
-  }
-
-
-  //! Scalar product between two vectors.
-  template<class T1, class Storage1, class Allocator1,
-	   class T2, class Storage2, class Allocator2>
-  T1 DotProdConj(const Vector<T1, Storage1, Allocator1>& X,
-		 const Vector<T2, Storage2, Allocator2>& Y)
-  {
-    return DotProd(X, Y);
   }
 
 
   //! Scalar product between two vectors conj(X).Y .
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
-  complex<T1> DotProdConj(const Vector<complex<T1>, Storage1, Allocator1>& X,
-			  const Vector<T2, Storage2, Allocator2>& Y)
+  T1 DotProdConjVector(const Vector<T1, Storage1, Allocator1>& X,
+		       const Vector<T2, Storage2, Allocator2>& Y)
   {
-    complex<T1> value;
+    T1 value;
     SetComplexZero(value);
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -487,8 +478,8 @@ namespace Seldon
   //! Scalar product between two sparse vectors.
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
-  T1 DotProd(const Vector<T1, VectSparse, Allocator1>& X,
-	     const Vector<T2, VectSparse, Allocator2>& Y)
+  T1 DotProdVector(const Vector<T1, VectSparse, Allocator1>& X,
+		   const Vector<T2, VectSparse, Allocator2>& Y)
   {
     T1 value;
     SetComplexZero(value);
@@ -515,8 +506,8 @@ namespace Seldon
   //! Scalar product between a sparse vector and a dense vector
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
-  T1 DotProd(const Vector<T1, VectSparse, Allocator1>& X,
-	     const Vector<T2, VectFull, Allocator2>& Y)
+  T1 DotProdVector(const Vector<T1, VectSparse, Allocator1>& X,
+		   const Vector<T2, VectFull, Allocator2>& Y)
   {
     T1 value;
     SetComplexZero(value);
@@ -530,11 +521,12 @@ namespace Seldon
   //! Scalar product between two sparse vectors conj(X).Y.
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
-  complex<T1>
-  DotProdConj(const Vector<complex<T1>, VectSparse, Allocator1>& X,
-	      const Vector<T2, VectSparse, Allocator2>& Y)
+  T1
+  DotProdConjVector(const Vector<T1, VectSparse, Allocator1>& X,
+		    const Vector<T2, VectSparse, Allocator2>& Y)
   {
-    complex<T1> value(0, 0);
+    T1 value;
+    SetComplexZero(value);
 
     int size_x = X.GetSize();
     int size_y = Y.GetSize();
@@ -558,11 +550,12 @@ namespace Seldon
   //! Scalar product between a sparse vector and dense one conj(X).Y.
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
-  complex<T1>
-  DotProdConj(const Vector<complex<T1>, VectSparse, Allocator1>& X,
-	      const Vector<T2, VectFull, Allocator2>& Y)
+  T1
+  DotProdConjVector(const Vector<T1, VectSparse, Allocator1>& X,
+		    const Vector<T2, VectFull, Allocator2>& Y)
   {
-    complex<T1> value(0, 0);
+    T1 value;
+    SetComplexZero(value);
 
     for (int i = 0; i < X.GetM(); i++)
       value += conjugate(X.Value(i))*Y(X.Index(i));
@@ -580,11 +573,16 @@ namespace Seldon
 
   
   //! returns 1-norm of X
+  /*!
+    For complex numbers, we use |z| = |Re(z)| + |Im(z)|
+    so that the function is the same as Blas equivalent dzasum
+  */
   template<class T1, class Storage1, class Allocator1>
-  T1 Norm1(const Vector<T1, Storage1, Allocator1>& X)
+  typename ClassComplexType<T1>::Treal
+  Norm1(const Vector<T1, Storage1, Allocator1>& X)
   {
-    T1 value(0);
-
+    typename ClassComplexType<T1>::Treal value(0);
+    
     for (int i = 0; i < X.GetM(); i++)
       value += ComplexAbs(X(i));
 
@@ -597,47 +595,18 @@ namespace Seldon
     For complex numbers, we use |z| = |Re(z)| + |Im(z)|
     so that the function is the same as Blas equivalent dzasum
   */
-  template<class T1, class Storage1, class Allocator1>
-  T1 Norm1(const Vector<complex<T1>, Storage1, Allocator1>& X)
-  {
-    T1 value(0);
-    
-    for (int i = 0; i < X.GetM(); i++)
-      value += ComplexAbs(X(i));
-    
-    return value;
-  }
-
-
-  //! returns 1-norm of X
   template<class T1, class Allocator1>
-  T1 Norm1(const Vector<T1, VectSparse, Allocator1>& X)
+  typename ClassComplexType<T1>::Treal
+  Norm1(const Vector<T1, VectSparse, Allocator1>& X)
   {
-    T1 value(0);
-
+    typename ClassComplexType<T1>::Treal value(0);
+    
     for (int i = 0; i < X.GetSize(); i++)
       value += ComplexAbs(X.Value(i));
 
     return value;
   }
-
-
-  //! returns 1-norm of X
-  /*!
-    For complex numbers, we use |z| = |Re(z)| + |Im(z)|
-    so that the function is the same as Blas equivalent dzasum
-  */
-  template<class T1, class Allocator1>
-  T1 Norm1(const Vector<complex<T1>, VectSparse, Allocator1>& X)
-  {
-    T1 value(0);
-
-    for (int i = 0; i < X.GetSize(); i++)
-      value += ComplexAbs(X.Value(i));
-
-    return value;
-  }
-
+  
 
   // NORM1 //
   ///////////
@@ -900,11 +869,11 @@ namespace Seldon
   */
   template <class T0, class Allocator0,
 	    class T1, class Allocator1>
-  void CheckDim(const Vector<T0, Vect_Sparse, Allocator0>& X,
-		const Vector<T1, Vect_Sparse, Allocator1>& Y,
+  void CheckDim(const Vector<T0, VectSparse, Allocator0>& X,
+		const Vector<T1, VectSparse, Allocator1>& Y,
 		string function, string op)
   {
-    // The dimension of a Vector<Vect_Sparse> is infinite,
+    // The dimension of a Vector<VectSparse> is infinite,
     // so no vector dimension checking has to be done.
   }
 
@@ -959,9 +928,9 @@ namespace Seldon
   */
   template <class T0, class Allocator0, class Allocator00,
 	    class T1, class Allocator1, class Allocator11>
-  void CheckDim(const Vector<Vector<T0, Vect_Sparse, Allocator0>,
+  void CheckDim(const Vector<Vector<T0, VectSparse, Allocator0>,
                 Collection, Allocator00>& X,
-		const Vector<Vector<T1, Vect_Sparse, Allocator1>,
+		const Vector<Vector<T1, VectSparse, Allocator1>,
                 Collection, Allocator11>& Y,
 		string function, string op)
   {

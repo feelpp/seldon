@@ -164,10 +164,10 @@ namespace Seldon
   }
   
   
-  template<class T, class Allocator> template<class Vector1>
-  void SparseSeldonSolver<T, Allocator>::Solve(Vector1& z)
+  template<class T, class Allocator> template<class T1>
+  void SparseSeldonSolver<T, Allocator>::Solve(Vector<T1>& z)
   {
-    Vector1 xtmp(z);
+    Vector<T1> xtmp(z);
 
     if (symmetric_matrix)
       {
@@ -192,16 +192,15 @@ namespace Seldon
   }
   
   
-  template<class T, class Allocator>
-  template<class TransStatus, class Vector1>
+  template<class T, class Allocator> template<class T1>
   void SparseSeldonSolver<T, Allocator>
-  ::Solve(const TransStatus& TransA, Vector1& z)
+  ::Solve(const SeldonTranspose& TransA, Vector<T1>& z)
   {
     if (symmetric_matrix)
       Solve(z);
     else
       {
-	Vector1 xtmp(z);
+	Vector<T1> xtmp(z);
 	if (TransA.Trans())
 	  {
 	    for (int i = 0; i < z.GetM(); i++)
@@ -487,12 +486,12 @@ namespace Seldon
   }
   
   
-  template<class real, class cplx,
-	   class Allocator, class Storage2, class Allocator2>
-  void SolveLU(const Matrix<real, General, ArrayRowSparse, Allocator>& A,
-               Vector<cplx, Storage2, Allocator2>& x)
+  template<class T1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  void SolveLuVector(const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
+		     Vector<T2, Storage2, Allocator2>& x)
   {
-    SolveLU(SeldonNoTrans, A, x);
+    SolveLuVector(SeldonNoTrans, A, x);
   }
   
   
@@ -500,14 +499,14 @@ namespace Seldon
   /*! L and U are assumed to be stored in A. The diagonal of A contains the
     inverse of the diagonal of U.
   */
-  template<class real, class cplx, class TransStatus,
-	   class Allocator, class Storage2, class Allocator2>
-  void SolveLU(const TransStatus& transA,
-               const Matrix<real, General, ArrayRowSparse, Allocator>& A,
-               Vector<cplx, Storage2, Allocator2>& x)
+  template<class T1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  void SolveLuVector(const SeldonTranspose& transA,
+		     const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
+		     Vector<T2, Storage2, Allocator2>& x)
   {
     int i, k, n, k_;
-    real inv_diag;
+    T1 inv_diag;
     n = A.GetM();
 
     if (transA.Trans())
@@ -808,17 +807,27 @@ namespace Seldon
   }
 
 
+  template<class T1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  void SolveLuVector(const Matrix<T1, Symmetric, ArrayRowSymSparse, Allocator1>& A,
+		     Vector<T2, Storage2, Allocator2>& x)
+  {
+    SolveLuVector(SeldonNoTrans, A, x);
+  }
+
+
   //! Resolution of L D L^t y = x (result is overwritten in x)
   /*! The factor L^t is assumed to be stored in matrix A. The diagonal of A is
     equal to the inverse of diagonal D.
   */
-  template<class real, class cplx, class Allocator,
-           class Storage2, class Allocator2>
-  void SolveLU(const Matrix<real, Symmetric, ArrayRowSymSparse, Allocator>& A,
-               Vector<cplx, Storage2, Allocator2>& x)
+  template<class T1, class Allocator1,
+	   class T2, class Storage2, class Allocator2>
+  void SolveLuVector(const SeldonTranspose& transA,
+		     const Matrix<T1, Symmetric, ArrayRowSymSparse, Allocator1>& A,
+		     Vector<T2, Storage2, Allocator2>& x)
   {
     int n = A.GetM(), j_row;
-    cplx tmp;
+    T2 tmp;
 
     // We solve first L y = b.
     for (int i_col = 0; i_col < n ; i_col++)
@@ -873,7 +882,8 @@ namespace Seldon
   void GetLU(MatrixSparse& A, SparseSeldonSolver<T, Alloc2>& mat_lu,
 	     bool keep_matrix, complex<T>& x)
   {
-    throw WrongArgument("GetLU(Matrix<complex<T> >& A, SparseSeldonSolver<T>& mat_lu, bool)", 
+    throw WrongArgument("GetLU(Matrix<complex<T> >& A, "
+			+ string("SparseSeldonSolver<T>& mat_lu, bool)"), 
 			"The LU matrix must be complex");
   }
 
@@ -883,7 +893,8 @@ namespace Seldon
   void GetLU(MatrixSparse& A, SparseSeldonSolver<complex<T>, Alloc2>& mat_lu,
 	     bool keep_matrix, T& x)
   {
-    throw WrongArgument("GetLU(Matrix<T>& A, SparseSeldonSolver<complex<T> >& mat_lu, bool)", 
+    throw WrongArgument("GetLU(Matrix<T>& A, " + 
+			string("SparseSeldonSolver<complex<T> >& mat_lu, bool)"), 
 			"The sparse matrix must be complex");
   }
 
@@ -913,7 +924,8 @@ namespace Seldon
   void GetLU(MatrixSparse& A, SparseSeldonSolver<T, Alloc2>& mat_lu,
 	     IVect& permut, bool keep_matrix, complex<T>& x)
   {
-    throw WrongArgument("GetLU(Matrix<complex<T> >& A, SparseSeldonSolver<T>& mat_lu, bool)", 
+    throw WrongArgument(string("GetLU(Matrix<complex<T> >& A, ")
+			+ "SparseSeldonSolver<T>& mat_lu, bool)", 
 			"The LU matrix must be complex");
   }
 
@@ -923,7 +935,8 @@ namespace Seldon
   void GetLU(MatrixSparse& A, SparseSeldonSolver<complex<T>, Alloc2>& mat_lu,
 	     IVect& permut, bool keep_matrix, T& x)
   {
-    throw WrongArgument("GetLU(Matrix<T>& A, SparseSeldonSolver<complex<T> >& mat_lu, bool)", 
+    throw WrongArgument(string("GetLU(Matrix<T>& A, ") + 
+			"SparseSeldonSolver<complex<T> >& mat_lu, bool)", 
 			"The sparse matrix must be complex");
   }
   
@@ -948,8 +961,8 @@ namespace Seldon
   }
 
 
-  template<class T, class Alloc2, class T1, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Alloc2, class T1, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       SparseSeldonSolver<T, Alloc2>& mat_lu,
 	       Vector<T1, VectFull, Allocator>& x)
   {

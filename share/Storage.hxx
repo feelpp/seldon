@@ -395,6 +395,65 @@ namespace Seldon
   {
   };
 
+  // complex matrices (in matrix_sparse/complex)
+
+  class ColComplexSparse
+  {
+  public:
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static const bool Sparse = true;
+  };
+
+
+  class RowComplexSparse
+  {
+  public:
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static const bool Sparse = true;
+  };
+
+
+  class ColSymComplexSparse
+  {
+  public:
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static const bool Sparse = true;
+  };
+
+
+  class RowSymComplexSparse
+  {
+  public:
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static const bool Sparse = true;
+  };
+
+
+  class ArrayRowComplexSparse : public RowComplexSparse
+  {
+  };
+
+  class ArrayRowSymComplexSparse : public RowSymComplexSparse
+  {
+  };
+
+  class ArrayColComplexSparse : public ColComplexSparse
+  {
+  };
+
+  class ArrayColSymComplexSparse : public ColSymComplexSparse
+  {
+  };
+
+
 
 } // namespace Seldon.
 

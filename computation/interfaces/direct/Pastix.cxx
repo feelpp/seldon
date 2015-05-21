@@ -234,7 +234,7 @@ namespace Seldon
     pastix_int_t nrhs = 1, nnz = 0;
     pastix_int_t* ptr_ = NULL;
     pastix_int_t* ind_ = NULL;
-    Vector<pastix_int_t, VectFull, CallocAlloc<pastix_int_t> > Ptr, Ind;
+    Vector<pastix_int_t> Ptr, Ind;
 
     iparm[IPARM_SYM] = API_SYM_YES;
     iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
@@ -288,8 +288,8 @@ namespace Seldon
     pastix_int_t* ptr_ = NULL;
     pastix_int_t* ind_ = NULL;
     T* values_ = NULL;
-    Vector<pastix_int_t, VectFull, CallocAlloc<pastix_int_t> > Ptr, IndRow;
-    Vector<T, VectFull, CallocAlloc<T> > Val;
+    Vector<pastix_int_t> Ptr, IndRow;
+    Vector<T> Val;
 
     General prop;
     ConvertToCSC(mat, prop, Ptr, IndRow, Val, true);
@@ -373,8 +373,8 @@ namespace Seldon
     pastix_int_t* ind_ = NULL;
 
     T* values_ = NULL;
-    Vector<pastix_int_t, VectFull, MallocAlloc<pastix_int_t> > Ptr, IndRow;
-    Vector<T, VectFull, MallocAlloc<T> > Val;
+    Vector<pastix_int_t> Ptr, IndRow;
+    Vector<T> Val;
 
     Symmetric prop;
     ConvertToCSR(mat, prop, Ptr, IndRow, Val);
@@ -437,8 +437,8 @@ namespace Seldon
 
 
   //! solving A x = b or A^T x = b (A is already factorized)
-  template<class T> template<class Allocator2, class Transpose_status>
-  void MatrixPastix<T>::Solve(const Transpose_status& TransA,
+  template<class T> template<class Allocator2>
+  void MatrixPastix<T>::Solve(const SeldonTranspose& TransA,
                               Vector<T, VectFull, Allocator2>& x)
   {
     pastix_int_t nrhs = 1;
@@ -473,8 +473,8 @@ namespace Seldon
 
 
   //! solving A x = b or A^T x = b (A is already factorized)
-  template<class T> template<class Allocator2, class Transpose_status>
-  void MatrixPastix<T>::Solve(const Transpose_status& TransA,
+  template<class T> template<class Allocator2>
+  void MatrixPastix<T>::Solve(const SeldonTranspose& TransA,
                               Matrix<T, General, ColMajor, Allocator2>& x)
   {
     pastix_int_t nrhs = x.GetN();
@@ -622,9 +622,9 @@ namespace Seldon
 
   //! solves A x = b or A^T x = b in parallel
   template<class T>
-  template<class Allocator2, class Transpose_status, class Tint>
+  template<class Allocator2, class Tint>
   void MatrixPastix<T>::SolveDistributed(MPI::Comm& comm_facto,
-                                         const Transpose_status& TransA,
+                                         const SeldonTranspose& TransA,
                                          Vector<T, Vect_Full, Allocator2>& x,
                                          const Vector<Tint>& glob_num)
   {
@@ -710,8 +710,8 @@ namespace Seldon
 
   //! LU resolution with a vector whose type is the same as Pastix object
   //! Solves transpose system A^T x = b or A x = b depending on TransA
-  template<class T, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixPastix<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
@@ -729,8 +729,8 @@ namespace Seldon
 
   //! LU resolution with a matrix whose type is the same as UmfPack object
   //! Solves transpose system A^T x = b or A x = b depending on TransA
-  template<class T, class Prop, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Prop, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixPastix<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
@@ -758,8 +758,8 @@ namespace Seldon
   
 
   //! Solves A x = b or A^T x = b, where A is real and x is complex
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixPastix<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x)
   {
     Matrix<double, General, ColMajor> y(x.GetM(), 2);
@@ -780,7 +780,8 @@ namespace Seldon
 
   //! Solves A x = b, where A is complex and x is real => Forbidden
   template<class Allocator>
-  void SolveLU(MatrixPastix<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x)
+  void SolveLU(MatrixPastix<complex<double> >& mat_lu,
+	       Vector<double, VectFull, Allocator>& x)
   {
     throw WrongArgument("SolveLU(MatrixPastix<complex<double> >, Vector<double>)", 
 			"The result should be a complex vector");
@@ -788,8 +789,8 @@ namespace Seldon
 
   
   //! Solves A x = b or A^T x = b, where A is complex and x is real => Forbidden  
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixPastix<complex<double> >& mat_lu,
                Vector<double, VectFull, Allocator>& x)
   {
@@ -809,18 +810,18 @@ namespace Seldon
   }
 
 
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Allocator>
   void
-  SolveCholesky(const Transpose_status& TransA,
+  SolveCholesky(const SeldonTranspose& TransA,
                 MatrixPastix<T>& mat_chol, Vector<T, VectFull, Allocator>& x)
   {
     mat_chol.Solve(TransA, x);
   }
 
 
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Allocator>
   void
-  MltCholesky(const Transpose_status& TransA,
+  MltCholesky(const SeldonTranspose& TransA,
               MatrixPastix<T>& mat_chol, Vector<T, VectFull, Allocator>& x)
   {
     cout << "Matrix-vector product y = L x not implemented in Pastix" << endl;

@@ -25,6 +25,395 @@
 namespace Seldon
 {
 
+  /*********************
+   * MEMORY MANAGEMENT *
+   *********************/
+
+
+  //! Clears the vector.
+  /*!
+    Destructs the vector.
+    \warning On exit, the vector is an empty vector.
+  */
+  template <class T, class Allocator>
+  void Vector<T, VectSparse, Allocator>::Clear()
+  {
+    // 'data_' is released.
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+	if (this->data_ != NULL)
+	  {
+	    Allocator::deallocate(this->data_, this->m_);
+	    this->data_ = NULL;
+	  }
+
+	if (index_ != NULL)
+	  {
+	    AllocatorInt::deallocate(index_, this->m_);
+	    index_ = NULL;
+	  }
+
+	this->m_ = 0;
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->data_ = NULL;
+	index_ = NULL;
+	this->m_ = 0;
+	return;
+      }
+#endif
+
+  }
+
+
+  //! Vector reallocation.
+  /*!
+    The vector is resized.
+    \param i new length of the vector.
+    \warning Depending on your allocator, previous non-zero entries may be
+    lost.
+  */
+  template <class T, class Allocator>
+  void Vector<T, VectSparse, Allocator>::Reallocate(int i)
+  {
+
+    if (i != this->m_)
+      {
+
+	this->m_ = i;
+
+#ifdef SELDON_CHECK_MEMORY
+	try
+	  {
+#endif
+
+	    this->data_ =
+	      reinterpret_cast<pointer>(Allocator::
+					reallocate(this->data_, i, this));
+
+	    index_
+	      = reinterpret_cast<int*>(AllocatorInt::
+				       reallocate(index_, i, this));
+
+#ifdef SELDON_CHECK_MEMORY
+	  }
+	catch (...)
+	  {
+	    this->m_ = 0;
+	    this->data_ = NULL;
+	    this->index_ = NULL;
+	    return;
+	  }
+	if (this->data_ == NULL)
+	  {
+	    this->m_ = 0;
+	    this->index_ = NULL;
+	    return;
+	  }
+#endif
+
+      }
+  }
+
+
+  //! Changes the number of non-zero entries of the vector.
+  /*! Changes the number of non-zero entries to \a n. If \a n non-zero entries
+    are available before resizing, they are all kept. Otherwise, only the
+    first \n non-zero entries are kept.
+    \param n new number of non-zero entries of the vector.
+  */
+  template <class T, class Allocator>
+  void Vector<T, VectSparse, Allocator>::Resize(int n)
+  {
+
+    if (n == this->m_)
+      return;
+
+    Vector<T, VectFull, Allocator> new_value(n);
+    Vector<int> new_index(n);
+    int Nmin = min(this->m_, n);
+    for (int i = 0; i < Nmin; i++)
+      {
+	new_value(i) = this->data_[i];
+	new_index(i) = index_[i];
+      }
+
+    SetData(new_value, new_index);
+  }
+
+
+  /*! \brief Changes the length of the vector and sets its data array (low
+    level method). */
+  /*!
+    Reallocates a vector and sets the new data array. It is useful to create
+    a vector from pre-existing data.
+    \param i new length of the vector.
+    \param data the new data array. \a data contains the new elements of the
+    vector and must therefore contain \a i elements.
+    \param index the new index array. \a index contains the new indices of the
+    non-zero entries and it must therefore contain \a i elements.
+    \warning \a data has to be used carefully outside the object.  Unless you
+    use 'Nullify', \a data will be freed by the destructor, which means that
+    \a data must have been allocated carefully. The vector allocator should be
+    compatible.
+    \note This method should only be used by advanced users.
+  */
+  template <class T, class Allocator>
+  void Vector<T, VectSparse, Allocator>
+  ::SetData(int i, T* data, int* index)
+  {
+    this->Clear();
+
+    this->m_ = i;
+
+    this->data_ = data;
+    this->index_ = index;
+  }
+
+
+  /*! \brief Changes the length of the vector and sets its data array (low
+    level method). */
+  /*!
+    Reallocates a vector and sets the new data array. It is useful to create
+    a vector from pre-existing data.
+    \param data the new data array. \a data contains the new elements of the
+    vector and must therefore contain \a i elements.
+    \param index the new index array. \a index contains the new indices of the
+    non-zero entries and it must therefore contain \a i elements.
+    \note Vectors \a data and \a index are empty vector on exit.
+  */
+  template <class T, class Allocator>
+  template<class Allocator2>
+  void Vector<T, VectSparse, Allocator>
+  ::SetData(Vector<T, VectFull, Allocator2>& data, Vector<int>& index)
+  {
+
+#ifdef SELDON_CHECK_BOUNDS
+    if (data.GetM() != index.GetM())
+      throw WrongDim("Vector<VectSparse>::SetData ",
+		     string("The data vector and the index vector should")
+		     + " have the same size.\n  Size of the data vector: "
+		     + to_str(data.GetM()) + "\n  Size of index vector: "
+		     + to_str(index.GetM()));
+#endif
+
+    SetData(data.GetM(), data.GetData(), index.GetData());
+    data.Nullify();
+    index.Nullify();
+  }
+
+
+  /*! \brief Lets the current vector point to the data of a second vector (low
+    level method). */
+  /*! Reallocates the current vector and lets its data point to those of \a V.
+    \param V the vector to which the current vector points to (on exit).
+    \warning On exit, both \a V and the current vector point to the same
+    arrays in memory. Only one of them should eventually deallocate the memory
+    blocks. The other one should be nullified by the user. In case the current
+    vector is responsible for the deallocations, its allocator should be
+    compatible with the allocator that created the memory blocks (which is
+    probably the allocator of \a V).
+  */
+  template <class T, class Allocator>
+  template<class Allocator2>
+  void Vector<T, VectSparse, Allocator>
+  ::SetData(const Vector<T, VectSparse, Allocator2>& V)
+  {
+    SetData(V.GetM(), V.GetData(), V.GetIndex());
+  }
+
+
+  //! Clears the vector without releasing memory.
+  /*!
+    On exit, the vector is empty and the memory has not been released.
+    It is useful for low level manipulations on a Vector instance.
+    \warning Memory is not released.
+  */
+  template <class T, class Allocator>
+  void Vector<T, VectSparse, Allocator>::Nullify()
+  {
+    this->m_ = 0;
+    this->data_ = NULL;
+    this->index_ = NULL;
+  }
+
+
+  /**********************************
+   * ELEMENT ACCESS AND AFFECTATION *
+   **********************************/
+
+
+  //! Access operator.
+  /*!
+    \param i index.
+    \return The value of the vector at \a i.
+  */
+  template <class T, class Allocator>
+  typename Vector<T, VectSparse, Allocator>::value_type
+  Vector<T, VectSparse, Allocator>::operator() (int i) const
+  {
+    int k = 0;
+    T zero;
+    SetComplexZero(zero);
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      // The entry does not exist, a zero is returned.
+      return zero;
+
+    return this->data_[k];
+  }
+
+
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the vector).
+  */
+  template <class T, class Allocator>
+  typename Vector<T, VectSparse, Allocator>::value_type
+  Vector<T, VectSparse, Allocator>::operator() (int i)
+  {
+    int k = 0;
+    T zero;
+    SetComplexZero(zero);
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      // The entry does not exist, a zero is returned.
+      return zero;
+    
+    return this->data_[k];
+  }
+  
+  
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the vector).
+  */
+  template <class T, class Allocator>
+  typename Vector<T, VectSparse, Allocator>::reference
+  Vector<T, VectSparse, Allocator>::Get(int i)
+  {
+    int k = 0;
+    T zero;
+    SetComplexZero(zero);
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      // The entry does not exist yet, so a zero entry is introduced.
+      AddInteraction(i, zero);
+    
+    return this->data_[k];
+  }
+
+
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument No reference can be returned because the element is a
+    zero entry (not stored in the vector).
+  */
+  template <class T, class Allocator>
+  typename Vector<T, VectSparse, Allocator>::const_reference
+  Vector<T, VectSparse, Allocator>::Get(int i) const
+  {
+    int k = 0;
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      throw WrongArgument("Vector<VectSparse>::Val(int)",
+                          "No reference to element " + to_str(i)
+                          + " can be returned: it is a zero entry.");
+    
+    return this->data_[k];
+  }
+
+
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument if i does not belong to the sparsity pattern
+  */
+  template <class T, class Allocator>
+  typename Vector<T, VectSparse, Allocator>::reference
+  Vector<T, VectSparse, Allocator>::Val(int i)
+  {
+    int k = 0;
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      throw WrongArgument("Vector<VectSparse>::Val(int)",
+                          "the entry " + to_str(i) +
+                          " does not belong to the sparsity pattern.");
+
+    
+    return this->data_[k];
+  }
+
+
+  //! Access method.
+  /*! Returns the value of element \a i.
+    \param[in] i index.
+    \return Element \a i of the vector.
+    \throw WrongArgument if i does not belong to the sparsity pattern
+  */
+  template <class T, class Allocator>
+  typename Vector<T, VectSparse, Allocator>::const_reference
+  Vector<T, VectSparse, Allocator>::Val(int i) const
+  {
+    int k = 0;
+    // Searching for the entry.
+    while (k < this->m_ && index_[k] < i)
+      k++;
+
+    if (k >= this->m_ || index_[k] != i)
+      throw WrongArgument("Vector<VectSparse>::Val(int)",
+                          "the entry " + to_str(i) +
+                          " does not belong to the sparsity pattern.");
+    
+    return this->data_[k];
+  }
+
+  
+  //! Duplicates a vector.
+  /*!
+    \param X vector to be copied.
+    \note Memory is duplicated: \a X is therefore independent from the current
+    instance after the copy.
+  */
+  template <class T, class Allocator>
+  void Vector<T, VectSparse, Allocator>
+  ::Copy(const Vector<T, VectSparse, Allocator>& X)
+  {
+    this->Reallocate(X.GetLength());
+
+    Allocator::memorycpy(this->data_, X.GetData(), this->m_);
+    AllocatorInt::memorycpy(this->index_, X.GetIndex(), this->m_);
+  }
+
 
   /************************
    * CONVENIENT FUNCTIONS *
@@ -611,13 +1000,6 @@ namespace Seldon
 
     return out;
   }
-
-  
-  // allocator for integer array in sparse vector
-  template<class T, class Allocator>
-  typename SeldonDefaultAllocator<VectFull, int>::allocator
-  Vector<T, VectSparse, Allocator>::index_allocator_;
-  
   
 } // namespace Seldon.
 

@@ -31,6 +31,180 @@ namespace Seldon
    *********************/
 
 
+  //! Constructor.
+  /*!
+    Builds a i by j sparse matrix with non-zero values and indices
+    provided by 'values' (values), 'ptr' (pointers) and 'ind' (indices).
+    Input vectors are released and are empty on exit.
+    \param i number of rows.
+    \param j number of columns.
+    \param values values of non-zero entries.
+    \param ptr row or column start indices.
+    \param ind row or column indices.
+    \warning Input vectors 'values', 'ptr' and 'ind' are empty on exit.
+    Moreover 'j' is assumed to be equal to i so that 'j' is discarded.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  template <class Storage0, class Allocator0,
+	    class Storage1, class Allocator1,
+	    class Storage2, class Allocator2>
+  Matrix_SymSparse<T, Prop, Storage, Allocator>::
+  Matrix_SymSparse(int i, int j,
+		   Vector<T, Storage0, Allocator0>& values,
+		   Vector<int, Storage1, Allocator1>& ptr,
+		   Vector<int, Storage2, Allocator2>& ind):
+    Matrix_Base<T, Allocator>(i, j)
+  {
+    nz_ = values.GetLength();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    // Checks whether vector sizes are acceptable.
+
+    if (ind.GetLength() != nz_)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim(string("Matrix_SymSparse::Matrix_SymSparse(int, int, ")
+		       + "const Vector&, const Vector&, const Vector&)",
+		       string("There are ") + to_str(nz_) + " values but "
+		       + to_str(ind.GetLength()) + " row or column indices.");
+      }
+
+    if (ptr.GetLength() - 1 != i)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim(string("Matrix_SymSparse::Matrix_SymSparse(int, int, ")
+		       + "const Vector&, const Vector&, const Vector&)",
+		       string("The vector of start indices contains ")
+		       + to_str(ptr.GetLength()-1) + string(" row or column ")
+		       + string("start  indices (plus the number of non-zero")
+		       + " entries) but there are " + to_str(i)
+		       + " rows or columns ("
+		       + to_str(i) + " by " + to_str(i) + " matrix).");
+      }
+
+    if (static_cast<long int>(2 * nz_ - 2) / static_cast<long int>(i + 1)
+	>= static_cast<long int>(i))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim(string("Matrix_SymSparse::Matrix_SymSparse(int, int, ")
+		       + "const Vector&, const Vector&, const Vector&)",
+		       string("There are more values (")
+		       + to_str(values.GetLength())
+		       + " values) than elements in the matrix ("
+		       + to_str(i) + " by " + to_str(i) + ").");
+      }
+#endif
+
+    this->ptr_ = ptr.GetData();
+    this->ind_ = ind.GetData();
+    this->data_ = values.GetData();
+
+    ptr.Nullify();
+    ind.Nullify();
+    values.Nullify();
+  }
+
+
+  //! Copy constructor
+  template <class T, class Prop, class Storage, class Allocator>
+  Matrix_SymSparse<T, Prop, Storage, Allocator>::
+  Matrix_SymSparse(const Matrix_SymSparse<T, Prop, Storage, Allocator>& A)
+  {
+    this->m_ = 0;
+    this->n_ = 0;
+    this->nz_ = 0;
+    ptr_ = NULL;
+    ind_ = NULL;
+    this->Copy(A);
+  }
+
+
+  //! Clears the matrix.
+  /*! This methods is equivalent to the destructor. On exit,
+    the matrix is empty (0x0).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_SymSparse<T, Prop, Storage, Allocator>::Clear()
+  {
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (ptr_ != NULL)
+	  {
+	    AllocatorInt::deallocate(ptr_, this->m_+1);
+	    ptr_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	ptr_ = NULL;
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (ind_ != NULL)
+	  {
+	    AllocatorInt::deallocate(ind_, this->nz_);
+	    ind_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	ind_ = NULL;
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (this->data_ != NULL)
+	  {
+	    Allocator::deallocate(this->data_, nz_);
+	    this->data_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->nz_ = 0;
+	this->data_ = NULL;
+      }
+#endif
+
+    this->m_ = 0;
+    this->n_ = 0;
+    this->nz_ = 0;
+  }
+
+
   //! Redefines the matrix.
   /*! It clears the matrix and sets it to a new matrix defined by
     'values' (values), 'ptr' (pointers) and 'ind' (indices).
@@ -194,7 +368,8 @@ namespace Seldon
       {
 #endif
 
-	ptr_ = reinterpret_cast<int*>( calloc(i+1, sizeof(int)) );
+	ptr_ = reinterpret_cast<int*>( AllocatorInt::
+				       allocate(i+1, this) );
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -270,7 +445,8 @@ namespace Seldon
       {
 #endif
 
-	ptr_ = reinterpret_cast<int*>( calloc(i + 1, sizeof(int)) );
+	ptr_ = reinterpret_cast<int*>( AllocatorInt::
+				       allocate(i + 1, this) );
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -304,7 +480,8 @@ namespace Seldon
       {
 #endif
 
-	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
+	ind_ = reinterpret_cast<int*>( AllocatorInt::
+				       allocate(nz_, this) );
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -313,7 +490,7 @@ namespace Seldon
 	this->m_ = 0;
 	this->n_ = 0;
 	nz_ = 0;
-	free(ptr_);
+	AllocatorInt::deallocate(ptr_, i+1);
 	ptr_ = NULL;
 	ind_ = NULL;
 	this->data_ = NULL;
@@ -323,7 +500,7 @@ namespace Seldon
 	this->m_ = 0;
 	this->n_ = 0;
 	nz_ = 0;
-	free(ptr_);
+	AllocatorInt::deallocate(ptr_, i+1);
 	ptr_ = NULL;
 	this->data_ = NULL;
       }
@@ -340,7 +517,7 @@ namespace Seldon
       {
 #endif
 
-	this->data_ = this->allocator_.allocate(nz_, this);
+	this->data_ = Allocator::allocate(nz_, this);
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -348,9 +525,9 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(ptr_);
+	AllocatorInt::deallocate(ptr_, i+1);
 	ptr_ = NULL;
-	free(ind_);
+	AllocatorInt::deallocate(ind_, nz);
 	ind_ = NULL;
 	this->data_ = NULL;
       }
@@ -358,9 +535,9 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(ptr_);
+	AllocatorInt::deallocate(ptr_, i+1);
 	ptr_ = NULL;
-	free(ind_);
+	AllocatorInt::deallocate(ind_, nz);
 	ind_ = NULL;
       }
     if (this->data_ == NULL && i != 0)
@@ -369,6 +546,10 @@ namespace Seldon
 		     + " bytes to store " + to_str(nz) + " values, for a "
 		     + to_str(i) + " by " + to_str(i) + " matrix.");
 #endif
+
+    // then filing ptr_ with 0
+    for (int k = 0; k <= i; k++)
+      ptr_[k] = 0;
   }
 
 
@@ -424,9 +605,8 @@ namespace Seldon
           {
 #endif
 
-            ind_ = reinterpret_cast<int*>( realloc(reinterpret_cast<void*>(ind_),
-                                                   nz*sizeof(int)) );
-
+            ind_ = reinterpret_cast<int*>( AllocatorInt::reallocate(ind_, nz) );
+	    
 #ifdef SELDON_CHECK_MEMORY
           }
         catch (...)
@@ -434,7 +614,7 @@ namespace Seldon
             this->m_ = 0;
             this->n_ = 0;
             nz_ = 0;
-            free(ptr_);
+            AllocatorInt::deallocate(ptr_, i+1);
             ptr_ = NULL;
             ind_ = NULL;
             this->data_ = NULL;
@@ -444,7 +624,7 @@ namespace Seldon
             this->m_ = 0;
             this->n_ = 0;
             nz_ = 0;
-            free(ptr_);
+            AllocatorInt::deallocate(ptr_, i+1);
             ptr_ = NULL;
             this->data_ = NULL;
           }
@@ -473,8 +653,7 @@ namespace Seldon
           {
 #endif
             // trying to resize ptr_
-            ptr_ = reinterpret_cast<int*>( realloc(ptr_, (i+1)*
-                                                   sizeof(int)) );
+            ptr_ = reinterpret_cast<int*>( AllocatorInt::reallocate(ptr_, i+1) );
 
 #ifdef SELDON_CHECK_MEMORY
           }
@@ -557,9 +736,9 @@ namespace Seldon
       {
 #endif
 
-	ptr_ = reinterpret_cast<int*>( calloc(i + 1, sizeof(int)) );
-	memcpy(this->ptr_, A.ptr_, (i + 1) * sizeof(int));
-
+	ptr_ = reinterpret_cast<int*>( AllocatorInt::allocate(i + 1, this) );
+	AllocatorInt::memorycpy(this->ptr_, A.ptr_, (i + 1));
+	
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -592,8 +771,8 @@ namespace Seldon
       {
 #endif
 
-	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
-	memcpy(this->ind_, A.ind_, nz_ * sizeof(int));
+	ind_ = reinterpret_cast<int*>( AllocatorInt::allocate(nz_, this) );
+	AllocatorInt::memorycpy(this->ind_, A.ind_, nz_);
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -602,7 +781,7 @@ namespace Seldon
 	this->m_ = 0;
 	this->n_ = 0;
 	nz_ = 0;
-	free(ptr_);
+	AllocatorInt::deallocate(ptr_, i+1);
 	ptr_ = NULL;
 	ind_ = NULL;
 	this->data_ = NULL;
@@ -612,7 +791,7 @@ namespace Seldon
 	this->m_ = 0;
 	this->n_ = 0;
 	nz_ = 0;
-	free(ptr_);
+	AllocatorInt::deallocate(ptr_, i+1);
 	ptr_ = NULL;
 	this->data_ = NULL;
       }
@@ -629,8 +808,8 @@ namespace Seldon
       {
 #endif
 
-	this->data_ = this->allocator_.allocate(nz_, this);
-	this->allocator_.memorycpy(this->data_, A.data_, nz_);
+	this->data_ = Allocator::allocate(nz_, this);
+	Allocator::memorycpy(this->data_, A.data_, nz_);
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -638,9 +817,9 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(ptr_);
+	AllocatorInt::deallocate(ptr_, i+1);
 	ptr_ = NULL;
-	free(ind_);
+	AllocatorInt::deallocate(ind_, nz);
 	ind_ = NULL;
 	this->data_ = NULL;
       }
@@ -648,9 +827,9 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(ptr_);
+	AllocatorInt::deallocate(ptr_, i+1);
 	ptr_ = NULL;
-	free(ind_);
+	AllocatorInt::deallocate(ind_, nz);
 	ind_ = NULL;
       }
     if (this->data_ == NULL && i != 0)
@@ -660,6 +839,17 @@ namespace Seldon
 		     + to_str(i) + " by " + to_str(i) + " matrix.");
 #endif
 
+  }
+  
+
+  //! returns size of matrix in bytes
+  template<class T, class Prop, class Storage, class Allocator>
+  int64_t Matrix_SymSparse<T, Prop, Storage, Allocator>::GetMemorySize() const
+  {
+    int64_t taille = this->GetPtrSize()*sizeof(int);
+    int coef = sizeof(T) + sizeof(int); // for each non-zero entry
+    taille += coef*int64_t(this->nz_);
+    return taille;
   }
   
   
@@ -921,8 +1111,8 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_SymSparse<T, Prop, Storage, Allocator>::Zero()
   {
-    this->allocator_.memoryset(this->data_, char(0),
-			       this->nz_ * sizeof(value_type));
+    Allocator::memoryset(this->data_, char(0),
+			 this->nz_ * sizeof(value_type));
   }
 
   
@@ -943,8 +1133,8 @@ namespace Seldon
     Clear();
 
     Vector<T, VectFull, Allocator> values(nz);
-    Vector<int, VectFull, CallocAlloc<int> > ptr(m + 1);
-    Vector<int, VectFull, CallocAlloc<int> > ind(nz);
+    Vector<int> ptr(m + 1);
+    Vector<int> ind(nz);
     
     values.Fill(one);
     ind.Fill();

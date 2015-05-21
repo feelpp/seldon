@@ -31,8 +31,8 @@ namespace Seldon
     The result should be the same on each processor.
    */
   template<class T1, class Allocator1>
-  T1 DotProd(const DistributedVector<T1, Allocator1>& X,
-	     const DistributedVector<T1, Allocator1>& Y)
+  T1 DotProdVector(const DistributedVector<T1, Allocator1>& X,
+		   const DistributedVector<T1, Allocator1>& Y)
   {
     T1 value;
     SetComplexZero(value);
@@ -64,8 +64,8 @@ namespace Seldon
     The result should be the same on each processor.
    */
   template<class T1, class Allocator1>
-  T1 DotProdConj(const DistributedVector<T1, Allocator1>& X,
-		 const DistributedVector<T1, Allocator1>& Y)
+  T1 DotProdConjVector(const DistributedVector<T1, Allocator1>& X,
+		       const DistributedVector<T1, Allocator1>& Y)
   {
     T1 value;
     SetComplexZero(value);

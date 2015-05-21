@@ -32,7 +32,8 @@ namespace Seldon
 
 
   //! Symmetric packed matrix class.
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Prop, class Storage, class Allocator
+	    = typename SeldonDefaultAllocator<Storage, T>::allocator>
   class Matrix_SymPacked: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.

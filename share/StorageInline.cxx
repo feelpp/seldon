@@ -17,7 +17,7 @@
 // along with Seldon. If not, see http://www.gnu.org/licenses/.
 
 
-#ifndef SELDON_FILE_STORAGE_CXX
+#ifndef SELDON_FILE_STORAGE_INLINE_CXX
 
 #include "Storage.hxx"
 
@@ -528,7 +528,62 @@ namespace Seldon
   }
 
 
+  inline int ColComplexSparse::GetFirst(int i, int j)
+  {
+    return j;
+  }
+  inline int ColComplexSparse::GetSecond(int i, int j)
+  {
+    return i;
+  }
+  inline int ColComplexSparse::GetBeginLoop(int i)
+  {
+    return 0;
+  }
+
+
+  inline int RowComplexSparse::GetFirst(int i, int j)
+  {
+    return i;
+  }
+  inline int RowComplexSparse::GetSecond(int i, int j)
+  {
+    return j;
+  }
+  inline int RowComplexSparse::GetBeginLoop(int i)
+  {
+    return 0;
+  }
+
+
+  inline int ColSymComplexSparse::GetFirst(int i, int j)
+  {
+    return j;
+  }
+  inline int ColSymComplexSparse::GetSecond(int i, int j)
+  {
+    return i;
+  }
+  inline int ColSymComplexSparse::GetBeginLoop(int i)
+  {
+    return i;
+  }
+
+
+  inline int RowSymComplexSparse::GetFirst(int i, int j)
+  {
+    return i;
+  }
+  inline int RowSymComplexSparse::GetSecond(int i, int j)
+  {
+    return j;
+  }
+  inline int RowSymComplexSparse::GetBeginLoop(int i)
+  {
+    return i;
+  }
+  
 } // namespace Seldon.
 
-#define SELDON_FILE_STORAGE_CXX
+#define SELDON_FILE_STORAGE_INLINE_CXX
 #endif

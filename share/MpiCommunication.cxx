@@ -26,13 +26,8 @@ namespace Seldon
   MPI::Request MpiIsend(const MPI::Comm& comm, T* x, Vector<int64_t>& xtmp,
                         int n, int proc, int tag)
   {
-    Vector<T> xvec;
-    xvec.SetData(n, x);
-    
-    MPI::Request rq = MpiIsend(comm, xvec, xtmp, n, proc, tag);
-    
-    xvec.Nullify();
-    return rq;
+    return comm.Isend(x, n*GetRatioMpiDataType(*x), 
+                      GetMpiDataType(*x), proc, tag);
   }
   
   template<class T>
@@ -48,13 +43,8 @@ namespace Seldon
   MPI::Request MpiIrecv(const MPI::Comm& comm, T* x, Vector<int64_t>& xtmp,
                         int n, int proc, int tag)
   {
-    Vector<T> xvec;
-    xvec.SetData(n, x);
-    
-    MPI::Request rq = MpiIrecv(comm, xvec, xtmp, n, proc, tag);
-    
-    xvec.Nullify();
-    return rq;
+    return comm.Irecv(x, n*GetRatioMpiDataType(*x), 
+                      GetMpiDataType(*x), proc, tag);
   }
 
   template<class T>
@@ -69,12 +59,6 @@ namespace Seldon
   template<class T>
   void MpiCompleteIrecv(T* x, Vector<int64_t>& xtmp, int n)
   {
-    Vector<T> xvec;
-    xvec.SetData(n, x);
-    
-    MpiCompleteIrecv(xvec, xtmp, n);
-    
-    xvec.Nullify();
   }
   
   template<class T>
@@ -86,12 +70,8 @@ namespace Seldon
   void MpiSsend(const MPI::Comm& comm, T* x, Vector<int64_t>& xtmp,
                 int n, int proc, int tag)
   {
-    Vector<T> xvec;
-    xvec.SetData(n, x);
-    
-    MpiSsend(comm, xvec, xtmp, n, proc, tag);
-    
-    xvec.Nullify();
+    comm.Ssend(x, n*GetRatioMpiDataType(*x),
+	       GetMpiDataType(*x), proc, tag);
   }
   
   template<class T>
@@ -106,12 +86,8 @@ namespace Seldon
   void MpiSend(const MPI::Comm& comm, T* x, Vector<int64_t>& xtmp,
                 int n, int proc, int tag)
   {
-    Vector<T> xvec;
-    xvec.SetData(n, x);
-    
-    MpiSend(comm, xvec, xtmp, n, proc, tag);
-    
-    xvec.Nullify();
+    comm.Send(x, n*GetRatioMpiDataType(*x),
+	      GetMpiDataType(*x), proc, tag);
   }
   
   template<class T>
@@ -126,16 +102,9 @@ namespace Seldon
   void MpiGather(const MPI::Comm& comm, T* x, Vector<int64_t>& xtmp,
                  T* y, int n, int proc)
   {
-    Vector<T> xvec, yvec;
-    xvec.SetData(n, x);
-    if (proc == comm.Get_rank())
-      yvec.SetData(n*comm.Get_size(), y);
-    
-    MpiGather(comm, xvec, xtmp, yvec, n, proc);
-    
-    xvec.Nullify();
-    if (proc == comm.Get_rank())
-      yvec.Nullify();
+    comm.Gather(x, n*GetRatioMpiDataType(*x), GetMpiDataType(*x),
+                y.GetData(), n*GetRatioMpiDataType(*x), GetMpiDataType(*x),
+		proc);
   }
   
   template<class T>
@@ -151,14 +120,7 @@ namespace Seldon
   void MpiAllreduce(const MPI::Comm& comm, T* x, Vector<int64_t>& xtmp,
                     T* y, int n, const MPI::Op& op)
   {
-    Vector<T> xvec, yvec;
-    xvec.SetData(n, x);
-    yvec.SetData(n, y);
-    
-    MpiAllreduce(comm, xvec, xtmp, yvec, n, op);
-    
-    xvec.Nullify();
-    yvec.Nullify();
+    comm.Allreduce(x, y, n*GetRatioMpiDataType(*x), GetMpiDataType(*x), op);
   }
   
   template<class T>
@@ -174,16 +136,8 @@ namespace Seldon
   void MpiReduce(const MPI::Comm& comm, T* x, Vector<int64_t>& xtmp,
                  T* y, int n, const MPI::Op& op, int proc)
   {
-    Vector<T> xvec, yvec;
-    xvec.SetData(n, x);
-    if (proc == comm.Get_rank())
-      yvec.SetData(n, y);
-    
-    MpiReduce(comm, xvec, xtmp, yvec, n, op, proc);
-    
-    xvec.Nullify();
-    if (proc == comm.Get_rank())
-      yvec.Nullify();
+    comm.Reduce(x, y, n*GetRatioMpiDataType(*x),
+                GetMpiDataType(*x), op, proc);
   }
   
   template<class T>
@@ -198,12 +152,8 @@ namespace Seldon
   void MpiRecv(const MPI::Comm& comm, T* x, Vector<int64_t>& xtmp,
                int n, int proc, int tag, MPI::Status& status)
   {
-    Vector<T> xvec;
-    xvec.SetData(n, x);
-    
-    MpiRecv(comm, xvec, xtmp, n, proc, tag, status);
-    
-    xvec.Nullify();
+    comm.Recv(x, n*GetRatioMpiDataType(*x), GetMpiDataType(*x),
+              proc, tag, status);
   }
   
   template<class T>
@@ -218,12 +168,7 @@ namespace Seldon
   void MpiBcast(const MPI::Comm& comm, T* x,
 		Vector<int64_t>& xtmp, int n, int proc)
   {
-    Vector<T> xvec;
-    xvec.SetData(n, x);
-    
-    MpiBcast(comm, xvec, xtmp, n, proc);
-    
-    xvec.Nullify();
+    comm.Bcast(x, n, GetMpiDataType(*x), proc);
   }
   
   template<class T>

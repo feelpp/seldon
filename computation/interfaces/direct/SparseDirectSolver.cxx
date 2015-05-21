@@ -698,9 +698,9 @@ namespace Seldon
   
   
   //! x_solution is overwritten with solution of A x = b or A^T x = b
-  template<class T> template<class TransStatus, class Vector1>
+  template<class T> template<class Vector1>
   void SparseDirectSolver<T>
-  ::Solve(const TransStatus& TransA, Vector1& x_solution)
+  ::Solve(const SeldonTranspose& TransA, Vector1& x_solution)
   {
     if (type_solver == UMFPACK)
       {
@@ -873,7 +873,8 @@ namespace Seldon
     if (type_solver == MUMPS)
       {
 #ifdef SELDON_WITH_MUMPS        
-	mat_mumps.FactorizeDistributedMatrix(comm_facto, Ptr, Row, Val, glob_num, sym, keep_matrix);
+	mat_mumps.FactorizeDistributedMatrix(comm_facto, Ptr, Row,
+					     Val, glob_num, sym, keep_matrix);
 #else
         throw Undefined("SparseDirectSolver::FactorizeDistributed(MPI::Comm&,"
                         " IVect&, IVect&, Vector<T>&, IVect&, bool, bool)",
@@ -884,7 +885,8 @@ namespace Seldon
       {
 #ifdef SELDON_WITH_PASTIX
         mat_pastix.SetNumberOfThreadPerNode(nb_threads_per_node);
-        mat_pastix.FactorizeDistributedMatrix(comm_facto, Ptr, Row, Val, glob_num, sym, keep_matrix);
+        mat_pastix.FactorizeDistributedMatrix(comm_facto, Ptr, Row,
+					      Val, glob_num, sym, keep_matrix);
 #else
         throw Undefined("SparseDirectSolver::FactorizeDistributed(MPI::Comm&,"
                         " IVect&, IVect&, Vector<T>&, IVect&, bool, bool)",
@@ -945,9 +947,9 @@ namespace Seldon
   /*!
     \param[in,out] x_solution on input right hand side, on output solution
    */
-  template<class T> template<class TransStatus, class Vector1>
+  template<class T> template<class Vector1>
   void SparseDirectSolver<T>::
-  SolveDistributed(MPI::Comm& comm_facto, const TransStatus& TransA,
+  SolveDistributed(MPI::Comm& comm_facto, const SeldonTranspose& TransA,
                    Vector1& x_solution, const IVect& glob_number)
   {
     if (type_solver == MUMPS)

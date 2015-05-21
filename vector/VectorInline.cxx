@@ -88,35 +88,6 @@ namespace Seldon
   }
 
   
-  //! Releases memory used by the vector.
-  template <class T, class Allocator>
-  inline void Vector_Base<T, Allocator>::Clear()
-  {
-    
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	if (data_ != NULL)
-	  {
-	    vect_allocator_.deallocate(data_, m_);
-	    m_ = 0;
-	    data_ = NULL;
-	  }
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	m_ = 0;
-	data_ = NULL;
-      }
-#endif
-
-  }
-
-
   /*******************
    * BASIC FUNCTIONS *
    *******************/
@@ -237,7 +208,7 @@ namespace Seldon
       {
 #endif
 
-	this->data_ = this->vect_allocator_.allocate(i, this);
+	this->data_ = Allocator::allocate(i, this);
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -293,7 +264,7 @@ namespace Seldon
       {
 #endif
 
-	this->data_ = this->vect_allocator_.allocate(V.GetM(), this);
+	this->data_ = Allocator::allocate(V.GetM(), this);
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -311,7 +282,7 @@ namespace Seldon
 		     + to_str(V.GetM()) + " elements).");
 #endif
 
-    this->vect_allocator_.memorycpy(this->data_, V.GetData(), V.GetM());
+    Allocator::memorycpy(this->data_, V.GetData(), V.GetM());
 
   }
 
@@ -367,8 +338,8 @@ namespace Seldon
 #endif
 
 	    this->data_ =
-	      reinterpret_cast<pointer>(this->vect_allocator_
-					.reallocate(this->data_, i, this));
+	      reinterpret_cast<pointer>(Allocator::
+					reallocate(this->data_, i, this));
 
 #ifdef SELDON_CHECK_MEMORY
 	  }
@@ -386,27 +357,6 @@ namespace Seldon
 #endif
 
       }
-  }
-
-
-  //! Changes the length of the vector, and keeps previous values.
-  /*!
-    Reallocates the vector to size i. Previous values are kept.
-    \param n new length of the vector.
-  */
-  template <class T, class Allocator>
-  inline void Vector<T, VectFull, Allocator>::Resize(int n)
-  {
-
-    if (n == this->m_)
-      return;
-
-    Vector<T, VectFull, Allocator> X_new(n);
-    for (int i = 0; i < min(this->m_, n); i++)
-      X_new(i) = this->data_[i];
-
-    SetData(n, X_new.GetData());
-    X_new.Nullify();
   }
 
 
@@ -590,7 +540,7 @@ namespace Seldon
   {
     this->Reallocate(X.GetLength());
 
-    this->vect_allocator_.memorycpy(this->data_, X.GetData(), this->m_);
+    Allocator::memorycpy(this->data_, X.GetData(), this->m_);
   }
 
 
@@ -716,8 +666,8 @@ namespace Seldon
   template <class T, class Allocator>
   inline void Vector<T, VectFull, Allocator>::Zero()
   {
-    this->vect_allocator_.memoryset(this->data_, char(0),
-				    this->GetDataSize() * sizeof(value_type));
+    Allocator::memoryset(this->data_, char(0),
+			 this->GetDataSize() * sizeof(value_type));
   }
 
 

@@ -22,6 +22,9 @@
 #include "SeldonPreconditionerHeader.hxx"
 #include "SeldonPreconditionerInline.hxx"
 
+
+#include "computation/solver/preconditioner/Precond_Ssor.cxx"
+
 // Incomplete factorization.
 #include "computation/solver/preconditioner/IlutPreconditioning.cxx"
 

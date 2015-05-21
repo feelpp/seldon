@@ -25,7 +25,436 @@
 namespace Seldon
 {
   
+
+  /****************
+   * CONSTRUCTORS *
+   ****************/
+
+
+  //! Default constructor.
+  /*!
+    Builds an empty 0x0 matrix.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+  ::Matrix_ComplexSparse(): Matrix_Base<T, Allocator>()
+  {
+    real_nz_ = 0;
+    imag_nz_ = 0;
+    real_ptr_ = NULL;
+    imag_ptr_ = NULL;
+    real_ind_ = NULL;
+    imag_ind_ = NULL;
+    real_data_ = NULL;
+    imag_data_ = NULL;
+  }
+
+
+  //! Constructor.
+  /*!
+    Builds a i by j sparse matrix.
+    \param i number of rows.
+    \param j number of columns.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+  ::Matrix_ComplexSparse(int i, int j): Matrix_Base<T, Allocator>()
+  {
+    real_nz_ = 0;
+    imag_nz_ = 0;
+    real_ptr_ = NULL;
+    imag_ptr_ = NULL;
+    real_ind_ = NULL;
+    imag_ind_ = NULL;
+    real_data_ = NULL;
+    imag_data_ = NULL;
+    
+    Reallocate(i, j);
+  }
+
+
+  //! Constructor.
+  /*! Builds a sparse matrix of size i by j , with real_nz
+    non-zero elements in the real part of the matrix and imag_nz
+    non-zero elements in the imaginary part of the matrix.
+    \param i number of rows.
+    \param j number of columns.
+    \param real_nz number of non-zero elements in the real part.
+    \param imag_nz number of non-zero elements in the imaginary part.
+    \note Matrix values are not initialized. Indices of non-zero entries
+    are not initialized either.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  Matrix_ComplexSparse<T, Prop, Storage, Allocator>::
+  Matrix_ComplexSparse(int i, int j, int real_nz, int imag_nz):
+    Matrix_Base<T, Allocator>()
+  {
+    real_nz_ = 0;
+    imag_nz_ = 0;
+    real_ptr_ = NULL;
+    imag_ptr_ = NULL;
+    real_ind_ = NULL;
+    imag_ind_ = NULL;
+    real_data_ = NULL;
+    imag_data_ = NULL;
+    
+    Reallocate(i, j, real_nz, imag_nz);
+  }
+
+
+  //! Constructor.
+  /*!
+    Builds a i by j sparse matrix with non-zero values and indices
+    provided by 'real_values' (values of the real part), 'real_ptr'
+    (pointers for the real part), 'real_ind' (indices for the real part),
+    'imag_values' (values of the imaginary part), 'imag_ptr'
+    (pointers for the imaginary part) and 'imag_ind' (indices for the
+    imaginary part). Input vectors are released and are empty on exit.
+    \param i number of rows.
+    \param j number of columns.
+    \param real_values values of non-zero entries for the real part.
+    \param real_ptr row or column start indices for the real part.
+    \param real_ind row or column indices for the real part.
+    \param imag_values values of non-zero entries for the imaginary part.
+    \param imag_ptr row or column start indices for the imaginary part.
+    \param imag_ind row or column indices for the imaginary part.
+    \warning Input vectors 'real_values', 'real_ptr' and 'real_ind',
+    'imag_values', 'imag_ptr' and 'imag_ind' are empty on exit.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  template <class Storage0, class Allocator0,
+	    class Storage1, class Allocator1,
+	    class Storage2, class Allocator2>
+  Matrix_ComplexSparse<T, Prop, Storage, Allocator>::
+  Matrix_ComplexSparse(int i, int j,
+		       Vector<value_type, Storage0, Allocator0>& real_values,
+		       Vector<int, Storage1, Allocator1>& real_ptr,
+		       Vector<int, Storage2, Allocator2>& real_ind,
+		       Vector<value_type, Storage0, Allocator0>& imag_values,
+		       Vector<int, Storage1, Allocator1>& imag_ptr,
+		       Vector<int, Storage2, Allocator2>& imag_ind):
+    Matrix_Base<T, Allocator>(i, j)
+  {
+
+    real_nz_ = real_values.GetLength();
+    imag_nz_ = imag_values.GetLength();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    // Checks whether vector sizes are acceptable.
+
+    if (real_ind.GetLength() != real_nz_)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+	throw WrongDim(string("Matrix_ComplexSparse::")
+		       + string("Matrix_ComplexSparse(int, int, ")
+		       + string("const Vector&, const Vector&, const Vector&")
+		       + ", const Vector&, const Vector&, const Vector&)",
+		       string("There are ") + to_str(real_nz_)
+		       + " values (real part) but "
+		       + to_str(real_ind.GetLength())
+		       + " row or column indices.");
+      }
+
+    if (imag_ind.GetLength() != imag_nz_)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+	throw WrongDim(string("Matrix_ComplexSparse::")
+		       + string("Matrix_ComplexSparse(int, int, ")
+		       + string("const Vector&, const Vector&, const Vector&")
+		       + ", const Vector&, const Vector&, const Vector&)",
+		       string("There are ") + to_str(imag_nz_)
+		       + " values (imaginary part) but "
+		       + to_str(imag_ind.GetLength())
+		       + " row or column indices.");
+      }
+
+    if (real_ptr.GetLength()-1 != Storage::GetFirst(i, j))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+	throw WrongDim(string("Matrix_ComplexSparse::")
+		       + string("Matrix_ComplexSparse(int, int, ")
+		       + string("const Vector&, const Vector&, const Vector&")
+		       + ", const Vector&, const Vector&, const Vector&)",
+		       string("The vector of start indices (real part)")
+		       + " contains " + to_str(real_ptr.GetLength()-1)
+		       + string(" row or column start indices (plus the")
+		       + " number of non-zero entries) but there are "
+		       + to_str(Storage::GetFirst(i, j))
+		       + " rows or columns ("
+		       + to_str(i) + " by " + to_str(j) + " matrix).");
+      }
+
+    if (imag_ptr.GetLength()-1 != Storage::GetFirst(i, j))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+	throw WrongDim(string("Matrix_ComplexSparse::")
+		       + string("Matrix_ComplexSparse(int, int, ")
+		       + string("const Vector&, const Vector&, const Vector&")
+		       + ", const Vector&, const Vector&, const Vector&)",
+		       string("The vector of start indices (imaginary part)")
+		       + " contains " + to_str(imag_ptr.GetLength()-1)
+		       + string(" row or column start indices (plus the")
+		       + " number of non-zero entries) but there are "
+		       + to_str(Storage::GetFirst(i, j))
+		       + " rows or columns ("
+		       + to_str(i) + " by " + to_str(j) + " matrix).");
+      }
+
+    if ((real_nz_ > 0
+         && (j == 0
+             || static_cast<long int>(real_nz_-1) / static_cast<long int>(j)
+             >= static_cast<long int>(i)))
+        ||
+        (imag_nz_ > 0
+         && (j == 0
+             || static_cast<long int>(imag_nz_-1) / static_cast<long int>(j)
+             >= static_cast<long int>(i))))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	real_nz_ = 0;
+	imag_nz_ = 0;
+	real_ptr_ = NULL;
+	imag_ptr_ = NULL;
+	real_ind_ = NULL;
+	imag_ind_ = NULL;
+	this->real_data_ = NULL;
+	this->imag_data_ = NULL;
+	throw WrongDim(string("Matrix_ComplexSparse::")
+		       + string("Matrix_ComplexSparse(int, int, ")
+		       + string("const Vector&, const Vector&, const Vector&")
+		       + ", const Vector&, const Vector&, const Vector&)",
+		       string("There are more values (")
+		       + to_str(real_values.GetLength())
+		       + " values for the real part and "
+		       + to_str(real_values.GetLength()) + string(" values")
+		       + string(" for the imaginary part) than elements")
+		       + " in the matrix ("
+		       + to_str(i) + " by " + to_str(j) + ").");
+      }
+#endif
+
+    this->real_ptr_ = real_ptr.GetData();
+    this->imag_ptr_ = imag_ptr.GetData();
+    this->real_ind_ = real_ind.GetData();
+    this->imag_ind_ = imag_ind.GetData();
+    this->real_data_ = real_values.GetData();
+    this->imag_data_ = imag_values.GetData();
+
+    real_ptr.Nullify();
+    imag_ptr.Nullify();
+    real_ind.Nullify();
+    imag_ind.Nullify();
+    real_values.Nullify();
+    imag_values.Nullify();
+  }
+
+
+  //! Copy constructor
+  template <class T, class Prop, class Storage, class Allocator>
+  Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+  ::Matrix_ComplexSparse(const Matrix_ComplexSparse<T, Prop,
+			 Storage, Allocator>& A)
+  {
+    this->m_ = 0;
+    this->n_ = 0;
+    real_nz_ = 0;
+    imag_nz_ = 0;
+    real_ptr_ = NULL;
+    imag_ptr_ = NULL;
+    real_ind_ = NULL;
+    imag_ind_ = NULL;
+    real_data_ = NULL;
+    imag_data_ = NULL;
+
+    this->Copy(A);
+  }
+
+
+  //! Clears the matrix.
+  /*! This methods is equivalent to the destructor. On exit, the matrix
+    is empty (0x0).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_ComplexSparse<T, Prop, Storage, Allocator>::Clear()
+  {
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (real_ptr_ != NULL)
+	  {
+	    AllocatorInt::deallocate(real_ptr_, this->m_+1);
+	    real_ptr_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	real_ptr_ = NULL;
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (imag_ptr_ != NULL)
+	  {
+	    AllocatorInt::deallocate(imag_ptr_, this->m_+1);
+	    imag_ptr_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	imag_ptr_ = NULL;
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (real_ind_ != NULL)
+	  {
+	    AllocatorInt::deallocate(real_ind_, this->real_nz_);
+	    real_ind_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	real_ind_ = NULL;
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (imag_ind_ != NULL)
+	  {
+	    AllocatorInt::deallocate(imag_ind_, this->imag_nz_);
+	    imag_ind_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	imag_ind_ = NULL;
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (this->real_data_ != NULL)
+	  {
+	    Allocator::deallocate(this->real_data_, real_nz_);
+	    this->real_data_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->real_nz_ = 0;
+	this->real_data_ = NULL;
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (this->imag_data_ != NULL)
+	  {
+	    Allocator::deallocate(this->imag_data_, imag_nz_);
+	    this->imag_data_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->imag_nz_ = 0;
+	this->imag_data_ = NULL;
+      }
+#endif
+
+    this->m_ = 0;
+    this->n_ = 0;
+    this->real_nz_ = 0;
+    this->imag_nz_ = 0;
+  }
+
   
+  /*******************
+   * BASIC FUNCTIONS *
+   *******************/
+
+
+  //! returns size of A in bytes used to store the matrix
+  template<class T, class Prop, class Storage, class Allocator>
+  int64_t Matrix_ComplexSparse<T, Prop, Storage, Allocator>
+  ::GetMemorySize() const
+  {
+    int64_t taille = 2*this->GetRealPtrSize()*sizeof(int);
+    int coef = sizeof(value_type) + sizeof(int); // for each non-zero entry
+    taille += coef*int64_t(this->real_nz_ + this->imag_nz_);
+    return taille;
+  }
+  
+    
   /*********************
    * MEMORY MANAGEMENT *
    *********************/
@@ -298,11 +727,13 @@ namespace Seldon
       {
 #endif
 
-	real_ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
-                                                   sizeof(int)) );
+	real_ptr_
+	  = reinterpret_cast<int*>( AllocatorInt::
+				    allocate(Storage::GetFirst(i, j)+1) );
 
-	imag_ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
-                                                   sizeof(int)) );
+	imag_ptr_
+	  = reinterpret_cast<int*>( AllocatorInt::
+				    allocate(Storage::GetFirst(i, j)+1) );
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -417,8 +848,9 @@ namespace Seldon
       {
 #endif
 
-	real_ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
-						   sizeof(int)) );
+	real_ptr_
+	  = reinterpret_cast<int*>( AllocatorInt::
+				    allocate(Storage::GetFirst(i, j)+1) );
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -463,8 +895,9 @@ namespace Seldon
       {
 #endif
 
-	imag_ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
-						   sizeof(int)) );
+	imag_ptr_
+	  = reinterpret_cast<int*>( AllocatorInt::
+				    allocate(Storage::GetFirst(i, j)+1) );
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -474,7 +907,8 @@ namespace Seldon
 	this->n_ = 0;
 	real_nz_ = 0;
 	imag_nz_ = 0;
-	free(real_ptr_);
+	AllocatorInt::deallocate(real_ptr_,
+				 Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
 	real_ind_ = NULL;
@@ -488,7 +922,8 @@ namespace Seldon
 	this->n_ = 0;
 	real_nz_ = 0;
 	imag_nz_ = 0;
-	free(real_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = 0;
 	real_ind_ = NULL;
 	imag_ind_ = NULL;
@@ -511,8 +946,9 @@ namespace Seldon
       {
 #endif
 
-	real_ind_ = reinterpret_cast<int*>( calloc(real_nz_, sizeof(int)) );
-
+	real_ind_ =
+	  reinterpret_cast<int*>( AllocatorInt::allocate(real_nz_, this) );
+	
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -521,8 +957,10 @@ namespace Seldon
 	this->n_ = 0;
 	real_nz_ = 0;
 	imag_nz_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
 	real_ind_ = NULL;
@@ -536,8 +974,10 @@ namespace Seldon
 	this->n_ = 0;
 	real_nz_ = 0;
 	imag_nz_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
 	this->real_data_ = NULL;
@@ -558,7 +998,8 @@ namespace Seldon
       {
 #endif
 
-	imag_ind_ = reinterpret_cast<int*>( calloc(imag_nz_, sizeof(int)) );
+	imag_ind_ =
+	  reinterpret_cast<int*>( AllocatorInt::allocate(imag_nz_, this) );
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -568,11 +1009,13 @@ namespace Seldon
 	this->n_ = 0;
 	real_nz_ = 0;
 	imag_nz_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
-	free(imag_ind_);
+	AllocatorInt::deallocate(imag_ind_, imag_nz);
 	real_ind_ = NULL;
 	imag_ind_ = NULL;
 	this->real_data_ = NULL;
@@ -584,11 +1027,13 @@ namespace Seldon
 	this->n_ = 0;
 	real_nz_ = 0;
 	imag_nz_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
-	free(imag_ind_);
+	AllocatorInt::deallocate(imag_ind_, imag_nz);
 	imag_ind_ = NULL;
 	this->real_data_ = NULL;
 	this->imag_data_ = NULL;
@@ -608,7 +1053,7 @@ namespace Seldon
       {
 #endif
 
-	this->real_data_ = this->allocator_.allocate(real_nz_, this);
+	this->real_data_ = Allocator::allocate(real_nz_, this);
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -616,12 +1061,14 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
-	free(real_ind_);
-	free(imag_ind_);
+	AllocatorInt::deallocate(real_ind_, real_nz);
+	AllocatorInt::deallocate(imag_ind_, imag_nz);
 	real_ind_ = NULL;
 	imag_ind_ = NULL;
 	this->real_data_ = NULL;
@@ -631,12 +1078,14 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
-	free(real_ind_);
-	free(imag_ind_);
+	AllocatorInt::deallocate(real_ind_, real_nz);
+	AllocatorInt::deallocate(imag_ind_, imag_nz);
 	real_ind_ = NULL;
 	imag_ind_ = NULL;
 	imag_data_ = NULL;
@@ -656,7 +1105,7 @@ namespace Seldon
       {
 #endif
 
-	this->imag_data_ = this->allocator_.allocate(imag_nz_, this);
+	this->imag_data_ = Allocator::allocate(imag_nz_, this);
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -664,15 +1113,17 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
-	free(real_ind_);
-	free(imag_ind_);
+	AllocatorInt::deallocate(real_ind_, real_nz);
+	AllocatorInt::deallocate(imag_ind_, imag_nz);
 	real_ind_ = NULL;
 	imag_ind_ = NULL;
-	this->allocator_.deallocate(this->real_data_, real_nz_);
+	Allocator::deallocate(this->real_data_, real_nz_);
 	this->real_data_ = NULL;
 	this->imag_data_ = NULL;
       }
@@ -680,15 +1131,17 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
-	free(real_ind_);
-	free(imag_ind_);
+	AllocatorInt::deallocate(real_ind_, real_nz);
+	AllocatorInt::deallocate(imag_ind_, imag_nz);
 	real_ind_ = NULL;
 	imag_ind_ = NULL;
-	this->allocator_.deallocate(this->real_data_, real_nz_);
+	Allocator::deallocate(this->real_data_, real_nz_);
 	real_data_ = NULL;
       }
     if (imag_data_ == NULL && i != 0 && j != 0)
@@ -700,6 +1153,13 @@ namespace Seldon
 		     + " values (imaginary part), for a "
 		     + to_str(i) + " by " + to_str(j) + " matrix.");
 #endif
+
+    // then filing real_ptr_ with 0
+    for (int k = 0; k <= Storage::GetFirst(i, j); k++)
+      {
+        real_ptr_[k] = 0;
+        imag_ptr_[k] = 0;
+      }
   }
   
   
@@ -707,7 +1167,7 @@ namespace Seldon
   /*!
     \param i number of rows
     \param j number of columns    
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
   ::Resize(int i, int j)
@@ -725,7 +1185,7 @@ namespace Seldon
     \param i number of rows
     \param j number of columns
     Previous entries are kept during the operation
-   */
+  */
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ComplexSparse<T, Prop, Storage, Allocator>
   ::Resize(int i, int j, int real_nz, int imag_nz)
@@ -786,10 +1246,10 @@ namespace Seldon
           {
 #endif
             
-            real_ptr_
-              = reinterpret_cast<int*>( realloc(real_ptr_,
-                                                (Storage::GetFirst(i, j)+1)
-                                                *sizeof(int)) );
+            real_ptr_ =
+              reinterpret_cast<int*>( AllocatorInt::
+				      reallocate(real_ptr_,
+						 (Storage::GetFirst(i, j)+1)) );
 
 #ifdef SELDON_CHECK_MEMORY
           }
@@ -820,7 +1280,7 @@ namespace Seldon
           }
         if (real_ptr_ == NULL && i != 0 && j != 0)
           throw NoMemory(string("Matrix_ComplexSparse::")
-		     + "Resize(int, int, int, int)",
+			 + "Resize(int, int, int, int)",
                          string("Unable to allocate ")
                          + to_str(sizeof(int) * (Storage::GetFirst(i, j)+1))
                          + " bytes to store " + to_str(Storage::GetFirst(i, j)+1)
@@ -834,10 +1294,10 @@ namespace Seldon
           {
 #endif
             
-            imag_ptr_
-              = reinterpret_cast<int*>( realloc(imag_ptr_,
-                                                (Storage::GetFirst(i, j)+1)
-                                                *sizeof(int)) );
+            imag_ptr_ =
+	      reinterpret_cast<int*>( AllocatorInt::
+				      reallocate(imag_ptr_,
+						 (Storage::GetFirst(i, j)+1)) );
             
 #ifdef SELDON_CHECK_MEMORY
           }
@@ -847,7 +1307,8 @@ namespace Seldon
             this->n_ = 0;
             real_nz_ = 0;
             imag_nz_ = 0;
-            free(real_ptr_);
+	    AllocatorInt::
+	      deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
             real_ptr_ = NULL;
             imag_ptr_ = NULL;
             real_ind_ = NULL;
@@ -861,7 +1322,8 @@ namespace Seldon
             this->n_ = 0;
             real_nz_ = 0;
             imag_nz_ = 0;
-            free(real_ptr_);
+	    AllocatorInt::
+	      deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
             real_ptr_ = 0;
             real_ind_ = NULL;
             imag_ind_ = NULL;
@@ -887,9 +1349,10 @@ namespace Seldon
           {
 #endif
             
-            real_ind_
-              = reinterpret_cast<int*>( realloc(real_ind_,
-                                                real_nz*sizeof(int)) );
+            real_ind_ = 
+              reinterpret_cast<int*>( AllocatorInt::
+				      reallocate(real_ind_,
+						 real_nz) );
 
 #ifdef SELDON_CHECK_MEMORY
           }
@@ -899,8 +1362,10 @@ namespace Seldon
             this->n_ = 0;
             real_nz_ = 0;
             imag_nz_ = 0;
-            free(real_ptr_);
-            free(imag_ptr_);
+	    AllocatorInt::
+	      deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	    AllocatorInt::
+	      deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
             real_ptr_ = NULL;
             imag_ptr_ = NULL;
             real_ind_ = NULL;
@@ -914,8 +1379,10 @@ namespace Seldon
             this->n_ = 0;
             real_nz_ = 0;
             imag_nz_ = 0;
-            free(real_ptr_);
-            free(imag_ptr_);
+	    AllocatorInt::
+	      deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	    AllocatorInt::
+	      deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
             real_ptr_ = NULL;
             imag_ptr_ = NULL;
             this->real_data_ = NULL;
@@ -939,9 +1406,10 @@ namespace Seldon
           {
 #endif
 
-            imag_ind_
-              = reinterpret_cast<int*>( realloc(imag_ind_,
-                                                imag_nz*sizeof(int)) );
+            imag_ind_ = 
+              reinterpret_cast<int*>( AllocatorInt::
+				      reallocate(imag_ind_,
+						 imag_nz) );
 #ifdef SELDON_CHECK_MEMORY
           }
         catch (...)
@@ -950,11 +1418,13 @@ namespace Seldon
             this->n_ = 0;
             real_nz_ = 0;
             imag_nz_ = 0;
-            free(real_ptr_);
-            free(imag_ptr_);
+	    AllocatorInt::
+	      deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	    AllocatorInt::
+	      deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
             real_ptr_ = NULL;
             imag_ptr_ = NULL;
-            free(imag_ind_);
+	    AllocatorInt::deallocate(imag_ind_, imag_nz);
             real_ind_ = NULL;
             imag_ind_ = NULL;
             this->real_data_ = NULL;
@@ -966,11 +1436,13 @@ namespace Seldon
             this->n_ = 0;
             real_nz_ = 0;
             imag_nz_ = 0;
-            free(real_ptr_);
-            free(imag_ptr_);
+	    AllocatorInt::
+	      deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	    AllocatorInt::
+	      deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
             real_ptr_ = NULL;
             imag_ptr_ = NULL;
-            free(imag_ind_);
+	    AllocatorInt::deallocate(imag_ind_, imag_nz);
             imag_ind_ = NULL;
             this->real_data_ = NULL;
             this->imag_data_ = NULL;
@@ -1078,10 +1550,13 @@ namespace Seldon
       {
 #endif
 
-	real_ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
-						   sizeof(int)) );
-	memcpy(this->real_ptr_, A.real_ptr_,
-	       (Storage::GetFirst(i, j) + 1) * sizeof(int));
+	real_ptr_ =
+	  reinterpret_cast<int*>( AllocatorInt::
+				  allocate(Storage::GetFirst(i, j)+1) );
+
+	AllocatorInt::
+	  memorycpy(this->real_ptr_, A.real_ptr_,
+		    (Storage::GetFirst(i, j) + 1) );
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -1126,10 +1601,13 @@ namespace Seldon
       {
 #endif
 
-	imag_ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
-						   sizeof(int)) );
-	memcpy(this->imag_ptr_, A.imag_ptr_,
-	       (Storage::GetFirst(i, j) + 1) * sizeof(int));
+	imag_ptr_ =
+	  reinterpret_cast<int*>( AllocatorInt::
+				  allocate(Storage::GetFirst(i, j)+1) );
+
+	AllocatorInt::
+	  memorycpy(this->imag_ptr_, A.imag_ptr_,
+		    (Storage::GetFirst(i, j) + 1) );
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -1139,7 +1617,8 @@ namespace Seldon
 	this->n_ = 0;
 	real_nz_ = 0;
 	imag_nz_ = 0;
-	free(real_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
 	real_ind_ = NULL;
@@ -1153,7 +1632,8 @@ namespace Seldon
 	this->n_ = 0;
 	real_nz_ = 0;
 	imag_nz_ = 0;
-	free(real_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = 0;
 	real_ind_ = NULL;
 	imag_ind_ = NULL;
@@ -1176,8 +1656,12 @@ namespace Seldon
       {
 #endif
 
-	real_ind_ = reinterpret_cast<int*>( calloc(real_nz_, sizeof(int)) );
-	memcpy(this->real_ind_, A.real_ind_, real_nz_ * sizeof(int));
+	real_ind_ =
+	  reinterpret_cast<int*>( AllocatorInt::
+				  allocate(real_nz_, this) );
+	
+	AllocatorInt::
+	  memorycpy(this->real_ind_, A.real_ind_, real_nz_);
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -1187,8 +1671,10 @@ namespace Seldon
 	this->n_ = 0;
 	real_nz_ = 0;
 	imag_nz_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
 	real_ind_ = NULL;
@@ -1202,8 +1688,10 @@ namespace Seldon
 	this->n_ = 0;
 	real_nz_ = 0;
 	imag_nz_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
 	this->real_data_ = NULL;
@@ -1224,9 +1712,13 @@ namespace Seldon
       {
 #endif
 
-	imag_ind_ = reinterpret_cast<int*>( calloc(imag_nz_, sizeof(int)) );
-	memcpy(this->imag_ind_, A.imag_ind_, imag_nz_ * sizeof(int));
-
+	imag_ind_ =
+	  reinterpret_cast<int*>( AllocatorInt::
+				  allocate(imag_nz_, this) );
+	
+	AllocatorInt::
+	  memorycpy(this->imag_ind_, A.imag_ind_, imag_nz_);
+	
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -1235,11 +1727,13 @@ namespace Seldon
 	this->n_ = 0;
 	real_nz_ = 0;
 	imag_nz_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
-	free(imag_ind_);
+	AllocatorInt::deallocate(imag_ind_, A.imag_nz_);
 	real_ind_ = NULL;
 	imag_ind_ = NULL;
 	this->real_data_ = NULL;
@@ -1251,11 +1745,13 @@ namespace Seldon
 	this->n_ = 0;
 	real_nz_ = 0;
 	imag_nz_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
-	free(imag_ind_);
+	AllocatorInt::deallocate(imag_ind_, A.imag_nz_);
 	imag_ind_ = NULL;
 	this->real_data_ = NULL;
 	this->imag_data_ = NULL;
@@ -1275,8 +1771,8 @@ namespace Seldon
       {
 #endif
 
-	this->real_data_ = this->allocator_.allocate(real_nz_, this);
-	this->allocator_.memorycpy(this->real_data_, A.real_data_, real_nz_);
+	this->real_data_ = Allocator::allocate(real_nz_, this);
+	Allocator::memorycpy(this->real_data_, A.real_data_, real_nz_);
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -1284,12 +1780,14 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
-	free(real_ind_);
-	free(imag_ind_);
+	AllocatorInt::deallocate(real_ind_, A.real_nz_);
+	AllocatorInt::deallocate(imag_ind_, A.imag_nz_);
 	real_ind_ = NULL;
 	imag_ind_ = NULL;
 	this->real_data_ = NULL;
@@ -1299,12 +1797,14 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
-	free(real_ind_);
-	free(imag_ind_);
+	AllocatorInt::deallocate(real_ind_, A.real_nz_);
+	AllocatorInt::deallocate(imag_ind_, A.imag_nz_);
 	real_ind_ = NULL;
 	imag_ind_ = NULL;
 	imag_data_ = NULL;
@@ -1324,8 +1824,8 @@ namespace Seldon
       {
 #endif
 
-	this->imag_data_ = this->allocator_.allocate(imag_nz_, this);
-	this->allocator_.memorycpy(this->imag_data_, A.imag_data_, imag_nz_);
+	this->imag_data_ = Allocator::allocate(imag_nz_, this);
+	Allocator::memorycpy(this->imag_data_, A.imag_data_, imag_nz_);
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -1333,15 +1833,17 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
-	free(real_ind_);
-	free(imag_ind_);
+	AllocatorInt::deallocate(real_ind_, A.real_nz_);
+	AllocatorInt::deallocate(imag_ind_, A.imag_nz_);
 	real_ind_ = NULL;
 	imag_ind_ = NULL;
-	this->allocator_.deallocate(this->real_data_, real_nz_);
+	Allocator::deallocate(this->real_data_, real_nz_);
 	this->real_data_ = NULL;
 	this->imag_data_ = NULL;
       }
@@ -1349,15 +1851,17 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(real_ptr_);
-	free(imag_ptr_);
+	AllocatorInt::
+	  deallocate(real_ptr_, Storage::GetFirst(i, j)+1);
+	AllocatorInt::
+	  deallocate(imag_ptr_, Storage::GetFirst(i, j)+1);
 	real_ptr_ = NULL;
 	imag_ptr_ = NULL;
-	free(real_ind_);
-	free(imag_ind_);
+	AllocatorInt::deallocate(real_ind_, A.real_nz_);
+	AllocatorInt::deallocate(imag_ind_, A.imag_nz_);
 	real_ind_ = NULL;
 	imag_ind_ = NULL;
-	this->allocator_.deallocate(this->real_data_, real_nz_);
+	Allocator::deallocate(this->real_data_, real_nz_);
 	real_data_ = NULL;
       }
     if (imag_data_ == NULL && i != 0 && j != 0)
@@ -1411,7 +1915,6 @@ namespace Seldon
 
     imag_a = imag_ptr_[Storage::GetFirst(i, j)];
     imag_b = imag_ptr_[Storage::GetFirst(i, j) + 1];
-
     if (real_a != real_b)
       {
 	l = Storage::GetSecond(i, j);
@@ -1811,11 +2314,11 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_ComplexSparse<T, Prop, Storage, Allocator>::Zero()
   {
-    this->allocator_.memoryset(this->real_data_, char(0),
-			       this->real_nz_ * sizeof(value_type));
+    Allocator::memoryset(this->real_data_, char(0),
+			 this->real_nz_ * sizeof(value_type));
     
-    this->allocator_.memoryset(this->imag_data_, char(0),
-			       this->imag_nz_ * sizeof(value_type));
+    Allocator::memoryset(this->imag_data_, char(0),
+			 this->imag_nz_ * sizeof(value_type));
   }
 
 
@@ -1836,18 +2339,20 @@ namespace Seldon
     Clear();
 
     Vector<value_type, VectFull, Allocator> real_values(nz), imag_values;
-    Vector<int, VectFull, CallocAlloc<int> > 
+    Vector<int, VectFull, AllocatorInt> 
       real_ptr(Storage::GetFirst(m, n) + 1);
-    Vector<int, VectFull, CallocAlloc<int> > real_ind(nz);
-    Vector<int, VectFull, CallocAlloc<int> > imag_ptr(real_ptr);
-    Vector<int, VectFull, CallocAlloc<int> > imag_ind;
+    Vector<int, VectFull, AllocatorInt> real_ind(nz);
+    Vector<int, VectFull, AllocatorInt> imag_ptr(real_ptr);
+    Vector<int, VectFull, AllocatorInt> imag_ind;
     
     real_values.Fill(value_type(1));
     real_ind.Fill();
     imag_ind.Zero();
+    imag_ptr.Zero();
     int i;
     for (i = 0; i < nz + 1; i++)
       real_ptr(i) = i;
+
     for (i = nz + 1; i < real_ptr.GetLength(); i++)
       real_ptr(i) = nz;
 
@@ -2100,12 +2605,14 @@ namespace Seldon
     FileStream.read(reinterpret_cast<char*>(real_ptr_),
                     sizeof(int)*(Storage::GetFirst(m, n)+1));
     FileStream.read(reinterpret_cast<char*>(real_ind_), sizeof(int)*real_nz);
-    FileStream.read(reinterpret_cast<char*>(this->real_data_), sizeof(value_type)*real_nz);
+    FileStream.read(reinterpret_cast<char*>(this->real_data_),
+		    sizeof(value_type)*real_nz);
 
     FileStream.read(reinterpret_cast<char*>(imag_ptr_),
                     sizeof(int)*(Storage::GetFirst(m, n)+1));
     FileStream.read(reinterpret_cast<char*>(imag_ind_), sizeof(int)*imag_nz);
-    FileStream.read(reinterpret_cast<char*>(this->imag_data_), sizeof(value_type)*imag_nz);
+    FileStream.read(reinterpret_cast<char*>(this->imag_data_),
+		    sizeof(value_type)*imag_nz);
     
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.

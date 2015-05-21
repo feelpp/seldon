@@ -25,32 +25,30 @@
 namespace Seldon
 {
 
-  class ColSymComplexSparse
-  {
-  public:
-    static int GetFirst(int i, int j);
-    static int GetSecond(int i, int j);
-    static int GetBeginLoop(int i);
-    static const bool Sparse = true;
-  };
-
-
-  class RowSymComplexSparse
-  {
-  public:
-    static int GetFirst(int i, int j);
-    static int GetSecond(int i, int j);
-    static int GetBeginLoop(int i);
-    static const bool Sparse = true;
-  };
-
-
   //! for complex sparse matrix, the allocator involves real numbers
   template<class T>
   class SeldonDefaultAllocator<ColSymComplexSparse, T>
   {
   public :
-    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+    typedef typename
+    SeldonDefaultAllocator<VectFull, typename ClassComplexType<T>::Treal>
+    ::allocator allocator;    
+  };
+
+  template<>
+  class SeldonDefaultAllocator<ColSymComplexSparse, complex<float> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, float>::allocator allocator;
+  };
+
+  template<>
+  class SeldonDefaultAllocator<ColSymComplexSparse, complex<double> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, double>::allocator allocator;
   };
 
 
@@ -59,7 +57,25 @@ namespace Seldon
   class SeldonDefaultAllocator<RowSymComplexSparse, T>
   {
   public :
-    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+    typedef typename
+    SeldonDefaultAllocator<VectFull, typename ClassComplexType<T>::Treal>
+    ::allocator allocator;    
+  };
+
+  template<>
+  class SeldonDefaultAllocator<RowSymComplexSparse, complex<float> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, float>::allocator allocator;
+  };
+
+  template<>
+  class SeldonDefaultAllocator<RowSymComplexSparse, complex<double> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, double>::allocator allocator;
   };
 
   
@@ -76,7 +92,8 @@ namespace Seldon
     'imag_ptr_', 'imag_ind_' and 'imag_data_'.\par
     Finally, since the matrix is symmetric, only its upper part is stored.
   */
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Prop, class Storage, class Allocator
+	    = typename SeldonDefaultAllocator<Storage, T>::allocator>
   class Matrix_SymComplexSparse: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
@@ -86,6 +103,7 @@ namespace Seldon
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
+    typedef typename SeldonDefaultAllocator<VectFull, int>::allocator AllocatorInt;
     typedef complex<value_type> entry_type;
     typedef complex<value_type> access_type;
     typedef complex<value_type> const_access_type;

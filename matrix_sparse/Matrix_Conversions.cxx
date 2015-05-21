@@ -493,7 +493,7 @@ namespace Seldon
   {
     int Nelement = IndRow_.GetLength();
 
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(Nelement),
+    Vector<int> IndRow(Nelement),
       IndCol(Nelement);
     
     for (int i = 0; i < Nelement; i++)
@@ -516,7 +516,7 @@ namespace Seldon
     Sort(IndRow, IndCol, Val);
     
     // Construction of array 'Ptr'.
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(m + 1);
+    Vector<int> Ptr(m + 1);
     Ptr.Zero();
     for (int i = 0; i < Nelement; i++)
       Ptr(IndRow(i)+1)++;
@@ -549,7 +549,7 @@ namespace Seldon
       return;
 
     int nnz = IndRow_.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
+    Vector<int> IndRow(nnz), IndCol(nnz);
     for (int i = 0; i < nnz; i++)
       {
 	IndRow(i) = IndRow_(i);
@@ -569,7 +569,7 @@ namespace Seldon
     Sort(IndCol, IndRow, Val);
 
     // Construction of array 'Ptr'.
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(n + 1);
+    Vector<int> Ptr(n + 1);
     Ptr.Zero();
     for (int i = 0; i < nnz; i++)
       {
@@ -604,7 +604,7 @@ namespace Seldon
       return;
 
     int nnz = IndRow_.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
+    Vector<int> IndRow(nnz), IndCol(nnz);
     for (int i = 0; i < nnz; i++)
       {
 	IndRow(i) = IndRow_(i);
@@ -648,7 +648,7 @@ namespace Seldon
     Sort(IndRow, IndCol, Val);
 
     // Construction of array 'Ptr'.
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(m + 1);
+    Vector<int> Ptr(m + 1);
     Ptr.Zero();
     for (int i = 0; i < nnz; i++)
       {
@@ -683,7 +683,7 @@ namespace Seldon
       return;
 
     int nnz = IndRow_.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
+    Vector<int> IndRow(nnz), IndCol(nnz);
     for (int i = 0; i < nnz; i++)
       {
 	IndRow(i) = IndRow_(i);
@@ -728,7 +728,7 @@ namespace Seldon
     Sort(IndCol, IndRow, Val);
 
     // Construction of array 'Ptr'.
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(m + 1);
+    Vector<int> Ptr(m + 1);
     Ptr.Zero();
     for (int i = 0; i < nnz; i++)
       {
@@ -768,7 +768,7 @@ namespace Seldon
       return;
 
     int nnz = IndRow_.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
+    Vector<int> IndRow(nnz), IndCol(nnz);
     for (int i = 0; i < nnz; i++)
       {
 	IndRow(i) = IndRow_(i);
@@ -788,7 +788,7 @@ namespace Seldon
     Sort(IndRow, IndCol, Val);
 
     // Number of elements per row.
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(m);
+    Vector<int> Ptr(m);
     Ptr.Zero();
     for (int i = 0; i < nnz; i++)
       {
@@ -833,7 +833,7 @@ namespace Seldon
       return;
 
     int nnz = IndRow_.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
+    Vector<int> IndRow(nnz), IndCol(nnz);
     for (int i = 0; i < nnz; i++)
       {
 	IndRow(i) = IndRow_(i);
@@ -853,7 +853,7 @@ namespace Seldon
     Sort(IndCol, IndRow, Val);
 
     // Construction of array 'Ptr'.
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(n);
+    Vector<int> Ptr(n);
     Ptr.Zero();
     for (int i = 0; i < nnz; i++)
       {
@@ -898,7 +898,7 @@ namespace Seldon
       return;
 
     int nnz = IndRow_.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
+    Vector<int> IndRow(nnz), IndCol(nnz);
     for (int i = 0; i < nnz; i++)
       {
 	IndRow(i) = IndRow_(i);
@@ -942,7 +942,7 @@ namespace Seldon
     Sort(IndRow, IndCol, Val);
 
     // Construction of array 'Ptr'.
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(m);
+    Vector<int> Ptr(m);
     Ptr.Zero();
     for (int i = 0; i < nnz; i++)
       {
@@ -989,7 +989,7 @@ namespace Seldon
       return;
 
     int nnz = IndRow_.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
+    Vector<int> IndRow(nnz), IndCol(nnz);
     for (int i = 0; i < nnz; i++)
       {
 	IndRow(i) = IndRow_(i);
@@ -1034,7 +1034,7 @@ namespace Seldon
     Sort(IndCol, IndRow, Val);
 
     // Construction of array 'Ptr'.
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(m);
+    Vector<int> Ptr(m);
     Ptr.Zero();
     for (int i = 0; i < nnz; i++)
       {
@@ -1089,7 +1089,7 @@ namespace Seldon
     int* ind_ = A.GetInd();
     
     // Conversion in coordinate format.
-    Vector<Tint, VectFull, CallocAlloc<Tint> > IndCol;
+    Vector<Tint> IndCol;
     ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
 
     // Sorting with respect to column numbers.
@@ -1205,7 +1205,7 @@ namespace Seldon
     int n = A.GetN();
 
     // Conversion in coordinate format.
-    Vector<Tint, VectFull, CallocAlloc<Tint> > IndCol;
+    Vector<Tint> IndCol;
     ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
 
     // Sorting with respect to column numbers.
@@ -1341,7 +1341,7 @@ namespace Seldon
     else
       {
 	// Conversion in coordinate format.
-	Vector<Tint, VectFull, CallocAlloc<Tint> > IndCol;
+	Vector<Tint> IndCol;
 	ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
 	
 	// Sorting with respect to row numbers.
@@ -1391,7 +1391,7 @@ namespace Seldon
 	if (nb_new_val > 0)
 	  {
 	    // Changing 'IndRow' and 'Val', and assembling the pattern.
-	    Vector<Tint, VectFull, CallocAlloc<Tint> > OldInd(IndCol);
+	    Vector<Tint> OldInd(IndCol);
 	    Vector<T, VectFull, Alloc4> OldVal(Val);
 	    IndCol.Reallocate(nnz + nb_new_val);
 	    Val.Reallocate(nnz + nb_new_val);
@@ -1485,7 +1485,7 @@ namespace Seldon
     else
       {
 	// Conversion in coordinate format.
-	Vector<Tint, VectFull, CallocAlloc<Tint> > IndCol;
+	Vector<Tint> IndCol;
 	ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
 	
 	int nnz = IndRow.GetM();
@@ -1536,7 +1536,7 @@ namespace Seldon
 	if (nb_new_val > 0)
 	  {
 	    // Changing 'IndRow' and 'Val', and assembling the pattern.
-	    Vector<Tint, VectFull, CallocAlloc<Tint> > OldInd(IndCol);
+	    Vector<Tint> OldInd(IndCol);
 	    Vector<T, VectFull, Alloc4> OldVal(Val);
 	    IndCol.Reallocate(nnz + nb_new_val);
 	    Val.Reallocate(nnz + nb_new_val);
@@ -1826,7 +1826,7 @@ namespace Seldon
 
     int nnz = A.GetDataSize();
     int n = A.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
+    Vector<int> IndRow(nnz), IndCol(nnz);
     Vector<T> Val(nnz);
     int ind = 0;
     for (i = 0; i < n; i++)
@@ -1992,8 +1992,8 @@ namespace Seldon
 	    Matrix<T1, Prop1, ColSparse, Allocator1>& mat_csc)
   {
     Vector<T1, VectFull, Allocator1> Val;
-    Vector<int, VectFull, CallocAlloc<int> > IndRow;
-    Vector<int, VectFull, CallocAlloc<int> > IndCol;
+    Vector<int> IndRow;
+    Vector<int> IndCol;
 
     General sym;
     ConvertToCSC(mat_array, sym, IndCol, IndRow, Val);
@@ -2010,8 +2010,8 @@ namespace Seldon
   void Copy(const Matrix<T, Prop, RowSparse, Alloc1>& A,
 	    Matrix<T, Prop, ColSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr;
-    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<int> Ptr;
+    Vector<int> Ind;
     Vector<T, VectFull, Alloc2> Val;
 
     int m = A.GetM(), n = A.GetN();
@@ -2027,8 +2027,8 @@ namespace Seldon
   void Copy(const Matrix<T, Prop, RowSparse, Alloc1>& A,
 	    Matrix<T, Prop, ArrayColSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr;
-    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<int> Ptr;
+    Vector<int> Ind;
     Vector<T, VectFull, Alloc2> Val;
 
     int m = A.GetM(), n = A.GetN();
@@ -2055,7 +2055,7 @@ namespace Seldon
   void Copy(const Matrix<T0, Prop0, ArrayRowSparse,Allocator0>& mat_array,
 	    Matrix<T1, Prop1, ColSparse, Allocator1>& mat_csr)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, IndRow;
+    Vector<int> Ptr, IndRow;
     Vector<T1, VectFull, Allocator1> Val;
 
     int m = mat_array.GetM();
@@ -2072,8 +2072,8 @@ namespace Seldon
   void Copy(const Matrix<T, Prop, RowSymSparse, Alloc1>& A,
 	    Matrix<T, Prop, ColSymSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr;
-    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<int> Ptr;
+    Vector<int> Ind;
     Vector<T, VectFull, Alloc2> Val;
 
     int m = A.GetM(), n = A.GetN();
@@ -2089,8 +2089,8 @@ namespace Seldon
   void Copy(const Matrix<T, Prop, ArrayRowSymSparse, Alloc1>& A,
 	    Matrix<T, Prop, ColSymSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr;
-    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<int> Ptr;
+    Vector<int> Ind;
     Vector<T, VectFull, Alloc2> Val;
 
     int m = A.GetM(), n = A.GetN();
@@ -2106,8 +2106,8 @@ namespace Seldon
   void Copy(const Matrix<T, Prop, ArrayColSymSparse, Alloc1>& A,
 	    Matrix<T, Prop, ColSymSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr;
-    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<int> Ptr;
+    Vector<int> Ind;
     Vector<T, VectFull, Alloc2> Val;
 
     int m = A.GetM(), n = A.GetN();
@@ -2123,8 +2123,8 @@ namespace Seldon
   void Copy(const Matrix<T, Prop1, RowSymSparse, Alloc1>& A,
 	    Matrix<T, Prop2, ColSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr;
-    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<int> Ptr;
+    Vector<int> Ind;
     Vector<T, VectFull, Alloc2> Val;
 
     int m = A.GetM(), n = A.GetN();
@@ -2141,7 +2141,7 @@ namespace Seldon
   void Copy(const Matrix<T0, Prop0, ArrayRowSymSparse, Allocator0>& A,
 	    Matrix<T1, Prop1, ColSparse, Allocator1>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<int> Ptr, Ind;
     Vector<T1, VectFull, Allocator1> AllVal;
 
     int n = A.GetM();
@@ -2157,8 +2157,8 @@ namespace Seldon
   void Copy(const Matrix<T, Prop1, ColSymSparse, Alloc1>& A,
 	    Matrix<T, Prop2, ColSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr;
-    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<int> Ptr;
+    Vector<int> Ind;
     Vector<T, VectFull, Alloc2> Val;
 
     int m = A.GetM(), n = A.GetN();
@@ -2174,8 +2174,8 @@ namespace Seldon
   void Copy(const Matrix<T, Prop1, ArrayColSymSparse, Alloc1>& A,
 	    Matrix<T, Prop2, ColSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr;
-    Vector<int, VectFull, CallocAlloc<int> > Ind;
+    Vector<int> Ptr;
+    Vector<int> Ind;
     Vector<T, VectFull, Alloc2> Val;
 
     int m = A.GetM(), n = A.GetN();
@@ -2669,7 +2669,7 @@ namespace Seldon
   void Copy(const Matrix<T1, Prop1, ColSparse, Alloc1>& A,
 	    Matrix<T2, Prop2, RowSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<int> Ptr, Ind;
     Vector<T1, VectFull, Alloc2> Value;
     
     General sym;
@@ -2692,7 +2692,7 @@ namespace Seldon
   void Copy(const Matrix<T1, Prop1, ArrayColSparse, Alloc1>& A,
 	    Matrix<T2, Prop2, RowSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<int> Ptr, Ind;
     Vector<T1, VectFull, Alloc2> Value;
     
     General sym;
@@ -2712,8 +2712,8 @@ namespace Seldon
 	    Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
   {
     Vector<T1, VectFull, Allocator1> Val;
-    Vector<int, VectFull, CallocAlloc<int> > IndRow;
-    Vector<int, VectFull, CallocAlloc<int> > IndCol;
+    Vector<int> IndRow;
+    Vector<int> IndCol;
 
     General sym;
     ConvertToCSR(mat_array, sym, IndRow, IndCol, Val);
@@ -2731,8 +2731,8 @@ namespace Seldon
 	    Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
   {
     Vector<T1, VectFull, Allocator1> Val;
-    Vector<int, VectFull, CallocAlloc<int> > IndRow;
-    Vector<int, VectFull, CallocAlloc<int> > IndCol;
+    Vector<int> IndRow;
+    Vector<int> IndCol;
     
     Symmetric sym;
     ConvertToCSR(mat_array, sym, IndRow, IndCol, Val);
@@ -2748,7 +2748,7 @@ namespace Seldon
   void Copy(const Matrix<T, Prop, ColSymSparse, Alloc1>& A,
 	    Matrix<T, Prop, RowSymSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<int> Ptr, Ind;
     Vector<T, VectFull, Alloc2> Value;
     
     Symmetric sym;
@@ -2766,7 +2766,7 @@ namespace Seldon
   void Copy(const Matrix<T, Prop1, ColSymSparse, Alloc1>& A,
 	    Matrix<T, Prop2, RowSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<int> Ptr, Ind;
     Vector<T, VectFull, Alloc2> Value;
     
     General unsym;
@@ -2784,7 +2784,7 @@ namespace Seldon
   void Copy(const Matrix<T, Prop, ArrayColSymSparse, Alloc1>& A,
 	    Matrix<T, Prop, RowSymSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<int> Ptr, Ind;
     Vector<T, VectFull, Alloc2> Value;
     
     Symmetric sym;
@@ -2802,7 +2802,7 @@ namespace Seldon
   void Copy(const Matrix<T, Prop1, ArrayColSymSparse, Alloc1>& A,
 	    Matrix<T, Prop2, RowSparse, Alloc2>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<int> Ptr, Ind;
     Vector<T, VectFull, Alloc2> Value;
     
     General unsym;
@@ -2822,8 +2822,8 @@ namespace Seldon
 	    Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
   {
     Vector<T1, VectFull, Allocator1> Val;
-    Vector<int, VectFull, CallocAlloc<int> > IndRow;
-    Vector<int, VectFull, CallocAlloc<int> > IndCol;
+    Vector<int> IndRow;
+    Vector<int> IndCol;
 
     General unsym;
     ConvertToCSR(mat_array, unsym, IndRow, IndCol, Val);
@@ -2840,8 +2840,8 @@ namespace Seldon
 	    Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
   {
     Vector<T1, VectFull, Allocator1> Val;
-    Vector<int, VectFull, CallocAlloc<int> > IndRow;
-    Vector<int, VectFull, CallocAlloc<int> > IndCol;
+    Vector<int> IndRow;
+    Vector<int> IndCol;
 
     Symmetric sym;
     ConvertToCSR(mat_array, sym, IndRow, IndCol, Val);
@@ -2858,8 +2858,8 @@ namespace Seldon
 	    Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
   {
     Vector<T1, VectFull, Allocator1> Val;
-    Vector<int, VectFull, CallocAlloc<int> > IndRow;
-    Vector<int, VectFull, CallocAlloc<int> > IndCol;
+    Vector<int> IndRow;
+    Vector<int> IndCol;
 
     General unsym;
     ConvertToCSR(mat_array, unsym, IndRow, IndCol, Val);
@@ -2917,7 +2917,7 @@ namespace Seldon
 	return;
       }
     
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<int> Ptr, Ind;
     Vector<T0, VectFull, Allocator0> Value;
     
     Symmetric sym;
@@ -2949,7 +2949,7 @@ namespace Seldon
 	return;
       }
     
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<int> Ptr, Ind;
     Vector<T0, VectFull, Allocator0> Value;
     
     Symmetric sym;
@@ -2978,7 +2978,7 @@ namespace Seldon
 
     int nnz = A.GetDataSize();
     int n = A.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
+    Vector<int> IndRow(nnz), IndCol(nnz);
     Vector<T1, VectFull, Allocator1> Val(nnz);
     int* indA = A.GetInd();
     int* ptrA = A.GetPtr();
@@ -3214,7 +3214,7 @@ namespace Seldon
 	return;
       }
     
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<int> Ptr, Ind;
     Vector<T0, VectFull, Allocator0> Value;
     
     Symmetric sym;
@@ -3278,7 +3278,7 @@ namespace Seldon
 
     int nnz = A.GetDataSize();
     int n = A.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz),IndCol(nnz);
+    Vector<int> IndRow(nnz),IndCol(nnz);
     Vector<T1, VectFull, Allocator1> Val(nnz);
     int ind = 0;
     for (i = 0; i < n; i++)
@@ -3330,7 +3330,7 @@ namespace Seldon
 
     int nnz = A.GetDataSize();
     int n = A.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > IndRow(nnz), IndCol(nnz);
+    Vector<int> IndRow(nnz), IndCol(nnz);
     Vector<T1> Val(nnz);
     int ind = 0;
     for (i = 0; i < n; i++)
@@ -3387,15 +3387,16 @@ namespace Seldon
 
     // Conversion in coordinate format.
     Vector<T1> Val;
-    Vector<int, VectFull, CallocAlloc<int> > IndRow, IndCol;
+    Vector<int> IndRow, IndCol;
     ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Val);
 
     // Sorting with respect to column numbers.
     Sort(IndCol, IndRow, Val);
 
     // Constructing pointer array 'Ptr'.
-    Vector<int, VectFull, CallocAlloc<int> > Ptr(n + 1);
-
+    Vector<int> Ptr(n + 1);
+    Ptr.Zero();
+    
     // Counting non-zero entries per column.
     for (i = 0; i < nnz; i++)
       Ptr(IndCol(i) + 1)++;
@@ -3443,7 +3444,7 @@ namespace Seldon
     int n = A.GetM();
 
     // Converting to coordinates.
-    Vector<int, VectFull, CallocAlloc<int> > IndRow, IndCol;
+    Vector<int> IndRow, IndCol;
     Vector<T0> Value;
     ConvertMatrix_to_Coordinates(A, IndRow, IndCol, Value);
 
@@ -3451,7 +3452,7 @@ namespace Seldon
     Value.Clear();
 
     // Sorting columns too.
-    Vector<int, VectFull, CallocAlloc<int> > IndRow2, IndCol2, Index(2*n);
+    Vector<int> IndRow2, IndCol2, Index(2*n);
     IndRow2 = IndRow;
     IndCol2 = IndCol;
     Sort(IndCol2.GetM(), IndCol2, IndRow2);
@@ -3518,7 +3519,7 @@ namespace Seldon
   void GetSymmetricPattern(const Matrix<T, Prop, Storage, Allocator>& A,
                            Matrix<int, Symmetric, RowSymSparse, AllocI>& B)
   {
-    Vector<int, VectFull, CallocAlloc<int> > Ptr, Ind;
+    Vector<int> Ptr, Ind;
 
     GetSymmetricPattern(A, Ptr, Ind);
 
@@ -3722,7 +3723,7 @@ namespace Seldon
         if (abs(A(i, j)) > threshold)
           nnz++;
     
-    Vector<int, VectFull, CallocAlloc<int> > IndCol(nnz), IndRow(n+1); 
+    Vector<int> IndCol(nnz), IndRow(n+1); 
     Vector<T> Value(nnz);
     nnz = 0; IndRow(0) = 0;
     for (int i = 0; i < n; i++)
@@ -3787,7 +3788,7 @@ namespace Seldon
         if (abs(A(i, j)) > threshold)
           nnz++;
     
-    Vector<int, VectFull, CallocAlloc<int> > IndCol(nnz), IndRow(m+1); 
+    Vector<int> IndCol(nnz), IndRow(m+1); 
     Vector<T> Value(nnz);
     nnz = 0; IndRow(0) = 0;
     for (int i = 0; i < m; i++)

@@ -24,29 +24,30 @@
 namespace Seldon
 {
   
-  class ArrayRowComplexSparse : public RowComplexSparse
-  {
-  };
-
-  class ArrayRowSymComplexSparse : public RowSymComplexSparse
-  {
-  };
-
-  class ArrayColComplexSparse : public ColComplexSparse
-  {
-  };
-
-  class ArrayColSymComplexSparse : public ColSymComplexSparse
-  {
-  };
-
-
   //! for complex sparse matrix, the allocator involves real numbers
   template<class T>
   class SeldonDefaultAllocator<ArrayColComplexSparse, T>
   {
   public :
-    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+    typedef typename 
+    SeldonDefaultAllocator<VectFull, typename ClassComplexType<T>::Treal>
+    ::allocator allocator;    
+  };
+
+  template<>
+  class SeldonDefaultAllocator<ArrayColComplexSparse, complex<float> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, float>::allocator allocator;
+  };
+
+  template<>
+  class SeldonDefaultAllocator<ArrayColComplexSparse, complex<double> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, double>::allocator allocator;
   };
 
 
@@ -55,7 +56,25 @@ namespace Seldon
   class SeldonDefaultAllocator<ArrayRowComplexSparse, T>
   {
   public :
-    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+    typedef typename 
+    SeldonDefaultAllocator<VectFull, typename ClassComplexType<T>::Treal>
+    ::allocator allocator;    
+  };
+
+  template<>
+  class SeldonDefaultAllocator<ArrayRowComplexSparse, complex<float> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, float>::allocator allocator;
+  };
+
+  template<>
+  class SeldonDefaultAllocator<ArrayRowComplexSparse, complex<double> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, double>::allocator allocator;
   };
 
 
@@ -64,7 +83,25 @@ namespace Seldon
   class SeldonDefaultAllocator<ArrayColSymComplexSparse, T>
   {
   public :
-    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+    typedef typename 
+    SeldonDefaultAllocator<VectFull, typename ClassComplexType<T>::Treal>
+    ::allocator allocator;
+  };
+
+  template<>
+  class SeldonDefaultAllocator<ArrayColSymComplexSparse, complex<float> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, float>::allocator allocator;
+  };
+
+  template<>
+  class SeldonDefaultAllocator<ArrayColSymComplexSparse, complex<double> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, double>::allocator allocator;
   };
 
 
@@ -73,7 +110,25 @@ namespace Seldon
   class SeldonDefaultAllocator<ArrayRowSymComplexSparse, T>
   {
   public :
-    typedef SELDON_DEFAULT_ALLOCATOR<typename ClassComplexType<T>::Treal> allocator;    
+    typedef typename 
+    SeldonDefaultAllocator<VectFull, typename ClassComplexType<T>::Treal>
+    ::allocator allocator;    
+  };
+
+  template<>
+  class SeldonDefaultAllocator<ArrayRowSymComplexSparse, complex<float> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, float>::allocator allocator;
+  };
+
+  template<>
+  class SeldonDefaultAllocator<ArrayRowSymComplexSparse, complex<double> >
+  {
+  public:
+    typedef typename
+    SeldonDefaultAllocator<VectFull, double>::allocator allocator;
   };
 
   
@@ -85,7 +140,8 @@ namespace Seldon
     (4) an array of vectors val : val(i) is a vector, which contains values of
     the row i
   */
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Prop, class Storage, class Allocator
+	    = typename SeldonDefaultAllocator<Storage, T>::allocator>
   class Matrix_ArrayComplexSparse : public VirtualMatrix<T>
   {
     // typedef declaration.

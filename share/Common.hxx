@@ -30,52 +30,26 @@
 #ifndef __APPLE__
 namespace std
 {
-  // conj available for real numbers for compatibility
-  inline float conj(float x)
-  {
-    return x;
-  }
-
-  inline double conj(double x)
-  {
-    return x;
-  }
-
-  inline float real(float x)
-  {
-    return x;
-  }
-
-  inline double real(double x)
-  {
-    return x;
-  }
-
+  float real(float x);
+  double real(double x);
 }
 #endif
 
 namespace std
 {
   template<class T>
-  inline T conjugate(const T& x)
-  {
-    return x;
-  }
-  
+  T conjugate(const T& x);
+
   template<class T>
-  inline complex<T> conjugate(const complex<T>& x)
-  {
-    return conj(x);
-  }
+  complex<T> conjugate(const complex<T>& x);
 }
       
-
-template <class T>
-void PrintArray(T* v, int lgth);
-
 namespace Seldon
 {
   using namespace std;
+ 
+  template <class T>
+  void PrintArray(T* v, int lgth);
   
   //! This class helps formatting C++ strings on the fly.
   /*!
@@ -160,6 +134,8 @@ namespace Seldon
 
   template <class T>
   void SetComplexReal(bool n, complex<T>& number);
+
+  void SetComplexReal(int x, complex<int>& number);
 
   template <class T>
   void SetComplexReal(const T& x, complex<T>& number);

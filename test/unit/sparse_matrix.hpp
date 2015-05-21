@@ -479,7 +479,7 @@ public:
 	  Copy(A_array, A_array_t);
 	  Transpose(A_array_t);
 
-	  Matrix<double, General, RowSparse, MallocAlloc<double> > A(m_, n_);
+	  Matrix<double, General, RowSparse> A(m_, n_);
 	  Copy(A_array, A);
 
 	  Transpose(A);
@@ -509,7 +509,7 @@ public:
 	  Copy(A_array, A_array_t);
 	  Transpose(A_array_t);
 
-	  Matrix<double, General, RowSparse, CallocAlloc<double> > A(m_, n_);
+	  Matrix<double, General, RowSparse> A(m_, n_);
 	  Copy(A_array, A);
 
 	  Transpose(A);
@@ -597,7 +597,7 @@ public:
     for (k = 0; k < Nloop_; k++)
       {
 	{
-	  Matrix<double, General, RowSparse, MallocAlloc<double> > A(m_, n_);
+	  Matrix<double, General, RowSparse> A(m_, n_);
 	  A.FillRand(Nelement_);
 	  for (i = 0; i < m_; i++)
 	    {
@@ -615,7 +615,7 @@ public:
 	    }
 	}
 	{
-	  Matrix<double, General, RowSparse, MallocAlloc<double> > A(m_, n_);
+	  Matrix<double, General, RowSparse> A(m_, n_);
 	  A.FillRand(Nelement_);
 	  for (j = 0; j < n_; j++)
 	    {

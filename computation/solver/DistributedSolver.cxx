@@ -328,8 +328,8 @@ namespace Seldon
   
 
 #ifdef SELDON_WITH_MPI
-  template<class TransA, class T>
-  void SolveLU_Distributed(MPI::Comm& comm, const TransA& transA,
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
 			   SparseDistributedSolver<T>& mat_lu,
                            Vector<T>& x, Vector<int>& global_col)
   {
@@ -337,8 +337,8 @@ namespace Seldon
   }
 
   
-  template<class TransA, class T>
-  void SolveLU_Distributed(MPI::Comm& comm, const TransA& transA,
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
                            SparseDistributedSolver<complex<T> >& mat_lu,
                            Vector<T>& x, Vector<int>& global_col)
   {
@@ -347,8 +347,8 @@ namespace Seldon
   }
   
   
-  template<class TransA, class T>
-  void SolveLU_Distributed(MPI::Comm& comm, const TransA& transA,
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
 			   SparseDistributedSolver<T>& mat_lu,
                            Vector<complex<T> >& x, Vector<int>& global_col)
   {
@@ -367,8 +367,8 @@ namespace Seldon
   }
   
   
-  template<class TransA, class T>
-  void SolveLU_Distributed(MPI::Comm& comm, const TransA& transA,
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
 			   SparseDistributedSolver<T>& mat_lu,
                            Matrix<T, General, ColMajor>& x, Vector<int>& global_col)
   {
@@ -376,8 +376,8 @@ namespace Seldon
   }
 
   
-  template<class TransA, class T>
-  void SolveLU_Distributed(MPI::Comm& comm, const TransA& transA,
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
                            SparseDistributedSolver<complex<T> >& mat_lu,
                            Matrix<T, General, ColMajor>& x, Vector<int>& global_col)
   {
@@ -386,10 +386,11 @@ namespace Seldon
   }
   
   
-  template<class TransA, class T>
-  void SolveLU_Distributed(MPI::Comm& comm, const TransA& transA,
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
 			   SparseDistributedSolver<T>& mat_lu,
-                           Matrix<complex<T>, General, ColMajor>& x, Vector<int>& global_col)
+                           Matrix<complex<T>, General, ColMajor>& x,
+			   Vector<int>& global_col)
   {
     throw WrongArgument("SolveLU(SparseDistributedSolver, Vector, Vector)",
 			"the matrix must be real");
@@ -405,7 +406,8 @@ namespace Seldon
    */
   template<class T> template<class MatrixSparse, class MatrixFull>
   void SparseDistributedSolver<T>::GetSchurComplement(MatrixSparse& mat_direct, 
-						      const IVect& num, MatrixFull& mat_schur)
+						      const IVect& num,
+						      MatrixFull& mat_schur)
   {
     if (this->type_solver == this->MUMPS)
       {

@@ -513,8 +513,8 @@ namespace Seldon
     \param[in,out] x right-hand-side on input, solution on output
     It is assumed that a call to FactorizeMatrix has been done before
   */
-  template<class T> template<class Allocator2, class Transpose_status>
-  void MatrixMumps<T>::Solve(const Transpose_status& TransA,
+  template<class T> template<class Allocator2>
+  void MatrixMumps<T>::Solve(const SeldonTranspose& TransA,
 			     Vector<T, VectFull, Allocator2>& x)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -553,8 +553,8 @@ namespace Seldon
     It is assumed that 'FactorizeMatrix' has already been called.
   */
   template<class T>
-  template<class Allocator2, class Transpose_status, class Prop>
-  void MatrixMumps<T>::Solve(const Transpose_status& TransA,
+  template<class Allocator2, class Prop>
+  void MatrixMumps<T>::Solve(const SeldonTranspose& TransA,
 			     Matrix<T, Prop, ColMajor, Allocator2>& x)
   {
 
@@ -682,7 +682,8 @@ namespace Seldon
           {
             CallMumps();
             
-            comm_facto.Allreduce(&struct_mumps.info[0], &info, 1, MPI::INTEGER, MPI::MIN);
+            comm_facto.Allreduce(&struct_mumps.info[0],
+				 &info, 1, MPI::INTEGER, MPI::MIN);
           }
       }
 
@@ -716,9 +717,9 @@ namespace Seldon
     \param[in,out] x right-hand-side then solution
     \param[in,out] glob_num global row numbers
   */
-  template<class T> template<class Allocator2, class Transpose_status>
+  template<class T> template<class Allocator2>
   void MatrixMumps<T>::SolveDistributed(MPI::Comm& comm_facto,
-                                        const Transpose_status& TransA,
+                                        const SeldonTranspose& TransA,
 					Vector<T, VectFull, Allocator2>& x,
 					const IVect& glob_num)
   {
@@ -846,9 +847,9 @@ namespace Seldon
     \param[in,out] x right-hand-side then solution
     \param[in,out] glob_num global row numbers
   */
-  template<class T> template<class Allocator2, class Transpose_status, class Prop>
+  template<class T> template<class Allocator2, class Prop>
   void MatrixMumps<T>::SolveDistributed(MPI::Comm& comm_facto,
-                                        const Transpose_status& TransA,
+                                        const SeldonTranspose& TransA,
 					Matrix<T, Prop, ColMajor, Allocator2>& x,
 					const IVect& glob_num)
   {
@@ -1098,8 +1099,8 @@ namespace Seldon
 
   //! LU resolution with a vector whose type is the same as for Mumps object
   //! Solves transpose system A^T x = b or A x = b depending on TransA
-  template<class T, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixMumps<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
@@ -1127,8 +1128,8 @@ namespace Seldon
   
 
   //! Solves A x = b or A^T x = b, where A is real and x is complex
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixMumps<double>& mat_lu,
                Vector<complex<double>, VectFull, Allocator>& x)
   {
@@ -1159,8 +1160,8 @@ namespace Seldon
 
   
   //! Solves A x = b or A^T x = b, where A is complex and x is real => Forbidden  
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixMumps<complex<double> >& mat_lu,
                Vector<double, VectFull, Allocator>& x)
   {
@@ -1180,8 +1181,8 @@ namespace Seldon
 
   //! LU resolution with a matrix whose type is the same as for Mumps object
   //! Solves transpose system A^T x = b or A x = b depending on TransA
-  template<class T, class Allocator, class Prop, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Allocator, class Prop>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixMumps<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
@@ -1197,8 +1198,8 @@ namespace Seldon
   }
 
   
-  template<class Prop, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Prop, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixMumps<double>& mat_lu,
 	       Matrix<complex<double>, Prop, ColMajor, Allocator>& x)
   {
@@ -1216,8 +1217,8 @@ namespace Seldon
   }
 
   
-  template<class Prop, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Prop, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixMumps<complex<double> >& mat_lu,
 	       Matrix<double, Prop, ColMajor, Allocator>& x)
   {

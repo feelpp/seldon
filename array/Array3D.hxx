@@ -45,10 +45,6 @@ namespace Seldon
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
 
-    // Static attributes.
-  protected:
-    static Allocator array3D_allocator_;
-
     // Attributes.
   protected:
     // Length along dimension #1.
@@ -71,10 +67,10 @@ namespace Seldon
     Array3D(int i, int j, int k);
     Array3D(const Array3D<T, Allocator>& A);
 
-    // Destructor.
+    // Destructor. (inline)
     ~Array3D();
 
-    // Basic methods.
+    // Basic methods. (inline)
     int GetLength1() const;
     int GetLength2() const;
     int GetLength3() const;
@@ -89,7 +85,7 @@ namespace Seldon
     void Nullify();
     void Clear();
 
-    // Element access and affectation.
+    // Element access and affectation. (inline)
     reference operator() (int i, int j, int k);
 #ifndef SWIG
     const_reference operator() (int i, int j, int k) const;
@@ -114,19 +110,14 @@ namespace Seldon
 
 
 #ifndef SWIG
-  // 3D array allocator.
-  template <class T, class Allocator>
-  Allocator Array3D<T, Allocator>::array3D_allocator_;
-
-
   template <class T, class Allocator>
   ostream& operator << (ostream& out,
 			const Array3D<T, Allocator>& A);
 #endif
 
   template <class T0, class T, class Allocator>
-  void Mlt(const T0& alpha, Array3D<T, Allocator>& A);
-
+  void MltScalar(const T0& alpha, Array3D<T, Allocator>& A);
+  
 } // namespace Seldon.
 
 

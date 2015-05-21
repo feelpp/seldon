@@ -17,7 +17,7 @@
 // along with Seldon. If not, see http://www.gnu.org/licenses/.
 
 
-#ifndef SELDON_FILE_SUBMATRIX_CXX
+#ifndef SELDON_FILE_SUBMATRIX_INLINE_CXX
 
 
 #include "SubMatrix.hxx"
@@ -81,5 +81,5 @@ namespace Seldon
 } // namespace Seldon.
 
 
-#define SELDON_FILE_SUBMATRIX_CXX
+#define SELDON_FILE_SUBMATRIX_INLINE_CXX
 #endif

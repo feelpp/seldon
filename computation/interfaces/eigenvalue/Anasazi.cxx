@@ -265,9 +265,14 @@ namespace Seldon
     typedef Anasazi::OperatorAnasaziEigen<EigenProblem, T> OPsub;
     typedef Anasazi::Operator<T> OP;
     Teuchos::RCP<const OP> A, M, Op;
-    A = Teuchos::rcp(new Anasazi::OperatorAnasaziEigen<EigenProblem, T>(var, OPsub::OPERATOR_A));
-    M = Teuchos::rcp(new Anasazi::OperatorAnasaziEigen<EigenProblem, T>(var, OPsub::OPERATOR_M));
-    Op = Teuchos::rcp(new Anasazi::OperatorAnasaziEigen<EigenProblem, T>(var, OPsub::OPERATOR_OP));
+    A = Teuchos::rcp(new Anasazi::OperatorAnasaziEigen
+		     <EigenProblem, T>(var, OPsub::OPERATOR_A));
+
+    M = Teuchos::rcp(new Anasazi::OperatorAnasaziEigen
+		     <EigenProblem, T>(var, OPsub::OPERATOR_M));
+
+    Op = Teuchos::rcp(new Anasazi::OperatorAnasaziEigen
+		      <EigenProblem, T>(var, OPsub::OPERATOR_OP));
 
     // Create eigenproblem
     Teuchos::RCP<Anasazi::BasicEigenproblem<T, MV, OP> > MyProblem;
@@ -390,9 +395,11 @@ namespace Seldon
     if (solver == var.SOLVER_LOBPCG)
       MySolver = Teuchos::rcp( new Anasazi::LOBPCGSolMgr<T, MV, OP>(MyProblem, MyPL));
     else if (solver == var.SOLVER_BKS)
-      MySolver = Teuchos::rcp( new Anasazi::BlockKrylovSchurSolMgr<T, MV, OP>(MyProblem, MyPL));
+      MySolver = Teuchos::rcp( new Anasazi::BlockKrylovSchurSolMgr<T, MV, OP>
+			       (MyProblem, MyPL));
     else if (solver == var.SOLVER_BD)
-      MySolver = Teuchos::rcp( new Anasazi::BlockDavidsonSolMgr<T, MV, OP>(MyProblem, MyPL));
+      MySolver = Teuchos::rcp( new Anasazi::BlockDavidsonSolMgr<T, MV, OP>
+			       (MyProblem, MyPL));
     else
       {
 	cout << "Invalid Anasazi solver: " << solver << endl;	

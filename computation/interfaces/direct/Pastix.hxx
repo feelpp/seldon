@@ -101,12 +101,12 @@ namespace Seldon
     template<class Allocator2>
     void Solve(Vector<T, VectFull, Allocator2>& x);
 
-    template<class Allocator2, class Transpose_status>
-    void Solve(const Transpose_status& TransA,
+    template<class Allocator2>
+    void Solve(const SeldonTranspose& TransA,
 	       Vector<T, VectFull, Allocator2>& x);
 
-    template<class Allocator2, class Transpose_status>
-    void Solve(const Transpose_status& TransA,
+    template<class Allocator2>
+    void Solve(const SeldonTranspose& TransA,
 	       Matrix<T, General, ColMajor, Allocator2>& x);
 
     void SetNumberOfThreadPerNode(int);
@@ -124,9 +124,9 @@ namespace Seldon
                           Vector<T, Vect_Full, Allocator2>& x,
                           const Vector<Tint>& glob_num);
 
-    template<class Allocator2, class Transpose_status, class Tint>
+    template<class Allocator2, class Tint>
     void SolveDistributed(MPI::Comm& comm_facto,
-                          const Transpose_status& TransA,
+                          const SeldonTranspose& TransA,
 			  Vector<T, Vect_Full, Allocator2>& x,
                           const Vector<Tint>& glob_num);
 
@@ -139,44 +139,48 @@ namespace Seldon
   template<class T, class Allocator>
   void SolveLU(MatrixPastix<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
 
-  template<class T, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixPastix<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
 
   template<class T, class Prop, class Allocator>
   void SolveLU(MatrixPastix<T>& mat_lu,
                Matrix<T, Prop, ColMajor, Allocator>& x);
 
-  template<class T, class Prop, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Prop, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixPastix<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x);
 
   template<class Allocator>
-  void SolveLU(MatrixPastix<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+  void SolveLU(MatrixPastix<double>& mat_lu,
+	       Vector<complex<double>, VectFull, Allocator>& x);
   
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
-	       MatrixPastix<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
+	       MatrixPastix<double>& mat_lu,
+	       Vector<complex<double>, VectFull, Allocator>& x);
 
   template<class Allocator>
-  void SolveLU(MatrixPastix<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+  void SolveLU(MatrixPastix<complex<double> >& mat_lu,
+	       Vector<double, VectFull, Allocator>& x);
 
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
-	       MatrixPastix<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
+	       MatrixPastix<complex<double> >& mat_lu,
+	       Vector<double, VectFull, Allocator>& x);
 
   template<class T, class Prop, class Storage, class Allocator>
   void GetCholesky(Matrix<T, Prop, Storage, Allocator>& A,
                    MatrixPastix<T>& mat_chol, bool keep_matrix);
 
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Allocator>
   void
-  SolveCholesky(const Transpose_status& TransA,
+  SolveCholesky(const SeldonTranspose& TransA,
                 MatrixPastix<T>& mat_chol, Vector<T, VectFull, Allocator>& x);
 
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Allocator>
   void
-  MltCholesky(const Transpose_status& TransA,
+  MltCholesky(const SeldonTranspose& TransA,
               MatrixPastix<T>& mat_chol, Vector<T, VectFull, Allocator>& x);
   
 }

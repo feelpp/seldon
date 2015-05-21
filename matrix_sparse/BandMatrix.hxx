@@ -31,7 +31,8 @@ namespace Seldon
   
   
   //! base class for a banded-matrix
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Prop, class Storage, class Allocator
+	    = typename SeldonDefaultAllocator<Storage, T>::allocator>
   class Matrix_Band : public VirtualMatrix<T>
   {
   public :
@@ -97,8 +98,8 @@ namespace Seldon
     void Add_(const T0& alpha,
 	      const Matrix<T, General, BandedCol, Allocator>& A);
     
-    template<class StatusA, class T0, class T1>
-    void MltAdd(const T0& alpha, const StatusA& trans,
+    template<class T0, class T1>
+    void MltAdd(const T0& alpha, const SeldonTranspose& trans,
                 const Vector<T1>& x, Vector<T1>& y) const;
     
     template<class T1>
@@ -162,7 +163,8 @@ namespace Seldon
 
   
   //! base class for arrow matrix (banded matrix + dense columns/rows)
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Prop, class Storage, class Allocator
+	    = typename SeldonDefaultAllocator<Storage, T>::allocator>
   class Matrix_Arrow : public Matrix_Band<T, Prop, Storage, Allocator>
   {
     // Attributes.
@@ -222,12 +224,12 @@ namespace Seldon
     void Add_(const T0& alpha,
 	      const Matrix<T, General, ArrowCol, Allocator>& A);
     
-    template<class StatusA, class T0, class T1>
-    void MltAdd(const T0& alpha, const StatusA& trans,
+    template<class T0, class T1>
+    void MltAdd(const T0& alpha, const SeldonTranspose& trans,
                 const Vector<T1>& x, Vector<T1>& y) const;
     
     template<class T1>
-    void Solve(Vector<T1>& x);
+    void Solve(Vector<T1>& x) const;
     
     void Write(string FileName) const;
     void Write(ostream& FileStream) const;
@@ -312,56 +314,61 @@ namespace Seldon
   void Copy(const Matrix<T, General, ArrayRowSparse, Allocator>& A,
             Matrix<T, General, BandedCol, Allocator>& B);
   
+  template<class T, class Allocator>
+  void SolveLU(const Matrix<T, General, BandedCol, Allocator>& A, Vector<T>& x);
+
+  template<class T, class Allocator>
+  void SolveLU(const Matrix<T, General, BandedCol, Allocator>& A,
+	       Vector<complex<T> >& x);
+
+  template<class T0, class T1, class Prop1, class Allocator1,
+	   class T2, class Prop2, class Allocator2>
+  void AddMatrix(const T0& alpha,
+		 const Matrix<T1, Prop1, BandedCol, Allocator1>& A,
+		 Matrix<T2, Prop2, BandedCol, Allocator2>& B);
+
+  template<class T0, class T1, class T, class T2, class Allocator>
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T, General, BandedCol, Allocator>& A,
+		    const Vector<T2>& x, const T1& beta, Vector<T2>& y);
+  
+  template<class T0, class T1, class T, class T2, class Allocator>
+  void MltAddVector(const T0& alpha, const class_SeldonNoTrans& trans,
+		    const Matrix<T, General, BandedCol, Allocator>& A,
+		    const Vector<T2>& x, const T1& beta, Vector<T2>& y);
+  
+  template<class T0, class T1, class T, class T2, class Allocator>
+  void MltAddVector(const T0& alpha, const class_SeldonTrans& trans,
+		    const Matrix<T, General, BandedCol, Allocator>& A,
+		    const Vector<T2>& x, const T1& beta, Vector<T2>& y);
+  
+  template<class T0, class T1, class T, class T2, class Allocator>
+  void MltAddVector(const T0& alpha, const class_SeldonConjTrans& trans,
+		    const Matrix<T, General, BandedCol, Allocator>& A,
+		    const Vector<T2>& x, const T1& beta, Vector<T2>& y);
+
   template<class T, class Allocator, class T1>
-  void SolveLU(Matrix<T, General, BandedCol, Allocator>& A, Vector<T1>& x);
+  void MltVector(const Matrix<T, General, BandedCol, Allocator>& A,
+		 const Vector<T1>& x, Vector<T1>& y);
+
+  template<class T, class Allocator, class T1>
+  void MltVector(const class_SeldonNoTrans& trans,
+		 const Matrix<T, General, BandedCol, Allocator>& A,
+		 const Vector<T1>& x, Vector<T1>& y);
+
+  template<class T, class Allocator, class T1>
+  void MltVector(const class_SeldonTrans& trans,
+		 const Matrix<T, General, BandedCol, Allocator>& A,
+		 const Vector<T1>& x, Vector<T1>& y);
+  
+  template<class T, class Allocator, class T1>
+  void MltVector(const class_SeldonConjTrans& trans,
+		 const Matrix<T, General, BandedCol, Allocator>& A,
+		 const Vector<T1>& x, Vector<T1>& y);
 
   template<class T0, class T1, class Allocator>
-  void Add(const T0& alpha,
-	   const Matrix<T1, General, BandedCol, Allocator>& A,
-           Matrix<T1, General, BandedCol, Allocator>& B);
-
-  template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T, General, BandedCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y);
-
-  template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha, const class_SeldonNoTrans& trans,
-              const Matrix<T, General, BandedCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y);
-
-  template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha, const class_SeldonTrans& trans,
-              const Matrix<T, General, BandedCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y);
-
-  template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha, const class_SeldonConjTrans& trans,
-              const Matrix<T, General, BandedCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y);
-
-  template<class T, class Allocator, class T1>
-  void Mlt(const Matrix<T, General, BandedCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y);
-
-  template<class T, class Allocator, class T1>
-  void Mlt(const class_SeldonNoTrans& trans,
-           const Matrix<T, General, BandedCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y);
-
-  template<class T, class Allocator, class T1>
-  void Mlt(const class_SeldonTrans& trans,
-           const Matrix<T, General, BandedCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y);
-
-  template<class T, class Allocator, class T1>
-  void Mlt(const class_SeldonConjTrans& trans,
-           const Matrix<T, General, BandedCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y);
-
-  template<class T0, class T1, class Allocator>
-  void Mlt(const T0& alpha,
-           Matrix<T1, General, BandedCol, Allocator>& A);
+  void MltScalar(const T0& alpha,
+		 Matrix<T1, General, BandedCol, Allocator>& A);
 
   template<class T, class Allocator>
   ostream& operator<<(ostream& out,
@@ -375,57 +382,61 @@ namespace Seldon
   template<class T, class Allocator>
   void GetLU(Matrix<T, General, ArrowCol, Allocator>& A);
   
-  template<class T, class Allocator, class T1>
-  void SolveLU(Matrix<T, General, ArrowCol, Allocator>& A, Vector<T1>& x);
+  template<class T, class Allocator>
+  void SolveLU(const Matrix<T, General, ArrowCol, Allocator>& A, Vector<T>& x);
 
-  template<class T0, class T1, class Allocator>
-  void Add(const T0& alpha,
-	   const Matrix<T1, General, ArrowCol, Allocator>& A,
-           Matrix<T1, General, ArrowCol, Allocator>& B);
+  template<class T, class Allocator>
+  void SolveLU(const Matrix<T, General, ArrowCol, Allocator>& A, Vector<complex<T> >& x);
 
+  template<class T0, class T1, class Prop1, class Allocator1,
+	   class T2, class Prop2, class Allocator2>
+  void AddMatrix(const T0& alpha,
+		 const Matrix<T1, Prop1, ArrowCol, Allocator1>& A,
+		 Matrix<T2, Prop2, ArrowCol, Allocator2>& B);
+  
   template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha,
-	      const Matrix<T, General, ArrowCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y);
-
+  void MltAddVector(const T0& alpha,
+		    const Matrix<T, General, ArrowCol, Allocator>& A,
+		    const Vector<T2>& x, const T1& beta, Vector<T2>& y);
+  
   template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha, const class_SeldonNoTrans& trans,
-              const Matrix<T, General, ArrowCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y);
-
+  void MltAddVector(const T0& alpha, const class_SeldonNoTrans& trans,
+		    const Matrix<T, General, ArrowCol, Allocator>& A,
+		    const Vector<T2>& x, const T1& beta, Vector<T2>& y);
+  
   template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha, const class_SeldonTrans& trans,
-              const Matrix<T, General, ArrowCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y);
-
+  void MltAddVector(const T0& alpha, const class_SeldonTrans& trans,
+		    const Matrix<T, General, ArrowCol, Allocator>& A,
+		    const Vector<T2>& x, const T1& beta, Vector<T2>& y);
+  
   template<class T0, class T1, class T, class T2, class Allocator>
-  void MltAdd(const T0& alpha, const class_SeldonConjTrans& trans,
-              const Matrix<T, General, ArrowCol, Allocator>& A,
-              const Vector<T2>& x, const T1& beta, Vector<T2>& y);
+  void MltAddVector(const T0& alpha, const class_SeldonConjTrans& trans,
+		    const Matrix<T, General, ArrowCol, Allocator>& A,
+		    const Vector<T2>& x, const T1& beta, Vector<T2>& y);
   
   template<class T, class Allocator, class T1>
-  void Mlt(const Matrix<T, General, ArrowCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y);
+  void MltVector(const Matrix<T, General, ArrowCol, Allocator>& A,
+		 const Vector<T1>& x, Vector<T1>& y);
+  
+  template<class T, class Allocator, class T1>
+  void MltVector(const class_SeldonNoTrans& trans,
+		 const Matrix<T, General, ArrowCol, Allocator>& A,
+		 const Vector<T1>& x, Vector<T1>& y);
 
   template<class T, class Allocator, class T1>
-  void Mlt(const class_SeldonNoTrans& trans,
-           const Matrix<T, General, ArrowCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y);
-
+  void MltVector(const class_SeldonTrans& trans,
+		 const Matrix<T, General, ArrowCol, Allocator>& A,
+		 const Vector<T1>& x, Vector<T1>& y);
+  
   template<class T, class Allocator, class T1>
-  void Mlt(const class_SeldonTrans& trans,
-           const Matrix<T, General, ArrowCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y);
-
-  template<class T, class Allocator, class T1>
-  void Mlt(const class_SeldonConjTrans& trans,
-           const Matrix<T, General, ArrowCol, Allocator>& A,
-           const Vector<T1>& x, Vector<T1>& y);
+  void MltVector(const class_SeldonConjTrans& trans,
+		 const Matrix<T, General, ArrowCol, Allocator>& A,
+		 const Vector<T1>& x, Vector<T1>& y);
 
   template<class T0, class T1, class Allocator>
-  void Mlt(const T0& alpha,
-           Matrix<T1, General, ArrowCol, Allocator>& A);
-
+  void MltScalar(const T0& alpha,
+		 Matrix<T1, General, ArrowCol, Allocator>& A);
+  
   template<class T, class Prop, class Allocator,
            class T1, class Allocator1, class T2, class Allocator2>
   void ScaleMatrix(Matrix<T, Prop, BandedCol, Allocator>& A,

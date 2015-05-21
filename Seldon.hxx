@@ -23,6 +23,9 @@
 #include "SeldonHeader.hxx"
 #include "SeldonInline.hxx"
 
+#include "share/Common.cxx"
+#include "share/Allocator.cxx"
+
 #ifndef SELDON_WITH_COMPILED_LIBRARY
 #include "share/MatrixFlag.cxx"
 #include "share/Errors.cxx"
@@ -51,6 +54,7 @@
 #include "computation/basic_functions/Functions_Matrix.cxx"
 #include "computation/basic_functions/Functions_Vector.cxx"
 #include "computation/basic_functions/Functions_MatVect.cxx"
+#include "computation/basic_functions/Functions_Base.cxx"
 
 // Blas interface.
 #ifdef SELDON_WITH_BLAS

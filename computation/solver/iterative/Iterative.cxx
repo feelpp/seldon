@@ -249,6 +249,14 @@ namespace Seldon
     return init_guess_null;
   }
 
+  
+  //! informs if the initial guess is null
+  template<class Titer>
+  void Iteration<Titer>::SetInitGuess(bool type)
+  {
+    init_guess_null = type;
+  }
+
 
   //! Returns true if the iterative solver has reached its end
   template<class Titer> template<class Vector1>

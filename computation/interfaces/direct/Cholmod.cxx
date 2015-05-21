@@ -118,8 +118,8 @@ namespace Seldon
 
 
   //! Solves L x = b or L^T x = b.
-  template<class Transpose_status, class Allocator>
-  void MatrixCholmod::Solve(const Transpose_status& TransA,
+  template<class Allocator>
+  void MatrixCholmod::Solve(const SeldonTranspose& TransA,
                             Vector<double, VectFull, Allocator>& x)
   {
     // Dense right hand side.
@@ -155,8 +155,8 @@ namespace Seldon
 
 
   //! Performs the matrix vector product y = L X or y = L^T X.
-  template<class Transpose_status, class Allocator>
-  void MatrixCholmod::Mlt(const Transpose_status& TransA,
+  template<class Allocator>
+  void MatrixCholmod::Mlt(const SeldonTranspose& TransA,
                           Vector<double, VectFull, Allocator>& X)
   {
     Vector<double, VectFull, Allocator> Y = X;
@@ -228,18 +228,18 @@ namespace Seldon
   }
 
 
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Allocator>
   void
-  SolveCholesky(const Transpose_status& TransA,
+  SolveCholesky(const SeldonTranspose& TransA,
                 MatrixCholmod& mat_chol, Vector<T, VectFull, Allocator>& x)
   {
     mat_chol.Solve(TransA, x);
   }
 
 
-  template<class T, class Allocator, class Transpose_status>
+  template<class T, class Allocator>
   void
-  MltCholesky(const Transpose_status& TransA,
+  MltCholesky(const SeldonTranspose& TransA,
               MatrixCholmod& mat_chol, Vector<T, VectFull, Allocator>& x)
   {
     mat_chol.Mlt(TransA, x);

@@ -24,11 +24,6 @@
 namespace Seldon
 {
 
-  // Matrix allocator.
-  template <class T, class Allocator>
-  Allocator Matrix_Base<T, Allocator>::allocator_;
-
-
 #ifdef SELDON_WITH_VIRTUAL
   //! reallocates the matrix
   template <class T>
@@ -234,6 +229,29 @@ namespace Seldon
     return IsComplexNumber(T(0));
   }
 #endif
+
+
+  // operator<< overloaded for matrices.
+  /*!
+    \param out output stream.
+    \param A matrix to be put in the stream.
+    \return The updated stream.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  ostream& operator << (ostream& out,
+			const Matrix<T, Prop, Storage, Allocator>& A)
+  {
+    
+    for (int i = 0; i < A.GetM(); i++)
+      {
+	for (int j = 0; j < A.GetN(); j++)
+	  out << A(i, j) << '\t';
+	out << endl;
+      }
+
+    return out;
+
+  }
 
 } // namespace Seldon.
 

@@ -43,106 +43,6 @@ namespace Seldon
   }
 
 
-  //! Main constructor.
-  /*! Builds a i x j full matrix.
-    \param i number of rows.
-    \param j number of columns.
-    \note 'j' is assumed to be equal to 'i' and is therefore discarded.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline Matrix_Triangular<T, Prop, Storage, Allocator>
-  ::Matrix_Triangular(int i, int j): Matrix_Base<T, Allocator>(i, i)
-  {
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	me_ = reinterpret_cast<pointer*>( calloc(i, sizeof(pointer)) );
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	me_ = NULL;
-	this->data_ = NULL;
-      }
-    if (me_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	this->data_ = NULL;
-      }
-    if (me_ == NULL && i != 0)
-      throw NoMemory("Matrix_Triangular::Matrix_Triangular(int, int)",
-		     string("Unable to allocate memory for a matrix of size ")
-		     + to_str(static_cast<long int>(i)
-			      * static_cast<long int>(i)
-			      * static_cast<long int>(sizeof(T)))
-		     + " bytes (" + to_str(i) + " x " + to_str(i)
-		     + " elements).");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	this->data_ = this->allocator_.allocate(i * i, this);
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	free(me_);
-	me_ = NULL;
-	this->data_ = NULL;
-      }
-    if (this->data_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	free(me_);
-	me_ = NULL;
-      }
-    if (this->data_ == NULL && i != 0)
-      throw NoMemory("Matrix_Triangular::Matrix_Triangular(int, int)",
-		     string("Unable to allocate memory for a matrix of size ")
-		     + to_str(static_cast<long int>(i)
-			      * static_cast<long int>(i)
-			      * static_cast<long int>(sizeof(T)))
-		     + " bytes (" + to_str(i) + " x " + to_str(i)
-		     + " elements).");
-#endif
-
-    pointer ptr = this->data_;
-    int lgth = i;
-    for (int k = 0; k < i; k++, ptr += lgth)
-      me_[k] = ptr;
-  }
-
-
-  //! Copy constructor.
-  template <class T, class Prop, class Storage, class Allocator>
-  inline Matrix_Triangular<T, Prop, Storage, Allocator>
-  ::Matrix_Triangular(const Matrix_Triangular<T, Prop,
-		      Storage, Allocator>& A)
-    : Matrix_Base<T, Allocator>()
-  {
-    this->m_ = 0;
-    this->n_ = 0;
-    this->data_ = NULL;
-    this->me_ = NULL;
-
-    this->Copy(A);
-  }
-
-
   /**************
    * DESTRUCTOR *
    **************/
@@ -153,59 +53,6 @@ namespace Seldon
   inline Matrix_Triangular<T, Prop, Storage, Allocator>::~Matrix_Triangular()
   {
     this->Clear();
-  }
-
-
-  //! Clears the matrix.
-  /*!
-    Destructs the matrix.
-    \warning On exit, the matrix is an empty 0x0 matrix.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Triangular<T, Prop, Storage, Allocator>::Clear()
-  {
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	if (this->data_ != NULL)
-	  {
-	    this->allocator_.deallocate(this->data_, this->m_ * this->n_);
-	    this->data_ = NULL;
-	  }
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->data_ = NULL;
-      }
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	if (me_ != NULL)
-	  {
-	    free(me_);
-	    me_ = NULL;
-	  }
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	me_ = NULL;
-      }
-#endif
-    
-    this->m_ = 0;
-    this->n_ = 0;
   }
 
 
@@ -234,208 +81,6 @@ namespace Seldon
   {
     int64_t taille = int64_t(GetDataSize())*sizeof(T);
     return taille;
-  }
-
-
-  /*********************
-   * MEMORY MANAGEMENT *
-   *********************/
-
-
-  //! Reallocates memory to resize the matrix.
-  /*!
-    On exit, the matrix is a i x i matrix.
-    \param i number of rows.
-    \param j number of columns.
-    \warning Depending on your allocator, data may be lost.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Triangular<T, Prop, Storage, Allocator>
-  ::Reallocate(int i, int j)
-  {
-
-    if (i != this->m_)
-      {
-	this->m_ = i;
-	this->n_ = i;
-
-#ifdef SELDON_CHECK_MEMORY
-	try
-	  {
-#endif
-
-	    me_ = reinterpret_cast<pointer*>( realloc(me_,
-						      i * sizeof(pointer)) );
-
-#ifdef SELDON_CHECK_MEMORY
-	  }
-	catch (...)
-	  {
-	    this->m_ = 0;
-	    this->n_ = 0;
-	    me_ = NULL;
-	    this->data_ = NULL;
-	  }
-	if (me_ == NULL)
-	  {
-	    this->m_ = 0;
-	    this->n_ = 0;
-	    this->data_ = NULL;
-	  }
-	if (me_ == NULL && i != 0)
-	  throw NoMemory("Matrix_Triangular::Reallocate(int, int)",
-			 string("Unable to reallocate memory")
-			 + " for a matrix of size "
-			 + to_str(static_cast<long int>(i)
-				  * static_cast<long int>(i)
-				  * static_cast<long int>(sizeof(T)))
-			 + " bytes (" + to_str(i) + " x " + to_str(i)
-			 + " elements).");
-#endif
-
-#ifdef SELDON_CHECK_MEMORY
-	try
-	  {
-#endif
-
-	    this->data_ =
-	      reinterpret_cast<pointer>(this->allocator_.reallocate(this->data_,
-								    i * i,
-								    this) );
-
-#ifdef SELDON_CHECK_MEMORY
-	  }
-	catch (...)
-	  {
-	    this->m_ = 0;
-	    this->n_ = 0;
-	    free(me_);
-	    me_ = NULL;
-	    this->data_ = NULL;
-	  }
-	if (this->data_ == NULL)
-	  {
-	    this->m_ = 0;
-	    this->n_ = 0;
-	    free(me_);
-	    me_ = NULL;
-	  }
-	if (this->data_ == NULL && i != 0)
-	  throw NoMemory("Matrix_Triangular::Reallocate(int, int)",
-			 string("Unable to reallocate memory")
-			 + " for a matrix of size "
-			 + to_str(static_cast<long int>(i)
-				  * static_cast<long int>(i)
-				  * static_cast<long int>(sizeof(T)))
-			 + " bytes (" + to_str(i) + " x " + to_str(i)
-			 + " elements).");
-#endif
-
-	pointer ptr = this->data_;
-	int lgth = Storage::GetSecond(i, i);
-	for (int k = 0; k < Storage::GetFirst(i, i); k++, ptr += lgth)
-	  me_[k] = ptr;
-      }
-  }
-
-
-  //! Changes the size of the matrix and sets its data array
-  //! (low level method).
-  /*!
-    The matrix is first cleared (memory is freed). The matrix is then resized
-    to a i x j matrix, and the data array of the matrix is set to 'data'.
-    'data' elements are not duplicated: the new data array of the matrix is
-    the 'data' array. It is useful to create a matrix from pre-existing data.
-    \param i new number of rows.
-    \param j new number of columns.
-    \param data new array storing elements.
-    \warning 'data' has to be used carefully outside the object.
-    Unless you use 'Nullify', 'data' will be freed by the destructor,
-    which means that 'data' must have been allocated carefully. The matrix
-    allocator should be compatible.
-    \note This method should only be used by advanced users.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Triangular<T, Prop, Storage, Allocator>
-  ::SetData(int i, int j,
-	    typename Matrix_Triangular<T, Prop, Storage, Allocator>
-	    ::pointer data)
-  {
-
-    this->Clear();
-
-    this->m_ = i;
-    this->n_ = i;
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	me_ = reinterpret_cast<pointer*>( calloc(i, sizeof(pointer)) );
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	me_ = NULL;
-	this->data_ = NULL;
-	return;
-      }
-    if (me_ == NULL)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	this->data_ = NULL;
-	return;
-      }
-#endif
-
-    this->data_ = data;
-
-    pointer ptr = this->data_;
-    int lgth = i;
-    for (int k = 0; k < i; k++, ptr += lgth)
-      me_[k] = ptr;
-  }
-
-
-  //! Clears the matrix without releasing memory.
-  /*!
-    On exit, the matrix is empty and the memory has not been released.
-    It is useful for low level manipulations on a Matrix instance.
-    \warning Memory is not released except for me_.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_Triangular<T, Prop, Storage, Allocator>::Nullify()
-  {
-    this->m_ = 0;
-    this->n_ = 0;
-
-#ifdef SELDON_CHECK_MEMORY
-    try
-      {
-#endif
-
-	if (me_ != NULL)
-	  {
-	    free(me_);
-	    me_ = NULL;
-	  }
-
-#ifdef SELDON_CHECK_MEMORY
-      }
-    catch (...)
-      {
-	this->m_ = 0;
-	this->n_ = 0;
-	me_ = NULL;
-      }
-#endif
-
-    this->data_ = NULL;
   }
 
 
@@ -681,7 +326,7 @@ namespace Seldon
   {
     this->Reallocate(A.GetM(), A.GetN());
 
-    this->allocator_.memorycpy(this->data_, A.GetData(), this->GetDataSize());
+    Allocator::memorycpy(this->data_, A.GetData(), this->GetDataSize());
   }
 
 
@@ -691,9 +336,9 @@ namespace Seldon
   ::MltAddVector(const Treal& alpha, const Vector<Treal>& x,
 		 const Treal& beta, Vector<Treal>& y) const
   {
-    MltAddComplex(alpha,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
+    MltAdd(alpha,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -701,9 +346,9 @@ namespace Seldon
   ::MltAddVector(const Tcplx& alpha, const Vector<Tcplx>& x,
 		 const Tcplx& beta, Vector<Tcplx>& y) const
   {
-    MltAddComplex(alpha,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
+    MltAdd(alpha,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -712,9 +357,9 @@ namespace Seldon
 		 const Vector<Treal>& x,
 		 const Treal& beta, Vector<Treal>& y) const
   {
-    MltAddComplex(alpha, trans,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
+    MltAdd(alpha, trans,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -723,23 +368,23 @@ namespace Seldon
 		 const Vector<Tcplx>& x,
 		 const Tcplx& beta, Vector<Tcplx>& y) const
   {
-    MltAddComplex(alpha, trans,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
+    MltAdd(alpha, trans,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
   }
   
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_Triangular<T, Prop, Storage, Allocator>
   ::MltVector(const Vector<Treal>& x, Vector<Treal>& y) const
   {
-    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    Mlt(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_Triangular<T, Prop, Storage, Allocator>
   ::MltVector(const Vector<Tcplx>& x, Vector<Tcplx>& y) const
   {
-    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    Mlt(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -747,8 +392,8 @@ namespace Seldon
   ::MltVector(const SeldonTranspose& trans,
 	      const Vector<Treal>& x, Vector<Treal>& y) const
   {
-    MltComplex(trans,
-	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    Mlt(trans,
+	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -756,8 +401,8 @@ namespace Seldon
   ::MltVector(const SeldonTranspose& trans,
 	      const Vector<Tcplx>& x, Vector<Tcplx>& y) const
   {
-    MltComplex(trans,
-	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    Mlt(trans,
+	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>

@@ -76,11 +76,11 @@ namespace Seldon
     template<class MatrixSparse>
     void Factorize(MatrixSparse& A, bool keep_matrix = false);
 
-    template<class TransStatus, class Vector1>
-    void Solve(const TransStatus& TransA, Vector1& x);
+    template<class Vector1>
+    void Solve(const SeldonTranspose& TransA, Vector1& x);
 
-    template<class TransStatus, class Vector1>
-    void Mlt(const TransStatus& TransA, Vector1& x);
+    template<class Vector1>
+    void Mlt(const SeldonTranspose& TransA, Vector1& x);
     
   };
 
@@ -89,31 +89,27 @@ namespace Seldon
   void GetCholesky(Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A,
                    int print_level = 0);
 
-  template<class classTrans,
-           class T0, class Prop, class Allocator0,
+  template<class T0, class Prop, class Allocator0,
            class T1, class Storage, class Allocator1>
-  void SolveCholesky(const classTrans& TransA,
+  void SolveCholesky(const SeldonTranspose& TransA,
                      const Matrix<T0, Prop, ArrayRowSymSparse, Allocator0>& A,
                      Vector<T1, Storage, Allocator1>& x);
 
-  template<class classTrans,
-	   class T0, class Prop, class Alloc0,
+  template<class T0, class Prop, class Alloc0,
 	   class T1, class Storage, class Allocator1>
-  void SolveCholesky(const classTrans& TransA,
+  void SolveCholesky(const SeldonTranspose& TransA,
 		     const Matrix<T0, Prop, RowSymSparse, Alloc0>& A,
                      Vector<T1, Storage, Allocator1>& X);
   
-  template<class classTrans, 
-           class T0, class Prop, class Allocator0,
+  template<class T0, class Prop, class Allocator0,
            class T1, class Storage, class Allocator1>
-  void MltCholesky(const classTrans& TransA,
+  void MltCholesky(const SeldonTranspose& TransA,
                    const Matrix<T0, Prop, ArrayRowSymSparse, Allocator0>& A,
                    Vector<T1, Storage, Allocator1>& x);
   
-  template<class classTrans, 
-           class T0, class Prop, class Allocator0,
+  template<class T0, class Prop, class Allocator0,
            class T1, class Storage, class Allocator1>
-  void MltCholesky(const classTrans& TransA,
+  void MltCholesky(const SeldonTranspose& TransA,
                    const Matrix<T0, Prop, RowSymSparse, Allocator0>& A,
                    Vector<T1, Storage, Allocator1>& x);
   

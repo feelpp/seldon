@@ -25,9 +25,54 @@
 namespace Seldon
 {
 
-  // Vector allocator.
+  //! Releases memory used by the vector.
   template <class T, class Allocator>
-  Allocator Vector_Base<T, Allocator>::vect_allocator_;
+  void Vector_Base<T, Allocator>::Clear()
+  {
+    
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (data_ != NULL)
+	  {
+	    Allocator::deallocate(data_, m_);
+	    m_ = 0;
+	    data_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	m_ = 0;
+	data_ = NULL;
+      }
+#endif
+
+  }
+
+
+  //! Changes the length of the vector, and keeps previous values.
+  /*!
+    Reallocates the vector to size i. Previous values are kept.
+    \param n new length of the vector.
+  */
+  template <class T, class Allocator>
+  void Vector<T, VectFull, Allocator>::Resize(int n)
+  {
+
+    if (n == this->m_)
+      return;
+
+    Vector<T, VectFull, Allocator> X_new(n);
+    for (int i = 0; i < min(this->m_, n); i++)
+      X_new(i) = this->data_[i];
+
+    SetData(n, X_new.GetData());
+    X_new.Nullify();
+  }
   
   
   /*********

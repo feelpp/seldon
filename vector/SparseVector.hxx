@@ -36,11 +36,9 @@ namespace Seldon
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
-
+    typedef typename SeldonDefaultAllocator<VectFull, int>::allocator AllocatorInt;
+    
     typedef VectSparse storage;
-
-  protected :
-    static typename SeldonDefaultAllocator<VectFull, int>::allocator index_allocator_;
 
     // Attributes.
   private:

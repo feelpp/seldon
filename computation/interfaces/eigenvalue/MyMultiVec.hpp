@@ -70,8 +70,8 @@ namespace Anasazi
     void  MvInit (ScalarType alpha);
     void MvPrint (std::ostream &os) const;
     
-    inline ScalarType& operator()(const int i, const int j);
-    inline const ScalarType& operator()(const int i, const int j) const;
+    ScalarType& operator()(const int i, const int j);
+    const ScalarType& operator()(const int i, const int j) const;
     ScalarType* operator[](int v);
     ScalarType* operator[](int v) const;
     

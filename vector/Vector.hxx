@@ -45,10 +45,6 @@ namespace Seldon
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
 
-    // Static attributes.
-  protected:
-    static Allocator vect_allocator_;
-
     // Attributes.
   protected:
     // Number of elements.

@@ -18,8 +18,14 @@ namespace Seldon
   const MPI::Datatype& GetMpiDataType(const complex<double>&);
   
   template<class T>
+  int GetRatioMpiDataType(const T&);
+ 
+  template<class T>
   int GetRatioMpiDataType(const Vector<T>&);
-  
+ 
+  template<class T>
+  int GetRatioMpiDataType(const complex<T>&);
+
   template<class T>
   int GetRatioMpiDataType(const Vector<complex<T> >&);
 

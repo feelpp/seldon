@@ -103,7 +103,7 @@ namespace Seldon
     bool First() const;
 
     bool IsInitGuess_Null() const;
-    void SetInitGuess(bool type) { init_guess_null = type; }
+    void SetInitGuess(bool type);
 
     template<class Vector1>
     bool Finished(const Vector1& r) const;

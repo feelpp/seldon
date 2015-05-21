@@ -257,10 +257,9 @@ namespace Seldon
     \param[in] A Cholesky factorization obtained after calling "GetCholesky".
     \param[in,out] x on exit, it is overwritten by the solution.
    */
-  template<class classTrans,
-           class T0, class Prop, class Allocator0,
+  template<class T0, class Prop, class Allocator0,
            class T1, class Storage, class Allocator1>
-  void SolveCholesky(const classTrans& TransA,
+  void SolveCholesky(const SeldonTranspose& TransA,
                      const Matrix<T0, Prop, ArrayRowSymSparse, Allocator0>& A,
                      Vector<T1, Storage, Allocator1>& x)
   {
@@ -307,10 +306,9 @@ namespace Seldon
     \param[in] A Cholesky factorization obtained after calling "GetCholesky".
     \param[in,out] x on exit, it is overwritten by the solution.
    */
-  template<class classTrans,
-	   class T0, class Prop, class Alloc0,
+  template<class T0, class Prop, class Alloc0,
 	   class T1, class Storage, class Allocator1>
-  void SolveCholesky(const classTrans& TransA,
+  void SolveCholesky(const SeldonTranspose& TransA,
 		     const Matrix<T0, Prop, RowSymSparse, Alloc0>& A,
                      Vector<T1, Storage, Allocator1>& X)
   {
@@ -354,10 +352,9 @@ namespace Seldon
     \param[in] A Cholesky factorization obtained after calling "GetCholesky".
     \param[in,out] x on exit, it is overwritten by the value of y.
    */
-  template<class classTrans, 
-           class T0, class Prop, class Allocator0,
+  template<class T0, class Prop, class Allocator0,
            class T1, class Storage, class Allocator1>
-  void MltCholesky(const classTrans& TransA,
+  void MltCholesky(const SeldonTranspose& TransA,
                    const Matrix<T0, Prop, ArrayRowSymSparse, Allocator0>& A,
                    Vector<T1, Storage, Allocator1>& x)
   {
@@ -405,10 +402,9 @@ namespace Seldon
     \param[in] A Cholesky factorization obtained after calling "GetCholesky".
     \param[in,out] x on exit, it is overwritten by the value of y.
    */
-  template<class classTrans, 
-           class T0, class Prop, class Allocator0,
+  template<class T0, class Prop, class Allocator0,
            class T1, class Storage, class Allocator1>
-  void MltCholesky(const classTrans& TransA,
+  void MltCholesky(const SeldonTranspose& TransA,
                    const Matrix<T0, Prop, RowSymSparse, Allocator0>& A,
                    Vector<T1, Storage, Allocator1>& x)
   {
@@ -639,9 +635,9 @@ namespace Seldon
    
   
   //! Solves L x = b or L^T x = b.
-  template<class T> template<class TransStatus, class Vector1>
+  template<class T> template<class Vector1>
   void SparseCholeskySolver<T>
-  ::Solve(const TransStatus& TransA, Vector1& x_solution)
+  ::Solve(const SeldonTranspose& TransA, Vector1& x_solution)
   {
     if (type_solver == CHOLMOD)
       {
@@ -684,9 +680,9 @@ namespace Seldon
   
   
   //! Computes L x or L^T.
-  template<class T> template<class TransStatus, class Vector1>
+  template<class T> template<class Vector1>
   void SparseCholeskySolver<T>
-  ::Mlt(const TransStatus& TransA, Vector1& x_solution)
+  ::Mlt(const SeldonTranspose& TransA, Vector1& x_solution)
   {
     if (type_solver == CHOLMOD)
       {

@@ -45,6 +45,183 @@ namespace Seldon
    *********************/
 
 
+  //! Constructor.
+  /*!
+    Builds a i by j sparse matrix with non-zero values and indices
+    provided by 'values' (values), 'ptr' (pointers) and 'ind' (indices).
+    Input vectors are released and are empty on exit.
+    \param i number of rows.
+    \param j number of columns.
+    \param values values of non-zero entries.
+    \param ptr row or column start indices.
+    \param ind row or column indices.
+    \warning Input vectors 'values', 'ptr' and 'ind' are empty on exit.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  template <class Storage0, class Allocator0,
+	    class Storage1, class Allocator1,
+	    class Storage2, class Allocator2>
+  Matrix_Sparse<T, Prop, Storage, Allocator>::
+  Matrix_Sparse(int i, int j,
+		Vector<T, Storage0, Allocator0>& values,
+		Vector<int, Storage1, Allocator1>& ptr,
+		Vector<int, Storage2, Allocator2>& ind):
+    Matrix_Base<T, Allocator>(i, j)
+  {
+    nz_ = values.GetLength();
+
+#ifdef SELDON_CHECK_DIMENSIONS
+    // Checks whether vector sizes are acceptable.
+
+    if (ind.GetLength() != nz_)
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim(string("Matrix_Sparse::Matrix_Sparse(int, int, ")
+		       + "const Vector&, const Vector&, const Vector&)",
+		       string("There are ") + to_str(nz_) + " values but "
+		       + to_str(ind.GetLength()) + " row or column indices.");
+      }
+
+    if (ptr.GetLength()-1 != Storage::GetFirst(i, j))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim(string("Matrix_Sparse::Matrix_Sparse(int, int, ")
+		       + "const Vector&, const Vector&, const Vector&)",
+		       string("The vector of start indices contains ")
+		       + to_str(ptr.GetLength()-1) + string(" row or column")
+		       + string(" start indices (plus the number")
+		       + " of non-zero entries) but there are "
+		       + to_str(Storage::GetFirst(i, j))
+		       + " rows or columns (" + to_str(i) + " by "
+		       + to_str(j) + " matrix).");
+      }
+
+    if (nz_ > 0
+        && (j == 0
+            || static_cast<long int>(nz_-1) / static_cast<long int>(j)
+            >= static_cast<long int>(i)))
+      {
+	this->m_ = 0;
+	this->n_ = 0;
+	nz_ = 0;
+	ptr_ = NULL;
+	ind_ = NULL;
+	this->data_ = NULL;
+	throw WrongDim(string("Matrix_Sparse::Matrix_Sparse(int, int, ")
+		       + "const Vector&, const Vector&, const Vector&)",
+		       string("There are more values (")
+		       + to_str(values.GetLength())
+		       + " values) than elements in the matrix ("
+		       + to_str(i) + " by " + to_str(j) + ").");
+      }
+#endif
+
+    this->ptr_ = ptr.GetData();
+    this->ind_ = ind.GetData();
+    this->data_ = values.GetData();
+
+    ptr.Nullify();
+    ind.Nullify();
+    values.Nullify();
+  }
+
+
+  //! Copy constructor
+  template <class T, class Prop, class Storage, class Allocator>
+  Matrix_Sparse<T, Prop, Storage, Allocator>::
+  Matrix_Sparse(const Matrix_Sparse<T, Prop, Storage, Allocator>& A):
+    Matrix_Base<T, Allocator>(A)
+  {
+    this->m_ = 0;
+    this->n_ = 0;
+    this->nz_ = 0;
+    ptr_ = NULL;
+    ind_ = NULL;
+    this->Copy(A);
+  }
+
+
+  //! Clears the matrix.
+  /*! This methods is equivalent to the destructor. On exit, the matrix
+    is empty (0x0).
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  void Matrix_Sparse<T, Prop, Storage, Allocator>::Clear()
+  {
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (ptr_ != NULL)
+	  {
+	    AllocatorInt::deallocate(ptr_, this->m_+1);
+	    ptr_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	ptr_ = NULL;
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (ind_ != NULL)
+	  {
+	    AllocatorInt::deallocate(ind_, this->nz_);
+	    ind_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	ind_ = NULL;
+      }
+#endif
+
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (this->data_ != NULL)
+	  {
+	    Allocator::deallocate(this->data_, nz_);
+	    this->data_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	this->nz_ = 0;
+	this->data_ = NULL;
+      }
+#endif
+
+    this->m_ = 0;
+    this->n_ = 0;
+    this->nz_ = 0;
+  }
+
+
   //! Redefines the matrix.
   /*! It clears the matrix and sets it to a new matrix defined by
     'values' (values), 'ptr' (pointers) and 'ind' (indices).
@@ -208,9 +385,9 @@ namespace Seldon
       {
 #endif
 
-	ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
-					      sizeof(int)) );
-
+	ptr_ = reinterpret_cast<int*>( AllocatorInt::
+				       allocate(Storage::GetFirst(i, j)+1, this) );
+	
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -298,8 +475,8 @@ namespace Seldon
       {
 #endif
 
-	ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
-					      sizeof(int)) );
+	ptr_ = reinterpret_cast<int*>( AllocatorInt::
+				       allocate(Storage::GetFirst(i, j)+1, this) );
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -334,8 +511,9 @@ namespace Seldon
       {
 #endif
 
-	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
-
+	ind_ = reinterpret_cast<int*>( AllocatorInt::
+				       allocate(nz_, this) );
+	
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -343,7 +521,8 @@ namespace Seldon
 	this->m_ = 0;
 	this->n_ = 0;
 	nz_ = 0;
-	free(ptr_);
+	AllocatorInt::
+	  deallocate(ptr_, Storage::GetFirst(i, j)+1);
 	ptr_ = NULL;
 	ind_ = NULL;
 	this->data_ = NULL;
@@ -353,7 +532,8 @@ namespace Seldon
 	this->m_ = 0;
 	this->n_ = 0;
 	nz_ = 0;
-	free(ptr_);
+	AllocatorInt::
+	  deallocate(ptr_, Storage::GetFirst(i, j)+1);
 	ptr_ = NULL;
 	this->data_ = NULL;
       }
@@ -370,7 +550,7 @@ namespace Seldon
       {
 #endif
 
-	this->data_ = this->allocator_.allocate(nz_, this);
+	this->data_ = Allocator::allocate(nz_, this);
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -378,9 +558,10 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(ptr_);
+	AllocatorInt::
+	  deallocate(ptr_, Storage::GetFirst(i, j)+1);
 	ptr_ = NULL;
-	free(ind_);
+	AllocatorInt::deallocate(ind_, nz);
 	ind_ = NULL;
 	this->data_ = NULL;
       }
@@ -388,9 +569,10 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(ptr_);
+	AllocatorInt::
+	  deallocate(ptr_, Storage::GetFirst(i, j)+1);
 	ptr_ = NULL;
-	free(ind_);
+	AllocatorInt::deallocate(ind_, nz);
 	ind_ = NULL;
       }
     if (this->data_ == NULL && i != 0 && j != 0)
@@ -399,6 +581,9 @@ namespace Seldon
 		     + " bytes to store " + to_str(nz) + " values, for a "
 		     + to_str(i) + " by " + to_str(j) + " matrix.");
 #endif
+
+    for (int k = 0; k <= Storage::GetFirst(i, j); k++)
+      ptr_[k] = 0;
   }
 
 
@@ -468,8 +653,8 @@ namespace Seldon
           {
 #endif
             ind_
-              = reinterpret_cast<int*>(realloc(reinterpret_cast<void*>(ind_),
-                                               nz*sizeof(int)));
+              = reinterpret_cast<int*>( AllocatorInt::
+					reallocate(ind_, nz, this) );
 
 #ifdef SELDON_CHECK_MEMORY
           }
@@ -478,8 +663,9 @@ namespace Seldon
             this->m_ = 0;
             this->n_ = 0;
             nz_ = 0;
-            free(ptr_);
-            ptr_ = NULL;
+            AllocatorInt::
+	      deallocate(ptr_, Storage::GetFirst(i, j)+1);
+	    ptr_ = NULL;
             ind_ = NULL;
             this->data_ = NULL;
           }
@@ -488,8 +674,9 @@ namespace Seldon
             this->m_ = 0;
             this->n_ = 0;
             nz_ = 0;
-            free(ptr_);
-            ptr_ = NULL;
+            AllocatorInt::
+	      deallocate(ptr_, Storage::GetFirst(i, j)+1);
+	    ptr_ = NULL;
             this->data_ = NULL;
           }
         if (ind_ == NULL && i != 0 && j != 0)
@@ -516,8 +703,8 @@ namespace Seldon
           {
 #endif
             // trying to resize ptr_
-            ptr_ = reinterpret_cast<int*>( realloc(ptr_, (Storage::GetFirst(i, j)+1)*
-                                                   sizeof(int)) );
+            ptr_ = reinterpret_cast<int*>( AllocatorInt::
+					   reallocate(ptr_, Storage::GetFirst(i, j)+1) );
 
 #ifdef SELDON_CHECK_MEMORY
           }
@@ -602,10 +789,11 @@ namespace Seldon
       {
 #endif
 
-	ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
-					      sizeof(int)) );
-	memcpy(this->ptr_, A.ptr_,
-               (Storage::GetFirst(i, j) + 1) * sizeof(int));
+	ptr_ = reinterpret_cast<int*>( AllocatorInt::
+				       allocate(Storage::GetFirst(i, j)+1) );
+
+	AllocatorInt::memorycpy(this->ptr_, A.ptr_,
+				Storage::GetFirst(i, j) + 1);
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -639,8 +827,9 @@ namespace Seldon
       {
 #endif
 
-	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
-	memcpy(this->ind_, A.ind_, nz_ * sizeof(int));
+	ind_ = reinterpret_cast<int*>( AllocatorInt::
+				       allocate(nz_, this) );
+	AllocatorInt::memorycpy(this->ind_, A.ind_, nz_);
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -649,7 +838,8 @@ namespace Seldon
 	this->m_ = 0;
 	this->n_ = 0;
 	nz_ = 0;
-	free(ptr_);
+	AllocatorInt::
+	  deallocate(ptr_, Storage::GetFirst(i, j)+1);
 	ptr_ = NULL;
 	ind_ = NULL;
 	this->data_ = NULL;
@@ -659,7 +849,8 @@ namespace Seldon
 	this->m_ = 0;
 	this->n_ = 0;
 	nz_ = 0;
-	free(ptr_);
+	AllocatorInt::
+	  deallocate(ptr_, Storage::GetFirst(i, j)+1);
 	ptr_ = NULL;
 	this->data_ = NULL;
       }
@@ -676,8 +867,8 @@ namespace Seldon
       {
 #endif
 
-	this->data_ = this->allocator_.allocate(nz_, this);
-	this->allocator_.memorycpy(this->data_, A.data_, nz_);
+	this->data_ = Allocator::allocate(nz_, this);
+	Allocator::memorycpy(this->data_, A.data_, nz_);
 
 #ifdef SELDON_CHECK_MEMORY
       }
@@ -685,9 +876,10 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(ptr_);
+	AllocatorInt::
+	  deallocate(ptr_, Storage::GetFirst(i, j)+1);
 	ptr_ = NULL;
-	free(ind_);
+	AllocatorInt::deallocate(ind_, nz);
 	ind_ = NULL;
 	this->data_ = NULL;
       }
@@ -695,9 +887,10 @@ namespace Seldon
       {
 	this->m_ = 0;
 	this->n_ = 0;
-	free(ptr_);
+	AllocatorInt::
+	  deallocate(ptr_, Storage::GetFirst(i, j)+1);
 	ptr_ = NULL;
-	free(ind_);
+	AllocatorInt::deallocate(ind_, nz);
 	ind_ = NULL;
       }
     if (this->data_ == NULL && i != 0 && j != 0)
@@ -709,6 +902,17 @@ namespace Seldon
 
   }
 
+
+  //! returns size of A in bytes used to store the matrix
+  template<class T, class Prop, class Storage, class Allocator>
+  int64_t Matrix_Sparse<T, Prop, Storage, Allocator>::GetMemorySize() const
+  {
+    int64_t taille = this->GetPtrSize()*sizeof(int);
+    int coef = sizeof(T) + sizeof(int); // for each non-zero entry
+    taille += coef*int64_t(this->nz_);
+    return taille;
+  }
+  
   
   /**********************************
    * ELEMENT ACCESS AND AFFECTATION *
@@ -936,8 +1140,8 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Sparse<T, Prop, Storage, Allocator>::Zero()
   {
-    this->allocator_.memoryset(this->data_, char(0),
-			       this->nz_ * sizeof(value_type));
+    Allocator::memoryset(this->data_, char(0),
+			 this->nz_ * sizeof(value_type));
   }
 
 
@@ -958,8 +1162,8 @@ namespace Seldon
     Clear();
 
     Vector<T, VectFull, Allocator> values(nz);
-    Vector<int, VectFull, CallocAlloc<int> > ptr(Storage::GetFirst(m, n) + 1);
-    Vector<int, VectFull, CallocAlloc<int> > ind(nz);
+    Vector<int> ptr(Storage::GetFirst(m, n) + 1);
+    Vector<int> ind(nz);
 
     T one; SetComplexOne(one);
     values.Fill(one);

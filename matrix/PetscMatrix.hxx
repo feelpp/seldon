@@ -63,7 +63,7 @@ namespace Seldon
   public:
     // Constructor.
     PetscMatrix();
-    PetscMatrix(int i, int j);
+    explicit PetscMatrix(int i, int j);
     PetscMatrix(Mat& A);
 
     void SetCommunicator(MPI_Comm mpi_communicator);

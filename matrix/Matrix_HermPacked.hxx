@@ -33,7 +33,8 @@ namespace Seldon
 
 
   //! Hermitian packed matrix class.
-  template <class T, class Prop, class Storage, class Allocator>
+  template <class T, class Prop, class Storage, class Allocator
+	    = typename SeldonDefaultAllocator<Storage, T>::allocator>
   class Matrix_HermPacked: public Matrix_Base<T, Allocator>
   {
     // typedef declaration.
@@ -46,9 +47,6 @@ namespace Seldon
     typedef typename Allocator::value_type entry_type;
     typedef typename Allocator::reference access_type;
     typedef typename Allocator::const_reference const_access_type;
-
-    // Attributes.
-  protected:
 
     // Methods.
   public:

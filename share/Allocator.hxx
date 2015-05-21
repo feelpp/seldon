@@ -44,11 +44,11 @@ namespace Seldon
 
   public:
 
-    pointer allocate(int num, void* h = 0);
-    void deallocate(pointer data, int num, void* h = 0);
-    void* reallocate(pointer data, int num, void* h = 0);
-    void memoryset(pointer data, char c, size_t num);
-    void memorycpy(pointer datat, pointer datas, size_t num);
+    static pointer allocate(int num, void* h = 0);
+    static void deallocate(pointer data, int num, void* h = 0);
+    static void* reallocate(pointer data, int num, void* h = 0);
+    static void memoryset(pointer data, char c, size_t num);
+    static void memorycpy(pointer datat, pointer datas, size_t num);
   };
 
 
@@ -73,11 +73,11 @@ namespace Seldon
 
   public:
 
-    pointer allocate(int num, void* h = 0);
-    void deallocate(pointer data, int num, void* h = 0);
-    void* reallocate(pointer data, int num, void* h = 0);
-    void memoryset(pointer data, char c, size_t num);
-    void memorycpy(pointer datat, pointer datas, size_t num);
+    static pointer allocate(int num, void* h = 0);
+    static void deallocate(pointer data, int num, void* h = 0);
+    static void* reallocate(pointer data, int num, void* h = 0);
+    static void memoryset(pointer data, char c, size_t num);
+    static void memorycpy(pointer datat, pointer datas, size_t num);
   };
 
 
@@ -102,11 +102,11 @@ namespace Seldon
 
   public:
 
-    pointer allocate(int num, void* h = 0);
-    void deallocate(pointer data, int num, void* h = 0);
-    void* reallocate(pointer data, int num, void* h = 0);
-    void memoryset(pointer data, char c, size_t num);
-    void memorycpy(pointer datat, pointer datas, size_t num);
+    static pointer allocate(int num, void* h = 0);
+    static void deallocate(pointer data, int num, void* h = 0);
+    static void* reallocate(pointer data, int num, void* h = 0);
+    static void memoryset(pointer data, char c, size_t num);
+    static void memorycpy(pointer datat, pointer datas, size_t num);
   };
   
 
@@ -131,11 +131,11 @@ namespace Seldon
     
   public:
 
-    pointer allocate(int num, void* h = 0);
-    void deallocate(pointer data, int num, void* h = 0);
-    void* reallocate(pointer data, int num, void* h = 0);
-    void memoryset(pointer data, char c, size_t num);
-    void memorycpy(pointer datat, pointer datas, size_t num);
+    static pointer allocate(int num, void* h = 0);
+    static void deallocate(pointer data, int num, void* h = 0);
+    static void* reallocate(pointer data, int num, void* h = 0);
+    static void memoryset(pointer data, char c, size_t num);
+    static void memorycpy(pointer datat, pointer datas, size_t num);
   };
   
   
@@ -160,11 +160,11 @@ namespace Seldon
 
   public:
 
-    pointer allocate(int num, void* h = 0);
-    void deallocate(pointer data, int num, void* h = 0);
-    void* reallocate(pointer data, int num, void* h = 0);
-    void memoryset(pointer data, char c, size_t num);
-    void memorycpy(pointer datat, pointer datas, size_t num);
+    static pointer allocate(int num, void* h = 0);
+    static void deallocate(pointer data, int num, void* h = 0);
+    static void* reallocate(pointer data, int num, void* h = 0);
+    static void memoryset(pointer data, char c, size_t num);
+    static void memorycpy(pointer datat, pointer datas, size_t num);
   };
 
   

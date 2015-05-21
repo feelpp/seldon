@@ -1201,10 +1201,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const Matrix<float, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<float, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<float, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1221,10 +1221,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<double, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<double, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<double, Prop0, ColMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<double, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1241,10 +1241,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<float>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<float>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1262,12 +1262,12 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<double>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
-
+    
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(A, b, "SolveLU(A, pivot, X)");
 #endif
@@ -1286,11 +1286,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const SeldonTranspose& TransA,
-	       const Matrix<float, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<float, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const SeldonTranspose& TransA,
+		     const Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<float, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1306,11 +1306,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const SeldonTranspose& TransA,
-	       const Matrix<double, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<double, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const SeldonTranspose& TransA,
+		     const Matrix<double, Prop0, ColMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<double, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1326,11 +1326,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const SeldonTranspose& TransA,
-	       const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<float>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const SeldonTranspose& TransA,
+		     const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<float>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1346,11 +1346,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const SeldonTranspose& TransA,
-	       const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const SeldonTranspose& TransA,
+		     const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<double>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1369,10 +1369,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const Matrix<float, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<float, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<float, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1389,10 +1389,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const Matrix<double, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<double, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<double, Prop0, RowMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<double, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1409,10 +1409,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<float>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<float>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1429,10 +1429,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<double>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1452,11 +1452,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const SeldonTranspose& TransA,
-	       const Matrix<float, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<float, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const SeldonTranspose& TransA,
+		     const Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<float, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1472,11 +1472,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const SeldonTranspose& TransA,
-	       const Matrix<double, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<double, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const SeldonTranspose& TransA,
+		     const Matrix<double, Prop0, RowMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<double, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1492,11 +1492,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const SeldonTranspose& TransA,
-	       const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<float>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const SeldonTranspose& TransA,
+		     const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<float>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1518,11 +1518,11 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const SeldonTranspose& TransA,
-	       const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const SeldonTranspose& TransA,
+		     const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<double>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1548,10 +1548,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<float, Prop0, ColSym, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<float, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<float, Prop0, ColSym, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<float, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1567,10 +1567,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<double, Prop0, ColSym, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<double, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<double, Prop0, ColSym, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<double, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1586,10 +1586,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<float>, Prop0, ColSym, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<float>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<float>, Prop0, ColSym, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<float>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1605,10 +1605,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<double>, Prop0, ColSym, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<double>, Prop0, ColSym, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<double>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1627,10 +1627,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<float, Prop0, ColSymPacked, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<float, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<float, Prop0, ColSymPacked, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<float, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1647,10 +1647,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<double, Prop0, ColSymPacked, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<double, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<double, Prop0, ColSymPacked, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<double, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1667,10 +1667,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1,class Allocator2>
-  void SolveLU(const Matrix<complex<float>, Prop0, ColSymPacked,
-	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<float>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<float>, Prop0, ColSymPacked,
+		     Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<float>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1687,10 +1687,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<double>, Prop0, ColSymPacked,
-	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<double>, Prop0, ColSymPacked,
+		     Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<double>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1710,10 +1710,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<float, Prop0, RowSym, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<float, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<float, Prop0, RowSym, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<float, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1729,10 +1729,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<double, Prop0, RowSym, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<double, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<double, Prop0, RowSym, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<double, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1748,10 +1748,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<float>, Prop0, RowSym, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<float>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<float>, Prop0, RowSym, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<float>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1767,10 +1767,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<double>, Prop0, RowSym, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<double>, Prop0, RowSym, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<double>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1789,10 +1789,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<float, Prop0, RowSymPacked, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<float, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<float, Prop0, RowSymPacked, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<float, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1809,10 +1809,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<double, Prop0, RowSymPacked, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<double, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<double, Prop0, RowSymPacked, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<double, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1829,10 +1829,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<float>, Prop0, RowSymPacked,
-	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<float>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<float>, Prop0, RowSymPacked,
+		     Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<float>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1849,10 +1849,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<double>, Prop0, RowSymPacked,
-	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<double>, Prop0, RowSymPacked,
+		     Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<double>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1872,10 +1872,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<float>, Prop0, ColHerm, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<float>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<float>, Prop0, ColHerm, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<float>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1891,10 +1891,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<double>, Prop0, ColHerm, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<double>, Prop0, ColHerm, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<double>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1913,10 +1913,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<float>, Prop0, ColHermPacked,
-	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<float>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<float>, Prop0, ColHermPacked,
+		     Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<float>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1932,10 +1932,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<double>, Prop0, ColHermPacked,
-	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<double>, Prop0, ColHermPacked,
+		     Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<double>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1954,10 +1954,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<float>, Prop0, RowHerm, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<float>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<float>, Prop0, RowHerm, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<float>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1975,10 +1975,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<double>, Prop0, RowHerm, Allocator0>& A,
-	       const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<double>, Prop0, RowHerm, Allocator0>& A,
+		     const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<double>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -1999,10 +1999,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<float>, Prop0, RowHermPacked,
-	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<float>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<float>, Prop0, RowHermPacked,
+		     Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<float>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -2020,10 +2020,10 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void SolveLU(const Matrix<complex<double>, Prop0, RowHermPacked,
-	       Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
-	       Vector<complex<double>, VectFull, Allocator2>& b,
-	       LapackInfo& info)
+  void SolveLuVector(const Matrix<complex<double>, Prop0, RowHermPacked,
+		     Allocator0>& A, const Vector<int, VectFull, Allocator1>& P,
+		     Vector<complex<double>, VectFull, Allocator2>& b,
+		     LapackInfo& info)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -8320,7 +8320,7 @@ namespace Seldon
 		  LapackInfo& info)
   {
     int m = A.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<float, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     sgetri_(&m, A.GetData(), &m, pivot.GetData(), work.GetData(), &m,
@@ -8340,7 +8340,7 @@ namespace Seldon
 		  LapackInfo& info)
   {
     int m = A.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<double, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     dgetri_(&m, A.GetData(), &m, pivot.GetData(), work.GetData(), &m,
@@ -8360,7 +8360,7 @@ namespace Seldon
 		  LapackInfo& info)
   {
     int m = A.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     cgetri_(&m, A.GetDataVoid(), &m, pivot.GetData(),
@@ -8380,7 +8380,7 @@ namespace Seldon
 		  LapackInfo& info)
   {
     int m = A.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zgetri_(&m, A.GetDataVoid(), &m, pivot.GetData(),
@@ -8403,7 +8403,7 @@ namespace Seldon
 		  LapackInfo& info)
   {
     int m = A.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<float, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     sgetri_(&m, A.GetData(), &m, pivot.GetData(), work.GetData(), &m,
@@ -8423,7 +8423,7 @@ namespace Seldon
 		  LapackInfo& info)
   {
     int m = A.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<double, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     dgetri_(&m, A.GetData(), &m, pivot.GetData(), work.GetData(), &m,
@@ -8443,7 +8443,7 @@ namespace Seldon
 		  LapackInfo& info)
   {
     int m = A.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     cgetri_(&m, A.GetDataVoid(), &m, pivot.GetData(),
@@ -8463,7 +8463,7 @@ namespace Seldon
 		  LapackInfo& info)
   {
     int m = A.GetM();
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zgetri_(&m, A.GetDataVoid(), &m, pivot.GetData(),
@@ -8487,7 +8487,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<float, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     ssytri_(&uplo, &m, A.GetData(), &m, pivot.GetData(), work.GetData(),
@@ -8508,7 +8508,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<double, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     dsytri_(&uplo, &m, A.GetData(), &m, pivot.GetData(), work.GetData(),
@@ -8529,7 +8529,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<float>, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     csytri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
@@ -8550,7 +8550,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<double>, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     zsytri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
@@ -8574,7 +8574,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<float, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     ssptri_(&uplo, &m, A.GetData(), pivot.GetData(), work.GetData(),
@@ -8595,7 +8595,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<double, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     dsptri_(&uplo, &m, A.GetData(), pivot.GetData(), work.GetData(),
@@ -8616,7 +8616,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     csptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
@@ -8637,7 +8637,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zsptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
@@ -8661,7 +8661,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<float, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     ssytri_(&uplo, &m, A.GetData(), &m, pivot.GetData(), work.GetData(),
@@ -8682,7 +8682,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<double, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     dsytri_(&uplo, &m, A.GetData(), &m, pivot.GetData(), work.GetData(),
@@ -8703,7 +8703,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<float>, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     csytri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
@@ -8724,7 +8724,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<double>, VectFull, Allocator0> work(2*m);
     GetLU(A, pivot, info);
     zsytri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
@@ -8748,7 +8748,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<float, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     ssptri_(&uplo, &m, A.GetData(), pivot.GetData(), work.GetData(),
@@ -8769,7 +8769,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<double, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     dsptri_(&uplo, &m, A.GetData(), pivot.GetData(), work.GetData(),
@@ -8790,7 +8790,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     csptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
@@ -8811,7 +8811,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zsptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
@@ -8835,7 +8835,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     chetri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
@@ -8856,7 +8856,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zhetri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
@@ -8881,7 +8881,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     chptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
@@ -8903,7 +8903,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('U');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zhptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
@@ -8927,7 +8927,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     chetri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
@@ -8948,7 +8948,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zhetri_(&uplo, &m, A.GetDataVoid(), &m, pivot.GetData(),
@@ -8973,7 +8973,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<float>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     chptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
@@ -8995,7 +8995,7 @@ namespace Seldon
   {
     int m = A.GetM();
     char uplo('L');
-    Vector<int, VectFull, CallocAlloc<int> > pivot;
+    Vector<int> pivot;
     Vector<complex<double>, VectFull, Allocator0> work(m);
     GetLU(A, pivot, info);
     zhptri_(&uplo, &m, A.GetDataVoid(), pivot.GetData(),
@@ -10633,8 +10633,8 @@ namespace Seldon
   // SolveCholesky //
 
 
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void SolveCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void SolveCholesky(const SeldonTranspose& TransA,
 		     const Matrix<double, Prop, RowSymPacked, Allocator>& A,
 		     Vector<double, VectFull, Allocator2>& X,
 		     LapackInfo& info)
@@ -10654,8 +10654,8 @@ namespace Seldon
   }
 
 
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void SolveCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void SolveCholesky(const SeldonTranspose& TransA,
 		     const Matrix<double, Prop, ColSymPacked, Allocator>& A,
 		     Vector<double, VectFull, Allocator2>& X,
 		     LapackInfo& info)
@@ -10675,8 +10675,8 @@ namespace Seldon
   }
 
 
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void SolveCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void SolveCholesky(const SeldonTranspose& TransA,
 		     const Matrix<double, Prop, RowSym, Allocator>& A,
 		     Vector<double, VectFull, Allocator2>& X,
 		     LapackInfo& info)
@@ -10696,8 +10696,8 @@ namespace Seldon
   }
 
 
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void SolveCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void SolveCholesky(const SeldonTranspose& TransA,
 		     const Matrix<double, Prop, ColSym, Allocator>& A,
 		     Vector<double, VectFull, Allocator2>& X,
 		     LapackInfo& info)
@@ -10717,8 +10717,8 @@ namespace Seldon
   }
 
   
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void SolveCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void SolveCholesky(const SeldonTranspose& TransA,
 		     const Matrix<complex<double>, Prop, RowHermPacked, Allocator>& A,
 		     Vector<complex<double>, VectFull, Allocator2>& X,
 		     LapackInfo& info)
@@ -10741,8 +10741,8 @@ namespace Seldon
   }
 
 
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void SolveCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void SolveCholesky(const SeldonTranspose& TransA,
 		     const Matrix<complex<double>, Prop, ColHermPacked, Allocator>& A,
 		     Vector<complex<double>, VectFull, Allocator2>& X,
 		     LapackInfo& info)
@@ -10768,8 +10768,8 @@ namespace Seldon
   }
 
   
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void SolveCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void SolveCholesky(const SeldonTranspose& TransA,
 		     const Matrix<complex<double>, Prop, RowHerm, Allocator>& A,
 		     Vector<complex<double>, VectFull, Allocator2>& X,
 		     LapackInfo& info)
@@ -10792,8 +10792,8 @@ namespace Seldon
   }
 
 
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void SolveCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void SolveCholesky(const SeldonTranspose& TransA,
 		     const Matrix<complex<double>, Prop, ColHerm, Allocator>& A,
 		     Vector<complex<double>, VectFull, Allocator2>& X,
 		     LapackInfo& info)
@@ -10827,8 +10827,8 @@ namespace Seldon
   // MltCholesky //
 
 
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void MltCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void MltCholesky(const SeldonTranspose& TransA,
                    const Matrix<double, Prop, RowSymPacked, Allocator>& A,
                    Vector<double, VectFull, Allocator2>& X,
                    LapackInfo& info)
@@ -10850,8 +10850,8 @@ namespace Seldon
   }
 
 
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void MltCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void MltCholesky(const SeldonTranspose& TransA,
                    const Matrix<double, Prop, ColSymPacked, Allocator>& A,
                    Vector<double, VectFull, Allocator2>& X,
                    LapackInfo& info)
@@ -10873,8 +10873,8 @@ namespace Seldon
   }
 
   
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void MltCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void MltCholesky(const SeldonTranspose& TransA,
                    const Matrix<double, Prop, RowSym, Allocator>& A,
                    Vector<double, VectFull, Allocator2>& X,
                    LapackInfo& info)
@@ -10896,8 +10896,8 @@ namespace Seldon
   }
 
 
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void MltCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void MltCholesky(const SeldonTranspose& TransA,
                    const Matrix<double, Prop, ColSym, Allocator>& A,
                    Vector<double, VectFull, Allocator2>& X,
                    LapackInfo& info)
@@ -10919,8 +10919,8 @@ namespace Seldon
   }
 
   
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void MltCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void MltCholesky(const SeldonTranspose& TransA,
                    const Matrix<complex<double>,
 		   Prop, RowHermPacked, Allocator>& A,
                    Vector<complex<double>, VectFull, Allocator2>& X,
@@ -10959,8 +10959,8 @@ namespace Seldon
   }
 
   
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void MltCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void MltCholesky(const SeldonTranspose& TransA,
                    const Matrix<complex<double>,
 		   Prop, ColHermPacked, Allocator>& A,
                    Vector<complex<double>, VectFull, Allocator2>& X,
@@ -10997,8 +10997,8 @@ namespace Seldon
   }
 
   
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void MltCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void MltCholesky(const SeldonTranspose& TransA,
                    const Matrix<complex<double>,
 		   Prop, RowHerm, Allocator>& A,
                    Vector<complex<double>, VectFull, Allocator2>& X,
@@ -11037,8 +11037,8 @@ namespace Seldon
   }
 
   
-  template<class Transp, class Prop, class Allocator, class Allocator2>
-  void MltCholesky(const Transp& TransA,
+  template<class Prop, class Allocator, class Allocator2>
+  void MltCholesky(const SeldonTranspose& TransA,
                    const Matrix<complex<double>,
 		   Prop, ColHerm, Allocator>& A,
                    Vector<complex<double>, VectFull, Allocator2>& X,

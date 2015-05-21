@@ -335,7 +335,7 @@ namespace Seldon
                                const Vector<int>& col_perm,
                                int starting_index = 0);
 
-    template<class T, class Prop, class Allocator>
+  template<class T, class Prop, class Allocator>
   void ApplyInversePermutation(Matrix<T, Prop, RowHerm, Allocator>& A,
                                const Vector<int>& row_perm,
                                const Vector<int>& col_perm,
@@ -505,7 +505,7 @@ namespace Seldon
   void ScaleLeftMatrix(Matrix<T, Prop, ColUpTriang, Allocator>& A,
                        const Vector<T1, VectFull, Allocator1>& Drow);
 
-template<class T, class Prop, class Allocator,
+  template<class T, class Prop, class Allocator,
            class T2, class Allocator2>
   void ScaleRightMatrix(Matrix<T, Prop, RowMajor, Allocator>& A,
                         const Vector<T2, VectFull, Allocator2>& Dcol);

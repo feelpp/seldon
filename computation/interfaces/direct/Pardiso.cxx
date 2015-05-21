@@ -274,8 +274,8 @@ namespace Seldon
   
   //! solves A x = b or A^T x = b
   //! x contains the source b on input, the solution x on output
-  template<class T> template<class Allocator2, class Transpose_status>
-  void MatrixPardiso<T>::Solve(const Transpose_status& TransA,
+  template<class T> template<class Allocator2>
+  void MatrixPardiso<T>::Solve(const SeldonTranspose& TransA,
                                Vector<T, VectFull, Allocator2>& x)
   {
     if (size_matrix <= 0)
@@ -308,8 +308,8 @@ namespace Seldon
   //! solves A x = b or A^T x = b (x, b are matrices)
   //! x contains the source b on input, the solution x on output  
   template<class T>
-  template<class Allocator2, class Transpose_status, class Prop>
-  void MatrixPardiso<T>::Solve(const Transpose_status& TransA,
+  template<class Allocator2, class Prop>
+  void MatrixPardiso<T>::Solve(const SeldonTranspose& TransA,
                                Matrix<T, Prop, ColMajor, Allocator2>& x)
   {
     if (size_matrix <= 0)
@@ -392,8 +392,8 @@ namespace Seldon
 
   //! LU resolution with a vector whose type is the same as for Pardiso object
   //! Solves transpose system A^T x = b or A x = b depending on TransA
-  template<class T, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixPardiso<T>& mat_lu, Vector<T, VectFull, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
@@ -411,8 +411,8 @@ namespace Seldon
 
   //! LU resolution with a matrix whose type is the same as for Pardiso object
   //! Solves transpose system A^T x = b or A x = b depending on TransA
-  template<class T, class Allocator, class Prop, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Allocator, class Prop>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixPardiso<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
   {
     mat_lu.Solve(TransA, x);
@@ -440,8 +440,8 @@ namespace Seldon
   
 
   //! Solves A x = b or A^T x = b, where A is real and x is complex
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixPardiso<double>& mat_lu,
                Vector<complex<double>, VectFull, Allocator>& x)
   {
@@ -471,8 +471,8 @@ namespace Seldon
 
   
   //! Solves A x = b or A^T x = b, where A is complex and x is real => Forbidden  
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixPardiso<complex<double> >& mat_lu,
                Vector<double, VectFull, Allocator>& x)
   {

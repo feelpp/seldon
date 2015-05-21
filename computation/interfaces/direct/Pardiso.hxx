@@ -63,7 +63,8 @@ namespace Seldon
     pardiso_int_t iparm[64]; //!< integer parameters
     double dparm[64];
     pardiso_int_t size_matrix;
-    pardiso_int_t maxfct; //!< maximum number of factors with identical sparsity structure
+    pardiso_int_t maxfct;
+    //!< maximum number of factors with identical sparsity structure
     pardiso_int_t mnum; //!< factor number, 1 <= mnum <= maxfct
     pardiso_int_t msglvl; //!< verbosity level
     int info_facto;
@@ -94,12 +95,12 @@ namespace Seldon
     template<class Allocator2>
     void Solve(Vector<T, VectFull, Allocator2>& x);
 
-    template<class Allocator2, class Transpose_status>
-    void Solve(const Transpose_status& TransA,
+    template<class Allocator2>
+    void Solve(const SeldonTranspose& TransA,
 	       Vector<T, VectFull, Allocator2>& x);
 
-    template<class Allocator2, class Transpose_status, class Prop>
-    void Solve(const Transpose_status& TransA,
+    template<class Allocator2, class Prop>
+    void Solve(const SeldonTranspose& TransA,
 	       Matrix<T, Prop, ColMajor, Allocator2>& x);
     
   };
@@ -112,31 +113,35 @@ namespace Seldon
   template<class T, class Allocator>
   void SolveLU(MatrixPardiso<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
 
-  template<class T, class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixPardiso<T>& mat_lu, Vector<T, VectFull, Allocator>& x);
 
   template<class T, class Prop, class Allocator>
   void SolveLU(MatrixPardiso<T>& mat_lu,
                Matrix<T, Prop, ColMajor, Allocator>& x);
 
-  template<class T, class Allocator, class Prop, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
+  template<class T, class Allocator, class Prop>
+  void SolveLU(const SeldonTranspose& TransA,
 	       MatrixPardiso<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x);
   
   template<class Allocator>
-  void SolveLU(MatrixPardiso<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+  void SolveLU(MatrixPardiso<double>& mat_lu,
+	       Vector<complex<double>, VectFull, Allocator>& x);
 
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
-	       MatrixPardiso<double>& mat_lu, Vector<complex<double>, VectFull, Allocator>& x);
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
+	       MatrixPardiso<double>& mat_lu,
+	       Vector<complex<double>, VectFull, Allocator>& x);
   
   template<class Allocator>
-  void SolveLU(MatrixPardiso<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+  void SolveLU(MatrixPardiso<complex<double> >& mat_lu,
+	       Vector<double, VectFull, Allocator>& x);
   
-  template<class Allocator, class Transpose_status>
-  void SolveLU(const Transpose_status& TransA,
-	       MatrixPardiso<complex<double> >& mat_lu, Vector<double, VectFull, Allocator>& x);
+  template<class Allocator>
+  void SolveLU(const SeldonTranspose& TransA,
+	       MatrixPardiso<complex<double> >& mat_lu,
+	       Vector<double, VectFull, Allocator>& x);
   
 }
 

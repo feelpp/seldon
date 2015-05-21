@@ -71,52 +71,9 @@ namespace Seldon
   }
 
 
-  /*********************
-   * MEMORY MANAGEMENT *
-   *********************/
-
-
-  //! Reallocates memory to resize the matrix.
-  /*!
-    On exit, the matrix is a i x j matrix.
-    \param i number of rows.
-    \param j number of columns.
-    \warning Data is lost.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
-  Reallocate(int i, int j)
-  {
-    // Clears previous entries.
-    Clear();
-
-    this->m_ = i;
-    this->n_ = j;
-
-    int n = Storage::GetFirst(i, j);
-    val_.Reallocate(n);
-  }
-
-  
   /*******************
    * BASIC FUNCTIONS *
    *******************/
-
-
-  //! Returns the number of non-zero entries.
-  /*!
-    \return The number of non-zero entries.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  inline int Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetNonZeros()
-    const
-  {
-    int nnz = 0;
-    for (int i = 0; i < this->val_.GetM(); i++)
-      nnz += this->val_(i).GetM();
-
-    return nnz;
-  }
 
 
   //! Returns the number of elements stored in memory.
@@ -132,20 +89,6 @@ namespace Seldon
     return GetNonZeros();
   }
 
-
-  //! returns size of matrix in bytes
-  template<class T, class Prop, class Storage, class Allocator>
-  inline int64_t Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetMemorySize() const
-  {
-    int coef = sizeof(T) + sizeof(int); // for each non-zero entry
-    // 1 int (=4bytes) and 2 int* (=16 bytes) per row
-    int64_t taille = 20*this->val_.GetM(); 
-    for (int i = 0; i < this->val_.GetM(); i++)
-      taille += coef*int64_t(this->val_(i).GetM());
-    
-    return taille;
-  }
-  
 
   //! Returns (row or column) indices of non-zero entries in row
   /*!
@@ -549,9 +492,9 @@ namespace Seldon
   ::MltAddVector(const Treal& alpha, const Vector<Treal>& x,
 		 const Treal& beta, Vector<Treal>& y) const
   {
-    MltAddComplex(alpha,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
+    MltAdd(alpha,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -559,9 +502,9 @@ namespace Seldon
   ::MltAddVector(const Tcplx& alpha, const Vector<Tcplx>& x,
 		 const Tcplx& beta, Vector<Tcplx>& y) const
   {
-    MltAddComplex(alpha,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
+    MltAdd(alpha,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -570,9 +513,9 @@ namespace Seldon
 		 const Vector<Treal>& x,
 		 const Treal& beta, Vector<Treal>& y) const
   {
-    MltAddComplex(alpha, trans,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
+    MltAdd(alpha, trans,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -581,23 +524,23 @@ namespace Seldon
 		 const Vector<Tcplx>& x,
 		 const Tcplx& beta, Vector<Tcplx>& y) const
   {
-    MltAddComplex(alpha, trans,
-		  static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
-		  x, beta, y);
+    MltAdd(alpha, trans,
+	   static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this),
+	   x, beta, y);
   }
   
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>
   ::MltVector(const Vector<Treal>& x, Vector<Treal>& y) const
   {
-    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    Mlt(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>
   ::MltVector(const Vector<Tcplx>& x, Vector<Tcplx>& y) const
   {
-    MltComplex(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    Mlt(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -605,8 +548,8 @@ namespace Seldon
   ::MltVector(const SeldonTranspose& trans,
 	      const Vector<Treal>& x, Vector<Treal>& y) const
   {
-    MltComplex(trans,
-	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    Mlt(trans,
+	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>
@@ -614,8 +557,8 @@ namespace Seldon
   ::MltVector(const SeldonTranspose& trans,
 	      const Vector<Tcplx>& x, Vector<Tcplx>& y) const
   {
-    MltComplex(trans,
-	       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
+    Mlt(trans,
+	static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), x, y);
   }
 
   template <class T, class Prop, class Storage, class Allocator>

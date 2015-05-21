@@ -93,6 +93,18 @@ namespace Seldon
   {
     return 2;
   }
+
+  template<class T>
+  inline int GetRatioMpiDataType(const T&)
+  {
+    return 1;
+  }
+  
+  template<class T>
+  inline int GetRatioMpiDataType(complex<T>&)
+  {
+    return 2;
+  }
   
 }
 

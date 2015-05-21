@@ -40,13 +40,9 @@ namespace Seldon
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
 
-    typedef typename SeldonDefaultAllocator<VectFull, int>::allocator::pointer length_pointer;
-
-    // Static attributes.
-  protected:
-    static Allocator array_allocator_;
-    static SeldonDefaultAllocator<VectFull, int>::allocator length_allocator_;
-
+    typedef typename SeldonDefaultAllocator<VectFull, int>::allocator AllocatorInt;
+    typedef typename AllocatorInt::pointer length_pointer;
+    
     // Attributes.
   protected:
 
@@ -72,10 +68,10 @@ namespace Seldon
     // Array(int* extent);
     Array(const Array<T, N, Allocator>& A);
 
-    // Destructor.
+    // Destructor. (inline)
     ~Array();
 
-    // Basic methods.
+    // Inline methods.
     int GetLength(int dimension) const;
     int GetSize() const;
     int GetDataSize() const;
@@ -92,7 +88,7 @@ namespace Seldon
 		    int q);
     void Clear();
 
-    // Element access and affectation.
+    // Element access and affectation. (inline)
     reference operator() (int i, int j, int k);
     reference operator() (int i, int j, int k, int l);
     reference operator() (int i, int j, int k, int l, int m);
@@ -135,15 +131,6 @@ namespace Seldon
 
 
 #ifndef SWIG
-  // Array allocator.
-  template <class T, int N, class Allocator>
-  Allocator Array<T, N, Allocator>::array_allocator_;
-
-  // Array length allocator.
-  template <class T, int N, class Allocator>
-  typename SeldonDefaultAllocator<VectFull, int>::allocator
-  Array<T, N, Allocator>::length_allocator_;
-
   template <class T, int N, class Allocator>
   ostream& operator << (ostream& out,
 			const Array<T, N, Allocator>& A);
