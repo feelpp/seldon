@@ -1164,7 +1164,7 @@ namespace Seldon
     
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Arrow<T, Prop, Storage, Allocator>
-  ::MltAddVector(const T& alpha, const class_SeldonTrans&,
+  ::MltAddVector(const T& alpha, const SeldonTranspose&,
 		 const Vector<T>& x, const T& beta, Vector<T>& y) const
   {
     T zero; SetComplexZero(zero);
@@ -1188,7 +1188,7 @@ namespace Seldon
   
   template <class T, class Prop, class Storage, class Allocator>
   void Matrix_Arrow<T, Prop, Storage, Allocator>
-  ::MltVector(const class_SeldonTrans&,
+  ::MltVector(const SeldonTranspose&,
 	      const Vector<T>& x, Vector<T>& y) const
   {
     T zero, one;

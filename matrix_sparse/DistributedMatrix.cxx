@@ -1806,58 +1806,43 @@ namespace Seldon
   template<class T2, class Storage2, class Allocator2,
            class T4, class Storage4, class Allocator4>
   void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::MltAddCol(const class_SeldonNoTrans& Trans,
+  ::MltAddCol(const SeldonTranspose& Trans,
               const Vector<T2, Storage2, Allocator2>& X,
               Vector<T4, Storage4, Allocator4>& Y) const
   {
-    for (int i = 0; i < dist_col.GetM(); i++)
-      for (int j = 0; j < dist_col(i).GetM(); j++)
-        {
-          int jloc = dist_col(i).Index(j);
-          Y(i) += dist_col(i).Value(j)*X(jloc);
-        }
-  }
-
-
-  //! Y = Y + alpha A^T X with only distant columns of A
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T2, class Storage2, class Allocator2,
-           class T4, class Storage4, class Allocator4>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::MltAddCol(const class_SeldonTrans& Trans,
-              const Vector<T2, Storage2, Allocator2>& X,
-              Vector<T4, Storage4, Allocator4>& Y) const
-  {
-    T4 zero; SetComplexZero(zero);
-    Y.Reallocate(global_col_to_recv.GetM());
-    Y.Fill(zero);
-    for (int i = 0; i < dist_col.GetM(); i++)
-      for (int j = 0; j < dist_col(i).GetM(); j++)
-        {
-          int jrow = dist_col(i).Index(j);
-          Y(jrow) += dist_col(i).Value(j)*X(i);
-        }
-  }
-
-
-  //! Y = Y + alpha A^H X with only distant columns of A
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T2, class Storage2, class Allocator2,
-           class T4, class Storage4, class Allocator4>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::MltAddCol(const class_SeldonConjTrans& Trans,
-              const Vector<T2, Storage2, Allocator2>& X,
-              Vector<T4, Storage4, Allocator4>& Y) const
-  {
-    T4 zero; SetComplexZero(zero);
-    Y.Reallocate(global_col_to_recv.GetM());
-    Y.Fill(zero);
-    for (int i = 0; i < dist_col.GetM(); i++)
-      for (int j = 0; j < dist_col(i).GetM(); j++)
-        {
-          int jrow = dist_col(i).Index(j);
-          Y(jrow) += conjugate(dist_col(i).Value(j))*X(i);
-        }
+    if (Trans.NoTrans())
+      {
+	for (int i = 0; i < dist_col.GetM(); i++)
+	  for (int j = 0; j < dist_col(i).GetM(); j++)
+	    {
+	      int jloc = dist_col(i).Index(j);
+	      Y(i) += dist_col(i).Value(j)*X(jloc);
+	    }
+      }
+    else
+      {	
+	T4 zero; SetComplexZero(zero);
+	Y.Reallocate(global_col_to_recv.GetM());
+	Y.Fill(zero);
+	if (Trans.Trans())
+	  {
+	    for (int i = 0; i < dist_col.GetM(); i++)
+	      for (int j = 0; j < dist_col(i).GetM(); j++)
+		{
+		  int jrow = dist_col(i).Index(j);
+		  Y(jrow) += dist_col(i).Value(j)*X(i);
+		}
+	  }
+	else
+	  {	
+	    for (int i = 0; i < dist_col.GetM(); i++)
+	      for (int j = 0; j < dist_col(i).GetM(); j++)
+		{
+		  int jrow = dist_col(i).Index(j);
+		  Y(jrow) += conjugate(dist_col(i).Value(j))*X(i);
+		}
+	  }
+      }
   }
   
 
@@ -1866,57 +1851,45 @@ namespace Seldon
   template<class T2, class Storage2, class Allocator2,
            class T4, class Storage4, class Allocator4>
   void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::MltAddRow(const class_SeldonTrans& Trans,
+  ::MltAddRow(const SeldonTranspose& Trans,
               const Vector<T2, Storage2, Allocator2>& X,
               Vector<T4, Storage4, Allocator4>& Y) const
   {
-    for (int i = 0; i < dist_row.GetM(); i++)
-      for (int j = 0; j < dist_row(i).GetM(); j++)
-        {
-          int jloc = dist_row(i).Index(j);
-          Y(i) += dist_row(i).Value(j)*X(jloc);
-        }
+    if (Trans.NoTrans())
+      {
+	T4 zero; SetComplexZero(zero);
+	Y.Reallocate(global_row_to_recv.GetM());
+	Y.Fill(zero);
+	for (int i = 0; i < dist_row.GetM(); i++)
+	  for (int j = 0; j < dist_row(i).GetM(); j++)
+	    {
+	      int jrow = dist_row(i).Index(j);
+	      Y(jrow) += dist_row(i).Value(j)*X(i);
+	    }
+      }
+    else
+      {
+	if (Trans.Trans())
+	  {
+	    for (int i = 0; i < dist_row.GetM(); i++)
+	      for (int j = 0; j < dist_row(i).GetM(); j++)
+		{
+		  int jloc = dist_row(i).Index(j);
+		  Y(i) += dist_row(i).Value(j)*X(jloc);
+		}
+	  }
+	else
+	  {
+	    for (int i = 0; i < dist_row.GetM(); i++)
+	      for (int j = 0; j < dist_row(i).GetM(); j++)
+		{
+		  int jloc = dist_row(i).Index(j);
+		  Y(i) += conjugate(dist_row(i).Value(j))*X(jloc);
+		}
+	  }
+      }
   }
-
-
-  //! Y = Y + alpha A^H X with only distant rows of A
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T2, class Storage2, class Allocator2,
-           class T4, class Storage4, class Allocator4>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::MltAddRow(const class_SeldonConjTrans& Trans,
-              const Vector<T2, Storage2, Allocator2>& X,
-              Vector<T4, Storage4, Allocator4>& Y) const
-  {
-    for (int i = 0; i < dist_row.GetM(); i++)
-      for (int j = 0; j < dist_row(i).GetM(); j++)
-        {
-          int jloc = dist_row(i).Index(j);
-          Y(i) += conjugate(dist_row(i).Value(j))*X(jloc);
-        }
-  }
-
-
-  //! Y = Y + alpha A X with only distant rows of A
-  template<class T, class Prop, class Storage, class Allocator>
-  template<class T2, class Storage2, class Allocator2,
-           class T4, class Storage4, class Allocator4>
-  void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::MltAddRow(const class_SeldonNoTrans& Trans,
-              const Vector<T2, Storage2, Allocator2>& X,
-              Vector<T4, Storage4, Allocator4>& Y) const
-  {
-    T4 zero; SetComplexZero(zero);
-    Y.Reallocate(global_row_to_recv.GetM());
-    Y.Fill(zero);
-    for (int i = 0; i < dist_row.GetM(); i++)
-      for (int j = 0; j < dist_row(i).GetM(); j++)
-        {
-          int jrow = dist_row(i).Index(j);
-          Y(jrow) += dist_row(i).Value(j)*X(i);
-        }
-  }
-
+  
 
   /******************************
    * Methods to assemble matrix *
@@ -2258,27 +2231,18 @@ namespace Seldon
            class T2, class Storage2, class Allocator2, class T3,
            class T4, class Storage4, class Allocator4>
   void MltAddVector(const T0& alpha,
-		    const class_SeldonNoTrans& Trans,
+		    const SeldonTranspose& Trans,
 		    const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
 		    const Vector<T2, Storage2, Allocator2>& X,
 		    const T3& beta,
 		    Vector<T4, Storage4, Allocator4>& Y, bool assemble)
   {
-    MltAddVector(alpha, M, X, beta, Y, assemble);
-  }
+    if (Trans.NoTrans())
+      {
+	MltAddVector(alpha, M, X, beta, Y, assemble);
+	return;
+      }
 
-
-  //! matrix vector product with a distributed matrix (transpose)
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-           class T2, class Storage2, class Allocator2, class T3,
-           class T4, class Storage4, class Allocator4>
-  void MltAddVector(const T0& alpha,
-		    const class_SeldonTrans& Trans,
-		    const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-		    const Vector<T2, Storage2, Allocator2>& X,
-		    const T3& beta,
-		    Vector<T4, Storage4, Allocator4>& Yres, bool assemble)
-  {
     const MPI::Comm& comm = M.GetCommunicator();
     bool proceed_distant_row = true, proceed_distant_col = true;
     if (comm.Get_size() == 1)
@@ -2328,100 +2292,12 @@ namespace Seldon
 
     // adding contributions of distant rows
     if (proceed_distant_row)
-      M.MltAddRow(SeldonTrans, Xrow, Y);
+      M.MltAddRow(Trans, Xrow, Y);
     
     // contributions of distant columns
     Vector<T4> Ycol;
     if (proceed_distant_col)
-      M.MltAddCol(SeldonTrans, X, Ycol);
-
-    // assembling row values
-    if (proceed_distant_col)
-      M.AssembleColValues(Ycol, Y);
-
-    // assembling rows shared between processors
-    if (assemble)
-      M.AssembleVec(Y);
-
-    if (beta == zero)
-      {
-        Mlt(alpha, Y);
-        Y.Nullify();
-      }
-    else
-      {
-        Mlt(beta, Yres);
-        Add(alpha, Y, Yres);
-      }
-  }
-
-
-  //! matrix vector product with a distributed matrix (conjugate transpose)
-  template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
-           class T2, class Storage2, class Allocator2, class T3,
-           class T4, class Storage4, class Allocator4>
-  void MltAddVector(const T0& alpha,
-		    const class_SeldonConjTrans& Trans,
-		    const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-		    const Vector<T2, Storage2, Allocator2>& X,
-		    const T3& beta,
-		    Vector<T4, Storage4, Allocator4>& Yres, bool assemble)
-  {
-    const MPI::Comm& comm = M.GetCommunicator();
-    bool proceed_distant_row = true, proceed_distant_col = true;
-    if (comm.Get_size() == 1)
-      {
-        proceed_distant_row = false;
-        proceed_distant_col = false;
-      }
-    else
-      {
-        if (!M.IsReadyForMltAdd())
-          {
-            // preparing the matrix vector product
-            // this method will be called once
-	    // for the first matrix-vector product
-            const_cast<DistributedMatrix<T1, Prop1,
-					 Storage1, Allocator1>& >(M)
-              .PrepareMltAdd();
-          }
-        
-        if (M.GetMaxDataSizeDistantCol() == 0)
-          proceed_distant_col = false;
-        
-        if (M.GetMaxDataSizeDistantRow() == 0)
-          proceed_distant_row = false;
-      }
-    
-    // scattering row values
-    Vector<T2> Xrow;
-    if (proceed_distant_row)
-      M.ScatterRowValues(X, Xrow);
-
-    T3 zero, one;
-    SetComplexZero(zero);
-    SetComplexOne(one);
-    
-    Vector<T4, Storage4, Allocator4> Y;
-    if (beta == zero)
-      Y.SetData(Yres.GetM(), Yres.GetData());
-    else
-      Y.Reallocate(Yres.GetM());
-    
-    Y.Fill(zero);
-            
-    // local matrix
-    MltVector(Trans, static_cast<const Matrix<T1, Prop1,
-	      Storage1, Allocator1>& >(M), X, Y);
-    
-    // adding contributions of distant rows
-    if (proceed_distant_row)
-      M.MltAddRow(SeldonConjTrans, Xrow, Y);
-    
-    // contributions of distant columns
-    Vector<T4> Ycol;
-    if (proceed_distant_col)
-      M.MltAddCol(SeldonConjTrans, X, Ycol);
+      M.MltAddCol(Trans, X, Ycol);
 
     // assembling row values
     if (proceed_distant_col)
@@ -2480,41 +2356,7 @@ namespace Seldon
   template <class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
 	    class T3, class Storage3, class Allocator3>
-  void MltVector(const class_SeldonNoTrans& Trans,
-		 const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-		 const Vector<T2, Storage2, Allocator2>& X,
-		 Vector<T3, Storage3, Allocator3>& Y, bool assemble)
-  {
-    T3 one, zero;
-    SetComplexOne(one);
-    SetComplexZero(zero);
-    Y.Fill(zero);
-    MltAddVector(one, Trans, M, X, zero, Y, assemble);
-  }
-
-  
-  //! computes Y = M^T X
-  template <class T1, class Prop1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2,
-	    class T3, class Storage3, class Allocator3>
-  void MltVector(const class_SeldonTrans& Trans,
-		 const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-		 const Vector<T2, Storage2, Allocator2>& X,
-		 Vector<T3, Storage3, Allocator3>& Y, bool assemble)
-  {
-    T3 one, zero;
-    SetComplexOne(one);
-    SetComplexZero(zero);
-    Y.Fill(zero);
-    MltAddVector(one, Trans, M, X, zero, Y, assemble);
-  }
-
-  
-  //! computes Y = M^H X
-  template <class T1, class Prop1, class Storage1, class Allocator1,
-	    class T2, class Storage2, class Allocator2,
-	    class T3, class Storage3, class Allocator3>
-  void MltVector(const class_SeldonConjTrans& Trans,
+  void MltVector(const SeldonTranspose& Trans,
 		 const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
 		 const Vector<T2, Storage2, Allocator2>& X,
 		 Vector<T3, Storage3, Allocator3>& Y, bool assemble)

@@ -421,27 +421,7 @@ namespace Seldon
 
   //! y = beta*y + alpha*A*x
   template<class T0, class T1, class T, class T2, class Allocator>
-  inline void MltAddVector(const T0& alpha, const class_SeldonNoTrans& trans,
-			   const Matrix<T, General, BandedCol, Allocator>& A,
-			   const Vector<T2>& x, const T1& beta, Vector<T2>& y)
-  {
-    Mlt(beta, y);
-    A.MltAdd(alpha, trans, x, y);
-  }
-
-  //! y = beta*y + alpha*A*x
-  template<class T0, class T1, class T, class T2, class Allocator>
-  inline void MltAddVector(const T0& alpha, const class_SeldonTrans& trans,
-			   const Matrix<T, General, BandedCol, Allocator>& A,
-			   const Vector<T2>& x, const T1& beta, Vector<T2>& y)
-  {
-    Mlt(beta, y);
-    A.MltAdd(alpha, trans, x, y);
-  }
-
-  //! y = beta*y + alpha*A*x
-  template<class T0, class T1, class T, class T2, class Allocator>
-  inline void MltAddVector(const T0& alpha, const class_SeldonConjTrans& trans,
+  inline void MltAddVector(const T0& alpha, const SeldonTranspose& trans,
 			   const Matrix<T, General, BandedCol, Allocator>& A,
 			   const Vector<T2>& x, const T1& beta, Vector<T2>& y)
   {
@@ -464,33 +444,7 @@ namespace Seldon
 
   //! y = A*x
   template<class T, class Allocator, class T1>
-  inline void MltVector(const class_SeldonNoTrans& trans,
-			const Matrix<T, General, BandedCol, Allocator>& A,
-			const Vector<T1>& x, Vector<T1>& y)
-  {
-    T1 zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    A.MltAdd(one, trans, x, y);
-  }
-
-
-  //! y = A*x
-  template<class T, class Allocator, class T1>
-  inline void MltVector(const class_SeldonTrans& trans,
-			const Matrix<T, General, BandedCol, Allocator>& A,
-			const Vector<T1>& x, Vector<T1>& y)
-  {
-    T1 zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    A.MltAdd(one, trans, x, y);
-  }
-
-
-  //! y = A*x
-  template<class T, class Allocator, class T1>
-  inline void MltVector(const class_SeldonConjTrans& trans,
+  inline void MltVector(const SeldonTranspose& trans,
 			const Matrix<T, General, BandedCol, Allocator>& A,
 			const Vector<T1>& x, Vector<T1>& y)
   {
@@ -584,29 +538,7 @@ namespace Seldon
 
   //! y = beta*y + alpha*A*x
   template<class T0, class T1, class T, class T2, class Allocator>
-  inline void MltAddVector(const T0& alpha, const class_SeldonNoTrans& trans,
-			   const Matrix<T, General, ArrowCol, Allocator>& A,
-			   const Vector<T2>& x, const T1& beta, Vector<T2>& y)
-  {
-    Mlt(beta, y);
-    A.MltAdd(alpha, trans, x, y);
-  }
-
-
-  //! y = beta*y + alpha*A*x
-  template<class T0, class T1, class T, class T2, class Allocator>
-  inline void MltAddVector(const T0& alpha, const class_SeldonTrans& trans,
-			   const Matrix<T, General, ArrowCol, Allocator>& A,
-			   const Vector<T2>& x, const T1& beta, Vector<T2>& y)
-  {
-    Mlt(beta, y);
-    A.MltAdd(alpha, trans, x, y);
-  }
-
-
-  //! y = beta*y + alpha*A*x
-  template<class T0, class T1, class T, class T2, class Allocator>
-  inline void MltAddVector(const T0& alpha, const class_SeldonConjTrans& trans,
+  inline void MltAddVector(const T0& alpha, const SeldonTranspose& trans,
 			   const Matrix<T, General, ArrowCol, Allocator>& A,
 			   const Vector<T2>& x, const T1& beta, Vector<T2>& y)
   {
@@ -629,7 +561,7 @@ namespace Seldon
 
   //! y = A*x
   template<class T, class Allocator, class T1>
-  inline void MltVector(const class_SeldonNoTrans& trans,
+  inline void MltVector(const SeldonTranspose& trans,
 			const Matrix<T, General, ArrowCol, Allocator>& A,
 			const Vector<T1>& x, Vector<T1>& y)
   {
@@ -640,32 +572,6 @@ namespace Seldon
   }
 
 
-  //! y = A*x
-  template<class T, class Allocator, class T1>
-  inline void MltVector(const class_SeldonTrans& trans,
-			const Matrix<T, General, ArrowCol, Allocator>& A,
-			const Vector<T1>& x, Vector<T1>& y)
-  {
-    T1 zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    A.MltAdd(one, trans, x, y);
-  }
-
-
-  //! y = A*x
-  template<class T, class Allocator, class T1>
-  inline void MltVector(const class_SeldonConjTrans& trans,
-			const Matrix<T, General, ArrowCol, Allocator>& A,
-			const Vector<T1>& x, Vector<T1>& y)
-  {
-    T1 zero, one;
-    SetComplexZero(zero); SetComplexOne(one);
-    y.Fill(zero);
-    A.MltAdd(one, trans, x, y);
-  }
-
-  
   //! A = alpha*A
   template<class T0, class T1, class Allocator>
   inline void MltScalar(const T0& alpha,

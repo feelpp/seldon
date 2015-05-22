@@ -821,33 +821,17 @@ namespace Seldon
 
   template<class T1, class T2, class T3,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltVector(const class_SeldonNoTrans& Trans, const Matrix<T1, Symmetric,
-		    ArrayRowSymSparse, Allocator1>& A,
-		    const Vector<T2, VectFull, Allocator2>& B,
-		    Vector<T3, VectFull, Allocator3>& C)
-  {
-    MltVector(A, B, C);
-  }
-
-
-  template<class T1, class T2, class T3,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltVector(const class_SeldonTrans& Trans, const Matrix<T1, Symmetric,
+  void MltVector(const SeldonTranspose& Trans, const Matrix<T1, Symmetric,
 		 ArrayRowSymSparse, Allocator1>& A,
 		 const Vector<T2, VectFull, Allocator2>& B,
 		 Vector<T3, VectFull, Allocator3>& C)
   {
-    MltVector(A, B, C);
-  }
+    if (!Trans.ConjTrans())
+      {
+	MltVector(A, B, C);
+	return;
+      }
 
-  
-  template<class T1, class T2, class T3,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltVector(const class_SeldonConjTrans& Trans, const Matrix<T1, Symmetric,
-		 ArrayRowSymSparse, Allocator1>& A,
-		 const Vector<T2, VectFull, Allocator2>& B,
-		 Vector<T3, VectFull, Allocator3>& C)
-  {
     C.Fill(0);
     
     int m = A.GetM(), n, p;
@@ -907,33 +891,17 @@ namespace Seldon
 
   template<class T1, class T2, class T3,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltVector(const class_SeldonNoTrans& Trans, const Matrix<T1, Symmetric,
+  void MltVector(const SeldonTranspose& Trans, const Matrix<T1, Symmetric,
 		 ArrayColSymSparse, Allocator1>& A,
 		 const Vector<T2, VectFull, Allocator2>& B,
 		 Vector<T3, VectFull, Allocator3>& C)
   {
-    MltVector(A, B, C);
-  }
+    if (!Trans.ConjTrans())
+      {
+	MltVector(A, B, C);
+	return;
+      }
 
-
-  template<class T1, class T2, class T3,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltVector(const class_SeldonTrans& Trans, const Matrix<T1, Symmetric,
-		 ArrayColSymSparse, Allocator1>& A,
-		 const Vector<T2, VectFull, Allocator2>& B,
-		 Vector<T3, VectFull, Allocator3>& C)
-  {
-    MltVector(A, B, C);
-  }
-
-  
-  template<class T1, class T2, class T3,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltVector(const class_SeldonConjTrans& Trans, const Matrix<T1, Symmetric,
-		 ArrayColSymSparse, Allocator1>& A,
-		 const Vector<T2, VectFull, Allocator2>& B,
-		 Vector<T3, VectFull, Allocator3>& C)
-  {
     C.Fill(0);
     
     int m = A.GetM(), n, p;
@@ -983,54 +951,44 @@ namespace Seldon
 
   template<class T1, class T2, class T3,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltVector(const class_SeldonNoTrans& Trans,
+  void MltVector(const SeldonTranspose& Trans,
 		 const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
 		 const Vector<T2, VectFull, Allocator2>& B,
 		 Vector<T3, VectFull, Allocator3>& C)
   {
-    MltVector(A, B, C);
-  }
-
-
-  template<class T1, class T2, class T3,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltVector(const class_SeldonTrans& Trans,
-		 const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
-		 const Vector<T2, VectFull, Allocator2>& B,
-		 Vector<T3, VectFull, Allocator3>& C)
-  {
-    C.Fill(0);        
-    int m = A.GetM(), n;
-    for (int i = 0 ; i < m ; i++)
+    if (Trans.NoTrans())
       {
-	n = A.GetRowSize(i);
-	for (int k = 0; k < n ; k++)
-	  C(A.Index(i, k)) += A.Value(i, k)*B(i);
+	MltVector(A, B, C);
+	return;
       }
-  }
 
-  
-  template<class T1, class T2, class T3,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltVector(const class_SeldonConjTrans& Trans,
-		 const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
-		 const Vector<T2, VectFull, Allocator2>& B,
-		 Vector<T3, VectFull, Allocator3>& C)
-  {
     C.Fill(0);        
     int m = A.GetM(), n;
-    for (int i = 0 ; i < m ; i++)
+
+    if (Trans.Trans())
       {
-	n = A.GetRowSize(i);
-	for (int k = 0; k < n ; k++)
-	  C(A.Index(i, k)) += conjugate(A.Value(i, k))*B(i);
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetRowSize(i);
+	    for (int k = 0; k < n ; k++)
+	      C(A.Index(i, k)) += A.Value(i, k)*B(i);
+	  }
+      }
+    else
+      {
+	for (int i = 0 ; i < m ; i++)
+	  {
+	    n = A.GetRowSize(i);
+	    for (int k = 0; k < n ; k++)
+	      C(A.Index(i, k)) += conjugate(A.Value(i, k))*B(i);
+	  }
       }
   }
   
   
   /*** ArrayColSparse ***/
-
-
+  
+  
   template<class T1, class T2, class T3,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltVector(const Matrix<T1, General, ArrayColSparse, Allocator1>& A,
@@ -1044,58 +1002,46 @@ namespace Seldon
   }
 
 
-  template<class T1, class T2, class T3, class T4,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltVector(const class_SeldonNoTrans& Trans,
-		 const Matrix<T1, General, ArrayColSparse, Allocator1>& A,
-		 const Vector<T2, VectFull, Allocator2>& B,
-		 Vector<T3, VectFull, Allocator3>& C)
-  {
-    MltVector(A, B, C);
-  }
-
-
   template<class T1, class T2, class T3,
 	   class Allocator1, class Allocator2, class Allocator3>
-  void MltVector(const class_SeldonTrans& Trans,
+  void MltVector(const SeldonTranspose& Trans,
 		 const Matrix<T1, General, ArrayColSparse, Allocator1>& A,
 		 const Vector<T2, VectFull, Allocator2>& B,
 		 Vector<T3, VectFull, Allocator3>& C)
   {
+    if (Trans.NoTrans())
+      {
+	MltVector(A, B, C);
+	return;
+      }
+
     T3 zero, temp;
     SetComplexZero(zero);
     
-    for (int i = 0 ; i < A.GetN(); i++)
+    if (Trans.Trans())
       {
-	temp = zero;
-	for (int k = 0; k < A.GetColumnSize(i); k++)
-	  temp += A.Value(i, k) * B(A.Index(i, k));
-	
-	C(i) = temp;
+	for (int i = 0 ; i < A.GetN(); i++)
+	  {
+	    temp = zero;
+	    for (int k = 0; k < A.GetColumnSize(i); k++)
+	      temp += A.Value(i, k) * B(A.Index(i, k));
+	    
+	    C(i) = temp;
+	  }
+      }
+    else
+      {
+	for (int i = 0 ; i < A.GetN(); i++)
+	  {
+	    temp = zero;
+	    for (int k = 0; k < A.GetColumnSize(i); k++)
+	      temp += conjugate(A.Value(i, k)) * B(A.Index(i, k));
+	    
+	    C(i) = temp;
+	  }
       }
   }
-
   
-  template<class T1, class T2, class T3,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltVector(const class_SeldonConjTrans& Trans,
-		 const Matrix<T1, General, ArrayColSparse, Allocator1>& A,
-		 const Vector<T2, VectFull, Allocator2>& B,
-		 Vector<T3, VectFull, Allocator3>& C)
-  {
-    T3 zero, temp;
-    SetComplexZero(zero);
-    
-    for (int i = 0 ; i < A.GetN(); i++)
-      {
-	temp = zero;
-	for (int k = 0; k < A.GetColumnSize(i); k++)
-	  temp += conjugate(A.Value(i, k)) * B(A.Index(i, k));
-	
-	C(i) = temp;
-      }
-  }
-
 
   // Mlt //
   /////////
@@ -1116,9 +1062,6 @@ namespace Seldon
 		    const T4& beta,
 		    Vector<T3, VectFull, Allocator3>& C)
   {
-    if (B.GetM() <= 0)
-      return;
-
     T4 zero; T0 one;
     SetComplexZero(zero);
     SetComplexOne(one);
@@ -1177,40 +1120,17 @@ namespace Seldon
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAddVector(const T0& alpha,
-		    const class_SeldonNoTrans& Trans, const Matrix<T1, Symmetric,
+		    const SeldonTranspose& Trans, const Matrix<T1, Symmetric,
 		    ArrayRowSymSparse, Allocator1>& A,
 		    const Vector<T2, VectFull, Allocator2>& B,
 		    const T4& beta,
 		    Vector<T3, VectFull, Allocator3>& C)
   {
-    MltAddVector(alpha, A, B, beta, C);
-  }
-
-
-  template<class T0, class T1, class T2, class T3, class T4,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAddVector(const T0& alpha,
-		    const class_SeldonTrans& Trans, const Matrix<T1, Symmetric,
-		    ArrayRowSymSparse, Allocator1>& A,
-		    const Vector<T2, VectFull, Allocator2>& B,
-		    const T4& beta,
-		    Vector<T3, VectFull, Allocator3>& C)
-  {
-    MltAddVector(alpha, A, B, beta, C);
-  }
-
-  
-  template<class T0, class T1, class T2, class T3, class T4,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAddVector(const T0& alpha,
-		    const class_SeldonConjTrans& Trans, const Matrix<T1, Symmetric,
-		    ArrayRowSymSparse, Allocator1>& A,
-		    const Vector<T2, VectFull, Allocator2>& B,
-		    const T4& beta,
-		    Vector<T3, VectFull, Allocator3>& C)
-  {
-    if (B.GetM() <= 0)
-      return;
+    if (!Trans.ConjTrans())
+      {
+	MltAddVector(alpha, A, B, beta, C);
+	return;
+      }
 
     T4 zero; T0 one;
     SetComplexZero(zero);
@@ -1278,9 +1198,6 @@ namespace Seldon
 		    const T4& beta,
 		    Vector<T3, VectFull, Allocator3>& C)
   {
-    if (B.GetM() <= 0)
-      return;
-
     T4 zero; T0 one;
     SetComplexZero(zero);
     SetComplexOne(one);
@@ -1339,40 +1256,17 @@ namespace Seldon
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAddVector(const T0& alpha,
-		    const class_SeldonNoTrans& Trans, const Matrix<T1, Symmetric,
+		    const SeldonTranspose& Trans, const Matrix<T1, Symmetric,
 		    ArrayColSymSparse, Allocator1>& A,
 		    const Vector<T2, VectFull, Allocator2>& B,
 		    const T4& beta,
 		    Vector<T3, VectFull, Allocator3>& C)
   {
-    MltAddVector(alpha, A, B, beta, C);
-  }
-
-
-  template<class T0, class T1, class T2, class T3, class T4,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAddVector(const T0& alpha,
-		    const class_SeldonTrans& Trans, const Matrix<T1, Symmetric,
-		    ArrayColSymSparse, Allocator1>& A,
-		    const Vector<T2, VectFull, Allocator2>& B,
-		    const T4& beta,
-		    Vector<T3, VectFull, Allocator3>& C)
-  {
-    MltAddVector(alpha, A, B, beta, C);
-  }
-
-  
-  template<class T0, class T1, class T2, class T3, class T4,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAddVector(const T0& alpha,
-		    const class_SeldonConjTrans& Trans, const Matrix<T1, Symmetric,
-		    ArrayColSymSparse, Allocator1>& A,
-		    const Vector<T2, VectFull, Allocator2>& B,
-		    const T4& beta,
-		    Vector<T3, VectFull, Allocator3>& C)
-  {
-    if (B.GetM() <= 0)
-      return;
+    if (!Trans.ConjTrans())
+      {
+	MltAddVector(alpha, A, B, beta, C);
+	return;
+      }
 
     T4 zero; T0 one;
     SetComplexZero(zero);
@@ -1482,25 +1376,18 @@ namespace Seldon
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAddVector(const T0& alpha,
-		    const class_SeldonNoTrans& Trans,
+		    const SeldonTranspose& Trans,
 		    const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
 		    const Vector<T2, VectFull, Allocator2>& B,
 		    const T4& beta,
 		    Vector<T3, VectFull, Allocator3>& C)
   {
-    MltAddVector(alpha, A, B, beta, C);
-  }
+    if (Trans.NoTrans())
+      {
+	MltAddVector(alpha, A, B, beta, C);
+	return;
+      }
 
-
-  template<class T0, class T1, class T2, class T3, class T4,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAddVector(const T0& alpha,
-		    const class_SeldonTrans& Trans,
-		    const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
-		    const Vector<T2, VectFull, Allocator2>& B,
-		    const T4& beta,
-		    Vector<T3, VectFull, Allocator3>& C)
-  {
     T4 zero; SetComplexZero(zero);
     T0 one; SetComplexOne(one);
 
@@ -1511,77 +1398,62 @@ namespace Seldon
     
     int m = A.GetM(), n, p;
     T1 val;
-    if (alpha == one)
+
+    if (Trans.Trans())
       {
-	for (int i = 0 ; i < m ; i++)
+	if (alpha == one)
 	  {
-	    n = A.GetRowSize(i);
-	    for (int k = 0; k < n ; k++)
+	    for (int i = 0 ; i < m ; i++)
 	      {
-		p = A.Index(i, k);
-		val = A.Value(i, k);
-		C(p) += val * B(i);
+		n = A.GetRowSize(i);
+		for (int k = 0; k < n ; k++)
+		  {
+		    p = A.Index(i, k);
+		    val = A.Value(i, k);
+		    C(p) += val * B(i);
+		  }
+	      }
+	  }
+	else // alpha != 1.
+	  {
+	    for (int i = 0 ; i < m ; i++)
+	      {
+		n = A.GetRowSize(i);
+		for (int k = 0; k < n ; k++)
+		  {
+		    p = A.Index(i, k);
+		    val = A.Value(i, k);
+		    C(p) += alpha * val * B(i);
+		  }
 	      }
 	  }
       }
-    else // alpha != 1.
-      {
-	for (int i = 0 ; i < m ; i++)
-	  {
-	    n = A.GetRowSize(i);
-	    for (int k = 0; k < n ; k++)
-	      {
-		p = A.Index(i, k);
-		val = A.Value(i, k);
-		C(p) += alpha * val * B(i);
-	      }
-	  }
-      }
-  }
-
-  
-  template<class T0, class T1, class T2, class T3, class T4,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAddVector(const T0& alpha,
-		    const class_SeldonConjTrans& Trans,
-		    const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
-		    const Vector<T2, VectFull, Allocator2>& B,
-		    const T4& beta,
-		    Vector<T3, VectFull, Allocator3>& C)
-  {
-    T4 zero; SetComplexZero(zero);
-    T0 one; SetComplexOne(one);
-
-    if (beta == zero)
-      C.Fill(0);
     else
-      Mlt(beta, C);
-    
-    int m = A.GetM(), n, p;
-    T1 val;
-    if (alpha == one)
       {
-	for (int i = 0 ; i < m ; i++)
+	if (alpha == one)
 	  {
-	    n = A.GetRowSize(i);
-	    for (int k = 0; k < n ; k++)
+	    for (int i = 0 ; i < m ; i++)
 	      {
-		p = A.Index(i, k);
-		val = conjugate(A.Value(i, k));
-		C(p) += val * B(i);
+		n = A.GetRowSize(i);
+		for (int k = 0; k < n ; k++)
+		  {
+		    p = A.Index(i, k);
+		    val = conjugate(A.Value(i, k));
+		    C(p) += val * B(i);
+		  }
 	      }
 	  }
-      }
-    else // alpha != 1.
-      {
-	for (int i = 0 ; i < m ; i++)
+	else // alpha != 1.
 	  {
-	    n = A.GetRowSize(i);
-	    for (int k = 0; k < n ; k++)
+	    for (int i = 0 ; i < m ; i++)
 	      {
-		p = A.Index(i, k);
-		val = conjugate(A.Value(i, k));
-		C(p) += alpha * val * B(i);
+		n = A.GetRowSize(i);
+		for (int k = 0; k < n ; k++)
+		  {
+		    p = A.Index(i, k);
+		    val = conjugate(A.Value(i, k));
+		    C(p) += alpha * val * B(i);
+		  }
 	      }
 	  }
       }
@@ -1626,25 +1498,18 @@ namespace Seldon
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAddVector(const T0& alpha,
-		    const class_SeldonNoTrans& Trans,
+		    const SeldonTranspose& Trans,
 		    const Matrix<T1, General, ArrayColSparse, Allocator1>& A,
 		    const Vector<T2, VectFull, Allocator2>& B,
 		    const T4& beta,
 		    Vector<T3, VectFull, Allocator3>& C)
   {
-    MltAddVector(alpha, A, B, beta, C);
-  }
+    if (Trans.NoTrans())
+      {
+	MltAddVector(alpha, A, B, beta, C);
+	return;
+      }
 
-
-  template<class T0, class T1, class T2, class T3, class T4,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAddVector(const T0& alpha,
-		    const class_SeldonTrans& Trans,
-		    const Matrix<T1, General, ArrayColSparse, Allocator1>& A,
-		    const Vector<T2, VectFull, Allocator2>& B,
-		    const T4& beta,
-		    Vector<T3, VectFull, Allocator3>& C)
-  {
     T4 zero; T0 one;
     SetComplexZero(zero);
     SetComplexOne(one);
@@ -1654,50 +1519,35 @@ namespace Seldon
     else
       Mlt(beta, C);
 
-    if (alpha == one)
+    if (Trans.Trans())
       {
-	for (int i = 0 ; i < A.GetN(); i++)
-          for (int k = 0; k < A.GetColumnSize(i); k++)
-            C(i) += A.Value(i, k) * B(A.Index(i, k));
+	if (alpha == one)
+	  {
+	    for (int i = 0 ; i < A.GetN(); i++)
+	      for (int k = 0; k < A.GetColumnSize(i); k++)
+		C(i) += A.Value(i, k) * B(A.Index(i, k));
+	  }
+	else // alpha != 1.
+	  {
+	    for (int i = 0 ; i < A.GetN(); i++)
+	      for (int k = 0; k < A.GetColumnSize(i); k++)
+		C(i) += alpha * A.Value(i, k) * B(A.Index(i, k));
+	  }
       }
-    else // alpha != 1.
-      {
-	for (int i = 0 ; i < A.GetN(); i++)
-          for (int k = 0; k < A.GetColumnSize(i); k++)
-            C(i) += alpha * A.Value(i, k) * B(A.Index(i, k));
-      }
-  }
-
-  
-  template<class T0, class T1, class T2, class T3, class T4,
-	   class Allocator1, class Allocator2, class Allocator3>
-  void MltAddVector(const T0& alpha,
-		    const class_SeldonConjTrans& Trans,
-		    const Matrix<T1, General, ArrayColSparse, Allocator1>& A,
-		    const Vector<T2, VectFull, Allocator2>& B,
-		    const T4& beta,
-		    Vector<T3, VectFull, Allocator3>& C)
-  {
-    T4 zero; T0 one;
-    SetComplexZero(zero);
-    SetComplexOne(one);
-    
-    if (beta == zero)
-      C.Fill(0);
     else
-      Mlt(beta, C);
-
-    if (alpha == one)
       {
-	for (int i = 0 ; i < A.GetN(); i++)
-          for (int k = 0; k < A.GetColumnSize(i); k++)
-            C(i) += conjugate(A.Value(i, k)) * B(A.Index(i, k));
-      }
-    else // alpha != 1.
-      {
-	for (int i = 0 ; i < A.GetN(); i++)
-          for (int k = 0; k < A.GetColumnSize(i); k++)
-            C(i) += alpha * conjugate(A.Value(i, k)) * B(A.Index(i, k));
+	if (alpha == one)
+	  {
+	    for (int i = 0 ; i < A.GetN(); i++)
+	      for (int k = 0; k < A.GetColumnSize(i); k++)
+		C(i) += conjugate(A.Value(i, k)) * B(A.Index(i, k));
+	  }
+	else // alpha != 1.
+	  {
+	    for (int i = 0 ; i < A.GetN(); i++)
+	      for (int k = 0; k < A.GetColumnSize(i); k++)
+		C(i) += alpha * conjugate(A.Value(i, k)) * B(A.Index(i, k));
+	  }
       }
   }
 

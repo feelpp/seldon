@@ -169,12 +169,7 @@ namespace Seldon
 	   const Vector<T, Storage2, Allocator2>& X,
 	   Vector<T, Storage3, Allocator3>& Y)
   {
-    if (Trans.NoTrans())
-      MltVector(M, X, Y);
-    else if (Trans.Trans())
-      MltVector(SeldonTrans, M, X, Y);
-    else
-      MltVector(SeldonConjTrans, M, X, Y);
+    MltVector(Trans, M, X, Y);
   }
 
 
@@ -186,12 +181,7 @@ namespace Seldon
 		  const Vector<complex<T>, Storage2, Allocator2>& X,
 		  Vector<complex<T>, Storage3, Allocator3>& Y)
   {
-    if (Trans.NoTrans())
-      MltVector(M, X, Y);
-    else if (Trans.Trans())
-      MltVector(SeldonTrans, M, X, Y);
-    else
-      MltVector(SeldonConjTrans, M, X, Y);
+    MltVector(Trans, M, X, Y);
   }
   
   template<class T, class Prop1, class Storage1, class Allocator1,
@@ -316,12 +306,7 @@ namespace Seldon
 		     const T& beta,
 		     Vector<T, Storage4, Allocator4>& Y)
   {
-    if (Trans.NoTrans())
-      MltAddVector(alpha, M, X, beta, Y);
-    else if (Trans.Trans())
-      MltAddVector(alpha, SeldonTrans, M, X, beta, Y);
-    else
-      MltAddVector(alpha, SeldonConjTrans, M, X, beta, Y);
+    MltAddVector(alpha, Trans, M, X, beta, Y);
   }
 
 
@@ -335,12 +320,7 @@ namespace Seldon
 		     const T& beta,
 		     Vector<complex<T>, Storage4, Allocator4>& Y)
   {
-    if (Trans.NoTrans())
-      MltAddVector(alpha, M, X, beta, Y);
-    else if (Trans.Trans())
-      MltAddVector(alpha, SeldonTrans, M, X, beta, Y);
-    else
-      MltAddVector(alpha, SeldonConjTrans, M, X, beta, Y);
+    MltAddVector(alpha, Trans, M, X, beta, Y);
   }
   
   template<class T,
@@ -353,12 +333,7 @@ namespace Seldon
 		     const T& beta,
 		     Vector<complex<T>, Storage4, Allocator4>& Y)
   {
-    if (Trans.NoTrans())
-      MltAddVector(alpha, M, X, beta, Y);
-    else if (Trans.Trans())
-      MltAddVector(alpha, SeldonTrans, M, X, beta, Y);
-    else
-      MltAddVector(alpha, SeldonConjTrans, M, X, beta, Y);
+    MltAddVector(alpha, Trans, M, X, beta, Y);
   }
 
   template<class T,
@@ -384,12 +359,8 @@ namespace Seldon
 		     const complex<T>& beta,
 		     Vector<complex<T>, Storage4, Allocator4>& Y)
   {
-    if (Trans.NoTrans())
-      MltAddVector(alpha, M, X, beta, Y);
-    else if (Trans.Trans())
-      MltAddVector(alpha, SeldonTrans, M, X, beta, Y);
-    else
-      MltAddVector(alpha, SeldonConjTrans, M, X, beta, Y);
+
+    MltAddVector(alpha, Trans, M, X, beta, Y);
   }
   
   template <class T, class Prop0, class Storage0, class Allocator0,
