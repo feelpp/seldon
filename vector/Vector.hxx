@@ -34,7 +34,8 @@ namespace Seldon
     It stores data and the vector size. It defines basic
     methods as well.
   */
-  template <class T, class Allocator>
+  template <class T, class Allocator
+	    = typename SeldonDefaultAllocator<VectFull, T>::allocator>
   class Vector_Base
   {
     // typdef declarations.
