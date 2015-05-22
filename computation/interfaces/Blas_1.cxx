@@ -202,24 +202,24 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const float& alpha,
-	   Vector<float, VectFull, Allocator>& X)
+  void MltScalar(const float& alpha,
+		 Vector<float, VectFull, Allocator>& X)
   {
     cblas_sscal(X.GetLength(), alpha, X.GetData(), 1);
   }
 
 
   template <class Allocator>
-  void Mlt(const double& alpha,
-	   Vector<double, VectFull, Allocator>& X)
+  void MltScalar(const double& alpha,
+		 Vector<double, VectFull, Allocator>& X)
   {
     cblas_dscal(X.GetLength(), alpha, X.GetData(), 1);
   }
 
 
   template <class Allocator>
-  void Mlt(const float& alpha,
-	   Vector<complex<float>, VectFull, Allocator>& X)
+  void MltScalar(const float& alpha,
+		 Vector<complex<float>, VectFull, Allocator>& X)
   {
     cblas_csscal(X.GetLength(), alpha,
 		 reinterpret_cast<void*>(X.GetData()), 1);
@@ -227,8 +227,8 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const double& alpha,
-	   Vector<complex<double>, VectFull, Allocator>& X)
+  void MltScalar(const double& alpha,
+		 Vector<complex<double>, VectFull, Allocator>& X)
   {
     cblas_zdscal(X.GetLength(), alpha,
 		 reinterpret_cast<void*>(X.GetData()), 1);
@@ -236,8 +236,8 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const complex<float>& alpha,
-	   Vector<complex<float>, VectFull, Allocator>& X)
+  void MltScalar(const complex<float>& alpha,
+		 Vector<complex<float>, VectFull, Allocator>& X)
   {
     cblas_cscal(X.GetLength(),
 		reinterpret_cast<const void*>(&alpha),
@@ -246,8 +246,8 @@ namespace Seldon
 
 
   template <class Allocator>
-  void Mlt(const complex<double>& alpha,
-	   Vector<complex<double>, VectFull, Allocator>& X)
+  void MltScalar(const complex<double>& alpha,
+		 Vector<complex<double>, VectFull, Allocator>& X)
   {
     cblas_zscal(X.GetLength(),
 		reinterpret_cast<const void*>(&alpha),
@@ -265,8 +265,8 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Copy(const Vector<float, VectFull, Allocator0>& X,
-	    Vector<float, VectFull, Allocator1>& Y)
+  void CopyVector(const Vector<float, VectFull, Allocator0>& X,
+		  Vector<float, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -280,8 +280,8 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Copy(const Vector<double, VectFull, Allocator0>& X,
-	    Vector<double, VectFull, Allocator1>& Y)
+  void CopyVector(const Vector<double, VectFull, Allocator0>& X,
+		  Vector<double, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -295,8 +295,8 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Copy(const Vector<complex<float>, VectFull, Allocator0>& X,
-	    Vector<complex<float>, VectFull, Allocator1>& Y)
+  void CopyVector(const Vector<complex<float>, VectFull, Allocator0>& X,
+		  Vector<complex<float>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -310,8 +310,8 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Copy(const Vector<complex<double>, VectFull, Allocator0>& X,
-	    Vector<complex<double>, VectFull, Allocator1>& Y)
+  void CopyVector(const Vector<complex<double>, VectFull, Allocator0>& X,
+		  Vector<complex<double>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -334,9 +334,9 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Add(const float& alpha,
-	   const Vector<float, VectFull, Allocator0>& X,
-	   Vector<float, VectFull, Allocator1>& Y)
+  void AddVector(const float& alpha,
+		 const Vector<float, VectFull, Allocator0>& X,
+		 Vector<float, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -351,9 +351,9 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Add(const double& alpha,
-	   const Vector<double, VectFull, Allocator0>& X,
-	   Vector<double, VectFull, Allocator1>& Y)
+  void AddVector(const double& alpha,
+		 const Vector<double, VectFull, Allocator0>& X,
+		 Vector<double, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -368,9 +368,9 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Add(const complex<float>& alpha,
-	   const Vector<complex<float>, VectFull, Allocator0>& X,
-	   Vector<complex<float>, VectFull, Allocator1>& Y)
+  void AddVector(const complex<float>& alpha,
+		 const Vector<complex<float>, VectFull, Allocator0>& X,
+		 Vector<complex<float>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -385,9 +385,9 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  void Add(const complex<double>& alpha,
-	   const Vector<complex<double>, VectFull, Allocator0>& X,
-	   Vector<complex<double>, VectFull, Allocator1>& Y)
+  void AddVector(const complex<double>& alpha,
+		 const Vector<complex<double>, VectFull, Allocator0>& X,
+		 Vector<complex<double>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -411,8 +411,8 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  float DotProd(const Vector<float, VectFull, Allocator0>& X,
-		const Vector<float, VectFull, Allocator1>& Y)
+  float DotProdVector(const Vector<float, VectFull, Allocator0>& X,
+		      const Vector<float, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -426,8 +426,8 @@ namespace Seldon
 
 
   template <class Allocator0, class Allocator1>
-  double DotProd(const Vector<double, VectFull, Allocator0>& X,
-		 const Vector<double, VectFull, Allocator1>& Y)
+  double DotProdVector(const Vector<double, VectFull, Allocator0>& X,
+		       const Vector<double, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -442,8 +442,8 @@ namespace Seldon
 
   template <class Allocator0, class Allocator1>
   complex<float>
-  DotProd(const Vector<complex<float>, VectFull, Allocator0>& X,
-	  const Vector<complex<float>, VectFull, Allocator1>& Y)
+  DotProdVector(const Vector<complex<float>, VectFull, Allocator0>& X,
+		const Vector<complex<float>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -472,8 +472,8 @@ namespace Seldon
 
   template <class Allocator0, class Allocator1>
   complex<double>
-  DotProd(const Vector<complex<double>, VectFull, Allocator0>& X,
-	  const Vector<complex<double>, VectFull, Allocator1>& Y)
+  DotProdVector(const Vector<complex<double>, VectFull, Allocator0>& X,
+		const Vector<complex<double>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -536,8 +536,8 @@ namespace Seldon
 
   template <class Allocator0, class Allocator1>
   complex<float>
-  DotProdConj(const Vector<complex<float>, VectFull, Allocator0>& X,
-	      const Vector<complex<float>, VectFull, Allocator1>& Y)
+  DotProdConjVector(const Vector<complex<float>, VectFull, Allocator0>& X,
+		    const Vector<complex<float>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -566,8 +566,8 @@ namespace Seldon
 
   template <class Allocator0, class Allocator1>
   complex<double>
-  DotProdConj(const Vector<complex<double>, VectFull, Allocator0>& X,
-	      const Vector<complex<double>, VectFull, Allocator1>& Y)
+  DotProdConjVector(const Vector<complex<double>, VectFull, Allocator0>& X,
+		    const Vector<complex<double>, VectFull, Allocator1>& Y)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS

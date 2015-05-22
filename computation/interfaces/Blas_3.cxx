@@ -37,11 +37,11 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const float& alpha,
-	      const Matrix<float, Prop0, ColMajor, Allocator0>& A,
-	      const Matrix<float, Prop1, ColMajor, Allocator1>& B,
-	      const float& beta,
-	      Matrix<float, Prop2, ColMajor, Allocator2>& C)
+  void MltAddMatrix(const float& alpha,
+		    const Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		    const Matrix<float, Prop1, ColMajor, Allocator1>& B,
+		    const float& beta,
+		    Matrix<float, Prop2, ColMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -58,11 +58,11 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const double& alpha,
-	      const Matrix<double, Prop0, ColMajor, Allocator0>& A,
-	      const Matrix<double, Prop1, ColMajor, Allocator1>& B,
-	      const double& beta,
-	      Matrix<double, Prop2, ColMajor, Allocator2>& C)
+  void MltAddMatrix(const double& alpha,
+		    const Matrix<double, Prop0, ColMajor, Allocator0>& A,
+		    const Matrix<double, Prop1, ColMajor, Allocator1>& B,
+		    const double& beta,
+		    Matrix<double, Prop2, ColMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -79,11 +79,11 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const complex<float>& alpha,
-	      const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
-	      const Matrix<complex<float>, Prop1, ColMajor, Allocator1>& B,
-	      const complex<float>& beta,
-	      Matrix<complex<float>, Prop2, ColMajor, Allocator2>& C)
+  void MltAddMatrix(const complex<float>& alpha,
+		    const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		    const Matrix<complex<float>, Prop1, ColMajor, Allocator1>& B,
+		    const complex<float>& beta,
+		    Matrix<complex<float>, Prop2, ColMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -103,11 +103,11 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const complex<double>& alpha,
-	      const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-	      const Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B,
-	      const complex<double>& beta,
-	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C)
+  void MltAddMatrix(const complex<double>& alpha,
+		    const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
+		    const Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B,
+		    const complex<double>& beta,
+		    Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -130,13 +130,13 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const float& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<float, Prop0, ColMajor, Allocator0>& A,
-	      const SeldonTranspose& TransB,
-	      const Matrix<float, Prop1, ColMajor, Allocator1>& B,
-	      const float& beta,
-	      Matrix<float, Prop2, ColMajor, Allocator2>& C)
+  void MltAddMatrix(const float& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		    const SeldonTranspose& TransB,
+		    const Matrix<float, Prop1, ColMajor, Allocator1>& B,
+		    const float& beta,
+		    Matrix<float, Prop2, ColMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -153,13 +153,13 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const double& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<double, Prop0, ColMajor, Allocator0>& A,
-	      const SeldonTranspose& TransB,
-	      const Matrix<double, Prop1, ColMajor, Allocator1>& B,
-	      const double& beta,
-	      Matrix<double, Prop2, ColMajor, Allocator2>& C)
+  void MltAddMatrix(const double& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<double, Prop0, ColMajor, Allocator0>& A,
+		    const SeldonTranspose& TransB,
+		    const Matrix<double, Prop1, ColMajor, Allocator1>& B,
+		    const double& beta,
+		    Matrix<double, Prop2, ColMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -176,13 +176,13 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const complex<float>& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
-	      const SeldonTranspose& TransB,
-	      const Matrix<complex<float>, Prop1, ColMajor, Allocator1>& B,
-	      const complex<float>& beta,
-	      Matrix<complex<float>, Prop2, ColMajor, Allocator2>& C)
+  void MltAddMatrix(const complex<float>& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		    const SeldonTranspose& TransB,
+		    const Matrix<complex<float>, Prop1, ColMajor, Allocator1>& B,
+		    const complex<float>& beta,
+		    Matrix<complex<float>, Prop2, ColMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -202,13 +202,13 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const complex<double>& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-	      const SeldonTranspose& TransB,
-	      const Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B,
-	      const complex<double>& beta,
-	      Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C)
+  void MltAddMatrix(const complex<double>& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
+		    const SeldonTranspose& TransB,
+		    const Matrix<complex<double>, Prop1, ColMajor, Allocator1>& B,
+		    const complex<double>& beta,
+		    Matrix<complex<double>, Prop2, ColMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -231,11 +231,11 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const float& alpha,
-	      const Matrix<float, Prop0, RowMajor, Allocator0>& A,
-	      const Matrix<float, Prop1, RowMajor, Allocator1>& B,
-	      const float& beta,
-	      Matrix<float, Prop2, RowMajor, Allocator2>& C)
+  void MltAddMatrix(const float& alpha,
+		    const Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		    const Matrix<float, Prop1, RowMajor, Allocator1>& B,
+		    const float& beta,
+		    Matrix<float, Prop2, RowMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -252,11 +252,11 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const double& alpha,
-	      const Matrix<double, Prop0, RowMajor, Allocator0>& A,
-	      const Matrix<double, Prop1, RowMajor, Allocator1>& B,
-	      const double& beta,
-	      Matrix<double, Prop2, RowMajor, Allocator2>& C)
+  void MltAddMatrix(const double& alpha,
+		    const Matrix<double, Prop0, RowMajor, Allocator0>& A,
+		    const Matrix<double, Prop1, RowMajor, Allocator1>& B,
+		    const double& beta,
+		    Matrix<double, Prop2, RowMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -273,11 +273,11 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const complex<float>& alpha,
-	      const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
-	      const Matrix<complex<float>, Prop1, RowMajor, Allocator1>& B,
-	      const complex<float>& beta,
-	      Matrix<complex<float>, Prop2, RowMajor, Allocator2>& C)
+  void MltAddMatrix(const complex<float>& alpha,
+		    const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		    const Matrix<complex<float>, Prop1, RowMajor, Allocator1>& B,
+		    const complex<float>& beta,
+		    Matrix<complex<float>, Prop2, RowMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -297,11 +297,11 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const complex<double>& alpha,
-	      const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
-	      const Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B,
-	      const complex<double>& beta,
-	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C)
+  void MltAddMatrix(const complex<double>& alpha,
+		    const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
+		    const Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B,
+		    const complex<double>& beta,
+		    Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -324,13 +324,13 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const float& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<float, Prop0, RowMajor, Allocator0>& A,
-	      const SeldonTranspose& TransB,
-	      const Matrix<float, Prop1, RowMajor, Allocator1>& B,
-	      const float& beta,
-	      Matrix<float, Prop2, RowMajor, Allocator2>& C)
+  void MltAddMatrix(const float& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		    const SeldonTranspose& TransB,
+		    const Matrix<float, Prop1, RowMajor, Allocator1>& B,
+		    const float& beta,
+		    Matrix<float, Prop2, RowMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -347,15 +347,15 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const double& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<double, Prop0, RowMajor, Allocator0>& A,
-	      const SeldonTranspose& TransB,
-	      const Matrix<double, Prop1, RowMajor, Allocator1>& B,
-	      const double& beta,
-	      Matrix<double, Prop2, RowMajor, Allocator2>& C)
+  void MltAddMatrix(const double& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<double, Prop0, RowMajor, Allocator0>& A,
+		    const SeldonTranspose& TransB,
+		    const Matrix<double, Prop1, RowMajor, Allocator1>& B,
+		    const double& beta,
+		    Matrix<double, Prop2, RowMajor, Allocator2>& C)
   {
-
+    
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(TransA, A, TransB, B, C,
 	     "MltAdd(alpha, TransA, A, TransB, B, beta, C)");
@@ -370,13 +370,13 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const complex<float>& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
-	      const SeldonTranspose& TransB,
-	      const Matrix<complex<float>, Prop1, RowMajor, Allocator1>& B,
-	      const complex<float>& beta,
-	      Matrix<complex<float>, Prop2, RowMajor, Allocator2>& C)
+  void MltAddMatrix(const complex<float>& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		    const SeldonTranspose& TransB,
+		    const Matrix<complex<float>, Prop1, RowMajor, Allocator1>& B,
+		    const complex<float>& beta,
+		    Matrix<complex<float>, Prop2, RowMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -396,13 +396,13 @@ namespace Seldon
   template <class Prop0, class Allocator0,
 	    class Prop1, class Allocator1,
 	    class Prop2, class Allocator2>
-  void MltAdd(const complex<double>& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
-	      const SeldonTranspose& TransB,
-	      const Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B,
-	      const complex<double>& beta,
-	      Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C)
+  void MltAddMatrix(const complex<double>& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
+		    const SeldonTranspose& TransB,
+		    const Matrix<complex<double>, Prop1, RowMajor, Allocator1>& B,
+		    const complex<double>& beta,
+		    Matrix<complex<double>, Prop2, RowMajor, Allocator2>& C)
   {
 
 #ifdef SELDON_CHECK_DIMENSIONS

@@ -100,6 +100,17 @@ namespace Seldon
   }
 
 
+  //! Returns the leading dimension.
+  /*!
+    \return The leading dimension.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline int Matrix_Pointers<T, Prop, Storage, Allocator>::GetLD() const
+  {
+    return Storage::GetSecond(this->m_, this->n_);
+  }
+
+
   /**********************************
    * ELEMENT ACCESS AND AFFECTATION *
    **********************************/

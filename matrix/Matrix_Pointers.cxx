@@ -397,17 +397,6 @@ namespace Seldon
    ************************/
 
 
-  //! Returns the leading dimension.
-  /*!
-    \return The leading dimension.
-  */
-  template <class T, class Prop, class Storage, class Allocator>
-  int Matrix_Pointers<T, Prop, Storage, Allocator>::GetLD() const
-  {
-    return Storage::GetSecond(this->m_, this->n_);
-  }
-
-
   //! Sets all elements to zero.
   /*!
     \warning It fills the memory with zeros. If the matrix stores complex

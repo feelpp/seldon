@@ -549,35 +549,35 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float& alpha,
-	      const Matrix<float, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<float, VectFull, Allocator1>& X,
-	      const float& beta,
-	      Vector<float, VectFull, Allocator2>& Y);
+  void MltAddVector(const float& alpha,
+		    const Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		    const Vector<float, VectFull, Allocator1>& X,
+		    const float& beta,
+		    Vector<float, VectFull, Allocator2>& Y);
+  
+  template <class Prop0, class Allocator0,
+	    class Allocator1, class Allocator2>
+  void MltAddVector(const double& alpha,
+		    const Matrix<double, Prop0, ColMajor, Allocator0>& A,
+		    const Vector<double, VectFull, Allocator1>& X,
+		    const double& beta,
+		    Vector<double, VectFull, Allocator2>& Y);
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double& alpha,
-	      const Matrix<double, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<double, VectFull, Allocator1>& X,
-	      const double& beta,
-	      Vector<double, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const complex<float>& alpha,
+		    const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		    const Vector<complex<float>, VectFull, Allocator1>& X,
+		    const complex<float>& beta,
+		    Vector<complex<float>, VectFull, Allocator2>& Y);
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float>& alpha,
-	      const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float>& beta,
-	      Vector<complex<float>, VectFull, Allocator2>& Y);
-
-  template <class Prop0, class Allocator0,
-	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double>& alpha,
-	      const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double>& beta,
-	      Vector<complex<double>, VectFull, Allocator2>& Y);
+  void MltAddVector(const complex<double>& alpha,
+		    const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
+		    const Vector<complex<double>, VectFull, Allocator1>& X,
+		    const complex<double>& beta,
+		    Vector<complex<double>, VectFull, Allocator2>& Y);
   
   
   /*** ColMajor and TransA ***/
@@ -585,39 +585,39 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<float, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<float, VectFull, Allocator1>& X,
-	      const float& beta,
-	      Vector<float, VectFull, Allocator2>& Y);
+  void MltAddVector(const float& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<float, Prop0, ColMajor, Allocator0>& A,
+		    const Vector<float, VectFull, Allocator1>& X,
+		    const float& beta,
+		    Vector<float, VectFull, Allocator2>& Y);
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<double, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<double, VectFull, Allocator1>& X,
-	      const double& beta,
-	      Vector<double, VectFull, Allocator2>& Y);
+  void MltAddVector(const double& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<double, Prop0, ColMajor, Allocator0>& A,
+		    const Vector<double, VectFull, Allocator1>& X,
+		    const double& beta,
+		    Vector<double, VectFull, Allocator2>& Y);
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float>& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float>& beta,
-	      Vector<complex<float>, VectFull, Allocator2>& Y);
+  void MltAddVector(const complex<float>& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<complex<float>, Prop0, ColMajor, Allocator0>& A,
+		    const Vector<complex<float>, VectFull, Allocator1>& X,
+		    const complex<float>& beta,
+		    Vector<complex<float>, VectFull, Allocator2>& Y);
   
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double>& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
-	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double>& beta,
-	      Vector<complex<double>, VectFull, Allocator2>& Y);
+  void MltAddVector(const complex<double>& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<complex<double>, Prop0, ColMajor, Allocator0>& A,
+		    const Vector<complex<double>, VectFull, Allocator1>& X,
+		    const complex<double>& beta,
+		    Vector<complex<double>, VectFull, Allocator2>& Y);
 
   
   /*** RowMajor and NoTrans ***/
@@ -625,35 +625,35 @@ namespace Seldon
   
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float& alpha,
-	      const Matrix<float, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<float, VectFull, Allocator1>& X,
-	      const float& beta,
-	      Vector<float, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const float& alpha,
+		    const Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		    const Vector<float, VectFull, Allocator1>& X,
+		    const float& beta,
+		    Vector<float, VectFull, Allocator2>& Y);
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double& alpha,
-	      const Matrix<double, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<double, VectFull, Allocator1>& X,
-	      const double& beta,
-	      Vector<double, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const double& alpha,
+		    const Matrix<double, Prop0, RowMajor, Allocator0>& A,
+		    const Vector<double, VectFull, Allocator1>& X,
+		    const double& beta,
+		    Vector<double, VectFull, Allocator2>& Y);
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float>& alpha,
-	      const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float>& beta,
-	      Vector<complex<float>, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const complex<float>& alpha,
+		    const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		    const Vector<complex<float>, VectFull, Allocator1>& X,
+		    const complex<float>& beta,
+		    Vector<complex<float>, VectFull, Allocator2>& Y);
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double>& alpha,
-	      const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double>& beta,
-	      Vector<complex<double>, VectFull, Allocator2>& Y);
+  void MltAddVector(const complex<double>& alpha,
+		    const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
+		    const Vector<complex<double>, VectFull, Allocator1>& X,
+		    const complex<double>& beta,
+		    Vector<complex<double>, VectFull, Allocator2>& Y);
   
   
   /*** RowMajor and TransA ***/
@@ -661,39 +661,39 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<float, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<float, VectFull, Allocator1>& X,
-	      const float& beta,
-	      Vector<float, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const float& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<float, Prop0, RowMajor, Allocator0>& A,
+		    const Vector<float, VectFull, Allocator1>& X,
+		    const float& beta,
+		    Vector<float, VectFull, Allocator2>& Y);
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<double, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<double, VectFull, Allocator1>& X,
-	      const double& beta,
-	      Vector<double, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const double& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<double, Prop0, RowMajor, Allocator0>& A,
+		    const Vector<double, VectFull, Allocator1>& X,
+		    const double& beta,
+		    Vector<double, VectFull, Allocator2>& Y);
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float>& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float>& beta,
-	      Vector<complex<float>, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const complex<float>& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<complex<float>, Prop0, RowMajor, Allocator0>& A,
+		    const Vector<complex<float>, VectFull, Allocator1>& X,
+		    const complex<float>& beta,
+		    Vector<complex<float>, VectFull, Allocator2>& Y);
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double>& alpha,
-	      const SeldonTranspose& TransA,
-	      const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
-	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double>& beta,
-	      Vector<complex<double>, VectFull, Allocator2>& Y);
+  void MltAddVector(const complex<double>& alpha,
+		    const SeldonTranspose& TransA,
+		    const Matrix<complex<double>, Prop0, RowMajor, Allocator0>& A,
+		    const Vector<complex<double>, VectFull, Allocator1>& X,
+		    const complex<double>& beta,
+		    Vector<complex<double>, VectFull, Allocator2>& Y);
   
   
   // Hermitian //
@@ -703,19 +703,19 @@ namespace Seldon
   
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float>& alpha,
-	      const Matrix<complex<float>, Prop0, ColHerm, Allocator0>& A,
-	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float>& beta,
-	      Vector<complex<float>, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const complex<float>& alpha,
+		    const Matrix<complex<float>, Prop0, ColHerm, Allocator0>& A,
+		    const Vector<complex<float>, VectFull, Allocator1>& X,
+		    const complex<float>& beta,
+		    Vector<complex<float>, VectFull, Allocator2>& Y);
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double>& alpha,
-	      const Matrix<complex<double>, Prop0, ColHerm, Allocator0>& A,
-	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double>& beta,
-	      Vector<complex<double>, VectFull, Allocator2>& Y);
+  void MltAddVector(const complex<double>& alpha,
+		    const Matrix<complex<double>, Prop0, ColHerm, Allocator0>& A,
+		    const Vector<complex<double>, VectFull, Allocator1>& X,
+		    const complex<double>& beta,
+		    Vector<complex<double>, VectFull, Allocator2>& Y);
 
   
   /*** ColHerm and Uplo ***/
@@ -729,7 +729,7 @@ namespace Seldon
 	      const Vector<complex<float>, VectFull, Allocator1>& X,
 	      const complex<float>& beta,
 	      Vector<complex<float>, VectFull, Allocator2>& Y);
-
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
   void MltAdd(const complex<double>& alpha,
@@ -738,26 +738,26 @@ namespace Seldon
 	      const Vector<complex<double>, VectFull, Allocator1>& X,
 	      const complex<double>& beta,
 	      Vector<complex<double>, VectFull, Allocator2>& Y);
-
+  
 
   /*** RowHerm and Upper ***/
 
   
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float>& alpha,
-	      const Matrix<complex<float>, Prop0, RowHerm, Allocator0>& A,
-	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float>& beta,
-	      Vector<complex<float>, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const complex<float>& alpha,
+		    const Matrix<complex<float>, Prop0, RowHerm, Allocator0>& A,
+		    const Vector<complex<float>, VectFull, Allocator1>& X,
+		    const complex<float>& beta,
+		    Vector<complex<float>, VectFull, Allocator2>& Y);
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double>& alpha,
-	      const Matrix<complex<double>, Prop0, RowHerm, Allocator0>& A,
-	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double>& beta,
-	      Vector<complex<double>, VectFull, Allocator2>& Y);
+  void MltAddVector(const complex<double>& alpha,
+		    const Matrix<complex<double>, Prop0, RowHerm, Allocator0>& A,
+		    const Vector<complex<double>, VectFull, Allocator1>& X,
+		    const complex<double>& beta,
+		    Vector<complex<double>, VectFull, Allocator2>& Y);
   
   
   /*** RowHerm and Uplo ***/
@@ -789,22 +789,22 @@ namespace Seldon
   
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float>& alpha,
-	      const Matrix<complex<float>, Prop0,
-	      ColHermPacked, Allocator0>& A,
-	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float>& beta,
-	      Vector<complex<float>, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const complex<float>& alpha,
+		    const Matrix<complex<float>, Prop0,
+		    ColHermPacked, Allocator0>& A,
+		    const Vector<complex<float>, VectFull, Allocator1>& X,
+		    const complex<float>& beta,
+		    Vector<complex<float>, VectFull, Allocator2>& Y);
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double>& alpha,
-	      const Matrix<complex<double>, Prop0,
-	      ColHermPacked, Allocator0>& A,
-	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double>& beta,
-	      Vector<complex<double>, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const complex<double>& alpha,
+		    const Matrix<complex<double>, Prop0,
+		    ColHermPacked, Allocator0>& A,
+		    const Vector<complex<double>, VectFull, Allocator1>& X,
+		    const complex<double>& beta,
+		    Vector<complex<double>, VectFull, Allocator2>& Y);
+  
   
   /*** ColHermPacked and Uplo ***/
   
@@ -835,22 +835,22 @@ namespace Seldon
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<float>& alpha,
-	      const Matrix<complex<float>, Prop0,
-	      RowHermPacked, Allocator0>& A,
-	      const Vector<complex<float>, VectFull, Allocator1>& X,
-	      const complex<float>& beta,
-	      Vector<complex<float>, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const complex<float>& alpha,
+		    const Matrix<complex<float>, Prop0,
+		    RowHermPacked, Allocator0>& A,
+		    const Vector<complex<float>, VectFull, Allocator1>& X,
+		    const complex<float>& beta,
+		    Vector<complex<float>, VectFull, Allocator2>& Y);
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const complex<double>& alpha,
-	      const Matrix<complex<double>, Prop0,
-	      RowHermPacked, Allocator0>& A,
-	      const Vector<complex<double>, VectFull, Allocator1>& X,
-	      const complex<double>& beta,
-	      Vector<complex<double>, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const complex<double>& alpha,
+		    const Matrix<complex<double>, Prop0,
+		    RowHermPacked, Allocator0>& A,
+		    const Vector<complex<double>, VectFull, Allocator1>& X,
+		    const complex<double>& beta,
+		    Vector<complex<double>, VectFull, Allocator2>& Y);
+  
 
   /*** RowHermPacked and Uplo ***/
 
@@ -883,19 +883,19 @@ namespace Seldon
   
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float& alpha,
-	      const Matrix<float, Prop0, ColSym, Allocator0>& A,
-	      const Vector<float, VectFull, Allocator1>& X,
-	      const float& beta,
-	      Vector<float, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const float& alpha,
+		    const Matrix<float, Prop0, ColSym, Allocator0>& A,
+		    const Vector<float, VectFull, Allocator1>& X,
+		    const float& beta,
+		    Vector<float, VectFull, Allocator2>& Y);
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double& alpha,
-	      const Matrix<double, Prop0, ColSym, Allocator0>& A,
-	      const Vector<double, VectFull, Allocator1>& X,
-	      const double& beta,
-	      Vector<double, VectFull, Allocator2>& Y);
+  void MltAddVector(const double& alpha,
+		    const Matrix<double, Prop0, ColSym, Allocator0>& A,
+		    const Vector<double, VectFull, Allocator1>& X,
+		    const double& beta,
+		    Vector<double, VectFull, Allocator2>& Y);
 
   
   /*** ColSym and Uplo ***/
@@ -925,19 +925,19 @@ namespace Seldon
   
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float& alpha,
-	      const Matrix<float, Prop0, RowSym, Allocator0>& A,
-	      const Vector<float, VectFull, Allocator1>& X,
-	      const float& beta,
-	      Vector<float, VectFull, Allocator2>& Y);
+  void MltAddVector(const float& alpha,
+		    const Matrix<float, Prop0, RowSym, Allocator0>& A,
+		    const Vector<float, VectFull, Allocator1>& X,
+		    const float& beta,
+		    Vector<float, VectFull, Allocator2>& Y);
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double& alpha,
-	      const Matrix<double, Prop0, RowSym, Allocator0>& A,
-	      const Vector<double, VectFull, Allocator1>& X,
-	      const double& beta,
-	      Vector<double, VectFull, Allocator2>& Y);
+  void MltAddVector(const double& alpha,
+		    const Matrix<double, Prop0, RowSym, Allocator0>& A,
+		    const Vector<double, VectFull, Allocator1>& X,
+		    const double& beta,
+		    Vector<double, VectFull, Allocator2>& Y);
   
   
   /*** RowSym and Uplo ***/
@@ -969,20 +969,20 @@ namespace Seldon
   
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float& alpha,
-	      const Matrix<float, Prop0, ColSymPacked, Allocator0>& A,
-	      const Vector<float, VectFull, Allocator1>& X,
-	      const float& beta,
-	      Vector<float, VectFull, Allocator2>& Y);
+  void MltAddVector(const float& alpha,
+		    const Matrix<float, Prop0, ColSymPacked, Allocator0>& A,
+		    const Vector<float, VectFull, Allocator1>& X,
+		    const float& beta,
+		    Vector<float, VectFull, Allocator2>& Y);
 
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double& alpha,
-	      const Matrix<double, Prop0, ColSymPacked, Allocator0>& A,
-	      const Vector<double, VectFull, Allocator1>& X,
-	      const double& beta,
-	      Vector<double, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const double& alpha,
+		    const Matrix<double, Prop0, ColSymPacked, Allocator0>& A,
+		    const Vector<double, VectFull, Allocator1>& X,
+		    const double& beta,
+		    Vector<double, VectFull, Allocator2>& Y);
+  
 
   /*** ColSymPacked and Uplo ***/
   
@@ -1011,19 +1011,19 @@ namespace Seldon
   
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const float& alpha,
-	      const Matrix<float, Prop0, RowSymPacked, Allocator0>& A,
-	      const Vector<float, VectFull, Allocator1>& X,
-	      const float& beta,
-	      Vector<float, VectFull, Allocator2>& Y);
-
+  void MltAddVector(const float& alpha,
+		    const Matrix<float, Prop0, RowSymPacked, Allocator0>& A,
+		    const Vector<float, VectFull, Allocator1>& X,
+		    const float& beta,
+		    Vector<float, VectFull, Allocator2>& Y);
+  
   template <class Prop0, class Allocator0,
 	    class Allocator1, class Allocator2>
-  void MltAdd(const double& alpha,
-	      const Matrix<double, Prop0, RowSymPacked, Allocator0>& A,
-	      const Vector<double, VectFull, Allocator1>& X,
-	      const double& beta,
-	      Vector<double, VectFull, Allocator2>& Y);
+  void MltAddVector(const double& alpha,
+		    const Matrix<double, Prop0, RowSymPacked, Allocator0>& A,
+		    const Vector<double, VectFull, Allocator1>& X,
+		    const double& beta,
+		    Vector<double, VectFull, Allocator2>& Y);
   
   
   /*** RowSymPacked and Uplo ***/
