@@ -397,6 +397,16 @@ namespace Seldon
     mat_lu.Solve(x);
   }
   
+
+#ifndef SELDON_WITH_LAPACK
+  template<class T, class Allocator>
+  inline void SolveLU(const Matrix<T, General, BandedCol, Allocator>& A,
+		      const Vector<int>& ipivot, Vector<T>& b)
+  {
+    A.Solve(ipivot, b);
+  }
+ #endif
+
   
   //! B = B + alpha*A
   template<class T0, class T1, class Allocator>
@@ -592,5 +602,5 @@ namespace Seldon
   
 }
 
-#define SELDON_FILE_BAND_MATRIX_CXX
+#define SELDON_FILE_BAND_MATRIX_INLINE_CXX
 #endif

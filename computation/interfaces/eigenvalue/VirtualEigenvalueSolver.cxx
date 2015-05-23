@@ -1549,7 +1549,7 @@ namespace Seldon
     
     this->complex_system = false;
     // computation of mat_lu = a M + b K
-    mat_lu_real = *Kh;
+    Copy(*Kh, mat_lu_real);
     Mlt(b, mat_lu_real);
     if (Mh == NULL)
       {

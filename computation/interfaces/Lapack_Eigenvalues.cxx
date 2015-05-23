@@ -2206,7 +2206,7 @@ namespace Seldon
 #endif
 
     int n = A.GetM();
-    Matrix<complex<double>, Prop1, ColMajor, Allocator1> A2(n, n), B2(n, n);
+    Matrix<complex<double>, General, ColMajor, Allocator1> A2(n, n), B2(n, n);
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	{

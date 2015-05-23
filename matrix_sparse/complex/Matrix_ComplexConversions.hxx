@@ -402,290 +402,290 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr);
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr);
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B);
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSymSparse, Allocator1>& B);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B);
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSymSparse, Allocator1>& B);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSymSparse, Allocator1>& B);;
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSymSparse, Allocator1>& B);;
       
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
        Matrix<T1, Prop1, RowComplexSparse, Allocator1>& B);
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColComplexSparse, Allocator1>& B);
   
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>& B);
   
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
        Matrix<T1, Prop1, RowSymComplexSparse, Allocator1>& B);
   
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowComplexSparse, Allocator1>& B);
   
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayColComplexSparse, Allocator1>& B);
 
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayColSymComplexSparse, Allocator1>& B);
 
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowSymComplexSparse, Allocator1>& B);
   
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowComplexSparse, Allocator1>& mat_csr);
   
   
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0,
+  CopyMatrix(const Matrix<T0, Prop0,
        ArrayRowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSymComplexSparse, Allocator1>& mat_csr);
 
   template<class T0, class Prop0, class Allocator0>
   void
-  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
        Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& B);
 
   template<class T0, class Prop0, class Allocator0>
   void
-  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
        Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& B);
 
   template<class T0, class Prop0, class Allocator0>
   void
-  Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
        Matrix<T0, Prop0, RowComplexSparse, Allocator0>& B);
 
   template<class T0, class Prop0, class Allocator0>
   void
-  Copy(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& A,
        Matrix<T0, Prop0, ColComplexSparse, Allocator0>& B);
 
   template<class T0, class Prop0, class Allocator0>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
        Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& B);
 
   template<class T0, class Prop0, class Allocator0>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
        Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& B);
 
   template<class T0, class Prop0, class Allocator0>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
        Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& B);
 
   template<class T0, class Prop0, class Allocator0>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& A,
        Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& B);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& mat_csr);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& B);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& B);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& mat_csr);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& B);
 
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& B);  
   
 } 

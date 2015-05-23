@@ -29,8 +29,7 @@ namespace Seldon
 		 ArrayRowSymComplexSparse, Allocator1>& A,
 		 Matrix<T2, Symmetric, ArrayRowSymComplexSparse, Allocator2>& B);
   
-  template<class T0, class T1, class Prop1, class Allocator1,
-           class T2, class Prop2, class Allocator2>
+  template<class T0, class T1, class Allocator1, class T2, class Allocator2>
   void AddMatrix(const T0& alpha, const Matrix<T1, Symmetric,
 		 ArrayRowSymComplexSparse, Allocator1>& A,
 		 Matrix<T2, Symmetric, ArrayRowSymSparse, Allocator2>& B);
@@ -120,6 +119,10 @@ namespace Seldon
   void MltScalar(const T0& alpha, Matrix<T, Prop,
 		 RowSymComplexSparse, Allocator>& A);
 
+  template<class T0, class T, class Prop, class Allocator>
+  void MltScalar(const complex<T0>& alpha,
+		 Matrix<T, Prop, RowSymComplexSparse, Allocator>& A);
+  
   template<class T, class Prop, class Allocator>
   void ApplyInversePermutation(Matrix<T, Prop,
 			       ArrayRowComplexSparse, Allocator>& A,

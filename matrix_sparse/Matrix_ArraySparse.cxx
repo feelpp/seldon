@@ -846,48 +846,7 @@ namespace Seldon
       if (row(j) <= i)
         this->val_(row(j)).AddInteraction(i, val(j));
   }
-
-
-  template <class T, class Prop, class Allocator>
-  ostream& operator <<(ostream& out,
-		       const Matrix<T, Prop, ArrayRowSparse, Allocator>& A)
-  {
-    A.WriteText(out);
-
-    return out;
-  }
-
-
-  template <class T, class Prop, class Allocator>
-  ostream& operator <<(ostream& out,
-		       const Matrix<T, Prop, ArrayColSparse, Allocator>& A)
-  {
-    A.WriteText(out);
-
-    return out;
-  }
-
-
-  template <class T, class Prop, class Allocator>
-  ostream& operator <<(ostream& out,
-		       const Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A)
-  {
-    A.WriteText(out);
-
-    return out;
-  }
-
-
-  template <class T, class Prop, class Allocator>
-  ostream& operator <<(ostream& out,
-		       const Matrix<T, Prop, ArrayColSymSparse, Allocator>& A)
-  {
-    A.WriteText(out);
-
-    return out;
-  }
-
-
+  
 } // namespace Seldon
 
 #define SELDON_FILE_MATRIX_ARRAY_SPARSE_CXX

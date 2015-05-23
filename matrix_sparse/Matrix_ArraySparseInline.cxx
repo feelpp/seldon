@@ -1491,6 +1491,46 @@ namespace Seldon
     if (i <= j)
       this->val_(i).AddInteraction(j, val);
   }
+
+
+  template <class T, class Prop, class Allocator>
+  inline ostream& operator <<(ostream& out,
+			      const Matrix<T, Prop, ArrayRowSparse, Allocator>& A)
+  {
+    A.WriteText(out);
+
+    return out;
+  }
+
+
+  template <class T, class Prop, class Allocator>
+  inline ostream& operator <<(ostream& out,
+			      const Matrix<T, Prop, ArrayColSparse, Allocator>& A)
+  {
+    A.WriteText(out);
+
+    return out;
+  }
+
+
+  template <class T, class Prop, class Allocator>
+  inline ostream& operator <<(ostream& out,
+			      const Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A)
+  {
+    A.WriteText(out);
+
+    return out;
+  }
+
+
+  template <class T, class Prop, class Allocator>
+  inline ostream& operator <<(ostream& out,
+			      const Matrix<T, Prop, ArrayColSymSparse, Allocator>& A)
+  {
+    A.WriteText(out);
+
+    return out;
+  }
   
 } // namespace Seldon
 

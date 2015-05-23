@@ -128,6 +128,164 @@ namespace Seldon
 
   };
 
+  // declarations of all iterative solvers
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T, class Vector1>
+  int BiCg(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	   Preconditioner_Base<T>& M,
+	   Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int BiCgStab(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	       Preconditioner_Base<T>& M,
+	       Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int BiCgStabl(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+		Preconditioner_Base<T>& M,
+		Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int BiCgcr(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	     Preconditioner_Base<T>& M,
+	     Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int Cg(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	 Preconditioner_Base<T>& M,
+	 Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int Cgne(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	   Preconditioner_Base<T>& M,
+	   Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int Cgs(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	  Preconditioner_Base<T>& M,
+	  Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int CoCg(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	   Preconditioner_Base<T>& M,
+	   Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int Gcr(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	  Preconditioner_Base<T>& M,
+	  Iteration<typename ClassComplexType<T>::Treal>& outer);
+
+  template<class T, class Vector1>
+  int Gmres(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	    Preconditioner_Base<T>& M,
+	    Iteration<typename ClassComplexType<T>::Treal>& outer);
+
+  template<class T, class Vector1>
+  int Lsqr(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	   Preconditioner_Base<T>& M,
+	   Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int MinRes(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	     Preconditioner_Base<T>& M,
+	     Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int QCgs(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	   Preconditioner_Base<T>& M,
+	   Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int Qmr(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	  Preconditioner_Base<T>& M,
+	  Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int QmrSym(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	     Preconditioner_Base<T>& M,
+	     Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int Symmlq(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	     Preconditioner_Base<T>& M,
+	     Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+  template<class T, class Vector1>
+  int TfQmr(const VirtualMatrix<T>& A, Vector1& x, const Vector1& b,
+	    Preconditioner_Base<T>& M,
+	    Iteration<typename ClassComplexType<T>::Treal>& iter);
+
+#else
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int BiCg(const Matrix1& A, Vector1& x, const Vector1& b,
+	   Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int BiCgStab(const Matrix1& A, Vector1& x, const Vector1& b,
+	       Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int BiCgStabl(const Matrix1& A, Vector1& x, const Vector1& b,
+		Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int BiCgcr(const Matrix1& A, Vector1& x, const Vector1& b,
+	     Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Cg(const Matrix1& A, Vector1& x, const Vector1& b,
+	 Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Cgne(const Matrix1& A, Vector1& x, const Vector1& b,
+	   Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Cgs(const Matrix1& A, Vector1& x, const Vector1& b,
+	  Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int CoCg(const Matrix1& A, Vector1& x, const Vector1& b,
+	   Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Gcr(const Matrix1& A, Vector1& x, const Vector1& b,
+	  Preconditioner& M, Iteration<Titer> & outer);
+
+  template <class Titer, class MatrixSparse, class Vector1, class Preconditioner>
+  int Gmres(const MatrixSparse& A, Vector1& x, const Vector1& b,
+	    Preconditioner& M, Iteration<Titer> & outer);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Lsqr(const Matrix1& A, Vector1& x, const Vector1& b,
+	   Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int MinRes(const Matrix1& A, Vector1& x, const Vector1& b,
+	     Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int QCgs(const Matrix1& A, Vector1& x, const Vector1& b,
+	   Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Qmr(const Matrix1& A, Vector1& x, const Vector1& b,
+	  Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int QmrSym(const Matrix1& A, Vector1& x, const Vector1& b,
+	     Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int Symmlq(const Matrix1& A, Vector1& x, const Vector1& b,
+	     Preconditioner& M, Iteration<Titer> & iter);
+
+  template <class Titer, class Matrix1, class Vector1, class Preconditioner>
+  int TfQmr(const Matrix1& A, Vector1& x, const Vector1& b,
+	    Preconditioner& M, Iteration<Titer> & iter);
+
+#endif
+
 } // end namespace
 
 #define SELDON_FILE_ITERATIVE_HXX

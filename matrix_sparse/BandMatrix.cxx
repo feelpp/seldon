@@ -1359,13 +1359,6 @@ namespace Seldon
     A.Factorize(ipivot);
   }
 
-  template<class T, class Allocator>
-  void SolveLU(const Matrix<T, General, BandedCol, Allocator>& A,
-               const Vector<int>& ipivot, Vector<T>& b)
-  {
-    A.Solve(ipivot, b);
-  }
-
 #endif
 
 

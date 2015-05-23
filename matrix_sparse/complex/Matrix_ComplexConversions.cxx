@@ -2676,7 +2676,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
   {
     Vector<int> Ptr, IndCol;
@@ -2695,7 +2695,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
   {
     Vector<int> Ptr, IndCol;
@@ -2714,7 +2714,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
   {
     Vector<int> Ptr, IndCol;
@@ -2733,7 +2733,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
   {
     Vector<int> Ptr, IndCol;
@@ -2752,7 +2752,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
   {
     Vector<int> Ptr, IndCol;
@@ -2771,7 +2771,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
   {
     Vector<int> Ptr, IndCol;
@@ -2790,7 +2790,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
   {
     Vector<int> Ptr, IndCol;
@@ -2809,7 +2809,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
   {
     Vector<int> Ptr, IndCol;
@@ -2828,7 +2828,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
   {
     Vector<int> Ptr, IndCol;
@@ -2847,7 +2847,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
   {
     Vector<int> Ptr, IndCol;
@@ -2866,7 +2866,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSymSparse, Allocator1>& mat_csr)
   {
     Vector<int> Ptr, IndCol;
@@ -2885,7 +2885,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSparse, Allocator1>& mat_csr)
   {
     Vector<int> Ptr, IndCol;
@@ -2904,7 +2904,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B)
   {
     Vector<int> Ptr, IndRow;
@@ -2923,7 +2923,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B)
   {
     Vector<int> Ptr, IndRow;
@@ -2942,7 +2942,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSymSparse, Allocator1>& B)
   {
     Vector<int> Ptr, IndRow;
@@ -2961,7 +2961,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B)
   {
     Vector<int> Ptr, IndRow;
@@ -2980,7 +2980,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B)
   {
     Vector<int> Ptr, IndRow;
@@ -2999,7 +2999,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayColSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSymSparse, Allocator1>& B)
   {
     Vector<int> Ptr, IndRow;
@@ -3018,7 +3018,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B)
   {
     Vector<int> Ptr, IndRow;
@@ -3037,7 +3037,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B)
   {
     Vector<int> Ptr, IndRow;
@@ -3056,7 +3056,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSymSparse, Allocator1>& B)
   {
     Vector<int> Ptr, IndRow;
@@ -3075,7 +3075,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B)
   {
     Vector<int> Ptr, IndRow;
@@ -3094,7 +3094,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSparse, Allocator1>& B)
   {
     Vector<int> Ptr, IndRow;
@@ -3113,7 +3113,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSymSparse, Allocator1>& B)
   {
     Vector<int> Ptr, IndRow;
@@ -3130,7 +3130,7 @@ namespace Seldon
   
   //! B = A.
   template<class T, class Prop, class Allocator>
-  void Copy(const Matrix<T, Prop, RowComplexSparse, Allocator>& A,
+  void CopyMatrix(const Matrix<T, Prop, RowComplexSparse, Allocator>& A,
 	    Matrix<T, Prop, RowComplexSparse, Allocator>& B)
   {
     B = A;
@@ -3139,7 +3139,7 @@ namespace Seldon
 
   //! B = A.
   template<class T, class Prop, class Allocator>
-  void Copy(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A,
+  void CopyMatrix(const Matrix<T, Prop, RowSymComplexSparse, Allocator>& A,
 	    Matrix<T, Prop, RowSymComplexSparse, Allocator>& B)
   {
     B = A;
@@ -3148,7 +3148,7 @@ namespace Seldon
 
   //! B = A.
   template<class T, class Prop, class Allocator>
-  void Copy(const Matrix<T, Prop, ColComplexSparse, Allocator>& A,
+  void CopyMatrix(const Matrix<T, Prop, ColComplexSparse, Allocator>& A,
 	    Matrix<T, Prop, ColComplexSparse, Allocator>& B)
   {
     B = A;
@@ -3157,7 +3157,7 @@ namespace Seldon
 
   //! B = A.
   template<class T, class Prop, class Allocator>
-  void Copy(const Matrix<T, Prop, ColSymComplexSparse, Allocator>& A,
+  void CopyMatrix(const Matrix<T, Prop, ColSymComplexSparse, Allocator>& A,
 	    Matrix<T, Prop, ColSymComplexSparse, Allocator>& B)
   {
     B = A;
@@ -3166,7 +3166,7 @@ namespace Seldon
 
   //! B = A.
   template<class T, class Prop, class Allocator>
-  void Copy(const Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A,
+  void CopyMatrix(const Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& A,
 	    Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>& B)
   {
     B = A;
@@ -3175,7 +3175,7 @@ namespace Seldon
 
   //! B = A.
   template<class T, class Prop, class Allocator>
-  void Copy(const Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A,
+  void CopyMatrix(const Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& A,
 	    Matrix<T, Prop, ArrayRowComplexSparse, Allocator>& B)
   {
     B = A;
@@ -3184,7 +3184,7 @@ namespace Seldon
 
   //! B = A.
   template<class T, class Prop, class Allocator>
-  void Copy(const Matrix<T, Prop, ArrayColComplexSparse, Allocator>& A,
+  void CopyMatrix(const Matrix<T, Prop, ArrayColComplexSparse, Allocator>& A,
 	    Matrix<T, Prop, ArrayColComplexSparse, Allocator>& B)
   {
     B = A;
@@ -3193,7 +3193,7 @@ namespace Seldon
 
   //! B = A.
   template<class T, class Prop, class Allocator>
-  void Copy(const Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>& A,
+  void CopyMatrix(const Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>& A,
 	    Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>& B)
   {
     B = A;
@@ -3204,7 +3204,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
        Matrix<T1, Prop1, RowComplexSparse, Allocator1>& B)
   {
     int m = A.GetM(), n = A.GetN();
@@ -3268,7 +3268,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColComplexSparse, Allocator1>& B)
   {
     int m = A.GetM();
@@ -3333,7 +3333,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
        Matrix<T1, Prop1, ColSymComplexSparse, Allocator1>& B)
   {
     int m = A.GetM(), n = A.GetN();
@@ -3398,7 +3398,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
        Matrix<T1, Prop1, RowSymComplexSparse, Allocator1>& B)
   {
     int m = A.GetM();
@@ -3463,12 +3463,12 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowComplexSparse, Allocator1>& B)
   {
     int m = A.GetM(), n = A.GetN();
     Matrix<T0, Prop0, ArrayRowSparse, Allocator0> Ar;
-    Copy(A, Ar);
+    CopyMatrix(A, Ar);
 
     typedef typename ClassComplexType<T1>::Treal Treal;
     Treal zero(0);    
@@ -3515,7 +3515,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ColSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayColComplexSparse, Allocator1>& B)
   {
     int m = A.GetM();
@@ -3567,12 +3567,12 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayColSymComplexSparse, Allocator1>& B)
   {
     int m = A.GetM(), n = A.GetN();
     Matrix<T0, Prop0, ArrayColSymSparse, Allocator0> Ar;
-    Copy(A, Ar);
+    CopyMatrix(A, Ar);
 
     typedef typename ClassComplexType<T1>::Treal Treal;
     Treal zero(0);    
@@ -3619,7 +3619,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowSymComplexSparse, Allocator1>& B)
   {
     int m = A.GetM();
@@ -3671,7 +3671,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowComplexSparse, Allocator1>& mat_csr)
   {
     int i, k;
@@ -3722,7 +3722,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0,
+  CopyMatrix(const Matrix<T0, Prop0,
        ArrayRowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, RowSymComplexSparse, Allocator1>& mat_csr)
   {
@@ -3774,7 +3774,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& mat_csr)
   {
     Vector<int> IndRow, IndCol;
@@ -3816,7 +3816,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& B)
   {
     int m = A.GetM();
@@ -3878,7 +3878,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, ArrayRowComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& B)
   {
     int m = A.GetM();
@@ -3940,7 +3940,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& mat_array,
        Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& mat_csr)
   {
     Vector<int> IndRow, IndCol;
@@ -3981,7 +3981,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowSparse, Allocator1>& B)
   {  
     typedef typename ClassComplexType<T0>::Treal Treal;  
@@ -4048,7 +4048,7 @@ namespace Seldon
   template<class T0, class Prop0, class Allocator0,
 	   class T1, class Prop1, class Allocator1>
   void
-  Copy(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
+  CopyMatrix(const Matrix<T0, Prop0, RowSymComplexSparse, Allocator0>& A,
        Matrix<T1, Prop1, ArrayRowSymSparse, Allocator1>& B)
   { 
     typedef typename ClassComplexType<T0>::Treal Treal;   

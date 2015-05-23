@@ -359,6 +359,23 @@ namespace Seldon
     
   };
 
+
+  template <class T, class Prop, class Allocator>
+  ostream& operator <<(ostream& out,
+		       const Matrix<T, Prop, ArrayRowSparse, Allocator>& A);
+
+  template <class T, class Prop, class Allocator>
+  ostream& operator <<(ostream& out,
+		       const Matrix<T, Prop, ArrayColSparse, Allocator>& A);
+
+  template <class T, class Prop, class Allocator>
+  ostream& operator <<(ostream& out,
+		       const Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A);
+
+  template <class T, class Prop, class Allocator>
+  ostream& operator <<(ostream& out,
+		       const Matrix<T, Prop, ArrayColSymSparse, Allocator>& A);
+  
 } // namespace Seldon
 
 #define SELDON_FILE_MATRIX_ARRAY_SPARSE_HXX

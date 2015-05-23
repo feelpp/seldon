@@ -82,8 +82,7 @@ namespace Seldon
   
 
   //! B = B + alpha A  
-  template<class T0, class T1, class Allocator1,
-           class T2, class Allocator2>
+  template<class T0, class T1, class Allocator1, class T2, class Allocator2>
   void AddMatrix(const T0& alpha, const Matrix<T1, Symmetric,
 		 ArrayRowSymComplexSparse, Allocator1>& A,
 		 Matrix<T2, Symmetric, ArrayRowSymSparse, Allocator2>& B)

@@ -618,6 +618,31 @@ namespace Seldon
   }
 
 
+  template<class T, class Prop1, class Storage1, class Allocator1,
+	   class Prop2, class Storage2, class Allocator2>
+  inline void Copy(const Matrix<T, Prop1, Storage1, Allocator1>& A,
+		   Matrix<T, Prop2, Storage2, Allocator2>& B)
+  {
+    CopyMatrix(A, B);
+  }
+
+  template<class T, class Prop1, class Storage1, class Allocator1,
+	   class Prop2, class Storage2, class Allocator2>
+  inline void Copy(const Matrix<complex<T>, Prop1, Storage1, Allocator1>& A,
+		   Matrix<T, Prop2, Storage2, Allocator2>& B)
+  {
+    throw WrongArgument("Copy", "incompatible types");    
+  }
+
+  template<class T, class Prop1, class Storage1, class Allocator1,
+	   class Prop2, class Storage2, class Allocator2>
+  inline void Copy(const Matrix<T, Prop1, Storage1, Allocator1>& A,
+		   Matrix<complex<T>, Prop2, Storage2, Allocator2>& B)
+  {
+    CopyMatrix(A, B);
+  }
+
+
   //! returns true if the matrix is symmetric
   template<class T, class Prop, class Storage, class Allocator>
   inline bool IsSymmetricMatrix(const Matrix<T, Prop, Storage, Allocator>& A)
