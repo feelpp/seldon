@@ -595,9 +595,9 @@ namespace Seldon
   void MatrixMumps<T>::
   FactorizeDistributedMatrix(MPI::Comm& comm_facto,
                              Vector<Tint, VectFull, Alloc1>& Ptr,
-                             Vector<Tint, VectFull, Alloc2>& IndRow,
+                             Vector<Tint, VectFull, Alloc2>& IndRow_,
                              Vector<T, VectFull, Alloc3>& Val,
-                             const Vector<Tint>& glob_number,
+                             const Vector<int>& glob_number,
                              bool sym, bool keep_matrix)
   {
     // Initialization depending on symmetry of the matrix.
@@ -619,27 +619,31 @@ namespace Seldon
     struct_mumps.icntl[17] = 3;
     
     // finding the size of the overall system
-    Tint nmax = 0, N = 0;
+    int nmax = 0, N = 0;
     for (int i = 0; i < glob_number.GetM(); i++)
       nmax = max(glob_number(i)+1, nmax);
 
     comm_facto.Allreduce(&nmax, &N, 1, MPI::INTEGER, MPI::MAX);
 
     // number of non-zero entries on this processor
-    int nnz = IndRow.GetM();
+    int nnz = IndRow_.GetM();
 
-    // conversion in coordinate format
-    Vector<Tint, VectFull, Alloc2> IndCol(nnz);
-    for (int i = 0; i < IndRow.GetM(); i++)
-      IndRow(i)++;
+    // conversion in coordinate format (in 32-bit integers)
+    Vector<int> IndCol(nnz);
+    Vector<int> IndRow(IndRow_.GetM());
+    for (int i = 0; i < IndRow_.GetM(); i++)
+      IndRow(i) = IndRow_(i) + 1;
 
     for (int i = 0; i < Ptr.GetM()-1; i++)
       for (int j = Ptr(i); j < Ptr(i+1); j++)
         IndCol(j) = glob_number(i) + 1;
 
     if (!keep_matrix)
-      Ptr.Clear();
-
+      {
+	Ptr.Clear();
+	IndRow_.Clear();
+      }
+    
     // Define the problem on the host
     struct_mumps.n = N;
     struct_mumps.nz_loc = nnz;
@@ -695,21 +699,6 @@ namespace Seldon
 
   }
 
-  
-  //! 64-bit interface
-  template<class T>
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MatrixMumps<T>::
-  FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                             Vector<int64_t, VectFull, Alloc1>& Ptr,
-                             Vector<int64_t, VectFull, Alloc2>& IndRow,
-                             Vector<T, VectFull, Alloc3>& Val,
-                             const Vector<int>& glob_number,
-                             bool sym, bool keep_matrix)
-  {
-    cout << "64-bit support of Mumps not implemented in Seldon" << endl;
-    abort();
-  }
   
   //! solves linear system with parallel execution
   /*!

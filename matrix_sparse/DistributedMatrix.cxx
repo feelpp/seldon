@@ -2235,11 +2235,11 @@ namespace Seldon
 		    const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
 		    const Vector<T2, Storage2, Allocator2>& X,
 		    const T3& beta,
-		    Vector<T4, Storage4, Allocator4>& Y, bool assemble)
+		    Vector<T4, Storage4, Allocator4>& Yres, bool assemble)
   {
     if (Trans.NoTrans())
       {
-	MltAddVector(alpha, M, X, beta, Y, assemble);
+	MltAddVector(alpha, M, X, beta, Yres, assemble);
 	return;
       }
 

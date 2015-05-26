@@ -142,16 +142,8 @@ namespace Seldon
                                     Vector<Tint, VectFull, Alloc1>&,
                                     Vector<Tint, VectFull, Alloc2>&,
                                     Vector<T, VectFull, Alloc3>&,
-                                    const Vector<Tint>& glob_number,
-				    bool sym, bool keep_matrix = false);
-    
-    template<class Alloc1, class Alloc2, class Alloc3>
-    void FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                                    Vector<int64_t, VectFull, Alloc1>& Ptr,
-                                    Vector<int64_t, VectFull, Alloc2>& IndRow,
-                                    Vector<T, VectFull, Alloc3>& Val,
                                     const Vector<int>& glob_number,
-                                    bool sym, bool keep_matrix);
+				    bool sym, bool keep_matrix = false);
     
     template<class Allocator2, class Tint>
     void SolveDistributed(MPI::Comm& comm_facto,
