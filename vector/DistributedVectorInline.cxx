@@ -109,14 +109,14 @@ namespace Seldon
 
   template<class T>
   inline T DotProd(const DistributedVector<T>& X,
-		   DistributedVector<T>& Y)
+		   const DistributedVector<T>& Y)
   {
     return DotProdVector(X, Y);
   }
 
   template<class T>
   inline complex<T> DotProd(const DistributedVector<complex<T> >& X,
-                            DistributedVector<T>& Y)
+                            const DistributedVector<T>& Y)
   {
     abort();
     return complex<T>(0, 0);
@@ -124,7 +124,7 @@ namespace Seldon
 
   template<class T>
   inline complex<T> DotProd(const DistributedVector<T>& X,
-                            DistributedVector<complex<T> >& Y)
+                            const DistributedVector<complex<T> >& Y)
   {
     abort();
     return complex<T>(0, 0);
@@ -132,21 +132,21 @@ namespace Seldon
 
   template<class T>
   inline T DotProdConj(const DistributedVector<T>& X,
-		       DistributedVector<T>& Y)
+		       const DistributedVector<T>& Y)
   {
     return DotProdVector(X, Y);
   }
 
   template<class T>
   inline complex<T> DotProdConj(const DistributedVector<complex<T> >& X,
-				DistributedVector<complex<T> >& Y)
+				const DistributedVector<complex<T> >& Y)
   {
     return DotProdConjVector(X, Y);
   }
 
   template<class T>
   inline complex<T> DotProdConj(const DistributedVector<complex<T> >& X,
-				DistributedVector<T>& Y)
+				const DistributedVector<T>& Y)
   {
     abort();
     return complex<T>(0, 0);
@@ -154,7 +154,7 @@ namespace Seldon
 
   template<class T>
   inline complex<T> DotProdConj(const DistributedVector<T>& X,
-				DistributedVector<complex<T> >& Y)
+				const DistributedVector<complex<T> >& Y)
   {
     abort();
     return complex<T>(0, 0);

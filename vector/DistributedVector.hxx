@@ -119,30 +119,30 @@ namespace Seldon
 			   const MPI::Comm& comm, int Nvol, int nb_u, int tag);
 
   template<class T>
-  T DotProd(const DistributedVector<T>& X, DistributedVector<T>& Y);
+  T DotProd(const DistributedVector<T>& X, const DistributedVector<T>& Y);
 
   template<class T>
   complex<T> DotProd(const DistributedVector<complex<T> >& X,
-                     DistributedVector<T>& Y);
+                     const DistributedVector<T>& Y);
 
   template<class T>
   complex<T> DotProd(const DistributedVector<T>& X,
-                     DistributedVector<complex<T> >& Y);
+                     const DistributedVector<complex<T> >& Y);
 
   template<class T>
-  T DotProdConj(const DistributedVector<T>& X, DistributedVector<T>& Y);
-
-  template<class T>
-  complex<T> DotProdConj(const DistributedVector<complex<T> >& X,
-			 DistributedVector<complex<T> >& Y);
+  T DotProdConj(const DistributedVector<T>& X, const DistributedVector<T>& Y);
 
   template<class T>
   complex<T> DotProdConj(const DistributedVector<complex<T> >& X,
-			 DistributedVector<T>& Y);
+			 const DistributedVector<complex<T> >& Y);
+
+  template<class T>
+  complex<T> DotProdConj(const DistributedVector<complex<T> >& X,
+			 const DistributedVector<T>& Y);
 
   template<class T>
   complex<T> DotProdConj(const DistributedVector<T>& X,
-			 DistributedVector<complex<T> >& Y);
+			 const DistributedVector<complex<T> >& Y);
   
 }
 

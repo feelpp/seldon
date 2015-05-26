@@ -89,7 +89,7 @@ namespace Seldon
   template<class T, class Storage1, class Allocator1,
 	   class Storage2, class Allocator2>
   inline T DotProd(const Vector<T, Storage1, Allocator1>& X,
-		   Vector<T, Storage2, Allocator2>& Y)
+		   const Vector<T, Storage2, Allocator2>& Y)
   {
     return DotProdVector(X, Y);
   }
@@ -97,7 +97,7 @@ namespace Seldon
   template<class T, class Storage1, class Allocator1,
 	   class Storage2, class Allocator2>
   inline T DotProdConj(const Vector<T, Storage1, Allocator1>& X,
-		       Vector<T, Storage2, Allocator2>& Y)
+		       const Vector<T, Storage2, Allocator2>& Y)
   {
     return DotProdVector(X, Y);
   }
@@ -105,7 +105,7 @@ namespace Seldon
   template<class T, class Storage1, class Allocator1,
 	   class Storage2, class Allocator2>
   inline complex<T> DotProdConj(const Vector<complex<T>, Storage1, Allocator1>& X,
-				Vector<complex<T>, Storage2, Allocator2>& Y)
+				const Vector<complex<T>, Storage2, Allocator2>& Y)
   {
     return DotProdConjVector(X, Y);
   }
@@ -113,7 +113,7 @@ namespace Seldon
   template<class T, class Storage1, class Allocator1,
 	   class Storage2, class Allocator2>
   inline complex<T> DotProdConj(const Vector<complex<T>, Storage1, Allocator1>& X,
-				Vector<T, Storage2, Allocator2>& Y)
+				const Vector<T, Storage2, Allocator2>& Y)
   {
     return DotProdConjVector(X, Y);
   }
@@ -121,7 +121,7 @@ namespace Seldon
   template<class T, class Storage1, class Allocator1,
 	   class Storage2, class Allocator2>
   inline complex<T> DotProdConj(const Vector<T, Storage1, Allocator1>& X,
-				Vector<complex<T>, Storage2, Allocator2>& Y)
+				const Vector<complex<T>, Storage2, Allocator2>& Y)
   {
     return DotProdVector(X, Y);
   }

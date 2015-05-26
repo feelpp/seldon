@@ -48,27 +48,27 @@ namespace Seldon
   template<class T, class Storage1, class Allocator1,
 	   class Storage2, class Allocator2>
   T DotProd(const Vector<T, Storage1, Allocator1>& X,
-	    Vector<T, Storage2, Allocator2>& Y);
+	    const Vector<T, Storage2, Allocator2>& Y);
   
   template<class T, class Storage1, class Allocator1,
 	   class Storage2, class Allocator2>
   T DotProdConj(const Vector<T, Storage1, Allocator1>& X,
-		Vector<T, Storage2, Allocator2>& Y);
+		const Vector<T, Storage2, Allocator2>& Y);
 
   template<class T, class Storage1, class Allocator1,
 	   class Storage2, class Allocator2>
   complex<T> DotProdConj(const Vector<complex<T>, Storage1, Allocator1>& X,
-			 Vector<complex<T>, Storage2, Allocator2>& Y);
+			 const Vector<complex<T>, Storage2, Allocator2>& Y);
     
   template<class T, class Storage1, class Allocator1,
 	   class Storage2, class Allocator2>
   complex<T> DotProdConj(const Vector<complex<T>, Storage1, Allocator1>& X,
-			 Vector<T, Storage2, Allocator2>& Y);
+			 const Vector<T, Storage2, Allocator2>& Y);
 
   template<class T, class Storage1, class Allocator1,
 	   class Storage2, class Allocator2>
   complex<T> DotProdConj(const Vector<T, Storage1, Allocator1>& X,
-			 Vector<complex<T>, Storage2, Allocator2>& Y);
+			 const Vector<complex<T>, Storage2, Allocator2>& Y);
 
   // matrix-vector product Mlt
   template <class T, class Prop0, class Storage0, class Allocator0,
