@@ -56,7 +56,7 @@ namespace Seldon
   //! sets parameters of preconditioning
   template<class T>
   void Preconditioner_Base<T>
-  ::SetInputPreconditioning(string keyword, const Vector<string>& param)
+  ::SetInputPreconditioning(const string& keyword, const Vector<string>& param)
   {
   }
 #else

@@ -724,30 +724,32 @@ namespace Seldon
 
   template<class T0, class Prop0, class Storage0, class Allocator0>
   void Mlt(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>&,
-	   const Vector<T0>& X, Vector<T0>& Y);
+	   const Vector<T0>& X, Vector<T0>& Y, bool assemble = true);
   
   template<class T0, class Prop0, class Storage0, class Allocator0>
   void Mlt(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>&,
-	   const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
+	   const Vector<complex<T0> >& X, Vector<complex<T0> >& Y,
+	   bool assemble = true);
   
   template<class T0, class Prop0, class Storage0, class Allocator0>
   void Mlt(const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>&,
-	   const Vector<T0>& X, Vector<T0>& Y);
+	   const Vector<T0>& X, Vector<T0>& Y, bool assemble = true);
   
   template<class T0, class Prop0, class Storage0, class Allocator0>
   void Mlt(const SeldonTranspose& trans,
 	   const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
-	   const Vector<T0>& X, Vector<T0>& Y);
+	   const Vector<T0>& X, Vector<T0>& Y, bool assemble = true);
   
   template<class T0, class Prop0, class Storage0, class Allocator0>
   void Mlt(const SeldonTranspose& trans,
 	   const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
-	   const Vector<complex<T0> >& X, Vector<complex<T0> >& Y);
+	   const Vector<complex<T0> >& X, Vector<complex<T0> >& Y,
+	   bool assemble = true);
   
   template<class T0, class Prop0, class Storage0, class Allocator0>
   void Mlt(const SeldonTranspose& trans,
 	   const DistributedMatrix<complex<T0>, Prop0, Storage0, Allocator0>& A,
-	   const Vector<T0>& X, Vector<T0>& Y);
+	   const Vector<T0>& X, Vector<T0>& Y, bool assemble = true);
   
   template<class T0, class Prop0, class Storage0, class Allocator0>
   void MltAdd(const T0& alpha,

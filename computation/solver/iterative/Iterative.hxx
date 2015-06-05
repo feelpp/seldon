@@ -33,7 +33,7 @@ namespace Seldon
     virtual void Solve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>& z);
     virtual void TransSolve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>& z);
     
-    virtual void SetInputPreconditioning(string, const Vector<string>&);
+    virtual void SetInputPreconditioning(const string&, const Vector<string>&);
 #else
     // solving M z = r
     template<class Matrix1, class Vector1>
