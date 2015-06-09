@@ -60,6 +60,9 @@ namespace Seldon
     struct_mumps.par = 1;
     struct_mumps.sym = 0; // 0 -> unsymmetric matrix
 
+    struct_mumps.info[8] = 0;
+    struct_mumps.info[9] = 0;
+
     // other parameters
     struct_mumps.n = 0;
     type_ordering = 7; // default : we let Mumps choose the ordering
@@ -409,6 +412,9 @@ namespace Seldon
   {
     int64_t taille = sizeof(int)*(num_row_glob.GetM()
                                   + num_col_glob.GetM() + perm.GetM());
+   
+    if (struct_mumps.n <= 0)
+      return taille;
     
     int64_t nnz = struct_mumps.info[8];
     if (struct_mumps.info[8] < 0)

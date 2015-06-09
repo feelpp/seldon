@@ -125,6 +125,9 @@ namespace Seldon
   int64_t MatrixPardiso<T>::GetMemorySize() const
   {
     int64_t taille = sizeof(pardiso_int_t)*ptrA.GetM();
+    if (size_matrix <= 0)
+      return taille;
+    
     taille += sizeof(pardiso_int_t)*indA.GetM();
     taille += sizeof(T)*valA.GetM();
     taille += sizeof(pardiso_int_t)*perm.GetM();

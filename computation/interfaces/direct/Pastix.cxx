@@ -210,6 +210,9 @@ namespace Seldon
   int64_t MatrixPastix<T>::GetMemorySize() const
   {
     int64_t taille = sizeof(pastix_int_t)*(perm.GetM()+invp.GetM()+col_num.GetM());
+    if (n <= 0)
+      return taille;
+    
     taille += sizeof(T)*iparm[IPARM_NNZEROS];
     return taille;
   }
