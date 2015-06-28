@@ -158,6 +158,7 @@ namespace Seldon
   public :
 
     EigenProblem_Base();
+    virtual ~EigenProblem_Base();
     
     // initialization
     void Init(int n);

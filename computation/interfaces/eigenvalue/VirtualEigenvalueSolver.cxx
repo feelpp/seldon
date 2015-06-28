@@ -50,6 +50,13 @@ namespace Seldon
     restart_number = 20;
   }
   
+
+  //! Destructor
+  template<class T>
+  EigenProblem_Base<T>::~EigenProblem_Base()
+  {
+  }
+  
   
   //! initialisation of the size of the eigenvalue problem
   template<class T>
