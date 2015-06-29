@@ -39,7 +39,7 @@ namespace Seldon
   class SeldonDefaultAllocator<ColSymComplexSparse, complex<float> >
   {
   public:
-    typedef typename
+    typedef
     SeldonDefaultAllocator<VectFull, float>::allocator allocator;
   };
 
@@ -47,7 +47,7 @@ namespace Seldon
   class SeldonDefaultAllocator<ColSymComplexSparse, complex<double> >
   {
   public:
-    typedef typename
+    typedef
     SeldonDefaultAllocator<VectFull, double>::allocator allocator;
   };
 
@@ -66,7 +66,7 @@ namespace Seldon
   class SeldonDefaultAllocator<RowSymComplexSparse, complex<float> >
   {
   public:
-    typedef typename
+    typedef
     SeldonDefaultAllocator<VectFull, float>::allocator allocator;
   };
 
@@ -74,7 +74,7 @@ namespace Seldon
   class SeldonDefaultAllocator<RowSymComplexSparse, complex<double> >
   {
   public:
-    typedef typename
+    typedef
     SeldonDefaultAllocator<VectFull, double>::allocator allocator;
   };
 

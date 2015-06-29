@@ -168,14 +168,14 @@ namespace Seldon
   void MpiBcast(const MPI::Comm& comm, T* x,
 		Vector<int64_t>& xtmp, int n, int proc)
   {
-    comm.Bcast(x, n, GetMpiDataType(*x), proc);
+    comm.Bcast(x, n*GetRatioMpiDataType(*x), GetMpiDataType(*x), proc);
   }
   
   template<class T>
   void MpiBcast(const MPI::Comm& comm, Vector<T>& x,
 		Vector<int64_t>& xtmp, int n, int proc)
   {
-    comm.Bcast(x.GetData(), n, GetMpiDataType(x), proc);
+    comm.Bcast(x.GetData(), n*GetRatioMpiDataType(x), GetMpiDataType(x), proc);
   }
   
 }
