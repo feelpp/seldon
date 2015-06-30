@@ -264,12 +264,7 @@ namespace Seldon
 		  const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
 		  const Vector<T0>& X, Vector<T0>& Y, bool assemble)
   {
-    if (trans.NoTrans())
-      MltVector(A, X, Y, assemble);
-    else if (trans.Trans())
-      MltVector(SeldonTrans, A, X, Y, assemble);
-    else
-      MltVector(SeldonConjTrans, A, X, Y, assemble);
+    MltVector(trans, A, X, Y, assemble);
   }
 
   template<class T0, class Prop0, class Storage0, class Allocator0>
@@ -278,12 +273,7 @@ namespace Seldon
 		  const Vector<complex<T0> >& X, Vector<complex<T0> >& Y,
 		  bool assemble)
   {
-    if (trans.NoTrans())
-      MltVector(A, X, Y, assemble);
-    else if (trans.Trans())
-      MltVector(SeldonTrans, A, X, Y, assemble);
-    else
-      MltVector(SeldonConjTrans, A, X, Y, assemble);
+    MltVector(trans, A, X, Y, assemble);
   }
 
   template<class T0, class Prop0, class Storage0, class Allocator0>
@@ -324,12 +314,7 @@ namespace Seldon
 		     const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
 		     const Vector<T0>& X, const T0& beta, Vector<T0>& Y, bool assemble)
   {
-    if (trans.NoTrans())
-      MltAddVector(alpha, SeldonNoTrans, A, X, beta, Y, assemble);
-    else if (trans.Trans())
-      MltAddVector(alpha, SeldonTrans, A, X, beta, Y, assemble);
-    else
-      MltAddVector(alpha, SeldonConjTrans, A, X, beta, Y, assemble);
+    MltAddVector(alpha, trans, A, X, beta, Y, assemble);
   }
 
   template<class T0, class Prop0, class Storage0, class Allocator0>
@@ -338,12 +323,7 @@ namespace Seldon
 		     const Vector<complex<T0> >& X, const complex<T0>& beta,
 		     Vector<complex<T0> >& Y, bool assemble)
   {
-    if (trans.NoTrans())
-      MltAddVector(alpha, SeldonNoTrans, A, X, beta, Y, assemble);
-    else if (trans.Trans())
-      MltAddVector(alpha, SeldonTrans, A, X, beta, Y, assemble);
-    else
-      MltAddVector(alpha, SeldonConjTrans, A, X, beta, Y, assemble);
+    MltAddVector(alpha, trans, A, X, beta, Y, assemble);
   }
 
   template<class T0, class Prop0, class Storage0, class Allocator0>
