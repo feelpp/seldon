@@ -564,7 +564,7 @@ namespace Seldon
       }
     
     iparm[IPARM_GRAPHDIST] = API_YES;
-    //iparm[IPARM_FREE_CSCUSER] = API_CSC_PRESERVE;
+    iparm[IPARM_FREE_CSCUSER] = API_CSC_PRESERVE;
     
     pastix_int_t* ptr_ = Ptr.GetData();
     pastix_int_t nrhs = 1;

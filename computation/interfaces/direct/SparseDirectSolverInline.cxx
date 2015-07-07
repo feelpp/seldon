@@ -60,6 +60,16 @@ namespace Seldon
   {
     type_ordering = type;
   }
+
+  
+  //! sets the threshold used for pivoting
+  template<class T>
+  void SparseDirectSolver<T>::SetPivotThreshold(const double& eps)
+  {
+#ifdef SELDON_WITH_PASTIX
+    mat_pastix.SetPivotThreshold(eps);
+#endif
+  }
     
   
   //! modifies the number of threads per node (for Pastix only)
@@ -165,7 +175,7 @@ namespace Seldon
   {
     threshold_matrix = eps;
   }
-  
+
     
   /*************************
    * Solve and SparseSolve *

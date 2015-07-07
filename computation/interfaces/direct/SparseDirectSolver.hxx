@@ -94,6 +94,8 @@ namespace Seldon
     
     void SetNumberOfThreadPerNode(int m);
     int GetNumberOfThreadPerNode() const;
+
+    void SetPivotThreshold(const double&);
     
     template<class MatrixSparse>
     void ComputeOrdering(MatrixSparse& A);
