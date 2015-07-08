@@ -34,8 +34,8 @@ namespace Seldon
     Vector<T0> xr(x.GetM()), xi(x.GetM());
     for (int i = 0; i < x.GetM(); i++)
       {
-	xr = real(x(i));
-	xi = imag(x(i));
+	xr(i) = real(x(i));
+	xi(i) = imag(x(i));
       }
     
     SolveLuVector(A, pivot, xr);
@@ -53,8 +53,8 @@ namespace Seldon
     Vector<T0> xr(x.GetM()), xi(x.GetM());
     for (int i = 0; i < x.GetM(); i++)
       {
-	xr = real(x(i));
-	xi = imag(x(i));
+	xr(i) = real(x(i));
+	xi(i) = imag(x(i));
       }
     
     SolveLuVector(trans, A, pivot, xr);
@@ -72,8 +72,8 @@ namespace Seldon
     Vector<T0> xr(x.GetM()), xi(x.GetM());
     for (int i = 0; i < x.GetM(); i++)
       {
-	xr = real(x(i));
-	xi = imag(x(i));
+	xr(i) = real(x(i));
+	xi(i) = imag(x(i));
       }
     
     SolveLuVector(A, pivot, xr);
