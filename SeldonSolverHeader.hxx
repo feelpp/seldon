@@ -51,6 +51,10 @@
 #include "computation/interfaces/direct/Pardiso.hxx"
 #endif
 
+#ifdef SELDON_WITH_WSMP
+#include "computation/interfaces/direct/Wsmp.hxx"
+#endif
+
 #include "computation/solver/SparseSolver.hxx"
 #include "computation/interfaces/direct/SparseDirectSolver.hxx"
 

@@ -108,7 +108,7 @@ namespace Seldon
     template<class Allocator2>
     void Solve(const SeldonTranspose& TransA,
 	       Matrix<T, General, ColMajor, Allocator2>& x);
-
+    
     void SetNumberOfThreadPerNode(int);
     
     template<class Alloc1, class Alloc2, class Alloc3, class Tint>

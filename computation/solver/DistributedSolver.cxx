@@ -450,6 +450,10 @@ namespace Seldon
 #ifdef SELDON_WITH_PASTIX
     taille += this->mat_pastix.GetMemorySize();
 #endif
+
+#ifdef SELDON_WITH_WSMP
+    taille += this->mat_wsmp.GetMemorySize();
+#endif
     
 #ifdef SELDON_WITH_PRECONDITIONING
     taille += this->mat_ilut.GetMemorySize();

@@ -69,6 +69,9 @@ namespace Seldon
 #ifdef SELDON_WITH_PASTIX
     mat_pastix.SetPivotThreshold(eps);
 #endif
+#ifdef SELDON_WITH_WSMP
+    mat_wsmp.SetPivotThreshold(eps);
+#endif
   }
     
   
@@ -118,6 +121,9 @@ namespace Seldon
 #ifdef SELDON_WITH_PASTIX
     mat_pastix.RefineSolution();
 #endif
+#ifdef SELDON_WITH_WSMP
+    mat_wsmp.RefineSolution();
+#endif
   }
   
   
@@ -127,7 +133,9 @@ namespace Seldon
 #ifdef SELDON_WITH_PASTIX
     mat_pastix.DoNotRefineSolution();
 #endif
-
+#ifdef SELDON_WITH_WSMP
+    mat_wsmp.DoNotRefineSolution();
+#endif
   }
   
   

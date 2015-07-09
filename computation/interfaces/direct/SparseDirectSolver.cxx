@@ -43,6 +43,9 @@ namespace Seldon
 #ifdef SELDON_WITH_PARDISO
     type_solver = PARDISO;
 #endif
+#ifdef SELDON_WITH_WSMP
+    type_solver = WSMP;
+#endif
 #ifdef SELDON_WITH_MUMPS
     type_solver = MUMPS;
 #endif
@@ -184,6 +187,10 @@ namespace Seldon
 	mat_pastix.Clear();
 #endif
 
+#ifdef SELDON_WITH_WSMP
+	mat_wsmp.Clear();
+#endif
+
 #ifdef SELDON_WITH_PRECONDITIONING
         mat_ilut.Clear();
 #endif
@@ -231,6 +238,9 @@ namespace Seldon
 #ifdef SELDON_WITH_SUPERLU
 	      mat_superlu.SelectOrdering(COLAMD);
 #endif 
+	    }
+	  else if (type_solver == WSMP)
+	    {
 	    }
 	  else
 	    {
@@ -483,6 +493,16 @@ namespace Seldon
                         "Seldon was not compiled with Pastix support.");
 #endif
       }
+    else if (type_solver == WSMP)
+      {
+#ifdef SELDON_WITH_WSMP
+        mat_wsmp.SetNumberOfThreadPerNode(nb_threads_per_node);
+	GetLU(A, mat_wsmp, keep_matrix);
+#else
+        throw Undefined("SparseDirectSolver::Factorize(MatrixSparse&, bool)",
+                        "Seldon was not compiled with Wsmp support.");
+#endif
+      }
     else if (type_solver == ILUT)
       {
 #ifdef SELDON_WITH_PRECONDITIONING        
@@ -681,6 +701,15 @@ namespace Seldon
                         "Seldon was not compiled with Pastix support.");
 #endif
       }
+    else if (type_solver == WSMP)
+      {
+#ifdef SELDON_WITH_WSMP
+	Seldon::SolveLU(mat_wsmp, x_solution);
+#else
+        throw Undefined("SparseDirectSolver::Solve(Vector&)",
+                        "Seldon was not compiled with Wsmp support.");
+#endif
+      }
     else if (type_solver == ILUT)
       {
 #ifdef SELDON_WITH_PRECONDITIONING
@@ -745,6 +774,15 @@ namespace Seldon
 #else
         throw Undefined("SparseDirectSolver::Solve(TransStatus, Vector&)",
                         "Seldon was not compiled with Pastix support.");
+#endif
+      }
+    else if (type_solver == WSMP)
+      {
+#ifdef SELDON_WITH_WSMP
+	Seldon::SolveLU(TransA, mat_wsmp, x_solution);
+#else
+        throw Undefined("SparseDirectSolver::Solve(TransStatus, Vector&)",
+                        "Seldon was not compiled with Wsmp support.");
 #endif
       }
     else if (type_solver == ILUT)
@@ -821,6 +859,15 @@ namespace Seldon
                         "Seldon was not compiled with Pastix support.");
 #endif
       }
+    else if (type_solver == WSMP)
+      {
+#ifdef SELDON_WITH_WSMP
+	Seldon::SolveLU(mat_wsmp, x_solution);
+#else
+        throw Undefined("SparseDirectSolver::Solve(Vector&)",
+                        "Seldon was not compiled with Wsmp support.");
+#endif
+      }
     else if (type_solver == ILUT)
       {
 #ifdef SELDON_WITH_PRECONDITIONING
@@ -893,6 +940,18 @@ namespace Seldon
                         "Seldon was not compiled with Pastix support.");
 #endif
       }
+    else if (type_solver == WSMP)
+      {
+#ifdef SELDON_WITH_WSMP
+        mat_wsmp.SetNumberOfThreadPerNode(nb_threads_per_node);
+        mat_wsmp.FactorizeDistributedMatrix(comm_facto, Ptr, Row,
+                                            Val, glob_num, sym, keep_matrix);
+#else
+        throw Undefined("SparseDirectSolver::FactorizeDistributed(MPI::Comm&,"
+                        " IVect&, IVect&, Vector<T>&, IVect&, bool, bool)",
+                        "Seldon was not compiled with Wsmp support.");
+#endif
+      }
     else
       {
         throw Undefined("SparseDirectSolver::FactorizeDistributed(MPI::Comm&,"
@@ -933,6 +992,16 @@ namespace Seldon
                         "Seldon was not compiled with Pastix support.");
 #endif
       }
+    else if (type_solver == WSMP)
+      {
+#ifdef SELDON_WITH_WSMP
+        mat_wsmp.SolveDistributed(comm_facto, x_solution, glob_number);
+#else
+        throw Undefined("SparseDirectSolver::SolveDistributed(MPI::Comm&,"
+                        " Vector&, IVect&)",
+                        "Seldon was not compiled with Wsmp support.");
+#endif
+      }
     else
       {
         throw Undefined("SparseDirectSolver::SolveDistributed(MPI::Comm&,"
@@ -970,6 +1039,16 @@ namespace Seldon
         throw Undefined("SparseDirectSolver::SolveDistributed(TransStatus, "
                         "MPI::Comm&, Vector&, IVect&)",
                         "Seldon was not compiled with Pastix support.");
+#endif
+      }
+    else if (type_solver == WSMP)
+      {
+#ifdef SELDON_WITH_WSMP
+	mat_wsmp.SolveDistributed(comm_facto, TransA, x_solution, glob_number);
+#else
+        throw Undefined("SparseDirectSolver::SolveDistributed(TransStatus, "
+                        "MPI::Comm&, Vector&, IVect&)",
+                        "Seldon was not compiled with Wsmp support.");
 #endif
       }
     else

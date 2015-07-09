@@ -54,6 +54,10 @@
 #endif
 #endif
 
+#ifdef SELDON_WITH_WSMP
+#include "computation/interfaces/direct/Wsmp.cxx"
+#endif
+
 #ifdef SELDON_WITH_PRECONDITIONING
 #include "SeldonPreconditioner.hxx"
 #endif

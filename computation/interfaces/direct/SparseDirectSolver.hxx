@@ -52,6 +52,9 @@ namespace Seldon
 #ifdef SELDON_WITH_PASTIX
     MatrixPastix<T> mat_pastix; //!< Pastix solver
 #endif
+#ifdef SELDON_WITH_WSMP
+    MatrixWsmp<T> mat_wsmp; //!< Wsmp solver
+#endif
     
 #ifdef SELDON_WITH_PRECONDITIONING
     //! ILUT solver
@@ -68,7 +71,8 @@ namespace Seldon
         
   public :
     // available solvers
-    enum {SELDON_SOLVER, UMFPACK, SUPERLU, MUMPS, PASTIX, ILUT, PARDISO};
+    enum {SELDON_SOLVER, UMFPACK, SUPERLU, MUMPS, PASTIX, ILUT, PARDISO, WSMP};
+    
     // error codes
     enum {FACTO_OK, STRUCTURALLY_SINGULAR_MATRIX,
           NUMERICALLY_SINGULAR_MATRIX, OUT_OF_MEMORY, INVALID_ARGUMENT,
