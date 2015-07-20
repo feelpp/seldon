@@ -799,7 +799,8 @@ namespace Seldon
     if (Norm2(resid) == 0)
       {
 	cout << "This eigenvalue problem rises an unknown bug in Arpack " << endl;
-	cout << "This bug can sometimes disappear if wise printing is done" << endl;
+	cout << "Is the mass matrix or stiffness matrix null ?" << endl;
+	cout << "Null eigenvalues are found." << endl;
 	abort();
       }
     

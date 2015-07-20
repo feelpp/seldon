@@ -27,14 +27,6 @@
 #include <hdf5.h>
 #endif
 
-#ifndef __APPLE__
-namespace std
-{
-  float real(float x);
-  double real(double x);
-}
-#endif
-
 namespace std
 {
   template<class T>
@@ -42,6 +34,12 @@ namespace std
 
   template<class T>
   complex<T> conjugate(const complex<T>& x);
+
+  template<class T>
+  T realpart(const T& x);
+
+  template<class T>
+  T realpart(const complex<T>& x);  
 }
       
 namespace Seldon

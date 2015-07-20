@@ -21,22 +21,6 @@
 
 #include "Common.hxx"
 
-#ifndef __APPLE__
-namespace std
-{
-  inline float real(float x)
-  {
-    return x;
-  }
-
-  inline double real(double x)
-  {
-    return x;
-  }
-
-}
-#endif
-
 namespace std
 {
   template<class T>
@@ -49,6 +33,18 @@ namespace std
   inline complex<T> conjugate(const complex<T>& x)
   {
     return conj(x);
+  }
+
+  template<class T>
+  inline T realpart(const T& x)
+  {
+    return x;
+  }
+  
+  template<class T>
+  inline T realpart(const complex<T>& x)
+  {
+    return real(x);
   }
 }
 
