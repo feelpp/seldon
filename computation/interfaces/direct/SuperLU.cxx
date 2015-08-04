@@ -43,14 +43,23 @@ namespace Seldon
     int         upper;
     int         fsupc, istart, nsupr;
     int         lastl = 0, lastu = 0;
-    SCformat    *Lstore;
-    NCformat    *Ustore;
     T      *SNptr;
     T one;
     
     SetComplexOne(one);
+
+#ifdef SELDON_WITH_SUPERLU_MT
+    SCPformat    *Lstore;
+    NCPformat    *Ustore;
+    Lstore = static_cast<SCPformat*>(L->Store);
+    Ustore = static_cast<NCPformat*>(U->Store);
+#else
+    SCformat    *Lstore;
+    NCformat    *Ustore;
     Lstore = static_cast<SCformat*>(L->Store);
     Ustore = static_cast<NCformat*>(U->Store);
+#endif
+
     Lcol[0] = 0;
     Ucol[0] = 0;
     
@@ -96,6 +105,11 @@ namespace Seldon
     *snnzU = lastu;
   }
 
+
+  /**********************
+   * MatrixSuperLU_Base *
+   **********************/
+  
   
   //! default constructor
   template<class T>
@@ -105,8 +119,17 @@ namespace Seldon
     permc_spec = COLAMD;
     Lstore = NULL;
     Ustore = NULL;
-    StatInit(&stat);
+    
+#ifdef SELDON_WITH_SUPERLU_MT
+    nprocs = 1;
+    diag_pivot_thresh  = 0.01;
+    usepr              = NO;
+    drop_tol           = 0.0;
+    
+#else
     set_default_options(&options);
+#endif
+
     ShowMessages();
     display_info = false;
     info_facto = 0;
@@ -118,7 +141,6 @@ namespace Seldon
   MatrixSuperLU_Base<T>::~MatrixSuperLU_Base()
   {
     Clear();
-    StatFree(&stat);
   }
 
 
@@ -136,8 +158,40 @@ namespace Seldon
 	    perm_r.Clear();
 	    perm_c.Clear();
 	  }
+        
 	n = 0;
+
+        StatFree(&stat);
       }
+  }
+
+
+  //! inits SuperLU computation
+  template<class T>
+  void MatrixSuperLU_Base<T>::Init(int size, int_t& panel_size, int_t& relax)
+  {
+    n = size;
+    panel_size = sp_ienv(1);
+    relax = sp_ienv(2);
+
+#ifdef SELDON_WITH_SUPERLU_MT
+    fact               = EQUILIBRATE;
+    refact             = NO;    
+
+    StatAlloc(n, nprocs, panel_size, relax, &stat);
+    StatInit(n, nprocs, &stat);
+#else
+    StatInit(&stat);
+#endif
+  }
+
+
+  template<class T>
+  void MatrixSuperLU_Base<T>::SetNumberOfThreadPerNode(int p)
+  {
+#ifdef SELDON_WITH_SUPERLU_MT
+    nprocs = p;
+#endif
   }
 
 
@@ -164,6 +218,55 @@ namespace Seldon
     return info_facto;
   }
 
+
+  //! Returns the permutation of rows.
+  /*! In order to retain the sparsity as much as possible, SuperLU permutes
+    rows and columns before the factorization. This method returns the row
+    permutation that was employed in the factorization. This method is
+    obviously to be called after the factorization has been performed.
+    \return The permutation of the rows.
+  */
+  template<class T>
+  const Vector<int>& MatrixSuperLU_Base<T>::GetRowPermutation() const
+  {
+    return perm_r;
+  }
+
+
+  //! Returns the permutation of columns.
+  /*! In order to retain the sparsity as much as possible, SuperLU permutes
+    rows and columns before the factorization. This method returns the column
+    permutation that was employed in the factorization. This method is
+    obviously to be called after the factorization has been performed.
+    \return The permutation of the columns.
+  */
+  template<class T>
+  const Vector<int>& MatrixSuperLU_Base<T>::GetColPermutation() const
+  {
+    return perm_c;
+  }
+
+
+  template<class T>
+  void MatrixSuperLU_Base<T>::SelectOrdering(colperm_t type)
+  {
+    permc_spec = type;
+  }
+
+
+  template<class T>
+  void MatrixSuperLU_Base<T>::SetPermutation(const IVect& permut)
+  {
+    permc_spec = MY_PERMC;
+    perm_c = permut;
+    perm_r = permut;
+  }
+  
+  
+  /*************************
+   * MatrixSuperLU<double> *
+   *************************/
+
   
   //! Returns the LU factorization.
   /*!
@@ -181,8 +284,13 @@ namespace Seldon
           Matrix<double, Prop, ColSparse, Allocator>& Umat,
           bool permuted)
   {
+#ifdef SELDON_WITH_SUPERLU_MT
+    Lstore = static_cast<SCPformat*>(L.Store);
+    Ustore = static_cast<NCPformat*>(U.Store);
+#else
     Lstore = static_cast<SCformat*>(L.Store);
     Ustore = static_cast<NCformat*>(U.Store);
+#endif
 
     int Lnnz = Lstore->nnz;
     int Unnz = Ustore->nnz;
@@ -257,59 +365,23 @@ namespace Seldon
   }
 
 
-  //! Returns the permutation of rows.
-  /*! In order to retain the sparsity as much as possible, SuperLU permutes
-    rows and columns before the factorization. This method returns the row
-    permutation that was employed in the factorization. This method is
-    obviously to be called after the factorization has been performed.
-    \return The permutation of the rows.
-  */
-  template<class T>
-  const Vector<int>& MatrixSuperLU_Base<T>::GetRowPermutation() const
-  {
-    return perm_r;
-  }
-
-
-  //! Returns the permutation of columns.
-  /*! In order to retain the sparsity as much as possible, SuperLU permutes
-    rows and columns before the factorization. This method returns the column
-    permutation that was employed in the factorization. This method is
-    obviously to be called after the factorization has been performed.
-    \return The permutation of the columns.
-  */
-  template<class T>
-  const Vector<int>& MatrixSuperLU_Base<T>::GetColPermutation() const
-  {
-    return perm_c;
-  }
-
-
-  template<class T>
-  void MatrixSuperLU_Base<T>::SelectOrdering(colperm_t type)
-  {
-    permc_spec = type;
-  }
-
-
-  template<class T>
-  void MatrixSuperLU_Base<T>::SetPermutation(const IVect& permut)
-  {
-    permc_spec = MY_PERMC;
-    perm_c = permut;
-    perm_r = permut;
-  }
-  
-  
   //! Returns the size of memory used by the current object
   int64_t MatrixSuperLU<double>::GetMemorySize() const
   {
     int64_t taille = sizeof(int)*(perm_r.GetM()+perm_c.GetM());
     if (this->n > 0)
       {
+#ifdef SELDON_WITH_SUPERLU_MT
+        superlu_memusage_t mem_usage;
+        int_t panel_size = sp_ienv(1);
+        superlu_dQuerySpace(nprocs, const_cast<SuperMatrix*>(&L),
+                            const_cast<SuperMatrix*>(&U), panel_size, &mem_usage);
+#else
         mem_usage_t mem_usage;
         dQuerySpace(const_cast<SuperMatrix*>(&L),
                     const_cast<SuperMatrix*>(&U), &mem_usage);
+#endif
+        
         taille += mem_usage.total_needed;
       }
     
@@ -326,23 +398,19 @@ namespace Seldon
     // clearing previous factorization
     Clear();
 
+    // initializing parameters
+    int_t panel_size, relax;
+    int_t lwork = 0;
+    Init(mat.GetN(), panel_size, relax);
+
     // conversion in CSC format
-    n = mat.GetN();
     Matrix<double, General, ColSparse> Acsr;
     Copy(mat, Acsr);
     if (!keep_matrix)
       mat.Clear();
 
-    // we get renumbering vectors perm_r and perm_c
-    options.ColPerm = permc_spec;
-    if (permc_spec != MY_PERMC)
-      {
-        perm_r.Reallocate(n);
-        perm_c.Reallocate(n);
-      }
-
-    SuperMatrix A, AA;
-    int nnz = Acsr.GetDataSize();
+    SuperMatrix AA;
+    int_t nnz = Acsr.GetDataSize();
     dCreate_CompCol_Matrix(&AA, n, n, nnz, Acsr.GetData(), Acsr.GetInd(),
 			   Acsr.GetPtr(), SLU_NC, SLU_D, SLU_GE);
 
@@ -356,24 +424,38 @@ namespace Seldon
         perm_c.Fill();
         
         get_perm_c(permc_spec, &AA, perm_c.GetData());        
+      }    
+    
+#ifdef SELDON_WITH_SUPERLU_MT
+    SuperMatrix AC;
+    trans_t  trans = NOTRANS;
+    perm_r.Reallocate(n);
+    perm_c.Reallocate(n);
+    
+    pdgstrf_init(nprocs, fact, trans, refact, panel_size, relax,
+		 diag_pivot_thresh, usepr, drop_tol, perm_c.GetData(), perm_r.GetData(),
+		 NULL, lwork, &AA, &AC, &options, &stat);
+    
+    pdgstrf(&options, &AC, perm_r.GetData(), &L, &U, &stat, &info_facto);
+    
+    pxgstrf_finalize(&options, &AC);
+    
+    if (info_facto == 0 && display_info)
+      {
+        PrintStat(&stat);
       }
     
+#else
+    SuperMatrix A;
     // original matrix AA is permuted to obtain matrix A
     Vector<int> etree(n);
     sp_preorder(&options, &AA, perm_c.GetData(), etree.GetData(), &A);
     
-    int panel_size = sp_ienv(1);
-    int relax = sp_ienv(2);
-    int lwork = 0;
-    
     // then calling factorisation on permuted matrix
     dgstrf(&options, &A, relax, panel_size, etree.GetData(),
-           NULL, lwork, perm_c.GetData(), perm_r.GetData(), &L, &U, &stat, &info_facto);
+           NULL, lwork, perm_c.GetData(), perm_r.GetData(), &L, &U,
+           &Glu, &stat, &info_facto);
         
-    // clearing matrices
-    Destroy_CompCol_Permuted(&A);
-    Destroy_CompCol_Matrix(&AA);
-
     if (info_facto == 0 && display_info)
       {
 	mem_usage_t mem_usage;
@@ -387,7 +469,14 @@ namespace Seldon
 	cout << "Memory used for factorization in MB: "
              << mem_usage.total_needed / (1024. * 1024.) << endl;
       }
+
+    Destroy_CompCol_Permuted(&A);
+#endif
     
+    // clearing matrices
+    Destroy_CompCol_Matrix(&AA);
+
+
     Acsr.Nullify();
   }
 
@@ -396,16 +485,7 @@ namespace Seldon
   template<class Allocator2>
   void MatrixSuperLU<double>::Solve(Vector<double, VectFull, Allocator2>& x)
   {
-    trans_t trans = NOTRANS;
-    int nb_rhs = 1, info;
-    // Putting right hand side on SuperLU structure.
-    dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
-			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
-
-    dgstrs(trans, &L, &U, perm_c.GetData(),
-	   perm_r.GetData(), &B, &stat, &info);
-
-    Destroy_SuperMatrix_Store(&B);
+    Solve(SeldonNoTrans, x);
   }
 
 
@@ -414,20 +494,24 @@ namespace Seldon
   void MatrixSuperLU<double>::Solve(const SeldonTranspose& TransA,
                                     Vector<double, VectFull, Allocator2>& x)
   {
+    trans_t trans;
     if (TransA.NoTrans())
-      {
-        Solve(x);
-        return;
-      }
-
-    trans_t trans = TRANS;
-    int nb_rhs = 1, info;
+      trans = NOTRANS;
+    else
+      trans = TRANS;
+    
+    int_t nb_rhs = 1, info;
     // Putting right hand side on SuperLU structure.
     dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
 
+#ifdef SELDON_WITH_SUPERLU_MT
+    dgstrs(trans, &L, &U, perm_r.GetData(),
+           perm_c.GetData(), &B, &stat, &info);
+#else
     dgstrs(trans, &L, &U, perm_c.GetData(),
 	   perm_r.GetData(), &B, &stat, &info);
+#endif
 
     Destroy_SuperMatrix_Store(&B);
   }
@@ -437,15 +521,7 @@ namespace Seldon
   template<class Allocator2>
   void MatrixSuperLU<double>::Solve(Matrix<double, General, ColMajor, Allocator2>& x)
   {
-    trans_t trans = NOTRANS;
-    int nb_rhs = x.GetN(), info;
-    dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
-			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
-
-    dgstrs(trans, &L, &U, perm_c.GetData(),
-	   perm_r.GetData(), &B, &stat, &info);
-
-    Destroy_SuperMatrix_Store(&B);
+    Solve(SeldonNoTrans, x);
   }
 
 
@@ -454,20 +530,24 @@ namespace Seldon
   void MatrixSuperLU<double>::Solve(const SeldonTranspose& TransA,
                                     Matrix<double, General, ColMajor, Allocator2>& x)
   {
+    trans_t trans;
     if (TransA.NoTrans())
-      {
-        Solve(x);
-        return;
-      }
-
-    trans_t trans = TRANS;
-    int nb_rhs = x.GetN(), info;
+      trans = NOTRANS;
+    else
+      trans = TRANS;
+    
+    int_t nb_rhs = x.GetN(), info;
     dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 x.GetData(), x.GetM(), SLU_DN, SLU_D, SLU_GE);
 
+#ifdef SELDON_WITH_SUPERLU_MT
+    dgstrs(trans, &L, &U, perm_r.GetData(),
+           perm_c.GetData(), &B, &stat, &info);
+#else
     dgstrs(trans, &L, &U, perm_c.GetData(),
 	   perm_r.GetData(), &B, &stat, &info);
-
+#endif
+    
     Destroy_SuperMatrix_Store(&B);
   }
 
@@ -478,14 +558,27 @@ namespace Seldon
     int64_t taille = sizeof(int)*(perm_r.GetM()+perm_c.GetM());
     if (this->n > 0)
       {
+#ifdef SELDON_WITH_SUPERLU_MT
+        superlu_memusage_t mem_usage;
+        int_t panel_size = sp_ienv(1);
+        superlu_zQuerySpace(nprocs, const_cast<SuperMatrix*>(&L),
+                            const_cast<SuperMatrix*>(&U), panel_size, &mem_usage);
+#else
         mem_usage_t mem_usage;
         zQuerySpace(const_cast<SuperMatrix*>(&L),
                     const_cast<SuperMatrix*>(&U), &mem_usage);
+#endif
+
         taille += mem_usage.total_needed;
       }
     
     return taille;
   }
+
+
+  /********************************
+   * MatrixSuperLU<complexdouble> *
+   ********************************/
   
     
   //! Returns the LU factorization.
@@ -504,8 +597,13 @@ namespace Seldon
 	  Matrix<complex<double>, Prop, ColSparse, Allocator>& Umat,
 	  bool permuted)
   {
+#ifdef SELDON_WITH_SUPERLU_MT
+    Lstore = static_cast<SCPformat*>(L.Store);
+    Ustore = static_cast<NCPformat*>(U.Store);
+#else
     Lstore = static_cast<SCformat*>(L.Store);
     Ustore = static_cast<NCformat*>(U.Store);
+#endif
 
     int Lnnz = Lstore->nnz;
     int Unnz = Ustore->nnz;
@@ -592,15 +690,19 @@ namespace Seldon
     // clearing previous factorization
     Clear();
 
+    // initializing parameters
+    int_t panel_size, relax;
+    int_t lwork = 0;
+    Init(mat.GetN(), panel_size, relax);
+
     // conversion in CSR format
-    n = mat.GetN();
     Matrix<complex<double>, General, ColSparse> Acsr;
     Copy(mat, Acsr);
     if (!keep_matrix)
       mat.Clear();
 
-    SuperMatrix AA, A;
-    int nnz = Acsr.GetDataSize();
+    SuperMatrix AA;
+    int_t nnz = Acsr.GetDataSize();
     zCreate_CompCol_Matrix(&AA, n, n, nnz,
 			   reinterpret_cast<doublecomplex*>(Acsr.GetData()),
 			   Acsr.GetInd(), Acsr.GetPtr(),
@@ -618,21 +720,37 @@ namespace Seldon
         get_perm_c(permc_spec, &AA, perm_c.GetData());        
       }
     
+#ifdef SELDON_WITH_SUPERLU_MT
+    SuperMatrix AC;
+    trans_t  trans = NOTRANS;
+    perm_r.Reallocate(n);
+    perm_c.Reallocate(n);
+    
+    cout << "Je suis dans l'appel de pzgstrf" << endl;
+    DISP(nprocs);
+    pzgstrf_init(nprocs, fact, trans, refact, panel_size, relax,
+		 diag_pivot_thresh, usepr, drop_tol, perm_c.GetData(), perm_r.GetData(),
+		 NULL, lwork, &AA, &AC, &options, &stat);
+    
+    pzgstrf(&options, &AC, perm_r.GetData(), &L, &U, &stat, &info_facto);
+    
+    pxgstrf_finalize(&options, &AC);
+
+    if (info_facto == 0 && display_info)
+      {
+        PrintStat(&stat);
+      }
+    
+#else
+    SuperMatrix A;
     // permuting matrix 
     Vector<int> etree(n);
     sp_preorder(&options, &AA, perm_c.GetData(), etree.GetData(), &A);
-        
-    int panel_size = sp_ienv(1);
-    int relax = sp_ienv(2);
-    int lwork = 0;
-    
+
     // factorisation
     zgstrf(&options, &A, relax, panel_size, etree.GetData(),
-           NULL, lwork, perm_c.GetData(), perm_r.GetData(), &L, &U, &stat, &info_facto);
-        
-    // clearing matrices
-    Destroy_CompCol_Permuted(&A);    
-    Destroy_CompCol_Matrix(&AA);
+           NULL, lwork, perm_c.GetData(), perm_r.GetData(), &L, &U,
+           &Glu, &stat, &info_facto);
 
     if (info_facto == 0 && display_info)
       {
@@ -647,6 +765,13 @@ namespace Seldon
 	cout << "Memory used for factorization in MB: "
 	     << mem_usage.total_needed / (1024. * 1024.) << endl;
       }
+        
+    Destroy_CompCol_Permuted(&A);    
+    
+#endif
+            
+    // clearing matrices
+    Destroy_CompCol_Matrix(&AA);
     
     Acsr.Nullify();
   }
@@ -657,16 +782,7 @@ namespace Seldon
   void MatrixSuperLU<complex<double> >::
   Solve(Vector<complex<double>, VectFull, Allocator2>& x)
   {
-    trans_t trans = NOTRANS;
-    int nb_rhs = 1, info;
-    zCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
-			 reinterpret_cast<doublecomplex*>(x.GetData()),
-			 x.GetM(), SLU_DN, SLU_Z, SLU_GE);
-
-    zgstrs(trans, &L, &U, perm_c.GetData(),
-	   perm_r.GetData(), &B, &stat, &info);
-
-    Destroy_SuperMatrix_Store(&B);
+    Solve(SeldonNoTrans, x);
   }
 
 
@@ -676,20 +792,22 @@ namespace Seldon
   Solve(const SeldonTranspose& TransA,
         Vector<complex<double>, VectFull, Allocator2>& x)
   {
-    if (TransA.NoTrans())
-      {
-        Solve(x);
-        return;
-      }
-
-    trans_t trans = TRANS;
-    int nb_rhs = 1, info;
+    trans_t trans = NOTRANS;
+    if (TransA.Trans())
+      trans = TRANS;
+    
+    int_t nb_rhs = 1, info;
     zCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 reinterpret_cast<doublecomplex*>(x.GetData()),
 			 x.GetM(), SLU_DN, SLU_Z, SLU_GE);
 
+#ifdef SELDON_WITH_SUPERLU_MT
+    zgstrs(trans, &L, &U, perm_r.GetData(),
+	   perm_c.GetData(), &B, &stat, &info);
+#else
     zgstrs(trans, &L, &U, perm_c.GetData(),
 	   perm_r.GetData(), &B, &stat, &info);
+#endif
 
     Destroy_SuperMatrix_Store(&B);
   }
@@ -700,16 +818,7 @@ namespace Seldon
   void MatrixSuperLU<complex<double> >::
   Solve(Matrix<complex<double>, General, ColMajor, Allocator2>& x)
   {
-    trans_t trans = NOTRANS;
-    int nb_rhs = x.GetN(), info;
-    zCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
-			 reinterpret_cast<doublecomplex*>(x.GetData()),
-			 x.GetM(), SLU_DN, SLU_Z, SLU_GE);
-
-    zgstrs(trans, &L, &U, perm_c.GetData(),
-	   perm_r.GetData(), &B, &stat, &info);
-
-    Destroy_SuperMatrix_Store(&B);
+    Solve(SeldonNoTrans, x);
   }
 
 
@@ -719,24 +828,31 @@ namespace Seldon
   Solve(const SeldonTranspose& TransA,
         Matrix<complex<double>, General, ColMajor, Allocator2>& x)
   {
-    if (TransA.NoTrans())
-      {
-        Solve(x);
-        return;
-      }
-
-    trans_t trans = TRANS;
-    int nb_rhs = x.GetN(), info;
+    trans_t trans = NOTRANS;
+    if (TransA.Trans())
+      trans = TRANS;
+    
+    int_t nb_rhs = x.GetN(), info;
     zCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
 			 reinterpret_cast<doublecomplex*>(x.GetData()),
 			 x.GetM(), SLU_DN, SLU_Z, SLU_GE);
 
+#ifdef SELDON_WITH_SUPERLU_MT
+    zgstrs(trans, &L, &U, perm_r.GetData(),
+	   perm_c.GetData(), &B, &stat, &info);
+#else
     zgstrs(trans, &L, &U, perm_c.GetData(),
 	   perm_r.GetData(), &B, &stat, &info);
+#endif
 
     Destroy_SuperMatrix_Store(&B);
   }
 
+  
+  /***************************
+   * GetLU/SolveLU functions *
+   ***************************/
+  
   
   //! Factorization of a matrix of same type T as for the SuperLU object 
   template<class MatrixSparse, class T>

@@ -19,11 +19,7 @@
 
 #ifndef SELDON_FILE_SUPERLU_HXX
 
-extern "C"
-{
 #include "superlu_interface.h"
-}
-
 
 namespace Seldon
 {
@@ -37,26 +33,46 @@ namespace Seldon
   protected :
     //! objects of SuperLU
     SuperMatrix L, U, B;
+    GlobalLU_t Glu; //!< object of SuperLU
+    
+#ifdef SELDON_WITH_SUPERLU_MT
+    int_t nprocs;
+    superlumt_options_t options; //!< options
+    Gstat_t stat; //!< statistics
+
+    double diag_pivot_thresh, drop_tol;
+    yes_no_t usepr, refact;
+    fact_t fact;
+    
+    SCPformat *Lstore;  //!< object of SuperLU
+    NCPformat *Ustore;  //!< object of SuperLU
+
+#else
     SCformat *Lstore;  //!< object of SuperLU
     NCformat *Ustore;  //!< object of SuperLU
-    SuperLUStat_t stat; //!< statistics
     superlu_options_t options; //!< options
+    SuperLUStat_t stat; //!< statistics
+#endif
+
     //! permutation array
-    Vector<int> perm_r, perm_c;
+    Vector<int_t> perm_r, perm_c;
 
     colperm_t permc_spec; //!< ordering scheme
-    int n; //!< number of rows
+    int_t n; //!< number of rows
     bool display_info; //!< display information about factorization ?
     //! Error code returned by SuperLU.
-    int info_facto;
+    int_t info_facto;
 
   public :
     MatrixSuperLU_Base();
     ~MatrixSuperLU_Base();
 
-    const Vector<int>& GetRowPermutation() const;
-    const Vector<int>& GetColPermutation() const;
+    const Vector<int_t>& GetRowPermutation() const;
+    const Vector<int_t>& GetColPermutation() const;
 
+    void Init(int_t size, int_t& panel_size, int_t& relax);
+    void SetNumberOfThreadPerNode(int p);
+    
     void SelectOrdering(colperm_t type);
     void SetPermutation(const IVect&);
 

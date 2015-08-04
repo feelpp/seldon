@@ -459,6 +459,7 @@ namespace Seldon
     else if (type_solver == SUPERLU)
       {
 #ifdef SELDON_WITH_SUPERLU
+        mat_superlu.SetNumberOfThreadPerNode(nb_threads_per_node);
 	GetLU(A, mat_superlu, keep_matrix);
 #else
         throw Undefined("SparseDirectSolver::Factorize(MatrixSparse&, bool)",
