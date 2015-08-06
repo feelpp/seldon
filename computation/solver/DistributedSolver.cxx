@@ -126,21 +126,34 @@ namespace Seldon
           cout << "Assembling the distributed matrix..." << endl;
         
         Vector<Int_wp> Ptr, IndRow;
-        Vector<T> Val; Prop0 sym;
+        Vector<T> Val;
         bool sym_pattern = false;
         if (this->type_solver == this->PASTIX)
           sym_pattern = true;
-        
-        AssembleDistributed(A, sym, comm, global_col_numbers,
-                            local_col_numbers,
-			    Ptr, IndRow, Val, sym_pattern);
+
+        bool reorder_num = false;
+        if (this->type_solver == this->SUPERLU)
+          {
+            General sym;
+            reorder_num = true;
+            AssembleDistributed(A, sym, comm, global_col_numbers,
+                                local_col_numbers,
+                                Ptr, IndRow, Val, sym_pattern, reorder_num);
+          }
+        else
+          {
+            Prop0 sym;
+            AssembleDistributed(A, sym, comm, global_col_numbers,
+                                local_col_numbers,
+                                Ptr, IndRow, Val, sym_pattern, reorder_num);
+          }
         
         if ((this->mat_seldon.GetPrintLevel() >= 1) &&(comm.Get_rank() == 0))
           cout << "Factorizing the distributed matrix..." << endl;
         
         // factorizes the matrix
         this->FactorizeDistributed(comm, Ptr, IndRow, Val,
-                                   global_col_numbers, sym_matrix);
+                                   global_col_numbers, sym_matrix, reorder_num);
       }
 #else
     SparseDirectSolver<T>::Factorize(A, keep_matrix);

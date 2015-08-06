@@ -236,7 +236,7 @@ namespace Seldon
 	  else if (type_solver == SUPERLU)
 	    {
 #ifdef SELDON_WITH_SUPERLU
-	      mat_superlu.SelectOrdering(COLAMD);
+	      mat_superlu.SelectOrdering(superlu::COLAMD);
 #endif 
 	    }
 	  else if (type_solver == WSMP)
@@ -372,7 +372,7 @@ namespace Seldon
 	  else if (type_solver == SUPERLU)
 	    {
 #ifdef SELDON_WITH_SUPERLU
-	      mat_superlu.SelectOrdering(COLAMD);
+	      mat_superlu.SelectOrdering(superlu::COLAMD);
 #endif
 	    }
 	  else
@@ -907,7 +907,8 @@ namespace Seldon
   void SparseDirectSolver<T>::
   FactorizeDistributed(MPI::Comm& comm_facto,
                        Vector<Tint>& Ptr, Vector<Tint>& Row, Vector<T>& Val,
-                       const IVect& glob_num, bool sym, bool keep_matrix)
+                       const IVect& glob_num, bool sym,
+                       bool reorder, bool keep_matrix)
   {
     bool user_ordering = AffectOrdering();
     if (user_ordering)
@@ -951,6 +952,18 @@ namespace Seldon
         throw Undefined("SparseDirectSolver::FactorizeDistributed(MPI::Comm&,"
                         " IVect&, IVect&, Vector<T>&, IVect&, bool, bool)",
                         "Seldon was not compiled with Wsmp support.");
+#endif
+      }
+    else if (type_solver == SUPERLU)
+      {
+#ifdef SELDON_WITH_SUPERLU_DIST
+        mat_superlu.SetNumberOfThreadPerNode(nb_threads_per_node);
+        mat_superlu.FactorizeDistributedMatrix(comm_facto, Ptr, Row,
+                                               Val, glob_num, sym, keep_matrix);
+#else
+        throw Undefined("SparseDirectSolver::FactorizeDistributed(MPI::Comm&,"
+                        " IVect&, IVect&, Vector<T>&, IVect&, bool, bool)",
+                        "Seldon was not compiled with SuperLU support.");
 #endif
       }
     else
@@ -1003,6 +1016,16 @@ namespace Seldon
                         "Seldon was not compiled with Wsmp support.");
 #endif
       }
+    else if (type_solver == SUPERLU)
+      {
+#ifdef SELDON_WITH_SUPERLU_DIST
+        mat_superlu.SolveDistributed(comm_facto, x_solution);
+#else
+        throw Undefined("SparseDirectSolver::SolveDistributed(MPI::Comm&,"
+                        " Vector&, IVect&)",
+                        "Seldon was not compiled with SuperLU support.");
+#endif
+      }
     else
       {
         throw Undefined("SparseDirectSolver::SolveDistributed(MPI::Comm&,"
@@ -1042,6 +1065,16 @@ namespace Seldon
                         "Seldon was not compiled with Pastix support.");
 #endif
       }
+    else if (type_solver == SUPERLU)
+      {
+#ifdef SELDON_WITH_SUPERLU_DIST
+	mat_superlu.SolveDistributed(comm_facto, TransA, x_solution);
+#else
+        throw Undefined("SparseDirectSolver::SolveDistributed(TransStatus, "
+                        "MPI::Comm&, Vector&, IVect&)",
+                        "Seldon was not compiled with SuperLU_DIST support.");
+#endif
+      }
     else if (type_solver == WSMP)
       {
 #ifdef SELDON_WITH_WSMP
@@ -1056,7 +1089,7 @@ namespace Seldon
       {
         throw Undefined("SparseDirectSolver::SolveDistributed(TransStatus, "
                         "MPI::Comm&, Vector&, IVect&)",
-                        "The method is defined for Mumps and Pastix only.");
+                        "The method is not defined for this solver.");
       }
   }
 #endif

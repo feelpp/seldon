@@ -270,12 +270,13 @@ namespace Seldon
     // functions for assembling matrix
     template<class T0, class Allocator0>
     void GetDistributedRows(Matrix<T0, General,
-			    ArrayRowSparse, Allocator0>& rows) const;
+			    ArrayRowSparse, Allocator0>& rows,
+                            Vector<IVect>& proc) const;
     
     template<class T0, class Allocator0>
     void GetDistributedColumns(Matrix<T0, General,
 			       ArrayColSparse, Allocator0>& rows,
-			       bool sym_pattern) const;
+			       Vector<IVect>&, bool sym_pattern) const;
 
 #ifdef SELDON_WITH_VIRTUAL
     // virtual inline methods
@@ -320,14 +321,14 @@ namespace Seldon
 			Symmetric& sym, const MPI::Comm& comm,
                         IVect& row_numbers, IVect& local_row_numbers,
                         Vector<Tint>& PtrA, Vector<Tint>& IndA,
-                        Vector<T0>& ValA, bool sym_pattern);
+                        Vector<T0>& ValA, bool sym_pattern, bool reorder);
     
     template<class MatrixSparse, class Tint, class T0> friend void
     AssembleDistributed(MatrixSparse& A,
 			General& prop, const MPI::Comm& comm,
                         IVect& col_numbers, IVect& local_col_numbers,
                         Vector<Tint>& PtrA, Vector<Tint>& IndA,
-                        Vector<T0>& ValA, bool sym_pattern);
+                        Vector<T0>& ValA, bool sym_pattern, bool reorder);
 
     template<class T1, class Prop1, class Storage1, class Allocator1> friend
     void MltMin(const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
@@ -688,14 +689,14 @@ namespace Seldon
 			   Symmetric& sym, const MPI::Comm& comm,
                            IVect& row_numbers, IVect& local_row_numbers,
 			   Vector<Tint>& PtrA, Vector<Tint>& IndA,
-                           Vector<T>& ValA, bool sym_pattern);
+                           Vector<T>& ValA, bool sym_pattern, bool reorder = false);
 
   template<class MatrixSparse, class Tint, class T>
   void AssembleDistributed(MatrixSparse& A,
 			   General& prop, const MPI::Comm& comm,
                            IVect& col_numbers, IVect& local_col_numbers,
                            Vector<Tint>& PtrA, Vector<Tint>& IndA,
-                           Vector<T>& ValA, bool sym_pattern);
+                           Vector<T>& ValA, bool sym_pattern, bool reorder = false);
 
   template<class TypeDist>
   void EraseDistantEntries(MPI::Comm& comm, const Vector<bool>& IsRowDropped,

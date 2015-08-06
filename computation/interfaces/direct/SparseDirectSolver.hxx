@@ -138,7 +138,7 @@ namespace Seldon
     void FactorizeDistributed(MPI::Comm& comm_facto,
                               Vector<Tint>& Ptr, Vector<Tint>& IndRow,
                               Vector<T>& Val, const IVect& glob_num,
-                              bool sym, bool keep_matrix = false);
+                              bool sym, bool reorder, bool keep_matrix = false);
     
     template<class Vector1>
     void SolveDistributed(MPI::Comm& comm_facto, Vector1& x_solution,

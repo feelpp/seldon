@@ -1906,10 +1906,15 @@ namespace Seldon
   template<class T0, class Allocator0>
   void DistributedMatrix<T, Prop, Storage, Allocator>
   ::GetDistributedRows(Matrix<T0, General, ArrayRowSparse,
-		       Allocator0>& B) const
+		       Allocator0>& B, Vector<IVect>& procB) const
   {    
     int m = this->GetM();
     int n = this->GetGlobalM();
+    int rank = this->comm_->Get_rank();
+    
+    bool retrieve_proc = false;
+    if (procB.GetM() == m)
+      retrieve_proc = true;
     
     Copy(static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this), B);
     
@@ -1921,7 +1926,7 @@ namespace Seldon
       {
 	int size_row = B.GetRowSize(i);
         size_row += dist_col(i).GetM();
-	IVect index(size_row);
+	IVect index(size_row), proc_loc(size_row);
 	Vector<T0> value(size_row);
 	int nb = 0;
 	int num_row = RowNumber(i);
@@ -1935,6 +1940,7 @@ namespace Seldon
                   {
                     index(nb) = num_col;
                     value(nb) = B.Value(i, j);
+                    proc_loc(nb) = rank;
                     nb++;
                   }
               }
@@ -1950,6 +1956,7 @@ namespace Seldon
                   {
                     index(nb) = num_col;
                     value(nb) = dist_col(i).Value(j);
+                    proc_loc(nb) = proc_col(i)(j);
                     nb++;
                   }
               }
@@ -1962,6 +1969,7 @@ namespace Seldon
                 int num_col = RowNumber(B.Index(i, j));
                 index(nb) = num_col;
                 value(nb) = B.Value(i, j);
+                proc_loc(nb) = rank;
                 nb++;
               }
             
@@ -1974,17 +1982,41 @@ namespace Seldon
                 
                 index(nb) = num_col;
                 value(nb) = dist_col(i).Value(j);
+                proc_loc(nb) = proc_col(i)(j);
                 nb++;
               }
           }
         
-        Seldon::Assemble(nb, index, value);
-        
-	B.ReallocateRow(i, nb);
+        Sort(nb, index, value, proc_loc);
+        size_row = 0;
+        int prec = -1;
         for (int j = 0; j < nb; j++)
+          {
+            if (index(j) == prec)
+              value(size_row-1) += value(j);
+            else
+              {
+                index(size_row) = index(j);
+                value(size_row) = value(j);
+                proc_loc(size_row) = proc_loc(j);
+                size_row++;
+              }
+            
+            prec = index(j);
+          }
+        
+	B.ReallocateRow(i, size_row);
+        for (int j = 0; j < size_row; j++)
           {
             B.Index(i, j) = index(j);
             B.Value(i, j) = value(j);
+          }
+        
+        if (retrieve_proc)
+          {
+            procB(i).Reallocate(size_row);
+            for (int j = 0; j < size_row; j++)
+              procB(i)(j) = proc_loc(j);
           }
       }
   }
@@ -2000,14 +2032,19 @@ namespace Seldon
   template<class T0, class Allocator0>
   void DistributedMatrix<T, Prop, Storage, Allocator>::
   GetDistributedColumns(Matrix<T0, General, ArrayColSparse, Allocator0>& B,
-                        bool sym_pattern) const
+                        Vector<IVect>& procB, bool sym_pattern) const
   {
     int m = this->GetGlobalM();
     int n = this->GetN();
+    int rank = this->comm_->Get_rank();
+    
+    bool retrieve_proc = false;
+    if (procB.GetM() == n)
+      retrieve_proc = true;
     
     // conversion to CSC format of local part and symmetrisation of pattern
     IVect Ptr, Ind; Vector<T0> Val;
-    Prop sym;
+    General sym;
     ConvertToCSC(*this, sym, Ptr, Ind, Val, sym_pattern);
     
     // for row numbers, we put global numbers and we add some distant entries
@@ -2022,7 +2059,7 @@ namespace Seldon
         if (sym_pattern)
           size_col += dist_col(i).GetM();
         
-	IVect index(size_col);
+	IVect index(size_col), proc_loc(size_col);
 	Vector<T0> value(size_col);
 	int nb = 0;
         // local values
@@ -2030,6 +2067,7 @@ namespace Seldon
           {
             index(nb) = RowNumber(Ind(j));
             value(nb) = Val(j);
+            proc_loc(nb) = rank;
             nb++;
           }
         
@@ -2040,6 +2078,7 @@ namespace Seldon
             if (this->local_number_distant_values)    
               index(nb) = global_row_to_recv(index(nb));
             
+            proc_loc(nb) = proc_row(i)(j);
             value(nb) = dist_row(i).Value(j);
             nb++;
           }
@@ -2052,17 +2091,41 @@ namespace Seldon
               if (this->local_number_distant_values)    
                 index(nb) = global_col_to_recv(index(nb));
             
+              proc_loc(nb) = proc_col(i)(j);
               value(nb) = 0;
               nb++;
             }
         
-        Seldon::Assemble(nb, index, value);
-        
-	B.ReallocateColumn(i, nb);
+        Sort(nb, index, value, proc_loc);
+        size_col = 0;
+        int prec = -1;
         for (int j = 0; j < nb; j++)
+          {
+            if (index(j) == prec)
+              value(size_col-1) += value(j);
+            else
+              {
+                index(size_col) = index(j);
+                value(size_col) = value(j);
+                proc_loc(size_col) = proc_loc(j);
+                size_col++;
+              }
+            
+            prec = index(j);
+          }
+        
+	B.ReallocateColumn(i, size_col);
+        for (int j = 0; j < size_col; j++)
           {
             B.Index(i, j) = index(j);
             B.Value(i, j) = value(j);
+          }
+
+        if (retrieve_proc)
+          {
+            procB(i).Reallocate(size_col);
+            for (int j = 0; j < size_col; j++)
+              procB(i)(j) = proc_loc(j);
           }
       }
   }
@@ -3467,156 +3530,40 @@ namespace Seldon
       for (int j = 0; j < A.dist_col(i).GetM(); j++)
         A.dist_col(i).Value(j) *= Dcol_glob(A.dist_col(i).Index(j));    
   }
-  
-  
-  //! assembling a distributed matrix, global rows are given in CSR form
-  /*!
-    \param[in] A distributed matrix
-    \param[in] sym the matrix is assumed to be symmetric,
-    only upper part is assembled
-    \param[in] comm MPI communicator
-    \param[out] row_numbers global row numbers
-    \param[out] local_row_numbers local row numbers
-    \param[out] PtrA Index of first element stored for each row
-    \param[out] IndA global column numbers
-    \param[out] ValA values
-    \param[in] sym_pattern not used
-   */
-  template<class MatrixSparse, class Tint, class T>
-  void AssembleDistributed(MatrixSparse& A,
-			   Symmetric& sym, const MPI::Comm& comm,
-                           IVect& row_numbers, IVect& local_row_numbers,
-			   Vector<Tint>& PtrA, Vector<Tint>& IndA,
-			   Vector<T>& ValA, bool sym_pattern)
-  {
-    int m = A.GetM();
-    int n = A.GetGlobalM();
-    
-    PtrA.Clear();
-    IndA.Clear();
-    ValA.Clear();
 
-    // we convert A in ArrayRowSparse format
-    Matrix<T, General, ArrayRowSparse> B;
-    A.GetDistributedRows(B);
-    
-    // global to local conversion
-    IVect Glob_to_local(n);
-    const IVect& RowNumber = A.GetGlobalRowNumber();
-    Glob_to_local.Fill(-1);
-    for (int i = 0; i < m; i++)
-      Glob_to_local(RowNumber(i)) = i;
-    
-    const IVect& OverlapRowNumber = A.GetOverlapRowNumber();
-    const IVect& OverlapProcNumber = A.GetOverlapProcNumber();
-    
-    // now sending/receiving overlapped rows, and distant rows
+
+  template<class T>
+  void SendAndReceiveDistributed(const MPI::Comm& comm, IVect& nsend_int, Vector<IVect>& EntierToSend, 
+                                 Vector<Vector<T> >& FloatToSend, IVect& nrecv_int,
+                                 Vector<IVect>& EntierToRecv, Vector<Vector<T> >& FloatToRecv)
+  {
     int nb_proc = comm.Get_size();
     int rank = comm.Get_rank();
+
     Vector<MPI::Request> request(3*nb_proc);
-    Vector<bool> request_active(nb_proc);
-    request_active.Fill(false);
-    IVect nsend_int(nb_proc);
-    Vector<IVect> EntierToSend(nb_proc);
-    Vector<Vector<T> > FloatToSend(nb_proc);
     Vector<Vector<int64_t> > FloatToSend_tmp(nb_proc);
     for (int i = 0; i < nb_proc; i++)
-      {
-	int nrow = 0, nsend_float = 0, irow;
-	nsend_int(i) = 2;
-	for (int j = 0; j < OverlapRowNumber.GetM(); j++)
-	  if (OverlapProcNumber(j) == i)
-	    {
-	      nrow++; nsend_int(i) += 2;
-	      irow = OverlapRowNumber(j);
-	      nsend_int(i) += B.GetRowSize(irow);
-	      nsend_float += B.GetRowSize(irow);
-	    }
-        
-        for (int j = 0; j < A.dist_row.GetM(); j++)
-          for (int k = 0; k < A.dist_row(j).GetM(); k++)
-            if (A.proc_row(j)(k) == i)
-              {
-                irow = A.dist_row(j).Index(k);
-                if (A.local_number_distant_values)
-                  irow = A.global_row_to_recv(irow);
-                
-                if (irow <= RowNumber(j))
-                  {
-                    nrow++; nsend_int(i) += 3;
-                    nsend_float++;
-                  }
-              }
-        
-        if (nrow <= 0)
-          nsend_int(i) = 0;
-        
-        if (i != rank)
+      if (i != rank)
+        {
           request(i) = comm.Isend(&nsend_int(i), 1, MPI::INTEGER, i, 4);
-        
-	if (nrow > 0)
-	  {
-	    request_active(i) = true;
-	    EntierToSend(i).Reallocate(nsend_int(i));
-	    FloatToSend(i).Reallocate(nsend_float);
-	    EntierToSend(i)(0) = nsend_float;
-            EntierToSend(i)(1) = nrow;	    
-	    nsend_int(i) = 2; nsend_float = 0;
-            // storing values and indices of a row shared with processor i
-            // processor i is the owner of this row
-	    for (int j = 0; j < OverlapRowNumber.GetM(); j++)
-	      if (OverlapProcNumber(j) == i)
-		{
-		  irow = OverlapRowNumber(j);
-		  EntierToSend(i)(nsend_int(i)++) = RowNumber(irow);
-		  EntierToSend(i)(nsend_int(i)++) = B.GetRowSize(irow);
-		  for (int k = 0; k < B.GetRowSize(irow); k++)
-		    {
-		      EntierToSend(i)(nsend_int(i)++) = B.Index(irow, k);
-		      FloatToSend(i)(nsend_float++) = B.Value(irow, k);
-		    }
-		}
-
-            // storing values of row associated with processor i
-            for (int j = 0; j < A.dist_row.GetM(); j++)
-              for (int k = 0; k < A.dist_row(j).GetM(); k++)
-                if (A.proc_row(j)(k) == i)
-                  {
-                    irow = A.dist_row(j).Index(k);
-                    if (A.local_number_distant_values)
-                      irow = A.global_row_to_recv(irow);
-                    
-                    if (irow <= RowNumber(j))
-                      {
-                        EntierToSend(i)(nsend_int(i)++) = irow;
-                        EntierToSend(i)(nsend_int(i)++) = 1;
-                        EntierToSend(i)(nsend_int(i)++) = RowNumber(j);
-                        FloatToSend(i)(nsend_float++)
-			  = A.dist_row(j).Value(k);
-                      }
-                  }
-        
-            // sending all the values and indices stored to the processor i
-            // only rows are sent
-	    request(i+nb_proc) = 
-              comm.Isend(EntierToSend(i).GetData(), nsend_int(i),
-			 MPI::INTEGER, i, 5);
-	    
-            request(i+2*nb_proc) = 
-              MpiIsend(comm, FloatToSend(i), FloatToSend_tmp(i),
-		       nsend_float, i, 6);
-	  }
-	else
-	  nsend_int(i) = 0;
-       
-      }
-
-    A.Clear();
+          
+          // sending all the values and indices stored to the processor i
+          if (nsend_int(i) > 0)
+            {
+              request(i+nb_proc) = 
+                comm.Isend(EntierToSend(i).GetData(), nsend_int(i),
+                           MPI::INTEGER, i, 5);
+              
+              if (EntierToSend(i)(0) > 0)
+                request(i+2*nb_proc) = 
+                  MpiIsend(comm, FloatToSend(i), FloatToSend_tmp(i),
+                           FloatToSend(i).GetM(), i, 6);
+            }
+        }
     
     // receiving the number of entries
-    MPI::Status status; IVect nrecv_int(nb_proc); nrecv_int.Fill(0);
-    Vector<IVect> EntierToRecv(nb_proc);
-    Vector<Vector<T> > FloatToRecv(nb_proc);
+    MPI::Status status; 
+    nrecv_int.Zero();
     Vector<int64_t> FloatToRecv_tmp;
     for (int i = 0; i < nb_proc; i++)
       if (i != rank)
@@ -3635,73 +3582,167 @@ namespace Seldon
             comm.Recv(EntierToRecv(i).GetData(), nrecv_int(i),
                       MPI::INTEGER, i, 5, status);
           }
+        else
+          EntierToRecv(i).Clear();
       }
     
     // waiting for sending of EntierToSend effective
     for (int i = 0; i < nb_proc; i++)
-      if (request_active(i))
+      if (nsend_int(i) > 0)
 	request(i+nb_proc).Wait(status);
     
     for (int i = 0; i < nb_proc; i++)
       {
         if (nrecv_int(i) > 0)
           {
-            int nsend_float = EntierToRecv(i)(0);
-            
-            FloatToRecv(i).Reallocate(nsend_float);
-            MpiRecv(comm, FloatToRecv(i), FloatToRecv_tmp,
-		    nsend_float, i, 6, status);
+            int nb_float = EntierToRecv(i)(0);
+            if (nb_float > 0)
+              {
+                FloatToRecv(i).Reallocate(nb_float);
+                MpiRecv(comm, FloatToRecv(i), FloatToRecv_tmp,
+                        nb_float, i, 6, status);
+              }
+            else
+              FloatToRecv(i).Clear();
           }
+        else
+          FloatToRecv(i).Clear();
       }
     
     // waiting for sending of FloatToSend effective
     for (int i = 0; i < nb_proc; i++)
-      if (request_active(i))
-	request(i + 2*nb_proc).Wait(status);
+      if (nsend_int(i) > 0)
+        if (EntierToSend(i)(0) > 0)
+          request(i + 2*nb_proc).Wait(status);
     
-    // deleting arrays
-    request_active.Fill(false);
+    // deleting sending arrays
     for (int i = 0; i < nb_proc; i++)
       {
         nsend_int(i) = 0;
         EntierToSend(i).Clear();
         FloatToSend(i).Clear();
       }
+  }
+  
 
-    // constructing array to know if a column is overlapped 
-    // (treated by another processor)
-    IVect OverlappedCol(n); OverlappedCol.Fill(-1);
-    for (int i = 0; i < OverlapRowNumber.GetM(); i++)
-      OverlappedCol(OverlapRowNumber(i)) = i;
-
-    // assembling matrix B with interactions coming from other processors
+  template<class T>
+  void AddReceivedInteractions(const MPI::Comm& comm, Matrix<T, General, ArrayRowSparse>& B,
+                               Vector<IVect>& EntierToRecv, Vector<Vector<T> >& FloatToRecv,
+                               IVect& nrecv_int, Vector<IVect>& EntierToSend,
+                               Vector<Vector<T> >& FloatToSend, IVect& nsend_int,
+                               IVect& Glob_to_local, const IVect& OverlappedCol,
+                               const IVect& OverlapProcNumber,
+                               Vector<IVect>& procB, bool reorder)
+  {
+    int nb_proc = comm.Get_size();
+    int nfac = 1;
+    if (reorder)
+      nfac = 2;
+    
     for (int i = 0; i < nb_proc; i++)
       {       
-        if (nrecv_int(i) > 0)
+        if (FloatToRecv(i).GetM() > 0)
           {	
             int nrow = EntierToRecv(i)(1);    
             // loop over rows
-            nrecv_int(i) = 2; int nsend_float = 0;
+            nrecv_int(i) = 2; int nrecv_float = 0;
+            IVect proc_num;
             for (int j = 0; j < nrow; j++)
               {
                 int iglob = EntierToRecv(i)(nrecv_int(i)++);
                 int irow = Glob_to_local(iglob);
                 int size_row = EntierToRecv(i)(nrecv_int(i)++);
                 IVect index(size_row); Vector<T> values(size_row);
-                for (int k = 0; k < size_row; k++)
+                if (reorder)
                   {
-                    index(k) = EntierToRecv(i)(nrecv_int(i)++);
-                    values(k) = FloatToRecv(i)(nsend_float++);
+                    proc_num.Reallocate(size_row);
+                    for (int k = 0; k < size_row; k++)
+                      {
+                        index(k) = EntierToRecv(i)(nrecv_int(i)++);
+                        proc_num(k) = EntierToRecv(i)(nrecv_int(i)++);
+                        values(k) = FloatToRecv(i)(nrecv_float++);
+                      }
+                  }
+                else
+                  {
+                    for (int k = 0; k < size_row; k++)
+                      {
+                        index(k) = EntierToRecv(i)(nrecv_int(i)++);
+                        values(k) = FloatToRecv(i)(nrecv_float++);
+                      }
                   }
                 
                 // adding to matrix B if the row is not shared
                 // otherwise we send the row to the original processor
                 if (OverlappedCol(irow) == -1)
                   {
-                    if (size_row == 1)
-                      B.AddInteraction(irow, index(0), values(0));
+                    if (reorder)
+                      {
+                        // checking if index is sorted
+                        bool index_sorted = true;
+                        for (int k = 1; k < size_row; k++)
+                          if (index(k) < index(k-1))
+                            index_sorted = false;
+
+                        if (!index_sorted)
+                          Sort(size_row, index, values, proc_num);
+                        
+                        int size_rowB = B.GetRowSize(irow);
+                        IVect new_col(size_rowB + size_row), new_proc(size_rowB + size_row);
+                        Vector<T> new_val(size_rowB + size_row);
+                        int p = 0, nb = 0;
+                        for (int k = 0; k < size_row; k++)
+                          {
+                            while ((p < size_rowB) && (B.Index(irow, p) < index(k)))
+                              {
+                                new_col(nb) = B.Index(irow, p);
+                                new_val(nb) = B.Value(irow, p);
+                                new_proc(nb) = procB(irow)(p);
+                                p++; nb++;
+                              }
+                            
+                            if ((p < size_rowB) && (B.Index(irow, p) == index(k)))
+                              {
+                                // the value is added
+                                new_col(nb) = index(k);
+                                new_val(nb) = values(k) + B.Value(irow, p);
+                                new_proc(nb) = procB(irow)(p);
+                                nb++; p++;
+                              }
+                            else
+                              {
+                                // the value is created
+                                new_col(nb) = index(k);
+                                new_val(nb) = values(k);
+                                new_proc(nb) = proc_num(k);
+                                nb++;                                
+                              }
+                          }
+
+                        while (p < size_rowB)
+                          {
+                            new_col(nb) = B.Index(irow, p);
+                            new_val(nb) = B.Value(irow, p);
+                            new_proc(nb) = procB(irow)(p);
+                            p++; nb++;
+                          }
+                        
+                        B.ReallocateRow(irow, nb);
+                        procB(irow).Reallocate(nb);
+                        for (int k = 0; k < nb; k++)
+                          {
+                            B.Index(irow, k) = new_col(k);
+                            B.Value(irow, k) = new_val(k);
+                            procB(irow)(k) = new_proc(k);
+                          }
+                      }
                     else
-                      B.AddInteractionRow(irow, size_row, index, values);
+                      {
+                        if (size_row == 1)
+                          B.AddInteraction(irow, index(0), values(0));
+                        else
+                          B.AddInteractionRow(irow, size_row, index, values);
+                      }
                   }
                 else
                   {
@@ -3712,7 +3753,7 @@ namespace Seldon
                     if (nsend_int(proc) == 0)
                       {
                         nsend_int(proc) = 2;
-                        EntierToSend(proc).Reallocate(size_row+4);
+                        EntierToSend(proc).Reallocate(size_row+2);
                         FloatToSend(proc).Reallocate(size_row);
                         EntierToSend(proc)(0) = 0;
                         EntierToSend(proc)(1) = 0;
@@ -3721,11 +3762,11 @@ namespace Seldon
                       {
                         offset_int = EntierToSend(proc).GetM();
                         offset_float = FloatToSend(proc).GetM();
-                        EntierToSend(proc).Resize(size_row+2+offset_int);
+                        EntierToSend(proc).Resize(nfac*size_row+2+offset_int);
                         FloatToSend(proc).Resize(size_row+offset_float);
                       }
                     
-                    nsend_int(proc) += size_row+2;
+                    nsend_int(proc) += nfac*size_row+2;
                     EntierToSend(proc)(0) += size_row;
                     EntierToSend(proc)(1)++;
                     EntierToSend(proc)(offset_int++) = iglob;
@@ -3733,129 +3774,768 @@ namespace Seldon
                     for (int k = 0; k < size_row; k++)
                       {
                         EntierToSend(proc)(offset_int++) = index(k);
+                        if (reorder)
+                          EntierToSend(proc)(offset_int++) = proc_num(k);
+                        
                         FloatToSend(proc)(offset_float++) = values(k);
                       }                    
                   }
               }
           }
       }
+  }
 
-    // sending rows overlapped to original processor
-    // this case occurs only if distant rows contain overlapped rows
-    for (int i = 0; i < nb_proc; i++)
-      {
-        if (i != rank)
-          {
-            request(i) = comm.Isend(&nsend_int(i), 1, MPI::INTEGER, i, 4);
-            if (nsend_int(i) > 0)
-              {
-                request_active(i) = true;
-                
-                request(i+nb_proc) = 
-                  comm.Isend(EntierToSend(i).GetData(), nsend_int(i),
-			     MPI::INTEGER, i, 5);
-                
-                request(i+2*nb_proc) = 
-                  MpiIsend(comm, FloatToSend(i), FloatToSend_tmp(i),
-                           FloatToSend(i).GetM(), i, 6);            
-              }
-          }
-      }
-    
-    // receiving rows
-    for (int i = 0; i < nb_proc; i++)
-      if (i != rank)
-        comm.Recv(&nrecv_int(i), 1, MPI::INTEGER, i, 4, status);
-    
-    // trying to receive EntierToRecv
-    for (int i = 0; i < nb_proc; i++)
-      {
-        if (nrecv_int(i) > 0)
-          {
-            EntierToRecv(i).Reallocate(nrecv_int(i));
-            comm.Recv(EntierToRecv(i).GetData(), nrecv_int(i),
-                      MPI::INTEGER, i, 5, status);
-          }
-      }
 
-    // waiting for sending of EntierToSend effective
-    for (int i = 0; i < nb_proc; i++)
-      if (request_active(i))
-	request(i+nb_proc).Wait(status);
-        
-    // trying to receive FloatToRecv
-    for (int i = 0; i < nb_proc; i++)
-      {
-        if (nrecv_int(i) > 0)
-          {
-            int nsend_float = EntierToRecv(i)(0);
-            
-            FloatToRecv(i).Reallocate(nsend_float);
-            MpiRecv(comm, FloatToRecv(i), FloatToRecv_tmp,
-		    nsend_float, i, 6, status);
-          }
-      }
+  template<class T>
+  void AddReceivedInteractions(const MPI::Comm& comm, Matrix<T, General, ArrayColSparse>& B,
+                               Vector<IVect>& EntierToRecv, Vector<Vector<T> >& FloatToRecv,
+                               IVect& nrecv_int, Vector<IVect>& EntierToSend,
+                               Vector<Vector<T> >& FloatToSend, IVect& nsend_int,
+                               IVect& Glob_to_local, const IVect& OverlappedCol,
+                               const IVect& OverlapProcNumber,
+                               Vector<IVect>& procB, bool reorder)
+  {
+    int nb_proc = comm.Get_size();
+    int nfac = 1;
+    if (reorder)
+      nfac = 2;
     
-    // waiting for sending of FloatToSend effective
-    for (int i = 0; i < nb_proc; i++)
-      if (request_active(i))
-	request(i + 2*nb_proc).Wait(status);
-    
-    // deleting arrays
-    request_active.Fill(false);
-    for (int i = 0; i < nb_proc; i++)
-      {
-        nsend_int(i) = 0;
-        EntierToSend(i).Clear();
-        FloatToSend(i).Clear();
-      }
-
-    // assembling matrix B with last interactions coming from other processors
     for (int i = 0; i < nb_proc; i++)
       {       
-        if (nrecv_int(i) > 0)
+        if (FloatToRecv(i).GetM() > 0)
           {	
             int ncol = EntierToRecv(i)(1);    
-            // loop over rows
-            nrecv_int(i) = 2; int nsend_float = 0;
+            // loop over column
+            nrecv_int(i) = 2; int nrecv_float = 0;
+            IVect proc_num;
             for (int j = 0; j < ncol; j++)
               {
                 int iglob = EntierToRecv(i)(nrecv_int(i)++);
                 int irow = Glob_to_local(iglob);
-                int size_row = EntierToRecv(i)(nrecv_int(i)++);
-                IVect index(size_row); Vector<T> values(size_row);
-                for (int k = 0; k < size_row; k++)
+                int size_col = EntierToRecv(i)(nrecv_int(i)++);
+                IVect index(size_col); Vector<T> values(size_col);
+                if (reorder)
                   {
-                    index(k) = EntierToRecv(i)(nrecv_int(i)++);
-                    values(k) = FloatToRecv(i)(nsend_float++);
-                  }
-                
-                // adding to matrix B if the column is not shared
-                // otherwise an error is generated (impossible case)
-                if (OverlappedCol(irow) == -1)
-                  {
-                    if (size_row == 1)
-                      B.AddInteraction(irow, index(0), values(0));
-                    else
-                      B.AddInteractionRow(irow, size_row, index, values);
+                    proc_num.Reallocate(size_col);
+                    for (int k = 0; k < size_col; k++)
+                      {
+                        index(k) = EntierToRecv(i)(nrecv_int(i)++);
+                        proc_num(k) = EntierToRecv(i)(nrecv_int(i)++);
+                        values(k) = FloatToRecv(i)(nrecv_float++);
+                      }
                   }
                 else
                   {
-                    cout << "Case impossible, this row is not overlapped"
-			 << endl;
-                    abort();
+                    for (int k = 0; k < size_col; k++)
+                      {
+                        index(k) = EntierToRecv(i)(nrecv_int(i)++);
+                        values(k) = FloatToRecv(i)(nrecv_float++);
+                      }
+                  }
+                
+                // adding to matrix B if the row is not shared
+                // otherwise we send the row to the original processor
+                if (OverlappedCol(irow) == -1)
+                  {
+                    if (reorder)
+                      {
+                        // checking if index is sorted
+                        bool index_sorted = true;
+                        for (int k = 1; k < size_col; k++)
+                          if (index(k) < index(k-1))
+                            index_sorted = false;
+
+                        if (!index_sorted)
+                          Sort(size_col, index, values, proc_num);
+                        
+                        int size_colB = B.GetColumnSize(irow);
+                        IVect new_col(size_colB + size_col), new_proc(size_colB + size_col);
+                        Vector<T> new_val(size_colB + size_col);
+                        int p = 0, nb = 0;
+                        for (int k = 0; k < size_col; k++)
+                          {
+                            while ((p < size_colB) && (B.Index(irow, p) < index(k)))
+                              {
+                                new_col(nb) = B.Index(irow, p);
+                                new_val(nb) = B.Value(irow, p);
+                                new_proc(nb) = procB(irow)(p);
+                                p++; nb++;
+                              }
+                            
+                            if ((p < size_colB) && (B.Index(irow, p) == index(k)))
+                              {
+                                // the value is added
+                                new_col(nb) = index(k);
+                                new_val(nb) = values(k) + B.Value(irow, p);
+                                new_proc(nb) = procB(irow)(p);
+                                nb++; p++;
+                              }
+                            else
+                              {
+                                // the value is created
+                                new_col(nb) = index(k);
+                                new_val(nb) = values(k);
+                                new_proc(nb) = proc_num(k);
+                                nb++;                                
+                              }
+                          }
+
+                        while (p < size_colB)
+                          {
+                            new_col(nb) = B.Index(irow, p);
+                            new_val(nb) = B.Value(irow, p);
+                            new_proc(nb) = procB(irow)(p);
+                            p++; nb++;
+                          }
+                        
+                        B.ReallocateColumn(irow, nb);
+                        procB(irow).Reallocate(nb);
+                        for (int k = 0; k < nb; k++)
+                          {
+                            B.Index(irow, k) = new_col(k);
+                            B.Value(irow, k) = new_val(k);
+                            procB(irow)(k) = new_proc(k);
+                          }
+                      }
+                    else
+                      {
+                        if (size_col == 1)
+                          B.AddInteraction(irow, index(0), values(0));
+                        else
+                          B.AddInteractionColumn(irow, size_col, index, values);
+                      }
+                  }
+                else
+                  {
+                    int irow_ = OverlappedCol(irow);
+                    int proc = OverlapProcNumber(irow_);
+                    
+                    int offset_int(2), offset_float(0);
+                    if (nsend_int(proc) == 0)
+                      {
+                        nsend_int(proc) = 2;
+                        EntierToSend(proc).Reallocate(size_col+2);
+                        FloatToSend(proc).Reallocate(size_col);
+                        EntierToSend(proc)(0) = 0;
+                        EntierToSend(proc)(1) = 0;
+                      }
+                    else
+                      {
+                        offset_int = EntierToSend(proc).GetM();
+                        offset_float = FloatToSend(proc).GetM();
+                        EntierToSend(proc).Resize(nfac*size_col+2+offset_int);
+                        FloatToSend(proc).Resize(size_col+offset_float);
+                      }
+                    
+                    nsend_int(proc) += nfac*size_col+2;
+                    EntierToSend(proc)(0) += size_col;
+                    EntierToSend(proc)(1)++;
+                    EntierToSend(proc)(offset_int++) = iglob;
+                    EntierToSend(proc)(offset_int++) = size_col;
+                    for (int k = 0; k < size_col; k++)
+                      {
+                        EntierToSend(proc)(offset_int++) = index(k);
+                        if (reorder)
+                          EntierToSend(proc)(offset_int++) = proc_num(k);
+                        
+                        FloatToSend(proc)(offset_float++) = values(k);
+                      }                    
                   }
               }
           }
-      }    
+      }
+  }
+
+
+  //! assembling a distributed matrix, global rows are given in CSR form
+  /*!
+    \param[in] A distributed matrix
+    \param[in] sym the matrix is assumed to be symmetric,
+    only upper part is assembled
+    \param[in] comm MPI communicator
+    \param[out] row_numbers global row numbers
+    \param[out] local_row_numbers local row numbers
+    \param[out] PtrA Index of first element stored for each row
+    \param[out] IndA global column numbers
+    \param[out] ValA values
+    \param[in] sym_pattern not used
+   */
+  template<class MatrixSparse, class Tint, class T>
+  void AssembleDistributed(MatrixSparse& A,
+			   Symmetric& sym, const MPI::Comm& comm,
+                           IVect& row_numbers, IVect& local_row_numbers,
+			   Vector<Tint>& PtrA, Vector<Tint>& IndA,
+			   Vector<T>& ValA, bool sym_pattern, bool reorder)
+  {
+    int m = A.GetM();
+    int n = A.GetGlobalM();
+    
+    PtrA.Clear();
+    IndA.Clear();
+    ValA.Clear();
+
+    int nb_proc = comm.Get_size();
+    int rank = comm.Get_rank();
+
+    // we convert A in ArrayRowSparse format
+    Matrix<T, General, ArrayRowSparse> B;
+    Vector<IVect> procB;
+    if (reorder)
+      procB.Reallocate(m);
+    
+    A.GetDistributedRows(B, procB);
+    
+    IVect RowNumber(A.GetGlobalRowNumber());
+    const IVect& OverlapRowNumber = A.GetOverlapRowNumber();
+    const IVect& OverlapProcNumber = A.GetOverlapProcNumber();
+
+    // constructing array to know if a column is overlapped 
+    // (treated by another processor)
+    IVect OverlappedCol(m); OverlappedCol.Fill(-1);
+    for (int i = 0; i < OverlapRowNumber.GetM(); i++)
+      OverlappedCol(OverlapRowNumber(i)) = i;
+
+    /*********************************
+     * Parallel assembling of matrix *
+     *********************************/
+    
+    // in this section, we will send/receive overlapped rows and distant rows
+    Vector<int> nb_row_sent(nb_proc);
+    Vector<int> nsend_int(nb_proc), nsend_float(nb_proc);
+    Vector<IVect> EntierToSend(nb_proc);
+    Vector<Vector<T> > FloatToSend(nb_proc);
+    
+    // counting the size of arrays to send
+    // nsend_int : the number of integers
+    // nsend_float : the number of floats
+    for (int i = 0; i < nb_proc; i++)
+      {
+        if (i != rank)
+          nsend_int(i) = 2;
+        else
+          nsend_int(i) = 0;
+        
+        nsend_float(i) = 0;
+        nb_row_sent(i) = 0;
+      }
+
+    // overlapped rows
+    for (int j = 0; j < OverlapRowNumber.GetM(); j++)
+      {
+        int i = OverlapProcNumber(j);
+        if (i != rank)
+          {
+            nsend_int(i) += 2;
+            nb_row_sent(i)++;
+            int irow = OverlapRowNumber(j);
+            nsend_int(i) += B.GetRowSize(irow);
+            nsend_float(i) += B.GetRowSize(irow);
+            if (reorder)
+              nsend_int(i) += B.GetRowSize(irow);
+          }
+      }
+    
+    // distant rows
+    for (int j = 0; j < A.dist_row.GetM(); j++)
+      for (int k = 0; k < A.dist_row(j).GetM(); k++)
+        {
+          int i = A.proc_row(j)(k);
+          if (i != rank)
+            {
+              int irow = A.dist_row(j).Index(k);
+              if (A.local_number_distant_values)
+                irow = A.global_row_to_recv(irow);
+              
+              if (irow <= RowNumber(j))
+                {
+                  nb_row_sent(i)++;
+                  nsend_int(i) += 3;
+                  nsend_float(i)++;
+                  if (reorder)
+                    nsend_int(i)++;
+                }
+            }
+        }
+    
+    // allocating arrays EntierToSend and FloatToSend
+    for (int i = 0; i < nb_proc; i++)
+      if (i != rank)
+        { 
+          if (nb_row_sent(i) == 0)
+            nsend_int(i) = 0;
+          
+          if (nb_row_sent(i) > 0)
+            {
+              EntierToSend(i).Reallocate(nsend_int(i));
+              FloatToSend(i).Reallocate(nsend_float(i));
+              EntierToSend(i)(0) = nsend_float(i);
+              EntierToSend(i)(1) = nb_row_sent(i);
+              nsend_int(i) = 2; nsend_float(i) = 0;
+            }
+        }
+
+    // then arrays EntierToSend and FloatToSend are filled
+
+    // storing values and indices of a row shared with processor i
+    // processor i is the owner of this row
+    for (int j = 0; j < OverlapRowNumber.GetM(); j++)
+      {
+        int i = OverlapProcNumber(j);
+        if (i != rank)
+          {
+            int irow = OverlapRowNumber(j);
+            EntierToSend(i)(nsend_int(i)++) = RowNumber(irow);
+            EntierToSend(i)(nsend_int(i)++) = B.GetRowSize(irow);
+            for (int k = 0; k < B.GetRowSize(irow); k++)
+              {
+                EntierToSend(i)(nsend_int(i)++) = B.Index(irow, k);
+                if (reorder)
+                  EntierToSend(i)(nsend_int(i)++) = procB(irow)(k);
+                
+                FloatToSend(i)(nsend_float(i)++) = B.Value(irow, k);
+              }
+
+            // the corresponding values of B are cleared
+            // they are no longer needed since they will be present in the distant processor
+            // after the exchange of datas
+            B.ClearRow(irow);
+            if (reorder)
+              procB(irow).Clear();
+          }
+      }
+    
+    // storing values of row associated with processor rank
+    for (int j = 0; j < A.dist_row.GetM(); j++)
+      for (int k = 0; k < A.dist_row(j).GetM(); k++)
+        {
+          int i = A.proc_row(j)(k);
+          if (i != rank)
+            {
+              int irow = A.dist_row(j).Index(k);
+              if (A.local_number_distant_values)
+                irow = A.global_row_to_recv(irow);
+              
+              if (irow <= RowNumber(j))
+                {
+                  EntierToSend(i)(nsend_int(i)++) = irow;
+                  EntierToSend(i)(nsend_int(i)++) = 1;
+                  EntierToSend(i)(nsend_int(i)++) = RowNumber(j);
+                  if (reorder)
+                    EntierToSend(i)(nsend_int(i)++) = rank;
+                  
+                  FloatToSend(i)(nsend_float(i)++)
+                    = A.dist_row(j).Value(k);
+                }
+            }
+        }
+    
+    // now the initial matrix A can be cleared
+    A.Clear();
+
+    // Datas for receiving EntierToSend and FloatToSend
+    Vector<IVect> EntierToRecv(nb_proc);
+    Vector<Vector<T> > FloatToRecv(nb_proc);
+    IVect nrecv_int(nb_proc);
+    
+    // exchanging datas
+    SendAndReceiveDistributed(comm, nsend_int, EntierToSend, FloatToSend,
+                              nrecv_int, EntierToRecv, FloatToRecv);
+    
+    // constructing local row numbers 
+    int nloc = m - OverlapRowNumber.GetM();
+    local_row_numbers.Reallocate(nloc);
+    int nrow = 0;
+    for (int i = 0; i < m; i++)
+      if (OverlappedCol(i) == -1)
+	local_row_numbers(nrow++) = i;
+    
+    // index array to obtain local numbers in array local_row_numbers
+    // from local numbers of the matrix
+    IVect inv_local_row_numbers(m);
+    inv_local_row_numbers.Fill(-1);
+    nrow = 0;
+    for (int i = 0; i < m; i++)
+      if (OverlappedCol(i) == -1)
+        inv_local_row_numbers(i) = nrow++;
+    
+    // global to local conversion
+    IVect Glob_to_local(n);
+    Glob_to_local.Fill(-1);
+    for (int i = 0; i < m; i++)
+      Glob_to_local(RowNumber(i)) = i;
+
+    // assembling matrix B with interactions coming from other processors
+    AddReceivedInteractions(comm, B, EntierToRecv, FloatToRecv, nrecv_int,
+                            EntierToSend, FloatToSend, nsend_int, Glob_to_local,
+                            OverlappedCol, OverlapProcNumber, procB, reorder);
+
+    // exchanging datas
+    SendAndReceiveDistributed(comm, nsend_int, EntierToSend, FloatToSend,
+                              nrecv_int, EntierToRecv, FloatToRecv);
+
+    // assembling matrix B with last interactions coming from other processors
+    AddReceivedInteractions(comm, B, EntierToRecv, FloatToRecv, nrecv_int,
+                            EntierToSend, FloatToSend, nsend_int, Glob_to_local,
+                            OverlappedCol, OverlapProcNumber, procB, reorder);
+    
+    /****************************
+     * Reordering of the matrix *
+     ****************************/
+
+    if (reorder)
+      {
+        // in this section, global rows are renumbered such that 
+        // each processor has consecutive row numbers (mandatory for SuperLU)
+        // processor 0 will be affected with rows 0..nloc0
+        // processor 1 with rows nloc0 ... nloc0 + nloc1
+        // ...
+        IVect OverlapLocalNumber(OverlapRowNumber.GetM());
+        IVect offset_global(nb_proc+1);
+        
+        IVect nb_col_sent(nb_proc);
+        IVect nb_row_overlap(nb_proc);
+        
+        Vector<IVect> col_number_sorted(nb_proc);
+        Vector<IVect> col_number_to_send(nb_proc);
+        nb_col_sent.Zero();
+
+        // counting the number of rows to send
+        nb_row_overlap.Zero();
+        for (int j = 0; j < OverlapRowNumber.GetM(); j++)
+          {
+            int i = OverlapProcNumber(j);
+            if (i != rank)
+              nb_row_overlap(i)++;
+          }
+
+        Vector<IVect> row_send_overlap(nb_proc);
+        for (int i = 0; i < nb_proc; i++)
+          if (nb_row_overlap(i) > 0)
+            row_send_overlap(i).Reallocate(nb_row_overlap(i));
+        
+        nb_row_overlap.Zero();
+        for (int j = 0; j < OverlapRowNumber.GetM(); j++)
+          {
+            int i = OverlapProcNumber(j);
+            if (i != rank)
+              row_send_overlap(i)(nb_row_overlap(i)++) = RowNumber(OverlapRowNumber(j));
+          }
+        
+        // counting the number of columns to send
+        for (int j = 0; j < B.GetM(); j++)
+          for (int k = 0; k < B.GetRowSize(j); k++)
+            {
+              int i = procB(j)(k);
+              if (i != rank)
+                nb_col_sent(i)++;
+            }
+        
+        for (int i = 0; i < nb_proc; i++)
+          if (i != rank)
+            col_number_sorted(i).Reallocate(nb_col_sent(i));
+        
+        // storing all the column numbers with distant processors
+        nb_col_sent.Zero();
+        for (int j = 0; j < B.GetM(); j++)
+          for (int k = 0; k < B.GetRowSize(j); k++)
+            {
+              int i = procB(j)(k);
+              if (i != rank)
+                col_number_sorted(i)(nb_col_sent(i)++) = B.Index(j, k);
+            }
+
+        // duplicates are removed in order to send a few numbers
+        for (int i = 0; i < nb_proc; i++)
+          if (i != rank)
+            {
+              IVect permut(nb_col_sent(i)), col_number_sort(col_number_sorted(i));
+              permut.Fill();
+              Sort(nb_col_sent(i), col_number_sort, permut);
+              
+              // counting the number of unique numbers
+              int prec = -1; nb_col_sent(i) = 0;
+              for (int j = 0; j < col_number_sort.GetM(); j++)
+                {
+                  if (col_number_sort(j) != prec)
+                    nb_col_sent(i)++;
+                  
+                  prec = col_number_sort(j);
+                }
+              
+              // filling col_number_to_send
+              col_number_to_send(i).Reallocate(nb_col_sent(i));
+              nb_col_sent(i) = 0;
+              prec = -1;
+              for (int j = 0; j < col_number_sort.GetM(); j++)
+                {
+                  if (col_number_sort(j) != prec)
+                    {
+                      col_number_to_send(i)(nb_col_sent(i)) = col_number_sort(j);
+                      nb_col_sent(i)++;
+                    }
+                  
+                  col_number_sorted(i)(permut(j)) = nb_col_sent(i)-1;
+                  prec = col_number_sort(j);
+                }               
+            }
+        
+        // allocating the array EntierToSend
+        nsend_int.Zero();
+        for (int i = 0; i < nb_proc; i++)
+          if ((i != rank) && (nb_col_sent(i)+nb_row_overlap(i) > 0))
+            {
+              // column numbers will be sent
+              nsend_int(i) = 2+nb_col_sent(i) + nb_row_overlap(i);
+              EntierToSend(i).Reallocate(nsend_int(i));
+              EntierToSend(i)(0) = 0;
+              EntierToSend(i)(1) = nb_col_sent(i) + nb_row_overlap(i);
+              nsend_int(i) = 2;
+            }
+        
+        // storing columns numbers associated with processor i
+        for (int i = 0; i < nb_proc; i++)
+          {
+            for (int j = 0; j < nb_row_overlap(i); j++)
+              EntierToSend(i)(nsend_int(i)++) = row_send_overlap(i)(j);
+            
+            for (int j = 0; j < nb_col_sent(i); j++)
+              EntierToSend(i)(nsend_int(i)++) = col_number_to_send(i)(j);
+          }
+
+        // exchanging datas
+        SendAndReceiveDistributed(comm, nsend_int, EntierToSend, FloatToSend,
+                                  nrecv_int, EntierToRecv, FloatToRecv);
+        
+        IVect nsend_intB(nb_proc), nrecv_intB(nb_proc);
+        nsend_intB.Zero(); nrecv_intB.Zero();
+        Vector<IVect> EntierToSendB(nb_proc), EntierToRecvB(nb_proc);
+        // detecting if there are some numbers that do not belong to the current processor
+        for (int i = 0; i < nb_proc; i++)
+          if ((i != rank) && (nrecv_int(i) > 0))
+            {
+              int nb_col = EntierToRecv(i)(1);
+              for (int j = 0; j < nb_col; j++)
+                {
+                  int iglob = EntierToRecv(i)(2+j);
+                  int irow = Glob_to_local(iglob);
+                  if (inv_local_row_numbers(irow) == -1)
+                    {
+                      int p = OverlappedCol(irow);
+                      int nproc = OverlapProcNumber(p);
+                      if (nsend_intB(nproc) == 0)
+                        {
+                          nsend_intB(nproc) = 3;
+                          EntierToSendB(nproc).Reallocate(3);
+                          EntierToSendB(nproc)(0) = 0;
+                          EntierToSendB(nproc)(1) = 1;
+                          EntierToSendB(nproc)(2) = iglob;
+                        }
+                      else
+                        {
+                          nsend_intB(nproc)++;
+                          EntierToSendB(nproc)(1)++;
+                          EntierToSendB(nproc).PushBack(iglob);
+                        }
+                    }
+                }
+            }
+        
+        // exchanging non-original dofs
+        SendAndReceiveDistributed(comm, nsend_intB, EntierToSendB, FloatToSend,
+                                  nrecv_intB, EntierToRecvB, FloatToRecv);        
+        
+        nsend_intB.Zero();
+        for (int i = 0; i < nb_proc; i++)
+          if ((i != rank) && (nrecv_intB(i) > 0))
+            {
+              int nb_col = EntierToRecvB(i)(1);
+              if (nb_col > 0)
+                {
+                  nsend_intB(i) = nb_col+2;
+                  EntierToSendB(i).Reallocate(nb_col+2);
+                  EntierToSendB(i)(0) = 0;
+                  EntierToSendB(i)(1) = nb_col;
+                  
+                  for (int j = 0; j < nb_col; j++)
+                    {
+                      int iglob = EntierToRecvB(i)(2+j);
+                      int irow = Glob_to_local(iglob);
+                      if (inv_local_row_numbers(irow) == -1)
+                        {
+                          cout << "impossible case" << endl;
+                          abort();
+                        }
+                      else
+                        EntierToSendB(i)(2+j) = inv_local_row_numbers(irow);
+                    }
+                }
+            }
+        
+        // returning the local numbers of non-original dofs
+        SendAndReceiveDistributed(comm, nsend_intB, EntierToSendB, FloatToSend,
+                                  nrecv_intB, EntierToRecvB, FloatToRecv);        
+
+        // filling local row numbers that need to be sent back
+        nsend_intB.Zero();
+        for (int i = 0; i < nb_proc; i++)
+          if ((i != rank) && (nrecv_int(i) > 0))
+            {
+              int nb_col = EntierToRecv(i)(1);
+              if (nb_col > 0)
+                {
+                  nsend_int(i) = 2*nb_col+2;
+                  EntierToSend(i).Reallocate(2*nb_col+2);
+                  EntierToSend(i)(0) = 0;
+                  EntierToSend(i)(1) = 2*nb_col;
+                  
+                  for (int j = 0; j < nb_col; j++)
+                    {
+                      int iglob = EntierToRecv(i)(2+j);
+                      int irow = Glob_to_local(iglob);
+                      if (inv_local_row_numbers(irow) == -1)
+                        {
+                          int p = OverlappedCol(irow);
+                          int nproc = OverlapProcNumber(p);
+                          int num = EntierToRecvB(nproc)(2+nsend_intB(nproc));
+                          nsend_intB(nproc)++;
+                          
+                          EntierToSend(i)(2+2*j) = num;
+                          EntierToSend(i)(3+2*j) = nproc;
+                        }
+                      else
+                        {
+                          EntierToSend(i)(2+2*j) = inv_local_row_numbers(irow);
+                          EntierToSend(i)(3+2*j) = rank;
+                        }
+                    }
+                }
+            }
+        
+        // exchanging datas
+        SendAndReceiveDistributed(comm, nsend_int, EntierToSend, FloatToSend,
+                                  nrecv_int, EntierToRecv, FloatToRecv);
+        
+        // receiving local numbers
+        Vector<IVect> proc_number_to_send(nb_proc);
+        for (int i = 0; i < nb_proc; i++)
+          {     
+            if (EntierToRecv(i).GetM() > 0)
+              {	
+                nrecv_int(i) = 2;
+                proc_number_to_send(i).Reallocate(nb_col_sent(i));
+                for (int j = 0; j < nb_row_overlap(i); j++)
+                  {
+                    row_send_overlap(i)(j) = EntierToRecv(i)(nrecv_int(i));
+                    if (EntierToRecv(i)(nrecv_int(i)+1) != i)
+                      {
+                        cout << "Impossible case" << endl;
+                        abort();
+                      }
+                    
+                    nrecv_int(i) += 2;
+                  }
+
+                for (int j = 0; j < nb_col_sent(i); j++)
+                  {
+                    col_number_to_send(i)(j) = EntierToRecv(i)(nrecv_int(i));
+                    proc_number_to_send(i)(j) = EntierToRecv(i)(nrecv_int(i)+1);
+                    nrecv_int(i) += 2;
+                  }
+              }        
+          }
+        
+        // filling OverlapLocalNumber
+        nb_row_overlap.Zero();
+        
+        OverlapLocalNumber.Fill(-1);
+        for (int j = 0; j < OverlapRowNumber.GetM(); j++)
+          {
+            int i = OverlapProcNumber(j);
+            if (i != rank)
+              {
+                OverlapLocalNumber(j) = row_send_overlap(i)(nb_row_overlap(i));
+                nb_row_overlap(i)++;
+              }
+          }
+        
+        // now in order to compute the global row numbers for any processor
+        // we need to retrieve the offsets (i.e. nloc cumulated)
+        offset_global.Zero();
+        
+        comm.Allgather(&nloc, 1, MPI::INTEGER, &offset_global(1), 1, MPI::INTEGER);
+        
+        for (int i = 1; i < nb_proc; i++)
+          offset_global(i+1) += offset_global(i);
+       
+        // RowNumber is modified
+        nrow = 0;
+        for (int i = 0; i < m; i++)
+          {
+            if (OverlappedCol(i) == -1)
+              {
+                RowNumber(i) = offset_global(rank) + nrow;
+                nrow++;
+              }
+            else
+              RowNumber(i) = -1;
+          }
+        
+        // then numbers in B are modified with the new numbering
+        nb_col_sent.Zero();
+        for (int j = 0; j < m; j++)
+          if (OverlappedCol(j) == -1)
+            {
+              for (int k = 0; k < B.GetRowSize(j); k++)
+                {
+                  int jglob = B.Index(j, k);
+                  int i = procB(j)(k);
+                  int ireal = i;
+                  int iloc = -1;
+                  if (i == rank)
+                    {
+                      int irow = Glob_to_local(jglob);
+                      if (OverlappedCol(irow) == -1)
+                        iloc = inv_local_row_numbers(irow);
+                      else
+                        {
+                          int p = OverlappedCol(irow);
+                          i = OverlapProcNumber(p);
+                          ireal = i;
+                          iloc = OverlapLocalNumber(p);
+                        }
+                    }
+                  else
+                    {
+                      int ilocC = col_number_sorted(i)(nb_col_sent(i));
+                      ireal = proc_number_to_send(i)(ilocC);
+                      iloc = col_number_to_send(i)(ilocC);
+                      nb_col_sent(i)++;
+                    }
+                  
+                  if (iloc >= 0)
+                    {
+                      B.Index(j, k) = offset_global(ireal) + iloc;
+                    }
+                  else
+                    {
+                      cout << "Impossible case" << endl;
+                      abort();
+                    }
+                }
+            }    
+      }
+
+    Glob_to_local.Clear();
+
+    /***************************
+     * Final conversion in CSR *
+     ***************************/
     
     // now we convert Bh to RowSparse while removing overlapped rows
-    Glob_to_local.Clear();
-    
-    int nloc = m - OverlapRowNumber.GetM();
     PtrA.Reallocate(nloc+1);
     row_numbers.Reallocate(nloc);
-    int nrow = 0, nnz = 0;
+    nrow = 0;
+    int nnz = 0;
     PtrA(nrow) = 0;
     for (int i = 0; i < m; i++)
       if (OverlappedCol(i) == -1)
@@ -3877,15 +4557,9 @@ namespace Seldon
 	      ValA(nnz) = B.Value(i, j);
 	      nnz++;
 	    }
+          
 	  nrow++;
-	}
-    
-    local_row_numbers.Reallocate(nloc);
-    nrow = 0;
-    for (int i = 0; i < m; i++)
-      if (OverlappedCol(i) == -1)
-	local_row_numbers(nrow++) = i;
-    
+	}    
   }
   
   
@@ -3907,7 +4581,7 @@ namespace Seldon
 			   General& prop, const MPI::Comm& comm,
                            IVect& col_numbers, IVect& local_col_numbers,
                            Vector<Tint>& PtrA, Vector<Tint>& IndA,
-			   Vector<T>& ValA, bool sym_pattern)
+			   Vector<T>& ValA, bool sym_pattern, bool reorder)
   {
     int n = A.GetN();
     int m = A.GetGlobalM();
@@ -3915,386 +4589,598 @@ namespace Seldon
     PtrA.Clear();
     IndA.Clear();
     ValA.Clear();
+  
+    int nb_proc = comm.Get_size();
+    int rank = comm.Get_rank();
     
     // we convert A in CSC format
     Matrix<T, General, ArrayColSparse> B;
-    A.GetDistributedColumns(B, sym_pattern);
+    Vector<IVect> procB;
+    if (reorder)
+      procB.Reallocate(n);
+
+    A.GetDistributedColumns(B, procB, sym_pattern);
     
-    // global to local conversion
-    IVect Glob_to_local(m);
-    const IVect& RowNumber = A.GetGlobalRowNumber();
-    Glob_to_local.Fill(-1);
-    for (int i = 0; i < n; i++)
-      Glob_to_local(RowNumber(i)) = i;
-    
+    IVect RowNumber = A.GetGlobalRowNumber();
     const IVect& OverlapRowNumber = A.GetOverlapRowNumber();
     const IVect& OverlapProcNumber = A.GetOverlapProcNumber();
-    
-    // we send to each processor additional entries due to overlapping
-    // distant columns or distant rows (because of symmetrisation of patterns
-    int nb_proc = comm.Get_size();
-    int rank = comm.Get_rank();
-    Vector<MPI::Request> request(3*nb_proc);
-    Vector<bool> request_active(nb_proc);
-    request_active.Fill(false);
-    IVect nsend_int(nb_proc);
-    Vector<IVect> EntierToSend(nb_proc);
-    Vector<Vector<T> > FloatToSend(nb_proc);
-    Vector<Vector<int64_t> > FloatToSend_tmp(nb_proc);
-    // loop over processors
-    for (int i = 0; i < nb_proc; i++)
-      {
-	int nrow = 0, nsend_float = 0, irow;
-	nsend_int(i) = 2;
-        for (int j = 0; j < OverlapRowNumber.GetM(); j++)
-	  if (OverlapProcNumber(j) == i)
-	    {
-	      nrow++; nsend_int(i) += 2;
-	      irow = OverlapRowNumber(j);
-	      nsend_int(i) += B.GetColumnSize(irow);
-	      nsend_float += B.GetColumnSize(irow);
-	    }
-        
-        if (sym_pattern)
-          for (int j = 0; j < A.dist_row.GetM(); j++)
-            for (int k = 0; k < A.dist_row(j).GetM(); k++)
-              if (A.proc_row(j)(k) == i)
-                {
-                  nrow++; nsend_int(i) += 3;
-                  nsend_float++;
-                }
-        
-        for (int j = 0; j < A.dist_col.GetM(); j++)
-          for (int k = 0; k < A.dist_col(j).GetM(); k++)
-            if (A.proc_col(j)(k) == i)
-              {
-                nrow++; nsend_int(i) += 3;
-                nsend_float++;
-              }
-        
-        if (nrow <= 0)
-          nsend_int(i) = 0;
-        
-        if (i != rank)
-          request(i) = comm.Isend(&nsend_int(i), 1, MPI::INTEGER, i, 4);
-        
-        if (nrow > 0)
-	  {
-	    request_active(i) = true;
-	    EntierToSend(i).Reallocate(nsend_int(i));
-	    FloatToSend(i).Reallocate(nsend_float);
-	    EntierToSend(i)(0) = nsend_float;
-            EntierToSend(i)(1) = nrow;	    
-	    nsend_int(i) = 2; nsend_float = 0;
-            // storing values and indices of a column shared with processor i
-            // processor i is the owner of this column
-	    for (int j = 0; j < OverlapRowNumber.GetM(); j++)
-	      if (OverlapProcNumber(j) == i)
-		{
-		  irow = OverlapRowNumber(j);
-		  EntierToSend(i)(nsend_int(i)++) = RowNumber(irow);
-		  EntierToSend(i)(nsend_int(i)++) = B.GetColumnSize(irow);
-		  for (int k = 0; k < B.GetColumnSize(irow); k++)
-		    {
-		      EntierToSend(i)(nsend_int(i)++) = B.Index(irow, k);
-		      FloatToSend(i)(nsend_float++) = B.Value(irow, k);
-		    }
-		}
-            
-            // storing values to enforce a symmetric pattern
-            if (sym_pattern)
-              for (int j = 0; j < A.dist_row.GetM(); j++)
-                for (int k = 0; k < A.dist_row(j).GetM(); k++)
-                  if (A.proc_row(j)(k) == i)
-                    {
-                      irow = A.dist_row(j).Index(k);
-                      if (A.local_number_distant_values)
-                        irow = A.global_row_to_recv(irow);
-
-                      EntierToSend(i)(nsend_int(i)++) = irow;
-                      EntierToSend(i)(nsend_int(i)++) = 1;
-                      EntierToSend(i)(nsend_int(i)++) = RowNumber(j);
-                      FloatToSend(i)(nsend_float++) = 0;
-                    }
-            
-            // storing values of columns associated with processor i
-            for (int j = 0; j < A.dist_col.GetM(); j++)
-              for (int k = 0; k < A.dist_col(j).GetM(); k++)
-                if (A.proc_col(j)(k) == i)
-                  {
-                    irow = A.dist_col(j).Index(k);
-                    if (A.local_number_distant_values)
-                      irow = A.global_col_to_recv(irow);
-
-                    EntierToSend(i)(nsend_int(i)++) = irow;
-                    EntierToSend(i)(nsend_int(i)++) = 1;
-                    EntierToSend(i)(nsend_int(i)++) = RowNumber(j);
-                    FloatToSend(i)(nsend_float++) = A.dist_col(j).Value(k);
-                  }
-            
-            // sending all the values and indices stored to the processor i
-            // only columns are sent
-            request(i+nb_proc) = 
-              comm.Isend(EntierToSend(i).GetData(), nsend_int(i),
-			 MPI::INTEGER, i, 5);
-	    
-            request(i+2*nb_proc) = 
-              MpiIsend(comm, FloatToSend(i), FloatToSend_tmp(i),
-		       nsend_float, i, 6);
-	  }
-	else
-	  nsend_int(i) = 0;
-       
-      }
-    
-    A.Clear();
-    
-    // receiving the number of entries
-    MPI::Status status; IVect nrecv_int(nb_proc); nrecv_int.Fill(0);
-    Vector<IVect> EntierToRecv(nb_proc);
-    Vector<Vector<T> > FloatToRecv(nb_proc);
-    Vector<int64_t> FloatToRecv_tmp;
-    for (int i = 0; i < nb_proc; i++)
-      if (i != rank)
-        comm.Recv(&nrecv_int(i), 1, MPI::INTEGER, i, 4, status);
-    
-    // waiting for sending of nsend_int effective
-    for (int i = 0; i < nb_proc; i++)
-      if (i != rank)
-        request(i).Wait(status);
-    
-    // trying to receive EntierToRecv
-    for (int i = 0; i < nb_proc; i++)
-      {
-        if (nrecv_int(i) > 0)
-          {
-            EntierToRecv(i).Reallocate(nrecv_int(i));
-            comm.Recv(EntierToRecv(i).GetData(), nrecv_int(i),
-                      MPI::INTEGER, i, 5, status);
-          }
-      }
-
-    // waiting for sending of EntierToSend effective
-    for (int i = 0; i < nb_proc; i++)
-      if (request_active(i))
-	request(i+nb_proc).Wait(status);
-        
-    // trying to receive FloatToRecv
-    for (int i = 0; i < nb_proc; i++)
-      {
-        if (nrecv_int(i) > 0)
-          {
-            int nsend_float = EntierToRecv(i)(0);
-            
-            FloatToRecv(i).Reallocate(nsend_float);
-            MpiRecv(comm, FloatToRecv(i), FloatToRecv_tmp,
-		    nsend_float, i, 6, status);
-          }
-      }
-    
-    // waiting for sending of FloatToSend effective
-    for (int i = 0; i < nb_proc; i++)
-      if (request_active(i))
-	request(i + 2*nb_proc).Wait(status);
-    
-    // deleting arrays
-    request_active.Fill(false);
-    for (int i = 0; i < nb_proc; i++)
-      {
-        nsend_int(i) = 0;
-        EntierToSend(i).Clear();
-        FloatToSend(i).Clear();
-        FloatToSend_tmp(i).Clear();
-      }
 
     // constructing array to know if a column is overlapped 
     // (treated by another processor)
     IVect OverlappedCol(n); OverlappedCol.Fill(-1);
     for (int i = 0; i < OverlapRowNumber.GetM(); i++)
       OverlappedCol(OverlapRowNumber(i)) = i;
-    
-    // assembling matrix B with interactions coming from other processors
-    for (int i = 0; i < nb_proc; i++)
-      {       
-        if (nrecv_int(i) > 0)
-          {	
-            int ncol = EntierToRecv(i)(1);    
-            // loop over columns
-            nrecv_int(i) = 2; int nsend_float = 0;
-            for (int j = 0; j < ncol; j++)
-              {
-                int iglob = EntierToRecv(i)(nrecv_int(i)++);
-                int icol = Glob_to_local(iglob);
-                int size_col = EntierToRecv(i)(nrecv_int(i)++);
-                IVect index(size_col); Vector<T> values(size_col);
-                for (int k = 0; k < size_col; k++)
-                  {
-                    index(k) = EntierToRecv(i)(nrecv_int(i)++);
-                    values(k) = FloatToRecv(i)(nsend_float++);
-                  }
-                
-                // adding to matrix B if the column is not shared
-                // otherwise we send the column to the original processor
-                if (OverlappedCol(icol) == -1)
-                  {
-                    if (size_col == 1)
-                      B.AddInteraction(index(0), icol, values(0));
-                    else
-                      B.AddInteractionColumn(icol, size_col, index, values);
-                  }
-                else
-                  {
-                    int icol_ = OverlappedCol(icol);
-                    int proc = OverlapProcNumber(icol_);
-                    
-                    int offset_int(2), offset_float(0);
-                    if (nsend_int(proc) == 0)
-                      {
-                        nsend_int(proc) = 2;
-                        EntierToSend(proc).Reallocate(size_col+4);
-                        FloatToSend(proc).Reallocate(size_col);
-                        EntierToSend(proc)(0) = 0;
-                        EntierToSend(proc)(1) = 0;
-                      }
-                    else
-                      {
-                        offset_int = EntierToSend(proc).GetM();
-                        offset_float = FloatToSend(proc).GetM();
-                        EntierToSend(proc).Resize(size_col+2+offset_int);
-                        FloatToSend(proc).Resize(size_col+offset_float);
-                      }
-                    
-                    nsend_int(proc) += size_col+2;
-                    EntierToSend(proc)(0) += size_col;
-                    EntierToSend(proc)(1)++;
-                    EntierToSend(proc)(offset_int++) = iglob;
-                    EntierToSend(proc)(offset_int++) = size_col;
-                    for (int k = 0; k < size_col; k++)
-                      {
-                        EntierToSend(proc)(offset_int++) = index(k);
-                        FloatToSend(proc)(offset_float++) = values(k);
-                      }                    
-                  }
-              }
-          }
-      }
 
-    // sending columns overlapped to original processor
-    // this case occurs only if distant columns contain overlapped columns
+    /*********************************
+     * Parallel assembling of matrix *
+     *********************************/
+    
+    // we send to each processor additional entries due to overlapping
+    // distant columns or distant rows (because of symmetrisation of patterns
+    IVect nsend_int(nb_proc), nsend_float(nb_proc), nb_col_sent(nb_proc);
+    Vector<IVect> EntierToSend(nb_proc);
+    Vector<Vector<T> > FloatToSend(nb_proc);
+
+
+    // counting the size of arrays to send
+    // nsend_int : the number of integers
+    // nsend_float : the number of floats
     for (int i = 0; i < nb_proc; i++)
       {
         if (i != rank)
+          nsend_int(i) = 2;
+        else
+          nsend_int(i) = 0;
+        
+        nsend_float(i) = 0;
+        nb_col_sent(i) = 0;
+      }
+
+    // overlapped columns
+    for (int j = 0; j < OverlapRowNumber.GetM(); j++)
+      {
+        int i = OverlapProcNumber(j);
+        if (i != rank)
           {
-            request(i) = comm.Isend(&nsend_int(i), 1, MPI::INTEGER, i, 4);
-            if (nsend_int(i) > 0)
-              {
-                request_active(i) = true;
-                
-                request(i+nb_proc) = 
-                  comm.Isend(EntierToSend(i).GetData(),
-			     nsend_int(i), MPI::INTEGER, i, 5);
-                
-                request(i+2*nb_proc) = 
-                  MpiIsend(comm, FloatToSend(i), FloatToSend_tmp(i),
-                           FloatToSend(i).GetM(), i, 6);            
-              }
+            nsend_int(i) += 2;
+            nb_col_sent(i)++;
+            int irow = OverlapRowNumber(j);
+            nsend_int(i) += B.GetColumnSize(irow);
+            nsend_float(i) += B.GetColumnSize(irow);
+            if (reorder)
+              nsend_int(i) += B.GetColumnSize(irow);
           }
       }
     
-    // receiving columns
+    // distant rows
+    if (sym_pattern)
+      for (int j = 0; j < A.dist_row.GetM(); j++)
+        for (int k = 0; k < A.dist_row(j).GetM(); k++)
+          {
+            int i = A.proc_row(j)(k);
+            if (i != rank)
+              {
+                nb_col_sent(i)++;
+                nsend_int(i) += 3;
+                nsend_float(i)++;
+                if (reorder)
+                  nsend_int(i)++;
+              }
+          }
+    
+    // distant columns
+    for (int j = 0; j < A.dist_col.GetM(); j++)
+      for (int k = 0; k < A.dist_col(j).GetM(); k++)
+        {
+          int i = A.proc_col(j)(k);
+          if (i != rank)
+            {
+              nb_col_sent(i)++;
+              nsend_int(i) += 3;
+              nsend_float(i)++;
+              if (reorder)
+                nsend_int(i)++;
+            }
+        }
+
+
+    // allocating arrays EntierToSend and FloatToSend
     for (int i = 0; i < nb_proc; i++)
       if (i != rank)
-        comm.Recv(&nrecv_int(i), 1, MPI::INTEGER, i, 4, status);
-    
-    // trying to receive EntierToRecv
-    for (int i = 0; i < nb_proc; i++)
-      {
-        if (nrecv_int(i) > 0)
-          {
-            EntierToRecv(i).Reallocate(nrecv_int(i));
-            comm.Recv(EntierToRecv(i).GetData(), nrecv_int(i),
-                      MPI::INTEGER, i, 5, status);
-          }
-      }
+        { 
+          if (nb_col_sent(i) == 0)
+            nsend_int(i) = 0;
+          
+          if (nb_col_sent(i) > 0)
+            {
+              EntierToSend(i).Reallocate(nsend_int(i));
+              FloatToSend(i).Reallocate(nsend_float(i));
+              EntierToSend(i)(0) = nsend_float(i);
+              EntierToSend(i)(1) = nb_col_sent(i);
+              nsend_int(i) = 2; nsend_float(i) = 0;
+            }
+        }
 
-    // waiting for sending of EntierToSend effective
-    for (int i = 0; i < nb_proc; i++)
-      if (request_active(i))
-	request(i+nb_proc).Wait(status);
-        
-    // trying to receive FloatToRecv
-    for (int i = 0; i < nb_proc; i++)
-      {
-        if (nrecv_int(i) > 0)
-          {
-            int nsend_float = EntierToRecv(i)(0);
-            
-            FloatToRecv(i).Reallocate(nsend_float);
-            MpiRecv(comm, FloatToRecv(i), FloatToRecv_tmp,
-		    nsend_float, i, 6, status);
-          }
-      }
-    
-    // waiting for sending of FloatToSend effective
-    for (int i = 0; i < nb_proc; i++)
-      if (request_active(i))
-	request(i + 2*nb_proc).Wait(status);
-    
-    // deleting arrays
-    request_active.Fill(false);
-    for (int i = 0; i < nb_proc; i++)
-      {
-        nsend_int(i) = 0;
-        EntierToSend(i).Clear();
-        FloatToSend(i).Clear();
-      }
+    // then arrays EntierToSend and FloatToSend are filled
 
-    // assembling matrix B with last interactions coming from other processors
-    for (int i = 0; i < nb_proc; i++)
-      {       
-        if (nrecv_int(i) > 0)
-          {	
-            int ncol = EntierToRecv(i)(1);    
-            // loop over columns
-            nrecv_int(i) = 2; int nsend_float = 0;
-            for (int j = 0; j < ncol; j++)
+    // storing values and indices of a column shared with processor i
+    // processor i is the owner of this column
+    for (int j = 0; j < OverlapRowNumber.GetM(); j++)
+      {
+        int i = OverlapProcNumber(j);
+        if (i != rank)
+          {
+            int irow = OverlapRowNumber(j);
+            EntierToSend(i)(nsend_int(i)++) = RowNumber(irow);
+            EntierToSend(i)(nsend_int(i)++) = B.GetColumnSize(irow);
+            for (int k = 0; k < B.GetColumnSize(irow); k++)
               {
-                int iglob = EntierToRecv(i)(nrecv_int(i)++);
-                int icol = Glob_to_local(iglob);
-                int size_col = EntierToRecv(i)(nrecv_int(i)++);
-                IVect index(size_col); Vector<T> values(size_col);
-                for (int k = 0; k < size_col; k++)
-                  {
-                    index(k) = EntierToRecv(i)(nrecv_int(i)++);
-                    values(k) = FloatToRecv(i)(nsend_float++);
-                  }
+                EntierToSend(i)(nsend_int(i)++) = B.Index(irow, k);
+                if (reorder)
+                  EntierToSend(i)(nsend_int(i)++) = procB(irow)(k);
                 
-                // adding to matrix B if the column is not shared
-                // otherwise an error is generated (impossible case)
-                if (OverlappedCol(icol) == -1)
-                  {
-                    if (size_col == 1)
-                      B.AddInteraction(index(0), icol, values(0));
-                    else
-                      B.AddInteractionColumn(icol, size_col, index, values);
-                  }
-                else
-                  {
-                    cout << "Case impossible, this column is not overlapped"
-			 << endl;
-                    abort();
-                  }
+                FloatToSend(i)(nsend_float(i)++) = B.Value(irow, k);
+              }
+            
+            // the corresponding values of B are cleared
+            // they are no longer needed since they will be present in the distant processor
+            // after the exchange of datas
+            B.ClearColumn(irow);
+            if (reorder)
+              procB(irow).Clear();
+          }
+      }
+
+    // storing values to enforce a symmetric pattern
+    if (sym_pattern)
+      for (int j = 0; j < A.dist_row.GetM(); j++)
+        for (int k = 0; k < A.dist_row(j).GetM(); k++)
+          {
+            int i = A.proc_row(j)(k);
+            if (i != rank)
+              {
+                int irow = A.dist_row(j).Index(k);
+                if (A.local_number_distant_values)
+                  irow = A.global_row_to_recv(irow);
+                
+                EntierToSend(i)(nsend_int(i)++) = irow;
+                EntierToSend(i)(nsend_int(i)++) = 1;
+                EntierToSend(i)(nsend_int(i)++) = RowNumber(j);
+                if (reorder)
+                  EntierToSend(i)(nsend_int(i)++) = rank;
+                
+                FloatToSend(i)(nsend_float(i)++) = 0;
               }
           }
-      }    
+            
+    // storing values of row associated with processor rank
+    for (int j = 0; j < A.dist_col.GetM(); j++)
+      for (int k = 0; k < A.dist_col(j).GetM(); k++)
+        {
+          int i = A.proc_col(j)(k);
+          if (i != rank)
+            {
+              int irow = A.dist_col(j).Index(k);
+              if (A.local_number_distant_values)
+                irow = A.global_col_to_recv(irow);
+              
+              EntierToSend(i)(nsend_int(i)++) = irow;
+              EntierToSend(i)(nsend_int(i)++) = 1;
+              EntierToSend(i)(nsend_int(i)++) = RowNumber(j);
+              if (reorder)
+                EntierToSend(i)(nsend_int(i)++) = rank;
+              
+              FloatToSend(i)(nsend_float(i)++)
+                = A.dist_col(j).Value(k);
+            }
+        }
+
+    // now the initial matrix A can be cleared    
+    A.Clear();
     
-    // now we convert B to ColSparse while removing overlapped columns
-    Glob_to_local.Clear();
-    
+    // Datas for receiving EntierToSend and FloatToSend
+    IVect nrecv_int(nb_proc);
+    Vector<IVect> EntierToRecv(nb_proc);
+    Vector<Vector<T> > FloatToRecv(nb_proc);
+
+    // exchanging datas
+    SendAndReceiveDistributed(comm, nsend_int, EntierToSend, FloatToSend,
+                              nrecv_int, EntierToRecv, FloatToRecv);
+
+    // constructing local column numbers 
     int nloc = n - OverlapRowNumber.GetM();
+    local_col_numbers.Reallocate(nloc);
+    int ncol = 0;
+    for (int i = 0; i < n; i++)
+      if (OverlappedCol(i) == -1)
+	local_col_numbers(ncol++) = i;
+    
+    // index array to obtain local numbers in array local_col_numbers
+    // from local numbers of the matrix
+    IVect inv_local_col_numbers(n);
+    inv_local_col_numbers.Fill(-1);
+    ncol = 0;
+    for (int i = 0; i < n; i++)
+      if (OverlappedCol(i) == -1)
+        inv_local_col_numbers(i) = ncol++;
+    
+    // global to local conversion
+    IVect Glob_to_local(m);
+    Glob_to_local.Fill(-1);
+    for (int i = 0; i < n; i++)
+      Glob_to_local(RowNumber(i)) = i;
+
+    // assembling matrix B with interactions coming from other processors
+    AddReceivedInteractions(comm, B, EntierToRecv, FloatToRecv, nrecv_int,
+                            EntierToSend, FloatToSend, nsend_int, Glob_to_local,
+                            OverlappedCol, OverlapProcNumber, procB, reorder);
+
+    // exchanging datas
+    SendAndReceiveDistributed(comm, nsend_int, EntierToSend, FloatToSend,
+                              nrecv_int, EntierToRecv, FloatToRecv);
+
+    // assembling matrix B with last interactions coming from other processors
+    AddReceivedInteractions(comm, B, EntierToRecv, FloatToRecv, nrecv_int,
+                            EntierToSend, FloatToSend, nsend_int, Glob_to_local,
+                            OverlappedCol, OverlapProcNumber, procB, reorder);
+
+    /****************************
+     * Reordering of the matrix *
+     ****************************/
+
+    if (reorder)
+      {
+        // in this section, global rows are renumbered such that 
+        // each processor has consecutive row numbers (mandatory for SuperLU)
+        // processor 0 will be affected with rows 0..nloc0
+        // processor 1 with rows nloc0 ... nloc0 + nloc1
+        // ...
+        IVect OverlapLocalNumber(OverlapRowNumber.GetM());
+        IVect offset_global(nb_proc+1);
+        
+        IVect nb_col_overlap(nb_proc);
+        
+        Vector<IVect> col_number_sorted(nb_proc);
+        Vector<IVect> col_number_to_send(nb_proc);
+        nb_col_sent.Zero();
+
+        // counting the number of columns to send
+        nb_col_overlap.Zero();
+        for (int j = 0; j < OverlapRowNumber.GetM(); j++)
+          {
+            int i = OverlapProcNumber(j);
+            if (i != rank)
+              nb_col_overlap(i)++;
+          }
+
+        Vector<IVect> col_send_overlap(nb_proc);
+        for (int i = 0; i < nb_proc; i++)
+          if (nb_col_overlap(i) > 0)
+            col_send_overlap(i).Reallocate(nb_col_overlap(i));
+        
+        nb_col_overlap.Zero();
+        for (int j = 0; j < OverlapRowNumber.GetM(); j++)
+          {
+            int i = OverlapProcNumber(j);
+            if (i != rank)
+              col_send_overlap(i)(nb_col_overlap(i)++) = RowNumber(OverlapRowNumber(j));
+          }
+        
+        // counting the number of columns to send
+        for (int j = 0; j < B.GetN(); j++)
+          for (int k = 0; k < B.GetColumnSize(j); k++)
+            {
+              int i = procB(j)(k);
+              if (i != rank)
+                nb_col_sent(i)++;
+            }
+        
+        for (int i = 0; i < nb_proc; i++)
+          if (i != rank)
+            col_number_sorted(i).Reallocate(nb_col_sent(i));
+        
+        // storing all the column numbers with distant processors
+        nb_col_sent.Zero();
+        for (int j = 0; j < B.GetN(); j++)
+          for (int k = 0; k < B.GetColumnSize(j); k++)
+            {
+              int i = procB(j)(k);
+              if (i != rank)
+                col_number_sorted(i)(nb_col_sent(i)++) = B.Index(j, k);
+            }
+
+        // duplicates are removed in order to send a few numbers
+        for (int i = 0; i < nb_proc; i++)
+          if (i != rank)
+            {
+              IVect permut(nb_col_sent(i)), col_number_sort(col_number_sorted(i));
+              permut.Fill();
+              Sort(nb_col_sent(i), col_number_sort, permut);
+              
+              // counting the number of unique numbers
+              int prec = -1; nb_col_sent(i) = 0;
+              for (int j = 0; j < col_number_sort.GetM(); j++)
+                {
+                  if (col_number_sort(j) != prec)
+                    nb_col_sent(i)++;
+                  
+                  prec = col_number_sort(j);
+                }
+              
+              // filling col_number_to_send
+              col_number_to_send(i).Reallocate(nb_col_sent(i));
+              nb_col_sent(i) = 0;
+              prec = -1;
+              for (int j = 0; j < col_number_sort.GetM(); j++)
+                {
+                  if (col_number_sort(j) != prec)
+                    {
+                      col_number_to_send(i)(nb_col_sent(i)) = col_number_sort(j);
+                      nb_col_sent(i)++;
+                    }
+                  
+                  col_number_sorted(i)(permut(j)) = nb_col_sent(i)-1;
+                  prec = col_number_sort(j);
+                }               
+            }
+        
+        // allocating the array EntierToSend
+        nsend_int.Zero();
+        for (int i = 0; i < nb_proc; i++)
+          if ((i != rank) && (nb_col_sent(i)+nb_col_overlap(i) > 0))
+            {
+              // column numbers will be sent
+              nsend_int(i) = 2+nb_col_sent(i) + nb_col_overlap(i);
+              EntierToSend(i).Reallocate(nsend_int(i));
+              EntierToSend(i)(0) = 0;
+              EntierToSend(i)(1) = nb_col_sent(i) + nb_col_overlap(i);
+              nsend_int(i) = 2;
+            }
+        
+        // storing columns numbers associated with processor i
+        for (int i = 0; i < nb_proc; i++)
+          {
+            for (int j = 0; j < nb_col_overlap(i); j++)
+              EntierToSend(i)(nsend_int(i)++) = col_send_overlap(i)(j);
+            
+            for (int j = 0; j < nb_col_sent(i); j++)
+              EntierToSend(i)(nsend_int(i)++) = col_number_to_send(i)(j);
+          }
+
+        // exchanging datas
+        SendAndReceiveDistributed(comm, nsend_int, EntierToSend, FloatToSend,
+                                  nrecv_int, EntierToRecv, FloatToRecv);
+        
+        IVect nsend_intB(nb_proc), nrecv_intB(nb_proc);
+        nsend_intB.Zero(); nrecv_intB.Zero();
+        Vector<IVect> EntierToSendB(nb_proc), EntierToRecvB(nb_proc);
+        // detecting if there are some numbers that do not belong to the current processor
+        for (int i = 0; i < nb_proc; i++)
+          if ((i != rank) && (nrecv_int(i) > 0))
+            {
+              int nb_col = EntierToRecv(i)(1);
+              for (int j = 0; j < nb_col; j++)
+                {
+                  int iglob = EntierToRecv(i)(2+j);
+                  int irow = Glob_to_local(iglob);
+                  if (inv_local_col_numbers(irow) == -1)
+                    {
+                      int p = OverlappedCol(irow);
+                      int nproc = OverlapProcNumber(p);
+                      if (nsend_intB(nproc) == 0)
+                        {
+                          nsend_intB(nproc) = 3;
+                          EntierToSendB(nproc).Reallocate(3);
+                          EntierToSendB(nproc)(0) = 0;
+                          EntierToSendB(nproc)(1) = 1;
+                          EntierToSendB(nproc)(2) = iglob;
+                        }
+                      else
+                        {
+                          nsend_intB(nproc)++;
+                          EntierToSendB(nproc)(1)++;
+                          EntierToSendB(nproc).PushBack(iglob);
+                        }
+                    }
+                }
+            }
+        
+        // exchanging non-original dofs
+        SendAndReceiveDistributed(comm, nsend_intB, EntierToSendB, FloatToSend,
+                                  nrecv_intB, EntierToRecvB, FloatToRecv);        
+        
+        nsend_intB.Zero();
+        for (int i = 0; i < nb_proc; i++)
+          if ((i != rank) && (nrecv_intB(i) > 0))
+            {
+              int nb_col = EntierToRecvB(i)(1);
+              if (nb_col > 0)
+                {
+                  nsend_intB(i) = nb_col+2;
+                  EntierToSendB(i).Reallocate(nb_col+2);
+                  EntierToSendB(i)(0) = 0;
+                  EntierToSendB(i)(1) = nb_col;
+                  
+                  for (int j = 0; j < nb_col; j++)
+                    {
+                      int iglob = EntierToRecvB(i)(2+j);
+                      int irow = Glob_to_local(iglob);
+                      if (inv_local_col_numbers(irow) == -1)
+                        {
+                          cout << "impossible case" << endl;
+                          abort();
+                        }
+                      else
+                        EntierToSendB(i)(2+j) = inv_local_col_numbers(irow);
+                    }
+                }
+            }
+        
+        // returning the local numbers of non-original dofs
+        SendAndReceiveDistributed(comm, nsend_intB, EntierToSendB, FloatToSend,
+                                  nrecv_intB, EntierToRecvB, FloatToRecv);        
+
+        // filling local row numbers that need to be sent back
+        nsend_intB.Zero();
+        for (int i = 0; i < nb_proc; i++)
+          if ((i != rank) && (nrecv_int(i) > 0))
+            {
+              int nb_col = EntierToRecv(i)(1);
+              if (nb_col > 0)
+                {
+                  nsend_int(i) = 2*nb_col+2;
+                  EntierToSend(i).Reallocate(2*nb_col+2);
+                  EntierToSend(i)(0) = 0;
+                  EntierToSend(i)(1) = 2*nb_col;
+                  
+                  for (int j = 0; j < nb_col; j++)
+                    {
+                      int iglob = EntierToRecv(i)(2+j);
+                      int irow = Glob_to_local(iglob);
+                      if (inv_local_col_numbers(irow) == -1)
+                        {
+                          int p = OverlappedCol(irow);
+                          int nproc = OverlapProcNumber(p);
+                          int num = EntierToRecvB(nproc)(2+nsend_intB(nproc));
+                          nsend_intB(nproc)++;
+                          
+                          EntierToSend(i)(2+2*j) = num;
+                          EntierToSend(i)(3+2*j) = nproc;
+                        }
+                      else
+                        {
+                          EntierToSend(i)(2+2*j) = inv_local_col_numbers(irow);
+                          EntierToSend(i)(3+2*j) = rank;
+                        }
+                    }
+                }
+            }
+        
+        // exchanging datas
+        SendAndReceiveDistributed(comm, nsend_int, EntierToSend, FloatToSend,
+                                  nrecv_int, EntierToRecv, FloatToRecv);
+        
+        // receiving local numbers
+        Vector<IVect> proc_number_to_send(nb_proc);
+        for (int i = 0; i < nb_proc; i++)
+          {     
+            if (EntierToRecv(i).GetM() > 0)
+              {	
+                nrecv_int(i) = 2;
+                proc_number_to_send(i).Reallocate(nb_col_sent(i));
+                for (int j = 0; j < nb_col_overlap(i); j++)
+                  {
+                    col_send_overlap(i)(j) = EntierToRecv(i)(nrecv_int(i));
+                    if (EntierToRecv(i)(nrecv_int(i)+1) != i)
+                      {
+                        cout << "Impossible case" << endl;
+                        abort();
+                      }
+                    
+                    nrecv_int(i) += 2;
+                  }
+
+                for (int j = 0; j < nb_col_sent(i); j++)
+                  {
+                    col_number_to_send(i)(j) = EntierToRecv(i)(nrecv_int(i));
+                    proc_number_to_send(i)(j) = EntierToRecv(i)(nrecv_int(i)+1);
+                    nrecv_int(i) += 2;
+                  }
+              }        
+          }
+        
+        // filling OverlapLocalNumber
+        nb_col_overlap.Zero();
+        
+        OverlapLocalNumber.Fill(-1);
+        for (int j = 0; j < OverlapRowNumber.GetM(); j++)
+          {
+            int i = OverlapProcNumber(j);
+            if (i != rank)
+              {
+                OverlapLocalNumber(j) = col_send_overlap(i)(nb_col_overlap(i));
+                nb_col_overlap(i)++;
+              }
+          }
+        
+        // now in order to compute the global row numbers for any processor
+        // we need to retrieve the offsets (i.e. nloc cumulated)
+        offset_global.Zero();
+        
+        comm.Allgather(&nloc, 1, MPI::INTEGER, &offset_global(1), 1, MPI::INTEGER);
+        
+        for (int i = 1; i < nb_proc; i++)
+          offset_global(i+1) += offset_global(i);
+       
+        // RowNumber is modified
+        ncol = 0;
+        for (int i = 0; i < n; i++)
+          {
+            if (OverlappedCol(i) == -1)
+              {
+                RowNumber(i) = offset_global(rank) + ncol;
+                ncol++;
+              }
+            else
+              RowNumber(i) = -1;
+          }
+        
+        // then numbers in B are modified with the new numbering
+        nb_col_sent.Zero();
+        for (int j = 0; j < n; j++)
+          if (OverlappedCol(j) == -1)
+            {
+              for (int k = 0; k < B.GetColumnSize(j); k++)
+                {
+                  int jglob = B.Index(j, k);
+                  int i = procB(j)(k);
+                  int ireal = i;
+                  int iloc = -1;
+                  if (i == rank)
+                    {
+                      int irow = Glob_to_local(jglob);
+                      if (OverlappedCol(irow) == -1)
+                        iloc = inv_local_col_numbers(irow);
+                      else
+                        {
+                          int p = OverlappedCol(irow);
+                          i = OverlapProcNumber(p);
+                          ireal = i;
+                          iloc = OverlapLocalNumber(p);
+                        }
+                    }
+                  else
+                    {
+                      int ilocC = col_number_sorted(i)(nb_col_sent(i));
+                      ireal = proc_number_to_send(i)(ilocC);
+                      iloc = col_number_to_send(i)(ilocC);
+                      nb_col_sent(i)++;
+                    }
+                  
+                  if (iloc >= 0)
+                    {
+                      B.Index(j, k) = offset_global(ireal) + iloc;
+                    }
+                  else
+                    {
+                      cout << "Impossible case" << endl;
+                      abort();
+                    }
+                }
+              
+              B.AssembleColumn(j);
+            }    
+      }
+
+    Glob_to_local.Clear();
+
+    /***************************
+     * Final conversion in CSC *
+     ***************************/
+    
     PtrA.Reallocate(nloc+1);
     col_numbers.Reallocate(nloc);
-    int ncol = 0, nnz = 0;
+    ncol = 0; int nnz = 0;
     PtrA(ncol) = 0;
     for (int i = 0; i < n; i++)
       if (OverlappedCol(i) == -1)
@@ -4320,13 +5206,6 @@ namespace Seldon
           
           ncol++;
         }
-    
-    local_col_numbers.Reallocate(nloc);
-    ncol = 0;
-    for (int i = 0; i < n; i++)
-      if (OverlappedCol(i) == -1)
-	local_col_numbers(ncol++) = i;
-    
   }
 
   

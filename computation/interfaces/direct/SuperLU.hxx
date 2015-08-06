@@ -24,39 +24,56 @@
 namespace Seldon
 {
 
-  void SetComplexOne(doublecomplex& one);
+#ifndef SELDON_WITH_SUPERLU_DIST
+  void SetComplexOne(superlu::doublecomplex& one);
+#endif
   
   //! class interfacing SuperLU functions
   template<class T>
   class MatrixSuperLU_Base
   {
   protected :
+#ifndef SELDON_WITH_SUPERLU_DIST
     //! objects of SuperLU
-    SuperMatrix L, U, B;
-    GlobalLU_t Glu; //!< object of SuperLU
+    superlu::SuperMatrix L, U, B;
+    superlu::GlobalLU_t Glu; //!< object of SuperLU
     
 #ifdef SELDON_WITH_SUPERLU_MT
+    superlu::superlumt_options_t options; //!< options
+    superlu::Gstat_t stat; //!< statistics
     int_t nprocs;
-    superlumt_options_t options; //!< options
-    Gstat_t stat; //!< statistics
-
-    double diag_pivot_thresh, drop_tol;
-    yes_no_t usepr, refact;
-    fact_t fact;
     
-    SCPformat *Lstore;  //!< object of SuperLU
-    NCPformat *Ustore;  //!< object of SuperLU
+    double diag_pivot_thresh, drop_tol;
+    superlu::yes_no_t usepr, refact;
+    superlu::fact_t fact;
+    
+    superlu::SCPformat *Lstore;  //!< object of SuperLU
+    superlu::NCPformat *Ustore;  //!< object of SuperLU
 
 #else
-    SCformat *Lstore;  //!< object of SuperLU
-    NCformat *Ustore;  //!< object of SuperLU
-    superlu_options_t options; //!< options
-    SuperLUStat_t stat; //!< statistics
+    superlu::SCformat *Lstore;  //!< object of SuperLU
+    superlu::NCformat *Ustore;  //!< object of SuperLU
+    superlu::superlu_options_t options; //!< options
+    superlu::SuperLUStat_t stat; //!< statistics
+#endif
+
+#else
+
+    int nprow, npcol;
+    superlu::gridinfo_t grid;
+    superlu::superlu_options_t options;
+    superlu::SuperLUStat_t stat;
+
+    superlu::SuperMatrix A;
+    superlu::ScalePermstruct_t ScalePermstruct;
+    superlu::LUstruct_t LUstruct;
+    superlu::SOLVEstruct_t SOLVEstruct;
+
 #endif
 
     //! permutation array
     Vector<int_t> perm_r, perm_c;
-
+    
     colperm_t permc_spec; //!< ordering scheme
     int_t n; //!< number of rows
     bool display_info; //!< display information about factorization ?
@@ -99,7 +116,8 @@ namespace Seldon
     MatrixSuperLU() : MatrixSuperLU_Base<double>() {}
     
     int64_t GetMemorySize() const;
-    
+
+#ifndef SELDON_WITH_SUPERLU_DIST    
     template<class Prop, class Allocator>
     void GetLU(Matrix<double, Prop, ColSparse, Allocator>& Lmat,
                Matrix<double, Prop, ColSparse, Allocator>& Umat,
@@ -109,6 +127,7 @@ namespace Seldon
     void GetLU(Matrix<double, Prop, RowSparse, Allocator>& Lmat,
                Matrix<double, Prop, RowSparse, Allocator>& Umat,
                bool permuted = true);
+#endif
 
     template<class T0, class Prop, class Storage, class Allocator>
     void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
@@ -127,6 +146,35 @@ namespace Seldon
     template<class Allocator2>
     void Solve(const SeldonTranspose& TransA,
                Matrix<double, General, ColMajor, Allocator2>& x);
+
+#ifdef SELDON_WITH_SUPERLU_DIST
+    template<class Alloc1, class Alloc2, class Alloc3>
+    void FactorizeDistributedMatrix(MPI::Comm& comm_facto,
+                                    Vector<int_t, VectFull, Alloc1>&,
+                                    Vector<int_t, VectFull, Alloc2>&,
+                                    Vector<double, VectFull, Alloc3>&,
+                                    const Vector<int_t>& glob_num,
+                                    bool sym, bool keep_matrix = false);
+
+    template<class Allocator2>
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          Vector<double, VectFull, Allocator2>& x);
+
+    template<class Allocator2>
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          const SeldonTranspose& TransA,
+			  Vector<double, VectFull, Allocator2>& x);
+
+    template<class Allocator2>
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          Matrix<double, General, ColMajor, Allocator2>& x);
+
+    template<class Allocator2>
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          const SeldonTranspose& TransA,
+			  Matrix<double, General, ColMajor, Allocator2>& x);
+#endif
+
   };
 
 
@@ -139,7 +187,8 @@ namespace Seldon
     MatrixSuperLU() : MatrixSuperLU_Base<complex<double> >() {}
 
     int64_t GetMemorySize() const;
-    
+
+#ifndef SELDON_WITH_SUPERLU_DIST        
     template<class Prop, class Allocator>
     void GetLU(Matrix<complex<double>, Prop, ColSparse, Allocator>& Lmat,
                Matrix<complex<double>, Prop, ColSparse, Allocator>& Umat,
@@ -149,6 +198,8 @@ namespace Seldon
     void GetLU(Matrix<complex<double>, Prop, RowSparse, Allocator>& Lmat,
                Matrix<complex<double>, Prop, RowSparse, Allocator>& Umat,
                bool permuted = true);
+
+#endif
 
     template<class T0, class Prop, class Storage, class Allocator>
     void FactorizeMatrix(Matrix<T0, Prop,
@@ -168,6 +219,34 @@ namespace Seldon
     template<class Allocator2>
     void Solve(const SeldonTranspose& TransA,
                Matrix<complex<double>, General, ColMajor, Allocator2>& x);
+
+#ifdef SELDON_WITH_SUPERLU_DIST
+    template<class Alloc1, class Alloc2, class Alloc3>
+    void FactorizeDistributedMatrix(MPI::Comm& comm_facto,
+                                    Vector<int_t, VectFull, Alloc1>&,
+                                    Vector<int_t, VectFull, Alloc2>&,
+                                    Vector<complex<double>, VectFull, Alloc3>&,
+				    const Vector<int_t>& glob_num,
+                                    bool sym, bool keep_matrix = false);
+
+    template<class Allocator2>
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          Vector<complex<double>, VectFull, Allocator2>& x);
+
+    template<class Allocator2>
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          const SeldonTranspose& TransA,
+			  Vector<complex<double>, VectFull, Allocator2>& x);
+
+    template<class Allocator2>
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          Matrix<complex<double>, General, ColMajor, Allocator2>& x);
+
+    template<class Allocator2>
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          const SeldonTranspose& TransA,
+			  Matrix<complex<double>, General, ColMajor, Allocator2>& x);
+#endif
 
   };
 
