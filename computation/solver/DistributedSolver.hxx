@@ -65,7 +65,17 @@ namespace Seldon
     void TransSolve(Vector<T1>& x_solution);
 
     template<class T1>
+    void Solve(const SeldonTranspose&, Vector<T1>& x_solution);
+
+    template<class T1>
     void Solve(Matrix<T1, General, ColMajor>& x_solution);    
+
+    template<class T1>
+    void TransSolve(Matrix<T1, General, ColMajor>& x_solution);    
+
+    template<class T1>
+    void Solve(const SeldonTranspose&,
+               Matrix<T1, General, ColMajor>& x_solution);    
     
     template<class MatrixSparse, class MatrixFull>
     void GetSchurComplement(MatrixSparse& mat_direct,

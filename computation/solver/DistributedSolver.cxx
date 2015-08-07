@@ -293,6 +293,17 @@ namespace Seldon
         x_solution(i) *= diagonal_scale_left(i);
   }
   
+
+  template<class T> template<class T1>
+  void SparseDistributedSolver<T>::Solve(const SeldonTranspose& trans,
+                                         Vector<T1>& x_solution)
+  {
+    if (trans.NoTrans())
+      Solve(x_solution);
+    else
+      TransSolve(x_solution);
+  }
+  
   
   //! solution of linear system Ax = b by using LU factorization (with scaling)
   /*!
@@ -338,6 +349,65 @@ namespace Seldon
     if (diagonal_scaling_right)
       ScaleLeftMatrix(x_solution, diagonal_scale_right);
   }
+
+
+  //! solution of linear system A^T x = b by using LU factorization (with scaling)
+  /*!
+    \param[in,out] x_solution on input right hand sides, on output solution
+   */
+  template<class T> template<class T1>
+  void SparseDistributedSolver<T>::TransSolve(Matrix<T1, General, ColMajor>& x_solution)
+  {
+    if (diagonal_scaling_left)
+      ScaleLeftMatrix(x_solution, diagonal_scale_right);
+    
+#ifdef SELDON_WITH_MPI
+    MPI::Comm& comm = *comm_;
+    if (comm.Get_size() == 1)
+      SparseDirectSolver<T>::Solve(x_solution);
+    else
+      {
+        // extracting right hand side (we remove overlapped dofs)
+	int n = local_col_numbers.GetM();
+	int N = x_solution.GetM(), nrhs = x_solution.GetN();
+        Matrix<T1, General, ColMajor> x_sol_extract(n, nrhs);
+	for (int k = 0; k < nrhs; k++)
+	  for (int i = 0; i < local_col_numbers.GetM(); i++)
+	    x_sol_extract(i, k) = x_solution(local_col_numbers(i), k);
+        
+	x_solution.Clear();
+        SolveLU_Distributed(comm, SeldonTrans, *this,
+                            x_sol_extract, global_col_numbers);
+        
+	x_solution.Reallocate(N, nrhs);
+        x_solution.Fill(0);
+	for (int k = 0; k < nrhs; k++)
+	  for (int i = 0; i < local_col_numbers.GetM(); i++)
+	    x_solution(local_col_numbers(i), k) = x_sol_extract(i, k);
+        
+        // adding overlapped components
+        this->AssembleVec(x_solution);
+      }
+#else
+    SparseDirectSolver<T>::Solve(x_solution);
+#endif
+    
+    if (diagonal_scaling_right)
+      ScaleLeftMatrix(x_solution, diagonal_scale_left);
+  }
+
+
+  template<class T> template<class T1>
+  void SparseDistributedSolver<T>::Solve(const SeldonTranspose& trans,
+                                         Matrix<T1, General, ColMajor>& x_solution)
+  {
+    if (trans.NoTrans())
+      Solve(x_solution);
+    else
+      TransSolve(x_solution);
+  }
+  
+  
   
 
 #ifdef SELDON_WITH_MPI

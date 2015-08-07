@@ -269,9 +269,11 @@ namespace Seldon
 	  int ok = colamd(n, n, Ind.GetM(), Ind.GetData(), Ptr.GetData(), NULL, Stats);
 	  if (ok != 1)
 	    {
+#ifndef SELDON_WITH_SUPERLU_MT
 	      colamd_report(Stats);
 	      throw Error("FindSparseOrdering(Matrix&, Vector&, int)",
 			  "COLAMD failed");
+#endif
 	    }
 	  
 	  for (int i = 0; i < n; i++)

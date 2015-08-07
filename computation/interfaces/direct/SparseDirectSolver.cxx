@@ -336,17 +336,28 @@ namespace Seldon
 	    }
 	  else if (type_solver == PASTIX)
 	    {
-#ifdef SELDON_WITH_SCOTCH
+#ifdef SELDON_WITH_PASTIX
 	      mat_pastix.SelectOrdering(API_ORDER_METIS);
 #endif
 	    }
 	  else if (type_solver == UMFPACK)
 	    {
-#ifdef SELDON_WITH_SCOTCH
+#ifdef SELDON_WITH_UMFPACK
 	      mat_umf.SelectOrdering(UMFPACK_ORDERING_METIS);
 #endif
 	    }
-
+          /*
+            currently not implemented in SuperLU
+	  else if (type_solver == SUPERLU)
+	    {
+#ifdef SELDON_WITH_SUPERLU
+              if (type_ordering==SparseMatrixOrdering::PARMETIS)
+                mat_superlu.SelectOrdering(superlu::PARMETIS);
+              else
+                mat_superlu.SelectOrdering(superlu::METIS_AT_PLUS_A);
+#endif
+	    }
+          */
 	  else
 	    {
 	      user_ordering = true;
@@ -380,6 +391,25 @@ namespace Seldon
 	      user_ordering = true;
 	    }
 	}
+      case SparseMatrixOrdering::MMD_AT_PLUS_A:
+        {
+          if (type_solver == SUPERLU)
+	    {
+#ifdef SELDON_WITH_SUPERLU
+	      mat_superlu.SelectOrdering(superlu::MMD_AT_PLUS_A);
+#endif
+	    }
+        }
+        break;
+      case SparseMatrixOrdering::MMD_ATA:
+        {
+          if (type_solver == SUPERLU)
+	    {
+#ifdef SELDON_WITH_SUPERLU
+	      mat_superlu.SelectOrdering(superlu::MMD_ATA);
+#endif
+	    }
+        }
 	break;
       }
     

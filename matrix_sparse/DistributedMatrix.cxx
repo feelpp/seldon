@@ -490,7 +490,7 @@ namespace Seldon
         
         if (nb < size)
           {
-            IVect num(size), proc(size); Vector<entry_type> val(size);
+            IVect num(size), proc(size); Vector<T> val(size);
             for (int j = 0; j < size; j++)
               {
                 num(j) = dist_vec(i).Index(j);
@@ -1302,10 +1302,10 @@ namespace Seldon
       taille += sizeof(int)*local_col_to_send(i).GetM();
     
     for (int i = 0; i < dist_row.GetM(); i++)
-      taille += (sizeof(entry_type)+sizeof(int))*dist_row(i).GetM();
+      taille += (sizeof(T)+sizeof(int))*dist_row(i).GetM();
 
     for (int i = 0; i < dist_col.GetM(); i++)
-      taille += (sizeof(entry_type)+sizeof(int))*dist_col(i).GetM();
+      taille += (sizeof(T)+sizeof(int))*dist_col(i).GetM();
     
     return taille;
   }
@@ -1408,7 +1408,7 @@ namespace Seldon
     
     // setting to 0 diagonal of overlapped rows
     const IVect& overlap = this->GetOverlapRowNumber();
-    entry_type zero; SetComplexZero(zero);
+    T zero; SetComplexZero(zero);
     for (int i = 0; i < overlap.GetM(); i++)
       this->Set(overlap(i), overlap(i), zero);
 
@@ -1577,7 +1577,7 @@ namespace Seldon
     
     // converting local part into coordinate form
     Vector<int> IndRow, IndCol;
-    Vector<entry_type> Value;
+    Vector<T> Value;
     ConvertMatrix_to_Coordinates(*this, IndRow, IndCol, Value, 0, true);
     
     // extending arrays in order to contain non-local part
@@ -2960,23 +2960,63 @@ namespace Seldon
   template<class T1, class Prop1, class Storage1, class Allocator1>
   void Transpose(DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A)
   {
+    int smax_row = A.size_max_distant_row;
+    int smax_col = A.size_max_distant_col;
+    
+    // storing the distributed datas
+    Vector<Vector<T1, VectSparse>, VectFull,
+           NewAlloc<Vector<T1, VectSparse> > > dist_row, dist_col;
+
+    Vector<IVect> proc_row, proc_col;
+    
+    IVect global_row_to_recv, global_col_to_recv;
+    IVect ptr_global_row_to_recv, ptr_global_col_to_recv;
+    Vector<IVect> local_row_to_send, local_col_to_send;
+    IVect proc_col_to_recv, proc_col_to_send,
+      proc_row_to_recv, proc_row_to_send;
+
+    SwapPointer(A.dist_row, dist_row);
+    SwapPointer(A.dist_col, dist_col);
+    SwapPointer(A.proc_row, proc_row);
+    SwapPointer(A.proc_col, proc_col);
+    SwapPointer(A.global_row_to_recv, global_row_to_recv);
+    SwapPointer(A.global_col_to_recv, global_col_to_recv);
+    SwapPointer(A.ptr_global_row_to_recv, ptr_global_row_to_recv);
+    SwapPointer(A.ptr_global_col_to_recv, ptr_global_col_to_recv);
+    SwapPointer(A.local_row_to_send, local_row_to_send);
+    SwapPointer(A.local_col_to_send, local_col_to_send);
+    SwapPointer(A.proc_row_to_recv, proc_row_to_recv);
+    SwapPointer(A.proc_col_to_recv, proc_col_to_recv);
+    SwapPointer(A.proc_row_to_send, proc_row_to_send);
+    SwapPointer(A.proc_col_to_send, proc_col_to_send);
+    bool local_number_distant_values = A.local_number_distant_values;
+
+    // local matrix is transposed (A may be erased during the process)
     Transpose(static_cast<Matrix<T1, Prop1, Storage1, Allocator1>& >(A));
     
     const MPI::Comm& comm = A.GetCommunicator();
     if (comm.Get_size() == 1)
       return;
     
-    SwapPointer(A.dist_row, A.dist_col);
-    SwapPointer(A.proc_row, A.proc_col);
-    SwapPointer(A.global_row_to_recv, A.global_col_to_recv);
-    SwapPointer(A.ptr_global_row_to_recv, A.ptr_global_col_to_recv);
-    SwapPointer(A.local_row_to_send, A.local_col_to_send);
-    SwapPointer(A.proc_row_to_recv, A.proc_col_to_recv);
-    SwapPointer(A.proc_row_to_send, A.proc_col_to_send);
+    // transposing distributed datas
+    SwapPointer(A.dist_row, dist_col);
+    SwapPointer(A.dist_col, dist_row);
+    SwapPointer(A.proc_row, proc_col);
+    SwapPointer(A.proc_col, proc_row);
+    SwapPointer(A.global_row_to_recv, global_col_to_recv);
+    SwapPointer(A.global_col_to_recv, global_row_to_recv);
+    SwapPointer(A.ptr_global_row_to_recv, ptr_global_col_to_recv);
+    SwapPointer(A.ptr_global_col_to_recv, ptr_global_row_to_recv);
+    SwapPointer(A.local_row_to_send, local_col_to_send);
+    SwapPointer(A.local_col_to_send, local_row_to_send);
+    SwapPointer(A.proc_row_to_recv, proc_col_to_recv);
+    SwapPointer(A.proc_col_to_recv, proc_row_to_recv);
+    SwapPointer(A.proc_row_to_send, proc_col_to_send);
+    SwapPointer(A.proc_col_to_send, proc_row_to_send);
+    A.local_number_distant_values = local_number_distant_values;
     
-    int itmp = A.size_max_distant_row;
-    A.size_max_distant_row = A.size_max_distant_col;
-    A.size_max_distant_col = itmp;
+    A.size_max_distant_row = smax_col;
+    A.size_max_distant_col = smax_row;
   }
   
 
@@ -3028,7 +3068,7 @@ namespace Seldon
     B.local_row_to_send = A.local_col_to_send;
     B.proc_row_to_recv = A.proc_col_to_recv;
     B.proc_row_to_send = A.proc_col_to_send;
-    B.local_number_distant_values = B.local_number_distant_values;
+    B.local_number_distant_values = A.local_number_distant_values;
     
     B.size_max_distant_row = A.size_max_distant_col;
     B.size_max_distant_col = A.size_max_distant_row;
@@ -3753,7 +3793,7 @@ namespace Seldon
                     if (nsend_int(proc) == 0)
                       {
                         nsend_int(proc) = 2;
-                        EntierToSend(proc).Reallocate(size_row+2);
+                        EntierToSend(proc).Reallocate(nfac*size_row+4);
                         FloatToSend(proc).Reallocate(size_row);
                         EntierToSend(proc)(0) = 0;
                         EntierToSend(proc)(1) = 0;
@@ -3900,7 +3940,7 @@ namespace Seldon
                     else
                       {
                         if (size_col == 1)
-                          B.AddInteraction(irow, index(0), values(0));
+                          B.AddInteraction(index(0), irow, values(0));
                         else
                           B.AddInteractionColumn(irow, size_col, index, values);
                       }
@@ -3914,7 +3954,7 @@ namespace Seldon
                     if (nsend_int(proc) == 0)
                       {
                         nsend_int(proc) = 2;
-                        EntierToSend(proc).Reallocate(size_col+2);
+                        EntierToSend(proc).Reallocate(nfac*size_col+4);
                         FloatToSend(proc).Reallocate(size_col);
                         EntierToSend(proc)(0) = 0;
                         EntierToSend(proc)(1) = 0;

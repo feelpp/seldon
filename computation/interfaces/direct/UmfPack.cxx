@@ -80,7 +80,7 @@ namespace Seldon
     if (this->n > 0)
       {
         int64_t size_mem = (this->Info(UMFPACK_SYMBOLIC_SIZE)
-                            + this->Info(UMFPACK_VARIABLE_PEAK))
+                            + this->Info(UMFPACK_NUMERIC_SIZE_ESTIMATE))
           *int64_t(this->Info(UMFPACK_SIZE_OF_UNIT));
         
         return size_mem;
@@ -186,7 +186,7 @@ namespace Seldon
     if (this->n > 0)
       {
         // memory used for matrix is released
-	AllocatorInt::dealloate(ptr_, this->n+1);
+	AllocatorInt::deallocate(ptr_, this->n+1);
 	AllocatorInt::deallocate(ind_, this->n+1);
 	Allocator::deallocate(data_real_, this->n+1);
 	Allocator::deallocate(data_imag_, this->n+1);
@@ -252,9 +252,9 @@ namespace Seldon
 
     if (print_level > 0)
       {
-	int size_mem = (this->Info(UMFPACK_SYMBOLIC_SIZE)
+	int64_t size_mem = int64_t(this->Info(UMFPACK_SYMBOLIC_SIZE)
 			+ this->Info(UMFPACK_NUMERIC_SIZE_ESTIMATE))
-	  *this->Info(UMFPACK_SIZE_OF_UNIT);
+	  *int64_t(this->Info(UMFPACK_SIZE_OF_UNIT));
 
 	cout << "Memory used to store LU factors: "
 	     << double(size_mem)/(1024*1024) << " MB" << endl;
@@ -428,12 +428,12 @@ namespace Seldon
 
     if (print_level > 0)
       {
-	int size_mem = (this->Info(UMFPACK_SYMBOLIC_SIZE)
+	int64_t size_mem = int64_t(this->Info(UMFPACK_SYMBOLIC_SIZE)
 			+ this->Info(UMFPACK_NUMERIC_SIZE_ESTIMATE))
-	  *this->Info(UMFPACK_SIZE_OF_UNIT);
+	  *int64_t(this->Info(UMFPACK_SIZE_OF_UNIT));
 
 	cout << "Estimated memory used to store LU factors: "
-	     << double(size_mem)/(1024*1024) << " MB" << endl;
+	     << double(size_mem)/(1024*1024) << " MiB" << endl;
       }
   }
 

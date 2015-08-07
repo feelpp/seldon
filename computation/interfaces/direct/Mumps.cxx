@@ -914,8 +914,9 @@ namespace Seldon
                         int nb_dof = nump(i).GetM();
                         xp.Reallocate(nb_dof, nrhs_p);
                         
-                        comm_facto.Recv(xp.GetDataVoid(), cplx*nb_dof*nrhs_p,
-                                        MPI::DOUBLE, i, 37, status);
+                        if (nb_dof > 0)
+                          comm_facto.Recv(xp.GetDataVoid(), cplx*nb_dof*nrhs_p,
+                                          MPI::DOUBLE, i, 37, status);
                       }
                     else
                       {
@@ -943,7 +944,8 @@ namespace Seldon
           {
             // On other processors, we send right hand side.
             int nb_dof = x.GetM();
-            comm_facto.Ssend(&x(0, num_rhs), cplx*nb_dof*nrhs_p, MPI::DOUBLE, 0, 37);
+            if (nb_dof > 0)              
+              comm_facto.Ssend(&x(0, num_rhs), cplx*nb_dof*nrhs_p, MPI::DOUBLE, 0, 37);
           }
     
         // we solve system

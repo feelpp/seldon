@@ -304,7 +304,8 @@ namespace Seldon
   {
     permc_spec = superlu::MY_PERMC;
     perm_c = permut;
-    perm_r = permut;
+    perm_r.Reallocate(perm_c.GetM());
+    perm_r.Fill();
   }
   
   
@@ -477,8 +478,6 @@ namespace Seldon
 #ifdef SELDON_WITH_SUPERLU_MT
     superlu::SuperMatrix AC;
     superlu::trans_t  trans = superlu::NOTRANS;
-    perm_r.Reallocate(n);
-    perm_c.Reallocate(n);
     
     superlu::pdgstrf_init(nprocs, fact, trans, refact, panel_size, relax,
                           diag_pivot_thresh, usepr, drop_tol,
@@ -1283,8 +1282,8 @@ namespace Seldon
       options.Trans = superlu::NOTRANS;
        
     options.Trans = superlu::NOTRANS;
-    Vector<double> berr(x.GetM());
     int nrhs = 1, info;
+    Vector<double> berr(nrhs);
     superlu::
       pzgssvx(&options, &A, &ScalePermstruct,
               reinterpret_cast<superlu::doublecomplex*>(x.GetData()),
@@ -1316,8 +1315,8 @@ namespace Seldon
       options.Trans = superlu::NOTRANS;
        
     options.Trans = superlu::NOTRANS;
-    Vector<double> berr(x.GetM());
     int nrhs = x.GetN(), info;
+    Vector<double> berr(nrhs);
     superlu::
       pzgssvx(&options, &A, &ScalePermstruct,
               reinterpret_cast<superlu::doublecomplex*>(x.GetData()),

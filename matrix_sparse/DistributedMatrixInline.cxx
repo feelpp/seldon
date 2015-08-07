@@ -80,7 +80,7 @@ namespace Seldon
   */
   template<class T, class Prop, class Storage, class Allocator>
   inline void DistributedMatrix<T, Prop, Storage, Allocator>::
-  AddDistantInteraction(int i, int jglob, int proc2, const entry_type& val)
+  AddDistantInteraction(int i, int jglob, int proc2, const T& val)
   {
     if (local_number_distant_values)
       SwitchToGlobalNumbers();
@@ -100,7 +100,7 @@ namespace Seldon
   template<class T, class Prop, class Storage, class Allocator>
   inline void DistributedMatrix<T, Prop, Storage, Allocator>
   ::AddRowDistantInteraction(int iglob, int j,
-			     int proc2, const entry_type& val)
+			     int proc2, const T& val)
   {
     if (local_number_distant_values)
       SwitchToGlobalNumbers();
@@ -113,7 +113,7 @@ namespace Seldon
   template<class T, class Prop, class Storage, class Allocator>
   inline void DistributedMatrix<T, Prop, Storage, Allocator>
   ::AddInteractionRow(int i, int num_val, const Vector<int>& col,
-		      const Vector<entry_type>& val)
+		      const Vector<T>& val)
   {
     Matrix<T, Prop, Storage, Allocator>::
       AddInteractionRow(i, num_val, col, val);
@@ -236,6 +236,62 @@ namespace Seldon
    * Mlt, MltAdd for distributed matrices *
    ****************************************/
 
+
+  template<class T, class Prop, class Storage, class Allocator>
+  inline void Mlt(const T& alpha,
+                  DistributedMatrix<T, Prop, Storage, Allocator>& A)
+  {
+    MltScalar(alpha, A);
+  }
+
+  template<class T, class Prop, class Storage, class Allocator>
+  inline void Mlt(const T& alpha,
+                  DistributedMatrix<complex<T>, Prop, Storage, Allocator>& A)
+  {
+    MltScalar(alpha, A);
+  }
+
+
+  template <class T,
+	    class Prop1, class Storage1, class Allocator1,
+	    class Prop2, class Storage2, class Allocator2>
+  inline void Add(const T& alpha,
+		  const DistributedMatrix<T, Prop1, Storage1, Allocator1>& A,
+		  DistributedMatrix<T, Prop2, Storage2, Allocator2>& B)
+  {
+    AddMatrix(alpha, A, B);
+  }
+
+  template <class T,
+	    class Prop1, class Storage1, class Allocator1,
+	    class Prop2, class Storage2, class Allocator2>
+  inline void Add(const complex<T>& alpha,
+		  const DistributedMatrix<T, Prop1, Storage1, Allocator1>& A,
+		  DistributedMatrix<complex<T>, Prop2, Storage2, Allocator2>& B)
+  {
+    AddMatrix(alpha, A, B);
+  }
+
+
+  template <class T,
+	    class Prop1, class Storage1, class Allocator1,
+	    class Prop2, class Storage2, class Allocator2>
+  inline void Add(const T& alpha,
+		  const DistributedMatrix<complex<T>, Prop1, Storage1, Allocator1>& A,
+		  DistributedMatrix<complex<T>, Prop2, Storage2, Allocator2>& B)
+  {
+    AddMatrix(alpha, A, B);
+  }
+
+  template <class T,
+	    class Prop1, class Storage1, class Allocator1,
+	    class Prop2, class Storage2, class Allocator2>
+  inline void Add(const T& alpha,
+		  const DistributedMatrix<complex<T>, Prop1, Storage1, Allocator1>& A,
+		  DistributedMatrix<T, Prop2, Storage2, Allocator2>& B)
+  {
+    throw WrongArgument("Add", "incompatible types");    
+  }
 
   template<class T0, class Prop0, class Storage0, class Allocator0>
   inline void Mlt(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,

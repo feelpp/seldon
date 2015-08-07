@@ -616,7 +616,7 @@ namespace Seldon
   //! solves A x = b in parallel
   template<class T> template<class Allocator2, class Tint>
   void MatrixPastix<T>::SolveDistributed(MPI::Comm& comm_facto,
-                                         Vector<T, Vect_Full, Allocator2>& x,
+                                         Vector<T, VectFull, Allocator2>& x,
                                          const Vector<Tint>& glob_num)
   {
     SolveDistributed(comm_facto, SeldonNoTrans, x, glob_num);
@@ -628,7 +628,7 @@ namespace Seldon
   template<class Allocator2, class Tint>
   void MatrixPastix<T>::SolveDistributed(MPI::Comm& comm_facto,
                                          const SeldonTranspose& TransA,
-                                         Vector<T, Vect_Full, Allocator2>& x,
+                                         Vector<T, VectFull, Allocator2>& x,
                                          const Vector<Tint>& glob_num)
   {
     pastix_int_t nrhs = 1;
@@ -654,6 +654,53 @@ namespace Seldon
           iparm[IPARM_END_TASK] = API_TASK_REFINE;
         else
           iparm[IPARM_END_TASK] = API_TASK_SOLVE;        
+      }
+    
+    iparm[IPARM_START_TASK] = API_TASK_SOLVE;
+
+    CallPastix(comm_facto, NULL, NULL, NULL, rhs_, nrhs);
+  }
+
+
+  //! solves A x = b in parallel
+  template<class T> template<class Allocator2, class Tint>
+  void MatrixPastix<T>::SolveDistributed(MPI::Comm& comm_facto,
+                                         Matrix<T, General, ColMajor, Allocator2>& x,
+                                         const Vector<Tint>& glob_num)
+  {
+    SolveDistributed(comm_facto, SeldonNoTrans, x, glob_num);
+  }
+
+
+  //! solves A x = b or A^T x = b in parallel
+  template<class T>
+  template<class Allocator2, class Tint>
+  void MatrixPastix<T>::SolveDistributed(MPI::Comm& comm_facto,
+                                         const SeldonTranspose& TransA,
+                                         Matrix<T, General, ColMajor, Allocator2>& x,
+                                         const Vector<Tint>& glob_num)
+  {
+    pastix_int_t nrhs = x.GetN();
+    T* rhs_ = x.GetData();
+
+    if (cholesky)
+      {
+        if (TransA.Trans())
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_SOLVE_BACKWARD_ONLY;
+        else
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_SOLVE_FORWARD_ONLY;
+
+        iparm[IPARM_END_TASK] = API_TASK_SOLVE;
+      }
+    else
+      {
+        if (TransA.Trans())
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_YES;
+        else
+          iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
+        
+        // no refinement for multiple right hand sides
+        iparm[IPARM_END_TASK] = API_TASK_SOLVE;        
       }
     
     iparm[IPARM_START_TASK] = API_TASK_SOLVE;

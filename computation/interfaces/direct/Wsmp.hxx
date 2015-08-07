@@ -117,6 +117,13 @@ namespace Seldon
     void SolveDistributed(MPI::Comm& comm_facto,
                           const SeldonTranspose& TransA,
 			  Vector<T>& x, const Vector<int>& glob_num);
+
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          Matrix<T, General, ColMajor>& x, const Vector<int>& glob_num);
+
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          const SeldonTranspose& TransA,
+			  Matrix<T, General, ColMajor>& x, const Vector<int>& glob_num);
 #endif
     
   };

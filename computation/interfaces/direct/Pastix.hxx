@@ -121,15 +121,26 @@ namespace Seldon
 
     template<class Allocator2, class Tint>
     void SolveDistributed(MPI::Comm& comm_facto,
-                          Vector<T, Vect_Full, Allocator2>& x,
+                          Vector<T, VectFull, Allocator2>& x,
                           const Vector<Tint>& glob_num);
 
     template<class Allocator2, class Tint>
     void SolveDistributed(MPI::Comm& comm_facto,
                           const SeldonTranspose& TransA,
-			  Vector<T, Vect_Full, Allocator2>& x,
+			  Vector<T, VectFull, Allocator2>& x,
                           const Vector<Tint>& glob_num);
 
+    template<class Allocator2, class Tint>
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          Matrix<T, General, ColMajor, Allocator2>& x,
+                          const Vector<Tint>& glob_num);
+
+    template<class Allocator2, class Tint>
+    void SolveDistributed(MPI::Comm& comm_facto,
+                          const SeldonTranspose& TransA,
+			  Matrix<T, General, ColMajor, Allocator2>& x,
+                          const Vector<Tint>& glob_num);
+    
   };
 
   template<class T0, class Prop, class Storage, class Allocator, class T>

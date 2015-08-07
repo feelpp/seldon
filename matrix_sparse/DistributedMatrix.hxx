@@ -33,11 +33,6 @@ namespace Seldon
     template<class T0, class Prop0, class Storage0, class Allocator0>
     friend class DistributedMatrix_BlockDiag;
     
-  public :
-    //! type of non-zero entries (double, complex<double>, etc)
-    typedef typename Matrix<T, Prop,
-			    Storage, Allocator>::entry_type entry_type;
-    
   protected :
     //! row numbers shared with other processors
     /*!
@@ -77,12 +72,12 @@ namespace Seldon
     MPI::Comm* comm_;
     
     //! additional values on rows with non-local columns
-    Vector<Vector<entry_type, VectSparse>, VectFull,
-           NewAlloc<Vector<entry_type, VectSparse> > > dist_col;
+    Vector<Vector<T, VectSparse>, VectFull,
+           NewAlloc<Vector<T, VectSparse> > > dist_col;
     
     //! additional values on columns with non-local rows
-    Vector<Vector<entry_type, VectSparse>, VectFull,
-                  NewAlloc<Vector<entry_type, VectSparse> > > dist_row;
+    Vector<Vector<T, VectSparse>, VectFull,
+                  NewAlloc<Vector<T, VectSparse> > > dist_row;
     
     //! distant processor for additional values
     Vector<IVect> proc_col, proc_row;
@@ -162,10 +157,10 @@ namespace Seldon
     int GetNbScalarUnknowns() const;
 
     void AddDistantInteraction(int i, int jglob, int proc,
-                               const entry_type& val);
+                               const T& val);
     
     void AddRowDistantInteraction(int iglob, int j, int proc,
-                                  const entry_type& val);
+                                  const T& val);
 
     int GetMaxDataSizeDistantCol() const;
     int GetMaxDataSizeDistantRow() const;
@@ -235,7 +230,7 @@ namespace Seldon
     
     // adding values to matrix    
     void AddInteractionRow(int, int, const Vector<int>&,
-			   const Vector<entry_type>&);
+			   const Vector<T>&);
     
     // functions for matrix-vector product    
     void PrepareMltAdd();
@@ -723,6 +718,42 @@ namespace Seldon
    * Mlt, MltAdd for distributed matrices *
    ****************************************/
 
+  template<class T, class Prop, class Storage, class Allocator>
+  void Mlt(const T& alpha,
+           DistributedMatrix<T, Prop, Storage, Allocator>& A);
+
+  template<class T, class Prop, class Storage, class Allocator>
+  void Mlt(const T& alpha,
+           DistributedMatrix<complex<T>, Prop, Storage, Allocator>& A);
+
+  template <class T,
+	    class Prop1, class Storage1, class Allocator1,
+	    class Prop2, class Storage2, class Allocator2>
+  void Add(const T& alpha,
+           const DistributedMatrix<T, Prop1, Storage1, Allocator1>& A,
+           DistributedMatrix<T, Prop2, Storage2, Allocator2>& B);
+  
+  template <class T,
+	    class Prop1, class Storage1, class Allocator1,
+	    class Prop2, class Storage2, class Allocator2>
+  void Add(const complex<T>& alpha,
+           const DistributedMatrix<T, Prop1, Storage1, Allocator1>& A,
+           DistributedMatrix<complex<T>, Prop2, Storage2, Allocator2>& B);
+
+  template <class T,
+	    class Prop1, class Storage1, class Allocator1,
+	    class Prop2, class Storage2, class Allocator2>
+  void Add(const T& alpha,
+           const DistributedMatrix<complex<T>, Prop1, Storage1, Allocator1>& A,
+           DistributedMatrix<complex<T>, Prop2, Storage2, Allocator2>& B);
+  
+  template <class T,
+	    class Prop1, class Storage1, class Allocator1,
+	    class Prop2, class Storage2, class Allocator2>
+  void Add(const T& alpha,
+           const DistributedMatrix<complex<T>, Prop1, Storage1, Allocator1>& A,
+           DistributedMatrix<T, Prop2, Storage2, Allocator2>& B);
+  
   template<class T0, class Prop0, class Storage0, class Allocator0>
   void Mlt(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>&,
 	   const Vector<T0>& X, Vector<T0>& Y, bool assemble = true);
