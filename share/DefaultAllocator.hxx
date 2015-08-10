@@ -34,6 +34,13 @@ namespace Seldon
   };  
 
   template<class Storage>
+  class SeldonDefaultAllocator<Storage, int64_t>
+  {
+  public:
+    typedef MallocAlloc<int64_t> allocator;
+  };  
+
+  template<class Storage>
   class SeldonDefaultAllocator<Storage, float>
   {
   public:

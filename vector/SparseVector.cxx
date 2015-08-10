@@ -518,26 +518,17 @@ namespace Seldon
     int k;
 
     // If the entry does not exist, the vector is reallocated.
-    Vector<T, VectFull, Allocator> new_val(this->m_ + 1);
-    Vector<int> new_ind(this->m_ + 1);
-    for (k = 0; k < pos; k++)
+    Resize(this->m_ + 1);
+    
+    for (k = this->m_-1; k > pos; k--)
       {
-	new_ind(k) = index_[k];
-	new_val(k) = this->data_[k];
+        this->data_[k] = this->data_[k-1];
+        this->index_[k] = this->index_[k-1];
       }
 
     // The new entry.
-    new_ind(pos) = i;
-    new_val(pos) = val;
-
-    // Other values in the vector.
-    for (k = pos + 1; k <= this->m_; k++)
-      {
-	new_ind(k) = index_[k - 1];
-	new_val(k) = this->data_[k - 1];
-      }
-
-    SetData(new_val, new_ind);
+    this->index_[pos] = i;
+    this->data_[pos] = val;
   }
 
 
@@ -584,6 +575,16 @@ namespace Seldon
   {
     Vector<int> index;
     Vector<T, VectFull, Allocator0> value;
+
+    if (!already_sorted)
+      {
+        // checking if numbers are sorted
+        already_sorted = true;
+        for (int i = 0; i < n-1; i++)
+          if (index2(i+1) <= index2(i))
+            already_sorted = false;
+      }
+    
     if (!already_sorted)
       {
         index.Reallocate(n);
