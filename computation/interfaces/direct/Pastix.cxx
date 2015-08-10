@@ -547,10 +547,6 @@ namespace Seldon
     if (n <= 0)
       return;
     
-    //Val.Write("ValP" + to_str(comm_facto.Get_rank()) + ".dat");
-    //IndRow.WriteText("IndexP" + to_str(comm_facto.Get_rank()) + ".dat");
-    //Ptr.WriteText("PtrP" + to_str(comm_facto.Get_rank()) + ".dat");
-    glob_number.WriteText("numP" + to_str(comm_facto.Get_rank()) + ".dat");
     distributed = true;
 
     if (sym)
