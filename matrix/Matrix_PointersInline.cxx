@@ -79,7 +79,7 @@ namespace Seldon
   template<class T, class Prop, class Storage, class Allocator>
   inline int64_t Matrix_Pointers<T, Prop, Storage, Allocator>::GetMemorySize() const
   {
-    int64_t taille = int64_t(this->GetDataSize())*sizeof(T);
+    int64_t taille = sizeof(*this) + int64_t(this->GetDataSize())*sizeof(T);
     taille += int64_t(Storage::GetFirst(this->m_, this->n_))*sizeof(pointer);
     return taille;
   }

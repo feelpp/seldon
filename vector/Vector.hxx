@@ -68,6 +68,7 @@ namespace Seldon
     int GetM() const;
     int GetLength() const;
     int GetSize() const;
+    int64_t GetMemorySize() const;
     pointer GetData() const;
     const_pointer GetDataConst() const;
     void* GetDataVoid() const;
@@ -111,6 +112,7 @@ namespace Seldon
     // Memory management.
     void Reallocate(int i);
     void Resize(int i);
+    void ResizeVector(int i);
     void SetData(int i, pointer data);
     template <class Allocator0>
     void SetData(const Vector<T, VectFull, Allocator0>& V);

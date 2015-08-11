@@ -418,12 +418,12 @@ namespace Seldon
     
     int64_t nnz = struct_mumps.info[8];
     if (struct_mumps.info[8] < 0)
-      nnz = abs(struct_mumps.info[8])*int64_t(1000000);
+      nnz = abs(struct_mumps.info[8])*int64_t(1024*1024);
 
     taille += sizeof(T)*nnz ;
     nnz = struct_mumps.info[9];
     if (struct_mumps.info[9] < 0)
-      nnz = abs(struct_mumps.info[9])*int64_t(1000000);
+      nnz = abs(struct_mumps.info[9])*int64_t(1024*1024);
     
     taille += sizeof(int)*nnz;
     return taille;

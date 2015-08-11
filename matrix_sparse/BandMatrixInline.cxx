@@ -73,7 +73,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline int64_t Matrix_Band<T, Prop, Storage, Allocator>::GetMemorySize() const
   {
-    return sizeof(T)*int64_t(data_.GetDataSize());
+    return sizeof(*this) + data_.GetMemorySize() - sizeof(data_);
   }
   
   
@@ -311,7 +311,9 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline int64_t Matrix_Arrow<T, Prop, Storage, Allocator>::GetMemorySize() const
   {
-    return sizeof(T)*int64_t(GetDataSize());
+    return Matrix_Band<T, Prop, Storage, Allocator>::GetMemorySize()
+      + last_rows_.GetMemorySize() + last_columns_.GetMemorySize()
+      + last_block_.GetMemorySize();
   }
   
   

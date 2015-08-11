@@ -175,7 +175,10 @@ namespace Seldon
   template<class T>
   int64_t MatrixWsmp<T>::GetMemorySize() const
   {
-    return int64_t(iparm(22))*1024*sizeof(T);
+    if (n > 0)
+      return int64_t(iparm(22))*1024*sizeof(T);
+    
+    return 0;
   }
   
   

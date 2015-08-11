@@ -34,7 +34,6 @@ namespace Seldon
   protected :
     cholmod_common param_chol;
     cholmod_factor* L;
-    cholmod_sparse* Lsparse;
     int n;
 
   public :
@@ -46,6 +45,8 @@ namespace Seldon
     void HideMessages();
     void ShowMessages();
     void ShowFullHistory();
+    
+    int64_t GetMemorySize() const;
 
     template<class Prop, class Storage, class Allocator>
     void FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,

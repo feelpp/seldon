@@ -548,6 +548,22 @@ namespace Seldon
     return n;
   }
   
+  
+  //! returns memory size used by the object in bytes
+  template<class T>
+  int64_t SparseCholeskySolver<T>::GetMemorySize() const
+  {
+    int64_t taille = mat_sym.GetMemorySize();
+    taille += xtmp.GetMemorySize();
+#ifdef SELDON_WITH_CHOLMOD
+    taille += mat_chol.GetMemorySize();
+#endif
+#ifdef SELDON_WITH_PASTIX
+    taille += mat_pastix.GetMemorySize();
+#endif
+    return taille;
+  }
+  
     
   //! Returns the type of ordering used.
   template<class T>

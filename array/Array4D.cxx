@@ -231,6 +231,18 @@ namespace Seldon
    ************************/
 
 
+  //! Returns the memory used by the object in bytes.
+  /*!
+    In this method, the type T is assumed to be "static"
+    such that sizeof(T) provides the correct size
+  */
+  template <class T, class Allocator>
+  int64_t Array4D<T, Allocator>::GetMemorySize() const
+  {
+    return sizeof(*this) + int64_t(sizeof(T))*GetDataSize();
+  }
+
+
   //! Sets all elements to zero.
   /*!
     \warning It fills the memory with zeros. If the 4D array stores complex

@@ -230,6 +230,17 @@ namespace Seldon
     return this->index_;
   }
 
+
+  //! Returns the memory used by the object in bytes.
+  /*!
+    In this method, the type T is assumed to be "static"
+    such that sizeof(T) provides the correct size
+  */
+  template <class T, class Allocator>
+  inline int64_t Vector<T, VectSparse, Allocator>::GetMemorySize() const
+  {
+    return sizeof(*this) + int64_t(sizeof(T) + sizeof(int))*this->m_;
+  }
   
 } // namespace Seldon.
 

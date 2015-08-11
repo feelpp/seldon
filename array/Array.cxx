@@ -1193,6 +1193,20 @@ namespace Seldon
    * CONVENIENT FUNCTIONS *
    ************************/
 
+  
+  //! Returns the memory used by the object in bytes.
+  /*!
+    In this method, the type T is assumed to be "static"
+    such that sizeof(T) provides the correct size
+  */
+  template <class T, int N, class Allocator>
+  int64_t Array<T, N, Allocator>::GetMemorySize() const
+  {
+    int64_t taille = sizeof(*this) + 2*N*sizeof(int);
+    taille += int64_t(sizeof(T))*GetDataSize();
+    return taille;
+  }
+
 
   //! Sets all elements to zero.
   /*!

@@ -79,7 +79,8 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline int64_t Matrix_Symmetric<T, Prop, Storage, Allocator>::GetMemorySize() const
   {
-    int64_t taille = int64_t(GetDataSize())*sizeof(T);
+    int64_t taille = sizeof(*this) + int64_t(GetDataSize())*sizeof(T);
+    taille += this->m_*sizeof(pointer);
     return taille;
   }
 

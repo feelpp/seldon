@@ -85,6 +85,7 @@ namespace Seldon
     int GetSize() const;
     int GetLength(int i) const;
     int GetSize(int i) const;
+    int64_t GetMemorySize() const;
     int GetNelement() const;
     int GetNelement(int beg, int end) const;
     Vector<int> GetShape() const;

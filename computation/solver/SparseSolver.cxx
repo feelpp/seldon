@@ -35,7 +35,7 @@ namespace Seldon
   int64_t SparseSeldonSolver<T, Allocator>::GetMemorySize() const
   {
     int64_t taille = mat_sym.GetMemorySize() + mat_unsym.GetMemorySize();
-    taille += sizeof(int)*(permutation_row.GetM() + permutation_col.GetM());
+    taille += permutation_row.GetMemorySize() + permutation_col.GetMemorySize();
     return taille;
   }
   

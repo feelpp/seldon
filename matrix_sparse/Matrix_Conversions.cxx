@@ -493,8 +493,7 @@ namespace Seldon
   {
     int Nelement = IndRow_.GetLength();
 
-    Vector<int> IndRow(Nelement),
-      IndCol(Nelement);
+    Vector<int> IndRow(Nelement), IndCol(Nelement);
     
     for (int i = 0; i < Nelement; i++)
       {
@@ -593,26 +592,18 @@ namespace Seldon
   template<class T, class Prop, class Allocator1,
 	   class Allocator2, class Allocator3>
   void
-  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow_,
-				 Vector<int, VectFull, Allocator2>& IndCol_,
+  ConvertMatrix_from_Coordinates(Vector<int, VectFull, Allocator1>& IndRow,
+				 Vector<int, VectFull, Allocator2>& IndCol,
 				 Vector<T, VectFull, Allocator3>& Val,
 				 Matrix<T, Prop, RowSymSparse, Allocator3>& A,
 				 int index)
   {
     // Assuming there is no duplicate value.
-    if (IndRow_.GetM() <= 0)
+    if (IndRow.GetM() <= 0)
       return;
 
-    int nnz = IndRow_.GetM();
-    Vector<int> IndRow(nnz), IndCol(nnz);
-    for (int i = 0; i < nnz; i++)
-      {
-	IndRow(i) = IndRow_(i);
-	IndCol(i) = IndCol_(i);
-      }
-    IndRow_.Clear();
-    IndCol_.Clear();
-
+    int nnz = IndRow.GetM();
+    
     int row_max = IndRow.GetNormInf();
     int col_max = IndCol.GetNormInf();
     int m = row_max - index + 1;

@@ -514,10 +514,10 @@ namespace Seldon
   template<class T>
   int64_t SparseDistributedSolver<T>::GetMemorySize() const
   {
-    int64_t taille = sizeof(Treal)*(diagonal_scale_left.GetM()
-				    +diagonal_scale_right.GetM());
+    int64_t taille = diagonal_scale_left.GetMemorySize()
+      + diagonal_scale_right.GetMemorySize();
     
-    taille += this->permut.GetM()*sizeof(int);
+    taille += this->permut.GetMemorySize();
 #ifdef SELDON_WITH_UMFPACK
     taille += this->mat_umf.GetMemorySize();
 #endif

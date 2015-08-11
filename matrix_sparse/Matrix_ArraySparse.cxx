@@ -109,11 +109,9 @@ namespace Seldon
   template<class T, class Prop, class Storage, class Allocator>
   int64_t Matrix_ArraySparse<T, Prop, Storage, Allocator>::GetMemorySize() const
   {
-    int coef = sizeof(T) + sizeof(int); // for each non-zero entry
-    // 1 int (=4bytes) and 2 int* (=16 bytes) per row
-    int64_t taille = 20*this->val_.GetM(); 
+    int64_t taille = sizeof(*this) + sizeof(pointer)*this->val_.GetM();
     for (int i = 0; i < this->val_.GetM(); i++)
-      taille += coef*int64_t(this->val_(i).GetM());
+      taille += this->val_(i).GetMemorySize();
     
     return taille;
   }

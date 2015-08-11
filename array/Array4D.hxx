@@ -81,7 +81,7 @@ namespace Seldon
     int GetLength3() const;
     int GetLength4() const;
     int GetSize() const;
-    int GetDataSize() const;
+    int GetDataSize() const; 
     pointer GetData() const;
     pointer GetDataPointer(int i, int j, int k, int l) const;
 
@@ -98,6 +98,7 @@ namespace Seldon
     void Copy(const Array4D<T, Allocator>& A);
 
     // Convenient functions.
+    int64_t GetMemorySize() const;
     void Zero();
     void Fill();
     template <class T0>

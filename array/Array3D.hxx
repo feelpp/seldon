@@ -94,6 +94,7 @@ namespace Seldon
     void Copy(const Array3D<T, Allocator>& A);
 
     // Convenient functions.
+    int64_t GetMemorySize() const;
     void Zero();
     void Fill();
     template <class T0>

@@ -201,6 +201,26 @@ namespace Seldon
   }
 
 
+  //! Returns the memory used by the object in bytes.
+  /*!
+    In this method, the type T is assumed to be "static"
+    such that sizeof(T) provides the correct size
+  */
+  template <class T, class Allocator0, class Allocator1, class Allocator2>
+  int64_t Vector3<T, Allocator0, Allocator1, Allocator2>::GetMemorySize() const
+  {
+    int64_t total = sizeof(*this) + sizeof(pointer)*GetLength();
+    for (int i = 0; i < GetLength(); i++)
+      {
+        total += sizeof(int)+sizeof(pointer)+sizeof(pointer)*GetLength(i);
+        for (int j = 0; j < GetLength(i); j++)
+          total += data_(i)(j).GetMemorySize();
+      }
+    
+    return total;
+  }
+  
+
   //! Returns the total number of elements in the inner vectors.
   /*!
     \return The sum of the lengths of the inner vectors.

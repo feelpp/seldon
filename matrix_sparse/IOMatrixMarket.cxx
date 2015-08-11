@@ -203,7 +203,6 @@ namespace Seldon
     if (row_numbers.GetM() > 0)
       ConvertMatrix_from_Coordinates(row_numbers, col_numbers, values,
                                      A, index);
-    
   }
 
 

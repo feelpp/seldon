@@ -130,7 +130,21 @@ namespace Seldon
   template <class T, class Allocator>
   void Vector<T, VectSparse, Allocator>::Resize(int n)
   {
+    ResizeVector(n);
+  }
 
+
+  //! Changes the number of non-zero entries of the vector.
+  /*! Changes the number of non-zero entries to \a n. If \a n non-zero entries
+    are available before resizing, they are all kept. Otherwise, only the
+    first \n non-zero entries are kept.
+    \param n new number of non-zero entries of the vector.
+  */
+  template <class T, class Allocator>
+  void Vector<T, VectSparse, Allocator>::ResizeVector(int n)
+  {
+    // function implemented in the aim that explicit specialization
+    // of Resize can call ResizeVector
     if (n == this->m_)
       return;
 

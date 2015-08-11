@@ -2245,7 +2245,7 @@ namespace Seldon
   int64_t Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
   ::GetMemorySize() const
   {
-    int64_t taille = 2*this->GetRealPtrSize()*sizeof(int);
+    int64_t taille = sizeof(*this) + 2*this->GetRealPtrSize()*sizeof(int);
     int coef = sizeof(value_type) + sizeof(int); // for each non-zero entry
     taille += coef*int64_t(this->real_nz_ + this->imag_nz_);
     return taille;

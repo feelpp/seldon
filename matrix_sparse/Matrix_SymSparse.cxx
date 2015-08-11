@@ -846,7 +846,7 @@ namespace Seldon
   template<class T, class Prop, class Storage, class Allocator>
   int64_t Matrix_SymSparse<T, Prop, Storage, Allocator>::GetMemorySize() const
   {
-    int64_t taille = this->GetPtrSize()*sizeof(int);
+    int64_t taille = sizeof(*this) + this->GetPtrSize()*sizeof(int);
     int coef = sizeof(T) + sizeof(int); // for each non-zero entry
     taille += coef*int64_t(this->nz_);
     return taille;

@@ -65,6 +65,7 @@ namespace Seldon
 
     int GetM() const;
     int GetN() const;
+    int64_t GetMemorySize() const;
 
     int GetTypeOrdering() const;
     void SetOrdering(const IVect&);

@@ -1278,34 +1278,32 @@ namespace Seldon
   ::GetMemorySize() const
   {
     int64_t taille = Matrix<T, Prop, Storage, Allocator>::GetMemorySize();
-    taille += sizeof(int)*(3*dist_col.GetM()+3*dist_row.GetM());
-    taille += sizeof(int)*(3*proc_col.GetM()+3*proc_row.GetM());
-    taille += sizeof(int)*(3*local_row_to_send.GetM()
-			   +3*local_col_to_send.GetM());
-    taille += sizeof(int)*(global_row_to_recv.GetM()
-			   +global_col_to_recv.GetM()+
-                           ptr_global_row_to_recv.GetM()
-			   +ptr_global_col_to_recv.GetM()+
-                           proc_col_to_recv.GetM()+proc_col_to_send.GetM()+
-                           proc_row_to_recv.GetM()+proc_row_to_send.GetM());
-
+    taille += sizeof(*this) + sizeof(int*)*(proc_row.GetM()+proc_col.GetM());
+    taille += sizeof(int*)*(local_row_to_send.GetM() + local_col_to_send.GetM()
+                            + dist_row.GetM() + dist_col.GetM());
+    
+    taille += global_row_to_recv.GetMemorySize() + global_col_to_recv.GetMemorySize() +
+      ptr_global_row_to_recv.GetMemorySize() + ptr_global_col_to_recv.GetMemorySize() +
+      proc_col_to_recv.GetMemorySize() + proc_col_to_send.GetMemorySize() +
+      proc_row_to_recv.GetMemorySize() + proc_row_to_send.GetMemorySize();
+    
     for (int i = 0; i < proc_row.GetM(); i++)
-      taille += sizeof(int)*proc_row(i).GetM();
+      taille += proc_row(i).GetMemorySize();
 
     for (int i = 0; i < proc_col.GetM(); i++)
-      taille += sizeof(int)*proc_col(i).GetM();
+      taille += proc_col(i).GetMemorySize();
 
     for (int i = 0; i < local_row_to_send.GetM(); i++)
-      taille += sizeof(int)*local_row_to_send(i).GetM();
+      taille += local_row_to_send(i).GetMemorySize();
 
     for (int i = 0; i < local_col_to_send.GetM(); i++)
-      taille += sizeof(int)*local_col_to_send(i).GetM();
+      taille += local_col_to_send(i).GetMemorySize();
     
     for (int i = 0; i < dist_row.GetM(); i++)
-      taille += (sizeof(T)+sizeof(int))*dist_row(i).GetM();
+      taille += dist_row(i).GetMemorySize();
 
     for (int i = 0; i < dist_col.GetM(); i++)
-      taille += (sizeof(T)+sizeof(int))*dist_col(i).GetM();
+      taille += dist_col(i).GetMemorySize();
     
     return taille;
   }

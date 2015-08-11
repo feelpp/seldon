@@ -35,7 +35,9 @@ namespace Seldon
     // allocation of arrays Control and Info
     Control.Reallocate(UMFPACK_CONTROL);
     Info.Reallocate(UMFPACK_INFO);
-
+    Control.Zero();
+    Info.Zero();
+    
     print_level = -1;
     transpose = false;
     status_facto = 0;

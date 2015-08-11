@@ -28,7 +28,6 @@ namespace Seldon
   {
     // Sets default parameters.
     cholmod_start(&param_chol);
-    Lsparse = NULL;
     n = 0;
   }
 
@@ -58,16 +57,25 @@ namespace Seldon
   }
 
 
+  int64_t MatrixCholmod::GetMemorySize() const
+  {
+    int64_t taille = sizeof(*this);
+    if (n > 0)
+      {
+        // assuming that L only contains simplicial structure (and not the supernodal one)
+        taille += int64_t(L->nzmax)*(sizeof(double) + sizeof(int)) + (n+1)*sizeof(int);
+      }
+    
+    return taille;
+  }
+  
+
   void MatrixCholmod::Clear()
   {
     if (n > 0)
       {
         n = 0;
         cholmod_free_factor(&L, &param_chol);
-        if (Lsparse != NULL)
-          cholmod_free_sparse(&Lsparse, &param_chol);
-
-        Lsparse = NULL;
       }
   }
 
@@ -106,16 +114,12 @@ namespace Seldon
     // Cholesky factorization.
     cholmod_factorize(&A, L, &param_chol);
 
-    cholmod_change_factor(CHOLMOD_REAL, true, L->is_super,
-                          true, L->is_monotonic, L, &param_chol);
-
-    // We convert the factorization to column sparse row format.
-    cholmod_factor* B = cholmod_copy_factor(L, &param_chol);
-    Lsparse = cholmod_factor_to_sparse(B, &param_chol);
-
-    cholmod_free_factor(&B, &param_chol);
+    // L is converted as a simplicial factor (i.e. CSR format)
+    // in order to complete a matrix-vector product with L
+    cholmod_change_factor(CHOLMOD_REAL, true, false, true,
+                          true, L, &param_chol);
   }
-
+  
 
   //! Solves L x = b or L^T x = b.
   template<class Allocator>
@@ -181,11 +185,11 @@ namespace Seldon
     Ychol.xtype = CHOLMOD_REAL;
     Ychol.dtype = CHOLMOD_DOUBLE;
 
-    // Conversion from Lsparse to Seldon structure.
+    // filling Seldon structure Lcsr
     Matrix<double, General, RowSparse> Lcsr;
-    Lcsr.SetData(n, n, Lsparse->nzmax, reinterpret_cast<double*>(Lsparse->x),
-                 reinterpret_cast<int*>(Lsparse->p),
-                 reinterpret_cast<int*>(Lsparse->i));
+    Lcsr.SetData(n, n, L->nzmax, reinterpret_cast<double*>(L->x),
+                 reinterpret_cast<int*>(L->p),
+                 reinterpret_cast<int*>(L->i));
 
     if (TransA.Trans())
       {

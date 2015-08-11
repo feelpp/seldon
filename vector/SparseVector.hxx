@@ -59,6 +59,7 @@ namespace Seldon
     // Memory management.
     void Reallocate(int i);
     void Resize(int i);
+    void ResizeVector(int i);
     void SetData(int nz, T* data, int* index);
     template<class Allocator2>
     void SetData(Vector<T, VectFull, Allocator2>& data,
@@ -91,7 +92,8 @@ namespace Seldon
 
     // Basic functions.
     int* GetIndex() const;
-
+    int64_t GetMemorySize() const;
+    
     // Convenient functions.
     template <class T0>
 #ifndef SWIG

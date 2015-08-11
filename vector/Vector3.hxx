@@ -101,6 +101,7 @@ namespace Seldon
     int GetSize(int i) const;
     int GetLength(int i, int j) const;
     int GetSize(int i, int j) const;
+    int64_t GetMemorySize() const;
     int GetNelement() const;
     int GetNelement(int beg, int end) const;
     int GetNelement(int beg0, int end0, int beg1, int end1) const;

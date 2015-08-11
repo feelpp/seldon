@@ -62,7 +62,20 @@ namespace Seldon
   template <class T, class Allocator>
   void Vector<T, VectFull, Allocator>::Resize(int n)
   {
+    ResizeVector(n);
+  }
 
+
+  //! Changes the length of the vector, and keeps previous values.
+  /*!
+    Reallocates the vector to size i. Previous values are kept.
+    \param n new length of the vector.
+  */
+  template <class T, class Allocator>
+  void Vector<T, VectFull, Allocator>::ResizeVector(int n)
+  {
+    // function implemented in the aim that explicit specialization
+    // of Resize can call ResizeVector
     if (n == this->m_)
       return;
 

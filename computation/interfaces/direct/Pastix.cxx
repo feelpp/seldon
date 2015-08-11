@@ -213,7 +213,8 @@ namespace Seldon
     if (n <= 0)
       return taille;
     
-    taille += sizeof(T)*iparm[IPARM_NNZEROS];
+    // assuming that for each term, a value and an index is needed
+    taille += (sizeof(T)+sizeof(pastix_int_t))*iparm[IPARM_NNZEROS];
     return taille;
   }
   
