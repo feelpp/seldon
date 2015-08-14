@@ -48,10 +48,9 @@ namespace Seldon
   template<class T, class Allocator>
   inline DistributedVector<T, Allocator>::
   DistributedVector(const DistributedVector<T, Allocator>& V)
-    : OverlapRowNumbers(V.OverlapRowNumbers), comm_(V.comm_)
+    : Vector<T, VectFull, Allocator>(V),
+      OverlapRowNumbers(V.OverlapRowNumbers), comm_(V.comm_)
   {
-    Vector<T, Vect_Full, Allocator>::
-      Copy(static_cast<const Vector<T, Vect_Full, Allocator>& >(V));
   }
   
   

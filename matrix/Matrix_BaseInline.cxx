@@ -206,7 +206,7 @@ namespace Seldon
   */
   template <class T, class Allocator>
   inline Matrix_Base<T, Allocator>::
-  Matrix_Base(const Matrix_Base<T, Allocator>& A)
+  Matrix_Base(const Matrix_Base<T, Allocator>& A) : VirtualMatrix<T>()
   {
     this->m_ = A.GetM();
     this->n_ = A.GetN();
