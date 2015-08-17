@@ -400,6 +400,14 @@ namespace Seldon
   void EraseCol(const IVect& col_number,
 		Matrix<T1, Prop, ArrayRowSparse, Allocator>& A);
   
+  template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, RowSparse, Allocator>& A);
+
+  template<class T1, class Prop, class Allocator>
+  void EraseCol(const IVect& col_number,
+		Matrix<T1, Prop, RowSymSparse, Allocator>& A);
+
   template<class T1, class Prop, class Storage, class Allocator>
   void EraseCol(const IVect& col_number,
 		Matrix<T1, Prop, Storage, Allocator>& A);
@@ -415,6 +423,14 @@ namespace Seldon
   template<class T1, class Prop, class Allocator>
   void EraseRow(const IVect& col_number,
 		Matrix<T1, Prop, ArrayRowSparse, Allocator>& A);
+
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, RowSparse, Allocator>& A);
+
+  template<class T1, class Prop, class Allocator>
+  void EraseRow(const IVect& col_number,
+		Matrix<T1, Prop, RowSymSparse, Allocator>& A);
 
   template<class T, class Complexe, class Allocator>
   void GetRowSum(Vector<T>& diagonal_scale_left,

@@ -2890,6 +2890,7 @@ namespace Seldon
   void EraseCol(const IVect& col_number,
 		Matrix<T1, Prop, Storage, Allocator>& A)
   {
+    cout << "Not implemented for any matrix" << endl;
     abort();
   }
    
@@ -2903,6 +2904,7 @@ namespace Seldon
   void EraseRow(const IVect& col_number,
 		Matrix<T1, Prop, Storage, Allocator>& A)
   {
+    cout << "Not implemented for any matrix" << endl;
     abort();
   }
 

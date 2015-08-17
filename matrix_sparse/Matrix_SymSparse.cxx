@@ -124,6 +124,7 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   Matrix_SymSparse<T, Prop, Storage, Allocator>::
   Matrix_SymSparse(const Matrix_SymSparse<T, Prop, Storage, Allocator>& A)
+    : Matrix_Base<T, Allocator>()
   {
     this->m_ = 0;
     this->n_ = 0;

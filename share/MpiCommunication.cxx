@@ -103,7 +103,7 @@ namespace Seldon
                  T* y, int n, int proc)
   {
     comm.Gather(x, n*GetRatioMpiDataType(*x), GetMpiDataType(*x),
-                y.GetData(), n*GetRatioMpiDataType(*x), GetMpiDataType(*x),
+                y, n*GetRatioMpiDataType(*x), GetMpiDataType(*x),
 		proc);
   }
   
