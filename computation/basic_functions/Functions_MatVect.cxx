@@ -2152,21 +2152,25 @@ namespace Seldon
 		const Vector<T2, Storage2, Allocator2>& Y,
 		string function)
   {
+    if (X.GetLength() != M.GetN() || Y.GetLength() != M.GetM())
+      {
+	
 #ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
     string Mchar = to_str(&M), Xchar = to_str(&X), Ychar = to_str(&Y);
 #else
     string Mchar("M"), Xchar("X"), Ychar("Y");
 #endif
-
-    if (X.GetLength() != M.GetN() || Y.GetLength() != M.GetM())
-      throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
-		     + string("\n     M (") + Mchar + string(") is a ")
-		     + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
-		     + string(" matrix;\n     X (") + Xchar
-		     + string(") is vector of length ")
-		     + to_str(X.GetLength()) + string(";\n     Y (")
-		     + Ychar + string(") is vector of length ")
-		     + to_str(Y.GetLength()) + string("."));
+    
+    throw WrongDim(function,
+		   string("Operation M X + Y -> Y not permitted:")
+		   + string("\n     M (") + Mchar + string(") is a ")
+		   + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
+		   + string(" matrix;\n     X (") + Xchar
+		   + string(") is vector of length ")
+		   + to_str(X.GetLength()) + string(";\n     Y (")
+		   + Ychar + string(") is vector of length ")
+		   + to_str(Y.GetLength()) + string("."));
+      }
   }
 
 
@@ -2188,21 +2192,24 @@ namespace Seldon
 		const Vector<T2, Collection, Allocator2>& Y,
 		string function)
   {
-#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
-    string Mchar = to_str(&M), Xchar = to_str(&X), Ychar = to_str(&Y);
-#else
-    string Mchar("M"), Xchar("X"), Ychar("Y");
-#endif
-
     if (X.GetNvector() != M.GetNmatrix() || Y.GetNvector() != M.GetMmatrix())
-      throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
-		     + string("\n     M (") + Mchar + string(") is a ")
-		     + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
-		     + string(" matrix;\n     X (") + Xchar
-		     + string(") is vector of length ")
-		     + to_str(X.GetNvector()) + string(";\n     Y (")
-		     + Ychar + string(") is vector of length ")
-		     + to_str(Y.GetNvector()) + string("."));
+      {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+	string Mchar = to_str(&M), Xchar = to_str(&X), Ychar = to_str(&Y);
+#else
+	string Mchar("M"), Xchar("X"), Ychar("Y");
+#endif
+	
+	throw WrongDim(function,
+		       string("Operation M X + Y -> Y not permitted:")
+		       + string("\n     M (") + Mchar + string(") is a ")
+		       + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
+		       + string(" matrix;\n     X (") + Xchar
+		       + string(") is vector of length ")
+		       + to_str(X.GetNvector()) + string(";\n     Y (")
+		       + Ychar + string(") is vector of length ")
+		       + to_str(Y.GetNvector()) + string("."));
+      }
   }
 
 
@@ -2224,21 +2231,24 @@ namespace Seldon
 		const Vector<T2, Collection, Allocator2>& Y,
 		string function)
   {
-#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
-    string Mchar = to_str(&M), Xchar = to_str(&X), Ychar = to_str(&Y);
-#else
-    string Mchar("M"), Xchar("X"), Ychar("Y");
-#endif
-
     if (X.GetNvector() != M.GetNmatrix() || Y.GetNvector() != M.GetMmatrix())
-      throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
-		     + string("\n     M (") + Mchar + string(") is a ")
-		     + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
-		     + string(" matrix;\n     X (") + Xchar
-		     + string(") is vector of length ")
-		     + to_str(X.GetNvector()) + string(";\n     Y (")
-		     + Ychar + string(") is vector of length ")
-		     + to_str(Y.GetNvector()) + string("."));
+      {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+	string Mchar = to_str(&M), Xchar = to_str(&X), Ychar = to_str(&Y);
+#else
+	string Mchar("M"), Xchar("X"), Ychar("Y");
+#endif
+	
+	throw WrongDim(function,
+		       string("Operation M X + Y -> Y not permitted:")
+		       + string("\n     M (") + Mchar + string(") is a ")
+		       + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
+		       + string(" matrix;\n     X (") + Xchar
+		       + string(") is vector of length ")
+		       + to_str(X.GetNvector()) + string(";\n     Y (")
+		       + Ychar + string(") is vector of length ")
+		       + to_str(Y.GetNvector()) + string("."));
+      }
   }
 
 
@@ -2260,21 +2270,24 @@ namespace Seldon
 		const Vector<T2, Storage2, Allocator2>& Y,
 		string function)
   {
-#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
-    string Mchar = to_str(&M), Xchar = to_str(&X), Ychar = to_str(&Y);
-#else
-    string Mchar("M"), Xchar("X"), Ychar("Y");
-#endif
-
     if (X.GetLength() != M.GetN() || Y.GetLength() != M.GetM())
-      throw WrongDim(function, string("Operation M X + Y -> Y not permitted:")
-		     + string("\n     M (") + Mchar + string(") is a ")
-		     + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
-		     + string(" matrix;\n     X (") + Xchar
-		     + string(") is vector of length ")
-		     + to_str(X.GetLength()) + string(";\n     Y (")
-		     + Ychar + string(") is vector of length ")
-		     + to_str(Y.GetLength()) + string("."));
+      {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+	string Mchar = to_str(&M), Xchar = to_str(&X), Ychar = to_str(&Y);
+#else
+	string Mchar("M"), Xchar("X"), Ychar("Y");
+#endif
+	
+	throw WrongDim(function,
+		       string("Operation M X + Y -> Y not permitted:")
+		       + string("\n     M (") + Mchar + string(") is a ")
+		       + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
+		       + string(" matrix;\n     X (") + Xchar
+		       + string(") is vector of length ")
+		       + to_str(X.GetLength()) + string(";\n     Y (")
+		       + Ychar + string(") is vector of length ")
+		       + to_str(Y.GetLength()) + string("."));
+      }
   }
 
 
@@ -2300,12 +2313,6 @@ namespace Seldon
 		const Vector<T2, Storage2, Allocator2>& Y,
 		string function, string op)
   {
-#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
-    string Mchar = to_str(&M), Xchar = to_str(&X), Ychar = to_str(&Y);
-#else
-    string Mchar("M"), Xchar("X"), Ychar("Y");
-#endif
-
     if (op == "M X + Y -> Y")
       if (trans.Trans())
 	op = string("Operation M' X + Y -> Y not permitted:");
@@ -2315,14 +2322,23 @@ namespace Seldon
 	op = string("Operation M X + Y -> Y not permitted:");
     else
       op = string("Operation ") + op + string(" not permitted:");
+
     if (X.GetLength() != M.GetN(trans) || Y.GetLength() != M.GetM(trans))
-      throw WrongDim(function, op + string("\n     M (") + Mchar
-		     + string(") is a ") + to_str(M.GetM()) + string(" x ")
+      {    
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+	string Mchar = to_str(&M), Xchar = to_str(&X), Ychar = to_str(&Y);
+#else
+	string Mchar("M"), Xchar("X"), Ychar("Y");
+#endif
+	
+	throw WrongDim(function, op + string("\n     M (") + Mchar
+		       + string(") is a ") + to_str(M.GetM()) + string(" x ")
 		     + to_str(M.GetN()) + string(" matrix;\n     X (")
-		     + Xchar + string(") is vector of length ")
-		     + to_str(X.GetLength()) + string(";\n     Y (")
-		     + Ychar + string(") is vector of length ")
-		     + to_str(Y.GetLength()) + string("."));
+		       + Xchar + string(") is vector of length ")
+		       + to_str(X.GetLength()) + string(";\n     Y (")
+		       + Ychar + string(") is vector of length ")
+		       + to_str(Y.GetLength()) + string("."));
+      }
   }
 
 
@@ -2342,19 +2358,21 @@ namespace Seldon
 		const Vector<T1, Storage1, Allocator1>& X,
 		string function, string op)
   {
-#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
-    string Mchar = to_str(&M), Xchar = to_str(&X);
-#else
-    string Mchar("M"), Xchar("X");
-#endif
-
     if (X.GetLength() != M.GetN())
-      throw WrongDim(function, string("Operation ") + op + " not permitted:"
-		     + string("\n     M (") + Mchar + string(") is a ")
-		     + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
-		     + string(" matrix;\n     X (") + Xchar
-		     + string(") is vector of length ")
-		     + to_str(X.GetLength()) + string("."));
+      {
+#ifndef SELDON_WITHOUT_TO_STR_CHECKDIM
+	string Mchar = to_str(&M), Xchar = to_str(&X);
+#else
+	string Mchar("M"), Xchar("X");
+#endif
+	
+	throw WrongDim(function, string("Operation ") + op + " not permitted:"
+		       + string("\n     M (") + Mchar + string(") is a ")
+		       + to_str(M.GetM()) + string(" x ") + to_str(M.GetN())
+		       + string(" matrix;\n     X (") + Xchar
+		       + string(") is vector of length ")
+		       + to_str(X.GetLength()) + string("."));
+      }
   }
 
 

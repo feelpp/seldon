@@ -287,6 +287,7 @@ namespace Seldon
   Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
   ::Matrix_SymComplexSparse(const Matrix_SymComplexSparse<T, Prop,
 			    Storage, Allocator>& A)
+    : Matrix_Base<T, Allocator>()
   {
     this->m_ = 0;
     this->n_ = 0;

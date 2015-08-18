@@ -45,6 +45,7 @@ namespace Seldon
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::reference reference;
     typedef typename Allocator::const_reference const_reference;
+    typedef Allocator allocator;
 
     // Attributes.
   protected:

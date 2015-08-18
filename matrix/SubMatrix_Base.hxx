@@ -38,6 +38,7 @@ namespace Seldon
     typedef typename M::entry_type entry_type;
     typedef typename M::access_type access_type;
     typedef typename M::const_access_type const_access_type;
+    typedef M storage;
 
     // Attributes.
   protected:
@@ -77,7 +78,7 @@ namespace Seldon
     void Reallocate(int, int) {}
     int64_t GetMemorySize() const { return 0; }
 #endif
-    
+
   };
 
 

@@ -16,8 +16,13 @@ namespace Seldon
   template<class T, class Allocator>
   void Mlt(const T& alpha, Array3D<complex<T>, Allocator>& A);
   
+#ifdef SELDON_WITH_REDUCED_TEMPLATE
   template<class T, class Storage, class Allocator>
   void Mlt(const T& alpha, Vector<T, Storage, Allocator>& A);
+#else
+  template<class T, class T0, class Storage, class Allocator>
+  void Mlt(const T& alpha, Vector<T0, Storage, Allocator>& A);
+#endif
   
   template<class T, class Storage, class Allocator>
   void Mlt(const T& alpha, Vector<complex<T>, Storage, Allocator>& A);
@@ -71,12 +76,21 @@ namespace Seldon
 			 const Vector<complex<T>, Storage2, Allocator2>& Y);
 
   // matrix-vector product Mlt
+#ifdef SELDON_WITH_REDUCED_TEMPLATE
   template <class T, class Prop0, class Storage0, class Allocator0,
 	    class Storage1, class Allocator1,
 	    class Storage2, class Allocator2>
   void Mlt(const Matrix<T, Prop0, Storage0, Allocator0>& M,
 	   const Vector<T, Storage1, Allocator1>& X,
 	   Vector<T, Storage2, Allocator2>& Y);
+#else
+  template <class T0, class Prop0, class Storage0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2>
+  void Mlt(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
+	   const Vector<T1, Storage1, Allocator1>& X,
+	   Vector<T2, Storage2, Allocator2>& Y);
+#endif
   
   template <class T, class Prop0, class Storage0, class Allocator0,
 	    class Storage1, class Allocator1,
@@ -92,6 +106,7 @@ namespace Seldon
 	   const Vector<complex<T>, Storage1, Allocator1>& X,
 	   Vector<complex<T>, Storage2, Allocator2>& Y);
   
+#ifdef SELDON_WITH_REDUCED_TEMPLATE
   template <class T, class Prop1, class Storage1, class Allocator1,
 	    class Storage2, class Allocator2,
 	    class Storage3, class Allocator3>
@@ -99,6 +114,16 @@ namespace Seldon
 	   const Matrix<T, Prop1, Storage1, Allocator1>& M,
 	   const Vector<T, Storage2, Allocator2>& X,
 	   Vector<T, Storage3, Allocator3>& Y);
+#else
+  template <class T0,
+            class T1, class Prop1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3, class Storage3, class Allocator3>
+  void Mlt(const T0& alpha,
+	   const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+	   const Vector<T2, Storage2, Allocator2>& X,
+	   Vector<T3, Storage3, Allocator3>& Y);
+#endif
   
   template <class T, class Prop1, class Storage1, class Allocator1,
 	    class Storage2, class Allocator2,
@@ -117,6 +142,7 @@ namespace Seldon
 	   Vector<T, Storage3, Allocator3>& Y);
 
   // matrix vector product MltAdd
+#ifdef SELDON_WITH_REDUCED_TEMPLATE
   template<class T,
 	   class Prop1, class Storage1, class Allocator1,
 	   class Storage2, class Allocator2,
@@ -126,6 +152,18 @@ namespace Seldon
 	      const Vector<T, Storage2, Allocator2>& X,
 	      const T& beta,
 	      Vector<T, Storage4, Allocator4>& Y);
+#else
+  template<class T,
+	   class T1, class Prop1, class Storage1, class Allocator1,
+	   class T2, class Storage2, class Allocator2,
+           class T3,
+           class T4, class Storage4, class Allocator4>
+  void MltAdd(const T& alpha,
+	      const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+	      const Vector<T2, Storage2, Allocator2>& X,
+	      const T3& beta,
+	      Vector<T4, Storage4, Allocator4>& Y);
+#endif
 
   template<class T,
 	   class Prop1, class Storage1, class Allocator1,

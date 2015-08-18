@@ -48,10 +48,12 @@ namespace Seldon
     // Methods.
   public:
     // Constructor.
-    Matrix(M& A, Vector<int>& row_list, Vector<int>& column_list);
+    Matrix(M& A, Vector<int> row_list, Vector<int> column_list);
 
     // Destructor.
     ~Matrix();
+
+    reference Get(int i, int j);
   };
 
 
@@ -70,7 +72,10 @@ namespace Seldon
                   SubStorage<M>, typename M::allocator>
   {
   public:
-    SubMatrix(M& A, Vector<int>& row_list, Vector<int>& column_list);
+    typedef typename M::reference reference;
+
+  public:
+    SubMatrix(M& A, Vector<int> row_list, Vector<int> column_list);
   };
 
 

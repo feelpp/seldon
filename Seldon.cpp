@@ -16,25 +16,27 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Seldon. If not, see http://www.gnu.org/licenses/.
 
+#define INSTANCE_BEGIN_LOOP(storage) int InstanceBeginLoop(storage input) {return input.GetBeginLoop(0);}
+#define INSTANCE_END_LOOP(storage) int InstanceEndLoop(storage input) {return input.GetEndLoop(0,0,0);}
 
 #ifndef SELDON_FILE_SELDON_CPP
 
 #include "Seldon.hxx"
-
+#include "SeldonComplexMatrixHeader.hxx"
 namespace Seldon
 {
   template class MallocAlloc<int>;
 
   template class Vector_Base<int, MallocAlloc<int> >;
   template class Vector<int, VectFull, MallocAlloc<int> >;
-  
+
   template class MallocAlloc<float>;
   template class Vector_Base<float, MallocAlloc<float> >;
   template class Vector<float, VectFull, MallocAlloc<float> >;
-  
+
   template class Vector<Vector<int, VectFull, MallocAlloc<int> >, Collection,
                 MallocAlloc<Vector<int, VectFull, MallocAlloc<int> > > >;
-  
+
   template class MallocAlloc<double>;
   template class Vector_Base<double, MallocAlloc<double> >;
   template class Vector<double, VectFull, MallocAlloc<double> >;
@@ -51,6 +53,7 @@ namespace Seldon
   template class Matrix_Pointers<double, General, RowMajor, MallocAlloc<double> >;
   template class Matrix<double, General, RowMajor, MallocAlloc<double> >;
 
+
   template class Array3D<int, MallocAlloc<int> >;
   template class Array3D<float, MallocAlloc<float> >;
   template class Array3D<double, MallocAlloc<double> >;
@@ -63,6 +66,27 @@ namespace Seldon
   template class Matrix_Sparse<double, General, RowSparse, MallocAlloc<double> >;
   template class Matrix<double, General, RowSparse, MallocAlloc<double> >;
 
+  template class MallocAlloc<complex<double> >;
+  template class Matrix_Base<complex<double>, MallocAlloc<complex<double> > >;
+
+
+  template class Matrix_Pointers<complex<double>, General, ColComplexSparse, MallocAlloc<complex<double> > >;
+  template class Matrix_ComplexSparse<complex<double>, General, ColComplexSparse, MallocAlloc<complex<double > > >;
+  template class Matrix<complex<double>, General, ColComplexSparse, MallocAlloc<complex<double > > >;
+
+  template class Matrix_Pointers<complex<double>, General, RowComplexSparse, MallocAlloc<complex<double> > >;
+  template class Matrix_ComplexSparse<complex<double>, General, RowComplexSparse, MallocAlloc<complex<double > > >;
+  template class Matrix<complex<double>, General, RowComplexSparse, MallocAlloc<complex<double > > >;
+
+
+  template class Matrix_Pointers<complex<double>, Symmetric, RowSymComplexSparse, MallocAlloc<complex<double> > >;
+  template class Matrix_ComplexSparse<complex<double>, Symmetric, RowSymComplexSparse, MallocAlloc<complex<double > > >;
+  template class Matrix<complex<double>, Symmetric, RowSymComplexSparse, MallocAlloc<complex<double > > >;
+
+  template class Matrix_Pointers<complex<double>, Symmetric, ColSymComplexSparse, MallocAlloc<complex<double> > >;
+  template class Matrix_ComplexSparse<complex<double>, Symmetric, ColSymComplexSparse, MallocAlloc<complex<double > > >;
+  template class Matrix<complex<double>, Symmetric, ColSymComplexSparse, MallocAlloc<complex<double > > >;
+
   template void ConvertMatrix_to_Coordinates(const Matrix<double, General, RowSparse, MallocAlloc<double> >& A,
                                              Vector<int>& IndRow, Vector<int>& IndCol,
                                              Vector<double, VectFull>& Val,
@@ -74,6 +98,37 @@ namespace Seldon
                                                Matrix<double, General, RowSparse, MallocAlloc<double> >& A,
                                                int index = 0);
 #endif
+
+  INSTANCE_BEGIN_LOOP(ColSymComplexSparse)
+  INSTANCE_BEGIN_LOOP(RowMajor)
+  INSTANCE_END_LOOP(RowMajor)
+  INSTANCE_BEGIN_LOOP(RowSparse)
+  INSTANCE_END_LOOP(RowSparse)
+  INSTANCE_BEGIN_LOOP(RowSymComplexSparse)
+  INSTANCE_BEGIN_LOOP(RowComplexSparse)
+  INSTANCE_BEGIN_LOOP(ColComplexSparse)
+
+  double real(double input)
+  {
+    return std::real(input);
+  }
+
+  float real(float input)
+  {
+    return std::real(input);
+  }
+
+  Str instance(const Str input)
+  {
+    Str dummy;
+    return Str(input);
+  }
+
+  void SetComplex(complex<int> input, int input2)
+  {
+    SetComplexReal(input2, input);
+  }
+
 
   // Skips one vector in an input stream.
   void skip_vector_double(istream& input_stream)
@@ -91,7 +146,7 @@ namespace Seldon
     input_stream.read(reinterpret_cast<char*>(&n), sizeof(int));
     input_stream.seekg(m * n * sizeof(double), istream::cur);
   }
-  
+
 }
 
 

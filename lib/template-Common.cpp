@@ -17,14 +17,16 @@
 // along with Seldon. If not, see http://www.gnu.org/licenses/.
 
 
+#ifndef SELDON_WITH_BLAS
 #define SELDON_WITH_BLAS
+#endif
 
 #include "SeldonHeader.hxx"
 
 #ifndef SELDON_WITH_COMPILED_LIBRARY
 #include "share/MatrixFlag.cxx"
 #include "share/Common.cxx"
-#include "share/Storage.cxx"
+#include "share/Storage.txx"
 #include "share/Errors.cxx"
 #endif
 

@@ -42,11 +42,19 @@ namespace Seldon
    * Functions in Functions_Vector *
    *********************************/
 
+#ifdef SELDON_WITH_REDUCED_TEMPLATE
   template<class T, class Storage, class Allocator>
   inline void Mlt(const T& alpha, Vector<T, Storage, Allocator>& A)
   {
     MltScalar(alpha, A);
   }
+#else
+  template<class T, class T0, class Storage, class Allocator>
+  inline void Mlt(const T& alpha, Vector<T0, Storage, Allocator>& A)
+  {
+    MltScalar(alpha, A);
+  }
+#endif
 
   template<class T, class Storage, class Allocator>
   inline void Mlt(const T& alpha, Vector<complex<T>, Storage, Allocator>& A)
@@ -130,6 +138,7 @@ namespace Seldon
    * Functions in Functions_MatVect *
    **********************************/
   
+#ifdef SELDON_WITH_REDUCED_TEMPLATE
   template <class T, class Prop0, class Storage0, class Allocator0,
 	    class Storage1, class Allocator1,
 	    class Storage2, class Allocator2>
@@ -139,6 +148,17 @@ namespace Seldon
   {
     MltVector(M, X, Y);
   }
+#else
+  template <class T0, class Prop0, class Storage0, class Allocator0,
+	    class T1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2>
+  inline void Mlt(const Matrix<T0, Prop0, Storage0, Allocator0>& M,
+		  const Vector<T1, Storage1, Allocator1>& X,
+		  Vector<T2, Storage2, Allocator2>& Y)
+  {
+    MltVector(M, X, Y);
+  }
+#endif
 
   template <class T, class Prop0, class Storage0, class Allocator0,
 	    class Storage1, class Allocator1,
@@ -195,6 +215,7 @@ namespace Seldon
     throw WrongArgument("Mlt", "Incompatible matrix-vector product");
   }
 
+#ifdef SELDON_WITH_REDUCED_TEMPLATE
   template <class T, class Prop1, class Storage1, class Allocator1,
 	    class Storage2, class Allocator2,
 	    class Storage3, class Allocator3>
@@ -206,6 +227,20 @@ namespace Seldon
     MltVector(M, X, Y);
     Mlt(alpha, Y);
   }
+#else
+  template <class T0,
+	    class T1, class Prop1, class Storage1, class Allocator1,
+	    class T2, class Storage2, class Allocator2,
+	    class T3, class Storage3, class Allocator3>
+  inline void Mlt(const T0& alpha,
+		  const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+		  const Vector<T2, Storage2, Allocator2>& X,
+		  Vector<T3, Storage3, Allocator3>& Y)
+  {
+    MltVector(M, X, Y);
+    Mlt(alpha, Y);
+  }
+#endif
 
   template <class T, class Prop1, class Storage1, class Allocator1,
 	    class Storage2, class Allocator2,
@@ -230,6 +265,7 @@ namespace Seldon
     throw WrongArgument("Mlt", "Incompatible matrix-vector product");
   }
         
+#ifdef SELDON_WITH_REDUCED_TEMPLATE
   template<class T,
 	   class Prop1, class Storage1, class Allocator1,
 	   class Storage2, class Allocator2,
@@ -242,6 +278,21 @@ namespace Seldon
   {
     MltAddVector(alpha, M, X, beta, Y);
   }
+#else
+  template<class T,
+	   class T1, class Prop1, class Storage1, class Allocator1,
+	   class T2, class Storage2, class Allocator2,
+	   class T3,
+	   class T4, class Storage4, class Allocator4>
+  inline void MltAdd(const T& alpha,
+		     const Matrix<T1, Prop1, Storage1, Allocator1>& M,
+		     const Vector<T2, Storage2, Allocator2>& X,
+		     const T3& beta,
+		     Vector<T4, Storage4, Allocator4>& Y)
+  {
+    MltAddVector(alpha, M, X, beta, Y);
+  }
+#endif
 
   template<class T,
 	   class Prop1, class Storage1, class Allocator1,

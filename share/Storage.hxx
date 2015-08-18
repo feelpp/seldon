@@ -348,6 +348,12 @@ namespace Seldon
   template <class M>
   class SubStorage
   {
+  public:
+    static const bool Sparse = false;
+    static int GetFirst(int i, int j);
+    static int GetSecond(int i, int j);
+    static int GetBeginLoop(int i);
+    static int GetEndLoop(int m, int n, int i);
   };
 
 

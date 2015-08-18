@@ -100,7 +100,7 @@ namespace Seldon
   {
     public : 
     typedef T Treal;
-    typedef complex<T> Tcplx;
+    typedef std::complex<T> Tcplx;
   };
 
   //! workaround class to retrieve double type from complex<double>
@@ -109,34 +109,34 @@ namespace Seldon
   {
   public : 
     typedef T Treal;
-    typedef complex<T> Tcplx;
+    typedef std::complex<T> Tcplx;
   };
   
   template <class T>
   void SetComplexZero(T& number);
 
   template <class T>
-  void SetComplexZero(complex<T>& number);
+  void SetComplexZero(std::complex<T>& number);
 
   template <class T>
   void SetComplexOne(T& number);
 
   template <class T>
-  void SetComplexOne(complex<T>& number);
+  void SetComplexOne(std::complex<T>& number);
 
   template <class T>
-  void SetComplexReal(int n, complex<T>& number);
+  void SetComplexReal(int n, std::complex<T>& number);
 
   template <class T>
   void SetComplexReal(int n, T& number);
 
   template <class T>
-  void SetComplexReal(bool n, complex<T>& number);
+  void SetComplexReal(bool n, std::complex<T>& number);
 
-  void SetComplexReal(int x, complex<int>& number);
+  void SetComplexReal(int x, std::complex<int>& number);
 
   template <class T>
-  void SetComplexReal(const T& x, complex<T>& number);
+  void SetComplexReal(const T& x, std::complex<T>& number);
 
   template <class T0, class T1>
   void SetComplexReal(const T0& x, T1& number);
@@ -145,13 +145,13 @@ namespace Seldon
   T ComplexAbs(const T& val);
 
   template<class T>
-  T ComplexAbs(const complex<T>& val);
+  T ComplexAbs(const std::complex<T>& val);
 
   template<class T>
   T absSquare(const T& x);
 
   template<class T>
-  T absSquare(const complex<T>& x);
+  T absSquare(const std::complex<T>& x);
   
   string GetExtension(const string& nom);
   string GetBaseString(const string& nom);

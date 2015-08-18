@@ -40,7 +40,7 @@ namespace Seldon
   //! Main constructor.
   template <class T, class Prop, class M, class Allocator>
   inline Matrix<T, Prop, SubStorage<M>, Allocator>
-  ::Matrix(M& A, Vector<int>& row_list, Vector<int>& column_list):
+  ::Matrix(M& A, Vector<int> row_list, Vector<int> column_list):
     SubMatrix_Base<T, Prop, M, Allocator>(A, row_list, column_list)
   {
   }
@@ -57,6 +57,18 @@ namespace Seldon
   {
   }
 
+   /***********
+   * METHODS  *
+   ***********/
+
+
+  template <class T, class Prop, class M, class Allocator>
+  inline typename Matrix<T, Prop, SubStorage<M>, Allocator>::reference
+  Matrix<T, Prop, SubStorage<M>, Allocator>::Get(int i, int j)
+  {
+    return this->Val(i, j);
+  }
+
 
   ///////////////
   // SUBMATRIX //
@@ -71,7 +83,7 @@ namespace Seldon
   //! Main constructor.
   template <class M>
   inline SubMatrix<M>
-  ::SubMatrix(M& A, Vector<int>& row_list, Vector<int>& column_list):
+  ::SubMatrix(M& A, Vector<int> row_list, Vector<int> column_list):
     Matrix<typename M::value_type, typename M::property,
     SubStorage<M>, typename M::allocator>(A, row_list, column_list)
   {

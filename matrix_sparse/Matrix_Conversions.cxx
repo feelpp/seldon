@@ -1349,30 +1349,32 @@ namespace Seldon
 	int nb_new_val = 0;
         // Counting entries that are on the symmetrized pattern without being
         // in the original pattern.
-        int k = 0;
-        for (int i = 0; i < n; i++)
-          {
-            while (k < IndRow.GetM() && IndRow(k) < i)
-              k++;
-	    
-            for (int j = ptr_[i]; j < ptr_[i+1]; j++)
-              {
-                int icol = ind_[j];
-                while (k < IndRow.GetM() && IndRow(k) == i
-                       && IndCol(k) < icol)
-                  k++;
-
-                if (k < IndRow.GetM() && IndRow(k) == i && IndCol(k) == icol)
-                  // Already existing entry.
-                  k++;
-                else
-                  {
-                    // New entry.
-                    Ptr(i + 1)++;
-                    nb_new_val++;
-                  }
-              }
-          }
+        {
+	  int k = 0;
+	  for (int i = 0; i < n; i++)
+	    {
+	      while (k < IndRow.GetM() && IndRow(k) < i)
+		k++;
+	      
+	      for (int j = ptr_[i]; j < ptr_[i+1]; j++)
+		{
+		  int icol = ind_[j];
+		  while (k < IndRow.GetM() && IndRow(k) == i
+			 && IndCol(k) < icol)
+		    k++;
+		  
+		  if (k < IndRow.GetM() && IndRow(k) == i && IndCol(k) == icol)
+		    // Already existing entry.
+		    k++;
+		  else
+		    {
+		      // New entry.
+		      Ptr(i + 1)++;
+		      nb_new_val++;
+		    }
+		}
+	    }
+	}
 	
 	// Accumulation to get pointer array.
 	Ptr(0) = 0;
@@ -1494,30 +1496,32 @@ namespace Seldon
 	int nb_new_val = 0;
         // Counting entries that are on the symmetrized pattern without being
         // in the original pattern.
-        int k = 0;
-        for (int i = 0; i < n; i++)
-          {
-            while (k < IndRow.GetM() && IndRow(k) < i)
-              k++;
-	    
-            for (int j = 0; j < A.GetColumnSize(i); j++)
-              {
-                int icol = A.Index(i, j);
-                while (k < IndRow.GetM() && IndRow(k) == i
-                       && IndCol(k) < icol)
-                  k++;
-		
-                if (k < IndRow.GetM() && IndRow(k) == i && IndCol(k) == icol)
-                  // Already existing entry.
-                  k++;
-                else
-                  {
-                    // New entry.
-                    Ptr(i + 1)++;
+        {
+	  int k = 0;
+	  for (int i = 0; i < n; i++)
+	    {
+	      while (k < IndRow.GetM() && IndRow(k) < i)
+		k++;
+	      
+	      for (int j = 0; j < A.GetColumnSize(i); j++)
+		{
+		  int icol = A.Index(i, j);
+		  while (k < IndRow.GetM() && IndRow(k) == i
+			 && IndCol(k) < icol)
+		    k++;
+		  
+		  if (k < IndRow.GetM() && IndRow(k) == i && IndCol(k) == icol)
+		    // Already existing entry.
+		    k++;
+		  else
+		    {
+		      // New entry.
+		      Ptr(i + 1)++;
                     nb_new_val++;
-                  }
-              }
-          }
+		    }
+		}
+	    }
+	}
 	
 	// Accumulation to get pointer array.
 	Ptr(0) = 0;
@@ -3399,7 +3403,7 @@ namespace Seldon
 
     // we fill matrix B
     B.Reallocate(A.GetM(), n);
-    for (int i = 0; i < n; i++)
+    for (i = 0; i < n; i++)
       {
 	int size_col = Ptr(i+1) - Ptr(i);
 	if (size_col > 0)

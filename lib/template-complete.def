@@ -108,13 +108,13 @@
 (define @real_complex = float, double, complexfloat, complexdouble);
 
 // Seldon objects.
-(define @trans = SeldonTrans, SeldonNoTrans, SeldonConjTrans);
+(define @trans = SeldonTranspose);
 (define @trans+ = SeldonTrans, SeldonNoTrans, SeldonConjTrans);
 (define @diag = SeldonUnit, SeldonNonUnit);
 (define @uplo = SeldonUpper, SeldonLower);
 (define @norm = SeldonNorm1, SeldonNormInf);
-(define @conj = SeldonConj, SeldonUnconj);
-(define @side = SeldonLeft, SeldonRight);
+(define @conj = class_SeldonConj, SeldonUnconj);
+(define @side = SeldonSide);
 
 // Miscellaneous.
 (define @colrow = Col, Row);

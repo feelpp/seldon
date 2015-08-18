@@ -186,9 +186,9 @@ namespace Seldon
     \param[in,out] number complex number to be set to zero.
   */
   template <class T>
-  inline void SetComplexZero(complex<T>& number)
+  inline void SetComplexZero(std::complex<T>& number)
   {
-    number = complex<T>(T(0), T(0));
+    number = std::complex<T>(T(0), T(0));
   }
 
 
@@ -208,7 +208,7 @@ namespace Seldon
     \param[in,out] number complex number to be set to (1, 0).
   */
   template <class T>
-  inline void SetComplexOne(complex<T>& number)
+  inline void SetComplexOne(std::complex<T>& number)
   {
     number = complex<T>(T(1), T(0));
   }
@@ -230,9 +230,9 @@ namespace Seldon
     \param[in,out] number complex number to be set to (n, 0).
   */
   template <class T>
-  inline void SetComplexReal(int n, complex<T>& number)
+  inline void SetComplexReal(int n, std::complex<T>& number)
   {
-    number = complex<T>(n, 0);
+    number = std::complex<T>(n, 0);
   }
   
 
@@ -241,16 +241,16 @@ namespace Seldon
     \param[in,out] number complex number to be set to (n, 0).
   */
   template <class T>
-  inline void SetComplexReal(bool n, complex<T>& number)
+  inline void SetComplexReal(bool n, std::complex<T>& number)
   {
-    number = complex<T>(n, 0);
+    number = std::complex<T>(n, 0);
   }
 
 
   //! Sets a complex number to (n, 0).
-  inline void SetComplexReal(int x, complex<int>& number)
+  inline void SetComplexReal(int x, std::complex<int>& number)
   {
-    number = complex<int>(x, 0);
+    number = std::complex<int>(x, 0);
   }
 
   
@@ -259,9 +259,9 @@ namespace Seldon
     \param[in,out] number complex number to be set to (x, 0).
   */  
   template <class T>
-  inline void SetComplexReal(const T& x, complex<T>& number)
+  inline void SetComplexReal(const T& x, std::complex<T>& number)
   {
-    number = complex<T>(x, 0);
+    number = std::complex<T>(x, 0);
   }
   
   
@@ -286,7 +286,7 @@ namespace Seldon
 
   //! Returns true for a complex number
   template <class T>
-  inline bool IsComplexNumber(const complex<T>& number)
+  inline bool IsComplexNumber(const std::complex<T>& number)
   {
     return true;
   }
@@ -302,7 +302,7 @@ namespace Seldon
   
   //! returns modulus of val
   template<class T>
-  inline T ComplexAbs(const complex<T>& val)
+  inline T ComplexAbs(const std::complex<T>& val)
   {
 #if defined(SELDON_WITH_BLAS) && !defined(SELDON_WITH_LAPACK)
     // we choose Blas convention
@@ -316,7 +316,7 @@ namespace Seldon
 
   //! returns the square modulus of z
   template<class T>
-  inline T absSquare(const complex<T>& z)
+  inline T absSquare(const std::complex<T>& z)
   {
     // more optimal than real(z * conj(z))
     return real(z)*real(z) + imag(z)*imag(z);
