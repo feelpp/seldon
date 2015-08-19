@@ -27,10 +27,38 @@
 namespace Seldon
 {
   template<class Storage>
+  class SeldonDefaultAllocator<Storage, bool>
+  {
+  public:
+    typedef MallocAlloc<bool> allocator;
+  };  
+
+  template<class Storage>
+  class SeldonDefaultAllocator<Storage, char>
+  {
+  public:
+    typedef MallocAlloc<char> allocator;
+  };  
+
+  template<class Storage>
+  class SeldonDefaultAllocator<Storage, unsigned>
+  {
+  public:
+    typedef MallocAlloc<unsigned> allocator;
+  };  
+
+  template<class Storage>
   class SeldonDefaultAllocator<Storage, int>
   {
   public:
     typedef MallocAlloc<int> allocator;
+  };  
+
+  template<class Storage>
+  class SeldonDefaultAllocator<Storage, uint64_t>
+  {
+  public:
+    typedef MallocAlloc<uint64_t> allocator;
   };  
 
   template<class Storage>
@@ -52,13 +80,6 @@ namespace Seldon
   {
   public:
     typedef MallocAlloc<double> allocator;
-  };  
-
-  template<class Storage>
-  class SeldonDefaultAllocator<Storage, bool>
-  {
-  public:
-    typedef MallocAlloc<bool> allocator;
   };  
 
   template<class Storage>

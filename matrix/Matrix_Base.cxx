@@ -226,7 +226,7 @@ namespace Seldon
   //! returns true if the matrix is complex
   template<class T> bool VirtualMatrix<T>::IsComplex() const
   {
-    return IsComplexNumber(T(0));
+    return IsComplexNumber(T());
   }
 #endif
 
