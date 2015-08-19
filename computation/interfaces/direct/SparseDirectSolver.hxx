@@ -119,8 +119,8 @@ namespace Seldon
     double GetThresholdMatrix() const;
     void SetThresholdMatrix(const double&);
 
-    template<class MatrixSparse>
-    void Factorize(MatrixSparse& A, bool keep_matrix = false);
+    template<class Prop, class Storage, class Allocator>
+    void Factorize(Matrix<T, Prop, Storage, Allocator>& A, bool keep_matrix = false);
     
     int GetInfoFactorization(int& ierr) const;
     

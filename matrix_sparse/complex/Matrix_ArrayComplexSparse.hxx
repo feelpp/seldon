@@ -181,6 +181,7 @@ namespace Seldon
     // Basic methods.
     int GetRealNonZeros() const;
     int GetImagNonZeros() const;
+    int GetNonZeros() const;
     int GetRealDataSize() const;
     int GetImagDataSize() const;
     int GetDataSize() const;

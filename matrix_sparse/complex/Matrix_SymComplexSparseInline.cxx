@@ -53,6 +53,21 @@ namespace Seldon
   */
   template <class T, class Prop, class Storage, class Allocator>
   inline int Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
+  ::GetNonZeros() const
+  {
+    return real_nz_ + imag_nz_;
+  }
+
+
+  //! Returns the number of elements stored in memory.
+  /*!
+    Returns the number of elements stored in memory, i.e.
+    the cumulated number of non-zero entries of both the real and
+    the imaginary part.
+    \return The number of elements stored in memory.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline int Matrix_SymComplexSparse<T, Prop, Storage, Allocator>
   ::GetDataSize() const
   {
     return real_nz_ + imag_nz_;

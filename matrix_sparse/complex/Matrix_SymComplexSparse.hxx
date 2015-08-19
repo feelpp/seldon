@@ -171,6 +171,7 @@ namespace Seldon
     void Copy(const Matrix_SymComplexSparse<T, Prop, Storage, Allocator>& A);
 
     // Basic methods.
+    int GetNonZeros() const;
     int GetDataSize() const;
     int64_t GetMemorySize() const;
     int* GetRealPtr() const;

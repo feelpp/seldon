@@ -471,8 +471,10 @@ namespace Seldon
     LU factorisation is stored in the current object.
     You can ask to clear the matrix given on input (to spare memory)
    */
-  template<class T> template<class MatrixSparse>
-  void SparseDirectSolver<T>::Factorize(MatrixSparse& A, bool keep_matrix)
+  template<class T>
+  template<class Prop, class Storage, class Allocator>
+  void SparseDirectSolver<T>::Factorize(Matrix<T, Prop, Storage, Allocator>& A,
+					bool keep_matrix)
   {
     ComputeOrdering(A);
     

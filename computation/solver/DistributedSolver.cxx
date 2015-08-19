@@ -568,7 +568,7 @@ namespace Seldon
 
 
   //! factorizes a matrix
-  template<class T, class MatrixSparse, class T0>
+  template<class T, class MatrixSparse>
   void GetLU(SparseDistributedSolver<T>& mat_lu, MatrixSparse& A,
              bool keep_matrix, bool scale_matrix)
   {

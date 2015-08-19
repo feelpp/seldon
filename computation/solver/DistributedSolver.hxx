@@ -111,7 +111,7 @@ namespace Seldon
   void GetLU(SparseDistributedSolver<T>& mat_lu, MatrixSparse& A,
              bool keep_matrix, bool scale_matrix, T0& x_test);
 
-  template<class T, class MatrixSparse, class T0>
+  template<class T, class MatrixSparse>
   void GetLU(SparseDistributedSolver<T>& mat_lu, MatrixSparse& A,
              bool keep_matrix = false, bool scale_matrix = false);
 

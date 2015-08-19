@@ -90,6 +90,20 @@ namespace Seldon
    *******************/
 
 
+  //! Returns the number of elements stored in memory (real+imaginary part).
+  /*!
+    Returns the number of elements stored in memory, i.e.
+    the number of non-zero entries.
+    \return The number of elements stored in memory.
+  */
+  template <class T, class Prop, class Storage, class Allocator>
+  inline int Matrix_ArrayComplexSparse<T, Prop, Storage, Allocator>::
+  GetNonZeros() const
+  {
+    return (GetRealNonZeros()+GetImagNonZeros());
+  }
+
+
   //! Returns the number of elements stored in memory (real part).
   /*!
     Returns the number of elements stored in memory, i.e.
