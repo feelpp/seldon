@@ -283,15 +283,6 @@ namespace Seldon
     // we clear previous factorization if present
     Clear();
 
-    distributed = false;
-    n = mat.GetN();
-    if (n <= 0)
-      return;
-
-    pastix_int_t nrhs = 1, nnz = 0;
-    pastix_int_t* ptr_ = NULL;
-    pastix_int_t* ind_ = NULL;
-    T* values_ = NULL;
     Vector<pastix_int_t> Ptr, IndRow;
     Vector<T> Val;
 
@@ -299,6 +290,25 @@ namespace Seldon
     ConvertToCSC(mat, prop, Ptr, IndRow, Val, true);
     if (!keep_matrix)
       mat.Clear();
+
+    FactorizeCSC(Ptr, IndRow, Val, false);
+  }
+
+  
+  template<class T>
+  void MatrixPastix<T>
+  ::FactorizeCSC(Vector<pastix_int_t>& Ptr, Vector<pastix_int_t>& IndRow,
+		 Vector<T>& Val, bool sym)
+  {
+    distributed = false;
+    n = Ptr.GetM()-1;
+    if (n <= 0)
+      return;
+    
+    pastix_int_t nrhs = 1, nnz = 0;
+    pastix_int_t* ptr_ = NULL;
+    pastix_int_t* ind_ = NULL;
+    T* values_ = NULL;
 
     ptr_ = Ptr.GetData();
     // changing to 1-index notation
@@ -312,6 +322,20 @@ namespace Seldon
 
     values_ = Val.GetData();
 
+    if (sym)
+      {
+	iparm[IPARM_SYM]           = API_SYM_YES;
+	if (cholesky)
+	  iparm[IPARM_FACTORIZATION] = API_FACT_LLT;
+	else
+	  iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
+      }
+    else
+      {
+	iparm[IPARM_SYM]           = API_SYM_NO;    
+	iparm[IPARM_FACTORIZATION] = API_FACT_LU;
+      }
+
     if (iparm[IPARM_ORDERING] != API_ORDER_PERSONAL)
       {
 	perm.Reallocate(n); invp.Reallocate(n);
@@ -321,9 +345,6 @@ namespace Seldon
     // pivot threshold
     if (adjust_threshold_pivot)
       dparm[DPARM_EPSILON_MAGN_CTRL] = threshold_pivot;
-    
-    iparm[IPARM_SYM] = API_SYM_NO;
-    iparm[IPARM_FACTORIZATION] = API_FACT_LU;
 
     iparm[IPARM_START_TASK] = API_TASK_ORDERING;
     iparm[IPARM_END_TASK] = API_TASK_ANALYSE;
@@ -367,68 +388,13 @@ namespace Seldon
     // we clear previous factorization if present
     Clear();
 
-    distributed = false;
-    n = mat.GetN();
-    if (n <= 0)
-      return;
-
-    pastix_int_t nrhs = 1, nnz = 0;
-    pastix_int_t* ptr_ = NULL;
-    pastix_int_t* ind_ = NULL;
-
-    T* values_ = NULL;
     Vector<pastix_int_t> Ptr, IndRow;
     Vector<T> Val;
 
     Symmetric prop;
     ConvertToCSR(mat, prop, Ptr, IndRow, Val);
 
-    iparm[IPARM_SYM]           = API_SYM_YES;
-    if (cholesky)
-      iparm[IPARM_FACTORIZATION] = API_FACT_LLT;
-    else
-      iparm[IPARM_FACTORIZATION] = API_FACT_LDLT;
-    
-    if (!keep_matrix)
-      mat.Clear();
-
-    ptr_ = Ptr.GetData();
-    // changing to 1-index notation
-    for (int i = 0; i <= n; i++)
-      ptr_[i]++;
-
-    nnz = IndRow.GetM();
-    ind_ = IndRow.GetData();
-    for (int i = 0; i < nnz; i++)
-      ind_[i]++;
-
-    values_ = Val.GetData();
-
-    perm.Reallocate(n); invp.Reallocate(n);
-    perm.Fill(); invp.Fill();
-
-    if (adjust_threshold_pivot)
-      dparm[DPARM_EPSILON_MAGN_CTRL] = threshold_pivot;
-
-    // ordering and analysis
-    iparm[IPARM_START_TASK] = API_TASK_ORDERING;
-    iparm[IPARM_END_TASK] = API_TASK_ANALYSE;
-    
-    CallPastix(MPI_COMM_SELF, ptr_, ind_, values_, NULL, nrhs);
-
-    Vector<pastix_int_t> proc_num(iparm[IPARM_THREAD_NBR]);
-    proc_num.Fill(MPI::COMM_WORLD.Get_rank());
-    pastix_bindThreads(pastix_data, iparm[IPARM_THREAD_NBR], proc_num.GetData());
-    
-    // factorization only
-    iparm[IPARM_START_TASK] = API_TASK_NUMFACT;
-    iparm[IPARM_END_TASK] = API_TASK_NUMFACT;
-
-    CallPastix(MPI_COMM_SELF, ptr_, ind_, values_, NULL, nrhs);
-
-    Ptr.Nullify();
-    IndRow.Nullify();
-    Val.Nullify();
+    FactorizeCSC(Ptr, IndRow, Val, true);
   }
 
 

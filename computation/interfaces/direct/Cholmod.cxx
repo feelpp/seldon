@@ -87,11 +87,19 @@ namespace Seldon
   {
     Clear();
 
-    n = mat.GetM();
     Matrix<double, Symmetric, RowSymSparse> Acsc;
     Copy(mat, Acsc);
     if (!keep_matrix)
       mat.Clear();
+    
+    FactorizeCSR(Acsc);
+  }
+
+
+  void MatrixCholmod::
+  FactorizeCSR(Matrix<double, Symmetric, RowSymSparse> & Acsc)
+  {
+    n = Acsc.GetM();
 
     // Initialization of sparse matrix.
     cholmod_sparse A;

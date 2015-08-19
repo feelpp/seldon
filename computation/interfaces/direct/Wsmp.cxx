@@ -197,9 +197,21 @@ namespace Seldon
   {
     Clear();
 
+    Symmetric prop;
+    ConvertToCSR(mat, prop, Ptr, IndRow, Val);
+    if (!keep_matrix)
+      mat.Clear();
+    
+    FactorizeSymmetric();
+  }
+  
+
+  template<class T>
+  void MatrixWsmp<T>::FactorizeSymmetric()
+  {
     distributed = false;    
     symmetric = true;
-    n = mat.GetM();
+    n = Ptr.GetM()-1;
     
     wsmp_initialize_();
     
@@ -223,11 +235,6 @@ namespace Seldon
     // pivot threshold
     dparm(10) = threshold_pivot;
     
-    Symmetric prop;
-    ConvertToCSR(mat, prop, Ptr, IndRow, Val);
-    if (!keep_matrix)
-      mat.Clear();
-    
     if (cholesky)
       {
         // L L^T factorization
@@ -241,7 +248,7 @@ namespace Seldon
         else
           iparm(30) = 1;
         
-        if (IsComplexMatrix(mat))
+        if (IsComplexNumber(T()))
           iparm(30) += 2;
       }
     
@@ -273,9 +280,21 @@ namespace Seldon
   {
     Clear();
 
+    General prop;
+    ConvertToCSR(mat, prop, Ptr, IndRow, Val);
+    if (!keep_matrix)
+      mat.Clear();
+   
+    FactorizeUnsymmetric();
+  }
+
+
+  template<class T>
+  void MatrixWsmp<T>::FactorizeUnsymmetric()
+  {
     distributed = false;    
     symmetric = false;
-    n = mat.GetM();
+    n = Ptr.GetM()-1;
     
     wsmp_initialize_();
     
@@ -283,11 +302,6 @@ namespace Seldon
     iparm(1) = 0;
     iparm(2) = 0;
 
-    General prop;
-    ConvertToCSR(mat, prop, Ptr, IndRow, Val);
-    if (!keep_matrix)
-      mat.Clear();
-    
     // initialisation step
     int nrhs = 0; T darray;
     CallWgsmp(&n, Ptr.GetData(), IndRow.GetData(), Val.GetData(),
@@ -481,8 +495,7 @@ namespace Seldon
             else
               iparm(30) = 1;
             
-            T z;
-            if (IsComplexNumber(z))
+            if (IsComplexNumber(T()))
               iparm(30) += 2;
           }
         

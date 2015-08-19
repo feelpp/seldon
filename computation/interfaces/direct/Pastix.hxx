@@ -94,6 +94,9 @@ namespace Seldon
     void FactorizeMatrix(Matrix<T0, General, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
+    void FactorizeCSC(Vector<pastix_int_t>& Ptr, Vector<pastix_int_t>& IndRow,
+		      Vector<T>& Val, bool sym);
+
     template<class T0, class Storage, class Allocator>
     void FactorizeMatrix(Matrix<T0, Symmetric, Storage, Allocator> & mat,
 			 bool keep_matrix = false);

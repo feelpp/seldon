@@ -99,6 +99,9 @@ namespace Seldon
     template<class Storage, class Allocator>
     void FactorizeMatrix(Matrix<T, General, Storage, Allocator>& mat,
 			 bool keep_matrix = false);
+
+    void FactorizeUnsymmetric();
+    void FactorizeSymmetric();
     
     void Solve(Vector<T>& b);
     void Solve(const SeldonTranspose& trans, Vector<T>& b);

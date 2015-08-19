@@ -91,7 +91,9 @@ namespace Seldon
     template<class T0, class Prop, class Storage, class Allocator>
     void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator>& mat,
                          bool keep_matrix = false);
-    
+
+    void FactorizeCSR(bool sym); 
+   
     template<class Allocator2>
     void Solve(Vector<T, VectFull, Allocator2>& x);
 

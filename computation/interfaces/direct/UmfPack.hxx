@@ -81,6 +81,8 @@ namespace Seldon
     void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
+    void FactorizeCSC(Matrix<double, General, ColSparse>& Acsc);
+    
     template<class Prop, class Allocator>
     void PerformAnalysis(Matrix<double, Prop, RowSparse, Allocator> & mat);
 
@@ -120,6 +122,8 @@ namespace Seldon
     void
     FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
                     bool keep_matrix = false);
+
+    void FactorizeCSC(Matrix<complex<double>, General, ColSparse>& Acsc);
 
     template<class Allocator2>
     void Solve(Vector<complex<double>, VectFull, Allocator2>& x);

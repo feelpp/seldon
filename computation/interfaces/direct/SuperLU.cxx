@@ -446,16 +446,23 @@ namespace Seldon
     // clearing previous factorization
     Clear();
 
-    // initializing parameters
-    int_t panel_size, relax;
-    int_t lwork = 0;
-    Init(mat.GetN(), panel_size, relax);
-
     // conversion in CSC format
     Matrix<double, General, ColSparse> Acsr;
     Copy(mat, Acsr);
     if (!keep_matrix)
       mat.Clear();
+
+    FactorizeCSC(Acsr);
+  }
+
+  
+  void MatrixSuperLU<double>
+  ::FactorizeCSC(Matrix<double, General, ColSparse>& Acsr)
+  {  
+    // initializing parameters
+    int_t panel_size, relax;
+    int_t lwork = 0;
+    Init(Acsr.GetN(), panel_size, relax);
 
     superlu::SuperMatrix AA;
     int_t nnz = Acsr.GetDataSize();
@@ -953,16 +960,23 @@ namespace Seldon
     // clearing previous factorization
     Clear();
 
-    // initializing parameters
-    int_t panel_size, relax;
-    int_t lwork = 0;
-    Init(mat.GetN(), panel_size, relax);
-
     // conversion in CSR format
     Matrix<complex<double>, General, ColSparse> Acsr;
     Copy(mat, Acsr);
     if (!keep_matrix)
       mat.Clear();
+
+    FactorizeCSC(Acsr);
+  }
+
+  
+  void MatrixSuperLU<complex<double> >
+  ::FactorizeCSC(Matrix<complex<double>, General, ColSparse>& Acsr)
+  {
+    // initializing parameters
+    int_t panel_size, relax;
+    int_t lwork = 0;
+    Init(Acsr.GetN(), panel_size, relax);
 
     superlu::SuperMatrix AA;
     int_t nnz = Acsr.GetDataSize();

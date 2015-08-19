@@ -143,9 +143,22 @@ namespace Seldon
   {
     // previous factorization is cleared if present
     Clear();
+
+    // conversion of sparse matrix into CSR form
+    Prop prop;
+    ConvertToCSR(mat, prop, ptrA, indA, valA);
+    if (!keep_matrix)
+      mat.Clear();
     
+    FactorizeCSR(IsSymmetricMatrix(mat));
+  }
+
+
+  template<class T>
+  void MatrixPardiso<T>::FactorizeCSR(bool sym)
+  {
     // checking that the matrix is non-empty
-    size_matrix = mat.GetM();
+    size_matrix = ptrA.GetM()-1;
     if (size_matrix <= 0)
       return;
     
@@ -153,16 +166,16 @@ namespace Seldon
     double ddum;
     pardiso_int_t nrhs = 0;
     mtype = 0;
-    if (IsComplexMatrix(mat))
+    if (IsComplexNumber(T()))
       {
-        if (IsSymmetricMatrix(mat))
+        if (sym)
           mtype = 6;
         else
           mtype = 13;
       }
     else
       {
-        if (IsSymmetricMatrix(mat))
+        if (sym)
           mtype = -2;
         else
           mtype = 11;
@@ -195,12 +208,6 @@ namespace Seldon
     
     for (int i = 0; i < 64; i++)
       iparm[i] = iparm_[i];
-    
-    // conversion of sparse matrix into CSR form
-    Prop prop;
-    ConvertToCSR(mat, prop, ptrA, indA, valA);
-    if (!keep_matrix)
-      mat.Clear();
     
     for (int i = 0; i < ptrA.GetM(); i++)
       ptrA(i)++;

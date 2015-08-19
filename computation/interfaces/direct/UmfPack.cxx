@@ -222,12 +222,19 @@ namespace Seldon
 
     // conversion to unsymmetric matrix in Column Sparse Column Format
     Matrix<double, General, ColSparse> Acsc;
-    transpose = false;
-
-    this->n = mat.GetM();
     Copy(mat, Acsc);
     if (!keep_matrix)
       mat.Clear();
+
+    FactorizeCSC(Acsc);
+  }
+
+  
+  void MatrixUmfPack<double>
+  ::FactorizeCSC(Matrix<double, General, ColSparse>& Acsc)
+  {
+    transpose = false;
+    this->n = Acsc.GetM();
 
     // we retrieve pointers of Acsc and nullify this object
     ptr_ = Acsc.GetPtr();
@@ -374,14 +381,22 @@ namespace Seldon
   {
     Clear();
 
-    this->n = mat.GetM();
     // conversion to CSC format
     Matrix<complex<double>, General, ColSparse> Acsc;
-    transpose = false;
 
     Copy(mat, Acsc);
     if (!keep_matrix)
       mat.Clear();
+    
+    FactorizeCSC(Acsc);
+  }
+
+
+  void MatrixUmfPack<complex<double> >
+  ::FactorizeCSC(Matrix<complex<double>, General, ColSparse>& Acsc)
+  {
+    transpose = false;
+    this->n = Acsc.GetM();
 
     int nnz = Acsc.GetDataSize();
     complex<double>* data = Acsc.GetData();

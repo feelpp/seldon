@@ -52,6 +52,8 @@ namespace Seldon
     void FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
                          bool keep_matrix = false);
 
+    void FactorizeCSR(Matrix<double, Symmetric, RowSymSparse> & Acsc);
+
     template<class Allocator>
     void Solve(const SeldonTranspose& TransA,
                Vector<double, VectFull, Allocator>& x);
