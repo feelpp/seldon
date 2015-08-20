@@ -1,4 +1,4 @@
-// Copyright (C) 2014 INRIA
+// Copyright (C) 2013-2015 INRIA
 // Author(s): Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
@@ -22,17 +22,24 @@
 namespace Seldon
 {
 
-  //! matrix distributed over all the processors
-  template<class T, class Prop, class Storage, class Allocator
-	   = typename SeldonDefaultAllocator<Storage, T>::allocator>
-  class DistributedMatrix : public Matrix<T, Prop, Storage, Allocator>
+  //! Base class for distributed matrix over all the processors
+  /*!
+    In this class, distant non-zero entries are stored.
+    It can contain non-zero entries corresponding to distant rows
+    (i.e. the column belongs to the current processor, but
+    the row belongs to another processor)
+    or distant columns
+    (i.e. the row belongs to the current processor, but
+    the column belongs to another processor)
+
+    Only one storage is implemented (equivalent of ArrayRowSparse).
+   */
+  template<class T>
+  class DistributedMatrix_Base
   {
-    template<class T0, class Prop0, class Storage0, class Allocator0>
-    friend class DistributedMatrix;
-    
-    template<class T0, class Prop0, class Storage0, class Allocator0>
-    friend class DistributedMatrix_BlockDiag;
-    
+    template<class T0>
+    friend class DistributedMatrix_Base;
+
   protected :
     //! row numbers shared with other processors
     /*!
@@ -137,102 +144,13 @@ namespace Seldon
     template<class T0, class TypeDist>
     void RemoveSmallEntryDistant(const T0&, TypeDist&, Vector<IVect>&);
     
-    template<class T0> void GetRowSumDistantRow(Vector<T0>& vec_sum) const;
     template<class T0> void GetRowSumDistantCol(Vector<T0>& vec_sum) const;
+    template<class T0> void GetRowSumDistantRow(Vector<T0>& vec_sum) const;
 
-    template<class T0> void GetColSumDistantRow(Vector<T0>& vec_sum) const;
     template<class T0> void GetColSumDistantCol(Vector<T0>& vec_sum) const;
-    
-  public :
-    // constructors
-    DistributedMatrix();
-    explicit DistributedMatrix(int m, int n);
-    
-    // Inline methods
-    MPI::Comm& GetCommunicator();
-    const MPI::Comm& GetCommunicator() const;
-  
-    int GetGlobalM() const;
-    int GetNodlScalar() const;
-    int GetNbScalarUnknowns() const;
+    template<class T0> void GetColSumDistantRow(Vector<T0>& vec_sum) const;
 
-    void AddDistantInteraction(int i, int jglob, int proc,
-                               const T& val);
-    
-    void AddRowDistantInteraction(int iglob, int j, int proc,
-                                  const T& val);
-
-    int GetMaxDataSizeDistantCol() const;
-    int GetMaxDataSizeDistantRow() const;
-    bool IsReadyForMltAdd() const;
-    
-    // initialisation of pointers
-    void Init(int n, IVect*, IVect*, IVect*,
-              int, int, IVect*, Vector<IVect>*, MPI::Comm&);
-  
-    template<class T0, class Prop0, class Storage0, class Allocator0>
-    void Init(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>&);
-    
-    void Init(Vector<IVect>&, IVect&, IVect&, IVect&,
-              int, int, IVect&, Vector<IVect>&, MPI::Comm&,
-              bool distribute_row = true);
-
-    void Init(IVect&, IVect&, IVect&,
-              int, int, IVect&, Vector<IVect>&, MPI::Comm&);
-    
-    // memory management
-    void Reallocate(int m, int n);
-    void Resize(int m, int n);
-    void Clear();
-    
-    // basic functions
-    DistributedMatrix<T, Prop, Storage, Allocator>&
-    operator=(const DistributedMatrix<T, Prop, Storage, Allocator>& X);
-    
-    template<class T0>
-    DistributedMatrix<T, Prop, Storage, Allocator>& operator *=(const T0& x);
-    
-    IVect& GetGlobalRowNumber();
-    const IVect& GetGlobalRowNumber() const;
-    IVect& GetOverlapRowNumber();
-    const IVect& GetOverlapRowNumber() const;
-    IVect& GetOverlapProcNumber();
-    const IVect& GetOverlapProcNumber() const;
-    IVect& GetProcessorSharingRows();
-    Vector<IVect>& GetSharingRowNumbers();
-
-    int64_t GetMemorySize() const;
-    
-    // convenient functions overloaded    
-    int GetNonZeros() const;
-    int GetDataSize() const;    
-    
-    template<class T0>
-    void RemoveSmallEntry(const T0& epsilon);
-    
-    void SetIdentity();
-    void Zero();
-    void Fill();
-    
-    template<class T0>
-    void Fill(const T0& x);
-    
-    void FillRand();
-    
-    void Write(string FileName) const;
-    void Write(ostream& FileStream) const;
-    void WriteText(string FileName, bool cplx = false) const;
-    void WriteText(ostream& FileStream, bool cplx = false) const;
-    void Read(string FileName);
-    void Read(istream& FileStream);
-    void ReadText(string FileName, bool cplx = false);
-    void ReadText(istream& FileStream, bool cplx = false);
-    
-    // adding values to matrix    
-    void AddInteractionRow(int, int, const Vector<int>&,
-			   const Vector<T>&);
-    
-    // functions for matrix-vector product    
+    // internal functions for matrix-vector product    
     void PrepareMltAdd();
     
     template<class T2>
@@ -261,6 +179,311 @@ namespace Seldon
     void MltAddRow(const SeldonTranspose& Trans,
                    const Vector<T2, Storage2, Allocator2>& X,
                    Vector<T4, Storage4, Allocator4>& Y) const;
+    
+    // internal static functions
+    static void AddDistantValue(Vector<T, VectSparse>& dist_col_,
+                                IVect& proc_col_,
+                                int jglob, int proc2, const T& val);
+
+    static void SendAndReceiveDistributed(const MPI::Comm& comm, IVect& nsend_int, Vector<IVect>& EntierToSend, 
+                                          Vector<Vector<T> >& FloatToSend, IVect& nrecv_int,
+                                          Vector<IVect>& EntierToRecv, Vector<Vector<T> >& FloatToRecv);
+    
+    
+    static void AddReceivedInteractions(const MPI::Comm& comm, Matrix<T, General, ArrayRowSparse>& B,
+                                        Vector<IVect>& EntierToRecv, Vector<Vector<T> >& FloatToRecv,
+                                        IVect& nrecv_int, Vector<IVect>& EntierToSend,
+                                        Vector<Vector<T> >& FloatToSend, IVect& nsend_int,
+                                        IVect& Glob_to_local, const IVect& OverlappedCol,
+                                        const IVect& OverlapProcNumber,
+                                        Vector<IVect>& procB, bool reorder);
+    
+    static void AddReceivedInteractions(const MPI::Comm& comm, Matrix<T, General, ArrayColSparse>& B,
+                                        Vector<IVect>& EntierToRecv, Vector<Vector<T> >& FloatToRecv,
+                                        IVect& nrecv_int, Vector<IVect>& EntierToSend,
+                                        Vector<Vector<T> >& FloatToSend, IVect& nsend_int,
+                                        IVect& Glob_to_local, const IVect& OverlappedCol,
+                                        const IVect& OverlapProcNumber,
+                                        Vector<IVect>& procB, bool reorder);
+    
+    template<class TypeDist>
+    static void EraseDistantEntries(MPI::Comm& comm, const Vector<bool>& IsRowDropped,
+                                    const Vector<bool>& IsRowDroppedDistant,
+                                    TypeDist& dist_row_, Vector<IVect>& proc_row_,
+                                    TypeDist& dist_col_, Vector<IVect>& proc_col_);
+    
+  public :
+    // constructors
+    DistributedMatrix_Base();
+    explicit DistributedMatrix_Base(int m, int n);
+    
+    // Inline methods
+    MPI::Comm& GetCommunicator();
+    const MPI::Comm& GetCommunicator() const;
+  
+    int GetLocalM() const;
+    int GetLocalN() const;
+    int GetGlobalM() const;
+    int GetNodlScalar() const;
+    int GetNbScalarUnknowns() const;
+
+    void AddDistantInteraction(int i, int jglob, int proc,
+                               const T& val);
+    
+    void AddRowDistantInteraction(int iglob, int j, int proc,
+                                  const T& val);
+
+    int GetMaxDataSizeDistantCol() const;
+    int GetMaxDataSizeDistantRow() const;
+    bool IsReadyForMltAdd() const;
+
+    int GetDistantColSize(int i) const;
+    int IndexGlobalCol(int i, int j) const;
+    int ProcessorDistantCol(int i, int j) const;
+    const T& ValueDistantCol(int i, int j) const;
+    
+    int GetDistantRowSize(int i) const;
+    int IndexGlobalRow(int i, int j) const;
+    int ProcessorDistantRow(int i, int j) const;
+    const T& ValueDistantRow(int i, int j) const;
+    
+    // initialisation of pointers
+    void Init(int n, IVect*, IVect*, IVect*,
+              int, int, IVect*, Vector<IVect>*, MPI::Comm&);
+  
+    template<class T0>
+    void Init(const DistributedMatrix_Base<T0>&);
+    
+    void Init(Vector<IVect>&, IVect&, IVect&, IVect&,
+              int, int, IVect&, Vector<IVect>&, MPI::Comm&,
+              bool distribute_row = true);
+
+    void Init(IVect&, IVect&, IVect&,
+              int, int, IVect&, Vector<IVect>&, MPI::Comm&);
+    
+    // memory management
+    void Reallocate(int m, int n);
+    void Resize(int m, int n);
+    void Clear();
+    
+    // basic functions
+    DistributedMatrix_Base<T>&
+    operator=(const DistributedMatrix_Base<T>& X);
+    
+    void Copy(const DistributedMatrix_Base<T>& X);
+    
+    template<class T0>
+    DistributedMatrix_Base<T>& operator *=(const T0& x);
+
+    IVect& GetGlobalRowNumber();
+    const IVect& GetGlobalRowNumber() const;
+    IVect& GetOverlapRowNumber();
+    const IVect& GetOverlapRowNumber() const;
+    IVect& GetOverlapProcNumber();
+    const IVect& GetOverlapProcNumber() const;
+    IVect& GetProcessorSharingRows();
+    const IVect& GetProcessorSharingRows() const;
+    Vector<IVect>& GetSharingRowNumbers();
+    const Vector<IVect>& GetSharingRowNumbers() const;
+
+    int64_t GetMemorySize() const;
+    
+    // convenient functions overloaded    
+    int GetNonZeros() const;
+    int GetDataSize() const;    
+    
+    template<class T0>
+    void RemoveSmallEntry(const T0& epsilon);
+    
+    void SetIdentity();
+    void Zero();
+    void Fill();
+    
+    template<class T0>
+    void Fill(const T0& x);
+    
+    void FillRand();
+    
+    void WriteText(ostream& FileStream, Vector<int>& Indow, Vector<int>& IndCol,
+                   Vector<T>& Value, bool cplx) const;
+    
+    // functions called by matrix-vector products
+    template<class T2, class T3, class T4, class Storage4, class Allocator4>
+    void InitMltAdd(bool& proceed_distant_row, bool& proceed_distant_col,
+                    const Vector<T2>& X, Vector<T2>& Xcol,
+                    const T3& beta, Vector<T4, Storage4, Allocator4>& Y,
+                    Vector<T4, Storage4, Allocator4>& Yres) const;
+    
+    template<class T2, class T3, class T4, class Storage4, class Allocator4>
+    void FinalizeMltAdd(bool proceed_distant_row, bool proceed_distant_col,
+                        const Vector<T2>& X, Vector<T2>& Xcol, const T3& alpha,
+                        const T3& beta, Vector<T4, Storage4, Allocator4>& Y,
+                        Vector<T4, Storage4, Allocator4>& Yres, bool assemble) const;
+    
+    template<class T2, class T3, class T4, class Storage4, class Allocator4>
+    void InitMltAdd(bool& proceed_distant_row, bool& proceed_distant_col,
+                    const SeldonTranspose& trans, const Vector<T2>& X, Vector<T2>& Xrow,
+                    const T3& beta, Vector<T4, Storage4, Allocator4>& Y,
+                    Vector<T4, Storage4, Allocator4>& Yres) const;
+
+    template<class T2, class T3, class T4, class Storage4, class Allocator4>
+    void FinalizeMltAdd(bool proceed_distant_row, bool proceed_distant_col,
+                        const SeldonTranspose& trans, const Vector<T2>& X, Vector<T2>& Xrow,
+                        const T3& alpha, const T3& beta, Vector<T4, Storage4, Allocator4>& Y,
+                        Vector<T4, Storage4, Allocator4>& Yres, bool assemble) const;
+    
+    void InitMltMin(Vector<int>& Y, Vector<int>& Yproc,
+                    Vector<int>& Xcol, Vector<int>& Xcol_proc) const;
+
+    void FinalizeMltMin(Vector<int>& Y, Vector<int>& Yproc,
+                        Vector<int>& Xcol, Vector<int>& Xcol_proc) const;
+
+    // methods called for various functions on matrices
+    template<class T0, class T1>
+    void AddDistributedMatrix(const T0& alpha,
+                              const DistributedMatrix_Base<T1>& A);
+
+    void GetMaxAbsDistant(typename ClassComplexType<T>::Treal& res) const;
+
+    template<class T0>
+    void AddRowSumDistant(Vector<T0>& vec_sum) const;
+
+    template<class T0>
+    void AddColSumDistant(Vector<T0>& vec_sum) const;
+
+    template<class T0>
+    void AddRowColSumDistant(Vector<T0>& sum_row, Vector<T0>& sum_col) const;
+    
+    void ExchangeParallelData(int& smax_row, int& smax_col, bool& local_number,
+                              Vector<Vector<T, VectSparse>, VectFull,
+                              NewAlloc<Vector<T, VectSparse> > >& dist_row_,
+                              Vector<Vector<T, VectSparse>, VectFull,
+                              NewAlloc<Vector<T, VectSparse> > >& dist_col_,
+                              Vector<IVect>& proc_row_, Vector<IVect>& proc_col_,
+                              IVect& global_row_to_recv_, IVect& global_col_to_recv_,
+                              IVect& ptr_global_row_to_recv_, IVect& ptr_global_col_to_recv_,
+                              Vector<IVect>& local_row_to_send_, Vector<IVect>& local_col_to_send_,
+                              IVect& proc_row_to_recv_, IVect& proc_col_to_recv_,
+                              IVect& proc_row_to_send_, IVect& proc_col_to_send_);
+
+    void ConjugateDistant();
+    void TransposeDistant(const DistributedMatrix_Base<T>& A);
+    
+    template<class T0>
+    void ScaleLeftDistant(const Vector<T0>& Drow);
+    
+    template<class T0>
+    void ScaleRightDistant(const Vector<T0>& Dcol);
+    
+    template<class T0, class T1>
+    void ScaleDistant(const Vector<T0>& Drow, const Vector<T1>& Dcol);
+    
+    void EraseColDistant(const IVect& num, bool sym);
+    void EraseRowDistant(const IVect& num, bool sym);
+
+    template<class T1>
+    void CopySubDistant(const DistributedMatrix_Base<T1>& A,
+                        const IVect& row, const IVect& col, bool sym);
+      
+
+    // functions for assembling matrix
+    template<class Tint>
+    void AssembleParallel(Matrix<T, General, ArrayRowSparse>& B, Vector<IVect>& procB,
+                          Symmetric& sym, IVect& row_numbers, IVect& local_row_numbers,
+                          Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA,
+                          bool sym_pattern, bool reorder);
+    
+    template<class Tint>
+    void AssembleParallel(Matrix<T, General, ArrayColSparse>& B, Vector<IVect>& procB,
+                          General& prop, IVect& col_numbers, IVect& local_col_numbers,
+                          Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA,
+                          bool sym_pattern, bool reorder);
+    
+    template<class T0, class Allocator0>
+    void GetDistributedRows(Matrix<T0, General,
+			    ArrayRowSparse, Allocator0>& rows,
+                            Vector<IVect>& proc, bool sym) const;
+    
+    template<class T0, class Allocator0>
+    void GetDistributedColumns(Matrix<T0, General, ArrayColSparse, Allocator0>& B,
+                               Vector<IVect>& procB, IVect& Ptr, IVect& Ind,
+                               Vector<T0>& Val, bool sym_pattern) const;
+    
+  };
+
+
+  //! matrix distributed over all the processors
+  /*!
+    The local part of the matrix (with local rows and columns)
+    is stored in the parent class Matrix<T, Prop, Storage, Allocator>
+    This part can be stored at the user convenience (RowSparse, ArrayRowSymSparse, etc)
+    The distant part of the matrix (with distant rows or distant columns)
+    is stored in the parent class DistributedMatrix_Base
+
+    Most of the functions that apply to standard matrices
+    are overloaded for the class DistributedMatrix such that
+    it should work correctly in parallel.
+   */
+  template<class T, class Prop, class Storage, class Allocator
+	   = typename SeldonDefaultAllocator<Storage, T>::allocator>
+  class DistributedMatrix : public Matrix<T, Prop, Storage, Allocator>,
+                            public DistributedMatrix_Base<T>
+  {
+    template<class T0, class Prop0, class Storage0, class Allocator0>
+    friend class DistributedMatrix;
+    
+  public :
+    // constructors
+    DistributedMatrix();
+    explicit DistributedMatrix(int m, int n);
+
+    // Inline methods
+    void AddDistantInteraction(int i, int jglob, int proc,
+                               const T& val);
+    
+    void AddRowDistantInteraction(int iglob, int j, int proc,
+                                  const T& val);
+
+    // memory management
+    void Reallocate(int m, int n);
+    void Resize(int m, int n);
+    void Clear();
+    
+    // basic functions
+    template<class Prop2, class Storage2, class Allocator2>
+    DistributedMatrix<T, Prop, Storage, Allocator>&
+    operator=(const DistributedMatrix<T, Prop2, Storage2, Allocator2>& X);
+    
+    template<class T0>
+    DistributedMatrix<T, Prop, Storage, Allocator>& operator *=(const T0& x);
+
+
+    int64_t GetMemorySize() const;
+    
+    // convenient functions
+    int GetNonZeros() const;
+    int GetDataSize() const;    
+    
+    template<class T0>
+    void RemoveSmallEntry(const T0& epsilon);
+    
+    void SetIdentity();
+    void Zero();
+    void Fill();
+    
+    template<class T0>
+    void Fill(const T0& x);
+    
+    void FillRand();
+    
+    void Write(string FileName) const;
+    void Write(ostream& FileStream) const;
+    void WriteText(string FileName, bool cplx = false) const;
+    void WriteText(ostream& FileStream, bool cplx = false) const;
+    void Read(string FileName);
+    void Read(istream& FileStream);
+    void ReadText(string FileName, bool cplx = false);
+    void ReadText(istream& FileStream, bool cplx = false);
     
     // functions for assembling matrix
     template<class T0, class Allocator0>
@@ -309,128 +532,11 @@ namespace Seldon
     virtual void MltVector(const SeldonTranspose&,
 			   const Vector<Tcplx>& x, Vector<Tcplx>& y) const;
 #endif
-
-    // friend functions    
-    template<class MatrixSparse, class Tint, class T0> friend void
-    AssembleDistributed(MatrixSparse& A,
-			Symmetric& sym, const MPI::Comm& comm,
-                        IVect& row_numbers, IVect& local_row_numbers,
-                        Vector<Tint>& PtrA, Vector<Tint>& IndA,
-                        Vector<T0>& ValA, bool sym_pattern, bool reorder);
-    
-    template<class MatrixSparse, class Tint, class T0> friend void
-    AssembleDistributed(MatrixSparse& A,
-			General& prop, const MPI::Comm& comm,
-                        IVect& col_numbers, IVect& local_col_numbers,
-                        Vector<Tint>& PtrA, Vector<Tint>& IndA,
-                        Vector<T0>& ValA, bool sym_pattern, bool reorder);
-
-    template<class T1, class Prop1, class Storage1, class Allocator1> friend
-    void MltMin(const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& M,
-		IVect& Y, IVect& Yproc);
-    
-    template<class T0, class T1, class Prop1, class Storage1,
-	     class Allocator1, class T2, class Prop2, class Storage2,
-	     class Allocator2> friend void
-    AddMatrix(const T0& alpha,
-	      const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A, 
-	      DistributedMatrix<T2, Prop2, Storage2, Allocator2>& B);
-    
-    template<class T1, class Prop1, class Storage1, class Allocator1>
-    friend typename ClassComplexType<T1>::Treal
-    MaxAbs(const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A);
-
-    template<class T0, class T1, class Prop1,
-	     class Storage1, class Allocator1>
-    friend void
-    GetRowSum(Vector<T0>& vec_sum,
-	      const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A);
-    
-    template<class T0, class T1, class Prop1,
-	     class Storage1, class Allocator1>
-    friend void
-    GetColSum(Vector<T0>& vec_sum,
-	      const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A);
- 
-    template<class T0, class T1, class Prop1,
-	     class Storage1, class Allocator1>
-    friend void 
-    GetRowColSum(Vector<T0>& row_sum, Vector<T0>& col_sum,
-		 const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A);
-
-    template<class T1, class Prop1, class Storage1, class Allocator1>
-    friend void
-    Transpose(DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A);
-
-    template<class T1, class Prop1, class Storage1, class Allocator1>
-    friend void 
-    Transpose(const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A,
-	      DistributedMatrix<T1, Prop1, Storage1, Allocator1>& B);
-    
-    template<class T1, class Prop1, class Storage1, class Allocator1>
-    friend void 
-    Conjugate(DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A);
-    
-    template<class T0, class Storage0, class Allocator0,
-             class T1, class Allocator1>
-    friend void 
-    ScaleRightMatrix(DistributedMatrix<T0, General, Storage0, Allocator0>& A,
-		     const Vector<T1, VectFull, Allocator1>& coef);
-    
-    template<class T0, class Storage0, class Allocator0,
-             class T1, class Allocator1>
-    friend void 
-    ScaleLeftMatrix(DistributedMatrix<T0, General, Storage0, Allocator0>& A,
-		    const Vector<T1, VectFull, Allocator1>& coef);
-
-    template<class T0, class Prop0, class Storage0, class Allocator0,
-             class T1, class Allocator1, class T2, class Allocator2>
-    friend void 
-    ScaleMatrix(DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
-		const Vector<T1, VectFull, Allocator1>& Drow,
-		const Vector<T2, VectFull, Allocator2>& Dcol);
-    
-    template<class T1, class Prop0, class Storage0, class Allocator0>
-    friend void
-    EraseCol(const IVect& col_number,
-             DistributedMatrix<T1, Prop0, Storage0, Allocator0>& A);
-    
-    template<class T1, class Prop0, class Storage0, class Allocator0>
-    friend void
-    EraseRow(const IVect& col_number,
-             DistributedMatrix<T1, Prop0, Storage0, Allocator0>& A);
-    
-    template<class T1, class Prop1, class Storage1, class Allocator1,
-             class T2, class Prop2, class Storage2, class Allocator2>
-    friend void 
-    Copy(const DistributedMatrix<T1, Prop1, Storage1, Allocator1>& A,
-	 DistributedMatrix<T2, Prop2, Storage2, Allocator2>& B);
-    
-    template<class T0, class Prop0, class Storage0, class Allocator0,
-             class T1, class Prop1, class Storage1, class Allocator1>
-    friend void
-    CopySubMatrix(const DistributedMatrix<T0, Prop0, Storage0, Allocator0>&,
-                  const IVect& row, const IVect& col,
-                  DistributedMatrix<T1, Prop1, Storage1, Allocator1>& B);
-    
-    template<class T0, class Prop0, class Storage0, class Allocator0,
-             class T1, class Prop1, class Storage1, class Allocator1>
-    friend void
-    ConvertToBlockDiagonal(const DistributedMatrix<T0, Prop0,
-			   Storage0, Allocator0>& A,
-                           DistributedMatrix<T1, Prop1,
-			   Storage1, Allocator1>& B);
     
   };
 
 
-  template<class T, class Allocator>
-  void AddDistantValue(Vector<T, VectSparse, Allocator>& dist_col,
-		       IVect& proc_col,
-		       int jglob, int proc2, const T& val);
-
-  // matrix vector products
-  
+  // matrix vector products  
   template<class T0, class T1, class Prop1, class Storage1, class Allocator1,
            class T2, class Storage2, class Allocator2, class T3,
            class T4, class Storage4, class Allocator4>
@@ -718,6 +824,7 @@ namespace Seldon
    * Mlt, MltAdd for distributed matrices *
    ****************************************/
 
+  // functions present in DistributedMatrixInline.cxx
   template<class T, class Prop, class Storage, class Allocator>
   void Mlt(const T& alpha,
            DistributedMatrix<T, Prop, Storage, Allocator>& A);

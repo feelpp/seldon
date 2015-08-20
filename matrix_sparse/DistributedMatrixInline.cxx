@@ -23,47 +23,63 @@
 
 namespace Seldon
 {
+
+  /**************************
+   * DistributedMatrix_Base *
+   **************************/
+
   
   //! returns MPI communicator (processors that will share the matrix)
-  template<class T, class Prop, class Storage, class Allocator>
-  inline MPI::Comm& DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetCommunicator()
+  template<class T>
+  inline MPI::Comm& DistributedMatrix_Base<T>::GetCommunicator()
   {
     return *comm_;
   }
   
   
   //! returns MPI communicator (processors that will share the matrix)
-  template<class T, class Prop, class Storage, class Allocator>
-  inline const MPI::Comm& DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetCommunicator() const
+  template<class T>
+  inline const MPI::Comm& DistributedMatrix_Base<T>::GetCommunicator() const
   {
     return *comm_;
   }
   
-  
+
+  //! returns the local number of rows
+  template<class T>
+  inline int DistributedMatrix_Base<T>::GetLocalM() const
+  {
+    return dist_col.GetM();
+  }
+
+
+  //! returns the local number of columns
+  template<class T>
+  inline int DistributedMatrix_Base<T>::GetLocalN() const
+  {
+    return dist_row.GetM();
+  }
+
+    
   //! returns the global number of rows
-  template<class T, class Prop, class Storage, class Allocator>
-  inline int DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetGlobalM() const
+  template<class T>
+  inline int DistributedMatrix_Base<T>::GetGlobalM() const
   {
     return nglob_;
   }
   
   
   //! returns the number of scalar unknowns
-  template<class T, class Prop, class Storage, class Allocator>
-  inline int DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetNodlScalar() const
+  template<class T>
+  inline int DistributedMatrix_Base<T>::GetNodlScalar() const
   {
     return nodl_scalar_;
   }
   
 
   //! returns the number of scalar unknowns
-  template<class T, class Prop, class Storage, class Allocator>
-  inline int DistributedMatrix<T, Prop, Storage, Allocator>
-  ::GetNbScalarUnknowns() const
+  template<class T>
+  inline int DistributedMatrix_Base<T>::GetNbScalarUnknowns() const
   {
     return nb_unknowns_scal_;
   }
@@ -78,8 +94,8 @@ namespace Seldon
     \param[in] proc2 distant processor containing the global column
     \param[in] val value of the non-zero entry
   */
-  template<class T, class Prop, class Storage, class Allocator>
-  inline void DistributedMatrix<T, Prop, Storage, Allocator>::
+  template<class T>
+  inline void DistributedMatrix_Base<T>::
   AddDistantInteraction(int i, int jglob, int proc2, const T& val)
   {
     if (local_number_distant_values)
@@ -97,8 +113,8 @@ namespace Seldon
     \param[in] proc2 distant processor containing the global row
     \param[in] val value of the non-zero entry
   */
-  template<class T, class Prop, class Storage, class Allocator>
-  inline void DistributedMatrix<T, Prop, Storage, Allocator>
+  template<class T>
+  inline void DistributedMatrix_Base<T>
   ::AddRowDistantInteraction(int iglob, int j,
 			     int proc2, const T& val)
   {
@@ -109,20 +125,9 @@ namespace Seldon
   }
   
   
-  //! adds non-zero entries in a row of the matrix
-  template<class T, class Prop, class Storage, class Allocator>
-  inline void DistributedMatrix<T, Prop, Storage, Allocator>
-  ::AddInteractionRow(int i, int num_val, const Vector<int>& col,
-		      const Vector<T>& val)
-  {
-    Matrix<T, Prop, Storage, Allocator>::
-      AddInteractionRow(i, num_val, col, val);
-  }
-  
-
   //! returns the maximum number of values in dist_col to exchange
-  template<class T, class Prop, class Storage, class Allocator>
-  inline int DistributedMatrix<T, Prop, Storage, Allocator>
+  template<class T>
+  inline int DistributedMatrix_Base<T>
   ::GetMaxDataSizeDistantCol() const
   {
     return size_max_distant_col;
@@ -130,8 +135,8 @@ namespace Seldon
   
   
   //! returns the maximum number of values in dist_row to exchange
-  template<class T, class Prop, class Storage, class Allocator>
-  inline int DistributedMatrix<T, Prop, Storage, Allocator>
+  template<class T>
+  inline int DistributedMatrix_Base<T>
   ::GetMaxDataSizeDistantRow() const
   { 
     return size_max_distant_row;
@@ -139,13 +144,106 @@ namespace Seldon
   
   
   //! returns true if the matrix is ready to perform a matrix-vector product
-  template<class T, class Prop, class Storage, class Allocator>
-  inline bool DistributedMatrix<T, Prop, Storage, Allocator>
+  template<class T>
+  inline bool DistributedMatrix_Base<T>
   ::IsReadyForMltAdd() const
   {
     return local_number_distant_values;
   }
 
+
+  //! returns the number of distant non-zero entries for the local row i
+  template<class T>
+  inline int DistributedMatrix_Base<T>::GetDistantColSize(int i) const
+  {
+    return dist_col(i).GetM();
+  }
+
+
+  //! returns the global column number of distant non-zero entry j for the local row i
+  template<class T>
+  inline int DistributedMatrix_Base<T>::IndexGlobalCol(int i, int j) const
+  {
+    if (this->local_number_distant_values)      
+      return global_col_to_recv(dist_col(i).Index(j));  
+
+    return dist_col(i).Index(j);
+  }
+
+
+  //! returns the processor associated with distant non-zero entry j for the local row i
+  template<class T>
+  inline int DistributedMatrix_Base<T>::ProcessorDistantCol(int i, int j) const
+  {
+    return proc_col(i)(j);  
+  }
+
+
+  //! returns the value of distant non-zero entry j for the local row i
+  template<class T>
+  inline const T& DistributedMatrix_Base<T>::ValueDistantCol(int i, int j) const
+  {
+    return dist_col(i).Value(j);  
+  }
+
+
+  //! returns the number of distant non-zero entries for the local column i
+  template<class T>
+  inline int DistributedMatrix_Base<T>::GetDistantRowSize(int i) const
+  {
+    return dist_row(i).GetM();
+  }
+
+
+  //! returns the global row number of distant non-zero entry j for the local column i
+  template<class T>
+  inline int DistributedMatrix_Base<T>::IndexGlobalRow(int i, int j) const
+  {
+    if (this->local_number_distant_values)
+      return global_row_to_recv(dist_row(i).Index(j));  
+    
+    return dist_row(i).Index(j);
+  }
+
+
+  //! returns the processor associated with distant non-zero entry j for the local column i
+  template<class T>
+  inline int DistributedMatrix_Base<T>::ProcessorDistantRow(int i, int j) const
+  {
+    return proc_row(i)(j);  
+  }
+
+
+  //! returns the value of distant non-zero entry j for the local column i
+  template<class T>
+  inline const T& DistributedMatrix_Base<T>::ValueDistantRow(int i, int j) const
+  {
+    return dist_row(i).Value(j);  
+  }
+  
+
+  /*********************
+   * DistributedMatrix *
+   *********************/
+
+
+  //! Adds val for local row i and global column jglob (proc owns this column)
+  template<class T, class Prop, class Storage, class Allocator>
+  inline void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::AddDistantInteraction(int i, int jglob, int proc, const T& val)
+  {
+    DistributedMatrix_Base<T>::AddDistantInteraction(i, jglob, proc, val);
+  }
+
+    
+  //! Adds val for global row iglob and local column j (proc owns the row)
+  template<class T, class Prop, class Storage, class Allocator>
+  inline void DistributedMatrix<T, Prop, Storage, Allocator>
+  ::AddRowDistantInteraction(int iglob, int j, int proc, const T& val)
+  {
+    DistributedMatrix_Base<T>::AddRowDistantInteraction(iglob, j, proc, val);
+  }
+  
 
 #ifdef SELDON_WITH_VIRTUAL
   template <class T, class Prop, class Storage, class Allocator>
@@ -235,7 +333,7 @@ namespace Seldon
   /****************************************
    * Mlt, MltAdd for distributed matrices *
    ****************************************/
-
+  
 
   template<class T, class Prop, class Storage, class Allocator>
   inline void Mlt(const T& alpha,
