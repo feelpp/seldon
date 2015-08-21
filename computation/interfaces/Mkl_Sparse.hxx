@@ -347,255 +347,260 @@ namespace Seldon
 
   
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<float, General, RowSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y);
+  void MltVector(const Matrix<float, General, RowSparse, Alloc1>& A,
+                 const Vector<float, VectFull, Alloc2>& X,
+                 Vector<float, VectFull, Alloc3>& Y);
   
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<double, General, RowSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y);
+  void MltVector(const Matrix<double, General, RowSparse, Alloc1>& A,
+                 const Vector<double, VectFull, Alloc2>& X,
+                 Vector<double, VectFull, Alloc3>& Y);
   
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y);
+  void MltVector(const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
+                 const Vector<complex<float>, VectFull, Alloc2>& X,
+                 Vector<complex<float>, VectFull, Alloc3>& Y);
   
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y);
+  void MltVector(const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
+                 const Vector<complex<double>, VectFull, Alloc2>& X,
+                 Vector<complex<double>, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y);
+  void MltVector(const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<float, VectFull, Alloc2>& X,
+                 Vector<float, VectFull, Alloc3>& Y);
   
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y);
+  void MltVector(const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<double, VectFull, Alloc2>& X,
+                 Vector<double, VectFull, Alloc3>& Y);
   
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y);
+  void MltVector(const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<complex<float>, VectFull, Alloc2>& X,
+                 Vector<complex<float>, VectFull, Alloc3>& Y);
+
+  template<class Alloc1, class Alloc2, class Alloc3>
+  void MltVector(const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<complex<double>, VectFull, Alloc2>& X,
+                 Vector<complex<double>, VectFull, Alloc3>& Y);
   
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const float& alpha,
-           const Matrix<float, General, RowSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y);
+  void MltVector(const float& alpha,
+                 const Matrix<float, General, RowSparse, Alloc1>& A,
+                 const Vector<float, VectFull, Alloc2>& X,
+                 Vector<float, VectFull, Alloc3>& Y);
   
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const double& alpha,
-           const Matrix<double, General, RowSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y);
+  void MltVector(const double& alpha,
+                 const Matrix<double, General, RowSparse, Alloc1>& A,
+                 const Vector<double, VectFull, Alloc2>& X,
+                 Vector<double, VectFull, Alloc3>& Y);
   
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const complex<float>& alpha,
-           const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y);
+  void MltVector(const complex<float>& alpha,
+                 const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
+                 const Vector<complex<float>, VectFull, Alloc2>& X,
+                 Vector<complex<float>, VectFull, Alloc3>& Y);
   
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const complex<double>& alpha,
-           const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y);
+  void MltVector(const complex<double>& alpha,
+                 const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
+                 const Vector<complex<double>, VectFull, Alloc2>& X,
+                 Vector<complex<double>, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const float& alpha,
-           const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y);
+  void MltVector(const float& alpha,
+                 const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<float, VectFull, Alloc2>& X,
+                 Vector<float, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const double& alpha,
-           const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y);
+  void MltVector(const double& alpha,
+                 const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<double, VectFull, Alloc2>& X,
+                 Vector<double, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const complex<float>& alpha,
-           const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y);
+  void MltVector(const complex<float>& alpha,
+                 const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<complex<float>, VectFull, Alloc2>& X,
+                 Vector<complex<float>, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const complex<double>& alpha,
-           const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y);
+  void MltVector(const complex<double>& alpha,
+                 const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<complex<double>, VectFull, Alloc2>& X,
+                 Vector<complex<double>, VectFull, Alloc3>& Y);
+  
+  template<class Alloc1, class Alloc2, class Alloc3>
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<float, General, RowSparse, Alloc1>& A,
+                 const Vector<float, VectFull, Alloc2>& X,
+                 Vector<float, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<float, General, RowSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y);
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<double, General, RowSparse, Alloc1>& A,
+                 const Vector<double, VectFull, Alloc2>& X,
+                 Vector<double, VectFull, Alloc3>& Y);
+  
+  template<class Alloc1, class Alloc2, class Alloc3>
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
+                 const Vector<complex<float>, VectFull, Alloc2>& X,
+                 Vector<complex<float>, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<double, General, RowSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y);
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
+                 const Vector<complex<double>, VectFull, Alloc2>& X,
+                 Vector<complex<double>, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y);
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<float, VectFull, Alloc2>& X,
+                 Vector<float, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y);
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<double, VectFull, Alloc2>& X,
+                 Vector<double, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y);
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<complex<float>, VectFull, Alloc2>& X,
+                 Vector<complex<float>, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y);
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<complex<double>, VectFull, Alloc2>& X,
+                 Vector<complex<double>, VectFull, Alloc3>& Y);
+  
+  template<class Alloc1, class Alloc2, class Alloc3>
+  void MltAddVector(const float& alpha,
+                    const Matrix<float, General, RowSparse, Alloc1>& A,
+                    const Vector<float, VectFull, Alloc2>& X,
+                    const float& beta,
+                    Vector<float, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y);
+  void MltAddVector(const double& alpha,
+                    const Matrix<double, General, RowSparse, Alloc1>& A,
+                    const Vector<double, VectFull, Alloc2>& X,
+                    const double& beta,
+                    Vector<double, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y);
+  void MltAddVector(const complex<float>& alpha,
+                    const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
+                    const Vector<complex<float>, VectFull, Alloc2>& X,
+                    const complex<float>& beta,
+                    Vector<complex<float>, VectFull, Alloc3>& Y);
+  
+  template<class Alloc1, class Alloc2, class Alloc3>
+  void MltAddVector(const complex<double>& alpha,
+                    const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
+                    const Vector<complex<double>, VectFull, Alloc2>& X,
+                    const complex<double>& beta,
+                    Vector<complex<double>, VectFull, Alloc3>& Y);
+  
+  template<class Alloc1, class Alloc2, class Alloc3>
+  void MltAddVector(const float& alpha,
+                    const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<float, VectFull, Alloc2>& X,
+                    const float& beta,
+                    Vector<float, VectFull, Alloc3>& Y);
+  
+  template<class Alloc1, class Alloc2, class Alloc3>
+  void MltAddVector(const double& alpha,
+                    const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<double, VectFull, Alloc2>& X,
+                    const double& beta,
+                    Vector<double, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const float& alpha,
-              const Matrix<float, General, RowSparse, Alloc1>& A,
-              const Vector<float, VectFull, Alloc2>& X,
-              const float& beta,
-              Vector<float, VectFull, Alloc3>& Y);
+  void MltAddVector(const complex<float>& alpha,
+                    const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<complex<float>, VectFull, Alloc2>& X,
+                    const complex<float>& beta,
+                    Vector<complex<float>, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const double& alpha,
-              const Matrix<double, General, RowSparse, Alloc1>& A,
-              const Vector<double, VectFull, Alloc2>& X,
-              const double& beta,
-              Vector<double, VectFull, Alloc3>& Y);
+  void MltAddVector(const complex<double>& alpha,
+                    const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<complex<double>, VectFull, Alloc2>& X,
+                    const complex<double>& beta,
+                    Vector<complex<double>, VectFull, Alloc3>& Y);
+  
+  template<class Alloc1, class Alloc2, class Alloc3>
+  void MltAddVector(const float& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<float, General, RowSparse, Alloc1>& A,
+                    const Vector<float, VectFull, Alloc2>& X,
+                    const float& beta,
+                    Vector<float, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<float>& alpha,
-              const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-              const Vector<complex<float>, VectFull, Alloc2>& X,
-              const complex<float>& beta,
-              Vector<complex<float>, VectFull, Alloc3>& Y);
+  void MltAddVector(const double& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<double, General, RowSparse, Alloc1>& A,
+                    const Vector<double, VectFull, Alloc2>& X,
+                    const double& beta,
+                    Vector<double, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<double>& alpha,
-              const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-              const Vector<complex<double>, VectFull, Alloc2>& X,
-              const complex<double>& beta,
-              Vector<complex<double>, VectFull, Alloc3>& Y);
+  void MltAddVector(const complex<float>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
+                    const Vector<complex<float>, VectFull, Alloc2>& X,
+                    const complex<float>& beta,
+                    Vector<complex<float>, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const float& alpha,
-              const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<float, VectFull, Alloc2>& X,
-              const float& beta,
-              Vector<float, VectFull, Alloc3>& Y);
+  void MltAddVector(const complex<double>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
+                    const Vector<complex<double>, VectFull, Alloc2>& X,
+                    const complex<double>& beta,
+                    Vector<complex<double>, VectFull, Alloc3>& Y);
+  
+  template<class Alloc1, class Alloc2, class Alloc3>
+  void MltAddVector(const float& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<float, VectFull, Alloc2>& X,
+                    const float& beta,
+                    Vector<float, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const double& alpha,
-              const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<double, VectFull, Alloc2>& X,
-              const double& beta,
-              Vector<double, VectFull, Alloc3>& Y);
+  void MltAddVector(const double& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<double, VectFull, Alloc2>& X,
+                    const double& beta,
+                    Vector<double, VectFull, Alloc3>& Y);
 
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<float>& alpha,
-              const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<complex<float>, VectFull, Alloc2>& X,
-              const complex<float>& beta,
-              Vector<complex<float>, VectFull, Alloc3>& Y);
-
+  void MltAddVector(const complex<float>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<complex<float>, VectFull, Alloc2>& X,
+                    const complex<float>& beta,
+                    Vector<complex<float>, VectFull, Alloc3>& Y);
+  
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<double>& alpha,
-              const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<complex<double>, VectFull, Alloc2>& X,
-              const complex<double>& beta,
-              Vector<complex<double>, VectFull, Alloc3>& Y);
-
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const float& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<float, General, RowSparse, Alloc1>& A,
-              const Vector<float, VectFull, Alloc2>& X,
-              const float& beta,
-              Vector<float, VectFull, Alloc3>& Y);
-
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const double& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<double, General, RowSparse, Alloc1>& A,
-              const Vector<double, VectFull, Alloc2>& X,
-              const double& beta,
-              Vector<double, VectFull, Alloc3>& Y);
-
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<float>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-              const Vector<complex<float>, VectFull, Alloc2>& X,
-              const complex<float>& beta,
-              Vector<complex<float>, VectFull, Alloc3>& Y);
-
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<double>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-              const Vector<complex<double>, VectFull, Alloc2>& X,
-              const complex<double>& beta,
-              Vector<complex<double>, VectFull, Alloc3>& Y);
-
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const float& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<float, VectFull, Alloc2>& X,
-              const float& beta,
-              Vector<float, VectFull, Alloc3>& Y);
-
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const double& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<double, VectFull, Alloc2>& X,
-              const double& beta,
-              Vector<double, VectFull, Alloc3>& Y);
-
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<float>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<complex<float>, VectFull, Alloc2>& X,
-              const complex<float>& beta,
-              Vector<complex<float>, VectFull, Alloc3>& Y);
-
-  template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<double>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<complex<double>, VectFull, Alloc2>& X,
-              const complex<double>& beta,
-              Vector<complex<double>, VectFull, Alloc3>& Y);
+  void MltAddVector(const complex<double>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<complex<double>, VectFull, Alloc2>& X,
+                    const complex<double>& beta,
+                    Vector<complex<double>, VectFull, Alloc3>& Y);
   
   template <class Prop0, class Allocator0, class Allocator1>
   void Solve(const SeldonUplo& Uplo,
@@ -665,76 +670,76 @@ namespace Seldon
 
   
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const float& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<float, General, RowSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<float, General, RowMajor, Alloc1>& B,
+  void MltAddMatrix(const float& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<float, General, RowSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<float, General, RowMajor, Alloc1>& B,
               const float& beta,
-              Matrix<float, General, RowMajor, Alloc2>& C);
+                    Matrix<float, General, RowMajor, Alloc2>& C);
 
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const double& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<double, General, RowSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<double, General, RowMajor, Alloc1>& B,
-              const double& beta,
-              Matrix<double, General, RowMajor, Alloc2>& C);
+  void MltAddMatrix(const double& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<double, General, RowSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<double, General, RowMajor, Alloc1>& B,
+                    const double& beta,
+                    Matrix<double, General, RowMajor, Alloc2>& C);
 
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<float>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
-              const complex<float>& beta,
-              Matrix<complex<float>, General, RowMajor, Alloc2>& C);
+  void MltAddMatrix(const complex<float>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
+                    const complex<float>& beta,
+                    Matrix<complex<float>, General, RowMajor, Alloc2>& C);
 
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<double>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
-              const complex<double>& beta,
-              Matrix<complex<double>, General, RowMajor, Alloc2>& C);
+  void MltAddMatrix(const complex<double>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
+                    const complex<double>& beta,
+                    Matrix<complex<double>, General, RowMajor, Alloc2>& C);
 
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const float& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<float, Symmetric, RowSymSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<float, General, RowMajor, Alloc1>& B,
-              const float& beta,
-              Matrix<float, General, RowMajor, Alloc2>& C);
+  void MltAddMatrix(const float& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<float, Symmetric, RowSymSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<float, General, RowMajor, Alloc1>& B,
+                    const float& beta,
+                    Matrix<float, General, RowMajor, Alloc2>& C);
+  
+  template<class Alloc0, class Alloc1, class Alloc2>
+  void MltAddMatrix(const double& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<double, Symmetric, RowSymSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<double, General, RowMajor, Alloc1>& B,
+                    const double& beta,
+                    Matrix<double, General, RowMajor, Alloc2>& C);
 
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const double& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<double, Symmetric, RowSymSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<double, General, RowMajor, Alloc1>& B,
-              const double& beta,
-              Matrix<double, General, RowMajor, Alloc2>& C);
+  void MltAddMatrix(const complex<float>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
+                    const complex<float>& beta,
+                    Matrix<complex<float>, General, RowMajor, Alloc2>& C);
 
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<float>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
-              const complex<float>& beta,
-              Matrix<complex<float>, General, RowMajor, Alloc2>& C);
-
-  template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<double>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
-              const complex<double>& beta,
-              Matrix<complex<double>, General, RowMajor, Alloc2>& C);
+  void MltAddMatrix(const complex<double>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
+                    const complex<double>& beta,
+                    Matrix<complex<double>, General, RowMajor, Alloc2>& C);
   
   template<class Alloc0, class Alloc1, class Alloc2>
   void Solve(const SeldonUplo& Uplo,
@@ -797,42 +802,42 @@ namespace Seldon
              Matrix<complex<double>, General, RowMajor, Alloc2>& C);
   
   template<class Alloc0, class Alloc1>
-  void Add(const float& alpha,
-           const Matrix<float, General, RowSparse, Alloc0>& A,
-           Matrix<float, General, RowSparse, Alloc1>& B);
+  void AddMatrix(const float& alpha,
+                 const Matrix<float, General, RowSparse, Alloc0>& A,
+                 Matrix<float, General, RowSparse, Alloc1>& B);
   
   template<class Alloc0, class Alloc1>
-  void Add(const double& alpha,
-           const Matrix<double, General, RowSparse, Alloc0>& A,
-           Matrix<double, General, RowSparse, Alloc1>& B);
+  void AddMatrix(const double& alpha,
+                 const Matrix<double, General, RowSparse, Alloc0>& A,
+                 Matrix<double, General, RowSparse, Alloc1>& B);
   
   template<class Alloc0, class Alloc1>
-  void Add(const complex<float>& alpha,
-           const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
-           Matrix<complex<float>, General, RowSparse, Alloc1>& B);
+  void AddMatrix(const complex<float>& alpha,
+                 const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
+                 Matrix<complex<float>, General, RowSparse, Alloc1>& B);
 
   template<class Alloc0, class Alloc1>
-  void Add(const complex<double>& alpha,
-           const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
-           Matrix<complex<double>, General, RowSparse, Alloc1>& B);
+  void AddMatrix(const complex<double>& alpha,
+                 const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
+                 Matrix<complex<double>, General, RowSparse, Alloc1>& B);
 
   template<class Alloc0, class Alloc1, class Alloc2>
-  void Mlt(const Matrix<float, General, RowSparse, Alloc0>& A,
-           const Matrix<float, General, RowSparse, Alloc1>& B,
-           Matrix<float, General, RowSparse, Alloc2>& C);
+  void MltMatrix(const Matrix<float, General, RowSparse, Alloc0>& A,
+                 const Matrix<float, General, RowSparse, Alloc1>& B,
+                 Matrix<float, General, RowSparse, Alloc2>& C);
   
   template<class Alloc0, class Alloc1, class Alloc2>
-  void Mlt(const Matrix<double, General, RowSparse, Alloc0>& A,
-           const Matrix<double, General, RowSparse, Alloc1>& B,
-           Matrix<double, General, RowSparse, Alloc2>& C);
+  void MltMatrix(const Matrix<double, General, RowSparse, Alloc0>& A,
+                 const Matrix<double, General, RowSparse, Alloc1>& B,
+                 Matrix<double, General, RowSparse, Alloc2>& C);
 
   template<class Alloc0, class Alloc1, class Alloc2>
-  void Mlt(const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
-           const Matrix<complex<float>, General, RowSparse, Alloc1>& B,
-           Matrix<complex<float>, General, RowSparse, Alloc2>& C);
+  void MltMatrix(const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
+                 const Matrix<complex<float>, General, RowSparse, Alloc1>& B,
+                 Matrix<complex<float>, General, RowSparse, Alloc2>& C);
 
   template<class Alloc0, class Alloc1, class Alloc2>
-  void Mlt(const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
+  void MltMatrix(const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
            const Matrix<complex<double>, General, RowSparse, Alloc1>& B,
            Matrix<complex<double>, General, RowSparse, Alloc2>& C);
   

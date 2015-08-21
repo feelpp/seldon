@@ -313,12 +313,12 @@ namespace Seldon
   
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<float, General, RowSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y)
+  void MltVector(const Matrix<float, General, RowSparse, Alloc1>& A,
+                 const Vector<float, VectFull, Alloc2>& X,
+                 Vector<float, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char transA('N');
@@ -330,12 +330,12 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<double, General, RowSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y)
+  void MltVector(const Matrix<double, General, RowSparse, Alloc1>& A,
+                 const Vector<double, VectFull, Alloc2>& X,
+                 Vector<double, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char transA('N');
@@ -347,12 +347,12 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y)
+  void MltVector(const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
+                 const Vector<complex<float>, VectFull, Alloc2>& X,
+                 Vector<complex<float>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char transA('N');
@@ -364,12 +364,12 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y)
+  void MltVector(const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
+                 const Vector<complex<double>, VectFull, Alloc2>& X,
+                 Vector<complex<double>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char transA('N');
@@ -381,12 +381,12 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y)
+  void MltVector(const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<float, VectFull, Alloc2>& X,
+                 Vector<float, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char uplo('U');
@@ -398,12 +398,12 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y)
+  void MltVector(const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<double, VectFull, Alloc2>& X,
+                 Vector<double, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
     
     char uplo('U');
@@ -415,12 +415,12 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y)
+  void MltVector(const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<complex<float>, VectFull, Alloc2>& X,
+                 Vector<complex<float>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char uplo('U');
@@ -432,12 +432,12 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y)
+  void MltVector(const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<complex<double>, VectFull, Alloc2>& X,
+                 Vector<complex<double>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char uplo('U');
@@ -449,13 +449,13 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const float& alpha,
-           const Matrix<float, General, RowSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y)
+  void MltVector(const float& alpha,
+                 const Matrix<float, General, RowSparse, Alloc1>& A,
+                 const Vector<float, VectFull, Alloc2>& X,
+                 Vector<float, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char transA('N');
@@ -476,13 +476,13 @@ namespace Seldon
 
   //! Y = alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const double& alpha,
-           const Matrix<double, General, RowSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y)
+  void MltVector(const double& alpha,
+                 const Matrix<double, General, RowSparse, Alloc1>& A,
+                 const Vector<double, VectFull, Alloc2>& X,
+                 Vector<double, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char transA('N');
@@ -503,13 +503,13 @@ namespace Seldon
 
   //! Y = alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const complex<float>& alpha,
-           const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y)
+  void MltVector(const complex<float>& alpha,
+                 const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
+                 const Vector<complex<float>, VectFull, Alloc2>& X,
+                 Vector<complex<float>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char transA('N');
@@ -530,13 +530,13 @@ namespace Seldon
 
   //! Y = alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const complex<double>& alpha,
-           const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y)
+  void MltVector(const complex<double>& alpha,
+                 const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
+                 const Vector<complex<double>, VectFull, Alloc2>& X,
+                 Vector<complex<double>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char transA('N');
@@ -557,13 +557,13 @@ namespace Seldon
 
   //! Y = alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const float& alpha,
-           const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y)
+  void MltVector(const float& alpha,
+                 const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<float, VectFull, Alloc2>& X,
+                 Vector<float, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char uplo('U');
@@ -584,13 +584,13 @@ namespace Seldon
 
   //! Y = alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const double& alpha,
-           const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y)
+  void MltVector(const double& alpha,
+                 const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<double, VectFull, Alloc2>& X,
+                 Vector<double, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char uplo('U');
@@ -611,13 +611,13 @@ namespace Seldon
 
   //! Y = alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const complex<float>& alpha,
-           const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y)
+  void MltVector(const complex<float>& alpha,
+                 const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<complex<float>, VectFull, Alloc2>& X,
+                 Vector<complex<float>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char uplo('U');
@@ -638,13 +638,13 @@ namespace Seldon
 
   //! Y = alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const complex<double>& alpha,
-           const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y)
+  void MltVector(const complex<double>& alpha,
+                 const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<complex<double>, VectFull, Alloc2>& X,
+                 Vector<complex<double>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char uplo('U');
@@ -665,13 +665,13 @@ namespace Seldon
 
   //! Y = A X or A^T X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<float, General, RowSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y)
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<float, General, RowSparse, Alloc1>& A,
+                 const Vector<float, VectFull, Alloc2>& X,
+                 Vector<float, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(trans, A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char transA(trans.Char());
@@ -693,13 +693,13 @@ namespace Seldon
 
   //! Y = A X or A^T X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<double, General, RowSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y)
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<double, General, RowSparse, Alloc1>& A,
+                 const Vector<double, VectFull, Alloc2>& X,
+                 Vector<double, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(trans, A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char transA(trans.Char());
@@ -721,13 +721,13 @@ namespace Seldon
 
   //! Y = A X or A^T X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y)
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
+                 const Vector<complex<float>, VectFull, Alloc2>& X,
+                 Vector<complex<float>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(trans, A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char transA(trans.Char());
@@ -749,13 +749,13 @@ namespace Seldon
 
   //! Y = A X or A^T X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y)
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
+                 const Vector<complex<double>, VectFull, Alloc2>& X,
+                 Vector<complex<double>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(trans, A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(trans, A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char transA(trans.Char());
@@ -777,13 +777,13 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<float, VectFull, Alloc2>& X,
-           Vector<float, VectFull, Alloc3>& Y)
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<float, VectFull, Alloc2>& X,
+                 Vector<float, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char uplo('U');
@@ -795,13 +795,13 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<double, VectFull, Alloc2>& X,
-           Vector<double, VectFull, Alloc3>& Y)
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<double, VectFull, Alloc2>& X,
+                 Vector<double, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     char uplo('U');
@@ -813,13 +813,13 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<float>, VectFull, Alloc2>& X,
-           Vector<complex<float>, VectFull, Alloc3>& Y)
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<complex<float>, VectFull, Alloc2>& X,
+                 Vector<complex<float>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     Vector<complex<float>, VectFull, Alloc2>& Xv
@@ -843,13 +843,13 @@ namespace Seldon
 
   //! Y = A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void Mlt(const SeldonTranspose& trans,
-           const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
-           const Vector<complex<double>, VectFull, Alloc2>& X,
-           Vector<complex<double>, VectFull, Alloc3>& Y)
+  void MltVector(const SeldonTranspose& trans,
+                 const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
+                 const Vector<complex<double>, VectFull, Alloc2>& X,
+                 Vector<complex<double>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "Mlt(A, X, Y)");
+    CheckDim(A, X, Y, "MltVector(A, X, Y)");
 #endif
 
     Vector<complex<double>, VectFull, Alloc2>& Xv
@@ -873,14 +873,14 @@ namespace Seldon
 
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const float& alpha,
-              const Matrix<float, General, RowSparse, Alloc1>& A,
-              const Vector<float, VectFull, Alloc2>& X,
-              const float& beta,
-              Vector<float, VectFull, Alloc3>& Y)
+  void MltAddVector(const float& alpha,
+                    const Matrix<float, General, RowSparse, Alloc1>& A,
+                    const Vector<float, VectFull, Alloc2>& X,
+                    const float& beta,
+                    Vector<float, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "MltAdd(alpha, A, X, beta, Y)");
+    CheckDim(A, X, Y, "MltAddVector(alpha, A, X, beta, Y)");
 #endif
 
     char transa('N');
@@ -894,14 +894,14 @@ namespace Seldon
   
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const double& alpha,
-              const Matrix<double, General, RowSparse, Alloc1>& A,
-              const Vector<double, VectFull, Alloc2>& X,
-              const double& beta,
-              Vector<double, VectFull, Alloc3>& Y)
+  void MltAddVector(const double& alpha,
+                    const Matrix<double, General, RowSparse, Alloc1>& A,
+                    const Vector<double, VectFull, Alloc2>& X,
+                    const double& beta,
+                    Vector<double, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "MltAdd(alpha, A, X, beta, Y)");
+    CheckDim(A, X, Y, "MltAddVector(alpha, A, X, beta, Y)");
 #endif
 
     char transa('N');
@@ -915,14 +915,14 @@ namespace Seldon
 
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<float>& alpha,
-              const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-              const Vector<complex<float>, VectFull, Alloc2>& X,
-              const complex<float>& beta,
-              Vector<complex<float>, VectFull, Alloc3>& Y)
+  void MltAddVector(const complex<float>& alpha,
+                    const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
+                    const Vector<complex<float>, VectFull, Alloc2>& X,
+                    const complex<float>& beta,
+                    Vector<complex<float>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "MltAdd(alpha, A, X, beta, Y)");
+    CheckDim(A, X, Y, "MltAddVector(alpha, A, X, beta, Y)");
 #endif
 
     char transa('N');
@@ -936,14 +936,14 @@ namespace Seldon
   
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<double>& alpha,
-              const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-              const Vector<complex<double>, VectFull, Alloc2>& X,
-              const complex<double>& beta,
-              Vector<complex<double>, VectFull, Alloc3>& Y)
+  void MltAddVector(const complex<double>& alpha,
+                    const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
+                    const Vector<complex<double>, VectFull, Alloc2>& X,
+                    const complex<double>& beta,
+                    Vector<complex<double>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "MltAdd(alpha, A, X, beta, Y)");
+    CheckDim(A, X, Y, "MltAddVector(alpha, A, X, beta, Y)");
 #endif
 
     char transa('N');
@@ -957,14 +957,14 @@ namespace Seldon
 
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const float& alpha,
-              const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<float, VectFull, Alloc2>& X,
-              const float& beta,
-              Vector<float, VectFull, Alloc3>& Y)
+  void MltAddVector(const float& alpha,
+                    const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<float, VectFull, Alloc2>& X,
+                    const float& beta,
+                    Vector<float, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "MltAdd(alpha, A, X, beta, Y)");
+    CheckDim(A, X, Y, "MltAddVector(alpha, A, X, beta, Y)");
 #endif
 
     char transa('N');
@@ -978,14 +978,14 @@ namespace Seldon
   
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const double& alpha,
-              const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<double, VectFull, Alloc2>& X,
-              const double& beta,
-              Vector<double, VectFull, Alloc3>& Y)
+  void MltAddVector(const double& alpha,
+                    const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<double, VectFull, Alloc2>& X,
+                    const double& beta,
+                    Vector<double, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "MltAdd(alpha, A, X, beta, Y)");
+    CheckDim(A, X, Y, "MltAddVector(alpha, A, X, beta, Y)");
 #endif
 
     char transa('N');
@@ -1000,14 +1000,14 @@ namespace Seldon
 
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<float>& alpha,
-              const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<complex<float>, VectFull, Alloc2>& X,
-              const complex<float>& beta,
-              Vector<complex<float>, VectFull, Alloc3>& Y)
+  void MltAddVector(const complex<float>& alpha,
+                    const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<complex<float>, VectFull, Alloc2>& X,
+                    const complex<float>& beta,
+                    Vector<complex<float>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "MltAdd(alpha, A, X, beta, Y)");
+    CheckDim(A, X, Y, "MltAddVector(alpha, A, X, beta, Y)");
 #endif
 
     char transa('N');
@@ -1021,14 +1021,14 @@ namespace Seldon
   
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<double>& alpha,
-              const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<complex<double>, VectFull, Alloc2>& X,
-              const complex<double>& beta,
-              Vector<complex<double>, VectFull, Alloc3>& Y)
+  void MltAddVector(const complex<double>& alpha,
+                    const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<complex<double>, VectFull, Alloc2>& X,
+                    const complex<double>& beta,
+                    Vector<complex<double>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(A, X, Y, "MltAdd(alpha, A, X, beta, Y)");
+    CheckDim(A, X, Y, "MltAddVector(alpha, A, X, beta, Y)");
 #endif
 
     char transa('N');
@@ -1042,15 +1042,15 @@ namespace Seldon
 
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const float& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<float, General, RowSparse, Alloc1>& A,
-              const Vector<float, VectFull, Alloc2>& X,
-              const float& beta,
-              Vector<float, VectFull, Alloc3>& Y)
+  void MltAddVector(const float& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<float, General, RowSparse, Alloc1>& A,
+                    const Vector<float, VectFull, Alloc2>& X,
+                    const float& beta,
+                    Vector<float, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
+    CheckDim(TransA, A, X, Y, "MltAddVector(alpha, trans, A, X, beta, Y)");
 #endif
 
     char transa(TransA.Char());
@@ -1064,15 +1064,15 @@ namespace Seldon
   
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const double& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<double, General, RowSparse, Alloc1>& A,
-              const Vector<double, VectFull, Alloc2>& X,
-              const double& beta,
-              Vector<double, VectFull, Alloc3>& Y)
+  void MltAddVector(const double& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<double, General, RowSparse, Alloc1>& A,
+                    const Vector<double, VectFull, Alloc2>& X,
+                    const double& beta,
+                    Vector<double, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
+    CheckDim(TransA, A, X, Y, "MltAddVector(alpha, trans, A, X, beta, Y)");
 #endif
 
     char transa(TransA.Char());
@@ -1086,15 +1086,15 @@ namespace Seldon
 
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<float>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
-              const Vector<complex<float>, VectFull, Alloc2>& X,
-              const complex<float>& beta,
-              Vector<complex<float>, VectFull, Alloc3>& Y)
+  void MltAddVector(const complex<float>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<float>, General, RowSparse, Alloc1>& A,
+                    const Vector<complex<float>, VectFull, Alloc2>& X,
+                    const complex<float>& beta,
+                    Vector<complex<float>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
+    CheckDim(TransA, A, X, Y, "MltAddVector(alpha, trans, A, X, beta, Y)");
 #endif
 
     char transa(TransA.Char());
@@ -1108,15 +1108,15 @@ namespace Seldon
   
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<double>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
-              const Vector<complex<double>, VectFull, Alloc2>& X,
-              const complex<double>& beta,
-              Vector<complex<double>, VectFull, Alloc3>& Y)
+  void MltAddVector(const complex<double>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<double>, General, RowSparse, Alloc1>& A,
+                    const Vector<complex<double>, VectFull, Alloc2>& X,
+                    const complex<double>& beta,
+                    Vector<complex<double>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
+    CheckDim(TransA, A, X, Y, "MltAddVector(alpha, trans, A, X, beta, Y)");
 #endif
 
     char transa(TransA.Char());
@@ -1130,15 +1130,15 @@ namespace Seldon
 
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const float& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<float, VectFull, Alloc2>& X,
-              const float& beta,
-              Vector<float, VectFull, Alloc3>& Y)
+  void MltAddVector(const float& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<float, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<float, VectFull, Alloc2>& X,
+                    const float& beta,
+                    Vector<float, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
+    CheckDim(TransA, A, X, Y, "MltAddVector(alpha, trans, A, X, beta, Y)");
 #endif
 
     char transa(TransA.Char());
@@ -1152,15 +1152,15 @@ namespace Seldon
   
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const double& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<double, VectFull, Alloc2>& X,
-              const double& beta,
-              Vector<double, VectFull, Alloc3>& Y)
+  void MltAddVector(const double& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<double, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<double, VectFull, Alloc2>& X,
+                    const double& beta,
+                    Vector<double, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
+    CheckDim(TransA, A, X, Y, "MltAddVector(alpha, trans, A, X, beta, Y)");
 #endif
 
     char transa(TransA.Char());
@@ -1175,15 +1175,15 @@ namespace Seldon
 
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<float>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<complex<float>, VectFull, Alloc2>& X,
-              const complex<float>& beta,
-              Vector<complex<float>, VectFull, Alloc3>& Y)
+  void MltAddVector(const complex<float>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<complex<float>, VectFull, Alloc2>& X,
+                    const complex<float>& beta,
+                    Vector<complex<float>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
+    CheckDim(TransA, A, X, Y, "MltAddVector(alpha, trans, A, X, beta, Y)");
 #endif
 
     char transa(TransA.Char());
@@ -1197,15 +1197,15 @@ namespace Seldon
   
   //! Y = beta Y + alpha A X
   template<class Alloc1, class Alloc2, class Alloc3>
-  void MltAdd(const complex<double>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
-              const Vector<complex<double>, VectFull, Alloc2>& X,
-              const complex<double>& beta,
-              Vector<complex<double>, VectFull, Alloc3>& Y)
+  void MltAddVector(const complex<double>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc1>& A,
+                    const Vector<complex<double>, VectFull, Alloc2>& X,
+                    const complex<double>& beta,
+                    Vector<complex<double>, VectFull, Alloc3>& Y)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, X, Y, "MltAdd(alpha, trans, A, X, beta, Y)");
+    CheckDim(TransA, A, X, Y, "MltAddVector(alpha, trans, A, X, beta, Y)");
 #endif
 
     char transa(TransA.Char());
@@ -1396,16 +1396,16 @@ namespace Seldon
   
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const float& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<float, General, RowSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<float, General, RowMajor, Alloc1>& B,
-              const float& beta,
-              Matrix<float, General, RowMajor, Alloc2>& C)
+  void MltAddMatrix(const float& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<float, General, RowSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<float, General, RowMajor, Alloc1>& B,
+                    const float& beta,
+                    Matrix<float, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
-    CheckDim(TransA, A, TransB, B, C, "MltAdd(alpha, transA, A, transB, B, beta, C)");
+    CheckDim(TransA, A, TransB, B, C, "MltAddVector(alpha, transA, A, transB, B, beta, C)");
 #endif
     
     if (!B.NoTrans())
@@ -1425,20 +1425,20 @@ namespace Seldon
 
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const double& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<double, General, RowSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<double, General, RowMajor, Alloc1>& B,
-              const double& beta,
-              Matrix<double, General, RowMajor, Alloc2>& C)
+  void MltAddMatrix(const double& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<double, General, RowSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<double, General, RowMajor, Alloc1>& B,
+                    const double& beta,
+                    Matrix<double, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(TransA, A, TransB, B, C,
-	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
+	     "MltAddVector(alpha, transA, A, transB, B, beta, C)");
 #endif
 
-    if (!B.NoTrans())
+    if (!TransB.NoTrans())
       {
 	cout << "Only product with non-tranpose B is available" << endl;
 	abort();
@@ -1455,20 +1455,20 @@ namespace Seldon
 
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<float>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
-              const complex<float>& beta,
-              Matrix<complex<float>, General, RowMajor, Alloc2>& C)
+  void MltAddMatrix(const complex<float>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
+                    const complex<float>& beta,
+                    Matrix<complex<float>, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(TransA, A, TransB, B, C,
-	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
+	     "MltAddVector(alpha, transA, A, transB, B, beta, C)");
 #endif
 
-    if (!B.NoTrans())
+    if (!TransB.NoTrans())
       {
 	cout << "Only product with non-tranpose B is available" << endl;
 	abort();
@@ -1485,20 +1485,20 @@ namespace Seldon
 
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<double>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
-              const complex<double>& beta,
-              Matrix<complex<double>, General, RowMajor, Alloc2>& C)
+  void MltAddMatrix(const complex<double>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
+                    const complex<double>& beta,
+                    Matrix<complex<double>, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(TransA, A, TransB, B, C,
-	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
+	     "MltAddVector(alpha, transA, A, transB, B, beta, C)");
 #endif
 
-    if (!B.NoTrans())
+    if (!TransB.NoTrans())
       {
 	cout << "Only product with non-tranpose B is available" << endl;
 	abort();
@@ -1515,20 +1515,20 @@ namespace Seldon
 
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const float& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<float, Symmetric, RowSymSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<float, General, RowMajor, Alloc1>& B,
-              const float& beta,
-              Matrix<float, General, RowMajor, Alloc2>& C)
+  void MltAddMatrix(const float& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<float, Symmetric, RowSymSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<float, General, RowMajor, Alloc1>& B,
+                    const float& beta,
+                    Matrix<float, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(TransA, A, TransB, B, C,
-	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
+	     "MltAddVector(alpha, transA, A, transB, B, beta, C)");
 #endif
 
-    if (!B.NoTrans())
+    if (!TransB.NoTrans())
       {
 	cout << "Only product with non-tranpose B is available" << endl;
 	abort();
@@ -1545,20 +1545,20 @@ namespace Seldon
 
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const double& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<double, Symmetric, RowSymSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<double, General, RowMajor, Alloc1>& B,
-              const double& beta,
-              Matrix<double, General, RowMajor, Alloc2>& C)
+  void MltAddMatrix(const double& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<double, Symmetric, RowSymSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<double, General, RowMajor, Alloc1>& B,
+                    const double& beta,
+                    Matrix<double, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(TransA, A, TransB, B, C,
-	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
+	     "MltAddVector(alpha, transA, A, transB, B, beta, C)");
 #endif
     
-    if (!B.NoTrans())
+    if (!TransB.NoTrans())
       {
 	cout << "Only product with non-tranpose B is available" << endl;
 	abort();
@@ -1575,20 +1575,20 @@ namespace Seldon
 
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<float>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
-              const complex<float>& beta,
-              Matrix<complex<float>, General, RowMajor, Alloc2>& C)
+  void MltAddMatrix(const complex<float>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<float>, Symmetric, RowSymSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<complex<float>, General, RowMajor, Alloc1>& B,
+                    const complex<float>& beta,
+                    Matrix<complex<float>, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(TransA, A, TransB, B, C,
-	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
+	     "MltAddVector(alpha, transA, A, transB, B, beta, C)");
 #endif
 
-    if (!B.NoTrans())
+    if (!TransB.NoTrans())
       {
 	cout << "Only product with non-tranpose B is available" << endl;
 	abort();
@@ -1605,20 +1605,20 @@ namespace Seldon
 
   //! C = alpha A B + beta C
   template<class Alloc0, class Alloc1, class Alloc2>
-  void MltAdd(const complex<double>& alpha,
-              const SeldonTranspose& TransA,
-              const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc0>& A,
-              const SeldonTranspose& TransB,
-              const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
-              const complex<double>& beta,
-              Matrix<complex<double>, General, RowMajor, Alloc2>& C)
+  void MltAddMatrix(const complex<double>& alpha,
+                    const SeldonTranspose& TransA,
+                    const Matrix<complex<double>, Symmetric, RowSymSparse, Alloc0>& A,
+                    const SeldonTranspose& TransB,
+                    const Matrix<complex<double>, General, RowMajor, Alloc1>& B,
+                    const complex<double>& beta,
+                    Matrix<complex<double>, General, RowMajor, Alloc2>& C)
   {
 #ifdef SELDON_CHECK_DIMENSIONS
     CheckDim(TransA, A, TransB, B, C,
-	     "MltAdd(alpha, transA, A, transB, B, beta, C)");
+	     "MltAddVector(alpha, transA, A, transB, B, beta, C)");
 #endif
 
-    if (!B.NoTrans())
+    if (!TransB.NoTrans())
       {
 	cout << "Only product with non-tranpose B is available" << endl;
 	abort();
@@ -1815,9 +1815,9 @@ namespace Seldon
 
   //! B = B + alpha A
   template<class Alloc0, class Alloc1>
-  void Add(const float& alpha,
-           const Matrix<float, General, RowSparse, Alloc0>& A,
-           Matrix<float, General, RowSparse, Alloc1>& B)
+  void AddMatrix(const float& alpha,
+                 const Matrix<float, General, RowSparse, Alloc0>& A,
+                 Matrix<float, General, RowSparse, Alloc1>& B)
   {
 #ifdef SELDON_CHECK_BOUNDS
     if (A.GetM() != B.GetM() || A.GetN() != B.GetN())
@@ -1885,9 +1885,9 @@ namespace Seldon
   
   //! B = B + alpha A  
   template<class Alloc0, class Alloc1>
-  void Add(const double& alpha,
-           const Matrix<double, General, RowSparse, Alloc0>& A,
-           Matrix<double, General, RowSparse, Alloc1>& B)
+  void AddMatrix(const double& alpha,
+                 const Matrix<double, General, RowSparse, Alloc0>& A,
+                 Matrix<double, General, RowSparse, Alloc1>& B)
   {
 #ifdef SELDON_CHECK_BOUNDS
     if (A.GetM() != B.GetM() || A.GetN() != B.GetN())
@@ -1955,9 +1955,9 @@ namespace Seldon
 
   //! B = B + alpha A  
   template<class Alloc0, class Alloc1>
-  void Add(const complex<float>& alpha,
-           const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
-           Matrix<complex<float>, General, RowSparse, Alloc1>& B)
+  void AddMatrix(const complex<float>& alpha,
+                 const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
+                 Matrix<complex<float>, General, RowSparse, Alloc1>& B)
   {
 #ifdef SELDON_CHECK_BOUNDS
     if (A.GetM() != B.GetM() || A.GetN() != B.GetN())
@@ -2025,9 +2025,9 @@ namespace Seldon
   
   //! B = B + alpha A
   template<class Alloc0, class Alloc1>
-  void Add(const complex<double>& alpha,
-           const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
-           Matrix<complex<double>, General, RowSparse, Alloc1>& B)
+  void AddMatrix(const complex<double>& alpha,
+                 const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
+                 Matrix<complex<double>, General, RowSparse, Alloc1>& B)
   {
 #ifdef SELDON_CHECK_BOUNDS
     if (A.GetM() != B.GetM() || A.GetN() != B.GetN())
@@ -2095,9 +2095,9 @@ namespace Seldon
   
   //! C = A B
   template<class Alloc0, class Alloc1, class Alloc2>
-  void Mlt(const Matrix<float, General, RowSparse, Alloc0>& A,
-           const Matrix<float, General, RowSparse, Alloc1>& B,
-           Matrix<float, General, RowSparse, Alloc2>& C)
+  void MltMatrix(const Matrix<float, General, RowSparse, Alloc0>& A,
+                 const Matrix<float, General, RowSparse, Alloc1>& B,
+                 Matrix<float, General, RowSparse, Alloc2>& C)
   {
     // switching to 1-based indexing 
     int m = A.GetM(), n = A.GetN(), k = B.GetN();
@@ -2160,9 +2160,9 @@ namespace Seldon
 
   //! C = A B
   template<class Alloc0, class Alloc1, class Alloc2>
-  void Mlt(const Matrix<double, General, RowSparse, Alloc0>& A,
-           const Matrix<double, General, RowSparse, Alloc1>& B,
-           Matrix<double, General, RowSparse, Alloc2>& C)
+  void MltMatrix(const Matrix<double, General, RowSparse, Alloc0>& A,
+                 const Matrix<double, General, RowSparse, Alloc1>& B,
+                 Matrix<double, General, RowSparse, Alloc2>& C)
   {
     // switching to 1-based indexing 
     int m = A.GetM(), n = A.GetN(), k = B.GetN();
@@ -2225,9 +2225,9 @@ namespace Seldon
 
   //! C = A B
   template<class Alloc0, class Alloc1, class Alloc2>
-  void Mlt(const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
-           const Matrix<complex<float>, General, RowSparse, Alloc1>& B,
-           Matrix<complex<float>, General, RowSparse, Alloc2>& C)
+  void MltMatrix(const Matrix<complex<float>, General, RowSparse, Alloc0>& A,
+                 const Matrix<complex<float>, General, RowSparse, Alloc1>& B,
+                 Matrix<complex<float>, General, RowSparse, Alloc2>& C)
   {
     // switching to 1-based indexing 
     int m = A.GetM(), n = A.GetN(), k = B.GetN();
@@ -2290,9 +2290,9 @@ namespace Seldon
 
   //! C = A B
   template<class Alloc0, class Alloc1, class Alloc2>
-  void Mlt(const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
-           const Matrix<complex<double>, General, RowSparse, Alloc1>& B,
-           Matrix<complex<double>, General, RowSparse, Alloc2>& C)
+  void MltMatrix(const Matrix<complex<double>, General, RowSparse, Alloc0>& A,
+                 const Matrix<complex<double>, General, RowSparse, Alloc1>& B,
+                 Matrix<complex<double>, General, RowSparse, Alloc2>& C)
   {
     // switching to 1-based indexing 
     int m = A.GetM(), n = A.GetN(), k = B.GetN();
