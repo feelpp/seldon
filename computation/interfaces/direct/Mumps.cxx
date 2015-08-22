@@ -49,7 +49,7 @@ namespace Seldon
   }
 
 
-  //! initialization
+  //! Default constructor
   template<class T>
   MatrixMumps<T>::MatrixMumps()
   {
@@ -76,7 +76,7 @@ namespace Seldon
   }
 
 
-  // Function used to force factorisation when estimated space was too small
+  //! Function used to force factorisation when estimated space was too small
   template<class T>
   void MatrixMumps<T>::IterateFacto()
   {
@@ -98,10 +98,10 @@ namespace Seldon
   }
   
   
-  //! initialization of the computation
-  template<class T> template<class MatrixSparse>
+  //! Calls initialization routine provided by Mumps
+  template<class T>
   void MatrixMumps<T>
-  ::InitMatrix(const MatrixSparse& A, bool distributed)
+  ::InitMatrix(bool sym, bool distributed)
   {
     // we clear previous factorization
     Clear();
@@ -122,7 +122,7 @@ namespace Seldon
 
     // symmetry is specified during the initialization stage
     struct_mumps.job = -1;
-    if (IsSymmetricMatrix(A))
+    if (sym)
       struct_mumps.sym = 2; // general symmetric matrix
     else
       struct_mumps.sym = 0; // unsymmetric matrix
@@ -170,7 +170,7 @@ namespace Seldon
   }
 
 
-  //! selects another ordering scheme
+  //! Selects another ordering scheme.
   template<class T>
   void MatrixMumps<T>::SelectOrdering(int num_ordering)
   {
@@ -178,7 +178,7 @@ namespace Seldon
   }
 
 
-  //! selects another ordering scheme (for distributed matrices)
+  //! Selects another ordering scheme (for distributed matrices)
   template<class T>
   void MatrixMumps<T>::SelectParallelOrdering(int num_ordering)
   {
@@ -187,6 +187,7 @@ namespace Seldon
   }
 
 
+  //! Provides the permutation array
   template<class T>
   void MatrixMumps<T>::SetPermutation(const IVect& permut)
   {
@@ -197,7 +198,7 @@ namespace Seldon
   }
 
 
-  //! clears factorization
+  //! Destructor
   template<class T>
   MatrixMumps<T>::~MatrixMumps()
   {
@@ -205,7 +206,7 @@ namespace Seldon
   }
 
 
-  //! clears factorization
+  //! Clears factorization
   template<class T>
   void MatrixMumps<T>::Clear()
   {
@@ -222,7 +223,7 @@ namespace Seldon
   }
 
 
-  //! no display from Mumps
+  //! Informs Mumps that no message should be displayed
   template<class T>
   void MatrixMumps<T>::HideMessages()
   {
@@ -236,7 +237,7 @@ namespace Seldon
   }
 
 
-  //! standard display
+  //! Informs Mumps to display standard output
   template<class T>
   void MatrixMumps<T>::ShowMessages()
   {
@@ -266,6 +267,7 @@ namespace Seldon
   }
 
   
+  //! Sets the coefficient used to overestimate the needed memory
   template<class T>
   void MatrixMumps<T>::SetCoefficientEstimationNeededMemory(double coef)
   {
@@ -273,6 +275,7 @@ namespace Seldon
   }
   
   
+  //! Sets the maximal allowed coefficient for the memory space multiplication
   template<class T>
   void MatrixMumps<T>::SetMaximumCoefficientEstimationNeededMemory(double coef)
   {
@@ -280,6 +283,7 @@ namespace Seldon
   }
   
   
+  //! Sets multiplication factor for each try to factorize the matrix
   template<class T>
   void MatrixMumps<T>::SetIncreaseCoefficientEstimationNeededMemory(double coef)
   {
@@ -297,11 +301,11 @@ namespace Seldon
   void MatrixMumps<T>::FindOrdering(Matrix<T0, Prop, Storage, Allocator> & mat,
 				    IVect& numbers, bool keep_matrix)
   {
-    InitMatrix(mat);
+    InitMatrix(IsSymmetricMatrix(mat));
 
     int n = mat.GetM();
     // conversion in coordinate format
-    IVect num_row, num_col; Vector<T> values;
+    Vector<MUMPS_INT> num_row, num_col; Vector<T> values;
     ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
     
     int nnz = num_col.GetM();
@@ -326,7 +330,7 @@ namespace Seldon
   }
 
   
-  //! factorization of a given matrix
+  //! Factorizes a given matrix
   /*!
     \param[in,out] mat matrix to factorize
     \param[in] keep_matrix if false, the given matrix is cleared
@@ -335,15 +339,26 @@ namespace Seldon
   void MatrixMumps<T>::FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 				       bool keep_matrix)
   {
-    InitMatrix(mat);
-
     int n = mat.GetM();
+    bool sym = IsSymmetricMatrix(mat);
     // conversion in coordinate format with fortran convention (1-index)
-    IVect num_row, num_col; Vector<T> values;
+    Vector<MUMPS_INT> num_row, num_col; Vector<T> values;
     ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
     if (!keep_matrix)
       mat.Clear();
+    
+    FactorizeCoordinate1(n, num_row, num_col, values, sym);
+  }
 
+
+  //! Factorizes a coordinate matrix with 1-index numbering
+  template<class T>
+  void MatrixMumps<T>::FactorizeCoordinate1(int n, Vector<MUMPS_INT>& num_row,
+					    Vector<MUMPS_INT>& num_col,
+					    Vector<T>& values, bool sym)
+  {
+    InitMatrix(sym);
+    
     int nnz = values.GetM();
     struct_mumps.n = n; struct_mumps.nz = nnz;
     struct_mumps.irn = num_row.GetData();
@@ -363,7 +378,7 @@ namespace Seldon
   void MatrixMumps<T>
   ::PerformAnalysis(Matrix<T, Prop, Storage, Allocator> & mat)
   {
-    InitMatrix(mat);
+    InitMatrix(IsSymmetricMatrix(mat));
 
     int n = mat.GetM(), nnz = mat.GetNonZeros();
     // conversion in coordinate format with fortran convention (1-index)
@@ -406,7 +421,7 @@ namespace Seldon
   }
 
   
-  //! returns memory used by the factorisation in bytes
+  //! Returns memory used by the factorisation in bytes
   template<class T>
   int64_t MatrixMumps<T>::GetMemorySize() const
   {
@@ -430,7 +445,7 @@ namespace Seldon
   }
   
 
-  //! returns information about factorization performed
+  //! Returns information about factorization performed
   template<class T>
   int MatrixMumps<T>::GetInfoFactorization() const
   {
@@ -452,11 +467,11 @@ namespace Seldon
 		 Matrix<T, Prop2, Storage2, Allocator2> & mat_schur,
 		 bool keep_matrix)
   {
-    InitMatrix(mat);
+    InitMatrix(IsSymmetricMatrix(mat));
     
     int n_schur = num.GetM();
     // Subscripts are changed to respect fortran convention
-    IVect index_schur(n_schur);
+    Vector<MUMPS_INT> index_schur(n_schur);
     for (int i = 0; i < n_schur; i++)
       index_schur(i) = num(i)+1;
 
@@ -471,7 +486,7 @@ namespace Seldon
 
     int n = mat.GetM(), nnz = mat.GetNonZeros();
     // conversion in coordinate format with fortran convention (1-index)
-    IVect num_row, num_col;
+    Vector<MUMPS_INT> num_row, num_col;
     Vector<T, VectFull, Allocator> values;
     ConvertMatrix_to_Coordinates(mat, num_row, num_col, values, 1);
     if (!keep_matrix)
@@ -514,8 +529,9 @@ namespace Seldon
   }
 
 
-  //! resolution of a linear system using the computed factorization
+  //! Solves a linear system using the computed factorization
   /*!
+    \param[in] TransA solves A x = b or A^T x = b
     \param[in,out] x right-hand-side on input, solution on output
     It is assumed that a call to FactorizeMatrix has been done before
   */
@@ -531,21 +547,29 @@ namespace Seldon
                      + " while the size of the matrix is equal to "
                      + to_str(struct_mumps.n) + ".");
 #endif
+    
+    Solve(TransA, x.GetData(), 1);
+  }
 
+
+  //! Solves linear system with multiple right hand sides
+  template<class T>
+  void MatrixMumps<T>::Solve(const SeldonTranspose& TransA, T* x_ptr, int nrhs)
+  {
     if (TransA.Trans())
       struct_mumps.icntl[8] = 0;
     else
       struct_mumps.icntl[8] = 1;
     
-    struct_mumps.nrhs = 1;
-    struct_mumps.lrhs = x.GetM();
-    struct_mumps.rhs = reinterpret_cast<pointer>(x.GetData());
+    struct_mumps.nrhs = nrhs;
+    struct_mumps.lrhs = struct_mumps.n;
+    struct_mumps.rhs = reinterpret_cast<pointer>(x_ptr);
     struct_mumps.job = 3; // we solve system
     CallMumps();
   }
 
 
-
+  //! Solves a linear system using the factorization computed
   template<class T> template<class Allocator2>
   void MatrixMumps<T>::Solve(Vector<T, VectFull, Allocator2>& x)
   {
@@ -553,8 +577,8 @@ namespace Seldon
   }
 
 
-  //! Resolution of a linear system using a computed factorization.
-  /*!
+  //! Solves a linear system using a computed factorization.
+  /*!    
     \param[in,out] x on entry, the right-hand-side; on exit, the solution.
     It is assumed that 'FactorizeMatrix' has already been called.
   */
@@ -570,17 +594,8 @@ namespace Seldon
                      + to_str(x.GetM()) + " while size of matrix is equal to "
                      + to_str(struct_mumps.n));
 #endif
-
-    if (TransA.Trans())
-      struct_mumps.icntl[8] = 0;
-    else
-      struct_mumps.icntl[8] = 1;
-
-    struct_mumps.nrhs = x.GetN();
-    struct_mumps.lrhs = x.GetM();
-    struct_mumps.rhs = reinterpret_cast<pointer>(x.GetData());
-    struct_mumps.job = 3; // we solve system
-    CallMumps();
+    
+    Solve(TransA, x.GetData(), x.GetN());
   }
 
 
@@ -597,27 +612,15 @@ namespace Seldon
     \param[in] keep_matrix if false, the given matrix is cleared
   */
   template<class T>
-  template<class Alloc1, class Alloc2, class Alloc3, class Tint>
   void MatrixMumps<T>::
-  FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                             Vector<Tint, VectFull, Alloc1>& Ptr,
-                             Vector<Tint, VectFull, Alloc2>& IndRow_,
-                             Vector<T, VectFull, Alloc3>& Val,
+  FactorizeDistributedMatrix(MPI::Comm& comm_facto, Vector<MUMPS_INT>& Ptr,
+                             Vector<MUMPS_INT>& IndRow, Vector<T>& Val,
                              const Vector<int>& glob_number,
                              bool sym, bool keep_matrix)
   {
     // Initialization depending on symmetry of the matrix.
-    if (sym)
-      {
-        Matrix<T, Symmetric, RowSymSparse, Alloc3> Atest;
-        InitMatrix(Atest, true);
-      }
-    else
-      {
-        Matrix<T, General, RowSparse, Alloc3> Atest;
-        InitMatrix(Atest, true);
-      }
-
+    InitMatrix(sym, true);
+    
     // Fortran communicator
     struct_mumps.comm_fortran = MPI_Comm_c2f(comm_facto);
 
@@ -632,23 +635,19 @@ namespace Seldon
     comm_facto.Allreduce(&nmax, &N, 1, MPI::INTEGER, MPI::MAX);
 
     // number of non-zero entries on this processor
-    int nnz = IndRow_.GetM();
+    int nnz = IndRow.GetM();
 
-    // conversion in coordinate format (in 32-bit integers)
-    Vector<int> IndCol(nnz);
-    Vector<int> IndRow(IndRow_.GetM());
-    for (int i = 0; i < IndRow_.GetM(); i++)
-      IndRow(i) = IndRow_(i) + 1;
+    // adding 1 to have 1-based indexes
+    Vector<MUMPS_INT> IndCol(nnz);
+    for (int i = 0; i < IndRow.GetM(); i++)
+      IndRow(i)++;
 
     for (int i = 0; i < Ptr.GetM()-1; i++)
       for (int j = Ptr(i); j < Ptr(i+1); j++)
         IndCol(j) = glob_number(i) + 1;
-
+    
     if (!keep_matrix)
-      {
-	Ptr.Clear();
-	IndRow_.Clear();
-      }
+      Ptr.Clear();
     
     // Define the problem on the host
     struct_mumps.n = N;
@@ -656,11 +655,11 @@ namespace Seldon
     struct_mumps.irn_loc = IndRow.GetData();
     struct_mumps.jcn_loc = IndCol.GetData();
     struct_mumps.a_loc = reinterpret_cast<pointer>(Val.GetData());
-
+    
     // Call the MUMPS package.
     struct_mumps.job = 1; // we analyse the system
     CallMumps();
-
+    
     // overestimating size in order to avoid error -9
     double coef = coef_overestimate;
     struct_mumps.icntl[22] = int(coef*struct_mumps.infog[25]);
@@ -718,124 +717,10 @@ namespace Seldon
 					Vector<T, VectFull, Allocator2>& x,
 					const IVect& glob_num)
   {
-    Vector<T, VectFull, Allocator2> rhs;
-    int cplx = sizeof(T)/8;
-    // allocating the global right hand side
-    if (comm_facto.Get_rank() == 0)
-      {
-        rhs.Reallocate(struct_mumps.n);
-        rhs.Zero();
-      }
- 
-    int nb_procs = comm_facto.Get_size();
-    MPI::Status status;
-    
-    Vector<T, VectFull, Allocator2> xp;
-    Vector<IVect> nump(nb_procs);
-	    
-    if (comm_facto.Get_rank() == 0)
-      {
-	// on the host, we retrieve datas of all the other processors
-	if (nb_procs > 1)
-	  {
-	    // assembling the right hand side
-	    for (int i = 0; i < nb_procs; i++)
-	      {
-
-		if (i != 0)
-		  {
-                    // On the host processor receiving components of right
-                    // hand side.
-		    int nb_dof;
-		    comm_facto.Recv(&nb_dof, 1, MPI::INTEGER, i, 34, status);
-
-                    xp.Reallocate(nb_dof);
-		    nump(i).Reallocate(nb_dof);
-
-                    comm_facto.Recv(xp.GetDataVoid(), cplx*nb_dof,
-                                    MPI::DOUBLE, i, 35, status);
-                    
-		    comm_facto.Recv(nump(i).GetData(), nb_dof, MPI::INTEGER,
-                                    i, 36, status);                    
-		  }
-		else
-		  {
-		    xp = x; nump(i) = glob_num;
-		  }
-                
-		for (int j = 0; j < nump(i).GetM(); j++)
-		  rhs(nump(i)(j)) = xp(j);
-	      }
-	  }
-	else
-	  Copy(x, rhs);
-
-	struct_mumps.rhs = reinterpret_cast<pointer>(rhs.GetData());
-      }
-    else
-      {
-	// On other processors, we send right hand side.
-	int nb = x.GetM();
-	comm_facto.Ssend(&nb, 1, MPI::INTEGER, 0, 34);
-	comm_facto.Ssend(x.GetDataVoid(), cplx*nb, MPI::DOUBLE, 0, 35);
-	comm_facto.Ssend(glob_num.GetData(), nb, MPI::INTEGER, 0, 36);
-      }
-
-    // we solve system
-    if (TransA.Trans())
-      struct_mumps.icntl[8] = 0;
-    else
-      struct_mumps.icntl[8] = 1;
-
-    struct_mumps.nrhs = 1;
-    struct_mumps.job = 3;
-    CallMumps();
-
-    // we distribute solution on all the processors
-    if (nb_procs > 1)
-      {
-        if (comm_facto.Get_rank() == 0)
-          {
-            for (int i = 0; i < nb_procs; i++)
-              {
-                if (i != 0)
-                  {
-                    int nb_dof = nump(i).GetM(); 
-                    xp.Reallocate(nb_dof);
-                    for (int j = 0; j < nb_dof; j++)
-                      xp(j) = rhs(nump(i)(j));
-                    
-                    comm_facto.Ssend(xp.GetDataVoid(), cplx*nb_dof,
-                                     MPI::DOUBLE, i, 41);
-                  }
-                else
-                  {
-                    for (int j = 0; j < x.GetM(); j++)
-                      x(j) = rhs(glob_num(j));
-                  }
-              }
-          }
-        else
-          {
-            int nb_dof = x.GetM();
-            comm_facto.Recv(x.GetDataVoid(), cplx*nb_dof,
-                            MPI::DOUBLE, 0, 41, status);
-          }
-      }
-    else
-      Copy(rhs, x);
+    SolveDistributed(comm_facto, TransA, x.GetData(), 1, glob_num);
   }
 
-
-  template<class T> template<class Allocator2, class Tint>
-  void MatrixMumps<T>::SolveDistributed(MPI::Comm& comm_facto,
-                                        Vector<T, VectFull, Allocator2>& x,
-					const Vector<Tint>& glob_num)
-  {
-    SolveDistributed(comm_facto, SeldonNoTrans, x, glob_num);
-  }
-
-
+  
   //! solves linear system with parallel execution
   /*!
     \param[in] TransA we solve A x = b or A^T x = b
@@ -848,9 +733,21 @@ namespace Seldon
 					Matrix<T, Prop, ColMajor, Allocator2>& x,
 					const IVect& glob_num)
   {
-    Matrix<T, General, ColMajor, Allocator2> rhs;
-    int cplx = sizeof(T)/8, nrhs = x.GetN();
-    int nblock = 8;
+    SolveDistributed(comm_facto, TransA, x.GetData(), x.GetN(), glob_num);
+  }
+
+  
+  //! solves linear system with parallel execution
+  template<class T>
+  void MatrixMumps<T>::SolveDistributed(MPI::Comm& comm_facto,
+                                        const SeldonTranspose& TransA,
+					T* x_ptr, int nrhs,
+					const IVect& glob_num)
+  {
+    // storing the global right hand side
+    Matrix<T, General, ColMajor> rhs;
+    int cplx = sizeof(T)/8;
+    int nblock = 8; // 8 right hand sides at the same time
     // allocating the global right hand side
     if (comm_facto.Get_rank() == 0)
       {
@@ -858,7 +755,7 @@ namespace Seldon
         rhs.Zero();
       }
     
-    Matrix<T, General, ColMajor, Allocator2> xp;
+    Matrix<T, General, ColMajor> xp;
     int nb_procs = comm_facto.Get_size();
     MPI::Status status;
  
@@ -893,7 +790,7 @@ namespace Seldon
       }
     
     // then loop over blocks of right hand sides
-    int num_rhs = 0;
+    int num_rhs = 0, ldb = glob_num.GetM();
     int lvl = print_level; HideMessages();
     while (num_rhs < nrhs)
       {
@@ -920,10 +817,10 @@ namespace Seldon
                       }
                     else
                       {
-                        xp.Reallocate(x.GetM(), nrhs_p);
+                        xp.Reallocate(glob_num.GetM(), nrhs_p);
                         for (int k = 0; k < nrhs_p; k++)
-                          for (int j = 0; j < x.GetM(); j++)
-                            xp(j, k) = x(j, num_rhs+k);
+                          for (int j = 0; j < glob_num.GetM(); j++)
+                            xp(j, k) = x_ptr[j + (num_rhs+k)*ldb];
                       }
                     
                     for (int k = 0; k < nrhs_p; k++)
@@ -934,8 +831,8 @@ namespace Seldon
             else
               {
                 for (int k = 0; k < nrhs_p; k++)
-                  for (int j = 0; j < x.GetM(); j++)
-                    rhs(j, k) = x(j, num_rhs+k);
+                  for (int j = 0; j < glob_num.GetM(); j++)
+                    rhs(j, k) = x_ptr[j + (num_rhs+k)*ldb];
               }
           
             struct_mumps.rhs = reinterpret_cast<pointer>(rhs.GetData());
@@ -943,11 +840,11 @@ namespace Seldon
         else
           {
             // On other processors, we send right hand side.
-            int nb_dof = x.GetM();
+            int nb_dof = glob_num.GetM();
             if (nb_dof > 0)              
-              comm_facto.Ssend(&x(0, num_rhs), cplx*nb_dof*nrhs_p, MPI::DOUBLE, 0, 37);
+              comm_facto.Ssend(&x_ptr[num_rhs*nb_dof], cplx*nb_dof*nrhs_p, MPI::DOUBLE, 0, 37);
           }
-    
+	
         // we solve system
         if (TransA.Trans())
           struct_mumps.icntl[8] = 0;
@@ -980,28 +877,28 @@ namespace Seldon
                     else
                       {
                         for (int k = 0; k < nrhs_p; k++)
-                          for (int j = 0; j < x.GetM(); j++)
-                            x(j, num_rhs+k) = rhs(glob_num(j), k);
+                          for (int j = 0; j < glob_num.GetM(); j++)
+                            x_ptr[j + ldb*(num_rhs+k)] = rhs(glob_num(j), k);
                       }
                   }
               }
             else
               {
-                int nb_dof = x.GetM();
+                int nb_dof = glob_num.GetM();
                 xp.Reallocate(nb_dof, nrhs_p);
                 comm_facto.Recv(xp.GetDataVoid(), cplx*nb_dof*nrhs_p,
                                 MPI::DOUBLE, 0, 40, status);
                 
                 for (int k = 0; k < nrhs_p; k++)
-                  for (int j = 0; j < x.GetM(); j++)
-                    x(j, num_rhs+k) = xp(j, k);
+                  for (int j = 0; j < glob_num.GetM(); j++)
+                    x_ptr[j + (num_rhs+k)*ldb] = xp(j, k);
               }
           }
         else
           {
             for (int k = 0; k < nrhs_p; k++)
-              for (int i = 0; i < x.GetM(); i++)
-                x(i, num_rhs+k) = rhs(i, k);
+              for (int i = 0; i < glob_num.GetM(); i++)
+                x_ptr[i + ldb*(num_rhs+k)] = rhs(i, k);
           }
 
         num_rhs += nrhs_p;
@@ -1012,16 +909,6 @@ namespace Seldon
     
     print_level = lvl;
   }
-
-
-  template<class T> template<class Allocator2, class Tint, class Prop>
-  void MatrixMumps<T>::SolveDistributed(MPI::Comm& comm_facto,
-                                        Matrix<T, Prop, ColMajor, Allocator2>& x,
-					const Vector<Tint>& glob_num)
-  {
-    SolveDistributed(comm_facto, SeldonNoTrans, x, glob_num);
-  }
-
 #endif
 
 

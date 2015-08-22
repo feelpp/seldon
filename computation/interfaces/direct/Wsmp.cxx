@@ -207,6 +207,22 @@ namespace Seldon
   
 
   template<class T>
+  void MatrixWsmp<T>::FactorizeCSR(Vector<int>& Ptr_, Vector<int>& IndRow_,
+				   Vector<T>& Val_, bool sym)
+  {
+    Ptr.SetData(Ptr_);
+    IndRow.SetData(IndRow_);
+    Val.SetData(Val_);
+    Ptr_.Nullify(); IndRow_.Nullify(); Val_.Nullify();
+    
+    if (sym)
+      FactorizeSymmetric();
+    else
+      FactorizeUnsymmetric();
+  }
+
+
+  template<class T>
   void MatrixWsmp<T>::FactorizeSymmetric()
   {
     distributed = false;    
@@ -340,7 +356,14 @@ namespace Seldon
   template<class T>
   void MatrixWsmp<T>::Solve(const SeldonTranspose& trans, Vector<T>& b)
   {
-    int nrhs = 1, naux = 0, mrp = 0;
+    Solve(trans, b.GetData(), 1);
+  }
+
+
+  template<class T>
+  void MatrixWsmp<T>::Solve(const SeldonTranspose& trans, T* x_ptr, int nrhs)
+  {
+    int naux = 0, mrp = 0;
     
     // solve
     if (symmetric)
@@ -361,7 +384,7 @@ namespace Seldon
           }
         
         CallWssmp(&n, Ptr.GetData(), IndRow.GetData(), Val.GetData(),
-                  NULL, permut.GetData(), inverse_permut.GetData(), b.GetData(), &n, &nrhs,
+                  NULL, permut.GetData(), inverse_permut.GetData(), x_ptr, &n, &nrhs,
                   NULL, &naux, &mrp, iparm.GetData(), dparm.GetData());        
       }
     else
@@ -373,18 +396,21 @@ namespace Seldon
         
         if (trans.Trans())
           {
-            Conjugate(b);
+	    for (int i = 0; i < n*nrhs; i++)
+	      x_ptr[i] = conjugate(x_ptr[i]);
+
             iparm(29) = 4;
           }
         else
           iparm(29) = 0;
 
         CallWgsmp(&n, Ptr.GetData(), IndRow.GetData(), Val.GetData(),
-                  b.GetData(), &n, &nrhs,
+                  x_ptr, &n, &nrhs,
                   NULL, iparm.GetData(), dparm.GetData());
 
         if (trans.Trans())
-          Conjugate(b);
+	  for (int i = 0; i < n*nrhs; i++)
+	    x_ptr[i] = conjugate(x_ptr[i]);
       }
   }
 
@@ -392,45 +418,7 @@ namespace Seldon
   template<class T>
   void MatrixWsmp<T>::Solve(const SeldonTranspose& trans, Matrix<T, General, ColMajor>& b)
   {
-    int nrhs = b.GetN(), naux = 0, mrp = 0;
-    // solve
-    if (symmetric)
-      {
-        iparm(1) = 4;
-        iparm(2) = 4;
-        if (cholesky)
-          {
-            if (trans.Trans())
-              iparm(29) = 2;
-            else
-              iparm(29) = 1;
-          }
-        else
-          {
-            if (refine_solution)
-              iparm(2) = 5;
-          }
-    
-        CallWssmp(&n, Ptr.GetData(), IndRow.GetData(), Val.GetData(),
-                  NULL, permut.GetData(), inverse_permut.GetData(), b.GetData(), &n, &nrhs,
-                  NULL, &naux, &mrp, iparm.GetData(), dparm.GetData());
-      }
-    else
-      {
-        iparm(1) = 3;
-        iparm(2) = 3;
-        if (refine_solution)
-          iparm(2) = 4;
-
-        if (trans.Trans())
-          iparm(29) = 4;
-        else
-          iparm(29) = 0;
-        
-        CallWgsmp(&n, Ptr.GetData(), IndRow.GetData(), Val.GetData(),
-                  b.GetData(), &n, &nrhs,
-                  NULL, iparm.GetData(), dparm.GetData());
-      }
+    Solve(trans, b.GetData(), b.GetN());
   }
 
 
@@ -538,22 +526,22 @@ namespace Seldon
   }
 
   
-  //! solves A x = b in parallel
-  template<class T>
-  void MatrixWsmp<T>::SolveDistributed(MPI::Comm& comm_facto,
-                                       Vector<T>& x, const Vector<int>& glob_num)
-  {
-    SolveDistributed(comm_facto, SeldonNoTrans, x, glob_num);
-  }
-
-
   //! solves A x = b or A^T x = b in parallel
   template<class T>
   void MatrixWsmp<T>::SolveDistributed(MPI::Comm& comm_facto,
                                        const SeldonTranspose& TransA,
                                        Vector<T>& x, const Vector<int>& glob_num)
   {
-    int nrhs = 1, naux = 0, mrp = 0;
+    SolveDistributed(comm_facto, TransA, x.GetData(), 1, glob_num);
+  }
+
+  
+  template<class T>
+  void MatrixWsmp<T>::SolveDistributed(MPI::Comm& comm_facto,
+                                       const SeldonTranspose& TransA,
+                                       T* x_ptr, int nrhs, const Vector<int>& glob_num)
+  {
+    int naux = 0, mrp = 0;
     if (symmetric)
       {
         iparm(1) = 4;
@@ -572,7 +560,7 @@ namespace Seldon
           }
 
         CallWssmp(&n, Ptr.GetData(), IndRow.GetData(), Val.GetData(), NULL,
-                  permut.GetData(), inverse_permut.GetData(), x.GetData(),
+                  permut.GetData(), inverse_permut.GetData(), x_ptr,
                   &n, &nrhs, NULL, &naux, &mrp, iparm.GetData(), dparm.GetData());
       }
     else
@@ -584,28 +572,22 @@ namespace Seldon
         
         if (TransA.Trans())
           {
-            Conjugate(x);
+	    for (int i = 0; i < n*nrhs; i++)
+	      x_ptr[i] = conjugate(x_ptr[i]);
+	    
             iparm(29) = 4;
           }
         else
           iparm(29) = 0;
 
         CallWgsmp(&n, Ptr.GetData(), IndRow.GetData(), Val.GetData(),
-                  x.GetData(), &n, &nrhs,
+                  x_ptr, &n, &nrhs,
                   NULL, iparm.GetData(), dparm.GetData());
         
         if (TransA.Trans())
-          Conjugate(x);
+	  for (int i = 0; i < n*nrhs; i++)
+	    x_ptr[i] = conjugate(x_ptr[i]);
       }
-  }
-
-  //! solves A x = b in parallel
-  template<class T>
-  void MatrixWsmp<T>::SolveDistributed(MPI::Comm& comm_facto,
-                                       Matrix<T, General, ColMajor>& x,
-                                       const Vector<int>& glob_num)
-  {
-    SolveDistributed(comm_facto, SeldonNoTrans, x, glob_num);
   }
 
 
@@ -616,50 +598,7 @@ namespace Seldon
                                        Matrix<T, General, ColMajor>& x,
                                        const Vector<int>& glob_num)
   {
-    int nrhs = x.GetN(), naux = 0, mrp = 0;
-    if (symmetric)
-      {
-        iparm(1) = 4;
-        iparm(2) = 4;
-        if (cholesky)
-          {
-            if (TransA.Trans())
-              iparm(29) = 2;
-            else
-              iparm(29) = 1;
-          }
-        else
-          {
-            if (refine_solution)
-              iparm(2) = 5;
-          }
-
-        CallWssmp(&n, Ptr.GetData(), IndRow.GetData(), Val.GetData(), NULL,
-                  permut.GetData(), inverse_permut.GetData(), x.GetData(),
-                  &n, &nrhs, NULL, &naux, &mrp, iparm.GetData(), dparm.GetData());
-      }
-    else
-      {
-        iparm(1) = 3;
-        iparm(2) = 3;
-        if (refine_solution)
-          iparm(2) = 4;
-        
-        if (TransA.Trans())
-          {
-            Conjugate(x);
-            iparm(29) = 4;
-          }
-        else
-          iparm(29) = 0;
-
-        CallWgsmp(&n, Ptr.GetData(), IndRow.GetData(), Val.GetData(),
-                  x.GetData(), &n, &nrhs,
-                  NULL, iparm.GetData(), dparm.GetData());
-        
-        if (TransA.Trans())
-          Conjugate(x);
-      }
+    SolveDistributed(comm_facto, TransA, x.GetData(), x.GetN(), glob_num);
   }
 #endif
 

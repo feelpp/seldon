@@ -411,8 +411,15 @@ namespace Seldon
   void MatrixPastix<T>::Solve(const SeldonTranspose& TransA,
                               Vector<T, VectFull, Allocator2>& x)
   {
-    pastix_int_t nrhs = 1;
-    T* rhs_ = x.GetData();
+    Solve(TransA, x.GetData(), 1);
+  }
+
+
+  //! solving A x = b or A^T x = b (A is already factorized)
+  template<class T>
+  void MatrixPastix<T>::Solve(const SeldonTranspose& TransA, T* x_ptr, int nrhs_)
+  {
+    pastix_int_t nrhs = nrhs_;
 
     if (cholesky)
       {
@@ -430,7 +437,8 @@ namespace Seldon
         else
           iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
         
-        if (refine_solution)
+	// no refinement for multiple right hand sides
+        if ((refine_solution) && (nrhs == 1))
           iparm[IPARM_END_TASK] = API_TASK_REFINE;
         else
           iparm[IPARM_END_TASK] = API_TASK_SOLVE;
@@ -438,53 +446,16 @@ namespace Seldon
     
     iparm[IPARM_START_TASK] = API_TASK_SOLVE;
     
-    CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
+    CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, x_ptr, nrhs);
   }
-
+  
 
   //! solving A x = b or A^T x = b (A is already factorized)
   template<class T> template<class Allocator2>
   void MatrixPastix<T>::Solve(const SeldonTranspose& TransA,
                               Matrix<T, General, ColMajor, Allocator2>& x)
   {
-    pastix_int_t nrhs = x.GetN();
-    T* rhs_ = x.GetData();
-
-    if (cholesky)
-      {
-        if (TransA.Trans())
-          iparm[IPARM_TRANSPOSE_SOLVE] = API_SOLVE_BACKWARD_ONLY;
-        else
-          iparm[IPARM_TRANSPOSE_SOLVE] = API_SOLVE_FORWARD_ONLY;
-
-        iparm[IPARM_END_TASK] = API_TASK_SOLVE;
-        CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
-      }
-    else
-      {
-        if (TransA.Trans())
-          iparm[IPARM_TRANSPOSE_SOLVE] = API_YES;
-        else
-          iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
-        
-        iparm[IPARM_START_TASK] = API_TASK_SOLVE;
-        if (refine_solution)
-          {        
-            for (int k = 0; k < nrhs; k++)
-              {
-                iparm[IPARM_START_TASK] = API_TASK_SOLVE;
-                iparm[IPARM_END_TASK] = API_TASK_REFINE;
-                CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, &x(0, k), 1);
-              }
-            //iparm[IPARM_END_TASK] = API_TASK_REFINE;
-            //CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
-          }
-        else
-          {
-            iparm[IPARM_END_TASK] = API_TASK_SOLVE;
-            CallPastix(MPI_COMM_SELF, NULL, NULL, NULL, rhs_, nrhs);
-          }    
-      }
+    Solve(TransA, x.GetData(), x.GetN());
   }
 
 
@@ -498,13 +469,11 @@ namespace Seldon
 
   //! Distributed factorization (on several nodes).
   template<class T>
-  template<class Alloc1, class Alloc2, class Alloc3, class Tint>
   void MatrixPastix<T>::
   FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                             Vector<pastix_int_t, VectFull, Alloc1>& Ptr,
-                             Vector<pastix_int_t, VectFull, Alloc2>& IndRow,
-                             Vector<T, VectFull, Alloc3>& Val,
-                             const Vector<Tint>& glob_number,
+                             Vector<pastix_int_t>& Ptr,
+                             Vector<pastix_int_t>& IndRow,
+                             Vector<T>& Val, const Vector<int>& glob_number,
                              bool sym, bool keep_matrix)
   {
     // we clear previous factorization if present
@@ -580,26 +549,25 @@ namespace Seldon
   }
 
   
-  //! solves A x = b in parallel
-  template<class T> template<class Allocator2, class Tint>
+  //! solves A x = b or A^T x = b in parallel
+  template<class T> template<class Allocator2>
   void MatrixPastix<T>::SolveDistributed(MPI::Comm& comm_facto,
+                                         const SeldonTranspose& TransA,
                                          Vector<T, VectFull, Allocator2>& x,
-                                         const Vector<Tint>& glob_num)
+                                         const Vector<int>& glob_num)
   {
-    SolveDistributed(comm_facto, SeldonNoTrans, x, glob_num);
+    SolveDistributed(comm_facto, TransA, x.GetData(), 1, glob_num);
   }
 
 
   //! solves A x = b or A^T x = b in parallel
   template<class T>
-  template<class Allocator2, class Tint>
   void MatrixPastix<T>::SolveDistributed(MPI::Comm& comm_facto,
-                                         const SeldonTranspose& TransA,
-                                         Vector<T, VectFull, Allocator2>& x,
-                                         const Vector<Tint>& glob_num)
+					 const SeldonTranspose& TransA,
+					 T* x_ptr, int nrhs_,
+					 const IVect& glob_num)
   {
-    pastix_int_t nrhs = 1;
-    T* rhs_ = x.GetData();
+    pastix_int_t nrhs = nrhs_;
 
     if (cholesky)
       {
@@ -618,64 +586,34 @@ namespace Seldon
           iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
 
         if (refine_solution)
-          iparm[IPARM_END_TASK] = API_TASK_REFINE;
+          {
+	    // no refinement for multiple right hand sides
+	    if (nrhs > 1)
+	      iparm[IPARM_END_TASK] = API_TASK_SOLVE;
+	    else
+	      iparm[IPARM_END_TASK] = API_TASK_REFINE;
+	  }
         else
           iparm[IPARM_END_TASK] = API_TASK_SOLVE;        
       }
     
     iparm[IPARM_START_TASK] = API_TASK_SOLVE;
 
-    CallPastix(comm_facto, NULL, NULL, NULL, rhs_, nrhs);
-  }
-
-
-  //! solves A x = b in parallel
-  template<class T> template<class Allocator2, class Tint>
-  void MatrixPastix<T>::SolveDistributed(MPI::Comm& comm_facto,
-                                         Matrix<T, General, ColMajor, Allocator2>& x,
-                                         const Vector<Tint>& glob_num)
-  {
-    SolveDistributed(comm_facto, SeldonNoTrans, x, glob_num);
+    CallPastix(comm_facto, NULL, NULL, NULL, x_ptr, nrhs);
   }
 
 
   //! solves A x = b or A^T x = b in parallel
-  template<class T>
-  template<class Allocator2, class Tint>
+  template<class T> template<class Allocator2>
   void MatrixPastix<T>::SolveDistributed(MPI::Comm& comm_facto,
                                          const SeldonTranspose& TransA,
                                          Matrix<T, General, ColMajor, Allocator2>& x,
-                                         const Vector<Tint>& glob_num)
+                                         const Vector<int>& glob_num)
   {
-    pastix_int_t nrhs = x.GetN();
-    T* rhs_ = x.GetData();
-
-    if (cholesky)
-      {
-        if (TransA.Trans())
-          iparm[IPARM_TRANSPOSE_SOLVE] = API_SOLVE_BACKWARD_ONLY;
-        else
-          iparm[IPARM_TRANSPOSE_SOLVE] = API_SOLVE_FORWARD_ONLY;
-
-        iparm[IPARM_END_TASK] = API_TASK_SOLVE;
-      }
-    else
-      {
-        if (TransA.Trans())
-          iparm[IPARM_TRANSPOSE_SOLVE] = API_YES;
-        else
-          iparm[IPARM_TRANSPOSE_SOLVE] = API_NO;
-        
-        // no refinement for multiple right hand sides
-        iparm[IPARM_END_TASK] = API_TASK_SOLVE;        
-      }
-    
-    iparm[IPARM_START_TASK] = API_TASK_SOLVE;
-
-    CallPastix(comm_facto, NULL, NULL, NULL, rhs_, nrhs);
+    SolveDistributed(comm_facto, TransA, x.GetData(), x.GetN(), glob_num);
   }
 
-  
+
   //! Factorization of a matrix of same type T as the Pastix object 
   template<class MatrixSparse, class T>
   void GetLU(MatrixSparse& A, MatrixPastix<T>& mat_lu, bool keep_matrix, T& x)

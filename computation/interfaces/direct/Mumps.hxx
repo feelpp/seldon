@@ -1,4 +1,4 @@
-// Copyright (C) 2003-2009 Marc Duruflé
+// Copyright (C) 2003-2015 Marc Duruflé
 //
 // This file is part of the linear-algebra library Seldon,
 // http://seldon.sourceforge.net/.
@@ -68,8 +68,8 @@ namespace Seldon
     int print_level;
     int info_facto;
     bool out_of_core;
-    IVect num_row_glob, num_col_glob;
-    IVect perm;
+    Vector<MUMPS_INT> num_row_glob, num_col_glob;
+    Vector<MUMPS_INT> perm;
     double coef_overestimate;
     double coef_increase_memory;
     double coef_max_overestimate;
@@ -78,8 +78,7 @@ namespace Seldon
     void CallMumps();
     void IterateFacto();
     
-    template<class MatrixSparse>
-    void InitMatrix(const MatrixSparse&, bool dist = false);
+    void InitMatrix(bool sym, bool dist = false);
 
   public :
     MatrixMumps();
@@ -112,6 +111,10 @@ namespace Seldon
     void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
+    void FactorizeCoordinate1(int n, Vector<MUMPS_INT>& num_row,
+			      Vector<MUMPS_INT>& num_col,
+			      Vector<T>& values, bool sym);
+    
     template<class Prop, class Storage, class Allocator>
     void PerformAnalysis(Matrix<T, Prop, Storage, Allocator> & mat);
 
@@ -126,45 +129,39 @@ namespace Seldon
 			bool keep_matrix = false);
 
     template<class Allocator2>
-    void Solve(Vector<T, VectFull, Allocator2>& x);
-
-    template<class Allocator2>
     void Solve(const SeldonTranspose& TransA,
 	       Vector<T, VectFull, Allocator2>& x);
+
+    void Solve(const SeldonTranspose&, T* x_ptr, int nrhs);
+    
+    template<class Allocator2>
+    void Solve(Vector<T, VectFull, Allocator2>& x);
 
     template<class Allocator2, class Prop>
     void Solve(const SeldonTranspose& TransA,
 	       Matrix<T, Prop, ColMajor, Allocator2>& x);
 
 #ifdef SELDON_WITH_MPI
-    template<class Alloc1, class Alloc2, class Alloc3, class Tint>
-    void FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                                    Vector<Tint, VectFull, Alloc1>&,
-                                    Vector<Tint, VectFull, Alloc2>&,
-                                    Vector<T, VectFull, Alloc3>&,
-                                    const Vector<int>& glob_number,
+    void FactorizeDistributedMatrix(MPI::Comm& comm_facto, Vector<MUMPS_INT>& Ptr,
+				    Vector<MUMPS_INT>& IndRow, Vector<T>& Val,
+				    const Vector<int>& glob_number,
 				    bool sym, bool keep_matrix = false);
     
-    template<class Allocator2, class Tint>
-    void SolveDistributed(MPI::Comm& comm_facto,
-                          Vector<T, VectFull, Allocator2>& x,
-                          const Vector<Tint>& glob_num);
-
     template<class Allocator2>
     void SolveDistributed(MPI::Comm& comm_facto,
-                          const SeldonTranspose& TransA,
+			  const SeldonTranspose& TransA,
 			  Vector<T, VectFull, Allocator2>& x,
 			  const IVect& glob_num);
-
-    template<class Allocator2, class Tint, class Prop>
-    void SolveDistributed(MPI::Comm& comm_facto,
-                          Matrix<T, Prop, ColMajor, Allocator2>& x,
-                          const Vector<Tint>& glob_num);
-
+    
     template<class Allocator2, class Prop>
     void SolveDistributed(MPI::Comm& comm_facto,
-                          const SeldonTranspose& TransA,
+			  const SeldonTranspose& TransA,
 			  Matrix<T, Prop, ColMajor, Allocator2>& x,
+			  const IVect& glob_num);
+
+    void SolveDistributed(MPI::Comm& comm_facto,
+			  const SeldonTranspose& TransA,
+			  T* x_ptr, int nrhs,
 			  const IVect& glob_num);
 #endif
 

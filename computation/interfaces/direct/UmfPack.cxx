@@ -112,7 +112,11 @@ namespace Seldon
     ptr_ = NULL;
     ind_ = NULL;
     data_ = NULL;
+#ifdef UMFPACK_INTSIZE64
+    umfpack_dl_defaults(this->Control.GetData());
+#else
     umfpack_di_defaults(this->Control.GetData());
+#endif
     this->HideMessages();
   }
 
@@ -125,7 +129,11 @@ namespace Seldon
     ind_ = NULL;
     data_real_ = NULL;
     data_imag_ = NULL;
+#ifdef UMFPACK_INTSIZE64
+    umfpack_zl_defaults(this->Control.GetData());
+#else
     umfpack_zi_defaults(this->Control.GetData());
+#endif
     this->HideMessages();
   }
 
@@ -140,7 +148,7 @@ namespace Seldon
   //! we clear present factorization if any
   void MatrixUmfPack<double>::Clear()
   {
-    typedef typename SeldonDefaultAllocator<VectFull, int>::
+    typedef typename SeldonDefaultAllocator<VectFull, umfpack_int_t>::
       allocator AllocatorInt;
 
     typedef typename SeldonDefaultAllocator<VectFull, double>::
@@ -154,10 +162,18 @@ namespace Seldon
 	Allocator::deallocate(data_, this->n+1);
 
 	// memory for numbering scheme is released
+#ifdef UMFPACK_INTSIZE64
+	umfpack_dl_free_symbolic(&this->Symbolic) ;
+#else
 	umfpack_di_free_symbolic(&this->Symbolic) ;
+#endif
 
 	// memory used by LU factorization is released
+#ifdef UMFPACK_INTSIZE64
+	umfpack_dl_free_numeric(&this->Numeric) ;
+#else
 	umfpack_di_free_numeric(&this->Numeric) ;
+#endif
 
 	this->n = 0;
 	this->Symbolic = NULL;
@@ -179,7 +195,7 @@ namespace Seldon
   //! we clear present factorization if any
   void MatrixUmfPack<complex<double> >::Clear()
   {
-    typedef typename SeldonDefaultAllocator<VectFull, int>::
+    typedef typename SeldonDefaultAllocator<VectFull, umfpack_int_t>::
       allocator AllocatorInt;
 
     typedef typename SeldonDefaultAllocator<VectFull, double>::
@@ -194,10 +210,18 @@ namespace Seldon
 	Allocator::deallocate(data_imag_, this->n+1);
 
 	// memory for numbering scheme is released
+#ifdef UMFPACK_INTSIZE64
+	umfpack_zl_free_symbolic(&this->Symbolic) ;
+#else
 	umfpack_zi_free_symbolic(&this->Symbolic) ;
+#endif
 
 	// memory used by LU factorization is released
+#ifdef UMFPACK_INTSIZE64
+	umfpack_zl_free_numeric(&this->Numeric) ;
+#else
 	umfpack_zi_free_numeric(&this->Numeric) ;
+#endif
 
         this->n = 0;
 	this->Symbolic = NULL;
@@ -220,43 +244,64 @@ namespace Seldon
     // we clear previous factorization
     Clear();
 
+    Vector<umfpack_int_t> Ptr, IndRow;
+    Vector<double> Val;
+
     // conversion to unsymmetric matrix in Column Sparse Column Format
-    Matrix<double, General, ColSparse> Acsc;
-    Copy(mat, Acsc);
+    General prop;
+    ConvertToCSC(mat, prop, Ptr, IndRow, Val, false);
     if (!keep_matrix)
       mat.Clear();
 
-    FactorizeCSC(Acsc);
+    FactorizeCSC(Ptr, IndRow, Val, false);
   }
 
   
   void MatrixUmfPack<double>
-  ::FactorizeCSC(Matrix<double, General, ColSparse>& Acsc)
+  ::FactorizeCSC(Vector<umfpack_int_t>& Ptr, Vector<umfpack_int_t>& IndRow,
+		 Vector<double>& Val, bool sym)
   {
     transpose = false;
-    this->n = Acsc.GetM();
+    this->n = Ptr.GetM()-1;
 
-    // we retrieve pointers of Acsc and nullify this object
-    ptr_ = Acsc.GetPtr();
-    ind_ = Acsc.GetInd();
-    data_ = Acsc.GetData();
-    Acsc.Nullify();
-
+    // we retrieve pointers and nullify input vectors
+    ptr_ = Ptr.GetData();
+    ind_ = IndRow.GetData();
+    data_ = Val.GetData();
+    Ptr.Nullify(); IndRow.Nullify(); Val.Nullify();
+    
     // symbolic factorization
+#ifdef UMFPACK_INTSIZE64
+    umfpack_dl_symbolic(this->n, this->n, ptr_, ind_, data_, &this->Symbolic,
+                        this->Control.GetData(), this->Info.GetData());
+#else
     umfpack_di_symbolic(this->n, this->n, ptr_, ind_, data_, &this->Symbolic,
                         this->Control.GetData(), this->Info.GetData());
+#endif
 
     // numerical factorization
+#ifdef UMFPACK_INTSIZE64
+    status_facto =
+      umfpack_dl_numeric(ptr_, ind_, data_,
+                         this->Symbolic, &this->Numeric,
+                         this->Control.GetData(), this->Info.GetData());
+#else
     status_facto =
       umfpack_di_numeric(ptr_, ind_, data_,
                          this->Symbolic, &this->Numeric,
                          this->Control.GetData(), this->Info.GetData());
+#endif
 
     // we display informations about the performed operation
     if (print_level > 1)
       {
+#ifdef UMFPACK_INTSIZE64
+	umfpack_dl_report_status(this->Control.GetData(), status_facto);
+	umfpack_dl_report_info(this->Control.GetData(),this->Info.GetData());
+#else
 	umfpack_di_report_status(this->Control.GetData(), status_facto);
 	umfpack_di_report_info(this->Control.GetData(),this->Info.GetData());
+#endif
       }
 
     if (print_level > 0)
@@ -279,22 +324,31 @@ namespace Seldon
     // we clear previous factorization
     Clear();
 
+    Vector<umfpack_int_t> Ptr, IndCol;
+    Vector<double> Val;
+
     // conversion to unsymmetric matrix in Column Sparse Row Format
-    Matrix<double, General, RowSparse> Acsr;
+    General prop;
+    ConvertToCSR(mat, prop, Ptr, IndCol, Val);
+    mat.Clear();
+
     transpose = true;
 
-    Copy(mat, Acsr);
-
     // we retrieve pointers of Acsc and nullify this object
-    this->n = mat.GetM();
-    ptr_ = Acsr.GetPtr();
-    ind_ = Acsr.GetInd();
-    data_ = Acsr.GetData();
-    Acsr.Nullify();
+    this->n = Ptr.GetM()-1;
+    ptr_ = Ptr.GetData();
+    ind_ = IndCol.GetData();
+    data_ = Val.GetData();
+    Ptr.Nullify(); IndCol.Nullify(); Val.Nullify();
 
     // factorization with UmfPack
+#ifdef UMFPACK_INTSIZE64
+    umfpack_dl_symbolic(this->n, this->n, ptr_, ind_, data_, &this->Symbolic,
+			this->Control.GetData(), this->Info.GetData());
+#else
     umfpack_di_symbolic(this->n, this->n, ptr_, ind_, data_, &this->Symbolic,
 			this->Control.GetData(), this->Info.GetData());
+#endif
 
   }
 
@@ -309,16 +363,28 @@ namespace Seldon
     for (int i = 0; i < mat.GetDataSize(); i++)
       data_[i] = data[i];
 
+#ifdef UMFPACK_INTSIZE64
+    status_facto =
+      umfpack_dl_numeric(ptr_, ind_, data_,
+			 this->Symbolic, &this->Numeric,
+			 this->Control.GetData(), this->Info.GetData());
+#else
     status_facto =
       umfpack_di_numeric(ptr_, ind_, data_,
 			 this->Symbolic, &this->Numeric,
 			 this->Control.GetData(), this->Info.GetData());
+#endif
 
     // we display informations about the performed operation
     if (print_level > 1)
       {
+#ifdef UMFPACK_INTSIZE64
+	umfpack_dl_report_status(this->Control.GetData(), status_facto);
+	umfpack_dl_report_info(this->Control.GetData(),this->Info.GetData());
+#else
 	umfpack_di_report_status(this->Control.GetData(), status_facto);
 	umfpack_di_report_info(this->Control.GetData(),this->Info.GetData());
+#endif
       }
   }
 
@@ -327,21 +393,7 @@ namespace Seldon
   template<class Allocator2>
   void MatrixUmfPack<double>::Solve(Vector<double, VectFull, Allocator2>& x)
   {
-    // local copy of x
-    Vector<double, VectFull, Allocator2> b(x);
-
-    int sys = UMFPACK_A;
-    if (transpose)
-      sys = UMFPACK_Aat;
-
-    int status
-      = umfpack_di_solve(sys, ptr_, ind_, data_, x.GetData(),
-			 b.GetData(), this->Numeric, this->Control.GetData(),
-			 this->Info.GetData());
-
-    // we display informations about the performed operation
-    if (print_level > 1)
-      umfpack_di_report_status(this->Control.GetData(), status);
+    Solve(SeldonNoTrans, x);
   }
 
 
@@ -349,24 +401,56 @@ namespace Seldon
   void MatrixUmfPack<double>::Solve(const SeldonTranspose& TransA,
 				    Vector<double, VectFull, Allocator2>& x)
   {
-    if (TransA.NoTrans())
-      {
-	Solve(x);
-	return;
-      }
+    Solve(TransA, x.GetData(), 1);
+  }
 
+
+  template<class Allocator2>
+  void MatrixUmfPack<double>::
+  Solve(const SeldonTranspose& TransA,
+	Matrix<double, General, ColMajor, Allocator2>& x)
+  {
+    Solve(TransA, x.GetData(), x.GetN());
+  }
+
+
+  void MatrixUmfPack<double>::Solve(const SeldonTranspose& TransA,
+				    double* x_ptr, int nrhs)
+  {
     // local copy of x
-    Vector<double, VectFull, Allocator2> b(x);
+    Vector<double> b(this->n);
 
     int sys = UMFPACK_Aat;
-    if (transpose)
-      sys = UMFPACK_A;
+    if (TransA.NoTrans())
+      {
+	if (!transpose)
+	  sys = UMFPACK_A;
+      }
+    else
+      {
+	if (transpose)
+	  sys = UMFPACK_A;
+      }
 
-    int status
-      = umfpack_di_solve(sys, ptr_, ind_, data_, x.GetData(),
-			 b.GetData(), this->Numeric, this->Control.GetData(),
-			 this->Info.GetData());
-
+    int status = 0;
+    for (int k = 0; k < nrhs; k++)
+      {
+	for (int i = 0; i < this->n; i++)
+	  b(i) = x_ptr[i + this->n*k];
+	
+#ifdef UMFPACK_INTSIZE64
+	status
+	  = umfpack_dl_solve(sys, ptr_, ind_, data_, &x_ptr[this->n*k],
+			     b.GetData(), this->Numeric, this->Control.GetData(),
+			     this->Info.GetData());
+#else
+	status
+	  = umfpack_di_solve(sys, ptr_, ind_, data_, &x_ptr[this->n*k],
+			     b.GetData(), this->Numeric, this->Control.GetData(),
+			     this->Info.GetData());
+#endif
+      }
+    
     // We display information about the performed operation.
     if (print_level > 1)
       umfpack_di_report_status(this->Control.GetData(), status);
@@ -381,52 +465,59 @@ namespace Seldon
   {
     Clear();
 
-    // conversion to CSC format
-    Matrix<complex<double>, General, ColSparse> Acsc;
+    Vector<umfpack_int_t> Ptr, IndRow;
+    Vector<complex<double> > Val;
 
-    Copy(mat, Acsc);
+    // conversion to CSC format
+    General prop;
+    ConvertToCSC(mat, prop, Ptr, IndRow, Val, false);
     if (!keep_matrix)
       mat.Clear();
     
-    FactorizeCSC(Acsc);
+    FactorizeCSC(Ptr, IndRow, Val, false);
   }
 
 
   void MatrixUmfPack<complex<double> >
-  ::FactorizeCSC(Matrix<complex<double>, General, ColSparse>& Acsc)
+  ::FactorizeCSC(Vector<umfpack_int_t>& Ptr, Vector<umfpack_int_t>& IndRow,
+		 Vector<complex<double> >& Val, bool sym)
   {
     transpose = false;
-    this->n = Acsc.GetM();
+    this->n = Ptr.GetM()-1;
 
-    int nnz = Acsc.GetDataSize();
-    complex<double>* data = Acsc.GetData();
-    int* ptr = Acsc.GetPtr();
-    int* ind = Acsc.GetInd();
+    int nnz = IndRow.GetDataSize();
+    complex<double>* data = Val.GetData();
     Vector<double> ValuesReal(nnz), ValuesImag(nnz);
-    Vector<int> Ptr(this->n+1), Ind(nnz);
 
     for (int i = 0; i < nnz; i++)
       {
 	ValuesReal(i) = real(data[i]);
 	ValuesImag(i) = imag(data[i]);
-	Ind(i) = ind[i];
       }
 
-    for (int i = 0; i <= this->n; i++)
-      Ptr(i) = ptr[i];
-
-    // we clear intermediary matrix Acsc
-    Acsc.Clear();
+    // we clear intermediary values Val
+    Val.Clear();
 
     // retrieve pointers and nullify Seldon vectors
     data_real_ = ValuesReal.GetData();
     data_imag_ = ValuesImag.GetData();
     ptr_ = Ptr.GetData();
-    ind_ = Ind.GetData();
+    ind_ = IndRow.GetData();
     ValuesReal.Nullify(); ValuesImag.Nullify();
-    Ptr.Nullify(); Ind.Nullify();
+    Ptr.Nullify(); IndRow.Nullify();
 
     // we call UmfPack
+#ifdef UMFPACK_INTSIZE64
+    umfpack_zl_symbolic(this->n, this->n, ptr_, ind_,
+			data_real_, data_imag_,
+			&this->Symbolic, this->Control.GetData(),
+			this->Info.GetData());
+
+    status_facto
+      = umfpack_zl_numeric(ptr_, ind_, data_real_, data_imag_,
+			   this->Symbolic, &this->Numeric,
+			   this->Control.GetData(), this->Info.GetData());
+#else
     umfpack_zi_symbolic(this->n, this->n, ptr_, ind_,
 			data_real_, data_imag_,
 			&this->Symbolic, this->Control.GetData(),
@@ -436,11 +527,17 @@ namespace Seldon
       = umfpack_zi_numeric(ptr_, ind_, data_real_, data_imag_,
 			   this->Symbolic, &this->Numeric,
 			   this->Control.GetData(), this->Info.GetData());
+#endif
 
     if (print_level > 1)
       {
+#ifdef UMFPACK_INTSIZE64
+	umfpack_zl_report_status(this->Control.GetData(), status_facto);
+	umfpack_zl_report_info(this->Control.GetData(), this->Info.GetData());
+#else
 	umfpack_zi_report_status(this->Control.GetData(), status_facto);
 	umfpack_zi_report_info(this->Control.GetData(), this->Info.GetData());
+#endif
       }
 
     if (print_level > 0)
@@ -470,37 +567,79 @@ namespace Seldon
   Solve(const SeldonTranspose& TransA,
 	Vector<complex<double>, VectFull, Allocator2>& x)
   {
-    int m = x.GetM();
-    // creation of vectors
-    Vector<double> b_real(m), b_imag(m);
-    for (int i = 0; i < m; i++)
-      {
-	b_real(i) = real(x(i));
-	b_imag(i) = imag(x(i));
-      }
+    Solve(TransA, x.GetData(), 1);
+  }
 
-    Vector<double> x_real(m), x_imag(m);
+
+  //! Solves linear system in complex double precision using UmfPack.
+  template<class Allocator2>
+  void MatrixUmfPack<complex<double> >::
+  Solve(const SeldonTranspose& TransA,
+	Matrix<complex<double>, General, ColMajor, Allocator2>& x)
+  {
+     Solve(TransA, x.GetData(), x.GetN());
+  }
+
+
+  void MatrixUmfPack<complex<double> >::
+  Solve(const SeldonTranspose& TransA, complex<double>* x_ptr, int nrhs)
+  {
+    // creation of vectors
+    Vector<double> b_real(this->n), b_imag(this->n);
+    Vector<double> x_real(this->n), x_imag(this->n);
     x_real.Zero();
     x_imag.Zero();
 
-    int sys = UMFPACK_A;
-    if (TransA.Trans())
-      sys = UMFPACK_Aat;
+    int sys = UMFPACK_Aat;
+    if (TransA.NoTrans())
+      {
+	if (!transpose)
+	  sys = UMFPACK_A;
+      }
+    else
+      {
+	if (transpose)
+	  sys = UMFPACK_A;
+      }
 
-    int status
-      = umfpack_zi_solve(sys, ptr_, ind_, data_real_, data_imag_,
-			 x_real.GetData(), x_imag.GetData(),
-			 b_real.GetData(), b_imag.GetData(),
-			 this->Numeric,
-			 this->Control.GetData(), this->Info.GetData());
-    b_real.Clear();
-    b_imag.Clear();
-
-    for (int i = 0; i < m; i++)
-      x(i) = complex<double>(x_real(i), x_imag(i));
-
+    int status = 0;
+    for (int k = 0; k < nrhs; k++)
+      {
+	
+	for (int i = 0; i < this->n; i++)
+	  {
+	    b_real(i) = real(x_ptr[i + k*this->n]);
+	    b_imag(i) = imag(x_ptr[i+k*this->n]);
+	  }
+	
+#ifdef UMFPACK_INTSIZE64
+	status
+	  = umfpack_zl_solve(sys, ptr_, ind_, data_real_, data_imag_,
+			     x_real.GetData(), x_imag.GetData(),
+			     b_real.GetData(), b_imag.GetData(),
+			     this->Numeric,
+			     this->Control.GetData(), this->Info.GetData());
+#else
+	status
+	  = umfpack_zi_solve(sys, ptr_, ind_, data_real_, data_imag_,
+			     x_real.GetData(), x_imag.GetData(),
+			     b_real.GetData(), b_imag.GetData(),
+			     this->Numeric,
+			     this->Control.GetData(), this->Info.GetData());
+#endif
+	
+	for (int i = 0; i < this->n; i++)
+	  x_ptr[i+k*this->n] = complex<double>(x_real(i), x_imag(i));
+      }
+    
     if (print_level > 1)
-      umfpack_zi_report_status(this->Control.GetData(), status);
+      {
+#ifdef UMFPACK_INTSIZE64
+	umfpack_zl_report_status(this->Control.GetData(), status);
+#else
+	umfpack_zi_report_status(this->Control.GetData(), status);
+#endif
+      }
   }
 
   
@@ -570,13 +709,7 @@ namespace Seldon
   void SolveLU(MatrixUmfPack<T>& mat_lu,
                Matrix<T, Prop, ColMajor, Allocator>& x)
   {
-    Vector<T> v;
-    for (int i = 0; i < x.GetN(); i++)
-      {
-	v.SetData(x.GetM(), &x(0, i));
-	mat_lu.Solve(v);
-	v.Nullify();
-      }
+     mat_lu.Solve(SeldonNoTrans, x);
   }
 
 
@@ -586,13 +719,7 @@ namespace Seldon
   void SolveLU(const SeldonTranspose& TransA,
 	       MatrixUmfPack<T>& mat_lu, Matrix<T, Prop, ColMajor, Allocator>& x)
   {
-    Vector<T> v;
-    for (int i = 0; i < x.GetN(); i++)
-      {
-	v.SetData(x.GetM(), &x(0, i));
-	mat_lu.Solve(TransA, v);
-	v.Nullify();
-      }
+    mat_lu.Solve(TransA, x);
   }
   
   

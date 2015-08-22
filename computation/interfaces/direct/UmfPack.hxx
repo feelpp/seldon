@@ -25,6 +25,13 @@ extern "C"
 #include "colamd.h"
 }
 
+#ifdef UMFPACK_INTSIZE64
+#define umfpack_int_t SuiteSparse_long
+#else
+#define umfpack_int_t int
+#endif
+
+
 namespace Seldon
 {
   //!< base class to solve linear system by using UmfPack
@@ -66,7 +73,7 @@ namespace Seldon
 
   protected :
     //! arrays containing matrix pattern in csc format
-    int* ind_, *ptr_;
+    umfpack_int_t* ind_, *ptr_;
     //! non-zero values
     double* data_;
 
@@ -81,7 +88,8 @@ namespace Seldon
     void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
-    void FactorizeCSC(Matrix<double, General, ColSparse>& Acsc);
+    void FactorizeCSC(Vector<umfpack_int_t>& Ptr, Vector<umfpack_int_t>& IndRow,
+		      Vector<double>& Val, bool sym);
     
     template<class Prop, class Allocator>
     void PerformAnalysis(Matrix<double, Prop, RowSparse, Allocator> & mat);
@@ -96,6 +104,12 @@ namespace Seldon
     template<class Allocator2>
     void Solve(const SeldonTranspose&, Vector<double, VectFull, Allocator2>& x);
 
+    template<class Allocator2>
+    void Solve(const SeldonTranspose& TransA,
+	       Matrix<double, General, ColMajor, Allocator2>& x);
+
+    void Solve(const SeldonTranspose& TransA, double* x_ptr, int nrhs);
+    
   };
 
 
@@ -107,7 +121,7 @@ namespace Seldon
 
   protected:
     //! arrays containing matrix pattern in csc format
-    int* ptr_, *ind_;
+    umfpack_int_t* ptr_, *ind_;
     //! non-zero values
     double* data_real_, *data_imag_;
 
@@ -123,7 +137,8 @@ namespace Seldon
     FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
                     bool keep_matrix = false);
 
-    void FactorizeCSC(Matrix<complex<double>, General, ColSparse>& Acsc);
+    void FactorizeCSC(Vector<umfpack_int_t>& Ptr, Vector<umfpack_int_t>& IndRow,
+		      Vector<complex<double> >& Val, bool sym);
 
     template<class Allocator2>
     void Solve(Vector<complex<double>, VectFull, Allocator2>& x);
@@ -131,6 +146,12 @@ namespace Seldon
     template<class Allocator2>
     void Solve(const SeldonTranspose&, Vector<complex<double>, VectFull, Allocator2>& x);
 
+    template<class Allocator2>
+    void Solve(const SeldonTranspose& TransA,
+	       Matrix<complex<double>, General, ColMajor, Allocator2>& x);
+
+    void Solve(const SeldonTranspose& TransA, complex<double>* x_ptr, int nrhs);
+    
   };
 
   template<class T0, class Prop, class Storage, class Allocator, class T>

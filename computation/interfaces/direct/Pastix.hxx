@@ -108,41 +108,36 @@ namespace Seldon
     void Solve(const SeldonTranspose& TransA,
 	       Vector<T, VectFull, Allocator2>& x);
 
+    void Solve(const SeldonTranspose&, T* x_ptr, int nrhs);
+    
     template<class Allocator2>
     void Solve(const SeldonTranspose& TransA,
 	       Matrix<T, General, ColMajor, Allocator2>& x);
     
     void SetNumberOfThreadPerNode(int);
     
-    template<class Alloc1, class Alloc2, class Alloc3, class Tint>
     void FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                                    Vector<pastix_int_t, VectFull, Alloc1>&,
-                                    Vector<pastix_int_t, VectFull, Alloc2>&,
-                                    Vector<T, VectFull, Alloc3>&,
-                                    const Vector<Tint>& glob_number,
+				    Vector<pastix_int_t>&,
+                                    Vector<pastix_int_t>&,
+                                    Vector<T>&, const Vector<int>& glob_num,
 				    bool sym, bool keep_matrix = false);
 
-    template<class Allocator2, class Tint>
-    void SolveDistributed(MPI::Comm& comm_facto,
-                          Vector<T, VectFull, Allocator2>& x,
-                          const Vector<Tint>& glob_num);
-
-    template<class Allocator2, class Tint>
+    template<class Allocator2>
     void SolveDistributed(MPI::Comm& comm_facto,
                           const SeldonTranspose& TransA,
 			  Vector<T, VectFull, Allocator2>& x,
-                          const Vector<Tint>& glob_num);
+                          const Vector<int>& glob_num);
 
-    template<class Allocator2, class Tint>
-    void SolveDistributed(MPI::Comm& comm_facto,
-                          Matrix<T, General, ColMajor, Allocator2>& x,
-                          const Vector<Tint>& glob_num);
-
-    template<class Allocator2, class Tint>
+    template<class Allocator2>
     void SolveDistributed(MPI::Comm& comm_facto,
                           const SeldonTranspose& TransA,
 			  Matrix<T, General, ColMajor, Allocator2>& x,
-                          const Vector<Tint>& glob_num);
+                          const Vector<int>& glob_num);
+    
+    void SolveDistributed(MPI::Comm& comm_facto,
+			  const SeldonTranspose& TransA,
+			  T* x_ptr, int nrhs,
+			  const IVect& glob_num);
     
   };
 

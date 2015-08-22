@@ -133,7 +133,8 @@ namespace Seldon
     void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
-    void FactorizeCSC(Matrix<double, General, ColSparse>& Acsr);
+    void FactorizeCSC(Vector<int_t>& Ptr, Vector<int_t>& IndRow,
+		      Vector<double>& Val, bool sym);
 
     template<class Allocator2>
     void Solve(Vector<double, VectFull, Allocator2>& x);
@@ -142,6 +143,9 @@ namespace Seldon
     void Solve(const SeldonTranspose& TransA,
                Vector<double, VectFull, Allocator2>& x);
 
+    void Solve(const SeldonTranspose& Trans,
+	       double* x_ptr, int nrhs_);
+    
     template<class Allocator2>
     void Solve(Matrix<double, General, ColMajor, Allocator2>& x);
 
@@ -150,31 +154,29 @@ namespace Seldon
                Matrix<double, General, ColMajor, Allocator2>& x);
 
 #ifdef SELDON_WITH_SUPERLU_DIST
-    template<class Alloc1, class Alloc2, class Alloc3>
     void FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                                    Vector<int_t, VectFull, Alloc1>&,
-                                    Vector<int_t, VectFull, Alloc2>&,
-                                    Vector<double, VectFull, Alloc3>&,
-                                    const Vector<int_t>& glob_num,
+                                    Vector<int_t>&, Vector<int_t>&,
+                                    Vector<double>&,
+                                    const Vector<int>& glob_num,
                                     bool sym, bool keep_matrix = false);
-
+    
     template<class Allocator2>
     void SolveDistributed(MPI::Comm& comm_facto,
-                          Vector<double, VectFull, Allocator2>& x);
+                          const SeldonTranspose& TransA,
+			  Vector<double, VectFull, Allocator2>& x,
+			  const Vector<int>& glob_num);
 
     template<class Allocator2>
     void SolveDistributed(MPI::Comm& comm_facto,
                           const SeldonTranspose& TransA,
-			  Vector<double, VectFull, Allocator2>& x);
+			  Matrix<double, General, ColMajor, Allocator2>& x,
+			  const Vector<int>& glob_num);
 
-    template<class Allocator2>
     void SolveDistributed(MPI::Comm& comm_facto,
-                          Matrix<double, General, ColMajor, Allocator2>& x);
-
-    template<class Allocator2>
-    void SolveDistributed(MPI::Comm& comm_facto,
-                          const SeldonTranspose& TransA,
-			  Matrix<double, General, ColMajor, Allocator2>& x);
+			  const SeldonTranspose& TransA,
+			  double* x_ptr, int nrhs_,
+			  const IVect& glob_num);
+    
 #endif
 
   };
@@ -208,7 +210,8 @@ namespace Seldon
 			 Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
-    void FactorizeCSC(Matrix<complex<double>, General, ColSparse>& Acsr);
+    void FactorizeCSC(Vector<int_t>& Ptr, Vector<int_t>& IndRow,
+		      Vector<complex<double> >& Val, bool sym);
     
     template<class Allocator2>
     void Solve(Vector<complex<double>, VectFull, Allocator2>& x);
@@ -216,6 +219,9 @@ namespace Seldon
     template<class Allocator2>
     void Solve(const SeldonTranspose& TransA,
                Vector<complex<double>, VectFull, Allocator2>& x);
+
+    void Solve(const SeldonTranspose& Trans,
+	       complex<double>* x_ptr, int nrhs_);
 
     template<class Allocator2>
     void Solve(Matrix<complex<double>, General, ColMajor, Allocator2>& x);
@@ -225,31 +231,28 @@ namespace Seldon
                Matrix<complex<double>, General, ColMajor, Allocator2>& x);
 
 #ifdef SELDON_WITH_SUPERLU_DIST
-    template<class Alloc1, class Alloc2, class Alloc3>
     void FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                                    Vector<int_t, VectFull, Alloc1>&,
-                                    Vector<int_t, VectFull, Alloc2>&,
-                                    Vector<complex<double>, VectFull, Alloc3>&,
-				    const Vector<int_t>& glob_num,
+                                    Vector<int_t>&, Vector<int_t>&,
+                                    Vector<complex<double> >&,
+                                    const Vector<int>& glob_num,
                                     bool sym, bool keep_matrix = false);
-
+    
     template<class Allocator2>
     void SolveDistributed(MPI::Comm& comm_facto,
-                          Vector<complex<double>, VectFull, Allocator2>& x);
+                          const SeldonTranspose& TransA,
+			  Vector<complex<double>, VectFull, Allocator2>& x,
+			  const Vector<int>& glob_num);
 
     template<class Allocator2>
     void SolveDistributed(MPI::Comm& comm_facto,
                           const SeldonTranspose& TransA,
-			  Vector<complex<double>, VectFull, Allocator2>& x);
+			  Matrix<complex<double>, General, ColMajor, Allocator2>& x,
+			  const Vector<int>& glob_num);
 
-    template<class Allocator2>
     void SolveDistributed(MPI::Comm& comm_facto,
-                          Matrix<complex<double>, General, ColMajor, Allocator2>& x);
-
-    template<class Allocator2>
-    void SolveDistributed(MPI::Comm& comm_facto,
-                          const SeldonTranspose& TransA,
-			  Matrix<complex<double>, General, ColMajor, Allocator2>& x);
+			  const SeldonTranspose& TransA,
+			  complex<double>* x_ptr, int nrhs_,
+			  const IVect& glob_num);
 #endif
 
   };

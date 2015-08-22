@@ -154,6 +154,25 @@ namespace Seldon
   }
 
 
+  //! Performs analysis and factorisation of a matrix given in CSR form
+  template<class T>
+  void MatrixPardiso<T>::FactorizeCSR(Vector<pardiso_int_t>& Ptr, 
+				      Vector<pardiso_int_t>& IndCol,
+				      Vector<T>& Values, bool sym)
+  {
+    // previous factorization is cleared if present
+    Clear();
+    
+    // structures are stored internally
+    ptrA.SetData(Ptr); Ptr.Nullify();
+    indA.SetData(IndCol); IndCol.Nullify();
+    valA.SetData(Values); Values.Nullify();
+
+    // then factorization is performed
+    FactorizeCSR(sym);
+  }
+
+
   template<class T>
   void MatrixPardiso<T>::FactorizeCSR(bool sym)
   {
@@ -288,11 +307,21 @@ namespace Seldon
   void MatrixPardiso<T>::Solve(const SeldonTranspose& TransA,
                                Vector<T, VectFull, Allocator2>& x)
   {
+    Solve(TransA, x.GetData(), 1);
+  }
+
+
+  //! solves A x = b or A^T x = b
+  //! x contains the source b on input, the solution x on output
+  template<class T>
+  void MatrixPardiso<T>::Solve(const SeldonTranspose& TransA,
+                               T* x_ptr, int nrhs_)
+  {
     if (size_matrix <= 0)
       return;
     
-    Vector<T, VectFull, Allocator2> b(x);
-    pardiso_int_t nrhs = 1;      
+    Matrix<T, General, ColMajor> b(size_matrix, nrhs_);
+    pardiso_int_t nrhs = nrhs_;      
     
     pardiso_int_t phase = 33, error;
     iparm[5] = 0;
@@ -305,7 +334,7 @@ namespace Seldon
     call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
                  valA.GetData(), ptrA.GetData(), indA.GetData(), 
                  perm.GetData(), &nrhs, iparm, &msglvl,
-                 b.GetData(), x.GetData(), &error);
+                 b.GetData(), x_ptr, &error);
     
     // recent version
     /* call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
@@ -322,30 +351,7 @@ namespace Seldon
   void MatrixPardiso<T>::Solve(const SeldonTranspose& TransA,
                                Matrix<T, Prop, ColMajor, Allocator2>& x)
   {
-    if (size_matrix <= 0)
-      return;
-    
-    Matrix<T, Prop, ColMajor, Allocator2> b(x);
-    pardiso_int_t nrhs = x.GetN();      
-    
-    pardiso_int_t phase = 33, error;
-    iparm[5] = 0;
-    if (TransA.Trans())
-      iparm[11] = 2;
-    else
-      iparm[11] = 0;
-    
-    // MKL version
-    call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
-                 valA.GetData(), ptrA.GetData(), indA.GetData(), 
-                 perm.GetData(), &nrhs, iparm, &msglvl,
-                 b.GetData(), x.GetData(), &error);
-    
-    // recent version
-    /* call_pardiso(pt, &maxfct, &mnum, &mtype, &phase, &size_matrix,
-                 valA.GetData(), ptrA.GetData(), indA.GetData(), 
-                 perm.GetData(), &nrhs, iparm, &msglvl,
-                 b.GetData(), x.GetData(), &error, dparm); */    
+    Solve(TransA, x.GetData(), x.GetN());
   }
 
 

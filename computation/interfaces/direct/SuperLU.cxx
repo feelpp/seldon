@@ -272,7 +272,7 @@ namespace Seldon
     \return The permutation of the rows.
   */
   template<class T>
-  const Vector<int>& MatrixSuperLU_Base<T>::GetRowPermutation() const
+  const Vector<int_t>& MatrixSuperLU_Base<T>::GetRowPermutation() const
   {
     return perm_r;
   }
@@ -286,7 +286,7 @@ namespace Seldon
     \return The permutation of the columns.
   */
   template<class T>
-  const Vector<int>& MatrixSuperLU_Base<T>::GetColPermutation() const
+  const Vector<int_t>& MatrixSuperLU_Base<T>::GetColPermutation() const
   {
     return perm_c;
   }
@@ -447,27 +447,32 @@ namespace Seldon
     Clear();
 
     // conversion in CSC format
-    Matrix<double, General, ColSparse> Acsr;
-    Copy(mat, Acsr);
+    General prop;
+    Vector<int_t> Ptr, IndRow;
+    Vector<double> Val;
+
+    ConvertToCSC(mat, prop, Ptr, IndRow, Val, false);
     if (!keep_matrix)
       mat.Clear();
 
-    FactorizeCSC(Acsr);
+    FactorizeCSC(Ptr, IndRow, Val, false);
   }
 
   
+  //! factorization of matrix given in CSC form
   void MatrixSuperLU<double>
-  ::FactorizeCSC(Matrix<double, General, ColSparse>& Acsr)
+  ::FactorizeCSC(Vector<int_t>& Ptr, Vector<int_t>& IndRow,
+		 Vector<double>& Val, bool sym)
   {  
     // initializing parameters
     int_t panel_size, relax;
     int_t lwork = 0;
-    Init(Acsr.GetN(), panel_size, relax);
+    Init(Ptr.GetM()-1, panel_size, relax);
 
     superlu::SuperMatrix AA;
-    int_t nnz = Acsr.GetDataSize();
-    superlu::dCreate_CompCol_Matrix(&AA, n, n, nnz, Acsr.GetData(), Acsr.GetInd(),
-                                    Acsr.GetPtr(), superlu::SLU_NC,
+    int_t nnz = IndRow.GetM();
+    superlu::dCreate_CompCol_Matrix(&AA, n, n, nnz, Val.GetData(), IndRow.GetData(),
+                                    Ptr.GetData(), superlu::SLU_NC,
                                     superlu::SLU_D, superlu::SLU_GE);
 
     // we get renumbering vectors perm_r and perm_c
@@ -531,11 +536,11 @@ namespace Seldon
     // clearing matrices
     superlu::Destroy_CompCol_Matrix(&AA);
     
-    Acsr.Nullify();
+    Ptr.Nullify(); IndRow.Nullify(); Val.Nullify();
   }
 
 
-  //! resolution of linear system A x = b
+  //! Solves linear system A x = b
   template<class Allocator2>
   void MatrixSuperLU<double>::Solve(Vector<double, VectFull, Allocator2>& x)
   {
@@ -543,10 +548,18 @@ namespace Seldon
   }
 
 
-  //! resolution of linear system A x = b or A^T x = b
+  //! Solves linear system A x = b or A^T x = b
   template<class Allocator2>
   void MatrixSuperLU<double>::Solve(const SeldonTranspose& TransA,
                                     Vector<double, VectFull, Allocator2>& x)
+  {
+    Solve(TransA, x.GetData(), 1);
+  }
+
+  
+  //! Solves linear system A x = b or A^T x = b
+  void MatrixSuperLU<double>::Solve(const SeldonTranspose& TransA,
+				    double* x_ptr, int nrhs_)
   {
     superlu::trans_t trans;
     if (TransA.NoTrans())
@@ -554,10 +567,9 @@ namespace Seldon
     else
       trans = superlu::TRANS;
     
-    int_t nb_rhs = 1, info;
+    int_t nb_rhs = nrhs_, info;
     // Putting right hand side on SuperLU structure.
-    superlu::dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
-                                  x.GetData(), x.GetM(),
+    superlu::dCreate_Dense_Matrix(&B, n, nb_rhs, x_ptr, n,
                                   superlu::SLU_DN, superlu::SLU_D, superlu::SLU_GE);
 
 #ifdef SELDON_WITH_SUPERLU_MT
@@ -567,12 +579,12 @@ namespace Seldon
     superlu::dgstrs(trans, &L, &U, perm_c.GetData(),
                     perm_r.GetData(), &B, &stat, &info);
 #endif
-
+    
     superlu::Destroy_SuperMatrix_Store(&B);
   }
 
 
-  //! resolution of linear system A x = b
+  //! Solves linear system A x = b
   template<class Allocator2>
   void MatrixSuperLU<double>::Solve(Matrix<double, General, ColMajor, Allocator2>& x)
   {
@@ -580,34 +592,14 @@ namespace Seldon
   }
 
 
-  //! resolution of linear system A x = b or A^T x = b
+  //! Solves linear system A x = b or A^T x = b
   template<class Allocator2>
   void MatrixSuperLU<double>::Solve(const SeldonTranspose& TransA,
                                     Matrix<double, General, ColMajor, Allocator2>& x)
   {
-    superlu::trans_t trans;
-    if (TransA.NoTrans())
-      trans = superlu::NOTRANS;
-    else
-      trans = superlu::TRANS;
-    
-    int_t nb_rhs = x.GetN(), info;
-    superlu::
-      dCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
-                           x.GetData(), x.GetM(),
-                           superlu::SLU_DN, superlu::SLU_D, superlu::SLU_GE);
-    
-#ifdef SELDON_WITH_SUPERLU_MT
-    superlu::dgstrs(trans, &L, &U, perm_r.GetData(),
-                    perm_c.GetData(), &B, &stat, &info);
-#else
-    superlu::dgstrs(trans, &L, &U, perm_c.GetData(),
-                    perm_r.GetData(), &B, &stat, &info);
-#endif
-    
-    superlu::Destroy_SuperMatrix_Store(&B);
+    Solve(TransA, x.GetData(), x.GetN());
   }
-
+  
 
 #else
   
@@ -640,19 +632,28 @@ namespace Seldon
   FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 		  bool keep_matrix)
   {
-    Vector<int> Ptr, IndRow, glob_num(1);
+    Vector<int_t> Ptr, IndRow;
     Vector<double> Val; General prop;
     ConvertToCSC(mat, prop, Ptr, IndRow, Val, false);
     if (!keep_matrix)
       mat.Clear();
     
+    FactorizeCSC(Ptr, IndRow, Val, IsSymmetricMatrix(mat));
+  }
+
+  
+  void MatrixSuperLU<double>
+  ::FactorizeCSC(Vector<int_t>& Ptr, Vector<int_t>& IndRow,
+		 Vector<double>& Val, bool sym)
+  {  
+    Vector<int> glob_num(1);
     glob_num(0) = 0;
     FactorizeDistributedMatrix(MPI::COMM_SELF, Ptr, IndRow, Val,
-                               glob_num, IsSymmetricMatrix(mat), false);
+			       glob_num, sym, false);
   }
 
 
-  //! resolution of linear system A x = b
+  //! Solves linear system A x = b
   template<class Allocator2>
   void MatrixSuperLU<double>::Solve(Vector<double, VectFull, Allocator2>& x)
   {
@@ -660,16 +661,27 @@ namespace Seldon
   }
 
 
-  //! resolution of linear system A x = b or A^T x = b
+  //! Solves linear system A x = b or A^T x = b
   template<class Allocator2>
   void MatrixSuperLU<double>::Solve(const SeldonTranspose& TransA,
                                     Vector<double, VectFull, Allocator2>& x)
   {
-    SolveDistributed(MPI::COMM_SELF, TransA, x);
+    Vector<int> glob_num(1);
+    glob_num(0) = 0;
+    SolveDistributed(MPI::COMM_SELF, TransA, x, glob_num);
   }
 
 
-  //! resolution of linear system A x = b
+  void MatrixSuperLU<double>::Solve(const SeldonTranspose& TransA,
+				    double* x_ptr, int nrhs_)
+  {
+    Vector<int> glob_num(1);
+    glob_num(0) = 0;
+    SolveDistributed(MPI::COMM_SELF, TransA, x_ptr, nrhs_, glob_num);
+  }
+  
+
+  //! Solves linear system A x = b
   template<class Allocator2>
   void MatrixSuperLU<double>::Solve(Matrix<double, General, ColMajor, Allocator2>& x)
   {
@@ -677,22 +689,21 @@ namespace Seldon
   }
 
 
-  //! resolution of linear system A x = b or A^T x = b
+  //! Solves linear system A x = b or A^T x = b
   template<class Allocator2>
   void MatrixSuperLU<double>::Solve(const SeldonTranspose& TransA,
                                     Matrix<double, General, ColMajor, Allocator2>& x)
   {
-    SolveDistributed(MPI::COMM_SELF, TransA, x);
+    Vector<int> glob_num(1);
+    glob_num(0) = 0;
+    SolveDistributed(MPI::COMM_SELF, TransA, x, glob_num);
   }
 
 
-  template<class Alloc1, class Alloc2, class Alloc3>
   void MatrixSuperLU<double>::
   FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                             Vector<int_t, VectFull, Alloc1>& Ptr,
-                             Vector<int_t, VectFull, Alloc2>& Row,
-                             Vector<double, VectFull, Alloc3>& Val,
-                             const Vector<int_t>& glob_num,
+                             Vector<int_t>& Ptr, Vector<int_t>& Row,
+                             Vector<double>& Val, const Vector<int>& glob_num,
                              bool sym, bool keep_matrix)
   {
     // can not be compiled simultaneously with pzgssvx
@@ -710,10 +721,11 @@ namespace Seldon
     
     // m_loc : local number of rows
     // N : global number of rows
-    int m_loc = Ptr.GetM()-1;    
+    int m_loc_ = Ptr.GetM()-1;    
     int N = m_loc;
-    comm_facto.Allreduce(&m_loc, &N, 1, MPI::INTEGER, MPI::SUM);
-
+    comm_facto.Allreduce(&m_loc_, &N, 1, MPI::INTEGER, MPI::SUM);
+    int_t m_loc = m_loc_;
+    
     // structures are initialized with N
     int_t panel_size, relax;
     Init(N, panel_size, relax);
@@ -727,8 +739,8 @@ namespace Seldon
     
     // fills the superlu structure
     // global numbers are assumed to be consecutive, we provide the first row number
-    int fst_row = glob_num(0);
-    int nnz_loc = Row.GetM();
+    int_t fst_row = glob_num(0);
+    int_t nnz_loc = Row.GetM();
     //superlu::SuperMatrix A;
     superlu::
       dCreate_CompRowLoc_Matrix_dist(&A, n, n, nnz_loc, m_loc, fst_row,
@@ -737,7 +749,7 @@ namespace Seldon
                                      superlu::SLU_GE);
     
     // completes factorization
-    int nrhs = 0;
+    int_t nrhs = 0;
     options.Trans = superlu::NOTRANS;
     options.Fact = superlu::DOFACT;
     abort();
@@ -753,52 +765,29 @@ namespace Seldon
   template<class Allocator2>
   void MatrixSuperLU<double>::
   SolveDistributed(MPI::Comm& comm_facto,
-                   Vector<double, VectFull, Allocator2>& x)
-  {
-    SolveDistributed(comm_facto, SeldonNoTrans, x);
-  }
-  
-  
-  template<class Allocator2>
-  void MatrixSuperLU<double>::
-  SolveDistributed(MPI::Comm& comm_facto,
                    const SeldonTranspose& TransA,
-                   Vector<double, VectFull, Allocator2>& x)
+                   Vector<double, VectFull, Allocator2>& x,
+		   const IVect& glob_num)
   {
-    // can not be compiled simultaneously with pzgssvx
-    abort();
-
-    /*options.Fact = superlu::FACTORED;
-    // inverting transpose because we have provided columns instead of rows
-    if (TransA.NoTrans())
-      options.Trans = superlu::TRANS;
-    else
-      options.Trans = superlu::NOTRANS;
-       
-    options.Trans = superlu::NOTRANS;
-    Vector<double> berr(x.GetM());
-    int nrhs = 1, info;
-    superlu::
-      pdgssvx(&options, &A, &ScalePermstruct, x.GetData(),
-              x.GetM(), nrhs, &grid, &LUstruct, &SOLVEstruct,
-              berr.GetData(), &stat, &info);*/
-  }  
+    SolveDistributed(comm_facto, TransA, x.GetData(), 1, glob_num);
+  }
 
   
   template<class Allocator2>
   void MatrixSuperLU<double>::
   SolveDistributed(MPI::Comm& comm_facto,
-                   Matrix<double, General, ColMajor, Allocator2>& x)
-  {
-    SolveDistributed(comm_facto, SeldonNoTrans, x);
-  }
-  
-  
-  template<class Allocator2>
-  void MatrixSuperLU<double>::
-  SolveDistributed(MPI::Comm& comm_facto,
                    const SeldonTranspose& TransA,
-                   Matrix<double, General, ColMajor, Allocator2>& x)
+                   Matrix<double, General, ColMajor, Allocator2>& x,
+		   const IVect& glob_num)
+  {
+    SolveDistributed(comm_facto, TransA, x.GetData(), x.GetN(), glob_num);
+  }
+
+
+  void MatrixSuperLU<double>::SolveDistributed(MPI::Comm& comm_facto,
+					       const SeldonTranspose& TransA,
+					       double* x_ptr, int nrhs_,
+					       const IVect& glob_num)
   {
     // can not be compiled simultaneously with pzgssvx
     abort();
@@ -810,11 +799,11 @@ namespace Seldon
       options.Trans = superlu::NOTRANS;
        
     options.Trans = superlu::NOTRANS;
-    Vector<double> berr(x.GetM());
-    int nrhs = x.GetN(), info;
+    Vector<double> berr(nrhs_);
+    int_t nrhs = nrhs_, info;
     superlu::
-      pdgssvx(&options, &A, &ScalePermstruct, x.GetData(),
-              x.GetM(), nrhs, &grid, &LUstruct, &SOLVEstruct,
+      pdgssvx(&options, &A, &ScalePermstruct, x_ptr,
+              n, nrhs, &grid, &LUstruct, &SOLVEstruct,
               berr.GetData(), &stat, &info);*/
   }
 #endif
@@ -960,30 +949,34 @@ namespace Seldon
     // clearing previous factorization
     Clear();
 
-    // conversion in CSR format
-    Matrix<complex<double>, General, ColSparse> Acsr;
-    Copy(mat, Acsr);
+    // conversion in CSC format
+    General prop;
+    Vector<int_t> Ptr, IndRow;
+    Vector<complex<double> > Val;
+
+    ConvertToCSC(mat, prop, Ptr, IndRow, Val, false);
     if (!keep_matrix)
       mat.Clear();
 
-    FactorizeCSC(Acsr);
+    FactorizeCSC(Ptr, IndRow, Val, false);
   }
 
   
   void MatrixSuperLU<complex<double> >
-  ::FactorizeCSC(Matrix<complex<double>, General, ColSparse>& Acsr)
+  ::FactorizeCSC(Vector<int_t>& Ptr, Vector<int_t>& IndRow,
+		 Vector<complex<double> >& Val, bool sym)
   {
     // initializing parameters
     int_t panel_size, relax;
     int_t lwork = 0;
-    Init(Acsr.GetN(), panel_size, relax);
+    Init(Ptr.GetM()-1, panel_size, relax);
 
     superlu::SuperMatrix AA;
-    int_t nnz = Acsr.GetDataSize();
+    int_t nnz = IndRow.GetM();
     superlu::
       zCreate_CompCol_Matrix(&AA, n, n, nnz,
-                             reinterpret_cast<superlu::doublecomplex*>(Acsr.GetData()),
-                             Acsr.GetInd(), Acsr.GetPtr(),
+                             reinterpret_cast<superlu::doublecomplex*>(Val.GetData()),
+                             IndRow.GetData(), Ptr.GetData(),
                              superlu::SLU_NC, superlu::SLU_Z, superlu::SLU_GE);
 
     // We get renumbering vectors perm_r and perm_c.
@@ -1052,12 +1045,12 @@ namespace Seldon
             
     // clearing matrices
     superlu::Destroy_CompCol_Matrix(&AA);
-    
-    Acsr.Nullify();
+
+    Ptr.Nullify(); IndRow.Nullify(); Val.Nullify();    
   }
 
 
-  //! resolution of linear system A x = b
+  //! Solves linear system A x = b
   template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
   Solve(Vector<complex<double>, VectFull, Allocator2>& x)
@@ -1066,59 +1059,29 @@ namespace Seldon
   }
 
 
-  //! resolution of linear system A x = b or A^T x = b
+  //! Solves linear system A x = b or A^T x = b
   template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
   Solve(const SeldonTranspose& TransA,
         Vector<complex<double>, VectFull, Allocator2>& x)
   {
-    superlu::trans_t trans = superlu::NOTRANS;
-    if (TransA.Trans())
-      trans = superlu::TRANS;
-    
-    int_t nb_rhs = 1, info;
-    superlu::
-      zCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
-                           reinterpret_cast<superlu::doublecomplex*>(x.GetData()),
-                           x.GetM(), superlu::SLU_DN,
-                           superlu::SLU_Z, superlu::SLU_GE);
-
-#ifdef SELDON_WITH_SUPERLU_MT
-    superlu::zgstrs(trans, &L, &U, perm_r.GetData(),
-                    perm_c.GetData(), &B, &stat, &info);
-#else
-    superlu::zgstrs(trans, &L, &U, perm_c.GetData(),
-                    perm_r.GetData(), &B, &stat, &info);
-#endif
-
-    Destroy_SuperMatrix_Store(&B);
+    Solve(TransA, x.GetData(), 1);
   }
 
 
-  //! resolution of linear system A x = b
-  template<class Allocator2>
-  void MatrixSuperLU<complex<double> >::
-  Solve(Matrix<complex<double>, General, ColMajor, Allocator2>& x)
-  {
-    Solve(SeldonNoTrans, x);
-  }
-
-
-  //! resolution of linear system A x = b or A^T x = b
-  template<class Allocator2>
-  void MatrixSuperLU<complex<double> >::
-  Solve(const SeldonTranspose& TransA,
-        Matrix<complex<double>, General, ColMajor, Allocator2>& x)
+  //! Solves linear system A x = b or A^T x = b
+  void MatrixSuperLU<complex<double> >
+  ::Solve(const SeldonTranspose& TransA, complex<double>* x_ptr, int nrhs_)
   {
     superlu::trans_t trans = superlu::NOTRANS;
     if (TransA.Trans())
       trans = superlu::TRANS;
     
-    int_t nb_rhs = x.GetN(), info;
+    int_t nb_rhs = nrhs_, info;
     superlu::
-      zCreate_Dense_Matrix(&B, x.GetM(), nb_rhs,
-                           reinterpret_cast<superlu::doublecomplex*>(x.GetData()),
-                           x.GetM(), superlu::SLU_DN, superlu::SLU_Z, superlu::SLU_GE);
+      zCreate_Dense_Matrix(&B, n, nb_rhs,
+                           reinterpret_cast<superlu::doublecomplex*>(x_ptr),
+                           n, superlu::SLU_DN, superlu::SLU_Z, superlu::SLU_GE);
     
 #ifdef SELDON_WITH_SUPERLU_MT
     superlu::zgstrs(trans, &L, &U, perm_r.GetData(),
@@ -1129,6 +1092,25 @@ namespace Seldon
 #endif
 
     superlu::Destroy_SuperMatrix_Store(&B);
+  }
+
+
+  //! Solves linear system A x = b
+  template<class Allocator2>
+  void MatrixSuperLU<complex<double> >::
+  Solve(Matrix<complex<double>, General, ColMajor, Allocator2>& x)
+  {
+    Solve(SeldonNoTrans, x);
+  }
+
+
+  //! Solves linear system A x = b or A^T x = b
+  template<class Allocator2>
+  void MatrixSuperLU<complex<double> >::
+  Solve(const SeldonTranspose& TransA,
+        Matrix<complex<double>, General, ColMajor, Allocator2>& x)
+  {
+    Solve(TransA, x.GetData(), x.GetN());
   }
 
 #else
@@ -1163,19 +1145,28 @@ namespace Seldon
   FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 		  bool keep_matrix)
   {
-    Vector<int> Ptr, IndRow, glob_num(1);
+    Vector<int_t> Ptr, IndRow;
     Vector<complex<double> > Val; General prop;
     ConvertToCSC(mat, prop, Ptr, IndRow, Val, false);
     if (!keep_matrix)
       mat.Clear();
     
-    glob_num(0) = 0;
-    FactorizeDistributedMatrix(MPI::COMM_SELF, Ptr, IndRow, Val,
-                               glob_num, IsSymmetricMatrix(mat), false);
+    FactorizeCSC(Ptr, IndRow, Val, IsSymmetricMatrix(mat));
   }
 
 
-  //! resolution of linear system A x = b
+  void MatrixSuperLU<complex<double> >
+  ::FactorizeCSC(Vector<int_t>& Ptr, Vector<int_t>& IndRow,
+		 Vector<complex<double> >& Val, bool sym)
+  {  
+    Vector<int> glob_num(1);
+    glob_num(0) = 0;
+    FactorizeDistributedMatrix(MPI::COMM_SELF, Ptr, IndRow, Val,
+                               glob_num, sym, false);
+  }
+
+
+  //! Solves linear system A x = b
   template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
   Solve(Vector<complex<double>, VectFull, Allocator2>& x)
@@ -1184,17 +1175,29 @@ namespace Seldon
   }
 
 
-  //! resolution of linear system A x = b or A^T x = b
+  //! Solves linear system A x = b or A^T x = b
   template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
   Solve(const SeldonTranspose& TransA,
         Vector<complex<double>, VectFull, Allocator2>& x)
   {
-    SolveDistributed(MPI::COMM_SELF, TransA, x);
+    Vector<int> glob_num(1);
+    glob_num(0) = 0;
+    SolveDistributed(MPI::COMM_SELF, TransA, x, glob_num);
   }
 
 
-  //! resolution of linear system A x = b
+  void MatrixSuperLU<complex<double> >
+  ::Solve(const SeldonTranspose& TransA,
+	  complex<double>* x_ptr, int nrhs_)
+  {
+    Vector<int> glob_num(1);
+    glob_num(0) = 0;
+    SolveDistributed(MPI::COMM_SELF, TransA, x_ptr, nrhs_, glob_num);
+  }
+  
+
+  //! Solves linear system A x = b
   template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
   Solve(Matrix<complex<double>, General, ColMajor, Allocator2>& x)
@@ -1203,22 +1206,22 @@ namespace Seldon
   }
 
 
-  //! resolution of linear system A x = b or A^T x = b
+  //! Solves linear system A x = b or A^T x = b
   template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
   Solve(const SeldonTranspose& TransA,
         Matrix<complex<double>, General, ColMajor, Allocator2>& x)
   {
-    SolveDistributed(MPI::COMM_SELF, TransA, x);
+    Vector<int> glob_num(1);
+    glob_num(0) = 0;
+    SolveDistributed(MPI::COMM_SELF, TransA, x, glob_num);
   }
 
 
-  template<class Alloc1, class Alloc2, class Alloc3>
   void MatrixSuperLU<complex<double> >::
   FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                             Vector<int_t, VectFull, Alloc1>& Ptr,
-                             Vector<int_t, VectFull, Alloc2>& Row,
-                             Vector<complex<double>, VectFull, Alloc3>& Val,
+                             Vector<int_t>& Ptr, Vector<int_t>& Row,
+                             Vector<complex<double> >& Val,
                              const Vector<int_t>& glob_num,
                              bool sym, bool keep_matrix)
   {
@@ -1233,9 +1236,10 @@ namespace Seldon
     
     // m_loc : local number of rows
     // N : global number of rows
-    int m_loc = Ptr.GetM()-1;    
-    int N = m_loc;
-    comm_facto.Allreduce(&m_loc, &N, 1, MPI::INTEGER, MPI::SUM);
+    int m_loc_ = Ptr.GetM()-1;    
+    int N = m_loc_;
+    comm_facto.Allreduce(&m_loc_, &N, 1, MPI::INTEGER, MPI::SUM);
+    int_t m_loc = m_loc_;
 
     // structures are initialized with N
     int_t panel_size, relax;
@@ -1250,8 +1254,8 @@ namespace Seldon
     
     // fills the superlu structure
     // global numbers are assumed to be consecutive, we provide the first row number
-    int fst_row = glob_num(0);
-    int nnz_loc = Row.GetM();
+    int_t fst_row = glob_num(0);
+    int_t nnz_loc = Row.GetM();
     //superlu::SuperMatrix A;
     superlu::
       zCreate_CompRowLoc_Matrix_dist(&A, n, n, nnz_loc, m_loc, fst_row,
@@ -1261,7 +1265,7 @@ namespace Seldon
                                      superlu::SLU_GE);
     
     // completes factorization
-    int nrhs = 0;
+    int_t nrhs = 0;
     options.Trans = superlu::NOTRANS;
     options.Fact = superlu::DOFACT;
     superlu::
@@ -1276,50 +1280,30 @@ namespace Seldon
   template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
   SolveDistributed(MPI::Comm& comm_facto,
-                   Vector<complex<double>, VectFull, Allocator2>& x)
-  {
-    SolveDistributed(comm_facto, SeldonNoTrans, x);
-  }
-  
-  
-  template<class Allocator2>
-  void MatrixSuperLU<complex<double> >::
-  SolveDistributed(MPI::Comm& comm_facto,
                    const SeldonTranspose& TransA,
-                   Vector<complex<double>, VectFull, Allocator2>& x)
+                   Vector<complex<double>, VectFull, Allocator2>& x,
+		   const Vector<int>& glob_num)
   {
-    options.Fact = superlu::FACTORED;
-    // inverting transpose because we have provided columns instead of rows
-    if (TransA.NoTrans())
-      options.Trans = superlu::TRANS;
-    else
-      options.Trans = superlu::NOTRANS;
-       
-    options.Trans = superlu::NOTRANS;
-    int nrhs = 1, info;
-    Vector<double> berr(nrhs);
-    superlu::
-      pzgssvx(&options, &A, &ScalePermstruct,
-              reinterpret_cast<superlu::doublecomplex*>(x.GetData()),
-              x.GetM(), nrhs, &grid, &LUstruct, &SOLVEstruct,
-              berr.GetData(), &stat, &info);    
-  }  
+    SolveDistributed(comm_facto, TransA, x.GetData(), 1, glob_num);
+  }
 
   
   template<class Allocator2>
   void MatrixSuperLU<complex<double> >::
   SolveDistributed(MPI::Comm& comm_facto,
-                   Matrix<complex<double>, General, ColMajor, Allocator2>& x)
+                   const SeldonTranspose& TransA,
+                   Matrix<complex<double>, General, ColMajor, Allocator2>& x,
+		   const Vector<int>& glob_num)
   {
-    SolveDistributed(comm_facto, SeldonNoTrans, x);
+    SolveDistributed(comm_facto, TransA, x.GetData(), x.GetN(), glob_num);
   }
-  
-  
-  template<class Allocator2>
+
+
   void MatrixSuperLU<complex<double> >::
   SolveDistributed(MPI::Comm& comm_facto,
-                   const SeldonTranspose& TransA,
-                   Matrix<complex<double>, General, ColMajor, Allocator2>& x)
+		   const SeldonTranspose& TransA,
+		   complex<double>* x_ptr, int nrhs_,
+		   const IVect& glob_num)
   {
     options.Fact = superlu::FACTORED;
     // inverting transpose because we have provided columns instead of rows
@@ -1328,13 +1312,14 @@ namespace Seldon
     else
       options.Trans = superlu::NOTRANS;
        
+    // TRANS does not work, we put NOTRANS
     options.Trans = superlu::NOTRANS;
-    int nrhs = x.GetN(), info;
-    Vector<double> berr(nrhs);
+    int_t nrhs = nrhs_, info;
+    Vector<double> berr(nrhs_);
     superlu::
       pzgssvx(&options, &A, &ScalePermstruct,
-              reinterpret_cast<superlu::doublecomplex*>(x.GetData()),
-              x.GetM(), nrhs, &grid, &LUstruct, &SOLVEstruct,
+              reinterpret_cast<superlu::doublecomplex*>(x_ptr),
+              n, nrhs, &grid, &LUstruct, &SOLVEstruct,
               berr.GetData(), &stat, &info);
 
   }

@@ -100,12 +100,15 @@ namespace Seldon
     void FactorizeMatrix(Matrix<T, General, Storage, Allocator>& mat,
 			 bool keep_matrix = false);
 
+    void FactorizeCSR(Vector<int>& Ptr, Vector<int>& IndRow,
+		      Vector<T>& Val, bool sym);
+
     void FactorizeUnsymmetric();
     void FactorizeSymmetric();
     
     void Solve(Vector<T>& b);
     void Solve(const SeldonTranspose& trans, Vector<T>& b);
-
+    void Solve(const SeldonTranspose&, T* x, int nrhs);
     void Solve(const SeldonTranspose& trans, Matrix<T, General, ColMajor>& b);
 
 #ifdef SELDON_WITH_MPI
@@ -115,18 +118,16 @@ namespace Seldon
 				    bool sym, bool keep_matrix = false);
 
     void SolveDistributed(MPI::Comm& comm_facto,
-                          Vector<T>& x, const Vector<int>& glob_num);
-
-    void SolveDistributed(MPI::Comm& comm_facto,
                           const SeldonTranspose& TransA,
 			  Vector<T>& x, const Vector<int>& glob_num);
 
     void SolveDistributed(MPI::Comm& comm_facto,
-                          Matrix<T, General, ColMajor>& x, const Vector<int>& glob_num);
-
-    void SolveDistributed(MPI::Comm& comm_facto,
                           const SeldonTranspose& TransA,
 			  Matrix<T, General, ColMajor>& x, const Vector<int>& glob_num);
+
+    void SolveDistributed(MPI::Comm& comm_facto,
+			  const SeldonTranspose& TransA,
+			  T* x_ptr, int nrhs, const Vector<int>& glob_num);
 #endif
     
   };

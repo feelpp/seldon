@@ -19,8 +19,8 @@
 
 #ifndef SELDON_FILE_PARDISO_HXX
 
-// if INTSIZE64 is defined, pardiso_64 is used instead of pardiso
-#ifdef INTSIZE64
+// if PARDISO_INTSIZE64 is defined, pardiso_64 is used instead of pardiso
+#ifdef PARDISO_INTSIZE64
 #define pardiso_int_t int64_t
 #define call_pardiso pardiso_64
 #else
@@ -92,6 +92,10 @@ namespace Seldon
     void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator>& mat,
                          bool keep_matrix = false);
 
+    void FactorizeCSR(Vector<pardiso_int_t>& Ptr,
+		      Vector<pardiso_int_t>& IndCol,
+		      Vector<T>& Values, bool sym);
+    
     void FactorizeCSR(bool sym); 
    
     template<class Allocator2>
@@ -100,7 +104,9 @@ namespace Seldon
     template<class Allocator2>
     void Solve(const SeldonTranspose& TransA,
 	       Vector<T, VectFull, Allocator2>& x);
-
+    
+    void Solve(const SeldonTranspose& TransA, T* x_ptr, int nrhs_);
+    
     template<class Allocator2, class Prop>
     void Solve(const SeldonTranspose& TransA,
 	       Matrix<T, Prop, ColMajor, Allocator2>& x);
