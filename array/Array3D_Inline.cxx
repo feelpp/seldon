@@ -152,21 +152,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length1_)
-      throw WrongIndex("Array3D::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length1_-1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length2_)
-      throw WrongIndex("Array3D::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length2_-1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length3_)
-      throw WrongIndex("Array3D::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length3_-1) + "], but is equal to "
-		       + to_str(k) + ".");
+    CheckBounds(i, j, k, length1_, length2_, length3_, "Array3D");
 #endif
 
     return data_[i * length23_ + j * length3_ + k];
@@ -187,21 +173,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length1_)
-      throw WrongIndex("Array3D::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length1_-1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length2_)
-      throw WrongIndex("Array3D::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length2_-1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length3_)
-      throw WrongIndex("Array3D::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length3_-1) + "], but is equal to "
-		       + to_str(k) + ".");
+    CheckBounds(i, j, k, length1_, length2_, length3_, "Array3D");
 #endif
 
     return data_[i*length23_ + j*length3_ + k];

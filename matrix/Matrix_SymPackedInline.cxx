@@ -98,14 +98,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_SymPacked::operator()",
-		     string("Index should be in [0, ") + to_str(this->m_-1)
-		     + "], but is equal to " + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_SymPacked::operator()",
-		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix_SymPacked");
 #endif
 
     return this->data_[j > i
@@ -133,14 +126,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_SymPacked::operator()",
-		     string("Index should be in [0, ") + to_str(this->m_-1)
-		     + "], but is equal to " + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_SymPacked::operator()",
-		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix_SymPacked");
 #endif
 
     return this->data_[j > i
@@ -167,14 +153,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_SymPacked::Val(int, int)",
-		     string("Index should be in [0, ") + to_str(this->m_-1)
-		     + "], but is equal to " + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_SymPacked::Val(int, int)",
-		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix_SymPacked");
 #endif
 
     return this->data_[j > i
@@ -202,14 +181,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_SymPacked::Val(int, int) const",
-		     string("Index should be in [0, ") + to_str(this->m_-1)
-		     + "], but is equal to " + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_SymPacked::Val(int, int) const",
-		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix_SymPacked");
 #endif
 
     return this->data_[j > i
@@ -265,11 +237,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->GetDataSize())
-      throw WrongIndex("Matrix_SymPacked::operator[] (int)",
-		       string("Index should be in [0, ")
-		       + to_str(this->GetDataSize()-1) + "], but is equal to "
-		       + to_str(i) + ".");
+    CheckBounds(i, this->GetDataSize(), "Matrix_SymPacked");
 #endif
 
     return this->data_[i];
@@ -289,11 +257,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->GetDataSize())
-      throw WrongIndex("Matrix_SymPacked::operator[] (int) const",
-		       string("Index should be in [0, ")
-		       + to_str(this->GetDataSize()-1) + "], but is equal to "
-		       + to_str(i) + ".");
+    CheckBounds(i, this->GetDataSize(), "Matrix_SymPacked");
 #endif
 
     return this->data_[i];

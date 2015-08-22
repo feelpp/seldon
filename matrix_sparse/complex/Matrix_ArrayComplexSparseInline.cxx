@@ -222,15 +222,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::operator()", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::operator()", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
 
     return entry_type(this->val_real_(Storage::GetFirst(i, j))
@@ -441,15 +433,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
-      throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
-                     + "], but is equal to " + to_str(i) + ".");
-    
-    if (j < 0 || j >= this->val_real_(i).GetM())
-      throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
-		     to_str(this->val_real_(i).GetM()-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, Storage::GetFirst(this->m_, this->n_),
+		this->val_real_(i).GetM(), "Matrix_ArrayComplexSparse");
 #endif
 
     return val_real_(i).Value(j);
@@ -469,14 +454,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
-      throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
-                     + "], but is equal to " + to_str(i) + ".");
-    if (j < 0 || j >= this->val_real_(i).GetM())
-      throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
-		     to_str(this->val_real_(i).GetM()-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, Storage::GetFirst(this->m_, this->n_),
+		this->val_real_(i).GetM(), "Matrix_ArrayComplexSparse");
 #endif
 
     return val_real_(i).Value(j);
@@ -495,15 +474,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
-      throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
-		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
-                     + "], but is equal to " + to_str(i) + ".");
-
-    if (j < 0 || j >= this->val_real_(i).GetM())
-      throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
-		     to_str(this->val_real_(i).GetM()-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, Storage::GetFirst(this->m_, this->n_),
+		this->val_real_(i).GetM(), "Matrix_ArrayComplexSparse");
 #endif
 
     return val_real_(i).Index(j);
@@ -522,15 +494,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
-      throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
-		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
-                     + "], but is equal to " + to_str(i) + ".");
-
-    if (j < 0 || j >= this->val_real_(i).GetM())
-      throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, "
-		     + to_str(this->val_real_(i).GetM()-1)
-		     + "], but is equal to " + to_str(j) + ".");
+    CheckBounds(i, j, Storage::GetFirst(this->m_, this->n_),
+		this->val_real_(i).GetM(), "Matrix_ArrayComplexSparse");
 #endif
 
     return val_real_(i).Index(j);
@@ -550,15 +515,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
-      throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
-                     + "], but is equal to " + to_str(i) + ".");
-
-    if (j < 0 || j >= this->val_imag_(i).GetM())
-      throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
-		     to_str(this->val_imag_(i).GetM()-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, Storage::GetFirst(this->m_, this->n_),
+		this->val_imag_(i).GetM(), "Matrix_ArrayComplexSparse");
 #endif
 
     return val_imag_(i).Value(j);
@@ -578,15 +536,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
-      throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
-                     + "], but is equal to " + to_str(i) + ".");
-
-    if (j < 0 || j >= this->val_imag_(i).GetM())
-      throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
-		     to_str(this->val_imag_(i).GetM()-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, Storage::GetFirst(this->m_, this->n_),
+		this->val_imag_(i).GetM(), "Matrix_ArrayComplexSparse");
 #endif
 
     return val_imag_(i).Value(j);
@@ -605,15 +556,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
-      throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
-		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
-                     + "], but is equal to " + to_str(i) + ".");
-
-    if (j < 0 || j >= this->val_imag_(i).GetM())
-      throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
-		     to_str(this->val_imag_(i).GetM()-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, Storage::GetFirst(this->m_, this->n_),
+		this->val_imag_(i).GetM(), "Matrix_ArrayComplexSparse");
 #endif
 
     return val_imag_(i).Index(j);
@@ -632,16 +576,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
-      throw WrongRow("Matrix_ArrayComplexSparse::index",
-		     "Index should be in [0, "
-                     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
-		     + "], but is equal to " + to_str(i) + ".");
-
-    if (j < 0 || j >= this->val_imag_(i).GetM())
-      throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
-		     to_str(this->val_imag_(i).GetM()-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, Storage::GetFirst(this->m_, this->n_),
+		this->val_imag_(i).GetM(), "Matrix_ArrayComplexSparse");
 #endif
 
     return val_imag_(i).Index(j);
@@ -1381,14 +1317,7 @@ namespace Seldon
     const
   {
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::operator()", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::operator()", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
 
     if (i <= j)
@@ -1409,14 +1338,7 @@ namespace Seldon
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::ValReal(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::ValReal", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::ValReal", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i > j)
@@ -1439,14 +1361,7 @@ namespace Seldon
   ::ValReal(int i, int j) const
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::ValReal", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::ValReal", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i > j)
@@ -1468,14 +1383,7 @@ namespace Seldon
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::GetReal(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::GetReal", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::GetReal", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i <= j)
@@ -1498,14 +1406,7 @@ namespace Seldon
   ::GetReal(int i, int j) const
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::GetReal", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::GetReal", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i <= j)
@@ -1527,14 +1428,7 @@ namespace Seldon
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::ValImag(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::ValImag", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::ValImag", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i > j)
@@ -1556,14 +1450,7 @@ namespace Seldon
   ::ValImag(int i, int j) const
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::ValImag", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::ValImag", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     if (i > j)
       return this->val_imag_(i).Val(j);
@@ -1583,14 +1470,7 @@ namespace Seldon
   Matrix<T, Prop, ArrayColSymComplexSparse, Allocator>::GetImag(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::GetImag", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::GetImag", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i <= j)
@@ -1612,14 +1492,7 @@ namespace Seldon
   ::GetImag(int i, int j) const
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::GetImag", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::GetImag", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i <= j)
@@ -1875,14 +1748,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_ArraySparse::operator()", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_ArraySparse::operator()", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
 
     if (i <= j)
@@ -1903,14 +1769,7 @@ namespace Seldon
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::ValReal(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::ValReal", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::ValReal", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i > j)
@@ -1933,14 +1792,7 @@ namespace Seldon
   ::ValReal(int i, int j) const
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::ValReal", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::ValReal", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     if (i > j)
       return this->val_real_(j).Val(i);
@@ -1961,14 +1813,7 @@ namespace Seldon
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::GetReal(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::GetReal", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::GetReal", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i <= j)
@@ -1991,14 +1836,7 @@ namespace Seldon
   ::GetReal(int i, int j) const
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::GetReal", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::GetReal", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i <= j)
@@ -2020,14 +1858,7 @@ namespace Seldon
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::ValImag(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::ValImag", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::ValImag", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     if (i > j)
       return this->val_imag_(j).Val(i);
@@ -2048,14 +1879,7 @@ namespace Seldon
   ::ValImag(int i, int j) const
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::ValImag", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::ValImag", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
 
     if (i > j)
@@ -2076,14 +1900,7 @@ namespace Seldon
   Matrix<T, Prop, ArrayRowSymComplexSparse, Allocator>::GetImag(int i, int j)
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::GetImag", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::GetImag", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i <= j)
@@ -2105,14 +1922,7 @@ namespace Seldon
   ::GetImag(int i, int j) const
   {    
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::GetImag", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::GetImag", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i <= j)

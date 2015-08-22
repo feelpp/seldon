@@ -368,6 +368,334 @@ namespace Seldon
 
 
   /////////////////
+  // CheckBounds //
+  /////////////////
+
+
+  void CheckBounds(int i, int length1_, string nom)
+  {
+    if (i < 0 || i >= length1_)
+      throw WrongIndex(nom + "::operator()",
+		       string("Index along dimension #1 should be in [0, ")
+		       + to_str(length1_-1) + "], but is equal to "
+		       + to_str(i) + ".");
+  }
+
+
+  void CheckBounds(int i, int j, int length1_, int length2_, string nom)
+  {
+    if (i < 0 || i >= length1_)
+      throw WrongIndex(nom + "::operator()",
+		       string("Index along dimension #1 should be in [0, ")
+		       + to_str(length1_-1) + "], but is equal to "
+		       + to_str(i) + ".");
+    if (j < 0 || j >= length2_)
+      throw WrongIndex(nom + "::operator()",
+		       string("Index along dimension #2 should be in [0, ")
+		       + to_str(length2_-1) + "], but is equal to "
+		       + to_str(j) + ".");
+  }
+
+
+  void CheckBoundsSym(int i, int j, int length1_, int length2_, string nom)
+  {
+    CheckBounds(i, j, length1_, length2_, nom);
+    
+    if (i > j)
+      throw WrongRow(nom+"::Val(int, int)",
+		     string("Attempted to access to element (")
+		     + to_str(i) + ", " + to_str(j)
+		     + ") but row index should not be strictly"
+		     + " greater than column index.");
+  }
+
+
+  void CheckBoundsTriang(int i, int j, int length1_, int length2_,
+			 bool uplo, string nom)
+  {
+    CheckBounds(i, j, length1_, length2_, nom);
+    
+    if (uplo)
+      {
+	if (i > j)
+	  throw WrongRow(nom + "::Val(int, int)",
+			 string("Attempted to access to element (")
+			 + to_str(i) + ", " + to_str(j) + string(") but row")
+			 + string(" index should not be strictly more")
+			 + " than column index (upper triangular matrix).");
+      }
+    else
+      {
+	if (j > i)
+	  throw WrongCol(nom + "::Val(int, int)",
+			 string("Attempted to access to element (")
+			 + to_str(i) + ", " + to_str(j) + string(") but")
+			 + string(" column index should not be strictly more")
+			 + " than row index (lower triangular matrix).");
+      }
+  }
+
+
+  void CheckBounds(int i, int j, int k,
+		   int length1_, int length2_, int length3_, string nom)
+  {
+    if (i < 0 || i >= length1_)
+      throw WrongIndex(nom + "::operator()",
+		       string("Index along dimension #1 should be in [0, ")
+		       + to_str(length1_-1) + "], but is equal to "
+		       + to_str(i) + ".");
+    if (j < 0 || j >= length2_)
+      throw WrongIndex(nom + "::operator()",
+		       string("Index along dimension #2 should be in [0, ")
+		       + to_str(length2_-1) + "], but is equal to "
+		       + to_str(j) + ".");
+    if (k < 0 || k >= length3_)
+      throw WrongIndex(nom + "::operator()",
+		       string("Index along dimension #3 should be in [0, ")
+		       + to_str(length3_-1) + "], but is equal to "
+		       + to_str(k) + ".");
+  }
+
+
+  void CheckBounds(int i, int j, int k, int l, int length1_, int length2_,
+		   int length3_, int length4_, string nom)
+  {
+    if (i < 0 || i >= length1_)
+      throw WrongIndex(nom + "::operator()",
+		       string("Index along dimension #1 should be in [0, ")
+		       + to_str(length1_-1) + "], but is equal to "
+		       + to_str(i) + ".");
+    if (j < 0 || j >= length2_)
+      throw WrongIndex(nom + "::operator()",
+		       string("Index along dimension #2 should be in [0, ")
+		       + to_str(length2_-1) + "], but is equal to "
+		       + to_str(j) + ".");
+    if (k < 0 || k >= length3_)
+      throw WrongIndex(nom + "::operator()",
+		       string("Index along dimension #3 should be in [0, ")
+		       + to_str(length3_-1) + "], but is equal to "
+		       + to_str(k) + ".");
+    if (l < 0 || l >= length4_)
+      throw WrongIndex(nom + "::operator()",
+		       string("Index along dimension #4 should be in [0, ")
+		       + to_str(length4_-1) + "], but is equal to "
+		       + to_str(l) + ".");
+  }
+
+
+  void CheckBounds(int i, int j, int k, int l, int m,
+		   int length0, int length1, int length2, int length3,
+		   int length4, string nom)
+  {
+    if (i < 0 || i >= length0)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #1 should be in [0, ")
+		       + to_str(length0 - 1) + "], but is equal to "
+		       + to_str(i) + ".");
+    if (j < 0 || j >= length1)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #2 should be in [0, ")
+		       + to_str(length1 - 1) + "], but is equal to "
+		       + to_str(j) + ".");
+    if (k < 0 || k >= length2)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #3 should be in [0, ")
+		       + to_str(length2 - 1) + "], but is equal to "
+		       + to_str(k) + ".");
+    if (l < 0 || l >= length3)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #4 should be in [0, ")
+		       + to_str(length3 - 1) + "], but is equal to "
+		       + to_str(l) + ".");
+    if (m < 0 || m >= length4)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #5 should be in [0, ")
+		       + to_str(length4 - 1) + "], but is equal to "
+		       + to_str(m) + ".");
+  }
+  
+
+  void CheckBounds(int i, int j, int k, int l, int m, int n,
+		   int length0, int length1, int length2, int length3,
+		   int length4, int length5, string nom)
+  {
+    if (i < 0 || i >= length0)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #1 should be in [0, ")
+		       + to_str(length0 - 1) + "], but is equal to "
+		       + to_str(i) + ".");
+    if (j < 0 || j >= length1)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #2 should be in [0, ")
+		       + to_str(length1 - 1) + "], but is equal to "
+		       + to_str(j) + ".");
+    if (k < 0 || k >= length2)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #3 should be in [0, ")
+		       + to_str(length2 - 1) + "], but is equal to "
+		       + to_str(k) + ".");
+    if (l < 0 || l >= length3)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #4 should be in [0, ")
+		       + to_str(length3 - 1) + "], but is equal to "
+		       + to_str(l) + ".");
+    if (m < 0 || m >= length4)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #5 should be in [0, ")
+		       + to_str(length4 - 1) + "], but is equal to "
+		       + to_str(m) + ".");
+    if (n < 0 || n >= length5)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #6 should be in [0, ")
+		       + to_str(length5 - 1) + "], but is equal to "
+		       + to_str(n) + ".");
+  }
+
+
+  void CheckBounds(int i, int j, int k, int l, int m, int n, int o,
+		   int length0, int length1, int length2, int length3,
+		   int length4, int length5, int length6, string nom)
+  {
+    if (i < 0 || i >= length0)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #1 should be in [0, ")
+		       + to_str(length0 - 1) + "], but is equal to "
+		       + to_str(i) + ".");
+    if (j < 0 || j >= length1)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #2 should be in [0, ")
+		       + to_str(length1 - 1) + "], but is equal to "
+		       + to_str(j) + ".");
+    if (k < 0 || k >= length2)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #3 should be in [0, ")
+		       + to_str(length2 - 1) + "], but is equal to "
+		       + to_str(k) + ".");
+    if (l < 0 || l >= length3)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #4 should be in [0, ")
+		       + to_str(length3 - 1) + "], but is equal to "
+		       + to_str(l) + ".");
+    if (m < 0 || m >= length4)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #5 should be in [0, ")
+		       + to_str(length4 - 1) + "], but is equal to "
+		       + to_str(m) + ".");
+    if (n < 0 || n >= length5)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #6 should be in [0, ")
+		       + to_str(length5 - 1) + "], but is equal to "
+		       + to_str(n) + ".");
+    if (o < 0 || o >= length6)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #7 should be in [0, ")
+		       + to_str(length6 - 1) + "], but is equal to "
+		       + to_str(o) + ".");
+  }
+
+
+  void CheckBounds(int i, int j, int k, int l, int m, int n, int o, int p,
+		   int length0, int length1, int length2, int length3,
+		   int length4, int length5, int length6, int length7,
+		   string nom)
+  {
+    if (i < 0 || i >= length0)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #1 should be in [0, ")
+		       + to_str(length0 - 1) + "], but is equal to "
+		       + to_str(i) + ".");
+    if (j < 0 || j >= length1)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #2 should be in [0, ")
+		       + to_str(length1 - 1) + "], but is equal to "
+		       + to_str(j) + ".");
+    if (k < 0 || k >= length2)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #3 should be in [0, ")
+		       + to_str(length2 - 1) + "], but is equal to "
+		       + to_str(k) + ".");
+    if (l < 0 || l >= length3)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #4 should be in [0, ")
+		       + to_str(length3 - 1) + "], but is equal to "
+		       + to_str(l) + ".");
+    if (m < 0 || m >= length4)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #5 should be in [0, ")
+		       + to_str(length4 - 1) + "], but is equal to "
+		       + to_str(m) + ".");
+    if (n < 0 || n >= length5)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #6 should be in [0, ")
+		       + to_str(length5 - 1) + "], but is equal to "
+		       + to_str(n) + ".");
+    if (o < 0 || o >= length6)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #7 should be in [0, ")
+		       + to_str(length6 - 1) + "], but is equal to "
+		       + to_str(o) + ".");
+    if (p < 0 || p >= length7)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #8 should be in [0, ")
+		       + to_str(length7 - 1) + "], but is equal to "
+		       + to_str(p) + ".");
+  }
+
+
+  void CheckBounds(int i, int j, int k, int l, int m, int n, int o, int p,
+		   int q, int length0, int length1, int length2, int length3,
+		   int length4, int length5, int length6, int length7,
+		   int length8, string nom)
+  {
+    if (i < 0 || i >= length0)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #1 should be in [0, ")
+		       + to_str(length0 - 1) + "], but is equal to "
+		       + to_str(i) + ".");
+    if (j < 0 || j >= length1)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #2 should be in [0, ")
+		       + to_str(length1 - 1) + "], but is equal to "
+		       + to_str(j) + ".");
+    if (k < 0 || k >= length2)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #3 should be in [0, ")
+		       + to_str(length2 - 1) + "], but is equal to "
+		       + to_str(k) + ".");
+    if (l < 0 || l >= length3)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #4 should be in [0, ")
+		       + to_str(length3 - 1) + "], but is equal to "
+		       + to_str(l) + ".");
+    if (m < 0 || m >= length4)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #5 should be in [0, ")
+		       + to_str(length4 - 1) + "], but is equal to "
+		       + to_str(m) + ".");
+    if (n < 0 || n >= length5)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #6 should be in [0, ")
+		       + to_str(length5 - 1) + "], but is equal to "
+		       + to_str(n) + ".");
+    if (o < 0 || o >= length6)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #7 should be in [0, ")
+		       + to_str(length6 - 1) + "], but is equal to "
+		       + to_str(o) + ".");
+    if (p < 0 || p >= length7)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #8 should be in [0, ")
+		       + to_str(length7 - 1) + "], but is equal to "
+		       + to_str(p) + ".");
+    if (q < 0 || q >= length8)
+      throw WrongIndex(nom+"::operator()",
+		       string("Index along dimension #9 should be in [0, ")
+		       + to_str(length8 - 1) + "], but is equal to "
+		       + to_str(q) + ".");
+  }
+  
+  
+  /////////////////
   // LAPACKERROR //
   /////////////////
 

@@ -159,15 +159,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_ArraySparse::operator()",
-		     "Index should be in [0, " + to_str(this->m_-1) +
-		     "],but is equal to " + to_str(i) + ".");
-
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_ArraySparse::operator()",
-		     "Index should be in [0, " + to_str(this->n_-1) +
-		     "], but is equal to " + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix_ArraySparse");
 #endif
 
     return this->val_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j));
@@ -187,15 +179,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_ArraySparse::Get(int, int)",
-		     "Index should be in [0, " + to_str(this->m_-1) +
-		     "],but is equal to " + to_str(i) + ".");
-
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_ArraySparse::Get(int, int)",
-		     "Index should be in [0, " + to_str(this->n_-1) +
-		     "], but is equal to " + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix_ArraySparse");
 #endif
 
     return this->val_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j));
@@ -215,15 +199,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_ArraySparse::Get(int, int)",
-		     "Index should be in [0, " + to_str(this->m_-1) +
-		     "],but is equal to " + to_str(i) + ".");
-
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_ArraySparse::Get(int, int)",
-		     "Index should be in [0, " + to_str(this->n_-1) +
-		     "], but is equal to " + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix_ArraySparse");
 #endif
 
     return this->val_(Storage::GetFirst(i, j)).Get(Storage::GetSecond(i, j));
@@ -242,15 +218,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_ArraySparse::Val(int, int)",
-		     "Index should be in [0, " + to_str(this->m_-1) +
-		     "], but is equal to " + to_str(i) + ".");
-
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_ArraySparse::Val(int, int)",
-		     "Index should be in [0, " + to_str(this->n_-1) +
-		     "], but is equal to " + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix_ArraySparse");
 #endif
 
     return
@@ -271,15 +239,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_ArraySparse::Val(int, int)",
-		     "Index should be in [0, " + to_str(this->m_-1) +
-		     "], but is equal to " + to_str(i) + ".");
-
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_ArraySparse::Val(int, int)",
-		     "Index should be in [0, " + to_str(this->n_-1) +
-		     "], but is equal to " + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix_ArraySparse");
 #endif
 
     return
@@ -313,15 +273,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
-      throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
-                     + "], but is equal to " + to_str(i) + ".");
-
-    if ((j < 0)||(j >= this->val_(i).GetM()))
-      throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
-		     to_str(this->val_(i).GetM()-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, Storage::GetFirst(this->m_, this->n_),
+		this->val_(i).GetM(), "Matrix_ArraySparse");
 #endif
 
     return val_(i).Value(j);
@@ -340,15 +293,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
-      throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
-		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
-                     + "], but is equal to " + to_str(i) + ".");
-
-    if ((j < 0)||(j >= this->val_(i).GetM()))
-      throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
-		     to_str(this->val_(i).GetM()-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, Storage::GetFirst(this->m_, this->n_),
+		this->val_(i).GetM(), "Matrix_ArraySparse");
 #endif
 
     return val_(i).Value(j);
@@ -367,15 +313,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
-      throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
-		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
-                     + "], but is equal to " + to_str(i) + ".");
-
-    if ((j < 0)||(j >= this->val_(i).GetM()))
-      throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
-		     to_str(this->val_(i).GetM()-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, Storage::GetFirst(this->m_, this->n_),
+		this->val_(i).GetM(), "Matrix_ArraySparse");
 #endif
 
     return val_(i).Index(j);
@@ -393,15 +332,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= Storage::GetFirst(this->m_, this->n_))
-      throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
-		     + to_str(Storage::GetFirst(this->m_, this->n_)-1)
-                     + "], but is equal to " + to_str(i) + ".");
-
-    if (j < 0 || j >= this->val_(i).GetM())
-      throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
-		     to_str(this->val_(i).GetM()-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, Storage::GetFirst(this->m_, this->n_),
+		this->val_(i).GetM(), "Matrix_ArraySparse");
 #endif
 
     return val_(i).Index(j);
@@ -900,14 +832,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::operator()", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::operator()", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
 
     if (i < j)
@@ -930,14 +855,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::Get(int, int)", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::Get(int, int)", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
 
     if (i < j)
@@ -960,14 +878,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::Get(int, int)", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::Get(int, int)", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
 
     if (i < j)
@@ -990,14 +901,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::Val(int, int)", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::Val(int, int)", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");    
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i > j)
@@ -1020,14 +924,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::Val(int, int)", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::Val(int, int)", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i > j)
@@ -1225,16 +1122,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_ArraySparse::operator()",
-                     "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_ArraySparse::operator()",
-                     "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
 
     if (i < j)
@@ -1257,14 +1145,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::Get(int, int)", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::Get(int, int)", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
 
     if (i < j)
@@ -1287,14 +1168,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::Get(int, int)", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::Get(int, int)", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
 
     if (i < j)
@@ -1317,15 +1191,9 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::Val(int, int)", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::Val(int, int)", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");    
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
+    
     if (i > j)
       return this->val_(j).Val(i);
     
@@ -1346,14 +1214,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix::Val(int, int)", "Index should be in [0, "
-		     + to_str(this->m_-1) + "], but is equal to "
-		     + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix::Val(int, int)", "Index should be in [0, "
-		     + to_str(this->n_-1) + "], but is equal to "
-		     + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix");
 #endif
     
     if (i > j)

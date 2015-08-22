@@ -451,10 +451,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<VectFull>::operator()",
-		       string("Index should be in [0, ") + to_str(this->m_-1)
-		       + "], but is equal to " + to_str(i) + ".");
+    CheckBounds(i, this->m_, "Vector<VectFull>");
 #endif
 
     return this->data_[i];
@@ -472,10 +469,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<VectFull>::Get(int)",
-		       string("Index should be in [0, ") + to_str(this->m_-1)
-		       + "], but is equal to " + to_str(i) + ".");
+    CheckBounds(i, this->m_, "Vector<VectFull>");
 #endif
 
     return this->data_[i];
@@ -493,10 +487,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<VectFull>::operator() const",
-		       string("Index should be in [0, ") + to_str(this->m_-1)
-		       + "], but is equal to " + to_str(i) + ".");
+    CheckBounds(i, this->m_, "Vector<VectFull>");
 #endif
 
     return this->data_[i];
@@ -514,10 +505,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<VectFull>::Get(int) const",
-		       string("Index should be in [0, ") + to_str(this->m_-1)
-		       + "], but is equal to " + to_str(i) + ".");
+    CheckBounds(i, this->m_, "Vector<VectFull>");
 #endif
 
     return this->data_[i];

@@ -166,26 +166,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length1_)
-      throw WrongIndex("Array4D::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length1_-1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length2_)
-      throw WrongIndex("Array4D::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length2_-1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length3_)
-      throw WrongIndex("Array4D::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length3_-1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length4_)
-      throw WrongIndex("Array4D::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length4_-1) + "], but is equal to "
-		       + to_str(l) + ".");
+    CheckBounds(i, j, k, l, length1_,
+		length2_, length3_, length4_, "Array4D");
 #endif
 
     return data_[i * length234_ + j * length34_ + k * length4_ + l];
@@ -207,26 +189,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length1_)
-      throw WrongIndex("Array4D::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length1_-1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length2_)
-      throw WrongIndex("Array4D::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length2_-1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length3_)
-      throw WrongIndex("Array4D::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length3_-1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length4_)
-      throw WrongIndex("Array4D::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length4_-1) + "], but is equal to "
-		       + to_str(l) + ".");
+    CheckBounds(i, j, k, l, length1_,
+		length2_, length3_, length4_, "Array4D");
 #endif
 
     return data_[i*length234_ + j*length34_ + k*length4_ + l];

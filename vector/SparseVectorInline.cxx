@@ -127,10 +127,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<VectSparse>::Value(int)",
-		       string("Index should be in [0, ") + to_str(this->m_-1)
-		       + "], but is equal to " + to_str(i) + ".");
+    CheckBounds(i, this->m_, "Vector<VectSparse>");
 #endif
 
     return this->data_[i];
@@ -148,10 +145,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<VectSparse>::Value(int)",
-		       string("Index should be in [0, ") + to_str(this->m_-1)
-		       + "], but is equal to " + to_str(i) + ".");
+    CheckBounds(i, this->m_, "Vector<VectSparse>");
 #endif
 
     return this->data_[i];
@@ -168,10 +162,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<VectSparse>::Index(int)",
-		       string("Index should be in [0, ") + to_str(this->m_-1)
-		       + "], but is equal to " + to_str(i) + ".");
+    CheckBounds(i, this->m_, "Vector<VectSparse>");
 #endif
 
     return this->index_[i];
@@ -188,10 +179,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongIndex("Vector<VectSparse>::Index(int)",
-		       string("Index should be in [0, ") + to_str(this->m_-1)
-		       + "], but is equal to " + to_str(i) + ".");
+    CheckBounds(i, this->m_, "Vector<VectSparse>");
 #endif
 
     return this->index_[i];

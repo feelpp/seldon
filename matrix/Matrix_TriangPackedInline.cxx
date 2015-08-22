@@ -101,14 +101,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_TriangPacked::operator()",
-		     string("Index should be in [0, ") + to_str(this->m_-1)
-		     + "], but is equal to " + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_TriangPacked::operator()",
-		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");
+    CheckBounds(i, j, this->m_, this->n_, "Matrix_TriangPacked");
 #endif
     
     T zero;
@@ -145,38 +138,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_TriangPacked::Val(int, int)",
-		     string("Index should be in [0, ") + to_str(this->m_-1)
-		     + "], but is equal to " + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_TriangPacked::Val(int, int)",
-		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");
-    if (Storage::UpLo())
-      {
-	if (i > j)
-	  throw WrongRow("Matrix_TriangPacked::Val(int, int)",
-			 string("Attempted to access to element (")
-			 + to_str(i) + ", " + to_str(j) + string(") but row")
-			 + string(" index should not be strictly more")
-			 + " than column index (upper triangular matrix).");
-	return this->data_[Storage::GetFirst(i * this->n_
-					     - (i * (i + 1)) / 2 + j,
-					     (j * (j + 1)) / 2 + i)];
-      }
-    else
-      {
-	if (j > i)
-	  throw WrongCol("Matrix_TriangPacked::Val(int, int)",
-			 string("Attempted to access to element (")
-			 + to_str(i) + ", " + to_str(j) + string(") but")
-			 + string(" column index should not be strictly more")
-			 + " than row index (lower triangular matrix).");
-	return this->data_[Storage::GetFirst((i * (i + 1)) / 2 + j,
-					     j * this->m_
-					     - (j * (j + 1)) / 2 + i)];
-      }
+    CheckBoundsTriang(i, j, this->m_, this->n_,
+		      Storage::UpLo(), "Matrix_TriangPacked");
 #endif
 
     if (Storage::UpLo())
@@ -205,38 +168,8 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->m_)
-      throw WrongRow("Matrix_TriangPacked::Val(int, int) const",
-		     string("Index should be in [0, ") + to_str(this->m_-1)
-		     + "], but is equal to " + to_str(i) + ".");
-    if (j < 0 || j >= this->n_)
-      throw WrongCol("Matrix_TriangPacked::Val(int, int)",
-		     string("Index should be in [0, ") + to_str(this->n_-1)
-		     + "], but is equal to " + to_str(j) + ".");
-    if (Storage::UpLo())
-      {
-	if (i > j)
-	  throw WrongRow("Matrix_TriangPacked::Val(int, int) const",
-			 string("Attempted to access to element (")
-			 + to_str(i) + ", " + to_str(j) + string(") but row")
-			 + string(" index should not be strictly more")
-			 + " than column index (upper triangular matrix).");
-	return this->data_[Storage::GetFirst(i * this->n_
-					     - (i * (i + 1)) / 2 + j,
-					     (j * (j + 1)) / 2 + i)];
-      }
-    else
-      {
-	if (j > i)
-	  throw WrongCol("Matrix_TriangPacked::Val(int, int) const",
-			 string("Attempted to access to element (")
-			 + to_str(i) + ", " + to_str(j) + string(") but")
-			 + string(" column index should not be strictly more")
-			 + " than row index (lower triangular matrix).");
-	return this->data_[Storage::GetFirst((i * (i + 1)) / 2 + j,
-					     j * this->m_
-					     - (j * (j + 1)) / 2 + i)];
-      }
+    CheckBoundsTriang(i, j, this->m_, this->n_,
+		      Storage::UpLo(), "Matrix_TriangPacked");
 #endif
 
     if (Storage::UpLo())
@@ -293,11 +226,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->GetDataSize())
-      throw WrongIndex("Matrix_TriangPacked::operator[] (int)",
-		       string("Index should be in [0, ")
-		       + to_str(this->GetDataSize()-1) + "], but is equal to "
-		       + to_str(i) + ".");
+    CheckBounds(i, this->GetDataSize(), "Matrix_TriangPacked");
 #endif
 
     return this->data_[i];
@@ -317,11 +246,7 @@ namespace Seldon
   {
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= this->GetDataSize())
-      throw WrongIndex("Matrix_TriangPacked::operator[] (int) const",
-		       string("Index should be in [0, ")
-		       + to_str(this->GetDataSize()-1) + "], but is equal to "
-		       + to_str(i) + ".");
+    CheckBounds(i, this->GetDataSize(), "Matrix_TriangPacked");
 #endif
 
     return this->data_[i];

@@ -156,6 +156,47 @@ namespace Seldon
 
 
   /////////////////
+  // CheckBounds //
+  /////////////////
+
+  
+  void CheckBounds(int i, int length1_, string nom);
+  void CheckBounds(int i, int j, int length1_, int length2_, string nom);
+  void CheckBoundsSym(int i, int j, int length1_, int length2_, string nom);
+  void CheckBoundsTriang(int i, int j, int length1_, int length2_,
+			 bool uplo, string nom);
+  
+  void CheckBounds(int i, int j, int k,
+		   int length1_, int length2_, int length3_, string nom);
+
+  void CheckBounds(int i, int j, int k, int l, int length1_, int length2_,
+		   int length3_, int length4_, string nom);
+
+  void CheckBounds(int i, int j, int k, int l, int m,
+		   int length0, int length1, int length2, int length3,
+		   int length4, string nom);
+
+  void CheckBounds(int i, int j, int k, int l, int m, int n,
+		   int length0, int length1, int length2, int length3,
+		   int length4, int length5, string nom);
+
+  void CheckBounds(int i, int j, int k, int l, int m, int n, int o,
+		   int length0, int length1, int length2, int length3,
+		   int length4, int length5, int length6, string nom);
+
+  void CheckBounds(int i, int j, int k, int l, int m, int n, int o, int p,
+		   int length0, int length1, int length2, int length3,
+		   int length4, int length5, int length6, int length7,
+		   string nom);
+
+
+  void CheckBounds(int i, int j, int k, int l, int m, int n, int o, int p,
+		   int q, int length0, int length1, int length2, int length3,
+		   int length4, int length5, int length6, int length7,
+		   int length8, string nom);
+  
+
+  /////////////////
   // LAPACKERROR //
   /////////////////
 

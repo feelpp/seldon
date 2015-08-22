@@ -122,21 +122,7 @@ namespace Seldon
 		     "Array dimension should be 3.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
+    CheckBounds(i, j, k, length_[0], length_[1], length_[2], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k];
@@ -160,21 +146,7 @@ namespace Seldon
 		     "Array dimension should be 3.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
+    CheckBounds(i, j, k, length_[0], length_[1], length_[2], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k];
@@ -199,26 +171,8 @@ namespace Seldon
 		     "Array dimension should be 4.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length_[3])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length_[3] - 1) + "], but is equal to "
-		       + to_str(l) + ".");
+    CheckBounds(i, j, k, l, length_[0], length_[1],
+		length_[2], length_[3], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k * offset_[2] + l];
@@ -243,26 +197,8 @@ namespace Seldon
 		     "Array dimension should be 4.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length_[3])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length_[3] - 1) + "], but is equal to "
-		       + to_str(l) + ".");
+    CheckBounds(i, j, k, l, length_[0], length_[1],
+		length_[2], length_[3], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k * offset_[2] + l];
@@ -288,31 +224,8 @@ namespace Seldon
 		     "Array dimension should be 5.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length_[3])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length_[3] - 1) + "], but is equal to "
-		       + to_str(l) + ".");
-    if (m < 0 || m >= length_[4])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #5 should be in [0, ")
-		       + to_str(length_[4] - 1) + "], but is equal to "
-		       + to_str(m) + ".");
+    CheckBounds(i, j, k, l, m, length_[0], length_[1], length_[2],
+		length_[3], length_[4], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k * offset_[2] +
@@ -339,31 +252,8 @@ namespace Seldon
 		     "Array dimension should be 5.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length_[3])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length_[3] - 1) + "], but is equal to "
-		       + to_str(l) + ".");
-    if (m < 0 || m >= length_[4])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #5 should be in [0, ")
-		       + to_str(length_[4] - 1) + "], but is equal to "
-		       + to_str(m) + ".");
+    CheckBounds(i, j, k, l, m, length_[0], length_[1], length_[2],
+		length_[3], length_[4], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k * offset_[2] +
@@ -392,36 +282,8 @@ namespace Seldon
 		     "Array dimension should be 6.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length_[3])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length_[3] - 1) + "], but is equal to "
-		       + to_str(l) + ".");
-    if (m < 0 || m >= length_[4])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #5 should be in [0, ")
-		       + to_str(length_[4] - 1) + "], but is equal to "
-		       + to_str(m) + ".");
-    if (n < 0 || n >= length_[5])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #6 should be in [0, ")
-		       + to_str(length_[5] - 1) + "], but is equal to "
-		       + to_str(n) + ".");
+    CheckBounds(i, j, k, l, m, n, length_[0], length_[1], length_[2],
+		length_[3], length_[4], length_[5], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k * offset_[2] +
@@ -450,36 +312,8 @@ namespace Seldon
 		     "Array dimension should be 6.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length_[3])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length_[3] - 1) + "], but is equal to "
-		       + to_str(l) + ".");
-    if (m < 0 || m >= length_[4])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #5 should be in [0, ")
-		       + to_str(length_[4] - 1) + "], but is equal to "
-		       + to_str(m) + ".");
-    if (n < 0 || n >= length_[5])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #6 should be in [0, ")
-		       + to_str(length_[5] - 1) + "], but is equal to "
-		       + to_str(n) + ".");
+    CheckBounds(i, j, k, l, m, n, length_[0], length_[1], length_[2],
+		length_[3], length_[4], length_[5], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k * offset_[2] +
@@ -509,41 +343,8 @@ namespace Seldon
 		     "Array dimension should be 7.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length_[3])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length_[3] - 1) + "], but is equal to "
-		       + to_str(l) + ".");
-    if (m < 0 || m >= length_[4])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #5 should be in [0, ")
-		       + to_str(length_[4] - 1) + "], but is equal to "
-		       + to_str(m) + ".");
-    if (n < 0 || n >= length_[5])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #6 should be in [0, ")
-		       + to_str(length_[5] - 1) + "], but is equal to "
-		       + to_str(n) + ".");
-    if (o < 0 || o >= length_[6])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #7 should be in [0, ")
-		       + to_str(length_[6] - 1) + "], but is equal to "
-		       + to_str(o) + ".");
+    CheckBounds(i, j, k, l, m, n, o, length_[0], length_[1], length_[2],
+		length_[3], length_[4], length_[5], length_[6], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k * offset_[2] +
@@ -573,41 +374,8 @@ namespace Seldon
 		     "Array dimension should be 7.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length_[3])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length_[3] - 1) + "], but is equal to "
-		       + to_str(l) + ".");
-    if (m < 0 || m >= length_[4])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #5 should be in [0, ")
-		       + to_str(length_[4] - 1) + "], but is equal to "
-		       + to_str(m) + ".");
-    if (n < 0 || n >= length_[5])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #6 should be in [0, ")
-		       + to_str(length_[5] - 1) + "], but is equal to "
-		       + to_str(n) + ".");
-    if (o < 0 || o >= length_[6])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #7 should be in [0, ")
-		       + to_str(length_[6] - 1) + "], but is equal to "
-		       + to_str(o) + ".");
+    CheckBounds(i, j, k, l, m, n, o, length_[0], length_[1], length_[2],
+		length_[3], length_[4], length_[5], length_[6], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k * offset_[2] +
@@ -638,46 +406,9 @@ namespace Seldon
 		     "Array dimension should be 8.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length_[3])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length_[3] - 1) + "], but is equal to "
-		       + to_str(l) + ".");
-    if (m < 0 || m >= length_[4])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #5 should be in [0, ")
-		       + to_str(length_[4] - 1) + "], but is equal to "
-		       + to_str(m) + ".");
-    if (n < 0 || n >= length_[5])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #6 should be in [0, ")
-		       + to_str(length_[5] - 1) + "], but is equal to "
-		       + to_str(n) + ".");
-    if (o < 0 || o >= length_[6])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #7 should be in [0, ")
-		       + to_str(length_[6] - 1) + "], but is equal to "
-		       + to_str(o) + ".");
-    if (p < 0 || p >= length_[7])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #8 should be in [0, ")
-		       + to_str(length_[7] - 1) + "], but is equal to "
-		       + to_str(p) + ".");
+    CheckBounds(i, j, k, l, m, n, o, p, length_[0], length_[1], length_[2],
+		length_[3], length_[4], length_[5], length_[6],
+		length_[7], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k * offset_[2] +
@@ -709,46 +440,9 @@ namespace Seldon
 		     "Array dimension should be 8.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length_[3])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length_[3] - 1) + "], but is equal to "
-		       + to_str(l) + ".");
-    if (m < 0 || m >= length_[4])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #5 should be in [0, ")
-		       + to_str(length_[4] - 1) + "], but is equal to "
-		       + to_str(m) + ".");
-    if (n < 0 || n >= length_[5])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #6 should be in [0, ")
-		       + to_str(length_[5] - 1) + "], but is equal to "
-		       + to_str(n) + ".");
-    if (o < 0 || o >= length_[6])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #7 should be in [0, ")
-		       + to_str(length_[6] - 1) + "], but is equal to "
-		       + to_str(o) + ".");
-    if (p < 0 || p >= length_[7])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #8 should be in [0, ")
-		       + to_str(length_[7] - 1) + "], but is equal to "
-		       + to_str(p) + ".");
+    CheckBounds(i, j, k, l, m, n, o, p, length_[0], length_[1], length_[2],
+		length_[3], length_[4], length_[5], length_[6],
+		length_[7], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k * offset_[2] +
@@ -781,51 +475,9 @@ namespace Seldon
 		     "Array dimension should be 9.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length_[3])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length_[3] - 1) + "], but is equal to "
-		       + to_str(l) + ".");
-    if (m < 0 || m >= length_[4])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #5 should be in [0, ")
-		       + to_str(length_[4] - 1) + "], but is equal to "
-		       + to_str(m) + ".");
-    if (n < 0 || n >= length_[5])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #6 should be in [0, ")
-		       + to_str(length_[5] - 1) + "], but is equal to "
-		       + to_str(n) + ".");
-    if (o < 0 || o >= length_[6])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #7 should be in [0, ")
-		       + to_str(length_[6] - 1) + "], but is equal to "
-		       + to_str(o) + ".");
-    if (p < 0 || p >= length_[7])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #8 should be in [0, ")
-		       + to_str(length_[7] - 1) + "], but is equal to "
-		       + to_str(p) + ".");
-    if (q < 0 || q >= length_[8])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #9 should be in [0, ")
-		       + to_str(length_[8] - 1) + "], but is equal to "
-		       + to_str(q) + ".");
+    CheckBounds(i, j, k, l, m, n, o, p, q, length_[0], length_[1], length_[2],
+		length_[3], length_[4], length_[5], length_[6],
+		length_[7], length_[8], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k * offset_[2] +
@@ -858,51 +510,9 @@ namespace Seldon
 		     "Array dimension should be 9.");
 
 #ifdef SELDON_CHECK_BOUNDS
-    if (i < 0 || i >= length_[0])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #1 should be in [0, ")
-		       + to_str(length_[0] - 1) + "], but is equal to "
-		       + to_str(i) + ".");
-    if (j < 0 || j >= length_[1])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #2 should be in [0, ")
-		       + to_str(length_[1] - 1) + "], but is equal to "
-		       + to_str(j) + ".");
-    if (k < 0 || k >= length_[2])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #3 should be in [0, ")
-		       + to_str(length_[2] - 1) + "], but is equal to "
-		       + to_str(k) + ".");
-    if (l < 0 || l >= length_[3])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #4 should be in [0, ")
-		       + to_str(length_[3] - 1) + "], but is equal to "
-		       + to_str(l) + ".");
-    if (m < 0 || m >= length_[4])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #5 should be in [0, ")
-		       + to_str(length_[4] - 1) + "], but is equal to "
-		       + to_str(m) + ".");
-    if (n < 0 || n >= length_[5])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #6 should be in [0, ")
-		       + to_str(length_[5] - 1) + "], but is equal to "
-		       + to_str(n) + ".");
-    if (o < 0 || o >= length_[6])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #7 should be in [0, ")
-		       + to_str(length_[6] - 1) + "], but is equal to "
-		       + to_str(o) + ".");
-    if (p < 0 || p >= length_[7])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #8 should be in [0, ")
-		       + to_str(length_[7] - 1) + "], but is equal to "
-		       + to_str(p) + ".");
-    if (q < 0 || q >= length_[8])
-      throw WrongIndex("Array::operator()",
-		       string("Index along dimension #9 should be in [0, ")
-		       + to_str(length_[8] - 1) + "], but is equal to "
-		       + to_str(q) + ".");
+    CheckBounds(i, j, k, l, m, n, o, p, q, length_[0], length_[1], length_[2],
+		length_[3], length_[4], length_[5], length_[6],
+		length_[7], length_[8], "Array");
 #endif
 
     return data_[i * offset_[0] + j * offset_[1] + k * offset_[2] +

@@ -35,7 +35,7 @@ namespace Seldon
     Identity preconditioner M = I
   */
   template<class T>
-  void Preconditioner_Base<T>
+  inline void Preconditioner_Base<T>
   ::Solve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>& z)
   {
     Copy(r, z);
@@ -46,7 +46,7 @@ namespace Seldon
     Identity preconditioner M = I
   */  
   template<class T>
-  void Preconditioner_Base<T>
+  inline void Preconditioner_Base<T>
   ::TransSolve(const VirtualMatrix<T>&, const Vector<T>& r, Vector<T>& z)
   {
     Copy(r, z);
@@ -55,7 +55,7 @@ namespace Seldon
 
   //! sets parameters of preconditioning
   template<class T>
-  void Preconditioner_Base<T>
+  inline void Preconditioner_Base<T>
   ::SetInputPreconditioning(const string& keyword, const Vector<string>& param)
   {
   }
