@@ -87,6 +87,35 @@ namespace Seldon
     this->Clear();
   }
 
+
+  //! Releases memory used by the vector.
+  template <class T, class Allocator>
+  inline void Vector_Base<T, Allocator>::Clear()
+  {
+    
+#ifdef SELDON_CHECK_MEMORY
+    try
+      {
+#endif
+
+	if (data_ != NULL)
+	  {
+	    Allocator::deallocate(data_, m_);
+	    m_ = 0;
+	    data_ = NULL;
+	  }
+
+#ifdef SELDON_CHECK_MEMORY
+      }
+    catch (...)
+      {
+	m_ = 0;
+	data_ = NULL;
+      }
+#endif
+
+  }
+
   
   /*******************
    * BASIC FUNCTIONS *
