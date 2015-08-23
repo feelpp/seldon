@@ -36,38 +36,15 @@ namespace Seldon
     IVect permut;
     //! size of factorized linear system 
     int n;
-    
-#ifdef SELDON_WITH_UMFPACK
-    MatrixUmfPack<T> mat_umf; //!< Umfpack solver
-#endif
-#ifdef SELDON_WITH_SUPERLU
-    MatrixSuperLU<T> mat_superlu; //!< SuperLU solver
-#endif
-#ifdef SELDON_WITH_PARDISO
-    MatrixPardiso<T> mat_pardiso; //!< Pardiso solver
-#endif
-#ifdef SELDON_WITH_MUMPS
-    MatrixMumps<T> mat_mumps; //!< Mumps solver
-#endif
-#ifdef SELDON_WITH_PASTIX
-    MatrixPastix<T> mat_pastix; //!< Pastix solver
-#endif
-#ifdef SELDON_WITH_WSMP
-    MatrixWsmp<T> mat_wsmp; //!< Wsmp solver
-#endif
-    
-#ifdef SELDON_WITH_PRECONDITIONING
-    //! ILUT solver
-    IlutPreconditioning<T> mat_ilut;
-#endif
-    
+    //! pointer to the used solver
+    VirtualSparseDirectSolver<T>* solver;
     //! threshold for ilut solver
     double threshold_matrix;
+    double pivot_threshold;
+    bool refine_solution;
+    int print_level;
     //! use of non-symmetric ilut ?
     bool enforce_unsym_ilut;
-    
-    //! default solver
-    SparseSeldonSolver<T> mat_seldon;
         
   public :
     // available solvers
@@ -82,33 +59,27 @@ namespace Seldon
     
     SparseDirectSolver();
     
-    void HideMessages();
-    void ShowMessages();
-    void ShowFullHistory();
-    
-    void Clear();
-    
+    // Inline methods
     int GetM() const;
     int GetN() const;
     
     int GetTypeOrdering() const;
     void SetPermutation(const IVect&);
-    bool AffectOrdering();
     void SelectOrdering(int);
     
-    void SetNumberOfThreadPerNode(int m);
-    int GetNumberOfThreadPerNode() const;
+    void HideMessages();
+    void ShowMessages();
+    void ShowFullHistory();
 
     void SetPivotThreshold(const double&);
+    void SetNumberOfThreadPerNode(int m);
+    int GetNumberOfThreadPerNode() const;
     
-    template<class MatrixSparse>
-    void ComputeOrdering(MatrixSparse& A);
-    
-    void SelectDirectSolver(int);
+    void SelectDirectSolver(int);    
     void SetNonSymmetricIlut();
 
     int GetDirectSolver();
-
+    
     void RefineSolution();
     void DoNotRefineSolution();
 
@@ -117,42 +88,121 @@ namespace Seldon
     void SetIncreaseCoefficientEstimationNeededMemory(double);
     
     double GetThresholdMatrix() const;
-    void SetThresholdMatrix(const double&);
 
+    // other methods
+    void Clear();
+
+    static bool IsAvailableSolver(int type);
+    bool AffectOrdering();
+
+    template<class T0, class Prop, class Storage, class Alloc>
+    void ComputeOrdering(Matrix<T0, Prop, Storage, Alloc>& A);
+    
+  protected:
+    void InitSolver();
+    
+  public:
+    void SetThresholdMatrix(const double&);
+    
     template<class Prop, class Storage, class Allocator>
-    void Factorize(Matrix<T, Prop, Storage, Allocator>& A, bool keep_matrix = false);
+    void Factorize(Matrix<T, Prop, Storage, Allocator>& A,
+		   bool keep_matrix = false);
     
     int GetInfoFactorization(int& ierr) const;
     
-    template<class Vector1>
-    void Solve(Vector1& x);
-    
-    template<class Vector1>
-    void Solve(const SeldonTranspose& TransA, Vector1& x);
+    void Solve(Vector<T>& x);
+    void Solve(const SeldonTranspose& TransA, Vector<T>& x);
 
-    template<class T1, class Alloc1>
-    void Solve(Matrix<T1, General, ColMajor, Alloc1>& x);
+    void Solve(Matrix<T, General, ColMajor>& x);
+    void Solve(const SeldonTranspose&, Matrix<T, General, ColMajor>& x);
 
 #ifdef SELDON_WITH_MPI
     template<class Tint>
     void FactorizeDistributed(MPI::Comm& comm_facto,
                               Vector<Tint>& Ptr, Vector<Tint>& IndRow,
                               Vector<T>& Val, const IVect& glob_num,
-                              bool sym, bool reorder, bool keep_matrix = false);
+                              bool sym, bool keep_matrix = false);
     
-    template<class Vector1>
-    void SolveDistributed(MPI::Comm& comm_facto, Vector1& x_solution,
+    void SolveDistributed(MPI::Comm& comm_facto, Vector<T>& x_solution,
                           const IVect& glob_number);
     
-    template<class Vector1>
     void SolveDistributed(MPI::Comm& comm_facto,
-			  const SeldonTranspose& TransA, Vector1& x_solution,
+			  const SeldonTranspose& TransA, Vector<T>& x_solution,
+                          const IVect& glob_number);
+
+    void SolveDistributed(MPI::Comm& comm_facto,
+			  Matrix<T, General, ColMajor>& x_solution,
+                          const IVect& glob_number);
+    
+    void SolveDistributed(MPI::Comm& comm_facto,
+			  const SeldonTranspose& TransA,
+			  Matrix<T, General, ColMajor>& x_solution,
                           const IVect& glob_number);
 #endif
     
-    
   };
 
+#ifdef SELDON_WITH_MPI
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
+			   SparseDirectSolver<T>& mat_lu,
+                           Vector<T>& x, Vector<int>& global_col);
+  
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
+                           SparseDirectSolver<complex<T> >& mat_lu,
+                           Vector<T>& x, Vector<int>& global_col);
+  
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
+			   SparseDirectSolver<T>& mat_lu,
+                           Vector<complex<T> >& x, Vector<int>& global_col);
+  
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
+			   SparseDirectSolver<T>& mat_lu,
+                           Matrix<T, General, ColMajor>& x, Vector<int>& global_col);
+  
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
+                           SparseDirectSolver<complex<T> >& mat_lu,
+                           Matrix<T, General, ColMajor>& x, Vector<int>& global_col);
+  
+  template<class T>
+  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
+			   SparseDirectSolver<T>& mat_lu,
+                           Matrix<complex<T>, General, ColMajor>& x,
+			   Vector<int>& global_col);
+#endif  
+  
+  template<class T>
+  void SolveLU(const SeldonTranspose& transA,
+	       SparseDirectSolver<T>& mat_lu, Vector<T>& x);
+  
+  template<class T>
+  void SolveLU(const SeldonTranspose& transA,
+	       SparseDirectSolver<complex<T> >& mat_lu, Vector<T>& x);
+  
+  template<class T>
+  void SolveLU(const SeldonTranspose& transA,
+	       SparseDirectSolver<T>& mat_lu, Vector<complex<T> >& x);
+
+  template<class T>
+  void SolveLU(const SeldonTranspose& transA,
+	       SparseDirectSolver<T>& mat_lu,
+	       Matrix<T, General, ColMajor>& x);
+  
+  template<class T>
+  void SolveLU(const SeldonTranspose& transA,
+	       SparseDirectSolver<complex<T> >& mat_lu,
+	       Matrix<T, General, ColMajor>& x);
+  
+  template<class T>
+  void SolveLU(const SeldonTranspose& transA,
+	       SparseDirectSolver<T>& mat_lu,
+	       Matrix<complex<T>, General, ColMajor>& x);
+
+  // SparseSolve and GetAndSolveLU
   template <class T0, class Prop0, class Storage0, class Allocator0,
 	    class T1, class Storage1, class Allocator1>
   void SparseSolve(Matrix<T0, Prop0, Storage0, Allocator0>& M,

@@ -3127,20 +3127,15 @@ namespace Seldon
   
 
   //! Method called by AssembleDistributed
-  template<class T> template<class Tint>
+  template<class T>
   void DistributedMatrix_Base<T>
   ::AssembleParallel(Matrix<T, General, ArrayRowSparse>& B, Vector<IVect>& procB,
                      Symmetric& sym, IVect& row_numbers, IVect& local_row_numbers,
-                     Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA,
-                     bool sym_pattern, bool reorder)
+		     IVect& OverlappedCol, bool sym_pattern, bool reorder)
   {
     int m = this->GetLocalM();
     int n = this->GetGlobalM();
     
-    PtrA.Clear();
-    IndA.Clear();
-    ValA.Clear();
-
     MPI::Comm& comm = this->GetCommunicator();    
     int nb_proc = comm.Get_size();
     int rank = comm.Get_rank();
@@ -3151,7 +3146,7 @@ namespace Seldon
 
     // constructing array to know if a column is overlapped 
     // (treated by another processor)
-    IVect OverlappedCol(m); OverlappedCol.Fill(-1);
+    OverlappedCol.Reallocate(m); OverlappedCol.Fill(-1);
     for (int i = 0; i < OverlapRowNumber.GetM(); i++)
       OverlappedCol(OverlapRowNumber(i)) = i;
 
@@ -3686,21 +3681,41 @@ namespace Seldon
       }
 
     Glob_to_local.Clear();
+    
+    nrow = 0;
+    row_numbers.Reallocate(nloc);
+    for (int i = 0; i < m; i++)
+      if (OverlappedCol(i) == -1)
+	{
+	  row_numbers(nrow) = RowNumber(i);
+	  nrow++;
+	}    
+  }
 
+  
+  //! Fills PtrA, IndA and ValA from values contained in B
+  template<class T> template<class Tint>
+  void DistributedMatrix_Base<T>
+  ::ConvertToCSR(Matrix<T, General, ArrayRowSparse>& B, IVect& OverlappedCol,
+		 Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA)
+  {
+    int m = this->GetLocalM();
+    int nloc = 0;
+    for (int i = 0; i < m; i++)
+      if (OverlappedCol(i) == -1)
+	nloc++;
+    
     /***************************
      * Final conversion in CSR *
      ***************************/
     
     // now we convert Bh to RowSparse while removing overlapped rows
     PtrA.Reallocate(nloc+1);
-    row_numbers.Reallocate(nloc);
-    nrow = 0;
-    int nnz = 0;
+    int nrow = 0, nnz = 0;
     PtrA(nrow) = 0;
     for (int i = 0; i < m; i++)
       if (OverlappedCol(i) == -1)
 	{
-	  row_numbers(nrow) = RowNumber(i);
 	  PtrA(nrow+1) = PtrA(nrow) + B.GetRowSize(i);
 	  nrow++;
           nnz += B.GetRowSize(i);
@@ -3724,20 +3739,15 @@ namespace Seldon
 
 
   //! Method called by AssembleDistributed  
-  template<class T> template<class Tint>
+  template<class T>
   void DistributedMatrix_Base<T>
   ::AssembleParallel(Matrix<T, General, ArrayColSparse>& B, Vector<IVect>& procB,
                      General& prop, IVect& col_numbers, IVect& local_col_numbers,
-                     Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA,
-                     bool sym_pattern, bool reorder)
+                     IVect& OverlappedCol, bool sym_pattern, bool reorder)
   {
     int n = this->GetLocalN();
     int m = this->GetGlobalM();
     
-    PtrA.Clear();
-    IndA.Clear();
-    ValA.Clear();
-
     const MPI::Comm& comm = this->GetCommunicator();  
     int nb_proc = comm.Get_size();
     int rank = comm.Get_rank();
@@ -3748,7 +3758,7 @@ namespace Seldon
 
     // constructing array to know if a column is overlapped 
     // (treated by another processor)
-    IVect OverlappedCol(n); OverlappedCol.Fill(-1);
+    OverlappedCol.Reallocate(n); OverlappedCol.Fill(-1);
     for (int i = 0; i < OverlapRowNumber.GetM(); i++)
       OverlappedCol(OverlapRowNumber(i)) = i;
 
@@ -4315,18 +4325,39 @@ namespace Seldon
 
     Glob_to_local.Clear();
 
+    ncol = 0;
+    col_numbers.Reallocate(nloc);
+    for (int i = 0; i < n; i++)
+      if (OverlappedCol(i) == -1)
+	{
+	  col_numbers(ncol) = RowNumber(i);
+	  ncol++;
+	}
+  }
+
+
+  //! Fills PtrA, IndA and ValA from values contained in B
+  template<class T> template<class Tint>
+  void DistributedMatrix_Base<T>
+  ::ConvertToCSC(Matrix<T, General, ArrayColSparse>& B, IVect& OverlappedCol,
+		 Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA)
+  {  
+    int n = this->GetLocalN();
+    int nloc = 0;
+    for (int i = 0; i < n; i++)
+      if (OverlappedCol(i) == -1)
+	nloc++;
+
     /***************************
      * Final conversion in CSC *
      ***************************/
     
     PtrA.Reallocate(nloc+1);
-    col_numbers.Reallocate(nloc);
-    ncol = 0; int nnz = 0;
+    int ncol = 0, nnz = 0;
     PtrA(ncol) = 0;
     for (int i = 0; i < n; i++)
       if (OverlappedCol(i) == -1)
         {
-          col_numbers(ncol) = RowNumber(i);
           PtrA(ncol+1) = PtrA(ncol) + B.GetColumnSize(i);
           ncol++;
           nnz += B.GetColumnSize(i);
@@ -5897,6 +5928,8 @@ namespace Seldon
 			   Vector<Tint>& PtrA, Vector<Tint>& IndA,
 			   Vector<T>& ValA, bool sym_pattern, bool reorder)
   {
+    PtrA.Clear(); IndA.Clear(); ValA.Clear();
+
     // we convert A in ArrayRowSparse format
     Matrix<T, General, ArrayRowSparse> B;
     Vector<IVect> procB;
@@ -5906,9 +5939,12 @@ namespace Seldon
     A.GetDistributedRows(B, procB);
     
     // then calling AssembleParallel
+    IVect OverlappedCol;
     A.AssembleParallel(B, procB, sym, row_numbers, local_row_numbers,
-                       PtrA, IndA, ValA, sym_pattern, reorder);
-    
+                       OverlappedCol, sym_pattern, reorder);
+  
+    // final conversion with type Tint
+    A.ConvertToCSR(B, OverlappedCol, PtrA, IndA, ValA);
   }
   
   
@@ -5932,6 +5968,8 @@ namespace Seldon
                            Vector<Tint>& PtrA, Vector<Tint>& IndA,
 			   Vector<T>& ValA, bool sym_pattern, bool reorder)
   {
+    PtrA.Clear(); IndA.Clear(); ValA.Clear();
+    
     // we convert A in CSC format
     Matrix<T, General, ArrayColSparse> B;
     Vector<IVect> procB;
@@ -5941,8 +5979,12 @@ namespace Seldon
     A.GetDistributedColumns(B, procB, sym_pattern);
     
     // then AssembleParallel is called
+    IVect OverlappedCol;
     A.AssembleParallel(B, procB, prop, col_numbers, local_col_numbers,
-                       PtrA, IndA, ValA, sym_pattern, reorder);
+                       OverlappedCol, sym_pattern, reorder);
+
+    // final conversion with type Tint
+    A.ConvertToCSC(B, OverlappedCol, PtrA, IndA, ValA);
   }
 
   

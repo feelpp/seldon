@@ -30,7 +30,7 @@ namespace Seldon
   
   //! class interfacing SuperLU functions
   template<class T>
-  class MatrixSuperLU_Base
+  class MatrixSuperLU_Base : public VirtualSparseDirectSolver<T>
   {
   protected :
 #ifndef SELDON_WITH_SUPERLU_DIST
@@ -90,9 +90,10 @@ namespace Seldon
     void Init(int_t size, int_t& panel_size, int_t& relax);
     void SetNumberOfThreadPerNode(int p);
     
-    void SelectOrdering(colperm_t type);
+    void SelectOrdering(int type);
     void SetPermutation(const IVect&);
 
+    bool UseInteger8() const;
     void Clear();
     void HideMessages();
     void ShowMessages();

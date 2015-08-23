@@ -42,14 +42,8 @@ namespace Seldon
     Matrix<T, Symmetric, ArrayRowSymSparse> mat_sym;
     //! Temporary vector.
     Vector<T> xtmp;
-
-#ifdef SELDON_WITH_CHOLMOD
-    MatrixCholmod mat_chol;
-#endif
-
-#ifdef SELDON_WITH_PASTIX
-    MatrixPastix<T> mat_pastix;
-#endif
+    //! extern Cholesky solver
+    VirtualSparseDirectSolver<T>* solver;
     
   public :
     // Available solvers.
@@ -73,15 +67,18 @@ namespace Seldon
 
     void SelectDirectSolver(int);
     int GetDirectSolver();
+    
+    void InitSolver();
 
-    template<class MatrixSparse>
-    void Factorize(MatrixSparse& A, bool keep_matrix = false);
+    template<class Prop, class Storage, class Allocator>
+    void Factorize(Matrix<T, Prop, Storage, Allocator>& A,
+		   bool keep_matrix = false);
 
-    template<class Vector1>
-    void Solve(const SeldonTranspose& TransA, Vector1& x);
+    template<class T1>
+    void Solve(const SeldonTranspose& TransA, Vector<T1>& x);
 
-    template<class Vector1>
-    void Mlt(const SeldonTranspose& TransA, Vector1& x);
+    template<class T1>
+    void Mlt(const SeldonTranspose& TransA, Vector<T1>& x);
     
   };
 

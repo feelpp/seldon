@@ -29,7 +29,7 @@ namespace Seldon
 {
 
   //! Object containing Cholesky factorization.
-  class MatrixCholmod
+  class MatrixCholmod : public VirtualSparseDirectSolver<double>
   {
   protected :
     cholmod_common param_chol;
@@ -40,6 +40,7 @@ namespace Seldon
     MatrixCholmod();
     ~MatrixCholmod();
 
+    bool UseInteger8() const;
     void Clear();
 
     void HideMessages();
@@ -47,6 +48,7 @@ namespace Seldon
     void ShowFullHistory();
     
     int64_t GetMemorySize() const;
+    int GetInfoFactorization() const;
 
     template<class Prop, class Storage, class Allocator>
     void FactorizeMatrix(Matrix<double, Prop, Storage, Allocator> & mat,
@@ -58,10 +60,12 @@ namespace Seldon
     void Solve(const SeldonTranspose& TransA,
                Vector<double, VectFull, Allocator>& x);
 
+    void Solve(const SeldonTranspose&, double* x_ptr, int nrhs);
+    
     template<class Allocator>
     void Mlt(const SeldonTranspose& TransA,
              Vector<double, VectFull, Allocator>& x);
-
+    
   };
 
   template<class T, class Prop, class Storage, class Allocator>

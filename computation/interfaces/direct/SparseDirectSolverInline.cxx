@@ -61,17 +61,40 @@ namespace Seldon
     type_ordering = type;
   }
 
+
+  //! hiding all messages
+  template<class T>
+  inline void SparseDirectSolver<T>::HideMessages()
+  {
+    print_level = 0;
+    solver->HideMessages();
+  }
   
+  
+  //! displaying basic messages
+  template<class T>
+  inline void SparseDirectSolver<T>::ShowMessages()
+  {
+    print_level = 1;
+    solver->ShowMessages();    
+  }
+  
+  
+  //! displaying all the messages
+  template<class T>
+  inline void SparseDirectSolver<T>::ShowFullHistory()
+  {
+    print_level = 2;
+    solver->ShowMessages();        
+  }
+    
+    
   //! sets the threshold used for pivoting
   template<class T>
   void SparseDirectSolver<T>::SetPivotThreshold(const double& eps)
   {
-#ifdef SELDON_WITH_PASTIX
-    mat_pastix.SetPivotThreshold(eps);
-#endif
-#ifdef SELDON_WITH_WSMP
-    mat_wsmp.SetPivotThreshold(eps);
-#endif
+    pivot_threshold = eps;
+    solver->SetPivotThreshold(eps);
   }
     
   
@@ -80,6 +103,7 @@ namespace Seldon
   inline void SparseDirectSolver<T>::SetNumberOfThreadPerNode(int p)
   {
     nb_threads_per_node = p;
+    solver->SetNumberOfThreadPerNode(nb_threads_per_node);
   }
   
 
@@ -96,6 +120,8 @@ namespace Seldon
   inline void SparseDirectSolver<T>::SelectDirectSolver(int type)
   {
     type_solver = type;
+    type_ordering = SparseMatrixOrdering::AUTO;
+    InitSolver();
   }
   
   
@@ -118,24 +144,16 @@ namespace Seldon
   template<class T>
   inline void SparseDirectSolver<T>::RefineSolution()
   {
-#ifdef SELDON_WITH_PASTIX
-    mat_pastix.RefineSolution();
-#endif
-#ifdef SELDON_WITH_WSMP
-    mat_wsmp.RefineSolution();
-#endif
+    refine_solution = true;
+    solver->RefineSolution();
   }
   
   
   template<class T>
   inline void SparseDirectSolver<T>::DoNotRefineSolution()
   {
-#ifdef SELDON_WITH_PASTIX
-    mat_pastix.DoNotRefineSolution();
-#endif
-#ifdef SELDON_WITH_WSMP
-    mat_wsmp.DoNotRefineSolution();
-#endif
+    refine_solution = false;
+    solver->DoNotRefineSolution();
   }
   
   
@@ -143,9 +161,7 @@ namespace Seldon
   inline void SparseDirectSolver<T>::
   SetCoefficientEstimationNeededMemory(double coef)
   {
-#ifdef SELDON_WITH_MUMPS
-    mat_mumps.SetCoefficientEstimationNeededMemory(coef);
-#endif
+    solver->SetCoefficientEstimationNeededMemory(coef);
   }
   
   
@@ -153,9 +169,7 @@ namespace Seldon
   inline void SparseDirectSolver<T>::
   SetMaximumCoefficientEstimationNeededMemory(double coef)
   {
-#ifdef SELDON_WITH_MUMPS
-    mat_mumps.SetMaximumCoefficientEstimationNeededMemory(coef);
-#endif
+    solver->SetMaximumCoefficientEstimationNeededMemory(coef);
   }
   
   
@@ -163,9 +177,7 @@ namespace Seldon
   inline void SparseDirectSolver<T>::
   SetIncreaseCoefficientEstimationNeededMemory(double coef)
   {
-#ifdef SELDON_WITH_MUMPS
-    mat_mumps.SetIncreaseCoefficientEstimationNeededMemory(coef);
-#endif
+    solver->SetIncreaseCoefficientEstimationNeededMemory(coef);
   }
   
   
@@ -177,14 +189,6 @@ namespace Seldon
   }
 
   
-  //! modifies threshold used for ilut
-  template<class T>
-  inline void SparseDirectSolver<T>::SetThresholdMatrix(const double& eps)
-  {
-    threshold_matrix = eps;
-  }
-
-    
   /*************************
    * Solve and SparseSolve *
    *************************/

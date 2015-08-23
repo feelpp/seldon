@@ -3,14 +3,14 @@
 namespace Seldon
 {
 
-  // int used for pastix
-#ifdef INTSIZE64
-  typedef int64_t Int_wp;
-#else
-  typedef int32_t Int_wp;
-#endif
-
   //! general class for direct solver
+  /*!
+    This class will call one of the direct solver interfaced
+    in Seldon (in sequential for Matrix and in distributed
+    for DistributedMatrix). The user can also provide
+    left/right scaling to apply to the matrix before
+    factorization.
+   */
   template<class T>
   class SparseDistributedSolver : public SparseDirectSolver<T>
   {
@@ -23,6 +23,8 @@ namespace Seldon
     Vector<Treal> diagonal_scale_right; //!< right scaling
 
 #ifdef SELDON_WITH_MPI
+    // data associated with distributed matrix
+    // see DistributedMatrix.hxx for a detailed description
     int nodl_scalar_, nb_unknowns_scal_;
     MPI::Comm* comm_;
     IVect* ProcSharingRows_;
@@ -47,17 +49,17 @@ namespace Seldon
     
     void Clear();
 
-    template<class MatrixSparse>
-    void Factorize(MatrixSparse& A, bool keep_matrix = false,
-                   bool scale_matrix = false);
+    template<class Prop0, class Storage0, class Allocator0>
+    void Factorize(Matrix<T, Prop0, Storage0, Allocator0>& A,
+		   bool keep_matrix = false, bool scale_matrix = false);
     
-    template<class T0, class Prop0, class Storage0, class Allocator0>
-    void Factorize(DistributedMatrix<T0, Prop0, Storage0, Allocator0>& A,
+    template<class Prop0, class Storage0, class Allocator0>
+    void Factorize(DistributedMatrix<T, Prop0, Storage0, Allocator0>& A,
                    bool keep_matrix = false, bool scale_matrix = false);
     
-    template<class Vector1>
-    void Solve(Vector1& x_solution, const Vector1& b_rhs);
-    
+    template<class T1>
+    void Solve(Vector<T1>& x_solution, const Vector<T1>& b_rhs);    
+
     template<class T1>
     void Solve(Vector<T1>& x_solution);
 
@@ -66,7 +68,7 @@ namespace Seldon
 
     template<class T1>
     void Solve(const SeldonTranspose&, Vector<T1>& x_solution);
-
+    
     template<class T1>
     void Solve(Matrix<T1, General, ColMajor>& x_solution);    
 
@@ -84,52 +86,6 @@ namespace Seldon
     int64_t GetMemorySize() const;
         
   };
-
-
-#ifdef SELDON_WITH_MPI
-  template<class T>
-  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
-			   SparseDistributedSolver<T>& mat_lu,
-                           Vector<T>& x, Vector<int>& global_col);
-  
-  template<class T>
-  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
-                           SparseDistributedSolver<complex<T> >& mat_lu,
-                           Vector<T>& x, Vector<int>& global_col);
-
-  template<class T>
-  void SolveLU_Distributed(MPI::Comm& comm, const SeldonTranspose& transA,
-			   SparseDistributedSolver<T>& mat_lu,
-                           Vector<complex<T> >& x, Vector<int>& global_col);
-#endif    
-
-  template<class T, class MatrixSparse>
-  void GetLU(SparseDistributedSolver<T>& mat_lu, MatrixSparse& A,
-             bool keep_matrix, bool scale_matrix, T& x_test);
-
-  template<class T, class MatrixSparse, class T0>
-  void GetLU(SparseDistributedSolver<T>& mat_lu, MatrixSparse& A,
-             bool keep_matrix, bool scale_matrix, T0& x_test);
-
-  template<class T, class MatrixSparse>
-  void GetLU(SparseDistributedSolver<T>& mat_lu, MatrixSparse& A,
-             bool keep_matrix = false, bool scale_matrix = false);
-
-  template<class T0, class T1>
-  void SolveLU(SparseDistributedSolver<T0>& mat_lu,
-	       Vector<T1>& x, const Vector<T1>& b);
-
-  template<class T>
-  void SolveLU(SparseDistributedSolver<complex<T> >& mat_lu,
-	       Vector<T>& x, const Vector<T>& b);
-
-  template<class T0, class T1>
-  void SolveLU(SparseDistributedSolver<T0>& mat_lu,
-	       Matrix<T1, General, ColMajor>& x);
-
-  template<class T>
-  void SolveLU(SparseDistributedSolver<complex<T> >& mat_lu,
-	       Matrix<T, General, ColMajor>& x);
   
 }
 

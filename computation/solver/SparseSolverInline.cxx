@@ -22,14 +22,9 @@
 
 #include "SparseSolver.hxx"
 
-#ifdef SELDON_WITH_UMFPACK
-#include "camd.h"
-#include "colamd.h"
-#endif
-
 namespace Seldon
 {
-  
+
   /*************************
    * Default Seldon solver *
    *************************/
@@ -44,6 +39,13 @@ namespace Seldon
   }
   
     
+  template<class T, class Allocator>
+  inline bool SparseSeldonSolver<T, Allocator>::UseInteger8() const
+  {
+    return false;
+  }
+
+
   template<class T, class Allocator>
   inline void SparseSeldonSolver<T, Allocator>::Clear()
   {
@@ -86,6 +88,13 @@ namespace Seldon
     permtol = a;
   }
   
+
+  template<class T, class Allocator>
+  inline int SparseSeldonSolver<T, Allocator>::GetInfoFactorization() const
+  {
+    return 0;
+  }
+
 }  // namespace Seldon.
 
 

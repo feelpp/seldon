@@ -255,6 +255,16 @@ namespace Seldon
     display_info = true;
   }
 
+
+  template<class T>
+  bool MatrixSuperLU_Base<T>::UseInteger8() const  
+  {
+    if (sizeof(int_t) == 8)
+      return true;
+    
+    return false;
+  }
+
   
   //! returns status of factorisation
   template<class T>
@@ -293,9 +303,9 @@ namespace Seldon
 
 
   template<class T>
-  void MatrixSuperLU_Base<T>::SelectOrdering(colperm_t type)
+  void MatrixSuperLU_Base<T>::SelectOrdering(int type)
   {
-    permc_spec = type;
+    permc_spec = (colperm_t) type;
   }
 
 

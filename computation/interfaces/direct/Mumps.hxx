@@ -56,7 +56,7 @@ namespace Seldon
 
   //! object used to solve linear system by calling mumps subroutines
   template<class T>
-  class MatrixMumps
+  class MatrixMumps : public VirtualSparseDirectSolver<T>
   {
   protected :
     int type_ordering; //!< ordering scheme (AMD, Metis, etc)
@@ -84,6 +84,7 @@ namespace Seldon
     MatrixMumps();
     ~MatrixMumps();
 
+    bool UseInteger8() const; 
     void Clear();
 
     void SelectOrdering(int num_ordering);

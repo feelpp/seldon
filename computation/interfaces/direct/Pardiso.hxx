@@ -55,7 +55,7 @@ extern "C"
 namespace Seldon
 {
   template<class T>
-  class MatrixPardiso
+  class MatrixPardiso : public VirtualSparseDirectSolver<T>
   {
   protected :
     void* pt[64]; //!< pointer to Pardiso object
@@ -76,7 +76,8 @@ namespace Seldon
   public :
     MatrixPardiso();
     ~MatrixPardiso();
-    
+
+    bool UseInteger8() const;    
     void Clear();
     
     void SelectOrdering(int type);

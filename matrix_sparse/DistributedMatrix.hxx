@@ -387,17 +387,21 @@ namespace Seldon
       
 
     // functions for assembling matrix
-    template<class Tint>
     void AssembleParallel(Matrix<T, General, ArrayRowSparse>& B, Vector<IVect>& procB,
                           Symmetric& sym, IVect& row_numbers, IVect& local_row_numbers,
-                          Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA,
-                          bool sym_pattern, bool reorder);
-    
-    template<class Tint>
+                          IVect& OverlappedCol, bool sym_pattern, bool reorder);
+
+    template<class Tint>    
+    void ConvertToCSR(Matrix<T, General, ArrayRowSparse>& B, IVect& OverlappedCol,
+		      Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA);
+
     void AssembleParallel(Matrix<T, General, ArrayColSparse>& B, Vector<IVect>& procB,
                           General& prop, IVect& col_numbers, IVect& local_col_numbers,
-                          Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA,
-                          bool sym_pattern, bool reorder);
+                          IVect& OverlappedCol, bool sym_pattern, bool reorder);
+
+    template<class Tint>    
+    void ConvertToCSC(Matrix<T, General, ArrayColSparse>& B, IVect& OverlappedCol,
+		      Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA);
     
     template<class T0, class Allocator0>
     void GetDistributedRows(Matrix<T0, General,

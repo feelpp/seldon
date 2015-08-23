@@ -70,6 +70,18 @@ namespace Seldon
   }
   
 
+  int MatrixCholmod::GetInfoFactorization() const
+  {
+    return 0;
+  }
+  
+
+  bool MatrixCholmod::UseInteger8() const
+  {
+    return false;
+  }
+
+
   void MatrixCholmod::Clear()
   {
     if (n > 0)
@@ -134,17 +146,23 @@ namespace Seldon
   void MatrixCholmod::Solve(const SeldonTranspose& TransA,
                             Vector<double, VectFull, Allocator>& x)
   {
+    Solve(TransA, x.GetData(), 1);
+  }
+
+
+  void MatrixCholmod::Solve(const SeldonTranspose& TransA, double* x_ptr, int nrhs)
+  {
     // Dense right hand side.
     cholmod_dense b_rhs;
-    b_rhs.nrow = x.GetM();
-    b_rhs.ncol = 1;
+    b_rhs.nrow = n;
+    b_rhs.ncol = nrhs;
     b_rhs.nzmax = b_rhs.nrow;
     b_rhs.d = b_rhs.nrow;
-    b_rhs.x = x.GetData();
+    b_rhs.x = x_ptr;
     b_rhs.z = NULL;
     b_rhs.xtype = CHOLMOD_REAL;
     b_rhs.dtype = CHOLMOD_DOUBLE;
-
+    
     cholmod_dense* x_sol, *y;
     if (TransA.Trans())
       {
@@ -158,9 +176,9 @@ namespace Seldon
       }
 
     double* data = reinterpret_cast<double*>(x_sol->x);
-    for (int i = 0; i < x.GetM(); i++)
-      x(i) = data[i];
-
+    for (int i = 0; i < n*nrhs; i++)
+      x_ptr[i] = data[i];
+    
     cholmod_free_dense(&x_sol, &param_chol);
     cholmod_free_dense(&y, &param_chol);
   }

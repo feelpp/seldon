@@ -47,6 +47,27 @@ namespace Seldon
     mat_unsym.Clear();
   }
 
+  
+  template<class cplx, class Allocator>
+  bool IlutPreconditioning<cplx, Allocator>::UseInteger8() const
+  {
+    return false;
+  }
+  
+  
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>::HideMessages()
+  {
+    print_level = 0;
+  }
+  
+  
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>::ShowMessages()
+  {
+    print_level = 1;
+  }
+
 
   template<class cplx, class Allocator>
   int IlutPreconditioning<cplx, Allocator>::GetFactorisationType() const
@@ -92,6 +113,13 @@ namespace Seldon
     return taille;
   }
   
+
+  template<class T, class Allocator>
+  inline int IlutPreconditioning<T, Allocator>::GetInfoFactorization() const
+  {
+    return 0;
+  }
+
   
   template<class cplx, class Allocator>
   void IlutPreconditioning<cplx, Allocator>
@@ -172,7 +200,7 @@ namespace Seldon
 
   template<class cplx, class Allocator>
   void IlutPreconditioning<cplx, Allocator>
-  ::SetPivotThreshold(typename ClassComplexType<cplx>::Treal tol)
+  ::SetPivotThreshold(double tol)
   {
     permtol = tol;
   }
@@ -496,6 +524,21 @@ namespace Seldon
       Solve(z);
   }
 
+
+  template<class cplx, class Allocator>
+  void IlutPreconditioning<cplx, Allocator>
+  ::Solve(const SeldonTranspose& TransA, cplx* x_ptr, int nrhs)
+  {
+    Vector<cplx> x;
+    int n = permutation_row.GetM();
+    for (int k = 0; k < nrhs; k++)
+      {
+	x.SetData(n, &x_ptr[k*n]);
+	Solve(TransA, x);
+	x.Nullify();
+      }
+  }
+  
 
   template<class real, class cplx, class Storage, class Allocator>
   void qsplit_ilut(Vector<cplx, Storage, Allocator>& a, IVect& ind, int first,

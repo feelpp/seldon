@@ -70,6 +70,16 @@ namespace Seldon
 
 
   template<class T>
+  bool MatrixUmfPack_Base<T>::UseInteger8() const  
+  {
+    if (sizeof(umfpack_int_t) == 8)
+      return true;
+    
+    return false;
+  }
+
+
+  template<class T>
   int MatrixUmfPack_Base<T>::GetInfoFactorization() const
   {
     return status_facto;

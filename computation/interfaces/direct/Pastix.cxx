@@ -101,6 +101,16 @@ namespace Seldon
   }
 
 
+  template<class T>
+  bool MatrixPastix<T>::UseInteger8() const  
+  {
+    if (sizeof(pastix_int_t) == 8)
+      return true;
+    
+    return false;
+  }
+
+
   //! Clearing factorization.
   template<class T>
   void MatrixPastix<T>::Clear()
@@ -218,6 +228,13 @@ namespace Seldon
     return taille;
   }
   
+
+  template<class T>
+  int MatrixPastix<T>::GetInfoFactorization() const
+  {
+    return 0;
+  }
+
   
   //! Returning ordering found by Scotch.
   template<class T>

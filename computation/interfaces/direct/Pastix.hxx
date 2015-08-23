@@ -35,7 +35,7 @@ namespace Seldon
 {
 
   template<class T>
-  class MatrixPastix
+  class MatrixPastix : public VirtualSparseDirectSolver<T>
   {
   protected :
     //! pastix structure
@@ -68,6 +68,7 @@ namespace Seldon
     MatrixPastix();
     ~MatrixPastix();
 
+    bool UseInteger8() const;
     void Clear();
 
     void CallPastix(const MPI_Comm&, pastix_int_t* colptr, pastix_int_t* row,
@@ -81,10 +82,11 @@ namespace Seldon
     void SetPermutation(const IVect& permut);
     void SetCholeskyFacto(bool chol);
     
-    void SetPivotThreshold(double eps);
+    void SetPivotThreshold(double);
     void RefineSolution();
     void DoNotRefineSolution();
     int64_t GetMemorySize() const;
+    int GetInfoFactorization() const;
     
     template<class T0, class Prop, class Storage, class Allocator, class Tint>
     void FindOrdering(Matrix<T0, Prop, Storage, Allocator> & mat,

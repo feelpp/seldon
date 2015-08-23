@@ -24,6 +24,137 @@
 
 namespace Seldon
 {
+
+  /*****************************************
+   * Virtual interface with direct solvers *
+   *****************************************/
+
+  
+  //! Destructor
+  template<class T> 
+  VirtualSparseDirectSolver<T>::~VirtualSparseDirectSolver()
+  {
+  }
+
+
+  //! Sets the threshold for pivot
+  template<class T> 
+  void VirtualSparseDirectSolver<T>::SetPivotThreshold(double)
+  {
+    // default method : no pivoting
+  }
+  
+  
+  //! Tells to the direct solver that refinement is required
+  template<class T> 
+  void VirtualSparseDirectSolver<T>::RefineSolution()
+  {
+  }
+  
+  
+  //! Tells to the direct solver that no refinement is required
+  template<class T>
+  void VirtualSparseDirectSolver<T>::DoNotRefineSolution()
+  {
+  }
+    
+  
+  //! Method overloaded in Mumps solver
+  template<class T> 
+  void VirtualSparseDirectSolver<T>::SetCoefficientEstimationNeededMemory(double coef)
+  {
+  }
+  
+  
+  //! Method overloaded in Mumps solver
+  template<class T> 
+  void VirtualSparseDirectSolver<T>
+  ::SetMaximumCoefficientEstimationNeededMemory(double coef)
+  {
+  }
+  
+  
+  //! Method overloaded in Mumps solver
+  template<class T> 
+  void VirtualSparseDirectSolver<T>
+  ::SetIncreaseCoefficientEstimationNeededMemory(double coef)
+  {
+  }
+
+  
+  //! selects ordering to use in the interfaced solver
+  template<class T> 
+  void VirtualSparseDirectSolver<T>::SelectOrdering(int)
+  {
+  }
+
+
+  //! selects ordering to use in parallel for the interfaced solver
+  template<class T> 
+  void VirtualSparseDirectSolver<T>::SelectParallelOrdering(int)
+  {
+  }
+  
+
+  //! gives the ordering array to the interface solver
+  template<class T> 
+  void VirtualSparseDirectSolver<T>::SetPermutation(const Vector<int>&)
+  {
+  }
+  
+
+  //! Sets the number of threads per mpi process
+  template<class T> 
+  void VirtualSparseDirectSolver<T>::SetNumberOfThreadPerNode(int n)
+  {
+  }
+   
+  
+#ifdef SELDON_WITH_MPI
+  //! factorizes a distributed matrix 
+  template<class T> 
+  void VirtualSparseDirectSolver<T>
+  ::FactorizeDistributedMatrix(MPI::Comm& comm_facto, Vector<int>& Ptr,
+			       Vector<int>& IndRow, Vector<T>& Val,
+			       const Vector<int>& glob_number,
+			       bool sym, bool keep_matrix)
+  {
+    // if this method is not overloaded, the computation is stopped
+    cout << "FactorizeDistributedMatrix (32 bits) not present " << endl;
+    cout << "Is it implemented in the chosen solver ?" << endl;
+    cout << "Or the 64 bits version should be called ?" << endl;
+    abort();
+  }
+  
+  
+  //! factorizes a distributed matrix 
+  template<class T> 
+  void VirtualSparseDirectSolver<T>
+  ::FactorizeDistributedMatrix(MPI::Comm& comm_facto, Vector<int64_t>& Ptr,
+			       Vector<int64_t>& IndRow, Vector<T>& Val,
+			       const Vector<int>& glob_number,
+			       bool sym, bool keep_matrix)
+  {
+    // if this method is not overloaded, the computation is stopped
+    cout << "FactorizeDistributedMatrix (64 bits) not present " << endl;
+    cout << "Is it implemented in the chosen solver ?" << endl;
+    cout << "Or the 32 bits version should be called ?" << endl;
+    abort();
+  }
+
+  
+  //! solves a distributed linear system once FactorizedDistributedMatrix
+  //! has been called
+  template<class T> 
+  void VirtualSparseDirectSolver<T>
+  ::SolveDistributed(MPI::Comm& comm_facto, const SeldonTranspose& TransA,
+                     T* x_ptr, int nrhs, const IVect& glob_num)
+  {
+    cout << "SolveDistributed is not present" << endl;
+    cout << "Is it implemented in the chosen solver ?" << endl;
+    abort();
+  }
+#endif
   
   /*************************
    * Default Seldon solver *
@@ -213,6 +344,21 @@ namespace Seldon
 	  }
 	else
 	  Solve(z);
+      }
+  }
+
+  
+  template<class T, class Allocator>
+  void SparseSeldonSolver<T, Allocator>
+  ::Solve(const SeldonTranspose& TransA, T* x_ptr, int nrhs)
+  {
+    Vector<T> x;
+    int n = permutation_row.GetM();
+    for (int k = 0; k < nrhs; k++)
+      {
+	x.SetData(n, &x_ptr[k*n]);
+	Solve(TransA, x);
+	x.Nullify();
       }
   }
   

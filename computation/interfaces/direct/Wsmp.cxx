@@ -105,6 +105,13 @@ namespace Seldon
     Clear();
   }
     
+
+  template<class T>
+  bool MatrixWsmp<T>::UseInteger8() const  
+  {    
+    return false;
+  }
+
   
   template<class T>
   void MatrixWsmp<T>::Clear() 

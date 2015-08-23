@@ -24,7 +24,8 @@ namespace Seldon
 
   template<class T, class Allocator
 	   = typename SeldonDefaultAllocator<ArrayRowSparse, T>::allocator>
-  class IlutPreconditioning : public Preconditioner_Base<T>
+  class IlutPreconditioning : public Preconditioner_Base<T>,
+			      public VirtualSparseDirectSolver<T>
   {
   protected :
     //! Verbosity level.
@@ -64,6 +65,10 @@ namespace Seldon
     IlutPreconditioning();
 
     void Clear();
+    
+    bool UseInteger8() const;
+    void HideMessages();
+    void ShowMessages();
 
     int GetFactorisationType() const;
     int GetFillLevel() const;
@@ -71,6 +76,7 @@ namespace Seldon
     int GetPrintLevel() const;
     int GetPivotBlockInteger() const;
     int64_t GetMemorySize() const;
+    int GetInfoFactorization() const;
 
     void SetFactorisationType(int);
     void SetFillLevel(int);
@@ -86,7 +92,7 @@ namespace Seldon
 
     void SetDroppingThreshold(typename ClassComplexType<T>::Treal);
     void SetDiagonalCoefficient(typename ClassComplexType<T>::Treal);
-    void SetPivotThreshold(typename ClassComplexType<T>::Treal);
+    void SetPivotThreshold(double);
 
     template<class MatrixSparse>
     void FactorizeSymMatrix(const IVect& perm,
@@ -126,6 +132,8 @@ namespace Seldon
     template<class Vector1>
     void Solve(const SeldonTranspose&, Vector1& z);
 
+    void Solve(const SeldonTranspose&, T* x_ptr, int nrhs);
+    
   };
 
   template<class real, class cplx, class Storage, class Allocator>

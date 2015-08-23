@@ -76,6 +76,15 @@ namespace Seldon
   }
 
 
+  template<class T>
+  bool MatrixMumps<T>::UseInteger8() const
+  {
+    // Blas is interfaced with 32 bits integers
+    // so we consider that Mumps is compiled with usual integers
+    return false;
+  }
+
+
   //! Function used to force factorisation when estimated space was too small
   template<class T>
   void MatrixMumps<T>::IterateFacto()

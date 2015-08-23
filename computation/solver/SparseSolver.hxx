@@ -20,19 +20,71 @@
 
 #ifndef SELDON_FILE_COMPUTATION_SPARSESOLVER_HXX
 
-#ifdef SELDON_WITH_PRECONDITIONING
-#include "computation/solver/preconditioner/IlutPreconditioning.hxx"
-#endif
-
 #include "Ordering.hxx"
 
 namespace Seldon
 {
+
+  //! Base class for an interface with a direct solver
+  template<class T>
+  class VirtualSparseDirectSolver
+  {
+  public:
+    virtual ~VirtualSparseDirectSolver();
+    
+    virtual void SetPivotThreshold(double);
+    virtual void RefineSolution();
+    virtual void DoNotRefineSolution();
+    
+    virtual void SetCoefficientEstimationNeededMemory(double coef);
+    virtual void SetMaximumCoefficientEstimationNeededMemory(double coef);
+    virtual void SetIncreaseCoefficientEstimationNeededMemory(double coef);
+
+    virtual void SelectOrdering(int);
+    virtual void SelectParallelOrdering(int);
+    virtual void SetPermutation(const Vector<int>&);
+    virtual void SetNumberOfThreadPerNode(int n);
+    
+#ifdef SELDON_WITH_MPI
+    virtual void 
+    FactorizeDistributedMatrix(MPI::Comm& comm_facto, Vector<int>& Ptr,
+			       Vector<int>& IndRow, Vector<T>& Val,
+			       const Vector<int>& glob_number,
+			       bool sym, bool keep_matrix = false);
+
+    virtual void 
+    FactorizeDistributedMatrix(MPI::Comm& comm_facto, Vector<int64_t>& Ptr,
+			       Vector<int64_t>& IndRow, Vector<T>& Val,
+			       const Vector<int>& glob_number,
+			       bool sym, bool keep_matrix = false);
+    
+    virtual void SolveDistributed(MPI::Comm& comm_facto,
+				  const SeldonTranspose& TransA,
+				  T* x_ptr, int nrhs,
+				  const IVect& glob_num);    
+#endif
+
+
+    // pure virtual methods (must be overloaded)
+
+    // (returns true if using 64-bit integers)
+    virtual bool UseInteger8() const = 0; 
+    virtual int64_t GetMemorySize() const = 0;
+    virtual int GetInfoFactorization() const = 0;
+    
+    virtual void Clear() = 0;
+    virtual void HideMessages() = 0;
+    virtual void ShowMessages() = 0;
+    
+    virtual void Solve(const SeldonTranspose&, T* x_ptr, int nrhs) = 0;
+    
+  };
+  
   
   //! Default solver in Seldon
   template<class T, class Allocator 
 	   = typename SeldonDefaultAllocator<ArrayRowSparse, T>::allocator>
-  class SparseSeldonSolver
+  class SparseSeldonSolver : public VirtualSparseDirectSolver<T>
   {
   protected :
     //! Verbosity level
@@ -52,6 +104,7 @@ namespace Seldon
     
     SparseSeldonSolver();
     
+    bool UseInteger8() const;
     void Clear();
     
     void HideMessages();
@@ -59,6 +112,7 @@ namespace Seldon
     int GetPrintLevel() const;
     
     int64_t GetMemorySize() const;
+    int GetInfoFactorization() const;
     
     double GetPivotThreshold() const;
     void SetPivotThreshold(const double&);
@@ -78,6 +132,8 @@ namespace Seldon
 
     template<class T1>
     void Solve(const SeldonTranspose& TransA, Vector<T1>& z);
+
+    void Solve(const SeldonTranspose&, T* x_ptr, int nrhs);
     
   };
 

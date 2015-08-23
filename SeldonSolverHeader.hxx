@@ -31,6 +31,8 @@
 #include "computation/solver/iterative/Iterative.hxx"
 
 // interfaces with direct solvers
+#include "computation/solver/SparseSolver.hxx"
+
 #ifdef SELDON_WITH_MUMPS
 #include "computation/interfaces/direct/Mumps.hxx"
 #endif
@@ -55,12 +57,11 @@
 #include "computation/interfaces/direct/Wsmp.hxx"
 #endif
 
-#include "computation/solver/SparseSolver.hxx"
-#include "computation/interfaces/direct/SparseDirectSolver.hxx"
-
 #ifdef SELDON_WITH_PRECONDITIONING
 #include "SeldonPreconditionerHeader.hxx"
 #endif
+
+#include "computation/interfaces/direct/SparseDirectSolver.hxx"
 
 // Cholesky Solver
 #ifdef SELDON_WITH_CHOLMOD

@@ -23,6 +23,7 @@ extern "C"
 {
 #include "umfpack.h"
 #include "colamd.h"
+#include "camd.h"
 }
 
 #ifdef UMFPACK_INTSIZE64
@@ -36,7 +37,7 @@ namespace Seldon
 {
   //!< base class to solve linear system by using UmfPack
   template<class T>
-  class MatrixUmfPack_Base
+  class MatrixUmfPack_Base : public VirtualSparseDirectSolver<T>
   {
   public :
     Vector<double> Control, Info; //!< parameters for UmfPack
@@ -52,6 +53,7 @@ namespace Seldon
     void HideMessages();
     void ShowMessages();
     void ShowFullHistory();
+    bool UseInteger8() const;
 
     int GetInfoFactorization() const;
     int64_t GetMemorySize() const;

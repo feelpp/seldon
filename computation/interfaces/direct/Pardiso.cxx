@@ -45,7 +45,17 @@ namespace Seldon
     Clear();
   }
   
-  
+
+  template<class T>
+  bool MatrixPardiso<T>::UseInteger8() const  
+  {
+    if (sizeof(pardiso_int_t) == 8)
+      return true;
+    
+    return false;
+  }
+
+
   //! LU factorization is cleared
   template<class T>
   void MatrixPardiso<T>::Clear()

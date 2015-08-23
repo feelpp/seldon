@@ -458,6 +458,9 @@ namespace Seldon
 #ifdef SELDON_WITH_PASTIX
     type_solver = PASTIX;
 #endif
+    
+    solver = NULL;
+    InitSolver();
   }
   
   
@@ -466,15 +469,8 @@ namespace Seldon
   void SparseCholeskySolver<T>::HideMessages()
   {
     print_level = -1;
-    
-#ifdef SELDON_WITH_CHOLMOD
-    mat_chol.HideMessages();
-#endif
-
-#ifdef SELDON_WITH_PASTIX
-    mat_pastix.HideMessages();
-#endif
-    
+    if (solver != NULL)
+      solver->HideMessages();
   }
   
   
@@ -483,15 +479,8 @@ namespace Seldon
   void SparseCholeskySolver<T>::ShowMessages()
   {
     print_level = 1;
-
-#ifdef SELDON_WITH_CHOLMOD
-    mat_chol.ShowMessages();
-#endif
-
-#ifdef SELDON_WITH_PASTIX
-    mat_pastix.ShowMessages();
-#endif
-    
+    if (solver != NULL)
+      solver->ShowMessages();
   }
   
   
@@ -500,15 +489,8 @@ namespace Seldon
   void SparseCholeskySolver<T>::ShowFullHistory()
   {
     print_level = 3;
-
-#ifdef SELDON_WITH_CHOLMOD
-    mat_chol.ShowMessages();
-#endif
-    
-#ifdef SELDON_WITH_PASTIX
-    mat_pastix.ShowFullHistory();
-#endif
-
+    if (solver != NULL)
+      solver->ShowMessages();
   }
     
   
@@ -519,14 +501,8 @@ namespace Seldon
     if (n > 0)
       {
 	n = 0;
-	
-#ifdef SELDON_WITH_CHOLMOD
-	mat_chol.Clear();
-#endif
-	
-#ifdef SELDON_WITH_PASTIX
-    mat_pastix.Clear();
-#endif
+	if (solver != NULL)
+	  solver->Clear();
 
         mat_sym.Clear();
       }    
@@ -555,12 +531,9 @@ namespace Seldon
   {
     int64_t taille = mat_sym.GetMemorySize();
     taille += xtmp.GetMemorySize();
-#ifdef SELDON_WITH_CHOLMOD
-    taille += mat_chol.GetMemorySize();
-#endif
-#ifdef SELDON_WITH_PASTIX
-    taille += mat_pastix.GetMemorySize();
-#endif
+    if (solver != NULL)
+      taille += solver->GetMemorySize();
+
     return taille;
   }
   
@@ -595,6 +568,7 @@ namespace Seldon
   void SparseCholeskySolver<T>::SelectDirectSolver(int type)
   {
     type_solver = type;
+    InitSolver();
   }
   
   
@@ -604,11 +578,45 @@ namespace Seldon
   {
     return type_solver;
   }
+
+
+  template<class T>
+  void SparseCholeskySolver<T>::InitSolver()
+  {
+    if (solver != NULL)
+      delete solver;
+    
+    if (type_solver == CHOLMOD)
+      {
+#ifdef SELDON_WITH_CHOLMOD
+	solver = new MatrixCholmod();
+#else
+	cout << "Seldon compiled without Cholmod support" << endl;
+	cout << "SELDON_WITH_CHOLMOD is not defined" << endl;
+#endif
+      }
+    else if (type_solver == PASTIX)
+      {
+#ifdef SELDON_WITH_PASTIX
+	solver = new MatrixPastix<T>();
+#else
+	cout << "Seldon compiled without Cholmod support" << endl;
+	cout << "SELDON_WITH_CHOLMOD is not defined" << endl;
+#endif
+      }
+    else
+      {
+	// Seldon solver stored in mat_sym
+	solver = NULL;	
+      }
+  }
     
   
   //! Performs Cholesky factorization.
-  template<class T> template<class MatrixSparse>
-  void SparseCholeskySolver<T>::Factorize(MatrixSparse& A, bool keep_matrix)
+  template<class T>
+  template<class Prop, class Storage, class Allocator>
+  void SparseCholeskySolver<T>::
+  Factorize(Matrix<T, Prop, Storage, Allocator>& A, bool keep_matrix)
   {    
     n = A.GetM();    
     if (type_solver == CHOLMOD)
@@ -616,7 +624,10 @@ namespace Seldon
 #ifdef SELDON_WITH_CHOLMOD
         if (print_level >= 1)
           cout << "Calling Cholmod to factorize the matrix" << endl;
-        
+	
+	MatrixCholmod& mat_chol = 
+	  dynamic_cast<MatrixCholmod&>(*this->solver);
+	
 	mat_chol.FactorizeMatrix(A, keep_matrix);
 #else
 	throw Error("SparseCholeskySolver::Factorize",
@@ -628,6 +639,9 @@ namespace Seldon
 #ifdef SELDON_WITH_PASTIX
         if (print_level >= 1)
           cout << "Calling Pastix to factorize the matrix" << endl;
+
+	MatrixPastix<T>& mat_pastix = 
+	  dynamic_cast<MatrixPastix<T>&>(*this->solver);
         
         GetCholesky(A, mat_pastix, keep_matrix);
 #else
@@ -651,13 +665,16 @@ namespace Seldon
    
   
   //! Solves L x = b or L^T x = b.
-  template<class T> template<class Vector1>
+  template<class T> template<class T1>
   void SparseCholeskySolver<T>
-  ::Solve(const SeldonTranspose& TransA, Vector1& x_solution)
+  ::Solve(const SeldonTranspose& TransA, Vector<T1>& x_solution)
   {
     if (type_solver == CHOLMOD)
       {
 #ifdef SELDON_WITH_CHOLMOD
+	MatrixCholmod& mat_chol = 
+	  dynamic_cast<MatrixCholmod&>(*this->solver);
+	
 	mat_chol.Solve(TransA, x_solution);
 #else
 	throw Error("SparseCholeskySolver::Solve",
@@ -667,6 +684,9 @@ namespace Seldon
     else if (type_solver == PASTIX)
       {
 #ifdef SELDON_WITH_PASTIX
+	MatrixPastix<T>& mat_pastix = 
+	  dynamic_cast<MatrixPastix<T>&>(*this->solver);
+
         SolveCholesky(TransA, mat_pastix, x_solution);
 #else
 	throw Error("SparseCholeskySolver::Solve",
@@ -696,13 +716,16 @@ namespace Seldon
   
   
   //! Computes L x or L^T.
-  template<class T> template<class Vector1>
+  template<class T> template<class T1>
   void SparseCholeskySolver<T>
-  ::Mlt(const SeldonTranspose& TransA, Vector1& x_solution)
+  ::Mlt(const SeldonTranspose& TransA, Vector<T1>& x_solution)
   {
     if (type_solver == CHOLMOD)
       {
 #ifdef SELDON_WITH_CHOLMOD
+	MatrixCholmod& mat_chol = 
+	  dynamic_cast<MatrixCholmod&>(*this->solver);
+
 	mat_chol.Mlt(TransA, x_solution);
 #else
 	throw Error("SparseCholeskySolver::Mlt",
@@ -712,6 +735,9 @@ namespace Seldon
     else if (type_solver == PASTIX)
       {
 #ifdef SELDON_WITH_PASTIX
+	MatrixPastix<T>& mat_pastix = 
+	  dynamic_cast<MatrixPastix<T>&>(*this->solver);
+
         MltCholesky(TransA, mat_pastix, x_solution);
 #else
 	throw Error("SparseCholeskySolver::Mlt",

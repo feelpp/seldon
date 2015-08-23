@@ -55,7 +55,7 @@ namespace Seldon
 {
 
   template<class T>
-  class MatrixWsmp
+  class MatrixWsmp : public VirtualSparseDirectSolver<T>
   {
   protected:    
     int n;
@@ -75,7 +75,8 @@ namespace Seldon
   public:
     MatrixWsmp();
     ~MatrixWsmp();
-    
+
+    bool UseInteger8() const;
     void Clear();
     
     void ShowMessages();
