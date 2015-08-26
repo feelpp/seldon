@@ -79,9 +79,10 @@ namespace Seldon
     lost.
   */
   template <class T, class Allocator>
-  void Vector<T, VectSparse, Allocator>::Reallocate(int i)
+  void Vector<T, VectSparse, Allocator>::ReallocateVector(int i)
   {
-
+    // function implemented in the aim that explicit specialization
+    // of Reallocate can call ReallocateVector
     if (i != this->m_)
       {
 

@@ -98,6 +98,20 @@ namespace Seldon
   }
 
 
+  //! Vector reallocation.
+  /*!
+    The vector is resized.
+    \param i new length of the vector.
+    \warning Depending on your allocator, previous non-zero entries may be
+    lost.
+  */
+  template <class T, class Allocator>
+  inline void Vector<T, VectSparse, Allocator>::Reallocate(int i)
+  {
+    ReallocateVector(i);
+  }
+
+
   /**************
    * DESTRUCTOR *
    **************/

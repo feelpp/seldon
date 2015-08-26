@@ -367,7 +367,22 @@ namespace Seldon
   template <class T, class Allocator>
   inline void Vector<T, VectFull, Allocator>::Reallocate(int i)
   {
+    ReallocateVector(i);
+  }
 
+
+  //! Vector reallocation.
+  /*!
+    The vector is resized.
+    \param i new length of the vector.
+    \warning Depending on your allocator, initial elements of the vector may
+    be lost.
+  */
+  template <class T, class Allocator>
+  inline void Vector<T, VectFull, Allocator>::ReallocateVector(int i)
+  {
+    // function implemented in the aim that explicit specialization
+    // of Reallocate can call ReallocateVector
     if (i != this->m_)
       {
 

@@ -112,6 +112,7 @@ namespace Seldon
 
     // Memory management.
     void Reallocate(int i);
+    void ReallocateVector(int i);
     void Resize(int i);
     void ResizeVector(int i);
     void SetData(int i, pointer data);
