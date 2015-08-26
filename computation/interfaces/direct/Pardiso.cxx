@@ -331,6 +331,10 @@ namespace Seldon
       return;
     
     Matrix<T, General, ColMajor> b(size_matrix, nrhs_);
+    for (int i = 0; i < size_matrix; i++)
+      for (int j = 0; j < nrhs_; j++)
+        b(i, j) = x_ptr[i+j*size_matrix];
+    
     pardiso_int_t nrhs = nrhs_;      
     
     pardiso_int_t phase = 33, error;

@@ -51,11 +51,11 @@ namespace superlu
 #else
   
   void
-  dCreate_CompCol_Matrix(SuperMatrix *, int, int, int, double *,
-                         int *, int *, Stype_t, Dtype_t, Mtype_t);
+  dCreate_CompCol_Matrix(SuperMatrix *, int_t, int_t, int_t, double *,
+                         int_t *, int_t *, Stype_t, Dtype_t, Mtype_t);
   
   void
-  dCreate_Dense_Matrix(SuperMatrix *, int, int, double *, int,
+  dCreate_Dense_Matrix(SuperMatrix *, int_t, int_t, double *, int_t,
                        Stype_t, Dtype_t, Mtype_t);
     
 #ifdef SELDON_WITH_SUPERLU_MT

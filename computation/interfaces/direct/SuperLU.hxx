@@ -19,7 +19,22 @@
 
 #ifndef SELDON_FILE_SUPERLU_HXX
 
+#ifdef SUPERLU_INTSIZE64
+#define _LONGINT
+#endif
+
 #include "superlu_interface.h"
+
+// here superlu_int_t is introduced in order to use
+// int64_t instead of long int which are different types
+// In SparseDistributedSolver int64_t is used, hence
+// this need of int64_t
+#ifdef SUPERLU_INTSIZE64
+#define superlu_int_t int64_t
+#undef _LONGINT
+#else
+#define superlu_int_t int
+#endif
 
 namespace Seldon
 {
@@ -78,7 +93,7 @@ namespace Seldon
     int_t n; //!< number of rows
     bool display_info; //!< display information about factorization ?
     //! Error code returned by SuperLU.
-    int_t info_facto;
+    int info_facto;
 
   public :
     MatrixSuperLU_Base();
@@ -87,7 +102,7 @@ namespace Seldon
     const Vector<int_t>& GetRowPermutation() const;
     const Vector<int_t>& GetColPermutation() const;
 
-    void Init(int_t size, int_t& panel_size, int_t& relax);
+    void Init(int size, int_t& panel_size, int_t& relax);
     void SetNumberOfThreadPerNode(int p);
     
     void SelectOrdering(int type);
@@ -134,7 +149,7 @@ namespace Seldon
     void FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
-    void FactorizeCSC(Vector<int_t>& Ptr, Vector<int_t>& IndRow,
+    void FactorizeCSC(Vector<superlu_int_t>& Ptr, Vector<superlu_int_t>& IndRow,
 		      Vector<double>& Val, bool sym);
 
     template<class Allocator2>
@@ -156,7 +171,7 @@ namespace Seldon
 
 #ifdef SELDON_WITH_SUPERLU_DIST
     void FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                                    Vector<int_t>&, Vector<int_t>&,
+                                    Vector<superlu_int_t>&, Vector<superlu_int_t>&,
                                     Vector<double>&,
                                     const Vector<int>& glob_num,
                                     bool sym, bool keep_matrix = false);
@@ -211,7 +226,7 @@ namespace Seldon
 			 Storage, Allocator> & mat,
 			 bool keep_matrix = false);
 
-    void FactorizeCSC(Vector<int_t>& Ptr, Vector<int_t>& IndRow,
+    void FactorizeCSC(Vector<superlu_int_t>& Ptr, Vector<superlu_int_t>& IndRow,
 		      Vector<complex<double> >& Val, bool sym);
     
     template<class Allocator2>
@@ -233,7 +248,7 @@ namespace Seldon
 
 #ifdef SELDON_WITH_SUPERLU_DIST
     void FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                                    Vector<int_t>&, Vector<int_t>&,
+                                    Vector<superlu_int_t>&, Vector<superlu_int_t>&,
                                     Vector<complex<double> >&,
                                     const Vector<int>& glob_num,
                                     bool sym, bool keep_matrix = false);

@@ -3699,7 +3699,7 @@ namespace Seldon
   ::ConvertToCSR(Matrix<T, General, ArrayRowSparse>& B, IVect& OverlappedCol,
 		 Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA)
   {
-    int m = this->GetLocalM();
+    int m = B.GetM();
     int nloc = 0;
     for (int i = 0; i < m; i++)
       if (OverlappedCol(i) == -1)
@@ -4342,7 +4342,7 @@ namespace Seldon
   ::ConvertToCSC(Matrix<T, General, ArrayColSparse>& B, IVect& OverlappedCol,
 		 Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA)
   {  
-    int n = this->GetLocalN();
+    int n = B.GetN();
     int nloc = 0;
     for (int i = 0; i < n; i++)
       if (OverlappedCol(i) == -1)
@@ -4666,6 +4666,14 @@ namespace Seldon
   {
     Matrix<T, Prop, Storage, Allocator>::Clear();
     DistributedMatrix_Base<T>::Clear();
+  }
+
+
+  //! Clears the local matrix
+  template<class T, class Prop, class Storage, class Allocator>
+  void DistributedMatrix<T, Prop, Storage, Allocator>::ClearLocal()
+  {
+    Matrix<T, Prop, Storage, Allocator>::Clear();
   }
 
 
@@ -5921,8 +5929,8 @@ namespace Seldon
     \param[out] ValA values
     \param[in] sym_pattern not used
    */
-  template<class MatrixSparse, class Tint, class T>
-  void AssembleDistributed(MatrixSparse& A,
+  template<class Prop, class Storage, class Alloc, class Tint, class T>
+  void AssembleDistributed(DistributedMatrix<T, Prop, Storage, Alloc>& A,
 			   Symmetric& sym, const MPI::Comm& comm,
                            IVect& row_numbers, IVect& local_row_numbers,
 			   Vector<Tint>& PtrA, Vector<Tint>& IndA,
@@ -5937,6 +5945,9 @@ namespace Seldon
       procB.Reallocate(A.GetM());
     
     A.GetDistributedRows(B, procB);
+    
+    // local matrix is cleared
+    A.ClearLocal();
     
     // then calling AssembleParallel
     IVect OverlappedCol;
@@ -5961,8 +5972,8 @@ namespace Seldon
     \param[in] sym_pattern if true,
     the pattern of the unsymmetric matrix is symmetrized
    */
-  template<class MatrixSparse, class Tint, class T>
-  void AssembleDistributed(MatrixSparse& A,
+  template<class Prop, class Storage, class Alloc, class Tint, class T>
+  void AssembleDistributed(DistributedMatrix<T, Prop, Storage, Alloc>& A,
 			   General& prop, const MPI::Comm& comm,
                            IVect& col_numbers, IVect& local_col_numbers,
                            Vector<Tint>& PtrA, Vector<Tint>& IndA,
@@ -5977,7 +5988,10 @@ namespace Seldon
       procB.Reallocate(A.GetN());
 
     A.GetDistributedColumns(B, procB, sym_pattern);
-    
+
+    // local matrix is cleared
+    A.ClearLocal();
+        
     // then AssembleParallel is called
     IVect OverlappedCol;
     A.AssembleParallel(B, procB, prop, col_numbers, local_col_numbers,

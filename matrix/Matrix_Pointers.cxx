@@ -863,7 +863,7 @@ namespace Seldon
     // Now reads all other rows, and puts them in a single vector.
     Vector<T> other_row;
     other_row.ReadText(FileStream);
-
+    
     // Number of rows and columns.
     int n = first_row.GetM();
     int m = 1 + other_row.GetM() / n;

@@ -574,8 +574,8 @@ namespace Seldon
 
 	// Determines next pivot.
         int imax = i_row;
-        double xmax = abs(Row_Val(imax));
-        double xmax0 = xmax;
+        Treal xmax = abs(Row_Val(imax));
+        Treal xmax0 = xmax;
         for (k = i_row + 1; k <= i_row + length - 1; k++)
           {
             tnorm = abs(Row_Val(k));

@@ -392,16 +392,16 @@ namespace Seldon
                           IVect& OverlappedCol, bool sym_pattern, bool reorder);
 
     template<class Tint>    
-    void ConvertToCSR(Matrix<T, General, ArrayRowSparse>& B, IVect& OverlappedCol,
-		      Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA);
+    static void ConvertToCSR(Matrix<T, General, ArrayRowSparse>& B, IVect& OverlappedCol,
+                             Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA);
 
     void AssembleParallel(Matrix<T, General, ArrayColSparse>& B, Vector<IVect>& procB,
                           General& prop, IVect& col_numbers, IVect& local_col_numbers,
                           IVect& OverlappedCol, bool sym_pattern, bool reorder);
 
     template<class Tint>    
-    void ConvertToCSC(Matrix<T, General, ArrayColSparse>& B, IVect& OverlappedCol,
-		      Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA);
+    static void ConvertToCSC(Matrix<T, General, ArrayColSparse>& B, IVect& OverlappedCol,
+                             Vector<Tint>& PtrA, Vector<Tint>& IndA, Vector<T>& ValA);
     
     template<class T0, class Allocator0>
     void GetDistributedRows(Matrix<T0, General,
@@ -452,6 +452,7 @@ namespace Seldon
     void Reallocate(int m, int n);
     void Resize(int m, int n);
     void Clear();
+    void ClearLocal();
     
     // basic functions
     template<class Prop2, class Storage2, class Allocator2>
@@ -789,15 +790,15 @@ namespace Seldon
                    const Vector<T1, VectFull, Allocator1>& Drow,
                    const Vector<T2, VectFull, Allocator2>& Dcol);
 
-  template<class MatrixSparse, class Tint, class T>
-  void AssembleDistributed(MatrixSparse& A,
+  template<class Prop, class Storage, class Alloc, class Tint, class T>
+  void AssembleDistributed(DistributedMatrix<T, Prop, Storage, Alloc>& A,
 			   Symmetric& sym, const MPI::Comm& comm,
                            IVect& row_numbers, IVect& local_row_numbers,
 			   Vector<Tint>& PtrA, Vector<Tint>& IndA,
                            Vector<T>& ValA, bool sym_pattern, bool reorder = false);
 
-  template<class MatrixSparse, class Tint, class T>
-  void AssembleDistributed(MatrixSparse& A,
+  template<class Prop, class Storage, class Alloc, class Tint, class T>
+  void AssembleDistributed(DistributedMatrix<T, Prop, Storage, Alloc>& A,
 			   General& prop, const MPI::Comm& comm,
                            IVect& col_numbers, IVect& local_col_numbers,
                            Vector<Tint>& PtrA, Vector<Tint>& IndA,

@@ -380,7 +380,7 @@ namespace Seldon
   {
     if (solver != NULL)
       delete solver;
-
+    
     switch (type_solver)
       {
       case SUPERLU:

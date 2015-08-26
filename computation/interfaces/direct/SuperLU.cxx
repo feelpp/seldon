@@ -313,7 +313,10 @@ namespace Seldon
   void MatrixSuperLU_Base<T>::SetPermutation(const IVect& permut)
   {
     permc_spec = superlu::MY_PERMC;
-    perm_c = permut;
+    perm_c.Reallocate(permut.GetM());
+    for (int i = 0; i < permut.GetM(); i++)
+      perm_c(i) = permut(i);
+    
     perm_r.Reallocate(perm_c.GetM());
     perm_r.Fill();
   }
@@ -458,7 +461,7 @@ namespace Seldon
 
     // conversion in CSC format
     General prop;
-    Vector<int_t> Ptr, IndRow;
+    Vector<superlu_int_t> Ptr, IndRow;
     Vector<double> Val;
 
     ConvertToCSC(mat, prop, Ptr, IndRow, Val, false);
@@ -471,7 +474,7 @@ namespace Seldon
   
   //! factorization of matrix given in CSC form
   void MatrixSuperLU<double>
-  ::FactorizeCSC(Vector<int_t>& Ptr, Vector<int_t>& IndRow,
+  ::FactorizeCSC(Vector<superlu_int_t>& Ptr, Vector<superlu_int_t>& IndRow,
 		 Vector<double>& Val, bool sym)
   {  
     // initializing parameters
@@ -481,8 +484,10 @@ namespace Seldon
 
     superlu::SuperMatrix AA;
     int_t nnz = IndRow.GetM();
-    superlu::dCreate_CompCol_Matrix(&AA, n, n, nnz, Val.GetData(), IndRow.GetData(),
-                                    Ptr.GetData(), superlu::SLU_NC,
+    superlu::dCreate_CompCol_Matrix(&AA, n, n, nnz, Val.GetData(),
+                                    reinterpret_cast<int_t*>(IndRow.GetData()),
+                                    reinterpret_cast<int_t*>(Ptr.GetData()),
+                                    superlu::SLU_NC,
                                     superlu::SLU_D, superlu::SLU_GE);
 
     // we get renumbering vectors perm_r and perm_c
@@ -506,8 +511,10 @@ namespace Seldon
                           perm_c.GetData(), perm_r.GetData(),
                           NULL, lwork, &AA, &AC, &options, &stat);
     
-    superlu::pdgstrf(&options, &AC, perm_r.GetData(), &L, &U, &stat, &info_facto);
+    int_t info;
+    superlu::pdgstrf(&options, &AC, perm_r.GetData(), &L, &U, &stat, &info);
     
+    info_facto = info;
     superlu::pxgstrf_finalize(&options, &AC);
     
     if (info_facto == 0 && display_info)
@@ -642,7 +649,7 @@ namespace Seldon
   FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 		  bool keep_matrix)
   {
-    Vector<int_t> Ptr, IndRow;
+    Vector<superlu_int_t> Ptr, IndRow;
     Vector<double> Val; General prop;
     ConvertToCSC(mat, prop, Ptr, IndRow, Val, false);
     if (!keep_matrix)
@@ -653,7 +660,7 @@ namespace Seldon
 
   
   void MatrixSuperLU<double>
-  ::FactorizeCSC(Vector<int_t>& Ptr, Vector<int_t>& IndRow,
+  ::FactorizeCSC(Vector<superlu_int_t>& Ptr, Vector<superlu_int_t>& IndRow,
 		 Vector<double>& Val, bool sym)
   {  
     Vector<int> glob_num(1);
@@ -712,7 +719,7 @@ namespace Seldon
 
   void MatrixSuperLU<double>::
   FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                             Vector<int_t>& Ptr, Vector<int_t>& Row,
+                             Vector<superlu_int_t>& Ptr, Vector<superlu_int_t>& Row,
                              Vector<double>& Val, const Vector<int>& glob_num,
                              bool sym, bool keep_matrix)
   {
@@ -961,7 +968,7 @@ namespace Seldon
 
     // conversion in CSC format
     General prop;
-    Vector<int_t> Ptr, IndRow;
+    Vector<superlu_int_t> Ptr, IndRow;
     Vector<complex<double> > Val;
 
     ConvertToCSC(mat, prop, Ptr, IndRow, Val, false);
@@ -973,7 +980,7 @@ namespace Seldon
 
   
   void MatrixSuperLU<complex<double> >
-  ::FactorizeCSC(Vector<int_t>& Ptr, Vector<int_t>& IndRow,
+  ::FactorizeCSC(Vector<superlu_int_t>& Ptr, Vector<superlu_int_t>& IndRow,
 		 Vector<complex<double> >& Val, bool sym)
   {
     // initializing parameters
@@ -986,7 +993,8 @@ namespace Seldon
     superlu::
       zCreate_CompCol_Matrix(&AA, n, n, nnz,
                              reinterpret_cast<superlu::doublecomplex*>(Val.GetData()),
-                             IndRow.GetData(), Ptr.GetData(),
+                             reinterpret_cast<int_t*>(IndRow.GetData()),
+                             reinterpret_cast<int_t*>(Ptr.GetData()),
                              superlu::SLU_NC, superlu::SLU_Z, superlu::SLU_GE);
 
     // We get renumbering vectors perm_r and perm_c.
@@ -1013,9 +1021,11 @@ namespace Seldon
                    perm_c.GetData(), perm_r.GetData(),
                    NULL, lwork, &AA, &AC, &options, &stat);
     
+    int_t info;
     superlu::
-      pzgstrf(&options, &AC, perm_r.GetData(), &L, &U, &stat, &info_facto);
+      pzgstrf(&options, &AC, perm_r.GetData(), &L, &U, &stat, &info);
     
+    info_facto = info;
     superlu::pxgstrf_finalize(&options, &AC);
 
     if (info_facto == 0 && display_info)
@@ -1155,7 +1165,7 @@ namespace Seldon
   FactorizeMatrix(Matrix<T0, Prop, Storage, Allocator> & mat,
 		  bool keep_matrix)
   {
-    Vector<int_t> Ptr, IndRow;
+    Vector<superlu_int_t> Ptr, IndRow;
     Vector<complex<double> > Val; General prop;
     ConvertToCSC(mat, prop, Ptr, IndRow, Val, false);
     if (!keep_matrix)
@@ -1166,7 +1176,7 @@ namespace Seldon
 
 
   void MatrixSuperLU<complex<double> >
-  ::FactorizeCSC(Vector<int_t>& Ptr, Vector<int_t>& IndRow,
+  ::FactorizeCSC(Vector<superlu_int_t>& Ptr, Vector<superlu_int_t>& IndRow,
 		 Vector<complex<double> >& Val, bool sym)
   {  
     Vector<int> glob_num(1);
@@ -1230,9 +1240,9 @@ namespace Seldon
 
   void MatrixSuperLU<complex<double> >::
   FactorizeDistributedMatrix(MPI::Comm& comm_facto,
-                             Vector<int_t>& Ptr, Vector<int_t>& Row,
+                             Vector<superlu_int_t>& Ptr, Vector<superlu_int_t>& Row,
                              Vector<complex<double> >& Val,
-                             const Vector<int_t>& glob_num,
+                             const Vector<int>& glob_num,
                              bool sym, bool keep_matrix)
   {
     // previous factorization is cleared if present
@@ -1270,7 +1280,9 @@ namespace Seldon
     superlu::
       zCreate_CompRowLoc_Matrix_dist(&A, n, n, nnz_loc, m_loc, fst_row,
                                      reinterpret_cast<superlu::doublecomplex*>
-                                     (Val.GetData()), Row.GetData(), Ptr.GetData(), 
+                                     (Val.GetData()),
+                                     reinterpret_cast<int_t*>(Row.GetData()),
+                                     reinterpret_cast<int_t*>(Ptr.GetData()), 
                                      superlu::SLU_NR_loc, superlu::SLU_Z,
                                      superlu::SLU_GE);
     
@@ -1324,7 +1336,7 @@ namespace Seldon
        
     // TRANS does not work, we put NOTRANS
     options.Trans = superlu::NOTRANS;
-    int_t nrhs = nrhs_, info;
+    int_t nrhs = nrhs_; int info;
     Vector<double> berr(nrhs_);
     superlu::
       pzgssvx(&options, &A, &ScalePermstruct,
