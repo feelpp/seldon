@@ -462,7 +462,7 @@ namespace Seldon
     int ma = A.GetM();
     float zero(0), one(1);
     if (alpha == zero)
-      Y.Fill(zero);
+      Y.Zero();
     else
       {
         mkl_cspblas_scsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
@@ -489,7 +489,7 @@ namespace Seldon
     int ma = A.GetM();
     double zero(0), one(1);
     if (alpha == zero)
-      Y.Fill(zero);
+      Y.Zero();
     else
       {
         mkl_cspblas_dcsrgemv(&transA, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
@@ -516,7 +516,7 @@ namespace Seldon
     int ma = A.GetM();
     complex<float> zero(0, 0), one(1, 0);
     if (alpha == zero)
-      Y.Fill(zero);
+      Y.Zero();
     else
       {
         mkl_cspblas_ccsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
@@ -543,7 +543,7 @@ namespace Seldon
     int ma = A.GetM();
     complex<double> zero(0, 0), one(1, 0);
     if (alpha == zero)
-      Y.Fill(zero);
+      Y.Zero();
     else
       {
         mkl_cspblas_zcsrgemv(&transA, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
@@ -570,7 +570,7 @@ namespace Seldon
     int ma = A.GetM();
     float zero(0), one(1);
     if (alpha == zero)
-      Y.Fill(zero);
+      Y.Zero();
     else
       {
         mkl_cspblas_scsrsymv(&uplo, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
@@ -597,7 +597,7 @@ namespace Seldon
     int ma = A.GetM();
     double zero(0), one(1);
     if (alpha == zero)
-      Y.Fill(zero);
+      Y.Zero();
     else
       {
         mkl_cspblas_dcsrsymv(&uplo, &ma, A.GetData(), A.GetPtr(), A.GetInd(),
@@ -624,7 +624,7 @@ namespace Seldon
     int ma = A.GetM();
     complex<float> zero(0, 0), one(1, 0);
     if (alpha == zero)
-      Y.Fill(zero);
+      Y.Zero();
     else
       {
         mkl_cspblas_ccsrsymv(&uplo, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),
@@ -651,7 +651,7 @@ namespace Seldon
     int ma = A.GetM();
     complex<double> zero(0, 0), one(1, 0);
     if (alpha == zero)
-      Y.Fill(zero);
+      Y.Zero();
     else
       {
         mkl_cspblas_zcsrsymv(&uplo, &ma, A.GetDataVoid(), A.GetPtr(), A.GetInd(),

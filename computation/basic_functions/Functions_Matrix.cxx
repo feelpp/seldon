@@ -371,10 +371,8 @@ namespace Seldon
     int m = A.GetM();
     int n = A.GetN();
 
-    T2 zero;
-    SetComplexZero(zero);
     C.Reallocate(A.GetM(), B.GetN());
-    C.Fill(zero);
+    C.Zero();
 
     for (int i = 0; i < m; i++)
       {
@@ -413,11 +411,9 @@ namespace Seldon
              "Matrix<RowSparse>& B, Matrix<RowMajor>& C)");
 #endif
     
-    T2 zero;
-    SetComplexZero(zero);
     int m = A.GetM();
     C.Reallocate(A.GetM(), B.GetM());
-    C.Fill(zero);
+    C.Zero();
     for (int i = 0; i < m; i++)
       {
         for (int j = 0; j < B.GetM(); j++)
@@ -724,7 +720,7 @@ namespace Seldon
 	  MltScalar(beta, C);
       }
     else
-      C.Fill(zero);
+      C.Zero();
     
     if (TransB.NoTrans())
       {
@@ -1409,7 +1405,7 @@ namespace Seldon
     int m = A.GetM();
     int n = B.GetN();
     if (beta == zero)
-      C.Fill(zero);
+      C.Zero();
     else
       MltScalar(beta, C);
     
@@ -1462,7 +1458,7 @@ namespace Seldon
 #endif
 	    
 	    if (beta == zero)
-	      C.Fill(zero);
+	      C.Zero();
 	    else
 	      MltScalar(beta, C);
     
@@ -1488,7 +1484,7 @@ namespace Seldon
 #endif
 
 	    if (beta == zero)
-	      C.Fill(zero);
+	      C.Zero();
 	    else
 	      MltScalar(beta, C);
 	    
@@ -1509,7 +1505,7 @@ namespace Seldon
 #endif
 
 	    if (beta == zero)
-	      C.Fill(zero);
+	      C.Zero();
 	    else
 	      MltScalar(beta, C);
 	    
@@ -1580,7 +1576,7 @@ namespace Seldon
         SetComplexZero(zero);
         int m = A.GetM();
         if (beta == zero)
-          C.Fill(zero);
+          C.Zero();
         else
           MltScalar(beta, C);
 	
@@ -2482,7 +2478,7 @@ namespace Seldon
   {
     typedef typename ClassComplexType<T>::Treal Treal;
     Vector<Treal> sum(A.GetN());
-    sum.Fill(Treal(0));
+    sum.Zero();
     for (int i = 0; i < A.GetM(); i++)
       for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
         sum(A.GetInd()[j]) += ComplexAbs( A.GetData()[j]);
@@ -2567,7 +2563,7 @@ namespace Seldon
   {
     typedef typename ClassComplexType<T>::Treal Treal;
     Vector<Treal> sum(A.GetM());
-    sum.Fill(Treal(0));
+    sum.Zero();
     for (int i = 0; i < A.GetN(); i++)
       for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
         sum(A.GetInd()[j]) += ComplexAbs( A.GetData()[j]);
@@ -2604,7 +2600,7 @@ namespace Seldon
   {
     typedef typename ClassComplexType<T>::Treal Treal;
     Vector<Treal> sum(A.GetN());
-    sum.Fill(Treal(0));
+    sum.Zero();
     for (int i = 0; i < A.GetM(); i++)
       for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
         {
@@ -2658,7 +2654,7 @@ namespace Seldon
   {
     typedef typename ClassComplexType<T>::Treal Treal;
     Vector<Treal> sum(A.GetN());
-    sum.Fill(Treal(0));
+    sum.Zero();
     for (int i = 0; i < A.GetM(); i++)
       for (int j = A.GetPtr()[i]; j < A.GetPtr()[i+1]; j++)
         {
@@ -2801,7 +2797,7 @@ namespace Seldon
 
     ptr_T.Zero();
     ind_T.Zero();
-    data_T.Fill(0);
+    data_T.Zero();
 
     // For each column j, computes number of its non-zeroes and stores it in
     // ptr_T[j].
@@ -2813,7 +2809,7 @@ namespace Seldon
       ptr_T(j) += ptr_T(j - 1);
 
     Vector<int> row_ind(n+1);
-    row_ind.Fill(0);
+    row_ind.Zero();
     for (int i = 0; i < m; i++)
       for (int jp = ptr(i); jp < ptr(i+1); jp++)
     	{
@@ -2864,7 +2860,7 @@ namespace Seldon
 
     ptr_T.Zero();
     ind_T.Zero();
-    data_T.Fill(0);
+    data_T.Zero();
 
     // For each column j, computes number of its non-zeroes and stores it in
     // ptr_T[j].
@@ -2876,7 +2872,7 @@ namespace Seldon
       ptr_T(j) += ptr_T(j - 1);
 
     Vector<int> row_ind(m+1);
-    row_ind.Fill(0);
+    row_ind.Zero();
     for (int i = 0; i < n; i++)
       for (int jp = ptr(i); jp < ptr(i+1); jp++)
     	{

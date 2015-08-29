@@ -581,7 +581,7 @@ namespace Seldon
   {
     T zero;
     SetComplexZero(zero);
-    C.Fill(zero);
+    C.Zero();
     MltAddMatrix(alpha, A, B, zero, C);
   }
 
@@ -595,7 +595,7 @@ namespace Seldon
     T one, zero;
     SetComplexZero(zero);
     SetComplexOne(one);
-    C.Fill(zero);
+    C.Zero();
     MltAddMatrix(one, A, B, zero, C);
   }
 

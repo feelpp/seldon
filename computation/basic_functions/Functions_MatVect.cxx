@@ -97,7 +97,7 @@ namespace Seldon
     int* ptr = M.GetPtr();
     int* ind = M.GetInd();
     T1* data = M.GetData();
-    Y.Fill(0);
+    Y.Zero();
 
     for (int j = 0; j < M.GetN(); j++)
       {
@@ -209,7 +209,7 @@ namespace Seldon
     int* ptr = M.GetPtr();
     int* ind = M.GetInd();
     T1* data = M.GetData();
-    Y.Fill(0);
+    Y.Zero();
     
     if (Trans.Trans())
       {
@@ -485,7 +485,7 @@ namespace Seldon
       {
 	if (alpha == T0(0))
 	  {
-	    Y.Fill(T4(0));
+	    Y.Zero();
 	    return;
 	  }
 	else
@@ -529,7 +529,7 @@ namespace Seldon
       {
 	if (alpha == T0(0))
 	  {
-	    Y.Fill(T4(0));
+	    Y.Zero();
 	    return;
 	  }
 	else
@@ -580,7 +580,7 @@ namespace Seldon
       {
 	if (alpha == T0(0))
 	  {
-	    Y.Fill(T4(0));
+	    Y.Zero();
 	    return;
 	  }
 	else
@@ -634,7 +634,7 @@ namespace Seldon
       {
 	if (alpha == T0(0))
 	  {
-	    Y.Fill(T4(0));
+	    Y.Zero();
 	    return;
 	  }
 	else
@@ -688,7 +688,7 @@ namespace Seldon
       {
 	if (alpha == T0(0))
 	  {
-	    Y.Fill(T4(0));
+	    Y.Zero();
 	    return;
 	  }
 	else
@@ -1455,7 +1455,7 @@ namespace Seldon
     SetComplexZero(zero);
     
     if (beta == zero3)
-      Y.Fill(zero);
+      Y.Zero();
     else
       Mlt(beta, Y);
 
