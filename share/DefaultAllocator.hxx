@@ -55,10 +55,10 @@ namespace Seldon
   };  
 
   template<class Storage>
-  class SeldonDefaultAllocator<Storage, uint64_t>
+  class SeldonDefaultAllocator<Storage, unsigned long long int>
   {
   public:
-    typedef MallocAlloc<uint64_t> allocator;
+    typedef MallocAlloc<unsigned long long int> allocator;
   };  
 
   template<class Storage>

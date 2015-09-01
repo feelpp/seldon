@@ -1955,7 +1955,7 @@ namespace Seldon
             class T, class Prop, class Storage, class Alloc3>
   void GetEigenvaluesEigenvectors(EigenPb& var_eig, Vector1& lambda,
 				  Vector2& lambda_imag,
-				  Matrix<T, Prop, Storage, Alloc3>& eigen_vec);
+				  Matrix<T, Prop, Storage, Alloc3>& eigen_vec)
   {
     int type_solver = TypeEigenvalueSolver::default_solver;
     if (type_solver == TypeEigenvalueSolver::DEFAULT)

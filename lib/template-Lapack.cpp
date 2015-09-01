@@ -16,7 +16,7 @@
 #include "matrix/Matrix_Hermitian.cxx"
 #include "matrix/Matrix_HermPacked.cxx"
 #include "share/Allocator.cxx"
-#include "share/Storage.cxx"
+#include "share/StorageInline.cxx"
 #include "share/MatrixFlagInline.cxx"
 #include "computation/interfaces/Lapack_LinearEquations.cxx"
 #include "computation/interfaces/Lapack_LeastSquares.cxx"

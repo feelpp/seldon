@@ -25,8 +25,8 @@
 
 #ifndef SELDON_WITH_COMPILED_LIBRARY
 #include "share/MatrixFlag.cxx"
-#include "share/Common.cxx"
-#include "share/Storage.txx"
+#include "share/CommonInline.cxx"
+#include "share/StorageInline.cxx"
 #include "share/Errors.cxx"
 #endif
 

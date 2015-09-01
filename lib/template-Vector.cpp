@@ -22,6 +22,7 @@
 #ifndef SELDON_WITH_COMPILED_LIBRARY
 #include "share/Errors.hxx"
 #include "share/Allocator.cxx"
+#include "vector/VectorInline.cxx"
 #include "vector/Vector.cxx"
 #include "vector/Functions_Arrays.cxx"
 #include "share/Common.cxx"

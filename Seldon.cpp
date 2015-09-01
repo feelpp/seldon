@@ -108,16 +108,6 @@ namespace Seldon
   INSTANCE_BEGIN_LOOP(RowComplexSparse)
   INSTANCE_BEGIN_LOOP(ColComplexSparse)
 
-  double real(double input)
-  {
-    return std::real(input);
-  }
-
-  float real(float input)
-  {
-    return std::real(input);
-  }
-
   Str instance(const Str input)
   {
     Str dummy;

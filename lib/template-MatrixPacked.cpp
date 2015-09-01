@@ -21,7 +21,7 @@
 
 
 #ifndef SELDON_WITH_COMPILED_LIBRARY
-#include "share/Storage.cxx"
+#include "share/StorageInline.cxx"
 #include "matrix/Matrix_Base.cxx"
 #include "matrix/Matrix_HermPacked.cxx"
 #include "matrix/Matrix_SymPacked.cxx"

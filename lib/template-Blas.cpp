@@ -17,7 +17,8 @@
 #include "matrix/Matrix_HermPacked.cxx"
 #include "matrix_sparse/Matrix_Sparse.cxx"
 #include "share/Allocator.cxx"
-#include "share/Storage.cxx"
+#include "share/AllocatorInline.cxx"
+#include "share/StorageInline.cxx"
 #include "share/MatrixFlagInline.cxx"
 #include "computation/interfaces/Blas_1.cxx"
 #include "computation/interfaces/Blas_2.cxx"
@@ -41,11 +42,11 @@ namespace Seldon
 
   SELDON_EXTERN template void Swap(Vector<@real_complex>&, Vector<@real_complex>&);
 
-  SELDON_EXTERN template void Mlt(const @scalar&, Vector<@scalar>&);
+  SELDON_EXTERN template void MltScalar(const @scalar&, Vector<@scalar>&);
 
-  SELDON_EXTERN template void Copy(const Vector<@real_complex>&, Vector<@real_complex>&);
+  SELDON_EXTERN template void CopyVector(const Vector<@real_complex>&, Vector<@real_complex>&);
 
-  SELDON_EXTERN template void Add(const @real_complex&, const Vector<@real_complex>&, Vector<@real_complex>&);
+  SELDON_EXTERN template void AddVector(const @real_complex&, const Vector<@real_complex>&, Vector<@real_complex>&);
 
   SELDON_EXTERN template @real_complex DotProdVector(const Vector<@real_complex>&, const Vector<@real_complex>&);
   SELDON_EXTERN template @complex DotProdConjVector(const Vector<@complex>&, const Vector<@complex>&);
@@ -66,16 +67,15 @@ namespace Seldon
 
   SELDON_EXTERN template void Mlt(const Matrix<@real_complex, General, @storage_blasT>&, Vector<@real_complex>&);
   SELDON_EXTERN template void Mlt(const SeldonTranspose&, const SeldonDiag&, const Matrix<@real_complex, General, @storage_blasT>&, Vector<@real_complex>&);
-  SELDON_EXTERN template void Mlt(const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, Vector<@real_complex>&);
-  SELDON_EXTERN template void Mlt(const Matrix<@real_complex, Symmetric, @storage_blasS>&, const Vector<@real_complex>&, Vector<@real_complex>&);
-  SELDON_EXTERN template void Mlt(const Matrix<@complex, Hermitian, @storage_blasH>&, const Vector<@complex>&, Vector<@complex>&);
-  SELDON_EXTERN template void Mlt(const SeldonTranspose&, const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, Vector<@real_complex>&);
+  SELDON_EXTERN template void MltVector(const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, Vector<@real_complex>&);
+  SELDON_EXTERN template void MltVector(const Matrix<@real_complex, Symmetric, @storage_blasS>&, const Vector<@real_complex>&, Vector<@real_complex>&);
+  SELDON_EXTERN template void MltVector(const Matrix<@complex, Hermitian, @storage_blasH>&, const Vector<@complex>&, Vector<@complex>&);
+  SELDON_EXTERN template void MltVector(const SeldonTranspose&, const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, Vector<@real_complex>&);
 
-  SELDON_EXTERN template void MltAdd(const @real_complex&, const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
-  SELDON_EXTERN template void MltAdd(const @real_complex&, const SeldonTranspose&, const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
-  SELDON_EXTERN template void MltAdd(const @real_complex&, const SeldonTranspose&, const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
-  SELDON_EXTERN template void MltAdd(const @real_complex&, const Matrix<@real_complex, Symmetric, @storage_blasS>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
-  SELDON_EXTERN template void MltAdd(const @complex&, const Matrix<@complex, Hermitian, @storage_blasH>&, const Vector<@complex>&, const @complex&, Vector<@complex>&);
+  SELDON_EXTERN template void MltAddVector(const @real_complex&, const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
+  SELDON_EXTERN template void MltAddVector(const @real_complex&, const SeldonTranspose&, const Matrix<@real_complex, General, @storage_blasGE>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
+  SELDON_EXTERN template void MltAddVector(const @real_complex&, const Matrix<@real_complex, Symmetric, @storage_blasS>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
+  SELDON_EXTERN template void MltAddVector(const @complex&, const Matrix<@complex, Hermitian, @storage_blasH>&, const Vector<@complex>&, const @complex&, Vector<@complex>&);
 
   SELDON_EXTERN template void Rank1Update(const @real_complex&, const Vector<@real_complex>&, const Vector<@real_complex>&, Matrix<@real_complex, General, @storage_blasGE>&);
   SELDON_EXTERN template void Rank1Update(const @complex&, const Vector<@complex>&, const SeldonConjugate&, const Vector<@complex>&, Matrix<@complex, General, @storage_blasGE>&);
@@ -91,14 +91,14 @@ namespace Seldon
 
   /* Blas Level 3 */
 
-  SELDON_EXTERN template void MltAdd(const @real_complex&, const Matrix<@real_complex, General, @storage_blasGE>&, const Matrix<@real_complex, General, @storage_blasGE>&, const @real_complex&, Matrix<@real_complex, General, @storage_blasGE>&);
-  SELDON_EXTERN template void MltAdd(const @real_complex&, const SeldonTranspose&, const Matrix<@real_complex, General, @storage_blasGE>&, const SeldonTranspose&, const Matrix<@real_complex, General, @storage_blasGE>&, const @real_complex&, Matrix<@real_complex, General, @storage_blasGE>&);
+  SELDON_EXTERN template void MltAddMatrix(const @real_complex&, const Matrix<@real_complex, General, @storage_blasGE>&, const Matrix<@real_complex, General, @storage_blasGE>&, const @real_complex&, Matrix<@real_complex, General, @storage_blasGE>&);
+  SELDON_EXTERN template void MltAddMatrix(const @real_complex&, const SeldonTranspose&, const Matrix<@real_complex, General, @storage_blasGE>&, const SeldonTranspose&, const Matrix<@real_complex, General, @storage_blasGE>&, const @real_complex&, Matrix<@real_complex, General, @storage_blasGE>&);
   SELDON_EXTERN template void MltAdd(const SeldonSide&, const @real_complex&, const Matrix<@real_complex, Symmetric, ColSym>&, const Matrix<@real_complex, General, ColMajor>&, const @real_complex&, Matrix<@real_complex, General, ColMajor>&);
   SELDON_EXTERN template void MltAdd(const SeldonSide&, const @real_complex&, const Matrix<@real_complex, Symmetric, RowSym>&, const Matrix<@real_complex, General, RowMajor>&, const @real_complex&, Matrix<@real_complex, General, RowMajor>&);
   SELDON_EXTERN template void MltAdd(const SeldonSide&, const @complex&, const Matrix<@complex, Symmetric, ColHerm>&, const Matrix<@complex, General, ColMajor>&, const @complex&, Matrix<@complex, General, ColMajor>&);
   SELDON_EXTERN template void MltAdd(const SeldonSide&, const @complex&, const Matrix<@complex, Symmetric, RowHerm>&, const Matrix<@complex, General, RowMajor>&, const @complex&, Matrix<@complex, General, RowMajor>&);
 
-  SELDON_EXTERN template void Mlt(const Matrix<@real_complex, General, @storage_blasGE>&, const Matrix<@real_complex, General, @storage_blasGE>&, Matrix<@real_complex, General, @storage_blasGE>&);
+  //SELDON_EXTERN template void MltMatrix(const Matrix<@real_complex, General, @storage_blasGE>&, const Matrix<@real_complex, General, @storage_blasGE>&, Matrix<@real_complex, General, @storage_blasGE>&);
   SELDON_EXTERN template void Mlt(const SeldonSide&, const @real_complex&, const Matrix<@real_complex, General, RowLoTriang>&, Matrix<@real_complex, General, RowMajor>&);
   SELDON_EXTERN template void Mlt(const SeldonSide&, const @real_complex&, const Matrix<@real_complex, General, RowUpTriang>&, Matrix<@real_complex, General, RowMajor>&);
   SELDON_EXTERN template void Mlt(const SeldonSide&, const @real_complex&, const Matrix<@real_complex, General, ColLoTriang>&, Matrix<@real_complex, General, ColMajor>&);
@@ -132,7 +132,7 @@ namespace Seldon
   SELDON_EXTERN template void TransposeConj(Matrix<@real_complex, Symmetric, @storage_blasS>&);
   SELDON_EXTERN template void TransposeConj(Matrix<@complex, Hermitian, @storage_blasH>&);
 
-  SELDON_EXTERN template void MltAdd(const @real_complex&, const Matrix<@real_complex, General, RowSparse>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
-  SELDON_EXTERN template void MltAdd(const @real_complex&, const SeldonTranspose&, const Matrix<@real_complex, General, RowSparse>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
+  SELDON_EXTERN template void MltAddVector(const @real_complex&, const Matrix<@real_complex, General, RowSparse>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
+  SELDON_EXTERN template void MltAddVector(const @real_complex&, const SeldonTranspose&, const Matrix<@real_complex, General, RowSparse>&, const Vector<@real_complex>&, const @real_complex&, Vector<@real_complex>&);
 
 }
