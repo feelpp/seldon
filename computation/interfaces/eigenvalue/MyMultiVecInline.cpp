@@ -4,21 +4,21 @@
 namespace Anasazi
 {
   template<class ScalarType>
-  inline int MyMultivec<ScalarType>::GetVecLength () const
+  inline int MyMultiVec<ScalarType>::GetVecLength () const
   {
     return(Length_);
   }
   
   
   template<class ScalarType>
-  inline int MyMultivec<ScalarType>::GetNumberVecs () const
+  inline int MyMultiVec<ScalarType>::GetNumberVecs () const
   {
     return(NumberVecs_);
   }
   
   
   template<class ScalarType>
-  inline ScalarType& MyMultivec<ScalarType>
+  inline ScalarType& MyMultiVec<ScalarType>
   ::operator()(const int i, const int j)
   {
     if (j < 0 || j >= NumberVecs_) throw(-1);
@@ -29,7 +29,7 @@ namespace Anasazi
   
   
   template<class ScalarType>
-  inline const ScalarType& MyMultivec<ScalarType>
+  inline const ScalarType& MyMultiVec<ScalarType>
   ::operator()(const int i, const int j) const
   {
     if (j < 0 || j >= NumberVecs_) throw(-1);
@@ -40,7 +40,7 @@ namespace Anasazi
   
   
   template<class ScalarType>
-  inline ScalarType* MyMultivec<ScalarType>::operator[](int v)
+  inline ScalarType* MyMultiVec<ScalarType>::operator[](int v)
   {
     if (v < 0 || v >= NumberVecs_) throw(-1);
     return(data_[v]);
@@ -48,7 +48,7 @@ namespace Anasazi
   
   
   template<class ScalarType>
-  inline ScalarType* MyMultivec<ScalarType>::operator[](int v) const
+  inline ScalarType* MyMultiVec<ScalarType>::operator[](int v) const
   {
     return(data_[v]);
   }

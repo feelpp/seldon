@@ -20,7 +20,7 @@
 
 #include "Anasazi.hxx"
 
-namespace Seldon
+namespace Anasazi
 {
   
   //! constructor with the eigenproblem
@@ -146,7 +146,11 @@ namespace Seldon
 	break;
       }
   }
-  
+
+}
+
+namespace Seldon
+{
   
   //! real case, z = x, zimag = y
   template<class T>
@@ -171,29 +175,37 @@ namespace Seldon
     \param[out] eigen_values eigenvalue
     \param[out] eigen_vectors eigenvectors
   */
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T>
+  void FindEigenvaluesAnasazi(EigenProblem_Base<T>& var,
+			      Vector<T>& eigen_values,
+			      Vector<T>& lambda_imag,
+			      Matrix<T, General, ColMajor>& eigen_vectors)
+#else
   template<class EigenProblem, class T, class Allocator1,
            class Allocator2, class Allocator3>
   void FindEigenvaluesAnasazi(EigenProblem& var,
 			      Vector<T, VectFull, Allocator1>& eigen_values,
 			      Vector<T, VectFull, Allocator2>& lambda_imag,
 			      Matrix<T, General, ColMajor, Allocator3>& eigen_vectors)
+#endif
   {
     int n = var.GetM();
     string which("LM");
     switch (var.GetTypeSorting())
       {
-      case EigenProblem::SORTED_REAL : which = "LR"; break;
-      case EigenProblem::SORTED_IMAG : which = "LI"; break;
-      case EigenProblem::SORTED_MODULUS : which = "LM"; break;
+      case EigenProblem_Base<T>::SORTED_REAL : which = "LR"; break;
+      case EigenProblem_Base<T>::SORTED_IMAG : which = "LI"; break;
+      case EigenProblem_Base<T>::SORTED_MODULUS : which = "LM"; break;
       }
     
     if (var.GetTypeSpectrum() == var.SMALL_EIGENVALUES)
       {
         switch (var.GetTypeSorting())
           {
-          case EigenProblem::SORTED_REAL : which = "SR"; break;
-          case EigenProblem::SORTED_IMAG : which = "SI"; break;
-          case EigenProblem::SORTED_MODULUS : which = "SM"; break;
+          case EigenProblem_Base<T>::SORTED_REAL : which = "SR"; break;
+          case EigenProblem_Base<T>::SORTED_IMAG : which = "SI"; break;
+          case EigenProblem_Base<T>::SORTED_MODULUS : which = "SM"; break;
           }
       }
 
@@ -203,11 +215,7 @@ namespace Seldon
     SetComplexZero(zero);
     SetComplexOne(one);
         
-    // mass matrix for diagonal case, and Cholesky case
-    typedef typename EigenProblem::MassValue Tmass;
-    Vector<Tmass> Dh_diag;
     int print_level = var.GetPrintLevel();
-
     int solver = var.GetEigensolverType();
     
     typedef Anasazi::MultiVec<T>  MV;
@@ -262,17 +270,17 @@ namespace Seldon
     Teuchos::RCP<MV> ivec = Teuchos::rcp( new Anasazi::MyMultiVec<T>(n, blockSize) );
     ivec->MvRandom();
 
-    typedef Anasazi::OperatorAnasaziEigen<EigenProblem, T> OPsub;
+    typedef Anasazi::OperatorAnasaziEigen<EigenProblem_Base<T>, T> OPsub;
     typedef Anasazi::Operator<T> OP;
     Teuchos::RCP<const OP> A, M, Op;
     A = Teuchos::rcp(new Anasazi::OperatorAnasaziEigen
-		     <EigenProblem, T>(var, OPsub::OPERATOR_A));
+		     <EigenProblem_Base<T>, T>(var, OPsub::OPERATOR_A));
 
     M = Teuchos::rcp(new Anasazi::OperatorAnasaziEigen
-		     <EigenProblem, T>(var, OPsub::OPERATOR_M));
+		     <EigenProblem_Base<T>, T>(var, OPsub::OPERATOR_M));
 
     Op = Teuchos::rcp(new Anasazi::OperatorAnasaziEigen
-		      <EigenProblem, T>(var, OPsub::OPERATOR_OP));
+		      <EigenProblem_Base<T>, T>(var, OPsub::OPERATOR_OP));
 
     // Create eigenproblem
     Teuchos::RCP<Anasazi::BasicEigenproblem<T, MV, OP> > MyProblem;
@@ -292,14 +300,11 @@ namespace Seldon
         // solving a standard eigenvalue problem
         if (var.DiagonalMass())
 	  {
-	    Vector<Tmass> Dh_diag;
-	    
 	    // computation of M
-            var.ComputeDiagonalMass(Dh_diag);
+            var.ComputeDiagonalMass();
 	    
             // computation of M^{-1/2}
-            var.FactorizeDiagonalMass(Dh_diag);
-            Dh_diag.Clear();
+            var.FactorizeDiagonalMass();
           }
 	else
 	  {

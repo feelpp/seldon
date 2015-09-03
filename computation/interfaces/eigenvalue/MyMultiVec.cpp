@@ -6,7 +6,7 @@ namespace Anasazi
   
   //! Constructor for a \c NumberVecs vectors of length \c Length.
   template<class ScalarType>
-  MyMultivec<ScalarType>::MyMultiVec(const int Length, const int NumberVecs)
+  MyMultiVec<ScalarType>::MyMultiVec(const int Length, const int NumberVecs)
     : Length_(Length),
       NumberVecs_(NumberVecs)
   {
@@ -51,7 +51,7 @@ namespace Anasazi
   
   //! Copy constructor, performs a deep copy.
   template<class ScalarType>
-  MyMultivec<ScalarType>::MyMultiVec(const MyMultiVec& rhs) :
+  MyMultiVec<ScalarType>::MyMultiVec(const MyMultiVec& rhs) :
     Length_(rhs.GetVecLength()),
     NumberVecs_(rhs.NumberVecs_)
   {
@@ -76,7 +76,7 @@ namespace Anasazi
   
   //! Destructor
   template<class ScalarType>
-  MyMultivec<ScalarType>::~MyMultiVec()
+  MyMultiVec<ScalarType>::~MyMultiVec()
   {
     for (int v = 0 ; v < NumberVecs_ ; ++v)
       if (ownership_[v]) 
@@ -86,10 +86,10 @@ namespace Anasazi
   
   //! Returns a clone of the current vector.
   template<class ScalarType>
-  MyMultiVec* MyMultivec<ScalarType>::Clone(const int NumberVecs) const
+  MyMultiVec<ScalarType>* MyMultiVec<ScalarType>::Clone(const int NumberVecs) const
   {
     // FIXME
-    MyMultiVec* tmp = new MyMultiVec(Length_, NumberVecs);
+    MyMultiVec<ScalarType>* tmp = new MyMultiVec<ScalarType>(Length_, NumberVecs);
     
     //   for (int v = 0 ; v < NumberVecs ; ++v)
     //         for (int i = 0 ; i < Length_ ; ++i)
@@ -101,18 +101,18 @@ namespace Anasazi
   
   // Returns a clone of the corrent multi-vector.
   template<class ScalarType>
-  MyMultiVec* MyMultivec<ScalarType>::CloneCopy() const
+  MyMultiVec<ScalarType>* MyMultiVec<ScalarType>::CloneCopy() const
   {
-    return(new MyMultiVec(*this));
+    return(new MyMultiVec<ScalarType>(*this));
   }
   
   
   //! Returns a clone copy of specified vectors.
   template<class ScalarType>
-  MyMultiVec* MyMultivec<ScalarType>::CloneCopy(const std::vector< int > &index) const
+  MyMultiVec<ScalarType>* MyMultiVec<ScalarType>::CloneCopy(const std::vector< int > &index) const
   {
     int size = index.size();
-    MyMultiVec* tmp = new MyMultiVec(Length_, size);
+    MyMultiVec<ScalarType>* tmp = new MyMultiVec<ScalarType>(Length_, size);
     
     for (unsigned int v = 0 ; v < index.size() ; ++v)
       for (int i = 0 ; i < Length_ ; ++i)
@@ -124,7 +124,7 @@ namespace Anasazi
   
   //! Returns a view of current vector (shallow copy)
   template<class ScalarType>
-  MyMultiVec* MyMultivec<ScalarType>
+  MyMultiVec<ScalarType>* MyMultiVec<ScalarType>
   ::CloneViewNonConst(const std::vector< int > &index) 
   {
     int size = index.size();
@@ -133,13 +133,13 @@ namespace Anasazi
     for (unsigned int v = 0 ; v < index.size() ; ++v)
       values[v] = data_[index[v]];
     
-    return(new MyMultiVec(Length_, values));
+    return(new MyMultiVec<ScalarType>(Length_, values));
   }
   
   
   //! Returns a view of current vector (shallow copy), const version.
   template<class ScalarType>
-  const MyMultiVec* MyMultivec<ScalarType>
+  const MyMultiVec<ScalarType>* MyMultiVec<ScalarType>
   ::CloneView(const std::vector< int > &index) const
   {
     int size = index.size();
@@ -148,13 +148,13 @@ namespace Anasazi
     for (unsigned int v = 0 ; v < index.size() ; ++v)
       values[v] = data_[index[v]];
     
-    return(new MyMultiVec(Length_, values));
+    return(new MyMultiVec<ScalarType>(Length_, values));
   }
     
   
   // Update *this with alpha * A * B + beta * (*this). 
   template<class ScalarType>
-  void MyMultivec<ScalarType>
+  void MyMultiVec<ScalarType>
   ::MvTimesMatAddMv(ScalarType alpha, const Anasazi::MultiVec<ScalarType> &A, 
 		    const Teuchos::SerialDenseMatrix<int, ScalarType> &B, 
 		    ScalarType beta)
@@ -210,7 +210,7 @@ namespace Anasazi
   
   // Replace *this with alpha * A + beta * B. 
   template<class ScalarType>
-  void MyMultivec<ScalarType>
+  void MyMultiVec<ScalarType>
   ::MvAddMv(ScalarType alpha, const Anasazi::MultiVec<ScalarType>& A, 
 	    ScalarType beta,  const Anasazi::MultiVec<ScalarType>& B)
   {
@@ -238,7 +238,7 @@ namespace Anasazi
   
   // Compute a dense matrix B through the matrix-matrix multiply alpha * A^H * (*this). 
   template<class ScalarType>
-  void MyMultivec<ScalarType>
+  void MyMultiVec<ScalarType>
   ::MvTransMv(ScalarType alpha, const Anasazi::MultiVec<ScalarType>& A, 
 	      Teuchos::SerialDenseMatrix< int, ScalarType >& B
 #ifdef HAVE_ANASAZI_EXPERIMENTAL
@@ -284,7 +284,7 @@ namespace Anasazi
   
   // Compute a vector b where the components are the individual dot-products, i.e.b[i] = A[i]^H*this[i] where A[i] is the i-th column of A. 
   template<class ScalarType>
-  void MyMultivec<ScalarType>
+  void MyMultiVec<ScalarType>
   ::MvDot(const Anasazi::MultiVec<ScalarType>& A, std::vector<ScalarType> &b
 #ifdef HAVE_ANASAZI_EXPERIMENTAL
 	  , Anasazi::ConjType conj
@@ -324,7 +324,7 @@ namespace Anasazi
   
   
   template<class ScalarType>
-  void MyMultivec<ScalarType>
+  void MyMultiVec<ScalarType>
   ::MvNorm( std::vector<typename Teuchos::ScalarTraits<ScalarType>::magnitudeType> &normvec) const 
   {
     assert (NumberVecs_ <= (int)normvec.size());
@@ -347,7 +347,7 @@ namespace Anasazi
   // in index.
   // FIXME: not so clear what the size of A and index.size() are...
   template<class ScalarType>
-  void MyMultivec<ScalarType>::SetBlock(const Anasazi::MultiVec<ScalarType>& A, 
+  void MyMultiVec<ScalarType>::SetBlock(const Anasazi::MultiVec<ScalarType>& A, 
 					const std::vector<int> &index)
   {
     MyMultiVec* MyA;
@@ -367,7 +367,7 @@ namespace Anasazi
   
   // Scale the vectors by alpha
   template<class ScalarType>
-  void MyMultivec<ScalarType>::MvScale( ScalarType alpha )
+  void MyMultiVec<ScalarType>::MvScale( ScalarType alpha )
   {
     for (int v = 0 ; v < NumberVecs_ ; ++v) {
       for (int i = 0 ; i < Length_ ; ++i) {
@@ -379,7 +379,7 @@ namespace Anasazi
   
   // Scale the i-th vector by alpha[i]
   template<class ScalarType>
-  void MyMultivec<ScalarType>::MvScale( const std::vector<ScalarType>& alpha )
+  void MyMultiVec<ScalarType>::MvScale( const std::vector<ScalarType>& alpha )
   {
     for (int v = 0 ; v < NumberVecs_ ; ++v) {
       for (int i = 0 ; i < Length_ ; ++i) {
@@ -391,7 +391,7 @@ namespace Anasazi
   
   // Fill the vectors in *this with random numbers.
   template<class ScalarType>
-  void MyMultivec<ScalarType>::MvRandom ()
+  void MyMultiVec<ScalarType>::MvRandom ()
   {
     for (int v = 0 ; v < NumberVecs_ ; ++v) {
       for (int i = 0 ; i < Length_ ; ++i) {
@@ -403,7 +403,7 @@ namespace Anasazi
   
   // Replace each element of the vectors in *this with alpha.
   template<class ScalarType>
-  void MyMultivec<ScalarType>::MvInit(ScalarType alpha)
+  void MyMultiVec<ScalarType>::MvInit(ScalarType alpha)
   {
     for (int v = 0 ; v < NumberVecs_ ; ++v) {
       for (int i = 0 ; i < Length_ ; ++i) {
@@ -414,7 +414,7 @@ namespace Anasazi
   
   
   template<class ScalarType>
-  void MyMultivec<ScalarType>::MvPrint(std::ostream &os) const
+  void MyMultiVec<ScalarType>::MvPrint(std::ostream &os) const
   {
     os << "Object MyMultiVec" << std::endl;
     os << "Number of rows = " << Length_ << std::endl;
@@ -430,7 +430,7 @@ namespace Anasazi
   
   
   template<class ScalarType>
-  void MyMultivec<ScalarType>::Check()
+  void MyMultiVec<ScalarType>::Check()
   {
     if (Length_ <= 0)
       throw("Length must be positive");

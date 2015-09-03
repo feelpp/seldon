@@ -27,11 +27,11 @@ namespace Anasazi
 
     ~MyMultiVec();
 
-    MyMultiVec* Clone(const int NumberVecs) const;
-    MyMultiVec* CloneCopy() const;
-    MyMultiVec* CloneCopy(const std::vector< int > &index) const;
-    MyMultiVec* CloneViewNonConst(const std::vector< int > &index);
-    const MyMultiVec* CloneView(const std::vector< int > &index) const;
+    MyMultiVec<ScalarType>* Clone(const int NumberVecs) const;
+    MyMultiVec<ScalarType>* CloneCopy() const;
+    MyMultiVec<ScalarType>* CloneCopy(const std::vector< int > &index) const;
+    MyMultiVec<ScalarType>* CloneViewNonConst(const std::vector< int > &index);
+    const MyMultiVec<ScalarType>* CloneView(const std::vector< int > &index) const;
     
     int GetVecLength () const;
     int GetNumberVecs () const;
