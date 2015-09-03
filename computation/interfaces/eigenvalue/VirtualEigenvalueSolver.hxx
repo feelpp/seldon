@@ -241,8 +241,11 @@ namespace Seldon
     virtual void FactorizeDiagonalMass() = 0;
     virtual void GetSqrtDiagonal(Vector<T>&) = 0;
     
-    virtual void MltInvSqrtDiagonalMass(Vector<T>& X) = 0;
-    virtual void MltSqrtDiagonalMass(Vector<T>& X) = 0;
+    virtual void MltInvSqrtDiagonalMass(Vector<Treal>& X) = 0;
+    virtual void MltSqrtDiagonalMass(Vector<Treal>& X) = 0;
+
+    virtual void MltInvSqrtDiagonalMass(Vector<Tcplx>& X) = 0;
+    virtual void MltSqrtDiagonalMass(Vector<Tcplx>& X) = 0;
     
     virtual void ComputeMassForCholesky();
     
@@ -343,9 +346,12 @@ namespace Seldon
     void FactorizeDiagonalMass();
     void GetSqrtDiagonal(Vector<T>&);
     
-    void MltInvSqrtDiagonalMass(Vector<T>& X);
-    void MltSqrtDiagonalMass(Vector<T>& X);
-    
+    void MltInvSqrtDiagonalMass(Vector<Treal>& X);
+    void MltSqrtDiagonalMass(Vector<Treal>& X);
+
+    void MltInvSqrtDiagonalMass(Vector<Tcplx>& X);
+    void MltSqrtDiagonalMass(Vector<Tcplx>& X);
+
     void MltMass(const Vector<T>& X, Vector<T>& Y);    
     
     void MltStiffness(const Vector<T>& X, Vector<T>& Y);

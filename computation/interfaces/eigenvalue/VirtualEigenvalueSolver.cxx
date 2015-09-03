@@ -863,7 +863,28 @@ namespace Seldon
   //! multiplication of X by D^-1/2
   template<class T, class StiffValue, class MassValue>
   void VirtualEigenProblem<T, StiffValue, MassValue>
-  ::MltInvSqrtDiagonalMass(Vector<T>& X)
+  ::MltInvSqrtDiagonalMass(Vector<Treal>& X)
+  {
+    for (int i = 0; i < X.GetM(); i++)
+      X(i) /= realpart(sqrt_diagonal_mass(i));
+  }
+  
+  
+  //! multiplication of X by D^1/2
+  template<class T, class StiffValue, class MassValue>
+  void VirtualEigenProblem<T, StiffValue, MassValue>
+  ::MltSqrtDiagonalMass(Vector<Treal>& X)
+  {
+    for (int i = 0; i < X.GetM(); i++)
+      X(i) *= realpart(sqrt_diagonal_mass(i));
+  }
+
+
+
+  //! multiplication of X by D^-1/2
+  template<class T, class StiffValue, class MassValue>
+  void VirtualEigenProblem<T, StiffValue, MassValue>
+  ::MltInvSqrtDiagonalMass(Vector<Tcplx>& X)
   {
     for (int i = 0; i < X.GetM(); i++)
       X(i) /= sqrt_diagonal_mass(i);
@@ -873,7 +894,7 @@ namespace Seldon
   //! multiplication of X by D^1/2
   template<class T, class StiffValue, class MassValue>
   void VirtualEigenProblem<T, StiffValue, MassValue>
-  ::MltSqrtDiagonalMass(Vector<T>& X)
+  ::MltSqrtDiagonalMass(Vector<Tcplx>& X)
   {
     for (int i = 0; i < X.GetM(); i++)
       X(i) *= sqrt_diagonal_mass(i);
@@ -2216,16 +2237,16 @@ namespace Seldon
   
   int TypeEigenvalueSolver::GetDefaultSolver()
   {
+#ifdef SELDON_WITH_ARPACK
+    return ARPACK;
+#endif
+    
 #ifdef SELDON_WITH_ANASAZI
     return ANASAZI;
 #endif
     
 #ifdef SELDON_WITH_FEAST
     return FEAST;
-#endif
-    
-#ifdef SELDON_WITH_ARPACK
-    return ARPACK;
 #endif
     
     return -1;

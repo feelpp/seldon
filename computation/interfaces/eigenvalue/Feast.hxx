@@ -37,12 +37,20 @@ namespace Seldon
 		 int& m, Vector<double>& res, int& info);
  
   // main function to find eigenvalues and eigenvectors with Feast (MKL implementation)
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T>
+  void FindEigenvaluesFeast(EigenProblem_Base<T>& var,
+                            Vector<T>& eigen_values,
+                            Vector<T>& lambda_imag,
+                            Matrix<T, General, ColMajor>& eigen_vectors);
+#else
   template<class EigenProblem, class T, class Allocator1,
 	   class Allocator2, class Al3>
   void FindEigenvaluesFeast(EigenProblem& var,
                             Vector<T, VectFull, Allocator1>& eigen_values,
                             Vector<T, VectFull, Allocator2>& lambda_imag,
                             Matrix<T, General, ColMajor, Al3>& eigen_vectors);
+#endif
   
 }
 

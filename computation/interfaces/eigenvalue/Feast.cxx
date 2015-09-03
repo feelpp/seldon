@@ -5,13 +5,23 @@ namespace Seldon
 {
   
   // main function to find eigenvalues and eigenvectors with Feast (MKL implementation)
+#ifdef SELDON_WITH_VIRTUAL
+  template<class T>
+  void FindEigenvaluesFeast(EigenProblem_Base<T>& var,
+                            Vector<T>& eigen_values,
+                            Vector<T>& lambda_imag,
+                            Matrix<T, General, ColMajor>& eigen_vectors)
+#else
   template<class EigenProblem, class T, class Allocator1,
 	   class Allocator2, class Allocator3>
   void FindEigenvaluesFeast(EigenProblem& var,
                             Vector<T, VectFull, Allocator1>& eigen_values,
                             Vector<T, VectFull, Allocator2>& lambda_imag,
                             Matrix<T, General, ColMajor, Allocator3>& eigen_vectors)
+#endif
   {
+    var.SetComputationalMode(var.REGULAR_MODE);
+    
     // initialization of feast parameters
     IVect fpm(128);
     fpm.Fill(0);
@@ -23,24 +33,22 @@ namespace Seldon
 
     double tol = var.GetStoppingCriterion();    
     fpm(2) = -log10(tol);
-    fpm(6) = -log10(tol);
     
     for (int i = 64; i < fpm.GetM(); i++)
       fpm(i) = 0;
     
     fpm(3) = var.GetNbMaximumIterations();
-    
+
     // initialization of computation
     int n = var.GetM();
 
     typedef typename ClassComplexType<T>::Tcplx Tcplx;
     typedef typename ClassComplexType<T>::Treal Treal;
         
-    int m0 = var.GetNbAskedEigenvalues();
+    int m0 = var.GetNbAskedEigenvalues()+1;
 
     Treal emin = var.GetLowerBoundInterval();
     Treal emax = var.GetUpperBoundInterval();
-    
     T zero; Tcplx one;
     SetComplexZero(zero);
     SetComplexOne(one);
@@ -74,13 +82,11 @@ namespace Seldon
     if (var.DiagonalMass())
       {
         // if the mass matrix is diagonal :
-        typedef typename EigenProblem::MassValue Tmass;
-        Vector<Tmass> Dh_diag;
         // the diagonal is computed
-        var.ComputeDiagonalMass(Dh_diag);
+        var.ComputeDiagonalMass();
         
         // and M^{-1/2} is computed
-        var.FactorizeDiagonalMass(Dh_diag);
+        var.FactorizeDiagonalMass();
       }
     else if (var.UseCholeskyFactoForMass())
       {
@@ -106,7 +112,6 @@ namespace Seldon
         CallFeast(ijob, n, ze, work, workc, aq, sq, fpm, epsout, loop,
                   emin, emax, m0, lambda, eigen_vectors, m, res, info);
         
-        //DISP(ijob); DISP(ze); DISP(loop); DISP(info);
         if (ijob == 10)
           {
             // we have to factorize ze M - K
@@ -215,6 +220,19 @@ namespace Seldon
 
     if (info != 0)
       {
+        if (info == 3)
+          {
+            cout << "Feast returns error code 3 " << endl;
+            cout << "It usually means that there are more than "
+                 << m0-1 << " eigenvalues in the "
+                 << "interval [" << emin << ", " << emax << "] " << endl;
+            
+            cout << "You can try to change the interval "
+                 << "or increase the number of asked eigenvalues" << endl;
+            
+            abort();
+          }
+
         cout << "An error occurred during feast eigenvalue solving " << endl;
         cout << "info = " << info << endl;
         abort();
@@ -230,6 +248,11 @@ namespace Seldon
       eigen_values(i) = lambda(i);
     
     eigen_vectors.Resize(n, m);
+
+    T shiftr = var.GetShiftValue(), shifti = var.GetImagShiftValue();
+    ApplyScalingEigenvec(var, eigen_values, lambda_imag, eigen_vectors,
+                         shiftr, shifti);
+
   }
 
   void CallFeast(int& ijob, int n, complex<double>& ze,
