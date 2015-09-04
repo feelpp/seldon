@@ -23,10 +23,10 @@
 #include "SeldonHeader.hxx"
 #include "SeldonInline.hxx"
 
-#include "share/Common.cxx"
 #include "share/Allocator.cxx"
 
 #ifndef SELDON_WITH_COMPILED_LIBRARY
+#include "share/Common.cxx"
 #include "share/MatrixFlag.cxx"
 #include "share/Errors.cxx"
 #endif
