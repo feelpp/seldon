@@ -28,7 +28,7 @@ namespace std
   {
     return x;
   }
-  
+
   template<class T>
   inline complex<T> conjugate(const complex<T>& x)
   {
@@ -40,7 +40,7 @@ namespace std
   {
     return x;
   }
-  
+
   template<class T>
   inline T realpart(const complex<T>& x)
   {
@@ -58,8 +58,8 @@ namespace Seldon
       std::cout << v[k] << " | ";
     std::cout << v[lgth - 1] << std::endl;
   }
-  
-  
+
+
   //! Default constructor.
   inline Str::Str()
   {
@@ -72,7 +72,8 @@ namespace Seldon
   */
   inline Str::Str(const Str& s)
   {
-    output_ << s;
+    string s_input = s;
+    output_ << s_input;
   }
 
 
@@ -223,8 +224,8 @@ namespace Seldon
   {
     number = T(n);
   }
-  
-    
+
+
   //! Sets a complex number to (n, 0).
   /*!
     \param[in,out] number complex number to be set to (n, 0).
@@ -234,7 +235,7 @@ namespace Seldon
   {
     number = std::complex<T>(n, 0);
   }
-  
+
 
   //! Sets a complex number to (n, 0).
   /*!
@@ -253,18 +254,18 @@ namespace Seldon
     number = std::complex<int>(x, 0);
   }
 
-  
+
   //! Sets a complex number to (x, 0).
   /*!
     \param[in,out] number complex number to be set to (x, 0).
-  */  
+  */
   template <class T>
   inline void SetComplexReal(const T& x, std::complex<T>& number)
   {
     number = std::complex<T>(x, 0);
   }
-  
-  
+
+
   //! Sets a complex number to x.
   /*!
     \param[in,out] number complex number to be set to x.
@@ -274,8 +275,8 @@ namespace Seldon
   {
     number = x;
   }
-  
-  
+
+
   //! Returns true for a complex number
   template <class T>
   inline bool IsComplexNumber(const T& number)
@@ -291,15 +292,15 @@ namespace Seldon
     return true;
   }
 
-  
+
   //! returns absolute value of val
   template<class T>
   inline T ComplexAbs(const T& val)
   {
     return abs(val);
   }
-  
-  
+
+
   //! returns modulus of val
   template<class T>
   inline T ComplexAbs(const std::complex<T>& val)
@@ -322,14 +323,14 @@ namespace Seldon
     return real(z)*real(z) + imag(z)*imag(z);
   }
 
-  
+
   //! returns the square modulus of z
   template<class T>
   inline T absSquare(const T& z)
   {
     return z*z;
   }
-  
+
 }  // namespace Seldon.
 
 #define SELDON_FILE_COMMON_INLINE_CXX
