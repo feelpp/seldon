@@ -19,7 +19,6 @@
 
 #ifndef SELDON_FILE_COMMON_INLINE_CXX
 
-#include "Common.hxx"
 
 namespace std
 {

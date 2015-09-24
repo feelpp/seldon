@@ -164,5 +164,7 @@ namespace Seldon
 
 }  // namespace Seldon.
 
+
+#include "CommonInline.cxx"
 #define SELDON_FILE_COMMON_HXX
 #endif
