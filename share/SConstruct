@@ -181,6 +181,10 @@ if ARGUMENTS["line"] == "no":
 
 
 target_list = glob.glob("*.cpp")
+exclude_target = to_string_list("exclude_target")
+for filename in target_list[:]:
+    if filename in exclude_target or filename[:-4] in exclude_target:
+        target_list.remove(filename)
 for filename in target_list:
     if ARGUMENTS["lib"] == "yes":
         env.Program(filename[:-4],
