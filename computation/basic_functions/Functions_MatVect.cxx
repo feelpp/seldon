@@ -155,6 +155,7 @@ namespace Seldon
     CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
     if (beta == T3(0))
+    {
       if (alpha == T0(0))
         {
           Y.Fill(T4(0));
@@ -167,6 +168,7 @@ namespace Seldon
             VecScale(Y.GetPetscVector(), alpha);
           return;
         }
+    }
     if (alpha == T0(1))
       {
         if (beta != T3(1))
@@ -197,6 +199,7 @@ namespace Seldon
     CheckDim(M, X, Y, "MltAdd(alpha, M, X, beta, Y)");
 #endif
     if (beta == T3(0))
+    {
       if (alpha == T0(0))
         {
           Y.Fill(T4(0));
@@ -209,6 +212,7 @@ namespace Seldon
             VecScale(Y.GetPetscVector(), alpha);
           return;
         }
+    }
     if (alpha == T0(1))
       {
         if (beta != T3(1))
@@ -246,6 +250,7 @@ namespace Seldon
     X_Petsc.Flush();
 
     if (beta == T3(0))
+    {
       if (alpha == T0(0))
         {
           Y.Fill(T4(0));
@@ -259,6 +264,7 @@ namespace Seldon
             VecScale(Y.GetPetscVector(), alpha);
           return;
         }
+    }
     if (alpha == T0(1))
       {
         if (beta != T3(1))
@@ -298,6 +304,7 @@ namespace Seldon
     X_Petsc.Flush();
 
     if (beta == T3(0))
+    {
       if (alpha == T0(0))
         {
           Y.Fill(T4(0));
@@ -311,6 +318,7 @@ namespace Seldon
             VecScale(Y.GetPetscVector(), alpha);
           return;
         }
+    }
     if (alpha == T0(1))
       {
         if (beta != T3(1))
@@ -350,6 +358,7 @@ namespace Seldon
     X_Petsc.Flush();
 
     if (beta == T3(0))
+    {
       if (alpha == T0(0))
         {
           Y.Fill(T4(0));
@@ -363,6 +372,7 @@ namespace Seldon
             VecScale(Y.GetPetscVector(), alpha);
           return;
         }
+    }
     if (alpha == T0(1))
       {
         if (beta != T3(1))
